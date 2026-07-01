@@ -1,0 +1,2618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokemon GO PvP Simulator</title>
+  <script src="gamemaster-data.js"></script>
+  <style>
+    :root {
+      --bg: #edf2f5;
+      --panel: #fff;
+      --ink: #17212f;
+      --muted: #5c6878;
+      --line: #d7dde6;
+      --soft: #f8fafc;
+      --accent: #156f8f;
+      --accent-dark: #0f526b;
+      --danger: #b33131;
+      --warn: #c98c19;
+      --good: #27805f;
+      --shadow: rgba(23, 33, 47, .07);
+      --grid: rgba(23, 33, 47, .11);
+      --ruler: #eef3f7;
+    }
+    body[data-theme="dark"] {
+      --bg: #111822;
+      --panel: #182231;
+      --ink: #edf3f8;
+      --muted: #a9b5c3;
+      --line: #2f3d4e;
+      --soft: #202b3a;
+      --accent: #2c8bb1;
+      --accent-dark: #1d6482;
+      --danger: #e16464;
+      --warn: #e0a83a;
+      --good: #32a77b;
+      --shadow: rgba(0, 0, 0, .26);
+      --grid: rgba(226, 235, 244, .14);
+      --ruler: #202b3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      background: #102532;
+      color: white;
+      border-bottom: 4px solid #d6ad39;
+    }
+    h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
+    .source { color: #cfd8df; font-size: 13px; text-align: right; }
+    main { padding: 16px; display: grid; gap: 14px; }
+    .toolbar, .setup { display: grid; gap: 12px; }
+    .toolbar {
+      grid-template-columns: repeat(7, max-content) 1fr;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 14px rgba(23, 33, 47, .05);
+    }
+    .toolbar select {
+      width: auto;
+      max-width: none;
+    }
+    .preset-select {
+      min-width: 210px;
+      max-width: 240px;
+    }
+    .setup {
+      grid-template-columns: repeat(2, 530px);
+      column-gap: 40px;
+      align-items: start;
+      justify-content: center;
+    }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 12px;
+      max-width: 530px;
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(23, 33, 47, .07);
+      position: relative;
+      overflow: hidden;
+    }
+    .trainer-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: #156f8f;
+    }
+    .trainer-card.a::before { background: linear-gradient(90deg, #156f8f, #2f78d6); }
+    .trainer-card.b::before { background: linear-gradient(90deg, #8f4fb8, #d6ad39); }
+    .trainer-card.a {
+      box-shadow: 0 8px 22px rgba(21, 111, 143, .12);
+    }
+    .trainer-card.b {
+      box-shadow: 0 8px 22px rgba(143, 79, 184, .12);
+    }
+    h2 { margin: 0 0 12px; font-size: 16px; font-weight: 650; }
+    .control-stack {
+      display: grid;
+      gap: 7px;
+      padding: 12px 8px 8px;
+      border: 1px solid #e6ebf2;
+      border-radius: 8px;
+      background: rgba(248, 250, 252, .72);
+    }
+    body[data-theme="dark"] .control-stack,
+    body[data-theme="dark"] .field-box,
+    body[data-theme="dark"] .stat-bars {
+      background: rgba(32, 43, 58, .72);
+    }
+    label {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .battle-identity img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+    .battle-identity img.shadow-pokemon {
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 54%, rgba(143, 79, 184, .25) 0 34%, rgba(143, 79, 184, .14) 35% 54%, transparent 68%),
+        radial-gradient(circle, rgba(98, 49, 158, .20), transparent 72%);
+      filter:
+        drop-shadow(0 0 5px rgba(143, 79, 184, .95))
+        drop-shadow(0 0 13px rgba(92, 45, 145, .72));
+    }
+    .battle-identity strong {
+      display: block;
+      font-size: 15px;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .battle-identity span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .type-badges {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+    }
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .25);
+    }
+    .battle-identity {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    select, input {
+      width: 100%;
+      max-width: 320px;
+      min-height: 30px;
+      border: 1px solid #c8d0da;
+      background: white;
+      color: var(--ink);
+      padding: 4px 7px;
+      font: inherit;
+      border-radius: 6px;
+    }
+    body[data-theme="dark"] select,
+    body[data-theme="dark"] input {
+      background: #111822;
+      color: var(--ink);
+      border-color: #3a4a5d;
+    }
+    .search-input, .pokemon-select, .move-select { max-width: 320px; }
+    .short-input { max-width: 86px; }
+    input[type="checkbox"] { width: auto; min-height: auto; }
+    .iv-row {
+      display: grid;
+      grid-template-columns: repeat(5, 54px);
+      gap: 4px;
+      max-width: none;
+      align-items: end;
+    }
+    .iv-field {
+      display: grid;
+      gap: 2px;
+      text-align: center;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .iv-field input {
+      text-align: center;
+      max-width: 54px;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .iv-row input {
+      min-width: 0;
+    }
+    .iv-row input::placeholder { color: #6f7c8c; }
+    .rank-meter {
+      width: 150px;
+      max-width: 100%;
+      margin: 0;
+      padding: 5px 8px;
+      border: 1px solid #c8d0da;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1fb878, #d6ad39, #d94c4c);
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
+    }
+    .rank-bait-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-left: 0;
+      max-width: 100%;
+    }
+    .bait-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .bait-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(3, max-content);
+      border: 1px solid #bfc8d3;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: inset 0 1px 1px rgba(23, 33, 47, .08);
+    }
+    .bait-toggle button {
+      min-height: 28px;
+      padding: 4px 10px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: none;
+    }
+    .bait-toggle button + button {
+      border-left: 1px solid #bfc8d3;
+    }
+    .bait-toggle button.active {
+      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
+      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+    }
+    body[data-theme="dark"] .bait-toggle button.active {
+      background: linear-gradient(180deg, #334256, #263446);
+    }
+    .compact-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(3, max-content);
+      border: 1px solid #bfc8d3;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: inset 0 1px 1px rgba(23, 33, 47, .08);
+    }
+    .compact-toggle button {
+      min-height: 26px;
+      padding: 3px 8px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 750;
+      box-shadow: none;
+    }
+    .compact-toggle button + button { border-left: 1px solid #bfc8d3; }
+    .compact-toggle button.active {
+      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
+      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+    }
+    .shield-mode-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .field-box {
+      margin-top: 12px;
+      background:
+        radial-gradient(circle at 16% 12%, rgba(21, 111, 143, .10), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(214, 173, 57, .13), transparent 28%),
+        linear-gradient(180deg, #f8fafc, #fff);
+      border: 1px solid #e1e7ef;
+      border-radius: 8px;
+      padding: 12px;
+      position: relative;
+      transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .trainer-card.a .field-box {
+      border-color: rgba(21, 111, 143, .20);
+    }
+    .trainer-card.b .field-box {
+      border-color: rgba(143, 79, 184, .22);
+    }
+    .trainer-card.timeline-focus .field-box {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 3px rgba(242, 199, 68, .18), 0 10px 26px rgba(23, 33, 47, .12);
+    }
+    button {
+      min-height: 32px;
+      border: 1px solid var(--accent-dark);
+      background: var(--accent);
+      color: white;
+      padding: 6px 11px;
+      font: inherit;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+    button:hover { background: var(--accent-dark); }
+    button.secondary {
+      background: #f5f7f9;
+      color: var(--ink);
+      border-color: #bfc8d3;
+    }
+    button.secondary:hover { background: #e9eef3; }
+    .bait-toggle button:hover,
+    .compact-toggle button:hover,
+    .shield-count-toggle button:hover {
+      background: #eef3f8;
+      color: var(--ink);
+      filter: none;
+      transform: none;
+      box-shadow: none;
+    }
+    .bait-toggle button.active:hover,
+    .compact-toggle button.active:hover,
+    .shield-count-toggle button.active:hover {
+      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
+      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+    }
+    body[data-theme="dark"] .bait-toggle button.active:hover,
+    body[data-theme="dark"] .compact-toggle button.active:hover,
+    body[data-theme="dark"] .shield-count-toggle button.active:hover {
+      background: linear-gradient(180deg, #334256, #263446);
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hp {
+      max-width: 390px;
+      height: 18px;
+      background: #dfe5ec;
+      border: 1px solid #c7d0da;
+      margin: 8px 0;
+      overflow: hidden;
+      border-radius: 999px;
+      position: relative;
+    }
+    .hp > div {
+      height: 100%;
+      width: 100%;
+      background: var(--good);
+      transition: width .15s ease;
+    }
+    .hp > div,
+    .energy-fill {
+      transition: width .22s ease, background-color .22s ease, background .22s ease;
+    }
+    .field-box.low-hp {
+      box-shadow: inset 0 0 0 1px rgba(201, 140, 25, .26), 0 0 0 3px rgba(201, 140, 25, .08);
+    }
+    .field-box.critical-hp {
+      box-shadow: inset 0 0 0 1px rgba(179, 49, 49, .36), 0 0 0 3px rgba(179, 49, 49, .10);
+    }
+    .hp-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .45);
+      pointer-events: none;
+    }
+    .resource-row {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+      margin: 8px 0;
+      max-width: 390px;
+    }
+    .stat-bars {
+      display: grid;
+      gap: 5px;
+      margin: 10px 0 6px;
+      max-width: 330px;
+      padding: 8px;
+      border: 1px solid #e7ecf2;
+      border-radius: 8px;
+      background: rgba(255,255,255,.66);
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: 70px 48px minmax(0, 1fr) 78px;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .stat-row strong {
+      color: var(--ink);
+      font-size: 13px;
+      text-align: right;
+    }
+    .stat-track {
+      height: 5px;
+      border-radius: 999px;
+      background: #d8e0e8;
+      overflow: hidden;
+    }
+    .stat-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: #66788c;
+    }
+    .stat-alert {
+      min-height: 18px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #c73f3f;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      white-space: nowrap;
+    }
+    .stat-alert.empty {
+      visibility: hidden;
+    }
+    .overall {
+      margin: 4px 0 8px 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .overall strong { color: var(--ink); font-size: 14px; }
+    .shield-visual {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin: 0;
+    }
+    .shield-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 8px;
+      border: 1px solid #e7ecf2;
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      flex: 0 0 auto;
+    }
+    .shield-row label {
+      display: none;
+    }
+    .shield-row input {
+      width: 46px;
+      min-height: 26px;
+      padding: 3px 5px;
+      text-align: center;
+    }
+    .shield-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #b245c5;
+      opacity: .28;
+    }
+    .shield-icon.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px rgba(178, 69, 197, .55));
+    }
+    .shield-count-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 42px);
+      border: 1px solid #d9c2e4;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.75);
+    }
+    .shield-count-toggle button {
+      min-height: 28px;
+      padding: 3px 6px;
+      border: 0;
+      border-radius: 0;
+      color: #8f4fb8;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-weight: 800;
+    }
+    .shield-count-toggle button + button { border-left: 1px solid #e1cde9; }
+    .shield-count-toggle button.active {
+      background: linear-gradient(180deg, #f7e9fb, #ebd4f2);
+      box-shadow: inset 0 2px 4px rgba(143, 79, 184, .16);
+    }
+    .shield-count-toggle svg {
+      width: 14px;
+      height: 14px;
+      opacity: .72;
+    }
+    .shield-count-toggle strong {
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1;
+    }
+    .energy-panel {
+      flex: 1 1 180px;
+      min-width: 150px;
+      padding: 6px 9px;
+      border: 1px solid #e3d39c;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,248,220,.74));
+      display: grid;
+      align-content: center;
+      gap: 3px;
+    }
+    .energy-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      color: #6a5421;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .energy-head strong {
+      color: #1f2c38;
+      font-size: 13px;
+    }
+    .energy-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #efe2b1;
+      box-shadow: inset 0 0 0 1px rgba(124, 94, 20, .12);
+    }
+    .energy-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f2c744, #f7df61);
+      transition: width .15s ease;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #e7ecf2;
+    }
+    .actions button {
+      min-width: 118px;
+      border-color: rgba(0, 0, 0, .22);
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      display: inline-grid;
+      grid-template-columns: 14px 1fr;
+      align-items: center;
+      gap: 6px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+    }
+    .actions button:hover {
+      filter: brightness(.92);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(23, 33, 47, .14);
+    }
+    .actions button.ready {
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.65),
+        0 0 0 4px rgba(214, 173, 57, .35),
+        0 0 16px rgba(214, 173, 57, .55);
+    }
+    .actions button.ready .move-button-label span::after {
+      content: " READY";
+      font-weight: 900;
+    }
+    .move-button-label {
+      display: grid;
+      gap: 1px;
+      text-align: left;
+      line-height: 1.05;
+    }
+    .move-button-label strong { font-size: 13px; }
+    .move-button-label span { font-size: 10px; opacity: .9; }
+    .effect-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 850;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .effect-chip.super { color: #12683f; background: #e4f7ee; border-color: #a9dfc5; }
+    .effect-chip.resisted { color: #8b2d2d; background: #fde9e9; border-color: #efb7b7; }
+    .effect-chip.neutral { color: #526171; background: #edf2f7; border-color: #d5dde7; }
+    .battle-summary {
+      width: min(100%, 1100px);
+      max-width: calc(100vw - 32px);
+      justify-self: center;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      background:
+        radial-gradient(circle at 10% 50%, rgba(21, 111, 143, .16), transparent 30%),
+        radial-gradient(circle at 90% 50%, rgba(143, 79, 184, .18), transparent 30%),
+        linear-gradient(90deg, rgba(21, 111, 143, .08), transparent 28%, transparent 72%, rgba(143, 79, 184, .08)),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 8px 22px var(--shadow);
+    }
+    .summary-side {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .summary-side.b { grid-template-columns: minmax(0, 1fr) 52px; text-align: right; }
+    .summary-side img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+    .summary-name {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 850;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .summary-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .summary-side.b .summary-meta { justify-content: flex-end; }
+    .summary-vs {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 46px;
+      min-height: 34px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .summary-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 24px;
+      padding: 3px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .summary-pill strong { color: var(--ink); }
+    .timeline {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 12px;
+      width: min(100%, 1100px);
+      justify-self: center;
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(23, 33, 47, .06);
+      max-width: calc(100vw - 32px);
+    }
+    .timeline-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .timeline-head h2 { margin: 0; }
+    .timeline-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .timeline-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .timeline-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .timeline-legend i {
+      display: inline-flex;
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+    .legend-fast {
+      border-radius: 2px;
+      background: #7aa13b;
+      border: 1px solid rgba(0,0,0,.22);
+    }
+    .legend-charge {
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid #c73f3f;
+    }
+    .legend-shield {
+      color: #b245c5;
+      background: currentColor;
+      clip-path: polygon(50% 4%, 88% 20%, 84% 58%, 50% 96%, 16% 58%, 12% 20%);
+    }
+    .timeline-tools select {
+      width: auto;
+      min-height: 28px;
+      max-width: none;
+      padding: 3px 28px 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      grid-template-rows: 20px 36px 36px;
+      gap: 0 8px;
+      align-items: stretch;
+    }
+    .timeline-scroll {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid #cfd7e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      min-height: 92px;
+    }
+    body[data-theme="dark"] .timeline-scroll,
+    body[data-theme="dark"] .timeline-track {
+      background: var(--soft);
+      border-color: var(--line);
+    }
+    .timeline-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      line-height: 1.15;
+      min-height: 36px;
+      padding: 3px 0;
+      overflow-wrap: anywhere;
+    }
+    #p1TimelineLabel { grid-column: 1; grid-row: 2; }
+    #p2TimelineLabel { grid-column: 1; grid-row: 3; }
+    .timeline-ruler {
+      position: relative;
+      height: 20px;
+      overflow: visible;
+      background:
+        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        var(--ruler);
+      color: #667484;
+      font-size: 10px;
+    }
+    .turn-label {
+      position: absolute;
+      top: 4px;
+      transform: translateX(-50%);
+      font-weight: 700;
+    }
+    .turn-label.start {
+      transform: none;
+      left: 4px !important;
+    }
+    .turn-label.end {
+      transform: translateX(-100%);
+      margin-left: -4px;
+    }
+    .timeline-track {
+      position: relative;
+      min-height: 36px;
+      overflow: visible;
+      border-top: 1px solid #d7dee8;
+      background: #f8fafc;
+      padding: 6px 3px;
+    }
+    .timeline-lane {
+      position: relative;
+      height: 24px;
+      min-width: 100%;
+      background:
+        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        var(--soft);
+    }
+    .timeline-ruler .timeline-lane {
+      height: 20px;
+      background:
+        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        var(--ruler);
+    }
+    .timeline-block {
+      position: absolute;
+      top: 3px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      border: 1px solid rgba(0, 0, 0, .24);
+      color: white;
+      font-size: 10px;
+      font-weight: 650;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      white-space: nowrap;
+      border-radius: 2px;
+      overflow: hidden;
+      gap: 2px;
+    }
+    .timeline-block:hover,
+    .timeline-block.previewed,
+    .timeline-block.selected {
+      outline: 2px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 0 3px rgba(21, 111, 143, .28), 0 0 12px rgba(21, 111, 143, .28);
+      z-index: 5;
+    }
+    .timeline-block.charge {
+      height: 24px;
+      top: 0;
+      border-radius: 999px;
+      outline: 2px solid rgba(0, 0, 0, .14);
+      z-index: 2;
+      min-width: 28px;
+    }
+    .timeline-block.shield {
+      height: 24px;
+      top: 0;
+      border-radius: 999px;
+      background: #f8effb;
+      color: #b245c5;
+      border-color: rgba(178, 69, 197, .65);
+      box-shadow: 0 0 0 2px rgba(178, 69, 197, .13), 0 0 8px rgba(178, 69, 197, .28);
+      text-shadow: none;
+      z-index: 2;
+    }
+    .timeline-shield-icon {
+      width: 17px;
+      height: 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timeline-shield-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+    .charge-trail {
+      position: absolute;
+      top: 7px;
+      height: 12px;
+      pointer-events: auto;
+      z-index: 1;
+    }
+    .charge-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .62);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .4);
+    }
+    .move-icon {
+      display: inline-flex;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+      flex: 0 0 auto;
+    }
+    .timeline-block.sneak {
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, .8),
+        inset 0 0 0 2px rgba(255, 255, 255, .18);
+    }
+    .timeline-marker {
+      position: absolute;
+      top: 3px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      background: #f6f0ff;
+      color: #9b38b5;
+      border: 1px solid rgba(155, 56, 181, .55);
+      font-size: 10px;
+      font-weight: 900;
+      text-shadow: none;
+      z-index: 4;
+      pointer-events: auto;
+      box-shadow: 0 2px 5px rgba(23, 33, 47, .16);
+    }
+    .timeline-marker.shielded {
+      color: #b245c5;
+      background: #fff;
+      border-color: rgba(178, 69, 197, .65);
+      padding: 0;
+      width: 20px;
+      min-width: 20px;
+    }
+    .timeline-marker.shielded svg {
+      width: 15px;
+      height: 15px;
+    }
+    .timeline-marker.ko {
+      width: 20px;
+      min-width: 20px;
+      padding: 0;
+      border-radius: 50%;
+      background: #fff;
+      color: #d31f1f;
+      border-color: rgba(211, 31, 31, .7);
+      font-size: 0;
+    }
+    .timeline-block.charged-ready {
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, .72),
+        0 0 0 4px rgba(215, 48, 48, .30),
+        0 0 12px rgba(215, 48, 48, .42),
+        inset 0 0 0 1px rgba(255, 255, 255, .20);
+    }
+    .timeline-block.ghosted {
+      opacity: 1;
+      z-index: 4;
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, .82),
+        0 0 0 5px rgba(242, 199, 68, .34),
+        0 0 14px rgba(242, 199, 68, .62),
+        inset 0 0 0 1px rgba(255,255,255,.28);
+    }
+    .timeline-marker.ko::before,
+    .timeline-marker.ko::after {
+      content: "";
+      position: absolute;
+      width: 11px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+    .timeline-marker.ko::before {
+      transform: rotate(45deg);
+    }
+    .timeline-marker.ko::after {
+      transform: rotate(-45deg);
+    }
+    .timeline-marker:hover,
+    .timeline-marker.previewed,
+    .timeline-marker.selected {
+      transform: scale(1.08);
+      box-shadow: 0 0 0 3px rgba(21, 111, 143, .22), 0 2px 7px rgba(23, 33, 47, .24);
+    }
+    .timeline-empty {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 5px 8px;
+    }
+    .log-panel {
+      width: min(100%, 1100px);
+      max-width: calc(100vw - 32px);
+      justify-self: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 8px 22px var(--shadow);
+      overflow: hidden;
+    }
+    .log-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .log-head h2 {
+      margin: 0;
+      font-size: 15px;
+    }
+    .log-tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .log-tools select {
+      width: auto;
+      min-height: 28px;
+      max-width: none;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    #log {
+      width: 100%;
+      min-height: 110px;
+      max-height: 180px;
+      border: 0;
+      background: var(--panel);
+      color: var(--ink);
+      padding: 10px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      overflow: auto;
+      border-radius: 8px;
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(10, 16, 24, .44);
+      z-index: 20;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(440px, 100%);
+      background: var(--panel);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+      padding: 14px;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .modal-head h2 { margin: 0; }
+    .modal-close {
+      min-width: 32px;
+      width: 32px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .event-visual {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) 58px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    .event-visual img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+    }
+    .event-move {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      text-align: center;
+      font-weight: 850;
+      color: var(--ink);
+    }
+    .detail-cell {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .detail-cell strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+    .hint { color: var(--muted); font-size: 13px; }
+    .error {
+      background: #fff1f1;
+      border: 1px solid #e4b7b7;
+      color: #7b1f1f;
+      padding: 12px;
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .setup, .toolbar { grid-template-columns: 1fr; }
+      .setup { column-gap: 12px; justify-content: stretch; }
+      .timeline { width: 100%; }
+      section { max-width: none; }
+      header { align-items: flex-start; flex-direction: column; }
+      .source { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pokemon GO PvP Simulator</h1>
+    <div class="source" id="source">Loading PvPoke data...</div>
+  </header>
+  <main>
+    <div class="error" id="error"></div>
+    <div class="toolbar">
+      <button id="start">Start Battle</button>
+      <button id="auto">Auto 20 Turns</button>
+      <button id="reset" class="secondary">Reset</button>
+      <button id="themeToggle" class="secondary">Dark</button>
+      <select id="presetMatchup" class="preset-select" title="Quick matchup">
+        <option value="">Quick matchup...</option>
+        <option value="swampert|skarmory">Swampert vs Skarmory</option>
+        <option value="forretress_shadow|machoke_shadow">Shadow Forretress vs Shadow Machoke</option>
+        <option value="sableye_shadow|swampert">Shadow Sableye vs Swampert</option>
+        <option value="sandslash_alolan_shadow|swampert">Shadow Alolan Sandslash vs Swampert</option>
+      </select>
+      <button id="loadPreset" class="secondary">Load</button>
+      <label class="check"><input id="releasedOnly" type="checkbox" checked> Released only</label>
+      <label class="check"><input id="showForms" type="checkbox"> Show duplicate forms</label>
+      <span class="hint" id="counts"></span>
+    </div>
+
+    <div class="setup">
+      <section class="trainer-card a">
+        <div class="control-stack">
+          <label>Search <input id="p1Search" class="search-input" placeholder="e.g. Swampert"></label>
+          <label>Pokemon <select id="p1Pokemon" class="pokemon-select"></select></label>
+          <label>Fast <select id="p1Fast" class="move-select"></select></label>
+          <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
+          <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
+          <label>IV
+            <span class="iv-row">
+              <span class="iv-field"><input id="p1Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
+              <span class="iv-field"><input id="p1IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
+              <span class="iv-field"><input id="p1IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
+              <span class="iv-field"><input id="p1IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
+              <span class="iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+            </span>
+          </label>
+          <div class="rank-bait-row">
+            <div id="p1RankMeter" class="rank-meter">Rank - / 4096</div>
+            <input id="p1Baiting" type="hidden" value="selective">
+            <div class="bait-control">
+              <span>Baiting</span>
+              <div class="bait-toggle" data-prefix="p1" title="Baiting">
+                <button type="button" data-bait="off">Off</button>
+                <button type="button" data-bait="selective" class="active">Selective</button>
+                <button type="button" data-bait="on">On</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-box">
+          <div class="battle-identity">
+            <img id="p1BattleImg" alt="">
+            <div><strong id="p1BattleName"></strong><span id="p1BattleMeta"></span><div id="p1Types" class="type-badges"></div></div>
+          </div>
+          <div id="p1StatBars" class="stat-bars"></div>
+          <div id="p1Overall" class="overall"></div>
+          <div class="hp"><div id="p1Hp"></div><span id="p1HpText" class="hp-text"></span></div>
+          <div class="resource-row">
+            <div class="shield-row">
+              <input id="p1Shields" type="hidden" value="1">
+              <div id="p1ShieldVisual" class="shield-count-toggle" data-prefix="p1"></div>
+            </div>
+            <div id="p1EnergyPanel" class="energy-panel"></div>
+          </div>
+          <div class="shield-mode-row">
+            <span>Shield logic</span>
+            <input id="p1ShieldMode" type="hidden" value="always">
+            <div class="compact-toggle shield-mode-toggle" data-prefix="p1">
+              <button type="button" data-shield-mode="always" class="active">Always</button>
+              <button type="button" data-shield-mode="nuke">Nuke</button>
+              <button type="button" data-shield-mode="no-first">No First</button>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="p1UseFast">Fast</button>
+            <button id="p1UseCharge1">Charged 1</button>
+            <button id="p1UseCharge2">Charged 2</button>
+          </div>
+        </div>
+      </section>
+      <section class="trainer-card b">
+        <div class="control-stack">
+          <label>Search <input id="p2Search" class="search-input" placeholder="e.g. Skarmory"></label>
+          <label>Pokemon <select id="p2Pokemon" class="pokemon-select"></select></label>
+          <label>Fast <select id="p2Fast" class="move-select"></select></label>
+          <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
+          <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
+          <label>IV
+            <span class="iv-row">
+              <span class="iv-field"><input id="p2Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
+              <span class="iv-field"><input id="p2IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
+              <span class="iv-field"><input id="p2IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
+              <span class="iv-field"><input id="p2IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
+              <span class="iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+            </span>
+          </label>
+          <div class="rank-bait-row">
+            <div id="p2RankMeter" class="rank-meter">Rank - / 4096</div>
+            <input id="p2Baiting" type="hidden" value="selective">
+            <div class="bait-control">
+              <span>Baiting</span>
+              <div class="bait-toggle" data-prefix="p2" title="Baiting">
+                <button type="button" data-bait="off">Off</button>
+                <button type="button" data-bait="selective" class="active">Selective</button>
+                <button type="button" data-bait="on">On</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-box">
+          <div class="battle-identity">
+            <img id="p2BattleImg" alt="">
+            <div><strong id="p2BattleName"></strong><span id="p2BattleMeta"></span><div id="p2Types" class="type-badges"></div></div>
+          </div>
+          <div id="p2StatBars" class="stat-bars"></div>
+          <div id="p2Overall" class="overall"></div>
+          <div class="hp"><div id="p2Hp"></div><span id="p2HpText" class="hp-text"></span></div>
+          <div class="resource-row">
+            <div class="shield-row">
+              <input id="p2Shields" type="hidden" value="1">
+              <div id="p2ShieldVisual" class="shield-count-toggle" data-prefix="p2"></div>
+            </div>
+            <div id="p2EnergyPanel" class="energy-panel"></div>
+          </div>
+          <div class="shield-mode-row">
+            <span>Shield logic</span>
+            <input id="p2ShieldMode" type="hidden" value="always">
+            <div class="compact-toggle shield-mode-toggle" data-prefix="p2">
+              <button type="button" data-shield-mode="always" class="active">Always</button>
+              <button type="button" data-shield-mode="nuke">Nuke</button>
+              <button type="button" data-shield-mode="no-first">No First</button>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="p2UseFast">Fast</button>
+            <button id="p2UseCharge1">Charged 1</button>
+            <button id="p2UseCharge2">Charged 2</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="battle-summary" id="battleSummary">
+      <div class="summary-side a">
+        <img id="summaryAImg" alt="">
+        <div>
+          <span class="summary-name" id="summaryAName">-</span>
+          <div class="summary-meta">
+            <span>HP <strong id="summaryAHp">-</strong></span>
+            <span>Energy <strong id="summaryAEnergy">-</strong></span>
+            <span>Bait <strong id="summaryABait">-</strong></span>
+          </div>
+        </div>
+      </div>
+      <div class="summary-vs">VS</div>
+      <div class="summary-side b">
+        <div>
+          <span class="summary-name" id="summaryBName">-</span>
+          <div class="summary-meta">
+            <span>HP <strong id="summaryBHp">-</strong></span>
+            <span>Energy <strong id="summaryBEnergy">-</strong></span>
+            <span>Bait <strong id="summaryBBait">-</strong></span>
+          </div>
+        </div>
+        <img id="summaryBImg" alt="">
+      </div>
+    </section>
+
+    <section class="timeline">
+      <div class="timeline-head">
+        <h2>Turn Timeline</h2>
+        <div class="timeline-tools">
+          <span class="timeline-legend">
+            <span><i class="legend-fast"></i>Fast</span>
+            <span><i class="legend-charge"></i>Charged</span>
+            <span><i class="legend-shield"></i>Shield</span>
+          </span>
+          <select id="timelineZoom" title="Timeline zoom">
+            <option value="14">Compact</option>
+            <option value="fit" selected>Fit</option>
+            <option value="24">Close</option>
+            <option value="32">Detailed</option>
+          </select>
+        </div>
+      </div>
+      <div class="timeline-grid">
+        <div class="timeline-label" id="p1TimelineLabel">A</div>
+        <div class="timeline-label" id="p2TimelineLabel">B</div>
+        <div class="timeline-scroll" id="timelineScroll">
+          <div class="timeline-ruler" id="timelineRuler"></div>
+          <div class="timeline-track" id="p1Timeline"></div>
+          <div class="timeline-track" id="p2Timeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="log-panel">
+      <div class="log-head">
+        <h2>Battle log</h2>
+        <div class="log-tools">
+          <select id="logFilter" title="Log filter">
+            <option value="all">All</option>
+            <option value="fast">Fast</option>
+            <option value="charge">Charged</option>
+            <option value="shield">Shielded</option>
+            <option value="ko">KO</option>
+          </select>
+        </div>
+      </div>
+      <div id="log"></div>
+    </section>
+  </main>
+
+  <div class="modal" id="eventModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="eventModalTitle">Event</h2>
+        <button id="eventModalClose" class="modal-close" title="Close">x</button>
+      </div>
+      <div id="eventModalBody" class="detail-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const gm = window.PVPOKE_GAMEMASTER;
+    let moveMap = new Map();
+    let allPokemon = [];
+    let visiblePokemon = [];
+    let left = null;
+    let right = null;
+    let log = [];
+    let timeline = [];
+    let battleTurns = { A: 0, B: 0 };
+    let previewingTimeline = false;
+    let previewTimelineIndex = null;
+    let selectedTimelineIndex = null;
+    const rankCache = new Map();
+    const chargeWindowTurns = 7;
+    const chargeGapTurns = 2;
+    const chargePauseTurns = chargeWindowTurns + chargeGapTurns;
+
+    const strong = {
+      bug:["dark","grass","psychic"], dark:["ghost","psychic"], dragon:["dragon"],
+      electric:["flying","water"], fairy:["dark","dragon","fighting"],
+      fighting:["dark","ice","normal","rock","steel"], fire:["bug","grass","ice","steel"],
+      flying:["bug","fighting","grass"], ghost:["ghost","psychic"],
+      grass:["ground","rock","water"], ground:["electric","fire","poison","rock","steel"],
+      ice:["dragon","flying","grass","ground"], poison:["fairy","grass"],
+      psychic:["fighting","poison"], rock:["bug","fire","flying","ice"],
+      steel:["fairy","ice","rock"], water:["fire","ground","rock"]
+    };
+    const weak = {
+      bug:["fairy","fighting","fire","flying","ghost","poison","steel"],
+      dark:["dark","fairy","fighting"], dragon:["steel"],
+      electric:["dragon","electric","grass","ground"], fairy:["fire","poison","steel"],
+      fighting:["bug","fairy","flying","ghost","poison","psychic"],
+      fire:["dragon","fire","rock","water"], flying:["electric","rock","steel"],
+      ghost:["dark","normal"], grass:["bug","dragon","fire","flying","grass","poison","steel"],
+      ground:["bug","flying","grass"], ice:["fire","ice","steel","water"],
+      normal:["ghost","rock","steel"], poison:["ghost","ground","poison","rock","steel"],
+      psychic:["dark","psychic","steel"], rock:["fighting","ground","steel"],
+      steel:["electric","fire","steel","water"], water:["dragon","grass","water"]
+    };
+    const typeColors = {
+      normal:"#8a8f96", fire:"#e56a26", water:"#2f78d6", electric:"#c99700",
+      grass:"#3b9140", ice:"#31a6bf", fighting:"#bf3d35", poison:"#8f4fb8",
+      ground:"#a87336", flying:"#6487c7", psychic:"#d84f85", bug:"#7b9b28",
+      rock:"#8e7950", ghost:"#61579d", dragon:"#5b63d8", dark:"#4c443f",
+      steel:"#6f8794", fairy:"#d765ad"
+    };
+    const damageBonus = 1.2999999523162842;
+    const shadowAtkMultiplier = 1.2;
+    const shadowDefMultiplier = 0.83333331;
+    const cpMultipliers = [
+      [1,.094],[1.5,.135137432],[2,.16639787],[2.5,.192650919],[3,.21573247],[3.5,.236572661],
+      [4,.25572005],[4.5,.273530381],[5,.29024988],[5.5,.306057377],[6,.3210876],[6.5,.335445036],
+      [7,.34921268],[7.5,.362457751],[8,.37523559],[8.5,.387592406],[9,.39956728],[9.5,.411193551],
+      [10,.42250001],[10.5,.432926419],[11,.44310755],[11.5,.453059958],[12,.46279839],[12.5,.472336083],
+      [13,.48168495],[13.5,.4908558],[14,.49985844],[14.5,.508701765],[15,.51739395],[15.5,.525942511],
+      [16,.53435433],[16.5,.542635767],[17,.55079269],[17.5,.558830576],[18,.56675452],[18.5,.574569153],
+      [19,.58227891],[19.5,.589887917],[20,.59740001],[20.5,.604818814],[21,.61215729],[21.5,.619399365],
+      [22,.62656713],[22.5,.633644533],[23,.64065295],[23.5,.647576426],[24,.65443563],[24.5,.661214806],
+      [25,.667934],[25.5,.674577537],[26,.68116492],[26.5,.687680648],[27,.69414365],[27.5,.700538673],
+      [28,.70688421],[28.5,.713164996],[29,.71939909],[29.5,.725571552],[30,.7317],[30.5,.734741009],
+      [31,.73776948],[31.5,.740785574],[32,.74378943],[32.5,.746781211],[33,.74976104],[33.5,.752729087],
+      [34,.75568551],[34.5,.758630378],[35,.76156384],[35.5,.764486065],[36,.76739717],[36.5,.770297266],
+      [37,.7731865],[37.5,.776064962],[38,.77893275],[38.5,.781790055],[39,.78463697],[39.5,.787473578],
+      [40,.79030001],[40.5,.79280395],[41,.79530001],[41.5,.7978039],[42,.8003],[42.5,.8028039],
+      [43,.8053],[43.5,.8078039],[44,.81029999],[44.5,.8128039],[45,.81529999],[45.5,.8178039],
+      [46,.82029999],[46.5,.8228039],[47,.82529999],[47.5,.8278039],[48,.83029999],[48.5,.8328039],
+      [49,.83529999],[49.5,.8378039],[50,.84029999],[50.5,.8428039],[51,.84529999]
+    ];
+
+    function init() {
+      if (!gm || !gm.pokemon || !gm.moves) {
+        showError("Could not find gamemaster-data.js. Keep PogoPvp.html and gamemaster-data.js in the same folder.");
+        return;
+      }
+
+      moveMap = new Map(gm.moves.map(m => [m.moveId, {
+        id: m.moveId,
+        name: m.name || m.moveId,
+        type: m.type,
+        power: Number(m.power || 0),
+        abbreviation: m.abbreviation || "",
+        energyGain: Number(m.energyGain || 0),
+        energyCost: Math.max(0, Number(m.energy || 0)),
+        turns: Number(m.turns || Math.max(1, Math.round(Number(m.cooldown || 500) / 500))),
+        buffs: m.buffs || null
+      }]));
+
+      allPokemon = gm.pokemon
+        .filter(p => p && p.speciesId && p.speciesName && p.baseStats)
+        .map(p => ({
+          id: p.speciesId,
+          name: p.speciesName,
+          dex: p.dex || 0,
+          released: p.released !== false,
+          types: (p.types || []).filter(type => type && type !== "none"),
+          atk: Number(p.baseStats.atk || 100),
+          def: Number(p.baseStats.def || 100),
+          hp: Number(p.baseStats.hp || 100),
+          defaultIVs: p.defaultIVs || {},
+          fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
+          charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+          tags: p.tags || []
+        }))
+        .filter(p => p.fast.length && p.charged.length)
+        .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+
+      $("source").textContent = `PvPoke gamemaster ${gm.timestamp || ""}`;
+      $("releasedOnly").onchange = refreshPokemonLists;
+      $("showForms").onchange = refreshPokemonLists;
+      $("p1Search").oninput = () => refreshOnePokemonList("p1", "Swampert");
+      $("p2Search").oninput = () => refreshOnePokemonList("p2", "Skarmory");
+      $("p1Pokemon").onchange = () => fillMoves("p1");
+      $("p2Pokemon").onchange = () => fillMoves("p2");
+      ["p1Fast", "p1Charged1", "p1Charged2"].forEach(id => $(id).onchange = () => syncSelection("p1"));
+      ["p2Fast", "p2Charged1", "p2Charged2"].forEach(id => $(id).onchange = () => syncSelection("p2"));
+      document.querySelectorAll(".bait-toggle button").forEach(button => {
+        button.onclick = () => setBaiting(button.closest(".bait-toggle").dataset.prefix, button.dataset.bait);
+      });
+      document.querySelectorAll(".shield-mode-toggle button").forEach(button => {
+        button.onclick = () => setShieldMode(button.closest(".shield-mode-toggle").dataset.prefix, button.dataset.shieldMode);
+      });
+      ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
+      ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
+      $("start").onclick = startBattle;
+      $("reset").onclick = startBattle;
+      $("auto").onclick = autoPlay;
+      $("loadPreset").onclick = loadPresetMatchup;
+      $("themeToggle").onclick = toggleTheme;
+      $("logFilter").onchange = renderLog;
+      $("eventModalClose").onclick = closeEventModal;
+      $("eventModal").addEventListener("click", event => {
+        if (event.target.id === "eventModal") closeEventModal();
+      });
+      $("timelineZoom").onchange = renderTimeline;
+      $("timelineScroll").addEventListener("mouseover", event => {
+        const block = event.target.closest("[data-event-index]");
+        if (block) {
+          const index = Number(block.dataset.eventIndex);
+          previewTimelineState(index);
+          highlightTimelineIndex(index);
+        }
+      });
+      $("timelineScroll").addEventListener("mouseout", event => {
+        if (!event.relatedTarget || !$("timelineScroll").contains(event.relatedTarget)) clearTimelinePreview();
+      });
+      $("timelineScroll").addEventListener("click", event => {
+        const block = event.target.closest("[data-event-index]");
+        if (!block) return;
+        selectedTimelineIndex = Number(block.dataset.eventIndex);
+        highlightTimelineIndex(selectedTimelineIndex);
+        openEventModal(selectedTimelineIndex);
+      });
+      window.addEventListener("resize", renderTimeline);
+      $("p1UseFast").onclick = () => useFast(left, right);
+      $("p1UseCharge1").onclick = () => useCharge(left, right, 0);
+      $("p1UseCharge2").onclick = () => useCharge(left, right, 1);
+      $("p2UseFast").onclick = () => useFast(right, left);
+      $("p2UseCharge1").onclick = () => useCharge(right, left, 0);
+      $("p2UseCharge2").onclick = () => useCharge(right, left, 1);
+
+      refreshPokemonLists();
+      startBattle();
+    }
+
+    function showError(message) {
+      $("error").style.display = "block";
+      $("error").textContent = message;
+    }
+
+    function displayName(p) {
+      return p.name;
+    }
+
+    function filteredBaseList() {
+      let list = allPokemon;
+      if ($("releasedOnly").checked) list = list.filter(p => p.released);
+      if (!$("showForms").checked) {
+        const seen = new Set();
+        list = list.filter(p => {
+          const key = p.name.toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+      return list;
+    }
+
+    function refreshPokemonLists() {
+      visiblePokemon = filteredBaseList();
+      $("counts").textContent = `${visiblePokemon.length} selectable Pokemon, ${moveMap.size} moves from PvPoke`;
+      refreshOnePokemonList("p1", "Swampert");
+      refreshOnePokemonList("p2", "Skarmory");
+    }
+
+    function refreshOnePokemonList(prefix, preferred) {
+      const select = $(`${prefix}Pokemon`);
+      const previous = select.value;
+      const q = $(`${prefix}Search`).value.trim().toLowerCase();
+      let list = visiblePokemon;
+      if (q) {
+        list = list.filter(p => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
+      }
+      if (!list.length) list = visiblePokemon.slice(0, 1);
+      select.innerHTML = list.map(p => `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`).join("");
+      const preferredMatch = list.find(p => p.name.toLowerCase() === preferred.toLowerCase());
+      if (list.some(p => p.id === previous)) select.value = previous;
+      else if (preferredMatch) select.value = preferredMatch.id;
+      else select.selectedIndex = 0;
+      applyDefaultIvs(prefix);
+      fillMoves(prefix);
+    }
+
+    function fillMoves(prefix) {
+      const p = findPokemon($(`${prefix}Pokemon`).value);
+      if (!p) return;
+      fillMoveSelect(`${prefix}Fast`, p.fast);
+      fillMoveSelect(`${prefix}Charged1`, p.charged);
+      fillMoveSelect(`${prefix}Charged2`, p.charged);
+      chooseRecommendedMoves(prefix, p);
+      syncSelection(prefix);
+    }
+
+    function fillMoveSelect(id, moveIds) {
+      $(id).innerHTML = moveIds.map(moveId => {
+        const m = moveMap.get(moveId);
+        const detail = m.energyGain > 0 ? `+${m.energyGain} Energy / ${m.turns} turns` : `${m.energyCost} Energy`;
+        return `<option value="${m.id}">${escapeHtml(m.name)} - ${detail}</option>`;
+      }).join("");
+      colorMoveSelect(id);
+    }
+
+    function chooseRecommendedMoves(prefix, p) {
+      const fast = p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b, p) - fastMoveScore(a, p));
+      const charged = p.charged.map(id => moveMap.get(id)).filter(Boolean)
+        .sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p))
+        .slice(0, 2)
+        .sort((a, b) => a.energyCost - b.energyCost || chargedMoveScore(b, p) - chargedMoveScore(a, p));
+      if (fast[0]) $(`${prefix}Fast`).value = fast[0].id;
+      if (charged[0]) $(`${prefix}Charged1`).value = charged[0].id;
+      if (charged[1]) $(`${prefix}Charged2`).value = charged[1].id;
+      else if (charged[0]) $(`${prefix}Charged2`).value = charged[0].id;
+      colorMoveSelect(`${prefix}Fast`);
+      colorMoveSelect(`${prefix}Charged1`);
+      colorMoveSelect(`${prefix}Charged2`);
+    }
+
+    function fastMoveScore(move, p) {
+      const turns = Math.max(1, move.turns || 1);
+      const stab = p.types.includes(move.type) ? 1.2 : 1;
+      return (move.power * stab + move.energyGain) / turns;
+    }
+
+    function chargedMoveScore(move, p) {
+      const cost = Math.max(1, move.energyCost || 1);
+      const stab = p.types.includes(move.type) ? 1.2 : 1;
+      return move.power * stab / cost;
+    }
+
+    function colorMoveSelect(id) {
+      const select = $(id);
+      const move = moveMap.get(select.value);
+      if (!move) return;
+      const color = typeColors[move.type] || "#fff";
+      select.style.background = `linear-gradient(90deg, ${color} 0 8px, #fff 8px)`;
+      select.style.borderColor = darken(color, .18);
+      select.style.color = "#17212f";
+    }
+
+    function findPokemon(id) {
+      return allPokemon.find(p => p.id === id);
+    }
+
+    function imageUrl(p) {
+      const slug = spriteSlug(p);
+      if (slug) return `https://img.pokemondb.net/sprites/home/normal/${slug}.png`;
+      if (!p || !p.dex) return "";
+      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.dex}.png`;
+    }
+
+    function fallbackImageUrl(p) {
+      if (!p || !p.dex) return "";
+      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.dex}.png`;
+    }
+
+    function setPokemonImage(img, p) {
+      img.alt = p ? p.name : "";
+      img.classList.toggle("shadow-pokemon", isShadow(p));
+      img.dataset.fallback = fallbackImageUrl(p);
+      img.src = imageUrl(p);
+      img.onerror = () => {
+        if (img.dataset.fallback && img.src !== img.dataset.fallback) {
+          img.src = img.dataset.fallback;
+          img.dataset.fallback = "";
+          return;
+        }
+        img.onerror = null;
+        img.src = fallbackSvg(p ? p.name : "?");
+      };
+    }
+
+    function spriteSlug(p) {
+      if (!p || !p.id) return "";
+      return p.id
+        .replace(/_shadow$/, "")
+        .replace(/_shadow_/g, "_")
+        .replace(/_galarian$/, "-galarian")
+        .replace(/_alolan$/, "-alolan")
+        .replace(/_hisuian$/, "-hisuian")
+        .replace(/_paldean$/, "-paldean")
+        .replace(/_/g, "-");
+    }
+
+    function isShadow(p) {
+      return !!(p && p.id && p.id.includes("shadow"));
+    }
+
+    function fallbackSvg(name) {
+      const initial = encodeURIComponent((name || "?").trim().charAt(0).toUpperCase() || "?");
+      return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='48' fill='%23e9eef3'/%3E%3Ccircle cx='48' cy='48' r='38' fill='%23fff' stroke='%23c8d0da' stroke-width='4'/%3E%3Cpath d='M10 48h76' stroke='%23c8d0da' stroke-width='4'/%3E%3Ccircle cx='48' cy='48' r='12' fill='%23fff' stroke='%23c8d0da' stroke-width='4'/%3E%3Ctext x='48' y='82' text-anchor='middle' font-family='Segoe UI,Arial' font-size='18' fill='%235c6878'%3E${initial}%3C/text%3E%3C/svg%3E`;
+    }
+
+    function pokemonMeta(p) {
+      if (!p) return "";
+      return `${p.types.map(title).join("/")} | ${p.fast.length} fast | ${p.charged.length} charged`;
+    }
+
+    function syncSelection(prefix) {
+      colorMoveSelect(`${prefix}Fast`);
+      colorMoveSelect(`${prefix}Charged1`);
+      colorMoveSelect(`${prefix}Charged2`);
+      if (prefix === "p1") left = create("p1", "A");
+      else right = create("p2", "B");
+      render();
+    }
+
+    function setBaiting(prefix, value) {
+      $(`${prefix}Baiting`).value = value;
+      document.querySelectorAll(`.bait-toggle[data-prefix="${prefix}"] button`).forEach(button => {
+        button.classList.toggle("active", button.dataset.bait === value);
+      });
+      syncSelection(prefix);
+    }
+
+    function setShieldMode(prefix, value) {
+      $(`${prefix}ShieldMode`).value = value;
+      document.querySelectorAll(`.shield-mode-toggle[data-prefix="${prefix}"] button`).forEach(button => {
+        button.classList.toggle("active", button.dataset.shieldMode === value);
+      });
+      syncSelection(prefix);
+    }
+
+    function loadPresetMatchup() {
+      const value = $("presetMatchup").value;
+      if (!value) return;
+      const [a, b] = value.split("|");
+      setPokemonSelection("p1", a);
+      setPokemonSelection("p2", b);
+      startBattle();
+    }
+
+    function setPokemonSelection(prefix, pokemonId) {
+      const select = $(`${prefix}Pokemon`);
+      if (![...select.options].some(option => option.value === pokemonId)) {
+        $("showForms").checked = true;
+        $(`${prefix}Search`).value = "";
+        refreshOnePokemonList(prefix, pokemonId);
+      }
+      if ([...select.options].some(option => option.value === pokemonId)) {
+        select.value = pokemonId;
+        fillMoves(prefix);
+      }
+    }
+
+    function applyDefaultIvs(prefix) {
+      const p = findPokemon($(`${prefix}Pokemon`).value);
+      const defaults = p && p.defaultIVs && p.defaultIVs.cp1500 ? p.defaultIVs.cp1500 : null;
+      const ivAtk = defaults ? defaults[1] : 0;
+      const ivDef = defaults ? defaults[2] : 15;
+      const ivHp = defaults ? defaults[3] : 15;
+      $(`${prefix}IvAtk`).value = ivAtk;
+      $(`${prefix}IvDef`).value = ivDef;
+      $(`${prefix}IvHp`).value = ivHp;
+    }
+
+    function selectedStats(prefix, p) {
+      const ivAtk = clampIv($(`${prefix}IvAtk`).value);
+      const ivDef = clampIv($(`${prefix}IvDef`).value);
+      const ivHp = clampIv($(`${prefix}IvHp`).value);
+      let best = null;
+      for (const [level, cpm] of cpMultipliers) {
+        const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
+        if (stats.cp <= 1500) best = stats;
+        else break;
+      }
+      if (!best) best = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
+      const rank = ivRank(p, ivAtk, ivDef, ivHp);
+      best.rank = rank.rank;
+      best.rankPercent = rank.percent;
+      best.statProduct = rank.statProduct;
+      return best;
+    }
+
+    function pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm) {
+      const attack = (p.atk + ivAtk) * cpm;
+      const defense = (p.def + ivDef) * cpm;
+      const hp = Math.max(10, Math.floor((p.hp + ivHp) * cpm));
+      const cp = Math.max(10, Math.floor((p.atk + ivAtk) * Math.sqrt(p.def + ivDef) * Math.sqrt(p.hp + ivHp) * cpm * cpm / 10));
+      return { level, cpm, cp, attack, defense, hp, ivAtk, ivDef, ivHp, statProduct: attack * defense * hp };
+    }
+
+    function ivRank(p, ivAtk, ivDef, ivHp) {
+      const ranks = rankingsForPokemon(p);
+      const key = `${ivAtk}/${ivDef}/${ivHp}`;
+      return ranks.byIv.get(key) || { rank: 4096, percent: 0, statProduct: 0 };
+    }
+
+    function rankingsForPokemon(p) {
+      if (rankCache.has(p.id)) return rankCache.get(p.id);
+      const rows = [];
+      const maxStats = { attack: 0, defense: 0, hp: 0 };
+      for (let atk = 0; atk <= 15; atk++) {
+        for (let def = 0; def <= 15; def++) {
+          for (let hp = 0; hp <= 15; hp++) {
+            let best = null;
+            for (const [level, cpm] of cpMultipliers) {
+              const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
+              if (stats.cp <= 1500) best = stats;
+              else break;
+            }
+            if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
+            rows.push({ key: `${atk}/${def}/${hp}`, statProduct: best.statProduct });
+            maxStats.attack = Math.max(maxStats.attack, best.attack);
+            maxStats.defense = Math.max(maxStats.defense, best.defense);
+            maxStats.hp = Math.max(maxStats.hp, best.hp);
+          }
+        }
+      }
+      rows.sort((a, b) => b.statProduct - a.statProduct);
+      const byIv = new Map();
+      rows.forEach((row, index) => {
+        byIv.set(row.key, {
+          rank: index + 1,
+          percent: 1 - index / (rows.length - 1),
+          statProduct: row.statProduct
+        });
+      });
+      const result = { byIv, maxStats };
+      rankCache.set(p.id, result);
+      return result;
+    }
+
+    function clampIv(value) {
+      return Math.max(0, Math.min(15, Math.round(Number(value || 0))));
+    }
+
+    function formatLevel(level) {
+      return Number.isInteger(level) ? String(level) : level.toFixed(1);
+    }
+
+    function formatStats(stats) {
+      return `ATK ${stats.attack.toFixed(1)} | DEF ${stats.defense.toFixed(1)} | HP ${stats.hp}`;
+    }
+
+    function create(prefix, trainer) {
+      const p = findPokemon($(`${prefix}Pokemon`).value);
+      const stats = selectedStats(prefix, p);
+      $(`${prefix}Level`).value = `L${formatLevel(stats.level)}`;
+      $(`${prefix}Cp`).value = stats.cp;
+      updateRankMeter(prefix, stats);
+      return {
+        trainer,
+        p,
+        fast: moveMap.get($(`${prefix}Fast`).value),
+        charged: [moveMap.get($(`${prefix}Charged1`).value), moveMap.get($(`${prefix}Charged2`).value)],
+        level: stats.level,
+        cp: stats.cp,
+        ivAtk: stats.ivAtk,
+        ivDef: stats.ivDef,
+        ivHp: stats.ivHp,
+        rank: stats.rank,
+        rankPercent: stats.rankPercent,
+        statProduct: stats.statProduct,
+        maxHp: stats.hp,
+        hp: stats.hp,
+        energy: 0,
+        shields: Math.max(0, Math.min(2, Number($(`${prefix}Shields`).value || 0))),
+        baiting: $(`${prefix}Baiting`).value,
+        shieldMode: $(`${prefix}ShieldMode`).value,
+        chargedTaken: 0,
+        attack: stats.attack,
+        defense: stats.defense,
+        shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
+        shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
+      };
+    }
+
+    function add(line, type = "info") {
+      const time = new Date().toLocaleTimeString("it-IT", { hour12: false });
+      log.push({ time, line, type });
+      renderLog();
+    }
+
+    function renderLog() {
+      const filter = $("logFilter") ? $("logFilter").value : "all";
+      const visible = log.filter(entry => filter === "all" || entry.type === filter);
+      $("log").textContent = visible.map(entry => `[${entry.time}] ${entry.line}`).join("\n");
+      $("log").scrollTop = $("log").scrollHeight;
+    }
+
+    function effectiveness(moveType, defenderTypes) {
+      let total = 1;
+      for (const t of defenderTypes) {
+        if ((strong[moveType] || []).includes(t)) total *= 1.6;
+        if ((weak[moveType] || []).includes(t)) total *= 0.625;
+      }
+      return total;
+    }
+
+    function estimate(attacker, defender, move) {
+      const rawDamage = move.power * effectiveAttack(attacker) * damageBonus * .5 / effectiveDefense(defender) * damageModifier(attacker, defender, move);
+      return Math.max(1, Math.floor(rawDamage) + 1);
+    }
+
+    function damageModifier(attacker, defender, move) {
+      const stab = attacker.p.types.includes(move.type) ? 1.2 : 1;
+      return stab * effectiveness(move.type, defender.p.types);
+    }
+
+    function effectiveAttack(combatant) {
+      return combatant.attack * (combatant.shadowAtkMult || 1);
+    }
+
+    function effectiveDefense(combatant) {
+      return combatant.defense * (combatant.shadowDefMult || 1);
+    }
+
+    function breakpointInfo(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast) return null;
+      const move = attacker.fast;
+      const modifier = damageModifier(attacker, defender, move);
+      const damage = estimate(attacker, defender, move);
+      if (!move.power || !modifier) return null;
+      const targetDamage = damage + 1;
+      const neededAttack = (targetDamage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * (attacker.shadowAtkMult || 1));
+      const delta = neededAttack - attacker.attack;
+      if (!isFinite(delta) || delta <= 0.005) return { label: "BP hit", title: `${move.name}: ${damage} damage` };
+      const maxAttack = maxReachableStat(attacker.p, "attack");
+      if (neededAttack > maxAttack + 0.005) {
+        return { label: "No BP", title: `${move.name}: next breakpoint at ${neededAttack.toFixed(1)} ATK, above the Great League maximum (${maxAttack.toFixed(1)})` };
+      }
+      return { label: `BP +${delta.toFixed(1)}`, title: `${move.name}: ${damage} -> ${damage + 1} damage at ${neededAttack.toFixed(1)} ATK` };
+    }
+
+    function bulkpointInfo(defender, attacker) {
+      if (!attacker || !defender || !attacker.fast) return null;
+      const move = attacker.fast;
+      const damage = estimate(attacker, defender, move);
+      if (damage <= 1) return null;
+      const modifier = damageModifier(attacker, defender, move);
+      const neededDefense = (move.power * effectiveAttack(attacker) * damageBonus * .5 * modifier) / ((damage - 1) * (defender.shadowDefMult || 1));
+      const delta = neededDefense - defender.defense;
+      if (!isFinite(delta) || delta <= 0.005) return { label: "Bulk hit", title: `${move.name}: ${damage} damage taken` };
+      const maxDefense = maxReachableStat(defender.p, "defense");
+      if (neededDefense > maxDefense + 0.005) {
+        return { label: "No Bulk", title: `${move.name}: next bulkpoint at ${neededDefense.toFixed(1)} DEF, above the Great League maximum (${maxDefense.toFixed(1)})` };
+      }
+      return { label: `Bulk +${delta.toFixed(1)}`, title: `${move.name}: ${damage} -> ${damage - 1} damage at ${neededDefense.toFixed(1)} DEF` };
+    }
+
+    function maxReachableStat(p, statName) {
+      const rankings = rankingsForPokemon(p);
+      if (rankings.maxStats && rankings.maxStats[statName]) return rankings.maxStats[statName];
+      let maxAttack = 0;
+      let maxDefense = 0;
+      let maxHp = 0;
+      for (let atk = 0; atk <= 15; atk++) {
+        for (let def = 0; def <= 15; def++) {
+          for (let hp = 0; hp <= 15; hp++) {
+            let best = null;
+            for (const [level, cpm] of cpMultipliers) {
+              const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
+              if (stats.cp <= 1500) best = stats;
+              else break;
+            }
+            if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
+            maxAttack = Math.max(maxAttack, best.attack);
+            maxDefense = Math.max(maxDefense, best.defense);
+            maxHp = Math.max(maxHp, best.hp);
+          }
+        }
+      }
+      rankings.maxStats = { attack: maxAttack, defense: maxDefense, hp: maxHp };
+      return rankings.maxStats[statName];
+    }
+
+    function apply(attacker, defender, move, shielded) {
+      let damage = estimate(attacker, defender, move);
+      if (shielded) damage = 1;
+      defender.hp = Math.max(0, defender.hp - damage);
+      attacker.energy = Math.max(0, Math.min(100, attacker.energy + move.energyGain - move.energyCost));
+      return damage;
+    }
+
+    function battleEnded() {
+      return !!(left && right && (left.hp <= 0 || right.hp <= 0));
+    }
+
+    function ready() {
+      if (!left || !right) startBattle();
+      if (battleEnded()) {
+        add("The battle is over. Press Start Battle to restart.", "ko");
+        return false;
+      }
+      return true;
+    }
+
+    function useFast(attacker, defender) {
+      if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const damage = apply(attacker, defender, attacker.fast, false);
+      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false);
+      add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, +${attacker.fast.energyGain} energy.`, "fast");
+      return finish();
+    }
+
+    function useCharge(attacker, defender, index) {
+      if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const move = attacker.charged[index];
+      if (attacker.energy < move.energyCost) {
+        add(`${attacker.trainer}: not enough energy for ${move.name} (${attacker.energy}/${move.energyCost}).`, "charge");
+        render();
+        return false;
+      }
+      const unshieldedDamage = estimate(attacker, defender, move);
+      const shielded = shouldShield(defender, move, unshieldedDamage);
+      const damage = apply(attacker, defender, move, shielded);
+      const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
+      defender.chargedTaken++;
+      if (shielded) {
+        defender.shields--;
+        recordShield(defender, move, chargeEvent.start);
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.`, "shield");
+      } else {
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.`, "charge");
+      }
+      return finish();
+    }
+
+    function shouldShield(defender, move, unshieldedDamage) {
+      if (!defender || defender.shields <= 0) return false;
+      if (defender.shieldMode === "no-first" && defender.chargedTaken === 0) return false;
+      if (defender.shieldMode === "nuke") {
+        return unshieldedDamage >= defender.hp || unshieldedDamage >= defender.maxHp * .35 || move.energyCost >= 55;
+      }
+      return true;
+    }
+
+    function finish() {
+      const ended = battleEnded();
+      if (left.hp <= 0 && right.hp <= 0) add("Tie.", "ko");
+      else if (left.hp <= 0) add("Trainer B wins.", "ko");
+      else if (right.hp <= 0) add("Trainer A wins.", "ko");
+      render();
+      return !ended;
+    }
+
+    function recordTimeline(attacker, move, kind, damage, shielded) {
+      const duration = kind === "fast" ? Math.max(1, move.turns || 1) : 1;
+      const start = battleTurns[attacker.trainer] || 0;
+      const event = {
+        trainer: attacker.trainer,
+        move,
+        kind,
+        damage,
+        shielded,
+        start,
+        duration,
+        energyBefore: kind === "fast" ? Math.max(0, attacker.energy - (move.energyGain || 0)) : attacker.energy + (move.energyCost || 0)
+      };
+      event.state = battleSnapshot();
+      timeline.push(event);
+      if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
+      if (kind === "charge") battleTurns[attacker.trainer] = start + 1;
+      return event;
+    }
+
+    function recordShield(defender, move, start) {
+      timeline.push({
+        trainer: defender.trainer,
+        move,
+        kind: "shield",
+        damage: 1,
+        shielded: true,
+        start,
+        duration: 1,
+        state: battleSnapshot()
+      });
+    }
+
+    function battleSnapshot() {
+      return {
+        A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy } : null,
+        B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy } : null
+      };
+    }
+
+    function autoAction(attacker, defender) {
+      if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const available = attacker.charged.filter(m => attacker.energy >= m.energyCost);
+      if (available.length) {
+        const best = chooseChargedMove(attacker, defender, available);
+        if (shouldWaitForChargeTiming(attacker, defender, best)) return useFast(attacker, defender);
+        return useCharge(attacker, defender, attacker.charged.indexOf(best));
+      } else {
+        return useFast(attacker, defender);
+      }
+    }
+
+    function chooseChargedMove(attacker, defender, available) {
+      const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost);
+      const straight = byDamage[0];
+      if (defender.shields <= 0) return straight;
+
+      const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
+      if (!cheapest || cheapest === straight) return straight;
+      if (attacker.baiting === "on") return cheapest;
+      if (attacker.baiting !== "selective") return straight;
+
+      const mostExpensive = [...attacker.charged].sort((a, b) => b.energyCost - a.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
+      const hasNukeReady = mostExpensive && attacker.energy >= mostExpensive.energyCost;
+      return hasNukeReady ? cheapest : straight;
+    }
+
+    function shouldWaitForChargeTiming(attacker, defender, move) {
+      const attackerTurn = battleTurns[attacker.trainer] || 0;
+      const defenderTurn = battleTurns[defender.trainer] || 0;
+      const attackerFastTurns = Math.max(1, attacker.fast.turns || 1);
+      const defenderFastTurns = Math.max(1, defender.fast.turns || 1);
+      if (attackerFastTurns >= defenderFastTurns) return false;
+      if (defenderTurn > attackerTurn) return false;
+      if (estimate(attacker, defender, move) >= defender.hp) return false;
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
+      return true;
+    }
+
+    function autoPlay() {
+      if (!left || !right) startBattle();
+      const targetTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0) + 20;
+      while (!battleEnded() && Math.min(battleTurns.A || 0, battleTurns.B || 0) < targetTurn) {
+        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+        const actors = [];
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+        if (!actors.length) break;
+        for (const [attacker, defender] of actors) {
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          if (!autoAction(attacker, defender) && !battleEnded()) break;
+        }
+      }
+      render();
+    }
+
+    function startBattle() {
+      left = create("p1", "A");
+      right = create("p2", "B");
+      log = [];
+      timeline = [];
+      battleTurns = { A: 0, B: 0 };
+      add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
+      render();
+    }
+
+    function renderSide(c, opponent, hpId, energyId, c1Id, c2Id) {
+      if (!c) return;
+      const prefix = hpId.slice(0, 2);
+      const hpPct = c.maxHp ? c.hp / c.maxHp : 1;
+      const box = $(`${prefix}BattleImg`).closest(".field-box");
+      box.classList.toggle("low-hp", hpPct <= .45 && hpPct > .20);
+      box.classList.toggle("critical-hp", hpPct <= .20);
+      setPokemonImage($(`${prefix}BattleImg`), c.p);
+      $(`${prefix}BattleName`).textContent = c.p.name;
+      $(`${prefix}BattleMeta`).textContent = `${c.p.types.map(title).join("/")} | CP ${c.cp} | L${formatLevel(c.level)}`;
+      renderTypeBadges(prefix, c.p.types);
+      renderStatBars(prefix, c, opponent);
+      updateRankMeter(prefix, c);
+      renderShields(prefix, c.shields);
+      renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
+      setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, "Fast", opponent);
+      setMoveButton(c1Id, c.charged[0], c.charged[0].name, "Charged", opponent);
+      setMoveButton(c2Id, c.charged[1], c.charged[1].name, "Charged", opponent);
+      $(c1Id).classList.toggle("ready", c.energy >= c.charged[0].energyCost);
+      $(c2Id).classList.toggle("ready", c.energy >= c.charged[1].energyCost);
+    }
+
+    function renderResourceBars(prefix, hp, maxHp, energy) {
+      const pct = Math.max(0, Math.min(100, Math.round(100 * hp / maxHp)));
+      $(`${prefix}Hp`).style.width = `${pct}%`;
+      $(`${prefix}Hp`).style.background = pct > 45 ? "var(--good)" : pct > 20 ? "var(--warn)" : "var(--danger)";
+      $(`${prefix}HpText`).textContent = `${Math.max(0, hp)} / ${maxHp}`;
+      renderEnergy(`${prefix}EnergyPanel`, energy);
+    }
+
+    function renderEnergy(id, energy) {
+      const pct = Math.max(0, Math.min(100, energy));
+      $(id).innerHTML =
+        `<div class="energy-head"><span>Energy</span><strong>${energy}/100</strong></div>` +
+        `<div class="energy-track"><div class="energy-fill" style="width:${pct}%"></div></div>`;
+    }
+
+    function renderTypeBadges(prefix, types) {
+      $(`${prefix}Types`).innerHTML = types.map(type => {
+        const color = typeColors[type] || "#66788c";
+        return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
+      }).join("");
+    }
+
+    function renderStatBars(prefix, c, opponent) {
+      const maxAttack = 170;
+      const maxDefense = 220;
+      const maxHp = 260;
+      const bp = breakpointInfo(c, opponent);
+      const bulk = bulkpointInfo(c, opponent);
+      const rows = [
+        ["attack", c.attack, maxAttack, "#d56a36", bp],
+        ["defense", c.defense, maxDefense, "#617385", bulk],
+        ["stamina", c.maxHp, maxHp, "#4f7d5f", null]
+      ];
+      $(`${prefix}StatBars`).innerHTML = rows.map(([name, value, max, color, alert]) => {
+        const pct = Math.max(4, Math.min(100, Math.round(value / max * 100)));
+        const display = name === "stamina" ? Math.round(value) : value.toFixed(1);
+        const badge = alert ? `<span class="stat-alert" title="${escapeHtml(alert.title)}">${escapeHtml(alert.label)}</span>` : `<span class="stat-alert empty">-</span>`;
+        return `<div class="stat-row"><span>${name}</span><strong>${display}</strong><div class="stat-track"><div class="stat-fill" style="width:${pct}%;background:${color}"></div></div>${badge}</div>`;
+      }).join("");
+      const product = Math.round(c.attack * c.defense * c.maxHp / 1000);
+      $(`${prefix}Overall`).innerHTML = `overall <strong>${product}</strong>`;
+    }
+
+    function updateRankMeter(prefix, stats) {
+      const meter = $(`${prefix}RankMeter`);
+      if (!meter || !stats.rank) return;
+      const pct = Math.max(0, Math.min(1, stats.rankPercent || 0));
+      const hue = Math.round(5 + pct * 135);
+      meter.textContent = `Rank #${stats.rank} / 4096`;
+      meter.style.background = `linear-gradient(90deg, hsl(${hue}, 68%, 42%), hsl(${Math.max(0, hue - 22)}, 70%, 52%))`;
+    }
+
+    function renderShields(prefix, shields) {
+      $(`${prefix}ShieldVisual`).innerHTML = [0, 1, 2].map(count => {
+        const icons = `${shieldSvg()}<strong>${count}</strong>`;
+        return `<button type="button" class="${count === shields ? "active" : ""}" data-shields="${count}" title="${count} shield${count === 1 ? "" : "s"}">${icons}</button>`;
+      }).join("");
+      $(`${prefix}ShieldVisual`).querySelectorAll("button").forEach(button => {
+        button.onclick = () => setShieldCount(prefix, Number(button.dataset.shields));
+      });
+    }
+
+    function setShieldCount(prefix, count) {
+      $(`${prefix}Shields`).value = count;
+      syncSelection(prefix);
+    }
+
+    function shieldSvg() {
+      return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 2.4 20 5.7v5.8c0 4.6-3.1 8.3-8 10.1-4.9-1.8-8-5.5-8-10.1V5.7l8-3.3Zm0 3.1L6.6 7.7v3.8c0 3.1 1.9 5.7 5.4 7.1 3.5-1.4 5.4-4 5.4-7.1V7.7L12 5.5Z"/></svg>`;
+    }
+
+    function render() {
+      renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
+      renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
+      renderBattleSummary();
+      renderTimeline();
+    }
+
+    function renderBattleSummary() {
+      if (!left || !right) return;
+      setPokemonImage($("summaryAImg"), left.p);
+      setPokemonImage($("summaryBImg"), right.p);
+      $("summaryAName").textContent = left.p.name;
+      $("summaryBName").textContent = right.p.name;
+      $("summaryAHp").textContent = `${left.hp}/${left.maxHp}`;
+      $("summaryBHp").textContent = `${right.hp}/${right.maxHp}`;
+      $("summaryAEnergy").textContent = `${left.energy}/100`;
+      $("summaryBEnergy").textContent = `${right.energy}/100`;
+      $("summaryABait").textContent = title(left.baiting);
+      $("summaryBBait").textContent = title(right.baiting);
+    }
+
+    function previewTimelineState(index) {
+      const event = timeline[index];
+      if (!event || !event.state) return;
+      if (previewingTimeline && previewTimelineIndex === index) return;
+      previewingTimeline = true;
+      previewTimelineIndex = index;
+      if (event.state.A) renderResourceBars("p1", event.state.A.hp, event.state.A.maxHp, event.state.A.energy);
+      if (event.state.B) renderResourceBars("p2", event.state.B.hp, event.state.B.maxHp, event.state.B.energy);
+    }
+
+    function highlightTimelineIndex(index) {
+      document.querySelectorAll(".timeline-block.previewed, .timeline-marker.previewed").forEach(el => el.classList.remove("previewed"));
+      document.querySelectorAll(".timeline-block.ghosted").forEach(el => el.classList.remove("ghosted"));
+      document.querySelectorAll(".trainer-card.timeline-focus").forEach(el => el.classList.remove("timeline-focus"));
+      document.querySelectorAll(`[data-event-index="${index}"]`).forEach(el => el.classList.add("previewed"));
+      const event = timeline[index];
+      if (event) {
+        document.querySelector(`.trainer-card.${event.trainer === "A" ? "a" : "b"}`)?.classList.add("timeline-focus");
+      }
+      ghostChargeEnergyPath(index);
+      document.querySelectorAll(".timeline-block.selected, .timeline-marker.selected").forEach(el => el.classList.remove("selected"));
+      if (selectedTimelineIndex !== null) {
+        document.querySelectorAll(`[data-event-index="${selectedTimelineIndex}"]`).forEach(el => el.classList.add("selected"));
+      }
+    }
+
+    function clearTimelinePreview() {
+      if (!previewingTimeline) return;
+      previewingTimeline = false;
+      previewTimelineIndex = null;
+      document.querySelectorAll(".timeline-block.previewed, .timeline-marker.previewed").forEach(el => el.classList.remove("previewed"));
+      document.querySelectorAll(".timeline-block.ghosted").forEach(el => el.classList.remove("ghosted"));
+      document.querySelectorAll(".trainer-card.timeline-focus").forEach(el => el.classList.remove("timeline-focus"));
+      if (left) renderResourceBars("p1", left.hp, left.maxHp, left.energy);
+      if (right) renderResourceBars("p2", right.hp, right.maxHp, right.energy);
+    }
+
+    function ghostChargeEnergyPath(index) {
+      const event = timeline[index];
+      if (!event || event.kind !== "charge") return;
+      let previousChargeIndex = -1;
+      for (let i = index - 1; i >= 0; i--) {
+        if (timeline[i].trainer === event.trainer && timeline[i].kind === "charge") {
+          previousChargeIndex = i;
+          break;
+        }
+      }
+      timeline.forEach((item, i) => {
+        if (i > previousChargeIndex && i < index && item.trainer === event.trainer && item.kind === "fast") {
+          document.querySelectorAll(`[data-event-index="${i}"]`).forEach(el => el.classList.add("ghosted"));
+        }
+      });
+    }
+
+    function openEventModal(index) {
+      const event = timeline[index];
+      if (!event) return;
+      const state = event.state || {};
+      const actor = event.trainer === "A" ? left : right;
+      const target = event.trainer === "A" ? right : left;
+      const color = typeColors[event.move.type] || "#156f8f";
+      $("eventModalTitle").textContent = `${event.move.name} - ${event.kind.toUpperCase()}`;
+      $("eventModalBody").innerHTML =
+        `<div class="event-visual">
+          <img src="${escapeHtml(imageUrl(actor.p))}" alt="">
+          <div class="event-move">
+            <span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(event.move.type)}</span>
+            <strong>${escapeHtml(event.move.name)}</strong>
+            <span>${event.damage} damage${event.shielded ? " - shielded" : ""}</span>
+          </div>
+          <img src="${escapeHtml(imageUrl(target.p))}" alt="">
+        </div>` +
+        [
+        ["Trainer", event.trainer],
+        ["Turn", event.kind === "fast" ? `${event.start}-${event.start + event.duration}` : event.start],
+        ["Damage", event.damage],
+        ["Move type", title(event.move.type)],
+        ["A HP / Energy", state.A ? `${state.A.hp}/${state.A.maxHp} - ${state.A.energy}` : "-"],
+        ["B HP / Energy", state.B ? `${state.B.hp}/${state.B.maxHp} - ${state.B.energy}` : "-"],
+        ["Shielded", event.shielded ? "Yes" : "No"],
+        ["Duration", `${event.duration} turn${event.duration === 1 ? "" : "s"}`]
+      ].map(([label, value]) => `<div class="detail-cell">${label}<strong>${escapeHtml(String(value))}</strong></div>`).join("");
+      $("eventModal").classList.add("open");
+      $("eventModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeEventModal() {
+      $("eventModal").classList.remove("open");
+      $("eventModal").setAttribute("aria-hidden", "true");
+    }
+
+    function renderTimeline() {
+      if (left) $("p1TimelineLabel").textContent = `A - ${left.p.name}`;
+      if (right) $("p2TimelineLabel").textContent = `B - ${right.p.name}`;
+      const chargeStarts = timelineChargeStarts();
+      const rawMaxTurn = Math.max(20, ...timeline.map(event => event.start + event.duration + 1));
+      const maxTurn = rawMaxTurn + chargeStarts.length * chargePauseTurns;
+      const scroll = $("timelineScroll");
+      const turnPx = timelineTurnPixels(maxTurn, scroll);
+      const keepAtEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 4;
+      renderTimelineRuler(maxTurn, turnPx);
+      renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeStarts);
+      renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeStarts);
+      if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+    }
+
+    function timelineTurnPixels(maxTurn, scroll) {
+      const zoom = $("timelineZoom").value;
+      if (zoom !== "fit") return Number(zoom || 18);
+      const available = Math.max(260, scroll.clientWidth - 10);
+      return Math.max(10, Math.min(24, Math.floor(available / Math.max(1, maxTurn))));
+    }
+
+    function timelineChargeStarts() {
+      return [...new Set(timeline.filter(event => event.kind === "charge").map(event => event.start))]
+        .sort((a, b) => a - b);
+    }
+
+    function visualTurn(turn, chargeStarts, includeCurrentCharge) {
+      const pauses = chargeStarts.filter(start => includeCurrentCharge ? start <= turn : start < turn).length;
+      return turn + pauses * chargePauseTurns;
+    }
+
+    function renderTimelineRuler(maxTurn, turnPx) {
+      const width = maxTurn * turnPx;
+      const every = turnPx < 18 ? 5 : turnPx < 28 ? 2 : 1;
+      $("timelineRuler").style.setProperty("--turn-px", `${turnPx}px`);
+      $("timelineRuler").innerHTML = `<div class="timeline-lane" style="width:${width}px">` +
+        Array.from({ length: maxTurn + 1 }, (_, turn) => {
+          if (turn % every !== 0) return "";
+          const cls = turn === 0 ? "turn-label start" : turn === maxTurn ? "turn-label end" : "turn-label";
+          return `<span class="${cls}" style="left:${turn * turnPx}px">${turn}</span>`;
+        }).join("") +
+        `</div>`;
+    }
+
+    function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeStarts) {
+      const row = $(id);
+      const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer);
+      row.style.setProperty("--turn-px", `${turnPx}px`);
+      const laneWidth = maxTurn * turnPx;
+      if (!events.length) {
+        row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px"><span class="timeline-empty">No actions</span></div>`;
+        return;
+      }
+      row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
+        if (event.kind === "fast") return renderFastTimelineEvent(event, chargeStarts, turnPx, index);
+        const isShield = event.kind === "shield";
+        const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
+        const textColor = isShield ? "#b245c5" : contrastText(color);
+        const isCharge = event.kind === "charge";
+        const width = Math.max(24, Math.min(32, turnPx + 10));
+        const baseTurn = visualTurn(event.start, chargeStarts, false);
+        const center = (baseTurn + chargeWindowTurns) * turnPx;
+        const left = Math.max(2, center - width / 2);
+        const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
+        const cls = (isShield ? "timeline-block shield" : isCharge ? "timeline-block charge" : "timeline-block") + (selectedTimelineIndex === index ? " selected" : "");
+        const shield = event.shielded ? " | shield: 1 damage" : "";
+        const titleText = isShield
+          ? `Shield used against ${event.move.name} - turn ${event.start}`
+          : `${event.move.name} - ${title(event.move.type)} - turn ${event.start}${shield} - ${event.damage} damage`;
+        const borderColor = isShield ? "rgba(178, 69, 197, .65)" : darken(color, .18);
+        const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index) : "";
+        const markers = timelineMarkers(event, index, left + width + 8);
+        return `${trail}<div class="${cls}" data-event-index="${index}" title="${escapeHtml(titleText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
+      }).join("") + `</div>`;
+    }
+
+    function renderFastTimelineEvent(event, chargeStarts, turnPx, eventIndex) {
+      const color = typeColors[event.move.type] || "#156f8f";
+      const textColor = contrastText(color);
+      const borderColor = darken(color, .18);
+      const label = `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
+      const cuts = chargeStarts.filter(start => start > event.start && start < event.start + event.duration);
+      const points = [event.start, ...cuts, event.start + event.duration];
+      return points.slice(0, -1).map((start, index) => {
+        const end = points[index + 1];
+        if (end <= start) return "";
+        const isSneak = chargeStarts.includes(start);
+        const visualStart = isSneak
+          ? visualTurn(start, chargeStarts, false) + .42
+          : visualTurn(start, chargeStarts, true);
+        const width = Math.max(10, (end - start) * turnPx - 4);
+        const left = visualStart * turnPx + 2;
+        const readyText = reachesChargedEnergy(event) ? " - charged move ready" : "";
+        const titleText = `${event.move.name} - ${title(event.move.type)} - turns ${start}-${end} - ${event.damage} damage${isSneak ? " - sneaked during charged move" : ""}${readyText}`;
+        const cls = `timeline-block${isSneak ? " sneak" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+        const markers = index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
+        return `<div class="${cls}" data-event-index="${eventIndex}" title="${escapeHtml(titleText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
+      }).join("");
+    }
+
+    function chargeTrail(startX, center, width, color, eventIndex) {
+      const trailEnd = center - width / 2 - 6;
+      const trailWidth = Math.max(24, trailEnd - startX);
+      const dots = [5, 7, 9, 11, 13, 15];
+      const spacing = trailWidth / dots.length;
+      return `<div class="charge-trail" data-event-index="${eventIndex}" style="left:${Math.max(0, startX + 4)}px;width:${trailWidth}px;color:${color}">` +
+        dots.map((size, index) => {
+          const x = (index + .5) * spacing;
+          return `<span class="charge-dot" style="left:${x}px;width:${size}px;height:${size}px"></span>`;
+        }).join("") +
+        `</div>`;
+    }
+
+    function moveTypeIcon(move) {
+      const color = typeColors[move.type] || "#66788c";
+      return `<span class="move-icon" style="background:${color}" title="${title(move.type)}"></span>`;
+    }
+
+    function timelineMarkers(event, eventIndex, left) {
+      const markers = [];
+      const state = event.state || {};
+      const opponent = event.trainer === "A" ? state.B : state.A;
+      if (opponent && opponent.hp <= 0) markers.push(`<span class="timeline-marker ko" data-event-index="${eventIndex}" title="KO" style="left:${left + markers.length * 22}px"></span>`);
+      return markers.join("");
+    }
+
+    function reachesChargedEnergy(event) {
+      const combatant = event.trainer === "A" ? left : right;
+      const state = event.state && event.state[event.trainer];
+      if (!combatant || !state || !combatant.charged.length) return false;
+      const cheapest = Math.min(...combatant.charged.map(move => move.energyCost || 0).filter(Boolean));
+      return cheapest > 0 && event.energyBefore < cheapest && state.energy >= cheapest;
+    }
+
+    function toggleTheme() {
+      const next = document.body.dataset.theme === "dark" ? "light" : "dark";
+      document.body.dataset.theme = next;
+      $("themeToggle").textContent = next === "dark" ? "Light" : "Dark";
+    }
+
+    function moveShortLabel(move) {
+      if (move.abbreviation) return move.abbreviation;
+      return move.name.split(/\\s+/).map(part => part.charAt(0)).join("").slice(0, 4).toUpperCase();
+    }
+
+    function title(s) {
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+    }
+
+    function setMoveButton(id, move, text, kind = "", opponent = null) {
+      const button = $(id);
+      const color = typeColors[move.type] || "#156f8f";
+      const effect = opponent ? moveEffectLabel(move, opponent) : "";
+      button.innerHTML =
+        `${moveTypeIcon(move)}<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span>${escapeHtml(kind)}${effect ? ` - ${effect}` : ""}</span></span>`;
+      button.style.background = color;
+      button.style.borderColor = darken(color, .18);
+      button.style.color = contrastText(color);
+      button.title = moveTooltip(move, kind, opponent, effect);
+    }
+
+    function moveTooltip(move, kind, opponent, effect) {
+      const lines = [`${move.name} (${title(move.type)})`, kind];
+      if (kind === "Fast") {
+        lines.push(`Power ${move.power}`);
+        lines.push(`Energy +${move.energyGain}`);
+        lines.push(`${move.turns} turn${move.turns === 1 ? "" : "s"}`);
+      } else {
+        const damage = opponent && (left || right) ? estimate((opponent === right ? left : right), opponent, move) : move.power;
+        const dpe = move.energyCost ? (damage / move.energyCost).toFixed(2) : "-";
+        lines.push(`Power ${move.power}`);
+        lines.push(`Energy ${move.energyCost}`);
+        lines.push(`Estimated damage ${damage}`);
+        lines.push(`DPE ${dpe}`);
+      }
+      if (effect) lines.push(effect);
+      return lines.join("\n");
+    }
+
+    function moveEffectLabel(move, defender) {
+      const mult = effectiveness(move.type, defender.p.types);
+      if (mult > 1.01) return "Super";
+      if (mult < .99) return "Resisted";
+      return "Neutral";
+    }
+
+    function darken(hex, amount) {
+      const n = parseInt(hex.slice(1), 16);
+      const r = Math.max(0, Math.round(((n >> 16) & 255) * (1 - amount)));
+      const g = Math.max(0, Math.round(((n >> 8) & 255) * (1 - amount)));
+      const b = Math.max(0, Math.round((n & 255) * (1 - amount)));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function contrastText(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      const r = (n >> 16) & 255;
+      const g = (n >> 8) & 255;
+      const b = n & 255;
+      return ((r * 299 + g * 587 + b * 114) / 1000) > 150 ? "#17212f" : "#fff";
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    init();
+  </script>
+</body>
+</html>
