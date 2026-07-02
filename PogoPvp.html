@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokemon GO PvP Simulator</title>
   <script src="gamemaster-data.js"></script>
+  <script src="pvpoke-default-movesets.js"></script>
   <style>
     :root {
       --bg: #edf2f5;
@@ -18,7 +19,7 @@
       --danger: #b33131;
       --warn: #c98c19;
       --good: #27805f;
-      --shadow: rgba(23, 33, 47, .07);
+      --shadow: rgba(23, 33, 47, .05);
       --grid: rgba(23, 33, 47, .11);
       --ruler: #eef3f7;
     }
@@ -53,7 +54,7 @@
       padding: 14px 18px;
       background: #102532;
       color: white;
-      border-bottom: 4px solid #d6ad39;
+      border-bottom: 2px solid #d6ad39;
     }
     h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
     .source { color: #cfd8df; font-size: 13px; text-align: right; }
@@ -66,7 +67,7 @@
       border: 1px solid var(--line);
       padding: 10px;
       border-radius: 8px;
-      box-shadow: 0 4px 14px rgba(23, 33, 47, .05);
+      box-shadow: none;
     }
     .toolbar select {
       width: auto;
@@ -77,18 +78,18 @@
       max-width: 240px;
     }
     .setup {
-      grid-template-columns: repeat(2, 530px);
-      column-gap: 40px;
+      grid-template-columns: repeat(2, 480px);
+      column-gap: 24px;
       align-items: start;
       justify-content: center;
     }
     section {
       background: var(--panel);
       border: 1px solid var(--line);
-      padding: 12px;
-      max-width: 530px;
+      padding: 10px;
+      max-width: 480px;
       border-radius: 8px;
-      box-shadow: 0 8px 22px rgba(23, 33, 47, .07);
+      box-shadow: none;
       position: relative;
       overflow: hidden;
     }
@@ -96,36 +97,37 @@
       content: "";
       position: absolute;
       inset: 0 0 auto 0;
-      height: 4px;
+      height: 3px;
       background: #156f8f;
     }
-    .trainer-card.a::before { background: linear-gradient(90deg, #156f8f, #2f78d6); }
-    .trainer-card.b::before { background: linear-gradient(90deg, #8f4fb8, #d6ad39); }
-    .trainer-card.a {
-      box-shadow: 0 8px 22px rgba(21, 111, 143, .12);
-    }
-    .trainer-card.b {
-      box-shadow: 0 8px 22px rgba(143, 79, 184, .12);
-    }
+    .trainer-card.a::before { background: #156f8f; }
+    .trainer-card.b::before { background: #8f4fb8; }
     h2 { margin: 0 0 12px; font-size: 16px; font-weight: 650; }
     .control-stack {
       display: grid;
       gap: 7px;
       padding: 12px 8px 8px;
-      border: 1px solid #e6ebf2;
+      border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(248, 250, 252, .72);
+      background: var(--soft);
     }
     body[data-theme="dark"] .control-stack,
     body[data-theme="dark"] .field-box,
     body[data-theme="dark"] .stat-bars {
       background: rgba(32, 43, 58, .72);
     }
+    body[data-theme="dark"] .rank-meter,
+    body[data-theme="dark"] .shield-row,
+    body[data-theme="dark"] .shield-count-toggle,
+    body[data-theme="dark"] .bait-toggle,
+    body[data-theme="dark"] .compact-toggle {
+      background: var(--soft);
+    }
     label {
       display: grid;
-      grid-template-columns: 88px minmax(0, 1fr);
+      grid-template-columns: 74px minmax(0, 1fr);
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       margin: 0;
       color: var(--muted);
       font-size: 13px;
@@ -172,7 +174,7 @@
       color: white;
       font-size: 12px;
       font-weight: 700;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, .25);
+      text-shadow: none;
     }
     .battle-identity {
       display: grid;
@@ -183,14 +185,29 @@
     }
     select, input {
       width: 100%;
-      max-width: 320px;
+      max-width: 286px;
       min-height: 30px;
-      border: 1px solid #c8d0da;
+      border: 1px solid #bac5d1;
       background: white;
       color: var(--ink);
       padding: 4px 7px;
       font: inherit;
       border-radius: 6px;
+      transition: border-color .14s ease, box-shadow .14s ease, background-color .14s ease;
+    }
+    select,
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+    select:hover, input:hover {
+      border-color: #8ea0b2;
+    }
+    select:focus-visible,
+    input:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(21, 111, 143, .24);
+      outline-offset: 2px;
+      border-color: var(--accent);
     }
     body[data-theme="dark"] select,
     body[data-theme="dark"] input {
@@ -198,7 +215,7 @@
       color: var(--ink);
       border-color: #3a4a5d;
     }
-    .search-input, .pokemon-select, .move-select { max-width: 320px; }
+    .search-input, .pokemon-select, .move-select { max-width: 286px; }
     .short-input { max-width: 86px; }
     input[type="checkbox"] { width: auto; min-height: auto; }
     .iv-row {
@@ -227,11 +244,11 @@
     }
     .iv-row input::placeholder { color: #6f7c8c; }
     .rank-meter {
-      width: 150px;
+      width: 138px;
       max-width: 100%;
       margin: 0;
       padding: 5px 8px;
-      border: 1px solid #c8d0da;
+      border: 1px solid var(--line);
       border-radius: 999px;
       background: linear-gradient(90deg, #1fb878, #d6ad39, #d94c4c);
       color: white;
@@ -251,7 +268,7 @@
     .bait-control {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
@@ -263,11 +280,10 @@
       border-radius: 999px;
       overflow: hidden;
       background: var(--panel);
-      box-shadow: inset 0 1px 1px rgba(23, 33, 47, .08);
     }
     .bait-toggle button {
       min-height: 28px;
-      padding: 4px 10px;
+      padding: 4px 8px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -275,16 +291,18 @@
       font-size: 12px;
       font-weight: 700;
       box-shadow: none;
+      cursor: pointer;
     }
     .bait-toggle button + button {
       border-left: 1px solid #bfc8d3;
     }
     .bait-toggle button.active {
-      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
-      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+      background: var(--accent);
+      color: white;
+      box-shadow: none;
     }
     body[data-theme="dark"] .bait-toggle button.active {
-      background: linear-gradient(180deg, #334256, #263446);
+      background: var(--accent);
     }
     .compact-toggle {
       display: inline-grid;
@@ -293,11 +311,10 @@
       border-radius: 999px;
       overflow: hidden;
       background: var(--panel);
-      box-shadow: inset 0 1px 1px rgba(23, 33, 47, .08);
     }
     .compact-toggle button {
       min-height: 26px;
-      padding: 3px 8px;
+      padding: 3px 7px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -305,11 +322,13 @@
       font-size: 11px;
       font-weight: 750;
       box-shadow: none;
+      cursor: pointer;
     }
     .compact-toggle button + button { border-left: 1px solid #bfc8d3; }
     .compact-toggle button.active {
-      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
-      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+      background: var(--accent);
+      color: white;
+      box-shadow: none;
     }
     .shield-mode-row {
       display: flex;
@@ -322,25 +341,16 @@
     }
     .field-box {
       margin-top: 12px;
-      background:
-        radial-gradient(circle at 16% 12%, rgba(21, 111, 143, .10), transparent 34%),
-        radial-gradient(circle at 92% 8%, rgba(214, 173, 57, .13), transparent 28%),
-        linear-gradient(180deg, #f8fafc, #fff);
-      border: 1px solid #e1e7ef;
+      background: var(--soft);
+      border: 1px solid var(--line);
       border-radius: 8px;
       padding: 12px;
       position: relative;
       transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
     }
-    .trainer-card.a .field-box {
-      border-color: rgba(21, 111, 143, .20);
-    }
-    .trainer-card.b .field-box {
-      border-color: rgba(143, 79, 184, .22);
-    }
     .trainer-card.timeline-focus .field-box {
       transform: translateY(-1px);
-      box-shadow: 0 0 0 3px rgba(242, 199, 68, .18), 0 10px 26px rgba(23, 33, 47, .12);
+      box-shadow: 0 0 0 3px rgba(21, 111, 143, .16);
     }
     button {
       min-height: 32px;
@@ -352,8 +362,13 @@
       cursor: pointer;
       font-weight: 600;
       border-radius: 6px;
+      transition: background-color .14s ease, border-color .14s ease, box-shadow .14s ease, transform .14s ease;
     }
-    button:hover { background: var(--accent-dark); }
+    button:hover {
+      background: var(--accent-dark);
+      box-shadow: 0 2px 6px rgba(23, 33, 47, .12);
+    }
+    button:active { transform: translateY(1px); }
     button.secondary {
       background: #f5f7f9;
       color: var(--ink);
@@ -372,13 +387,14 @@
     .bait-toggle button.active:hover,
     .compact-toggle button.active:hover,
     .shield-count-toggle button.active:hover {
-      background: linear-gradient(180deg, #e9eef4, #cfd8e4);
-      box-shadow: inset 0 2px 4px rgba(23, 33, 47, .18);
+      background: var(--accent);
+      color: white;
+      box-shadow: none;
     }
     body[data-theme="dark"] .bait-toggle button.active:hover,
     body[data-theme="dark"] .compact-toggle button.active:hover,
     body[data-theme="dark"] .shield-count-toggle button.active:hover {
-      background: linear-gradient(180deg, #334256, #263446);
+      background: var(--accent);
     }
     .check {
       display: flex;
@@ -388,7 +404,7 @@
       font-size: 13px;
     }
     .hp {
-      max-width: 390px;
+      max-width: 348px;
       height: 18px;
       background: #dfe5ec;
       border: 1px solid #c7d0da;
@@ -428,32 +444,32 @@
     .resource-row {
       display: flex;
       align-items: stretch;
-      gap: 10px;
+      gap: 8px;
       margin: 8px 0;
-      max-width: 390px;
+      max-width: 348px;
     }
     .stat-bars {
       display: grid;
       gap: 5px;
       margin: 10px 0 6px;
-      max-width: 330px;
+      max-width: 305px;
       padding: 8px;
-      border: 1px solid #e7ecf2;
+      border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.66);
     }
     .stat-row {
       display: grid;
-      grid-template-columns: 70px 48px minmax(0, 1fr) 78px;
+      grid-template-columns: 58px 42px minmax(0, 1fr) 70px;
       align-items: center;
-      gap: 7px;
+      gap: 5px;
       font-size: 12px;
       color: var(--muted);
     }
     .stat-row strong {
       color: var(--ink);
       font-size: 13px;
-      text-align: right;
+      text-align: left;
     }
     .stat-track {
       height: 5px;
@@ -470,13 +486,14 @@
     .stat-alert {
       min-height: 18px;
       padding: 2px 6px;
-      border-radius: 999px;
-      background: #c73f3f;
-      color: white;
+      border-radius: 4px;
+      background: #fff4e0;
+      color: #845a11;
+      border: 1px solid #e7c37a;
       font-size: 11px;
       font-weight: 800;
       text-align: center;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      text-shadow: none;
       white-space: nowrap;
     }
     .stat-alert.empty {
@@ -499,9 +516,9 @@
       align-items: center;
       gap: 7px;
       padding: 6px 8px;
-      border: 1px solid #e7ecf2;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255,255,255,.72);
+      background: var(--panel);
       flex: 0 0 auto;
     }
     .shield-row label {
@@ -528,8 +545,8 @@
     }
     .shield-count-toggle {
       display: inline-grid;
-      grid-template-columns: repeat(3, 42px);
-      border: 1px solid #d9c2e4;
+      grid-template-columns: repeat(3, 36px);
+      border: 1px solid #c8d0da;
       border-radius: 999px;
       overflow: hidden;
       background: rgba(255,255,255,.75);
@@ -539,18 +556,20 @@
       padding: 3px 6px;
       border: 0;
       border-radius: 0;
-      color: #8f4fb8;
+      color: var(--ink);
       background: transparent;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 4px;
       font-weight: 800;
+      cursor: pointer;
     }
-    .shield-count-toggle button + button { border-left: 1px solid #e1cde9; }
+    .shield-count-toggle button + button { border-left: 1px solid #c8d0da; }
     .shield-count-toggle button.active {
-      background: linear-gradient(180deg, #f7e9fb, #ebd4f2);
-      box-shadow: inset 0 2px 4px rgba(143, 79, 184, .16);
+      background: var(--accent);
+      color: white;
+      box-shadow: none;
     }
     .shield-count-toggle svg {
       width: 14px;
@@ -562,19 +581,20 @@
       font-size: 12px;
       line-height: 1;
     }
+    .shield-count-toggle button.active strong {
+      color: white;
+    }
     .energy-panel {
       flex: 1 1 180px;
-      min-width: 150px;
+      min-width: 132px;
       padding: 7px 10px 8px;
-      border: 1px solid #d4ad31;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,246,204,.86));
+      border: 1px solid #d7c06b;
+      border-radius: 8px;
+      background: #fff9de;
       display: grid;
       align-content: center;
       gap: 5px;
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, .72),
-        0 2px 8px rgba(158, 122, 24, .12);
+      box-shadow: none;
     }
     .energy-head {
       display: flex;
@@ -593,45 +613,52 @@
       padding: 1px 6px;
       border-radius: 999px;
       background: rgba(255, 255, 255, .72);
-      box-shadow: 0 1px 3px rgba(99, 74, 14, .12);
+      box-shadow: none;
     }
     .energy-track {
       height: 12px;
       overflow: hidden;
       border-radius: 999px;
-      background:
-        repeating-linear-gradient(90deg, transparent 0 18px, rgba(122, 91, 17, .12) 18px 19px),
-        linear-gradient(180deg, #f4edcf, #dfd2a5);
+      background: #eadfa9;
       border: 1px solid rgba(124, 94, 20, .28);
-      box-shadow:
-        inset 0 1px 2px rgba(92, 69, 16, .20),
-        0 1px 0 rgba(255, 255, 255, .72);
+      box-shadow: inset 0 1px 2px rgba(92, 69, 16, .16);
       position: relative;
     }
     .energy-fill {
       width: 0%;
       height: 100%;
       border-radius: inherit;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.42), transparent 44%),
-        linear-gradient(90deg, #f0b91c, #ffd83a 58%, #fff06a);
+      background: #d6ad39;
       transition: width .15s ease;
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, .34),
-        0 0 10px rgba(242, 199, 68, .62);
+      box-shadow: none;
+    }
+    body[data-theme="dark"] .energy-panel {
+      background: #282618;
+      border-color: #6e612b;
+    }
+    body[data-theme="dark"] .energy-head,
+    body[data-theme="dark"] .energy-head strong {
+      color: var(--ink);
+    }
+    body[data-theme="dark"] .energy-head strong {
+      background: rgba(255, 255, 255, .08);
+    }
+    body[data-theme="dark"] .energy-track {
+      background: #4a4224;
+      border-color: #6e612b;
     }
     .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid #e7ecf2;
     }
     .actions button {
-      min-width: 118px;
-      border-color: rgba(0, 0, 0, .22);
-      text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
+      min-width: 108px;
+      border-color: rgba(0, 0, 0, .18);
+      text-shadow: none;
       display: inline-grid;
       grid-template-columns: 14px 1fr;
       align-items: center;
@@ -641,13 +668,10 @@
     .actions button:hover {
       filter: brightness(.92);
       transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(23, 33, 47, .14);
+      box-shadow: 0 3px 8px rgba(23, 33, 47, .13);
     }
     .actions button.ready {
-      box-shadow:
-        0 0 0 2px rgba(255,255,255,.65),
-        0 0 0 4px rgba(214, 173, 57, .35),
-        0 0 16px rgba(214, 173, 57, .55);
+      box-shadow: 0 0 0 3px rgba(214, 173, 57, .30);
     }
     .move-button-label {
       display: grid;
@@ -687,14 +711,11 @@
       gap: 16px;
       align-items: center;
       background:
-        radial-gradient(circle at 10% 50%, rgba(21, 111, 143, .16), transparent 30%),
-        radial-gradient(circle at 90% 50%, rgba(143, 79, 184, .18), transparent 30%),
-        linear-gradient(90deg, rgba(21, 111, 143, .08), transparent 28%, transparent 72%, rgba(143, 79, 184, .08)),
         var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 12px 16px;
-      box-shadow: 0 8px 22px var(--shadow);
+      box-shadow: none;
     }
     .summary-side {
       display: grid;
@@ -766,7 +787,7 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--panel);
-      box-shadow: 0 8px 22px rgba(23, 33, 47, .05);
+      box-shadow: none;
     }
     .key-card {
       min-width: 0;
@@ -793,7 +814,7 @@
       width: min(100%, 1100px);
       justify-self: center;
       border-radius: 8px;
-      box-shadow: 0 8px 22px rgba(23, 33, 47, .06);
+      box-shadow: none;
       max-width: calc(100vw - 32px);
     }
     .timeline-head {
@@ -925,10 +946,10 @@
       padding: 6px 3px;
     }
     #p1Timeline {
-      background: linear-gradient(90deg, rgba(21, 111, 143, .10), rgba(21, 111, 143, .03));
+      background: #f4f8fb;
     }
     #p2Timeline {
-      background: linear-gradient(90deg, rgba(143, 79, 184, .10), rgba(143, 79, 184, .03));
+      background: #f8f5fb;
     }
     .timeline-lane {
       position: relative;
@@ -1132,7 +1153,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
-      box-shadow: 0 8px 22px var(--shadow);
+      box-shadow: none;
       overflow: hidden;
     }
     .log-head {
@@ -1556,6 +1577,18 @@
       rock:"#8e7950", ghost:"#61579d", dragon:"#5b63d8", dark:"#4c443f",
       steel:"#6f8794", fairy:"#d765ad"
     };
+    const fallbackStandardMovesets = {
+      swampert: {
+        fast: "MUD_SHOT",
+        charged: ["HYDRO_CANNON", "EARTHQUAKE"]
+      },
+      skarmory: {
+        fast: "STEEL_WING",
+        charged: ["SKY_ATTACK", "BRAVE_BIRD"]
+      }
+    };
+    const pvpokeStandardMovesets = window.PVPOKE_DEFAULT_MOVESETS || {};
+    const standardMovesets = { ...fallbackStandardMovesets, ...pvpokeStandardMovesets };
     const damageBonus = 1.2999999523162842;
     const shadowAtkMultiplier = 1.2;
     const shadowDefMultiplier = 0.83333331;
@@ -1747,6 +1780,11 @@
     }
 
     function chooseRecommendedMoves(prefix, p) {
+      const standard = standardMovesetFor(p);
+      if (standard) {
+        applyStandardMoveset(prefix, p, standard);
+        return;
+      }
       const fast = p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b, p) - fastMoveScore(a, p));
       const charged = p.charged.map(id => moveMap.get(id)).filter(Boolean)
         .sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p))
@@ -1761,10 +1799,47 @@
       colorMoveSelect(`${prefix}Charged2`);
     }
 
+    function standardMovesetFor(p) {
+      if (!p || !p.id) return null;
+      if (standardMovesets[p.id]) return standardMovesets[p.id];
+      const baseId = p.id.replace(/_shadow$/, "");
+      return standardMovesets[baseId] || null;
+    }
+
+    function applyStandardMoveset(prefix, p, standard) {
+      const fastSelect = $(`${prefix}Fast`);
+      const charged1Select = $(`${prefix}Charged1`);
+      const charged2Select = $(`${prefix}Charged2`);
+      if (standard.fast && p.fast.includes(standard.fast)) {
+        fastSelect.value = standard.fast;
+      }
+
+      const standardCharged = (standard.charged || []).filter(id => p.charged.includes(id));
+      if (standardCharged[0]) charged1Select.value = standardCharged[0];
+      if (standardCharged[1]) charged2Select.value = standardCharged[1];
+      if (standardCharged.length < 2) {
+        const fallbackCharged = p.charged.map(id => moveMap.get(id)).filter(Boolean)
+          .filter(move => !standardCharged.includes(move.id))
+          .sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p));
+        if (!standardCharged[0] && fallbackCharged[0]) charged1Select.value = fallbackCharged[0].id;
+        if (!standardCharged[1]) {
+          const usedFirst = charged1Select.value;
+          const fallbackSecond = fallbackCharged.find(move => move.id !== usedFirst) || fallbackCharged[0];
+          if (fallbackSecond) charged2Select.value = fallbackSecond.id;
+        }
+      }
+
+      colorMoveSelect(`${prefix}Fast`);
+      colorMoveSelect(`${prefix}Charged1`);
+      colorMoveSelect(`${prefix}Charged2`);
+    }
+
     function fastMoveScore(move, p) {
       const turns = Math.max(1, move.turns || 1);
       const stab = p.types.includes(move.type) ? 1.2 : 1;
-      return (move.power * stab + move.energyGain) / turns;
+      const damagePerTurn = move.power * stab / turns;
+      const energyPerTurn = move.energyGain / turns;
+      return damagePerTurn + energyPerTurn * 1.8;
     }
 
     function chargedMoveScore(move, p) {
@@ -1778,9 +1853,10 @@
       const move = moveMap.get(select.value);
       if (!move) return;
       const color = typeColors[move.type] || "#fff";
-      select.style.background = `linear-gradient(90deg, ${color} 0 8px, #fff 8px)`;
-      select.style.borderColor = darken(color, .18);
-      select.style.color = "#17212f";
+      select.style.background = "";
+      select.style.borderColor = "";
+      select.style.borderLeft = `4px solid ${color}`;
+      select.style.color = "";
     }
 
     function findPokemon(id) {
@@ -2185,10 +2261,15 @@
 
     function useFast(attacker, defender) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const energyBefore = attacker.energy;
       const damage = apply(attacker, defender, attacker.fast, false);
-      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false);
+      const energyGained = attacker.energy - energyBefore;
+      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore);
       attacker.lastFastStart = event.start;
-      add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, +${attacker.fast.energyGain} energy.`, "fast");
+      const energyText = energyGained === attacker.fast.energyGain
+        ? `+${energyGained} energy`
+        : `+${energyGained} energy (${attacker.energy}/100)`;
+      add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, ${energyText}.`, "fast");
       return finish();
     }
 
@@ -2236,9 +2317,14 @@
       return !ended;
     }
 
-    function recordTimeline(attacker, move, kind, damage, shielded) {
+    function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null) {
       const duration = kind === "fast" ? Math.max(1, move.turns || 1) : 1;
       const start = battleTurns[attacker.trainer] || 0;
+      const energyBefore = energyBeforeOverride !== null
+        ? energyBeforeOverride
+        : kind === "fast"
+          ? Math.max(0, attacker.energy - (move.energyGain || 0))
+          : attacker.energy + (move.energyCost || 0);
       const event = {
         trainer: attacker.trainer,
         move,
@@ -2247,7 +2333,7 @@
         shielded,
         start,
         duration,
-        energyBefore: kind === "fast" ? Math.max(0, attacker.energy - (move.energyGain || 0)) : attacker.energy + (move.energyCost || 0)
+        energyBefore
       };
       event.state = battleSnapshot();
       timeline.push(event);
@@ -2341,6 +2427,9 @@
       const defenderTurn = battleTurns[defender.trainer] || 0;
       const defenderFastTurns = Math.max(1, defender.fast.turns || 1);
       if (defenderFastTurns <= 1) return false;
+      if (defender.shields <= 0) return false;
+      if (attacker.energy >= 100) return false;
+      if (attacker.energy + Number(attacker.fast.energyGain || 0) >= 100) return false;
       const damage = estimate(attacker, defender, move);
       if (damage >= defender.hp && !shouldShield(defender, move, damage)) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
@@ -2454,6 +2543,7 @@
       const pct = Math.max(0, Math.min(1, stats.rankPercent || 0));
       const hue = Math.round(5 + pct * 135);
       meter.textContent = `Rank #${stats.rank} / 4096`;
+      meter.style.borderColor = `hsl(${hue}, 48%, 38%)`;
       meter.style.background = `linear-gradient(90deg, hsl(${hue}, 68%, 42%), hsl(${Math.max(0, hue - 22)}, 70%, 52%))`;
     }
 
