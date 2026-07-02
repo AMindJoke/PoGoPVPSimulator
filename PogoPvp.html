@@ -1280,12 +1280,492 @@
       display: none;
     }
     @media (max-width: 900px) {
-      .setup, .toolbar { grid-template-columns: 1fr; }
-      .setup { column-gap: 12px; justify-content: stretch; }
-      .timeline { width: 100%; }
-      section { max-width: none; }
-      header { align-items: flex-start; flex-direction: column; }
-      .source { text-align: left; }
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+        padding: 8px 10px;
+      }
+      h1 { font-size: 16px; }
+      .source {
+        text-align: left;
+        font-size: 11px;
+      }
+      main {
+        padding: 8px;
+        gap: 8px;
+      }
+      .toolbar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        padding: 6px;
+      }
+      .toolbar button,
+      .toolbar select {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        min-height: 28px;
+        padding: 4px 6px;
+        font-size: 11px;
+      }
+      .preset-select {
+        min-width: 0;
+        max-width: none;
+      }
+      .toolbar .check,
+      .toolbar .hint {
+        font-size: 11px;
+      }
+      .setup {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        justify-content: stretch;
+      }
+      section {
+        max-width: none;
+        padding: 6px;
+      }
+      .control-stack {
+        gap: 5px;
+        padding: 8px 5px 6px;
+      }
+      label {
+        grid-template-columns: 1fr;
+        gap: 2px;
+        font-size: 10px;
+      }
+      select,
+      input {
+        max-width: none;
+        min-height: 25px;
+        padding: 3px 5px;
+        font-size: 11px;
+      }
+      .search-input,
+      .pokemon-select,
+      .move-select {
+        max-width: none;
+      }
+      .iv-row {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 2px;
+      }
+      .iv-field {
+        font-size: 9px;
+      }
+      .iv-field input {
+        max-width: none;
+        min-height: 23px;
+        padding: 2px;
+        font-size: 10px;
+      }
+      .rank-bait-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+      .rank-meter {
+        width: 100%;
+        padding: 4px 6px;
+        font-size: 10px;
+        text-align: center;
+      }
+      .bait-control,
+      .shield-mode-row {
+        justify-content: space-between;
+        gap: 4px;
+        font-size: 10px;
+      }
+      .bait-toggle,
+      .compact-toggle {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+      }
+      .bait-toggle button,
+      .compact-toggle button {
+        min-height: 24px;
+        padding: 2px 4px;
+        font-size: 9px;
+      }
+      .field-box {
+        margin-top: 8px;
+        padding: 7px;
+      }
+      .battle-identity {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .battle-identity img {
+        width: 40px;
+        height: 40px;
+      }
+      .battle-identity strong {
+        font-size: 12px;
+      }
+      .battle-identity span {
+        font-size: 10px;
+      }
+      .type-badges {
+        gap: 3px;
+        margin-top: 3px;
+      }
+      .type-badge {
+        min-height: 15px;
+        padding: 1px 5px;
+        font-size: 9px;
+      }
+      .hp,
+      .resource-row,
+      .stat-bars {
+        max-width: none;
+      }
+      .hp {
+        height: 15px;
+        margin: 6px 0;
+      }
+      .hp-text {
+        font-size: 10px;
+      }
+      .resource-row {
+        gap: 5px;
+        margin: 6px 0;
+      }
+      .shield-row {
+        padding: 4px 5px;
+      }
+      .shield-count-toggle {
+        grid-template-columns: repeat(3, 28px);
+      }
+      .shield-count-toggle button {
+        min-height: 24px;
+        padding: 2px 3px;
+        gap: 2px;
+      }
+      .shield-count-toggle svg {
+        width: 12px;
+        height: 12px;
+      }
+      .shield-count-toggle strong {
+        font-size: 10px;
+      }
+      .energy-panel {
+        min-width: 0;
+        padding: 5px 6px;
+        gap: 3px;
+      }
+      .energy-head {
+        font-size: 10px;
+      }
+      .energy-head strong {
+        font-size: 11px;
+        padding: 0 4px;
+      }
+      .energy-track {
+        height: 9px;
+      }
+      .stat-bars {
+        gap: 3px;
+        margin: 6px 0 4px;
+        padding: 5px;
+      }
+      .stat-row {
+        grid-template-columns: 45px 34px minmax(0, 1fr) 52px;
+        gap: 3px;
+        font-size: 9px;
+      }
+      .stat-row strong {
+        font-size: 10px;
+      }
+      .stat-track {
+        height: 4px;
+      }
+      .stat-alert {
+        min-height: 15px;
+        padding: 1px 3px;
+        font-size: 8px;
+      }
+      .overall {
+        margin: 3px 0 5px 4px;
+        font-size: 10px;
+      }
+      .overall strong {
+        font-size: 11px;
+      }
+      .actions {
+        gap: 4px;
+        margin-top: 7px;
+        padding-top: 7px;
+      }
+      .actions button {
+        flex: 1 1 48%;
+        min-width: 0;
+        min-height: 28px;
+        padding: 4px;
+        grid-template-columns: 10px minmax(0, 1fr);
+        gap: 4px;
+      }
+      .move-icon {
+        width: 10px;
+        height: 10px;
+      }
+      .move-button-label strong {
+        font-size: 10px;
+      }
+      .move-button-label > span {
+        font-size: 8px;
+        gap: 2px;
+      }
+      .effect-chip {
+        min-height: 14px;
+        padding: 0 3px;
+        font-size: 8px;
+      }
+      .battle-summary,
+      .key-numbers,
+      .timeline,
+      .log-panel {
+        width: 100%;
+        max-width: none;
+      }
+      .battle-summary {
+        gap: 8px;
+        padding: 8px;
+      }
+      .summary-side {
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 6px;
+      }
+      .summary-side.b {
+        grid-template-columns: minmax(0, 1fr) 38px;
+      }
+      .summary-side img {
+        width: 38px;
+        height: 38px;
+      }
+      .summary-name {
+        font-size: 12px;
+      }
+      .summary-meta {
+        gap: 4px;
+        font-size: 9px;
+      }
+      .summary-vs {
+        min-width: 34px;
+        min-height: 28px;
+        font-size: 11px;
+      }
+      .key-numbers {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+        padding: 6px;
+      }
+      .key-card {
+        padding: 6px;
+        font-size: 10px;
+      }
+      .key-card strong {
+        font-size: 11px;
+      }
+      .timeline {
+        padding: 8px;
+      }
+      .timeline-head {
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .timeline-head h2,
+      .log-head h2 {
+        font-size: 13px;
+      }
+      .timeline-legend {
+        gap: 5px;
+        font-size: 10px;
+      }
+      .timeline-tools {
+        gap: 5px;
+      }
+      .timeline-grid {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 0 5px;
+      }
+      .timeline-label {
+        font-size: 10px;
+      }
+      .log-head {
+        padding: 6px 8px;
+      }
+      #log {
+        min-height: 96px;
+        max-height: 150px;
+        padding: 8px;
+        font-size: 11px;
+      }
+    }
+    @media (max-width: 430px) {
+      main {
+        padding: 5px;
+        gap: 6px;
+      }
+      .toolbar {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 5px;
+      }
+      .toolbar button,
+      .toolbar select {
+        min-height: 25px;
+        padding: 3px 4px;
+        font-size: 10px;
+      }
+      .toolbar .check,
+      .toolbar .hint {
+        font-size: 9px;
+      }
+      .setup {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+      }
+      section {
+        padding: 4px;
+      }
+      .control-stack {
+        gap: 4px;
+        padding: 6px 4px 5px;
+      }
+      label {
+        font-size: 9px;
+      }
+      select,
+      input {
+        min-height: 23px;
+        padding: 2px 4px;
+        font-size: 10px;
+      }
+      .iv-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .iv-field:has(#p1Level),
+      .iv-field:has(#p2Level),
+      .iv-field:has(#p1Cp),
+      .iv-field:has(#p2Cp) {
+        display: none;
+      }
+      .rank-bait-row {
+        gap: 4px;
+      }
+      .rank-meter {
+        padding: 3px 4px;
+        font-size: 9px;
+      }
+      .bait-control > span,
+      .shield-mode-row > span {
+        display: none;
+      }
+      .bait-toggle button,
+      .compact-toggle button {
+        min-height: 22px;
+        padding: 2px;
+        font-size: 8px;
+      }
+      .field-box {
+        margin-top: 6px;
+        padding: 5px;
+      }
+      .battle-identity {
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 4px;
+      }
+      .battle-identity img {
+        width: 32px;
+        height: 32px;
+      }
+      .battle-identity strong {
+        font-size: 10px;
+      }
+      .battle-identity span {
+        font-size: 8px;
+      }
+      .type-badge {
+        min-height: 13px;
+        padding: 1px 4px;
+        font-size: 8px;
+      }
+      .hp {
+        height: 13px;
+      }
+      .hp-text {
+        font-size: 9px;
+      }
+      .resource-row {
+        gap: 3px;
+      }
+      .shield-row {
+        padding: 3px;
+      }
+      .shield-count-toggle {
+        grid-template-columns: repeat(3, 23px);
+      }
+      .shield-count-toggle button {
+        min-height: 22px;
+        padding: 1px;
+      }
+      .shield-count-toggle svg {
+        width: 10px;
+        height: 10px;
+      }
+      .shield-count-toggle strong {
+        font-size: 9px;
+      }
+      .energy-panel {
+        padding: 4px;
+      }
+      .energy-head {
+        font-size: 8px;
+      }
+      .energy-head strong {
+        font-size: 9px;
+        padding: 0 3px;
+      }
+      .energy-track {
+        height: 7px;
+      }
+      .stat-bars {
+        padding: 4px;
+      }
+      .stat-row {
+        grid-template-columns: 38px 29px minmax(0, 1fr);
+        gap: 2px;
+        font-size: 8px;
+      }
+      .stat-row strong {
+        font-size: 9px;
+      }
+      .stat-alert {
+        display: none;
+      }
+      .actions {
+        gap: 3px;
+      }
+      .actions button {
+        min-height: 25px;
+        padding: 3px;
+        grid-template-columns: 8px minmax(0, 1fr);
+      }
+      .move-icon {
+        width: 8px;
+        height: 8px;
+      }
+      .move-button-label strong {
+        font-size: 9px;
+      }
+      .move-button-label > span {
+        font-size: 7px;
+      }
+      .effect-chip {
+        display: none;
+      }
     }
   </style>
 </head>
