@@ -1127,8 +1127,8 @@
     }
     .timeline-grid {
       display: grid;
-      grid-template-columns: 94px minmax(0, 1fr);
-      grid-template-rows: 18px 32px 32px;
+      grid-template-columns: 104px minmax(0, 1fr);
+      grid-template-rows: 18px 38px 54px;
       gap: 0 8px;
       align-items: stretch;
     }
@@ -1140,7 +1140,10 @@
       border: 1px solid #cfd7e1;
       border-radius: 6px;
       background: #f8fafc;
-      min-height: 84px;
+      box-sizing: border-box;
+      height: 110px;
+      padding-bottom: 14px;
+      scrollbar-gutter: stable;
     }
     body[data-theme="dark"] .timeline-scroll,
     body[data-theme="dark"] .timeline-track {
@@ -1155,9 +1158,20 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      box-sizing: border-box;
+      height: 100%;
       line-height: 1.15;
-      min-height: 36px;
       padding: 3px 0;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .timeline-label span {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      max-width: 100%;
+      overflow: hidden;
       overflow-wrap: anywhere;
     }
     #p1TimelineLabel { grid-column: 1; grid-row: 2; }
@@ -1188,11 +1202,12 @@
     }
     .timeline-track {
       position: relative;
-      min-height: 32px;
+      box-sizing: border-box;
+      height: 38px;
       overflow: visible;
       border-top: 1px solid #d7dee8;
       background: #f8fafc;
-      padding: 6px 3px;
+      padding: 8px 3px;
     }
     #p1Timeline {
       background: #f4f8fb;
@@ -1202,7 +1217,7 @@
     }
     .timeline-lane {
       position: relative;
-      height: 20px;
+      height: 22px;
       min-width: 100%;
       background:
         repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
@@ -1906,7 +1921,7 @@
         gap: 5px;
       }
       .timeline-grid {
-        grid-template-columns: 64px minmax(0, 1fr);
+        grid-template-columns: 76px minmax(0, 1fr);
         gap: 0 5px;
       }
       .timeline-label {
@@ -3124,7 +3139,7 @@
       const buffText = buffMessages.length ? ` Buff: ${buffMessages.join(", ")}.` : "";
       if (shielded) {
         defender.shields--;
-        recordShield(defender, move, chargeEvent.start);
+        recordShield(defender, move, chargeEvent);
         add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}`, "shield");
       } else {
         add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}`, "charge");
@@ -3168,6 +3183,7 @@
         duration,
         energyBefore
       };
+      event.timelineIndex = timeline.length;
       event.state = battleSnapshot();
       timeline.push(event);
       if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
@@ -3175,14 +3191,16 @@
       return event;
     }
 
-    function recordShield(defender, move, start) {
+    function recordShield(defender, move, chargeEvent) {
       timeline.push({
         trainer: defender.trainer,
         move,
         kind: "shield",
         damage: 1,
         shielded: true,
-        start,
+        start: chargeEvent.start,
+        chargeEvent,
+        chargeIndex: chargeEvent.timelineIndex,
         duration: 1,
         state: battleSnapshot()
       });
@@ -3573,17 +3591,24 @@
     }
 
     function renderTimeline() {
-      if (left) $("p1TimelineLabel").textContent = `A - ${left.p.name}`;
-      if (right) $("p2TimelineLabel").textContent = `B - ${right.p.name}`;
-      const chargeStarts = timelineChargeStarts();
+      if (left) {
+        $("p1TimelineLabel").innerHTML = `<span>${escapeHtml(`A - ${left.p.name}`)}</span>`;
+        $("p1TimelineLabel").title = left.p.name;
+      }
+      if (right) {
+        $("p2TimelineLabel").innerHTML = `<span>${escapeHtml(`B - ${right.p.name}`)}</span>`;
+        $("p2TimelineLabel").title = right.p.name;
+      }
+      const chargeSlots = timelineChargeSlots();
+      const chargeStarts = uniqueChargeStarts(chargeSlots);
       const rawMaxTurn = Math.max(20, ...timeline.map(event => event.start + event.duration + 1));
-      const maxTurn = rawMaxTurn + chargeStarts.length * chargePauseTurns;
+      const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns;
       const scroll = $("timelineScroll");
       const turnPx = timelineTurnPixels(maxTurn, scroll);
       const keepAtEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 4;
       renderTimelineRuler(maxTurn, turnPx);
-      renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeStarts);
-      renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeStarts);
+      renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
+      renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
     }
 
@@ -3594,13 +3619,19 @@
       return Math.max(10, Math.min(24, Math.floor(available / Math.max(1, maxTurn))));
     }
 
-    function timelineChargeStarts() {
-      return [...new Set(timeline.filter(event => event.kind === "charge").map(event => event.start))]
-        .sort((a, b) => a - b);
+    function timelineChargeSlots() {
+      return timeline
+        .map((event, index) => ({ event, index }))
+        .filter(item => item.event.kind === "charge")
+        .sort((a, b) => a.event.start - b.event.start || a.index - b.index);
     }
 
-    function visualTurn(turn, chargeStarts, includeCurrentCharge) {
-      const pauses = chargeStarts.filter(start => includeCurrentCharge ? start <= turn : start < turn).length;
+    function uniqueChargeStarts(chargeSlots) {
+      return [...new Set(chargeSlots.map(item => item.event.start))].sort((a, b) => a - b);
+    }
+
+    function visualTurn(turn, chargeSlots, includeCurrentCharge) {
+      const pauses = chargeSlots.filter(item => includeCurrentCharge ? item.event.start <= turn : item.event.start < turn).length;
       return turn + pauses * chargePauseTurns;
     }
 
@@ -3617,7 +3648,12 @@
         `</div>`;
     }
 
-    function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeStarts) {
+    function chargeVisualTurn(event, index, chargeSlots) {
+      const pauses = chargeSlots.filter(item => item.event.start < event.start || (item.event.start === event.start && item.index < index)).length;
+      return event.start + pauses * chargePauseTurns;
+    }
+
+    function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeSlots, chargeStarts) {
       const row = $(id);
       const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer);
       row.style.setProperty("--turn-px", `${turnPx}px`);
@@ -3627,13 +3663,17 @@
         return;
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
-        if (event.kind === "fast") return renderFastTimelineEvent(event, chargeStarts, turnPx, index);
+        if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
         const isShield = event.kind === "shield";
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
         const width = isCharge ? Math.max(34, Math.min(46, turnPx + 18)) : Math.max(24, Math.min(32, turnPx + 10));
-        const baseTurn = visualTurn(event.start, chargeStarts, false);
+        const baseTurn = isCharge
+          ? chargeVisualTurn(event, index, chargeSlots)
+          : event.chargeEvent
+            ? chargeVisualTurn(event.chargeEvent, event.chargeIndex, chargeSlots)
+            : visualTurn(event.start, chargeSlots, false);
         const center = (baseTurn + chargeWindowTurns) * turnPx;
         const left = Math.max(2, center - width / 2);
         const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
@@ -3649,7 +3689,7 @@
       }).join("") + `</div>`;
     }
 
-    function renderFastTimelineEvent(event, chargeStarts, turnPx, eventIndex) {
+    function renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, eventIndex) {
       const color = typeColors[event.move.type] || "#156f8f";
       const textColor = contrastText(color);
       const borderColor = darken(color, .18);
@@ -3661,8 +3701,8 @@
         if (end <= start) return "";
         const isSneak = chargeStarts.includes(start);
         const visualStart = isSneak
-          ? visualTurn(start, chargeStarts, false) + .42
-          : visualTurn(start, chargeStarts, true);
+          ? visualTurn(start, chargeSlots, false) + .42
+          : visualTurn(start, chargeSlots, true);
         const width = Math.max(10, (end - start) * turnPx - 4);
         const left = visualStart * turnPx + 2;
         const isContinuation = points.length > 2 && index > 0;
