@@ -48,7 +48,7 @@
     }
     header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       gap: 16px;
       padding: 14px 18px;
@@ -57,17 +57,33 @@
       border-bottom: 2px solid #d6ad39;
     }
     h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
-    .source { color: #cfd8df; font-size: 13px; text-align: right; }
     main { padding: 16px; display: grid; gap: 14px; }
     .toolbar, .setup { display: grid; gap: 12px; }
     .toolbar {
-      grid-template-columns: repeat(7, max-content) 1fr;
+      grid-template-columns: auto minmax(280px, auto) minmax(0, 1fr) auto;
       align-items: center;
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
       border-radius: 8px;
       box-shadow: none;
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .toolbar-actions {
+      padding-right: 10px;
+      border-right: 1px solid var(--line);
+    }
+    .toolbar-preset {
+      justify-content: center;
+    }
+    .toolbar-filters {
+      justify-content: flex-end;
+      gap: 12px;
     }
     .toolbar select {
       width: auto;
@@ -78,8 +94,8 @@
       max-width: 240px;
     }
     .setup {
-      grid-template-columns: repeat(2, 480px);
-      column-gap: 24px;
+      grid-template-columns: repeat(2, 360px);
+      column-gap: 100px;
       align-items: start;
       justify-content: center;
     }
@@ -87,7 +103,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
-      max-width: 480px;
+      max-width: 360px;
       border-radius: 8px;
       box-shadow: none;
       position: relative;
@@ -105,11 +121,40 @@
     h2 { margin: 0 0 12px; font-size: 16px; font-weight: 650; }
     .control-stack {
       display: grid;
-      gap: 7px;
-      padding: 12px 8px 8px;
+      gap: 5px;
+      padding: 11px 7px 7px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--soft);
+    }
+    .section-kicker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+    .section-kicker::after {
+      content: "";
+      height: 1px;
+      flex: 1 1 auto;
+      background: var(--line);
+    }
+    .setup-kicker {
+      margin-bottom: 2px;
+    }
+    .meta-ai-row {
+      display: grid;
+      grid-template-columns: 122px minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      margin-top: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
     body[data-theme="dark"] .control-stack,
     body[data-theme="dark"] .field-box,
@@ -120,7 +165,8 @@
     body[data-theme="dark"] .shield-row,
     body[data-theme="dark"] .shield-count-toggle,
     body[data-theme="dark"] .bait-toggle,
-    body[data-theme="dark"] .compact-toggle {
+    body[data-theme="dark"] .compact-toggle,
+    body[data-theme="dark"] .iv-details {
       background: var(--soft);
     }
     label {
@@ -185,7 +231,7 @@
     }
     select, input {
       width: 100%;
-      max-width: 286px;
+      max-width: 250px;
       min-height: 30px;
       border: 1px solid #bac5d1;
       background: white;
@@ -204,6 +250,7 @@
     }
     select:focus-visible,
     input:focus-visible,
+    .iv-details summary:focus-visible,
     button:focus-visible {
       outline: 3px solid rgba(21, 111, 143, .24);
       outline-offset: 2px;
@@ -215,15 +262,82 @@
       color: var(--ink);
       border-color: #3a4a5d;
     }
-    .search-input, .pokemon-select, .move-select { max-width: 286px; }
+    .search-input, .pokemon-select, .move-select { max-width: 250px; }
     .short-input { max-width: 86px; }
     input[type="checkbox"] { width: auto; min-height: auto; }
+    .iv-details {
+      display: grid;
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      border: 1px solid rgba(186, 197, 209, .82);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .52);
+      overflow: hidden;
+    }
+    .iv-details summary {
+      min-height: 28px;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .iv-details summary::-webkit-details-marker {
+      display: none;
+    }
+    .iv-details summary::after {
+      content: "v";
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+      transition: transform .16s ease;
+    }
+    .iv-details[open] summary::after {
+      transform: rotate(180deg);
+    }
+    .iv-details summary:hover {
+      background: rgba(21, 111, 143, .06);
+    }
+    .advanced-panel {
+      margin: 8px 0;
+      max-width: 298px;
+    }
+    .advanced-body {
+      display: grid;
+      gap: 6px;
+      padding: 0 7px 7px;
+    }
+    .advanced-body .iv-row {
+      padding: 0;
+    }
+    .advanced-body .meta-ai-row,
+    .advanced-body .stat-bars {
+      max-width: 270px;
+    }
+    .advanced-body .overall {
+      max-width: 270px;
+    }
+    .advanced-body .meta-ai-row,
+    .advanced-body .stat-bars {
+      margin: 0;
+    }
+    .advanced-body .overall {
+      margin: 0 0 0 6px;
+    }
     .iv-row {
       display: grid;
-      grid-template-columns: repeat(5, 54px);
-      gap: 4px;
+      grid-template-columns: repeat(5, 48px);
+      gap: 3px;
       max-width: none;
       align-items: end;
+      padding: 0 8px 8px;
     }
     .iv-field {
       display: grid;
@@ -235,7 +349,7 @@
     }
     .iv-field input {
       text-align: center;
-      max-width: 54px;
+      max-width: 48px;
       padding-left: 4px;
       padding-right: 4px;
     }
@@ -244,20 +358,31 @@
     }
     .iv-row input::placeholder { color: #6f7c8c; }
     .rank-meter {
-      width: 138px;
+      width: 122px;
       max-width: 100%;
       margin: 0;
-      padding: 5px 8px;
+      padding: 5px 7px;
       border: 1px solid var(--line);
       border-radius: 999px;
       background: linear-gradient(90deg, #1fb878, #d6ad39, #d94c4c);
       color: white;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
+      line-height: 1.1;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
       text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
     }
     .rank-bait-row {
+      display: contents;
+    }
+    .rank-bait-row .bait-control {
+      justify-self: start;
+    }
+    .legacy-rank-bait-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -268,7 +393,7 @@
     .bait-control {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
@@ -282,8 +407,8 @@
       background: var(--panel);
     }
     .bait-toggle button {
-      min-height: 28px;
-      padding: 4px 8px;
+      min-height: 26px;
+      padding: 3px 4px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -333,20 +458,37 @@
     .shield-mode-row {
       display: flex;
       align-items: center;
+      justify-content: flex-start;
       gap: 7px;
-      margin-top: 6px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+      min-width: 0;
+    }
+    .shield-resource-row {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+    }
+    .shields-kicker {
+      margin: 2px 0 0;
+      font-size: 10px;
+    }
+    .shield-mode-row .shield-mode-toggle {
+      flex: 0 0 auto;
     }
     .field-box {
-      margin-top: 12px;
+      margin-top: 9px;
       background: var(--soft);
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px;
       position: relative;
       transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .battle-kicker {
+      margin-bottom: 8px;
     }
     .trainer-card.timeline-focus .field-box {
       transform: translateY(-1px);
@@ -404,7 +546,7 @@
       font-size: 13px;
     }
     .hp {
-      max-width: 348px;
+      max-width: 298px;
       height: 18px;
       background: #dfe5ec;
       border: 1px solid #c7d0da;
@@ -442,27 +584,26 @@
       pointer-events: none;
     }
     .resource-row {
-      display: flex;
-      align-items: stretch;
-      gap: 8px;
+      display: grid;
+      gap: 5px;
       margin: 8px 0;
-      max-width: 348px;
+      max-width: 298px;
     }
     .stat-bars {
       display: grid;
-      gap: 5px;
-      margin: 10px 0 6px;
-      max-width: 305px;
-      padding: 8px;
+      gap: 4px;
+      margin: 8px 0 5px;
+      max-width: 270px;
+      padding: 6px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.66);
     }
     .stat-row {
       display: grid;
-      grid-template-columns: 58px 42px minmax(0, 1fr) 70px;
+      grid-template-columns: 46px 38px minmax(46px, 1fr) 52px;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
       font-size: 12px;
       color: var(--muted);
     }
@@ -485,7 +626,7 @@
     }
     .stat-alert {
       min-height: 18px;
-      padding: 2px 6px;
+      padding: 2px 4px;
       border-radius: 4px;
       background: #fff4e0;
       color: #845a11;
@@ -514,12 +655,13 @@
     .shield-row {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 6px 8px;
+      justify-content: space-between;
+      gap: 5px;
+      padding: 4px 5px;
       border: 1px solid var(--line);
-      border-radius: 999px;
+      border-radius: 8px;
       background: var(--panel);
-      flex: 0 0 auto;
+      min-width: 0;
     }
     .shield-row label {
       display: none;
@@ -545,7 +687,7 @@
     }
     .shield-count-toggle {
       display: inline-grid;
-      grid-template-columns: repeat(3, 36px);
+      grid-template-columns: repeat(3, 34px);
       border: 1px solid #c8d0da;
       border-radius: 999px;
       overflow: hidden;
@@ -553,7 +695,7 @@
     }
     .shield-count-toggle button {
       min-height: 28px;
-      padding: 3px 6px;
+      padding: 2px 4px;
       border: 0;
       border-radius: 0;
       color: var(--ink);
@@ -585,9 +727,9 @@
       color: white;
     }
     .energy-panel {
-      flex: 1 1 180px;
-      min-width: 132px;
-      padding: 7px 10px 8px;
+      width: 100%;
+      min-width: 0;
+      padding: 6px 8px 7px;
       border: 1px solid #d7c06b;
       border-radius: 8px;
       background: #fff9de;
@@ -647,22 +789,66 @@
       background: #4a4224;
       border-color: #6e612b;
     }
-    .actions {
+    .manual-panel {
+      width: 100%;
+      max-width: none;
+      justify-self: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: none;
+      overflow: hidden;
+    }
+    .manual-head {
+      min-height: 40px;
+      padding: 8px 10px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .manual-head h2 {
+      margin: 0;
+      font-size: 15px;
+    }
+    .manual-head span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: auto;
+    }
+    .manual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 10px 10px;
+      border-top: 1px solid var(--line);
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
       margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #e7ecf2;
+    }
+    .actions::before {
+      content: attr(data-label);
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
     }
     .actions button {
-      min-width: 108px;
+      width: 100%;
+      min-width: 0;
+      min-height: 34px;
+      padding: 4px 5px;
       border-color: rgba(0, 0, 0, .18);
       text-shadow: none;
       display: inline-grid;
-      grid-template-columns: 14px 1fr;
+      grid-template-columns: 12px minmax(0, 1fr);
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
     }
     .actions button:hover {
@@ -678,23 +864,38 @@
       gap: 1px;
       text-align: left;
       line-height: 1.05;
+      min-width: 0;
     }
-    .move-button-label strong { font-size: 13px; }
+    .move-button-label strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
+    }
     .move-button-label > span {
-      display: inline-flex;
+      display: grid;
+      grid-template-columns: minmax(0, max-content) auto;
       align-items: center;
-      gap: 4px;
-      flex-wrap: wrap;
-      font-size: 10px;
+      justify-content: start;
+      gap: 3px;
+      min-width: 0;
+      font-size: 8px;
       opacity: .95;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .move-kind {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .effect-chip {
       display: inline-flex;
       align-items: center;
-      min-height: 18px;
-      padding: 1px 6px;
+      min-height: 14px;
+      padding: 0 4px;
       border-radius: 999px;
-      font-size: 10px;
+      font-size: 8px;
       font-weight: 850;
       border: 1px solid transparent;
       white-space: nowrap;
@@ -702,82 +903,8 @@
     .effect-chip.super { color: #12683f; background: #e4f7ee; border-color: #a9dfc5; }
     .effect-chip.resisted { color: #8b2d2d; background: #fde9e9; border-color: #efb7b7; }
     .effect-chip.neutral { color: #526171; background: #edf2f7; border-color: #d5dde7; }
-    .battle-summary {
-      width: min(100%, 1100px);
-      max-width: calc(100vw - 32px);
-      justify-self: center;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-      gap: 16px;
-      align-items: center;
-      background:
-        var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px 16px;
-      box-shadow: none;
-    }
-    .summary-side {
-      display: grid;
-      grid-template-columns: 52px minmax(0, 1fr);
-      gap: 10px;
-      align-items: center;
-      min-width: 0;
-    }
-    .summary-side.b { grid-template-columns: minmax(0, 1fr) 52px; text-align: right; }
-    .summary-side img {
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-    }
-    .summary-name {
-      display: block;
-      color: var(--ink);
-      font-size: 16px;
-      font-weight: 850;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .summary-meta {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .summary-side.b .summary-meta { justify-content: flex-end; }
-    .summary-vs {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 46px;
-      min-height: 34px;
-      border-radius: 999px;
-      background: var(--soft);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 900;
-    }
-    .summary-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      min-height: 24px;
-      padding: 3px 9px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--soft);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .summary-pill strong { color: var(--ink); }
     .key-numbers {
-      width: min(100%, 1100px);
+      width: min(100%, 820px);
       max-width: calc(100vw - 32px);
       justify-self: center;
       display: grid;
@@ -798,24 +925,145 @@
       color: var(--muted);
       font-size: 12px;
     }
+    .key-card.wide {
+      grid-column: span 2;
+    }
     .key-card strong {
       display: block;
-      margin-top: 3px;
+      margin-top: 5px;
       color: var(--ink);
-      font-size: 14px;
-      white-space: nowrap;
+      font-size: 12px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      line-height: 1.25;
+    }
+    .key-rows {
+      display: grid;
+      gap: 4px;
+    }
+    .key-row {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      align-items: start;
+      gap: 6px;
+      padding-top: 3px;
+      border-top: 1px solid rgba(215, 221, 230, .72);
+      min-width: 0;
+    }
+    .key-row:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+    .key-tag {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .72);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .key-tag img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    .key-text {
+      min-width: 0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+    .key-entry-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .key-entry {
+      display: grid;
+      grid-template-columns: 10px minmax(0, 1fr);
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      padding: 3px 4px;
+      border: 1px solid rgba(215, 221, 230, .72);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, .48);
+    }
+    .key-entry-grid.single {
+      grid-template-columns: 1fr;
+    }
+    .key-type-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.18);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+    }
+    .key-move-name {
+      display: block;
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 750;
+    }
+    .key-damage {
+      display: block;
+      font-weight: 900;
+      white-space: nowrap;
+      grid-column: 2;
+    }
+    .key-cmp {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .key-cmp img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
     .timeline {
       background: var(--panel);
       border: 1px solid var(--line);
-      padding: 12px;
-      width: min(100%, 1100px);
+      padding: 10px;
+      width: 100%;
       justify-self: center;
       border-radius: 8px;
       box-shadow: none;
-      max-width: calc(100vw - 32px);
+      max-width: none;
+    }
+    .battle-cta-row {
+      width: min(100%, 820px);
+      justify-self: center;
+      display: flex;
+      justify-content: center;
+      margin-top: -4px;
+    }
+    .battle-cta {
+      min-width: 178px;
+      min-height: 40px;
+      padding: 8px 24px;
+      border-radius: 999px;
+      border-color: #0f526b;
+      background: #156f8f;
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: 0;
+      box-shadow: 0 4px 10px rgba(23, 33, 47, .14);
+    }
+    .battle-cta:hover {
+      background: #0f526b;
+      box-shadow: 0 6px 14px rgba(23, 33, 47, .18);
     }
     .timeline-head {
       display: flex;
@@ -838,8 +1086,9 @@
       gap: 8px;
       flex-wrap: wrap;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 750;
+      opacity: .86;
     }
     .timeline-legend span {
       display: inline-flex;
@@ -878,8 +1127,8 @@
     }
     .timeline-grid {
       display: grid;
-      grid-template-columns: 112px minmax(0, 1fr);
-      grid-template-rows: 20px 36px 36px;
+      grid-template-columns: 94px minmax(0, 1fr);
+      grid-template-rows: 18px 32px 32px;
       gap: 0 8px;
       align-items: stretch;
     }
@@ -891,7 +1140,7 @@
       border: 1px solid #cfd7e1;
       border-radius: 6px;
       background: #f8fafc;
-      min-height: 92px;
+      min-height: 84px;
     }
     body[data-theme="dark"] .timeline-scroll,
     body[data-theme="dark"] .timeline-track {
@@ -915,7 +1164,7 @@
     #p2TimelineLabel { grid-column: 1; grid-row: 3; }
     .timeline-ruler {
       position: relative;
-      height: 20px;
+      height: 18px;
       overflow: visible;
       background:
         repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
@@ -939,7 +1188,7 @@
     }
     .timeline-track {
       position: relative;
-      min-height: 36px;
+      min-height: 32px;
       overflow: visible;
       border-top: 1px solid #d7dee8;
       background: #f8fafc;
@@ -953,22 +1202,22 @@
     }
     .timeline-lane {
       position: relative;
-      height: 24px;
+      height: 20px;
       min-width: 100%;
       background:
         repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
         transparent;
     }
     .timeline-ruler .timeline-lane {
-      height: 20px;
+      height: 18px;
       background:
         repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
         var(--ruler);
     }
     .timeline-block {
       position: absolute;
-      top: 3px;
-      height: 18px;
+      top: 2px;
+      height: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1147,14 +1396,45 @@
       padding: 5px 8px;
     }
     .log-panel {
-      width: min(100%, 1100px);
-      max-width: calc(100vw - 32px);
+      width: 100%;
+      max-width: none;
       justify-self: center;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
       box-shadow: none;
       overflow: hidden;
+    }
+    .analysis-grid {
+      width: min(100%, 820px);
+      max-width: calc(100vw - 32px);
+      justify-self: center;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .log-panel summary.log-head {
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .log-panel summary.log-head::-webkit-details-marker {
+      display: none;
+    }
+    .log-panel summary.log-head::after {
+      content: "v";
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      transition: transform .16s ease;
+    }
+    .log-panel[open] summary.log-head::after {
+      transform: rotate(180deg);
+    }
+    .log-panel:not([open]) summary.log-head {
+      border-bottom: 0;
     }
     .log-head {
       display: flex;
@@ -1182,8 +1462,8 @@
     }
     #log {
       width: 100%;
-      min-height: 110px;
-      max-height: 180px;
+      min-height: 106px;
+      max-height: 146px;
       border: 0;
       background: var(--panel);
       color: var(--ink);
@@ -1287,10 +1567,6 @@
         padding: 8px 10px;
       }
       h1 { font-size: 16px; }
-      .source {
-        text-align: left;
-        font-size: 11px;
-      }
       main {
         padding: 8px;
         gap: 8px;
@@ -1299,6 +1575,13 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
         padding: 6px;
+      }
+      .toolbar-group {
+        display: contents;
+      }
+      .toolbar-actions {
+        padding-right: 0;
+        border-right: 0;
       }
       .toolbar button,
       .toolbar select {
@@ -1350,6 +1633,22 @@
       .iv-row {
         grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 2px;
+        padding: 0 5px 6px;
+      }
+      .iv-details summary {
+        min-height: 24px;
+        padding: 4px 6px;
+        font-size: 10px;
+      }
+      .advanced-panel {
+        margin: 6px 0;
+      }
+      .advanced-body {
+        gap: 5px;
+        padding: 0 5px 6px;
+      }
+      .advanced-body .iv-row {
+        padding: 0;
       }
       .iv-field {
         font-size: 9px;
@@ -1364,6 +1663,15 @@
         display: grid;
         grid-template-columns: 1fr;
         gap: 5px;
+      }
+      .meta-ai-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        margin-top: 6px;
+        padding: 5px;
+      }
+      .section-kicker {
+        font-size: 9px;
       }
       .rank-meter {
         width: 100%;
@@ -1432,6 +1740,16 @@
         gap: 5px;
         margin: 6px 0;
       }
+      .shield-resource-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .shield-mode-toggle {
+        justify-self: stretch;
+      }
+      .shield-mode-row .shield-mode-toggle {
+        flex: 1 1 auto;
+      }
       .shield-row {
         padding: 4px 5px;
       }
@@ -1494,12 +1812,20 @@
         font-size: 11px;
       }
       .actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 4px;
         margin-top: 7px;
         padding-top: 7px;
       }
+      .manual-grid {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 0 8px 8px;
+      }
+      .manual-head span {
+        display: none;
+      }
       .actions button {
-        flex: 1 1 48%;
         min-width: 0;
         min-height: 28px;
         padding: 4px;
@@ -1522,44 +1848,34 @@
         padding: 0 3px;
         font-size: 8px;
       }
-      .battle-summary,
       .key-numbers,
       .timeline,
-      .log-panel {
+      .log-panel,
+      .analysis-grid {
         width: 100%;
         max-width: none;
       }
-      .battle-summary {
+      .analysis-grid {
+        grid-template-columns: 1fr;
         gap: 8px;
-        padding: 8px;
       }
-      .summary-side {
-        grid-template-columns: 38px minmax(0, 1fr);
-        gap: 6px;
+      .battle-cta-row {
+        width: 100%;
+        margin-top: -2px;
       }
-      .summary-side.b {
-        grid-template-columns: minmax(0, 1fr) 38px;
-      }
-      .summary-side img {
-        width: 38px;
-        height: 38px;
-      }
-      .summary-name {
-        font-size: 12px;
-      }
-      .summary-meta {
-        gap: 4px;
-        font-size: 9px;
-      }
-      .summary-vs {
-        min-width: 34px;
-        min-height: 28px;
-        font-size: 11px;
+      .battle-cta {
+        min-width: 140px;
+        min-height: 34px;
+        padding: 6px 18px;
+        font-size: 13px;
       }
       .key-numbers {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 5px;
         padding: 6px;
+      }
+      .key-card.wide {
+        grid-column: span 2;
       }
       .key-card {
         padding: 6px;
@@ -1567,6 +1883,9 @@
       }
       .key-card strong {
         font-size: 11px;
+      }
+      .key-entry-grid {
+        grid-template-columns: 1fr;
       }
       .timeline {
         padding: 8px;
@@ -1645,6 +1964,19 @@
       }
       .iv-row {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 0 4px 5px;
+      }
+      .iv-details summary {
+        min-height: 22px;
+        padding: 3px 5px;
+        font-size: 9px;
+      }
+      .advanced-body {
+        gap: 4px;
+        padding: 0 4px 5px;
+      }
+      .advanced-body .iv-row {
+        padding: 0;
       }
       .iv-field:has(#p1Level),
       .iv-field:has(#p2Level),
@@ -1701,6 +2033,9 @@
       .resource-row {
         gap: 3px;
       }
+      .shield-resource-row {
+        gap: 3px;
+      }
       .shield-row {
         padding: 3px;
       }
@@ -1746,7 +2081,12 @@
         display: none;
       }
       .actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 3px;
+      }
+      .manual-grid {
+        gap: 5px;
+        padding: 0 6px 6px;
       }
       .actions button {
         min-height: 25px;
@@ -1766,233 +2106,248 @@
       .effect-chip {
         display: none;
       }
+      .battle-cta {
+        min-width: 112px;
+        min-height: 30px;
+        padding: 5px 14px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
-    <div class="source" id="source">Loading PvPoke data...</div>
   </header>
   <main>
     <div class="error" id="error"></div>
     <div class="toolbar">
-      <button id="start">Start Battle</button>
-      <button id="auto">Auto 20 Turns</button>
-      <button id="reset" class="secondary">Reset</button>
-      <button id="themeToggle" class="secondary">Dark</button>
-      <select id="presetMatchup" class="preset-select" title="Quick matchup">
-        <option value="">Quick matchup...</option>
-        <option value="swampert|skarmory">Swampert vs Skarmory</option>
-        <option value="forretress_shadow|machoke_shadow">Shadow Forretress vs Shadow Machoke</option>
-        <option value="sableye_shadow|swampert">Shadow Sableye vs Swampert</option>
-        <option value="sandslash_alolan_shadow|swampert">Shadow Alolan Sandslash vs Swampert</option>
-      </select>
-      <button id="loadPreset" class="secondary">Load</button>
-      <label class="check"><input id="releasedOnly" type="checkbox" checked> Released only</label>
-      <label class="check"><input id="showForms" type="checkbox"> Show duplicate forms</label>
+      <div class="toolbar-group toolbar-actions">
+        <button id="reset" class="secondary">Reset</button>
+        <button id="themeToggle" class="secondary">Dark</button>
+      </div>
+      <div class="toolbar-group toolbar-preset">
+        <select id="presetMatchup" class="preset-select" title="Quick matchup">
+          <option value="">Quick matchup...</option>
+          <option value="swampert|skarmory">Swampert vs Skarmory</option>
+          <option value="forretress_shadow|machoke_shadow">Shadow Forretress vs Shadow Machoke</option>
+          <option value="sableye_shadow|swampert">Shadow Sableye vs Swampert</option>
+          <option value="sandslash_alolan_shadow|swampert">Shadow Alolan Sandslash vs Swampert</option>
+        </select>
+        <button id="loadPreset" class="secondary">Load</button>
+      </div>
+      <div class="toolbar-group toolbar-filters">
+        <label class="check"><input id="releasedOnly" type="checkbox" checked> Released only</label>
+        <label class="check"><input id="showForms" type="checkbox"> Show duplicate forms</label>
+      </div>
       <span class="hint" id="counts"></span>
     </div>
 
     <div class="setup">
       <section class="trainer-card a">
         <div class="control-stack">
+          <div class="section-kicker setup-kicker">Setup</div>
           <label>Search <input id="p1Search" class="search-input" placeholder="e.g. Swampert"></label>
           <label>Pokemon <select id="p1Pokemon" class="pokemon-select"></select></label>
           <label>Fast <select id="p1Fast" class="move-select"></select></label>
           <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
           <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
-          <label>IV
-            <span class="iv-row">
-              <span class="iv-field"><input id="p1Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
-              <span class="iv-field"><input id="p1IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
-              <span class="iv-field"><input id="p1IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
-              <span class="iv-field"><input id="p1IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
-              <span class="iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
-            </span>
-          </label>
-          <div class="rank-bait-row">
-            <div id="p1RankMeter" class="rank-meter">Rank - / 4096</div>
-            <input id="p1Baiting" type="hidden" value="selective">
-            <div class="bait-control">
-              <span>Baiting</span>
-              <div class="bait-toggle" data-prefix="p1" title="Baiting">
-                <button type="button" data-bait="off">Off</button>
-                <button type="button" data-bait="selective" class="active">Selective</button>
-                <button type="button" data-bait="on">On</button>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="field-box">
+          <div class="section-kicker battle-kicker">Battle state</div>
           <div class="battle-identity">
             <img id="p1BattleImg" alt="">
             <div><strong id="p1BattleName"></strong><span id="p1BattleMeta"></span><div id="p1Types" class="type-badges"></div></div>
           </div>
-          <div id="p1StatBars" class="stat-bars"></div>
-          <div id="p1Overall" class="overall"></div>
+          <details class="iv-details advanced-panel">
+            <summary>Advanced</summary>
+            <div class="advanced-body">
+              <span class="iv-row">
+                <span class="iv-field"><input id="p1Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
+                <span class="iv-field"><input id="p1IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
+                <span class="iv-field"><input id="p1IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
+                <span class="iv-field"><input id="p1IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
+                <span class="iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+              </span>
+              <div class="meta-ai-row">
+                <div class="rank-bait-row">
+                  <div id="p1RankMeter" class="rank-meter">Rank -/4096</div>
+                  <input id="p1Baiting" type="hidden" value="selective">
+                  <div class="bait-control">
+                    <span>Baiting</span>
+                    <div class="bait-toggle" data-prefix="p1" title="Baiting">
+                      <button type="button" data-bait="off">Off</button>
+                      <button type="button" data-bait="selective" class="active">Selective</button>
+                      <button type="button" data-bait="on">On</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="p1StatBars" class="stat-bars"></div>
+              <div id="p1Overall" class="overall"></div>
+            </div>
+          </details>
           <div class="hp"><div id="p1Hp"></div><span id="p1HpText" class="hp-text"></span></div>
           <div class="resource-row">
-            <div class="shield-row">
-              <input id="p1Shields" type="hidden" value="1">
-              <div id="p1ShieldVisual" class="shield-count-toggle" data-prefix="p1"></div>
-            </div>
             <div id="p1EnergyPanel" class="energy-panel"></div>
-          </div>
-          <div class="shield-mode-row">
-            <span>Shield logic</span>
-            <input id="p1ShieldMode" type="hidden" value="always">
-            <div class="compact-toggle shield-mode-toggle" data-prefix="p1">
-              <button type="button" data-shield-mode="always" class="active">Always</button>
-              <button type="button" data-shield-mode="nuke">Nuke</button>
-              <button type="button" data-shield-mode="no-first">No First</button>
+            <div class="section-kicker shields-kicker">Shields</div>
+            <div class="shield-resource-row">
+              <div class="shield-row">
+                <input id="p1Shields" type="hidden" value="1">
+                <div id="p1ShieldVisual" class="shield-count-toggle" data-prefix="p1"></div>
+              </div>
+              <div class="shield-mode-row">
+                <input id="p1ShieldMode" type="hidden" value="always">
+                <div class="compact-toggle shield-mode-toggle" data-prefix="p1">
+                  <button type="button" data-shield-mode="always" class="active">Always</button>
+                  <button type="button" data-shield-mode="nuke">Nuke</button>
+                  <button type="button" data-shield-mode="no-first">No First</button>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="actions">
-            <button id="p1UseFast">Fast</button>
-            <button id="p1UseCharge1">Charged 1</button>
-            <button id="p1UseCharge2">Charged 2</button>
           </div>
         </div>
       </section>
       <section class="trainer-card b">
         <div class="control-stack">
+          <div class="section-kicker setup-kicker">Setup</div>
           <label>Search <input id="p2Search" class="search-input" placeholder="e.g. Skarmory"></label>
           <label>Pokemon <select id="p2Pokemon" class="pokemon-select"></select></label>
           <label>Fast <select id="p2Fast" class="move-select"></select></label>
           <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
           <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
-          <label>IV
-            <span class="iv-row">
-              <span class="iv-field"><input id="p2Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
-              <span class="iv-field"><input id="p2IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
-              <span class="iv-field"><input id="p2IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
-              <span class="iv-field"><input id="p2IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
-              <span class="iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
-            </span>
-          </label>
-          <div class="rank-bait-row">
-            <div id="p2RankMeter" class="rank-meter">Rank - / 4096</div>
-            <input id="p2Baiting" type="hidden" value="selective">
-            <div class="bait-control">
-              <span>Baiting</span>
-              <div class="bait-toggle" data-prefix="p2" title="Baiting">
-                <button type="button" data-bait="off">Off</button>
-                <button type="button" data-bait="selective" class="active">Selective</button>
-                <button type="button" data-bait="on">On</button>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="field-box">
+          <div class="section-kicker battle-kicker">Battle state</div>
           <div class="battle-identity">
             <img id="p2BattleImg" alt="">
             <div><strong id="p2BattleName"></strong><span id="p2BattleMeta"></span><div id="p2Types" class="type-badges"></div></div>
           </div>
-          <div id="p2StatBars" class="stat-bars"></div>
-          <div id="p2Overall" class="overall"></div>
+          <details class="iv-details advanced-panel">
+            <summary>Advanced</summary>
+            <div class="advanced-body">
+              <span class="iv-row">
+                <span class="iv-field"><input id="p2Level" class="short-input" type="text" readonly title="Calculated level" placeholder="Lv"><span>Level</span></span>
+                <span class="iv-field"><input id="p2IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
+                <span class="iv-field"><input id="p2IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
+                <span class="iv-field"><input id="p2IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
+                <span class="iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+              </span>
+              <div class="meta-ai-row">
+                <div class="rank-bait-row">
+                  <div id="p2RankMeter" class="rank-meter">Rank -/4096</div>
+                  <input id="p2Baiting" type="hidden" value="selective">
+                  <div class="bait-control">
+                    <span>Baiting</span>
+                    <div class="bait-toggle" data-prefix="p2" title="Baiting">
+                      <button type="button" data-bait="off">Off</button>
+                      <button type="button" data-bait="selective" class="active">Selective</button>
+                      <button type="button" data-bait="on">On</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="p2StatBars" class="stat-bars"></div>
+              <div id="p2Overall" class="overall"></div>
+            </div>
+          </details>
           <div class="hp"><div id="p2Hp"></div><span id="p2HpText" class="hp-text"></span></div>
           <div class="resource-row">
-            <div class="shield-row">
-              <input id="p2Shields" type="hidden" value="1">
-              <div id="p2ShieldVisual" class="shield-count-toggle" data-prefix="p2"></div>
-            </div>
             <div id="p2EnergyPanel" class="energy-panel"></div>
-          </div>
-          <div class="shield-mode-row">
-            <span>Shield logic</span>
-            <input id="p2ShieldMode" type="hidden" value="always">
-            <div class="compact-toggle shield-mode-toggle" data-prefix="p2">
-              <button type="button" data-shield-mode="always" class="active">Always</button>
-              <button type="button" data-shield-mode="nuke">Nuke</button>
-              <button type="button" data-shield-mode="no-first">No First</button>
+            <div class="section-kicker shields-kicker">Shields</div>
+            <div class="shield-resource-row">
+              <div class="shield-row">
+                <input id="p2Shields" type="hidden" value="1">
+                <div id="p2ShieldVisual" class="shield-count-toggle" data-prefix="p2"></div>
+              </div>
+              <div class="shield-mode-row">
+                <input id="p2ShieldMode" type="hidden" value="always">
+                <div class="compact-toggle shield-mode-toggle" data-prefix="p2">
+                  <button type="button" data-shield-mode="always" class="active">Always</button>
+                  <button type="button" data-shield-mode="nuke">Nuke</button>
+                  <button type="button" data-shield-mode="no-first">No First</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="actions">
+        </div>
+      </section>
+    </div>
+
+    <div class="battle-cta-row">
+      <button id="battleCta" class="battle-cta">Battle</button>
+    </div>
+
+    <section class="key-numbers" id="keyNumbers">
+      <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
+      <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
+      <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
+    </section>
+
+    <div class="analysis-grid">
+      <section class="timeline">
+        <div class="timeline-head">
+          <h2>Turn Timeline</h2>
+          <div class="timeline-tools">
+            <span class="timeline-legend">
+              <span><i class="legend-fast"></i>Fast</span>
+              <span><i class="legend-charge"></i>Charged</span>
+              <span><i class="legend-shield"></i>Shield</span>
+            </span>
+            <select id="timelineZoom" title="Timeline zoom">
+              <option value="14">Compact</option>
+              <option value="fit" selected>Fit</option>
+              <option value="24">Close</option>
+              <option value="32">Detailed</option>
+            </select>
+          </div>
+        </div>
+        <div class="timeline-grid">
+          <div class="timeline-label" id="p1TimelineLabel">A</div>
+          <div class="timeline-label" id="p2TimelineLabel">B</div>
+          <div class="timeline-scroll" id="timelineScroll">
+            <div class="timeline-ruler" id="timelineRuler"></div>
+            <div class="timeline-track" id="p1Timeline"></div>
+            <div class="timeline-track" id="p2Timeline"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="manual-panel">
+        <div class="manual-head">
+          <h2>Manual controls</h2>
+          <span>Optional testing</span>
+        </div>
+        <div class="manual-grid">
+          <div class="actions" data-label="Pokemon A">
+            <button id="p1UseFast">Fast</button>
+            <button id="p1UseCharge1">Charged 1</button>
+            <button id="p1UseCharge2">Charged 2</button>
+          </div>
+          <div class="actions" data-label="Pokemon B">
             <button id="p2UseFast">Fast</button>
             <button id="p2UseCharge1">Charged 1</button>
             <button id="p2UseCharge2">Charged 2</button>
           </div>
         </div>
       </section>
+
+      <details class="log-panel">
+        <summary class="log-head">
+          <h2>Battle log</h2>
+          <div class="log-tools">
+            <select id="logFilter" title="Log filter">
+              <option value="all">All</option>
+              <option value="fast">Fast</option>
+              <option value="charge">Charged</option>
+              <option value="shield">Shielded</option>
+              <option value="ko">KO</option>
+            </select>
+          </div>
+        </summary>
+        <div id="log"></div>
+      </details>
     </div>
-
-    <section class="battle-summary" id="battleSummary">
-      <div class="summary-side a">
-        <img id="summaryAImg" alt="">
-        <div>
-          <span class="summary-name" id="summaryAName">-</span>
-          <div class="summary-meta">
-            <span>HP <strong id="summaryAHp">-</strong></span>
-            <span>Energy <strong id="summaryAEnergy">-</strong></span>
-            <span>Bait <strong id="summaryABait">-</strong></span>
-          </div>
-        </div>
-      </div>
-      <div class="summary-vs">VS</div>
-      <div class="summary-side b">
-        <div>
-          <span class="summary-name" id="summaryBName">-</span>
-          <div class="summary-meta">
-            <span>HP <strong id="summaryBHp">-</strong></span>
-            <span>Energy <strong id="summaryBEnergy">-</strong></span>
-            <span>Bait <strong id="summaryBBait">-</strong></span>
-          </div>
-        </div>
-        <img id="summaryBImg" alt="">
-      </div>
-    </section>
-
-    <section class="key-numbers" id="keyNumbers">
-      <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
-      <div class="key-card">Charged damage<strong id="keyChargedDamage">-</strong></div>
-      <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
-      <div class="key-card">Shield pressure<strong id="keyPressure">-</strong></div>
-    </section>
-
-    <section class="timeline">
-      <div class="timeline-head">
-        <h2>Turn Timeline</h2>
-        <div class="timeline-tools">
-          <span class="timeline-legend">
-            <span><i class="legend-fast"></i>Fast</span>
-            <span><i class="legend-charge"></i>Charged</span>
-            <span><i class="legend-shield"></i>Shield</span>
-          </span>
-          <select id="timelineZoom" title="Timeline zoom">
-            <option value="14">Compact</option>
-            <option value="fit" selected>Fit</option>
-            <option value="24">Close</option>
-            <option value="32">Detailed</option>
-          </select>
-        </div>
-      </div>
-      <div class="timeline-grid">
-        <div class="timeline-label" id="p1TimelineLabel">A</div>
-        <div class="timeline-label" id="p2TimelineLabel">B</div>
-        <div class="timeline-scroll" id="timelineScroll">
-          <div class="timeline-ruler" id="timelineRuler"></div>
-          <div class="timeline-track" id="p1Timeline"></div>
-          <div class="timeline-track" id="p2Timeline"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="log-panel">
-      <div class="log-head">
-        <h2>Battle log</h2>
-        <div class="log-tools">
-          <select id="logFilter" title="Log filter">
-            <option value="all">All</option>
-            <option value="fast">Fast</option>
-            <option value="charge">Charged</option>
-            <option value="shield">Shielded</option>
-            <option value="ko">KO</option>
-          </select>
-        </div>
-      </div>
-      <div id="log"></div>
-    </section>
   </main>
 
   <div class="modal" id="eventModal" aria-hidden="true">
@@ -2133,7 +2488,6 @@
         .filter(p => p.fast.length && p.charged.length)
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
 
-      $("source").textContent = `PvPoke gamemaster ${gm.timestamp || ""}`;
       $("releasedOnly").onchange = refreshPokemonLists;
       $("showForms").onchange = refreshPokemonLists;
       $("p1Search").oninput = () => refreshOnePokemonList("p1", "Swampert");
@@ -2150,12 +2504,12 @@
       });
       ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
       ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
-      $("start").onclick = startBattle;
+      $("battleCta").onclick = startBattle;
       $("reset").onclick = startBattle;
-      $("auto").onclick = autoPlay;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
       $("logFilter").onchange = renderLog;
+      $("logFilter").onclick = event => event.stopPropagation();
       $("eventModalClose").onclick = closeEventModal;
       $("eventModal").addEventListener("click", event => {
         if (event.target.id === "eventModal") closeEventModal();
@@ -2253,8 +2607,7 @@
     function fillMoveSelect(id, moveIds) {
       $(id).innerHTML = moveIds.map(moveId => {
         const m = moveMap.get(moveId);
-        const detail = m.energyGain > 0 ? `+${m.energyGain} Energy / ${m.turns} turns` : `${m.energyCost} Energy`;
-        return `<option value="${m.id}">${escapeHtml(m.name)} - ${detail}</option>`;
+        return `<option value="${m.id}">${escapeHtml(m.name)}</option>`;
       }).join("");
       colorMoveSelect(id);
     }
@@ -2733,7 +3086,7 @@
     function ready() {
       if (!left || !right) startBattle();
       if (battleEnded()) {
-        add("The battle is over. Press Start Battle to restart.", "ko");
+        add("The battle is over. Press Battle to restart.", "ko");
         return false;
       }
       return true;
@@ -2961,7 +3314,7 @@
       box.classList.toggle("critical-hp", hpPct <= .20);
       setPokemonImage($(`${prefix}BattleImg`), c.p);
       $(`${prefix}BattleName`).textContent = c.p.name;
-      $(`${prefix}BattleMeta`).textContent = `${c.p.types.map(title).join("/")} | CP ${c.cp} | L${formatLevel(c.level)}`;
+      $(`${prefix}BattleMeta`).textContent = `CP ${c.cp} | L${formatLevel(c.level)}`;
       renderTypeBadges(prefix, c.p.types);
       renderStatBars(prefix, c, opponent);
       updateRankMeter(prefix, c);
@@ -3022,7 +3375,7 @@
       if (!meter || !stats.rank) return;
       const pct = Math.max(0, Math.min(1, stats.rankPercent || 0));
       const hue = Math.round(5 + pct * 135);
-      meter.textContent = `Rank #${stats.rank} / 4096`;
+      meter.textContent = `Rank #${stats.rank}/4096`;
       meter.style.borderColor = `hsl(${hue}, 48%, 38%)`;
       meter.style.background = `linear-gradient(90deg, hsl(${hue}, 68%, 42%), hsl(${Math.max(0, hue - 22)}, 70%, 52%))`;
     }
@@ -3049,39 +3402,43 @@
     function render() {
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
-      renderBattleSummary();
       renderKeyNumbers();
       renderTimeline();
     }
 
-    function renderBattleSummary() {
-      if (!left || !right) return;
-      setPokemonImage($("summaryAImg"), left.p);
-      setPokemonImage($("summaryBImg"), right.p);
-      $("summaryAName").textContent = left.p.name;
-      $("summaryBName").textContent = right.p.name;
-      $("summaryAHp").textContent = `${left.hp}/${left.maxHp}`;
-      $("summaryBHp").textContent = `${right.hp}/${right.maxHp}`;
-      $("summaryAEnergy").textContent = `${left.energy}/100`;
-      $("summaryBEnergy").textContent = `${right.energy}/100`;
-      $("summaryABait").textContent = title(left.baiting);
-      $("summaryBBait").textContent = title(right.baiting);
-    }
-
     function renderKeyNumbers() {
       if (!left || !right) return;
-      $("keyFastDamage").textContent = `${left.fast.name} ${baseEstimate(left, right, left.fast)} / ${right.fast.name} ${baseEstimate(right, left, right.fast)}`;
-      const leftBest = bestChargedDamage(left, right, true);
-      const rightBest = bestChargedDamage(right, left, true);
-      $("keyChargedDamage").textContent = `${leftBest.move.name} ${leftBest.damage} / ${rightBest.move.name} ${rightBest.damage}`;
-      $("keyCmp").textContent = left.attack > right.attack ? left.p.name : right.attack > left.attack ? right.p.name : "Tie";
-      $("keyPressure").textContent = `${leftBest.move.energyCost}e / ${rightBest.move.energyCost}e`;
+      $("keyFastDamage").innerHTML =
+        keyRows(
+          keyRow(left.p, [keyEntry(left.fast, `${baseEstimate(left, right, left.fast)} dmg`)]),
+          keyRow(right.p, [keyEntry(right.fast, `${baseEstimate(right, left, right.fast)} dmg`)])
+        );
+      $("keyChargedDamage").innerHTML =
+        keyRows(
+          keyRow(left.p, left.charged.map(move => keyEntry(move, `${baseEstimate(left, right, move)} dmg`))),
+          keyRow(right.p, right.charged.map(move => keyEntry(move, `${baseEstimate(right, left, move)} dmg`)))
+        );
+      const cmp = left.attack > right.attack ? left : right.attack > left.attack ? right : null;
+      $("keyCmp").innerHTML = cmp ? keyCmp(cmp.p) : `<span class="key-cmp">Tie</span>`;
     }
 
-    function bestChargedDamage(attacker, defender, base = false) {
-      return attacker.charged
-        .map(move => ({ move, damage: base ? baseEstimate(attacker, defender, move) : estimate(attacker, defender, move) }))
-        .sort((a, b) => b.damage - a.damage || a.move.energyCost - b.move.energyCost)[0];
+    function keyRows(...rows) {
+      return `<span class="key-rows">${rows.join("")}</span>`;
+    }
+
+    function keyRow(pokemon, entries) {
+      return `<span class="key-row"><span class="key-tag" title="${escapeHtml(pokemon.name)}"><img src="${escapeHtml(imageUrl(pokemon))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(pokemon))}'"></span><span class="key-text"><span class="key-entry-grid${entries.length === 1 ? " single" : ""}">` +
+        entries.join("") +
+        `</span></span></span>`;
+    }
+
+    function keyEntry(move, value) {
+      const color = typeColors[move.type] || "#66788c";
+      return `<span class="key-entry"><span class="key-type-dot" title="${title(move.type)}" style="background:${color}"></span><span class="key-move-name" title="${escapeHtml(move.name)}">${escapeHtml(move.name)}</span><span class="key-damage">${escapeHtml(value)}</span></span>`;
+    }
+
+    function keyCmp(pokemon) {
+      return `<span class="key-cmp"><img src="${escapeHtml(imageUrl(pokemon))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(pokemon))}'">${escapeHtml(pokemon.name)}</span>`;
     }
 
     function baseEstimate(attacker, defender, move) {
@@ -3346,7 +3703,7 @@
       const effectClass = effect ? effect.toLowerCase() : "";
       const effectChip = effect ? `<span class="effect-chip ${effectClass}">${effect}</span>` : "";
       button.innerHTML =
-        `${moveTypeIcon(move)}<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span>${escapeHtml(kind)} ${effectChip}</span></span>`;
+        `${moveTypeIcon(move)}<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span><span class="move-kind">${escapeHtml(kind)}</span>${effectChip}</span></span>`;
       button.style.background = color;
       button.style.borderColor = darken(color, .18);
       button.style.color = contrastText(color);
