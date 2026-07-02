@@ -20,9 +20,8 @@ Optional/local files such as `.exe`, `.zip`, and old test files are not needed f
 
 ## Data
 
-The simulator uses a PvPoke gamemaster export stored in `gamemaster-data.js`.
+The simulator uses a gamemaster stored in `gamemaster-data.js`.
 
-Default move recommendations can be generated from PvPoke Great League rankings:
 
 ```powershell
 .\tools\Import-PvPokeMovesets.ps1
