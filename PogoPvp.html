@@ -565,13 +565,16 @@
     .energy-panel {
       flex: 1 1 180px;
       min-width: 150px;
-      padding: 6px 9px;
-      border: 1px solid #e3d39c;
+      padding: 7px 10px 8px;
+      border: 1px solid #d4ad31;
       border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,248,220,.74));
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,246,204,.86));
       display: grid;
       align-content: center;
-      gap: 3px;
+      gap: 5px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .72),
+        0 2px 8px rgba(158, 122, 24, .12);
     }
     .energy-head {
       display: flex;
@@ -585,21 +588,37 @@
     }
     .energy-head strong {
       color: #1f2c38;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 1px 3px rgba(99, 74, 14, .12);
     }
     .energy-track {
-      height: 7px;
+      height: 12px;
       overflow: hidden;
       border-radius: 999px;
-      background: #efe2b1;
-      box-shadow: inset 0 0 0 1px rgba(124, 94, 20, .12);
+      background:
+        repeating-linear-gradient(90deg, transparent 0 18px, rgba(122, 91, 17, .12) 18px 19px),
+        linear-gradient(180deg, #f4edcf, #dfd2a5);
+      border: 1px solid rgba(124, 94, 20, .28);
+      box-shadow:
+        inset 0 1px 2px rgba(92, 69, 16, .20),
+        0 1px 0 rgba(255, 255, 255, .72);
+      position: relative;
     }
     .energy-fill {
       width: 0%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #f2c744, #f7df61);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.42), transparent 44%),
+        linear-gradient(90deg, #f0b91c, #ffd83a 58%, #fff06a);
       transition: width .15s ease;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .34),
+        0 0 10px rgba(242, 199, 68, .62);
     }
     .actions {
       display: flex;
@@ -630,10 +649,6 @@
         0 0 0 4px rgba(214, 173, 57, .35),
         0 0 16px rgba(214, 173, 57, .55);
     }
-    .actions button.ready .move-button-label span::after {
-      content: " READY";
-      font-weight: 900;
-    }
     .move-button-label {
       display: grid;
       gap: 1px;
@@ -641,12 +656,19 @@
       line-height: 1.05;
     }
     .move-button-label strong { font-size: 13px; }
-    .move-button-label span { font-size: 10px; opacity: .9; }
+    .move-button-label > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      opacity: .95;
+    }
     .effect-chip {
       display: inline-flex;
       align-items: center;
       min-height: 18px;
-      padding: 2px 7px;
+      padding: 1px 6px;
       border-radius: 999px;
       font-size: 10px;
       font-weight: 850;
@@ -733,6 +755,37 @@
       white-space: nowrap;
     }
     .summary-pill strong { color: var(--ink); }
+    .key-numbers {
+      width: min(100%, 1100px);
+      max-width: calc(100vw - 32px);
+      justify-self: center;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 22px rgba(23, 33, 47, .05);
+    }
+    .key-card {
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .key-card strong {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .timeline {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -871,13 +924,19 @@
       background: #f8fafc;
       padding: 6px 3px;
     }
+    #p1Timeline {
+      background: linear-gradient(90deg, rgba(21, 111, 143, .10), rgba(21, 111, 143, .03));
+    }
+    #p2Timeline {
+      background: linear-gradient(90deg, rgba(143, 79, 184, .10), rgba(143, 79, 184, .03));
+    }
     .timeline-lane {
       position: relative;
       height: 24px;
       min-width: 100%;
       background:
         repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
-        var(--soft);
+        transparent;
     }
     .timeline-ruler .timeline-lane {
       height: 20px;
@@ -911,12 +970,17 @@
       z-index: 5;
     }
     .timeline-block.charge {
-      height: 24px;
-      top: 0;
+      height: 26px;
+      top: -1px;
       border-radius: 999px;
-      outline: 2px solid rgba(0, 0, 0, .14);
-      z-index: 2;
-      min-width: 28px;
+      outline: 2px solid rgba(255, 255, 255, .86);
+      z-index: 6;
+      min-width: 34px;
+      overflow: visible;
+      box-shadow:
+        0 0 0 2px rgba(0, 0, 0, .16),
+        0 3px 8px rgba(23, 33, 47, .22),
+        inset 0 0 0 1px rgba(255, 255, 255, .22);
     }
     .timeline-block.shield {
       height: 24px;
@@ -969,6 +1033,13 @@
       box-shadow:
         0 0 0 2px rgba(255, 255, 255, .8),
         inset 0 0 0 2px rgba(255, 255, 255, .18);
+    }
+    .timeline-block.continuation {
+      top: 6px;
+      height: 12px;
+      opacity: .72;
+      border-style: dashed;
+      text-shadow: none;
     }
     .timeline-marker {
       position: absolute;
@@ -1371,6 +1442,13 @@
       </div>
     </section>
 
+    <section class="key-numbers" id="keyNumbers">
+      <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
+      <div class="key-card">Charged damage<strong id="keyChargedDamage">-</strong></div>
+      <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
+      <div class="key-card">Shield pressure<strong id="keyPressure">-</strong></div>
+    </section>
+
     <section class="timeline">
       <div class="timeline-head">
         <h2>Turn Timeline</h2>
@@ -1467,6 +1545,10 @@
       psychic:["dark","psychic","steel"], rock:["fighting","ground","steel"],
       steel:["electric","fire","steel","water"], water:["dragon","grass","water"]
     };
+    const immune = {
+      dragon:["fairy"], electric:["ground"], fighting:["ghost"], ghost:["normal"],
+      ground:["flying"], normal:["ghost"], poison:["steel"], psychic:["dark"]
+    };
     const typeColors = {
       normal:"#8a8f96", fire:"#e56a26", water:"#2f78d6", electric:"#c99700",
       grass:"#3b9140", ice:"#31a6bf", fighting:"#bf3d35", poison:"#8f4fb8",
@@ -1512,7 +1594,11 @@
         energyGain: Number(m.energyGain || 0),
         energyCost: Math.max(0, Number(m.energy || 0)),
         turns: Number(m.turns || Math.max(1, Math.round(Number(m.cooldown || 500) / 500))),
-        buffs: m.buffs || null
+        buffs: m.buffs || null,
+        buffsSelf: m.buffsSelf || null,
+        buffsOpponent: m.buffsOpponent || null,
+        buffTarget: m.buffTarget || null,
+        buffApplyChance: Number(m.buffApplyChance ?? 0)
       }]));
 
       allPokemon = gm.pokemon
@@ -1920,6 +2006,9 @@
         chargedTaken: 0,
         attack: stats.attack,
         defense: stats.defense,
+        attackStage: 0,
+        defenseStage: 0,
+        lastFastStart: null,
         shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
         shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
       };
@@ -1943,6 +2032,7 @@
       for (const t of defenderTypes) {
         if ((strong[moveType] || []).includes(t)) total *= 1.6;
         if ((weak[moveType] || []).includes(t)) total *= 0.625;
+        if ((immune[moveType] || []).includes(t)) total *= 0.625;
       }
       return total;
     }
@@ -1958,11 +2048,16 @@
     }
 
     function effectiveAttack(combatant) {
-      return combatant.attack * (combatant.shadowAtkMult || 1);
+      return combatant.attack * statStageMultiplier(combatant.attackStage || 0) * (combatant.shadowAtkMult || 1);
     }
 
     function effectiveDefense(combatant) {
-      return combatant.defense * (combatant.shadowDefMult || 1);
+      return combatant.defense * statStageMultiplier(combatant.defenseStage || 0) * (combatant.shadowDefMult || 1);
+    }
+
+    function statStageMultiplier(stage) {
+      const value = Math.max(-4, Math.min(4, Number(stage || 0)));
+      return value >= 0 ? (4 + value) / 4 : 4 / (4 - value);
     }
 
     function breakpointInfo(attacker, defender) {
@@ -1972,7 +2067,7 @@
       const damage = estimate(attacker, defender, move);
       if (!move.power || !modifier) return null;
       const targetDamage = damage + 1;
-      const neededAttack = (targetDamage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * (attacker.shadowAtkMult || 1));
+      const neededAttack = (targetDamage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * statStageMultiplier(attacker.attackStage || 0) * (attacker.shadowAtkMult || 1));
       const delta = neededAttack - attacker.attack;
       if (!isFinite(delta) || delta <= 0.005) return { label: "BP hit", title: `${move.name}: ${damage} damage` };
       const maxAttack = maxReachableStat(attacker.p, "attack");
@@ -1988,7 +2083,7 @@
       const damage = estimate(attacker, defender, move);
       if (damage <= 1) return null;
       const modifier = damageModifier(attacker, defender, move);
-      const neededDefense = (move.power * effectiveAttack(attacker) * damageBonus * .5 * modifier) / ((damage - 1) * (defender.shadowDefMult || 1));
+      const neededDefense = (move.power * effectiveAttack(attacker) * damageBonus * .5 * modifier) / ((damage - 1) * statStageMultiplier(defender.defenseStage || 0) * (defender.shadowDefMult || 1));
       const delta = neededDefense - defender.defense;
       if (!isFinite(delta) || delta <= 0.005) return { label: "Bulk hit", title: `${move.name}: ${damage} damage taken` };
       const maxDefense = maxReachableStat(defender.p, "defense");
@@ -2032,6 +2127,49 @@
       return damage;
     }
 
+    function applyMoveBuffs(attacker, defender, move) {
+      if (!move || (!move.buffs && !move.buffsSelf && !move.buffsOpponent)) return [];
+      if (Number(move.buffApplyChance || 0) < 1) return [];
+      if (move.buffTarget === "both") {
+        return [
+          ...applyBuffArray(attacker, move.buffsSelf, attacker.p.name),
+          ...applyBuffArray(defender, move.buffsOpponent, defender.p.name)
+        ];
+      }
+      const target = move.buffTarget === "opponent" ? defender : attacker;
+      return applyBuffArray(target, move.buffs, target.p.name);
+    }
+
+    function applyBuffArray(combatant, buffs, label) {
+      if (!combatant || !Array.isArray(buffs)) return [];
+      const messages = [];
+      const atkDelta = Number(buffs[0] || 0);
+      const defDelta = Number(buffs[1] || 0);
+      if (atkDelta) {
+        const before = combatant.attackStage || 0;
+        combatant.attackStage = clampStage(before + atkDelta);
+        if (combatant.attackStage !== before) messages.push(`${label} ATK ${stageDeltaText(combatant.attackStage - before)} (${stageText(combatant.attackStage)})`);
+      }
+      if (defDelta) {
+        const before = combatant.defenseStage || 0;
+        combatant.defenseStage = clampStage(before + defDelta);
+        if (combatant.defenseStage !== before) messages.push(`${label} DEF ${stageDeltaText(combatant.defenseStage - before)} (${stageText(combatant.defenseStage)})`);
+      }
+      return messages;
+    }
+
+    function clampStage(stage) {
+      return Math.max(-4, Math.min(4, Number(stage || 0)));
+    }
+
+    function stageDeltaText(delta) {
+      return delta > 0 ? `+${delta}` : String(delta);
+    }
+
+    function stageText(stage) {
+      return stage > 0 ? `+${stage}` : String(stage);
+    }
+
     function battleEnded() {
       return !!(left && right && (left.hp <= 0 || right.hp <= 0));
     }
@@ -2049,6 +2187,7 @@
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const damage = apply(attacker, defender, attacker.fast, false);
       const event = recordTimeline(attacker, attacker.fast, "fast", damage, false);
+      attacker.lastFastStart = event.start;
       add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, +${attacker.fast.energyGain} energy.`, "fast");
       return finish();
     }
@@ -2064,14 +2203,17 @@
       const unshieldedDamage = estimate(attacker, defender, move);
       const shielded = shouldShield(defender, move, unshieldedDamage);
       const damage = apply(attacker, defender, move, shielded);
+      const buffMessages = applyMoveBuffs(attacker, defender, move);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
+      chargeEvent.buffs = buffMessages;
       defender.chargedTaken++;
+      const buffText = buffMessages.length ? ` Buff: ${buffMessages.join(", ")}.` : "";
       if (shielded) {
         defender.shields--;
         recordShield(defender, move, chargeEvent.start);
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.`, "shield");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}`, "shield");
       } else {
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.`, "charge");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}`, "charge");
       }
       return finish();
     }
@@ -2129,8 +2271,8 @@
 
     function battleSnapshot() {
       return {
-        A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy } : null,
-        B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy } : null
+        A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy, attackStage: left.attackStage || 0, defenseStage: left.defenseStage || 0 } : null,
+        B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy, attackStage: right.attackStage || 0, defenseStage: right.defenseStage || 0 } : null
       };
     }
 
@@ -2139,6 +2281,7 @@
       const available = attacker.charged.filter(m => attacker.energy >= m.energyCost);
       if (available.length) {
         const best = chooseChargedMove(attacker, defender, available);
+        if (!best) return useFast(attacker, defender);
         if (shouldWaitForChargeTiming(attacker, defender, best)) return useFast(attacker, defender);
         return useCharge(attacker, defender, attacker.charged.indexOf(best));
       } else {
@@ -2149,27 +2292,61 @@
     function chooseChargedMove(attacker, defender, available) {
       const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost);
       const straight = byDamage[0];
+      const lethal = [...available]
+        .filter(move => {
+          const damage = estimate(attacker, defender, move);
+          return damage >= defender.hp && !shouldShield(defender, move, damage);
+        })
+        .sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
+      if (lethal) return lethal;
+      if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
       if (defender.shields <= 0) return straight;
 
+      const mostExpensive = [...attacker.charged].sort((a, b) => b.energyCost - a.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
+      if (attacker.baiting === "selective" && mostExpensive && attacker.energy < mostExpensive.energyCost && attacker.energy < 100) {
+        return null;
+      }
+
       if (!cheapest || cheapest === straight) return straight;
       if (attacker.baiting === "on") return cheapest;
       if (attacker.baiting !== "selective") return straight;
 
-      const mostExpensive = [...attacker.charged].sort((a, b) => b.energyCost - a.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const hasNukeReady = mostExpensive && attacker.energy >= mostExpensive.energyCost;
+      const straightDamage = estimate(attacker, defender, straight);
+      const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
+      if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
       return hasNukeReady ? cheapest : straight;
+    }
+
+    function shouldOverfarmForCloser(attacker, defender, available, currentMove) {
+      if (!attacker || !defender || !currentMove || !attacker.fast) return false;
+      if (defender.shields > 0) return false;
+      const bestOverall = [...attacker.charged]
+        .sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
+      if (!bestOverall || available.includes(bestOverall)) return false;
+      const fastGain = Number(attacker.fast.energyGain || 0);
+      if (fastGain <= 0) return false;
+      const energyNeeded = bestOverall.energyCost - attacker.energy;
+      if (energyNeeded <= 0 || energyNeeded > fastGain) return false;
+      const currentDamage = estimate(attacker, defender, currentMove);
+      const closerDamage = estimate(attacker, defender, bestOverall);
+      if (closerDamage < defender.hp && closerDamage < currentDamage * 1.25) return false;
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
+      return true;
     }
 
     function shouldWaitForChargeTiming(attacker, defender, move) {
       const attackerTurn = battleTurns[attacker.trainer] || 0;
       const defenderTurn = battleTurns[defender.trainer] || 0;
-      const attackerFastTurns = Math.max(1, attacker.fast.turns || 1);
       const defenderFastTurns = Math.max(1, defender.fast.turns || 1);
-      if (attackerFastTurns >= defenderFastTurns) return false;
-      if (defenderTurn > attackerTurn) return false;
-      if (estimate(attacker, defender, move) >= defender.hp) return false;
+      if (defenderFastTurns <= 1) return false;
+      const damage = estimate(attacker, defender, move);
+      if (damage >= defender.hp && !shouldShield(defender, move, damage)) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
+      if (defenderTurn > attackerTurn) {
+        return defender.lastFastStart === attackerTurn;
+      }
       return true;
     }
 
@@ -2182,6 +2359,12 @@
         if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
         if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
         if (!actors.length) break;
+        actors.sort(([a], [b]) => {
+          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
+          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
+          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
+        });
         for (const [attacker, defender] of actors) {
           if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
           if (!autoAction(attacker, defender) && !battleEnded()) break;
@@ -2297,6 +2480,7 @@
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
       renderBattleSummary();
+      renderKeyNumbers();
       renderTimeline();
     }
 
@@ -2312,6 +2496,33 @@
       $("summaryBEnergy").textContent = `${right.energy}/100`;
       $("summaryABait").textContent = title(left.baiting);
       $("summaryBBait").textContent = title(right.baiting);
+    }
+
+    function renderKeyNumbers() {
+      if (!left || !right) return;
+      $("keyFastDamage").textContent = `${left.fast.name} ${baseEstimate(left, right, left.fast)} / ${right.fast.name} ${baseEstimate(right, left, right.fast)}`;
+      const leftBest = bestChargedDamage(left, right, true);
+      const rightBest = bestChargedDamage(right, left, true);
+      $("keyChargedDamage").textContent = `${leftBest.move.name} ${leftBest.damage} / ${rightBest.move.name} ${rightBest.damage}`;
+      $("keyCmp").textContent = left.attack > right.attack ? left.p.name : right.attack > left.attack ? right.p.name : "Tie";
+      $("keyPressure").textContent = `${leftBest.move.energyCost}e / ${rightBest.move.energyCost}e`;
+    }
+
+    function bestChargedDamage(attacker, defender, base = false) {
+      return attacker.charged
+        .map(move => ({ move, damage: base ? baseEstimate(attacker, defender, move) : estimate(attacker, defender, move) }))
+        .sort((a, b) => b.damage - a.damage || a.move.energyCost - b.move.energyCost)[0];
+    }
+
+    function baseEstimate(attacker, defender, move) {
+      const attackerStage = attacker.attackStage || 0;
+      const defenderStage = defender.defenseStage || 0;
+      attacker.attackStage = 0;
+      defender.defenseStage = 0;
+      const damage = estimate(attacker, defender, move);
+      attacker.attackStage = attackerStage;
+      defender.defenseStage = defenderStage;
+      return damage;
     }
 
     function previewTimelineState(index) {
@@ -2393,6 +2604,7 @@
         ["Move type", title(event.move.type)],
         ["A HP / Energy", state.A ? `${state.A.hp}/${state.A.maxHp} - ${state.A.energy}` : "-"],
         ["B HP / Energy", state.B ? `${state.B.hp}/${state.B.maxHp} - ${state.B.energy}` : "-"],
+        ["Buffs", event.buffs && event.buffs.length ? event.buffs.join(", ") : "-"],
         ["Shielded", event.shielded ? "Yes" : "No"],
         ["Duration", `${event.duration} turn${event.duration === 1 ? "" : "s"}`]
       ].map(([label, value]) => `<div class="detail-cell">${label}<strong>${escapeHtml(String(value))}</strong></div>`).join("");
@@ -2465,7 +2677,7 @@
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
-        const width = Math.max(24, Math.min(32, turnPx + 10));
+        const width = isCharge ? Math.max(34, Math.min(46, turnPx + 18)) : Math.max(24, Math.min(32, turnPx + 10));
         const baseTurn = visualTurn(event.start, chargeStarts, false);
         const center = (baseTurn + chargeWindowTurns) * turnPx;
         const left = Math.max(2, center - width / 2);
@@ -2498,9 +2710,11 @@
           : visualTurn(start, chargeStarts, true);
         const width = Math.max(10, (end - start) * turnPx - 4);
         const left = visualStart * turnPx + 2;
+        const isContinuation = points.length > 2 && index > 0;
         const readyText = reachesChargedEnergy(event) ? " - charged move ready" : "";
         const titleText = `${event.move.name} - ${title(event.move.type)} - turns ${start}-${end} - ${event.damage} damage${isSneak ? " - sneaked during charged move" : ""}${readyText}`;
-        const cls = `timeline-block${isSneak ? " sneak" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+        if (isContinuation) return index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
+        const cls = `timeline-block${isSneak ? " sneak" : ""}${isContinuation ? " continuation" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
         const markers = index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
         return `<div class="${cls}" data-event-index="${eventIndex}" title="${escapeHtml(titleText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
       }).join("");
@@ -2559,8 +2773,10 @@
       const button = $(id);
       const color = typeColors[move.type] || "#156f8f";
       const effect = opponent ? moveEffectLabel(move, opponent) : "";
+      const effectClass = effect ? effect.toLowerCase() : "";
+      const effectChip = effect ? `<span class="effect-chip ${effectClass}">${effect}</span>` : "";
       button.innerHTML =
-        `${moveTypeIcon(move)}<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span>${escapeHtml(kind)}${effect ? ` - ${effect}` : ""}</span></span>`;
+        `${moveTypeIcon(move)}<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span>${escapeHtml(kind)} ${effectChip}</span></span>`;
       button.style.background = color;
       button.style.borderColor = darken(color, .18);
       button.style.color = contrastText(color);
