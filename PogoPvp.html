@@ -2504,7 +2504,7 @@
       });
       ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
       ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
-      $("battleCta").onclick = startBattle;
+      $("battleCta").onclick = runBattleToEnd;
       $("reset").onclick = startBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
@@ -3295,6 +3295,33 @@
       render();
     }
 
+    function runBattleToEnd() {
+      if (!left || !right || battleEnded()) startBattle();
+      let guard = 0;
+      while (!battleEnded() && guard < 1000) {
+        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+        const actors = [];
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+        if (!actors.length) break;
+        actors.sort(([a], [b]) => {
+          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
+          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
+          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
+        });
+        let progressed = false;
+        for (const [attacker, defender] of actors) {
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          progressed = autoAction(attacker, defender) || progressed;
+        }
+        if (!progressed) break;
+        guard++;
+      }
+      if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
+      render();
+    }
+
     function startBattle() {
       left = create("p1", "A");
       right = create("p2", "B");
@@ -3318,7 +3345,7 @@
       renderTypeBadges(prefix, c.p.types);
       renderStatBars(prefix, c, opponent);
       updateRankMeter(prefix, c);
-      renderShields(prefix, c.shields);
+      renderShields(prefix);
       renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
       setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, "Fast", opponent);
       setMoveButton(c1Id, c.charged[0], c.charged[0].name, "Charged", opponent);
@@ -3380,10 +3407,11 @@
       meter.style.background = `linear-gradient(90deg, hsl(${hue}, 68%, 42%), hsl(${Math.max(0, hue - 22)}, 70%, 52%))`;
     }
 
-    function renderShields(prefix, shields) {
+    function renderShields(prefix) {
+      const selectedShields = Math.max(0, Math.min(2, Number($(`${prefix}Shields`).value || 0)));
       $(`${prefix}ShieldVisual`).innerHTML = [0, 1, 2].map(count => {
         const icons = `${shieldSvg()}<strong>${count}</strong>`;
-        return `<button type="button" class="${count === shields ? "active" : ""}" data-shields="${count}" title="${count} shield${count === 1 ? "" : "s"}">${icons}</button>`;
+        return `<button type="button" class="${count === selectedShields ? "active" : ""}" data-shields="${count}" title="${count} shield${count === 1 ? "" : "s"} matchup">${icons}</button>`;
       }).join("");
       $(`${prefix}ShieldVisual`).querySelectorAll("button").forEach(button => {
         button.onclick = () => setShieldCount(prefix, Number(button.dataset.shields));
