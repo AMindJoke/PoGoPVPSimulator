@@ -120,6 +120,12 @@
       position: relative;
       overflow: hidden;
     }
+    .trainer-card {
+      overflow: visible;
+    }
+    .trainer-card:focus-within {
+      z-index: 30;
+    }
     .trainer-card::before {
       content: "";
       position: absolute;
@@ -137,6 +143,9 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--soft);
+    }
+    .moves-stack {
+      margin-top: 8px;
     }
     .section-kicker {
       display: flex;
@@ -274,6 +283,116 @@
       border-color: #3a4a5d;
     }
     .search-input, .pokemon-select, .move-select { max-width: 250px; }
+    .pokemon-select-hidden {
+      display: none;
+    }
+    .pokemon-picker {
+      position: relative;
+      display: grid;
+      gap: 4px;
+      max-width: 250px;
+      z-index: 20;
+    }
+    .pokemon-picker > span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .pokemon-picker-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 30px;
+      gap: 4px;
+      align-items: center;
+    }
+    .pokemon-picker-input {
+      max-width: none;
+    }
+    .pokemon-picker-toggle {
+      min-height: 30px;
+      width: 30px;
+      padding: 0;
+      border-color: #bac5d1;
+      background: white;
+      color: var(--accent);
+      box-shadow: none;
+    }
+    .pokemon-picker-toggle::before {
+      content: "v";
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+      transition: transform .16s ease;
+    }
+    .pokemon-picker.open .pokemon-picker-toggle::before {
+      transform: rotate(180deg);
+    }
+    .pokemon-suggestions {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      display: none;
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      z-index: 80;
+    }
+    .pokemon-picker.open .pokemon-suggestions {
+      display: grid;
+      gap: 3px;
+    }
+    .pokemon-suggestion {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 4px 6px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .pokemon-suggestion:hover,
+    .pokemon-suggestion.active {
+      border-color: rgba(21, 111, 143, .28);
+      background: rgba(21, 111, 143, .08);
+    }
+    .pokemon-suggestion img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+    .pokemon-suggestion small {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .pokemon-suggestion-empty {
+      padding: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    body[data-theme="dark"] .pokemon-picker-toggle {
+      background: #111822;
+      border-color: #3a4a5d;
+      color: var(--accent-2);
+    }
+    body[data-theme="dark"] .pokemon-suggestion:hover,
+    body[data-theme="dark"] .pokemon-suggestion.active {
+      background: rgba(78, 177, 209, .12);
+      border-color: rgba(78, 177, 209, .3);
+    }
     .short-input { max-width: 86px; }
     input[type="checkbox"] { width: auto; min-height: auto; }
     .iv-details {
@@ -522,6 +641,50 @@
       box-shadow: 0 2px 6px rgba(23, 33, 47, .12);
     }
     button:active { transform: translateY(1px); }
+    .pokemon-picker-toggle {
+      min-height: 30px;
+      width: 30px;
+      padding: 0;
+      border-color: #bac5d1;
+      background: white;
+      color: var(--accent);
+      box-shadow: none;
+    }
+    .pokemon-picker-toggle:hover {
+      background: rgba(21, 111, 143, .08);
+      box-shadow: none;
+    }
+    .pokemon-suggestion {
+      min-height: 34px;
+      padding: 4px 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      box-shadow: none;
+      font-weight: 800;
+    }
+    .pokemon-suggestion:hover,
+    .pokemon-suggestion.active {
+      border-color: rgba(21, 111, 143, .28);
+      background: rgba(21, 111, 143, .08);
+      box-shadow: none;
+    }
+    .pokemon-suggestion:active {
+      transform: none;
+    }
+    body[data-theme="dark"] .pokemon-picker-toggle {
+      background: #111822;
+      border-color: #3a4a5d;
+      color: var(--accent-2);
+    }
+    body[data-theme="dark"] .pokemon-picker-toggle:hover {
+      background: rgba(78, 177, 209, .12);
+    }
+    body[data-theme="dark"] .pokemon-suggestion:hover,
+    body[data-theme="dark"] .pokemon-suggestion.active {
+      background: rgba(78, 177, 209, .12);
+      border-color: rgba(78, 177, 209, .3);
+    }
     button.secondary {
       background: #f5f7f9;
       color: var(--ink);
@@ -1790,8 +1953,33 @@
       }
       .search-input,
       .pokemon-select,
+      .pokemon-picker,
       .move-select {
         max-width: none;
+      }
+      .pokemon-picker-control {
+        grid-template-columns: minmax(0, 1fr) 27px;
+      }
+      .pokemon-picker-toggle {
+        width: 27px;
+        min-height: 25px;
+      }
+      .pokemon-suggestions {
+        max-height: 190px;
+      }
+      .pokemon-suggestion {
+        grid-template-columns: 26px minmax(0, 1fr);
+        min-height: 30px;
+        gap: 5px;
+        padding: 3px 5px;
+        font-size: 10px;
+      }
+      .pokemon-suggestion img {
+        width: 24px;
+        height: 24px;
+      }
+      .pokemon-suggestion small {
+        font-size: 9px;
       }
       .iv-row {
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -2170,6 +2358,29 @@
         padding: 2px 4px;
         font-size: 10px;
       }
+      .pokemon-picker-control {
+        grid-template-columns: minmax(0, 1fr) 24px;
+        gap: 3px;
+      }
+      .pokemon-picker-toggle {
+        width: 24px;
+        min-height: 23px;
+      }
+      .pokemon-suggestions {
+        max-height: 165px;
+        padding: 4px;
+      }
+      .pokemon-suggestion {
+        grid-template-columns: 22px minmax(0, 1fr);
+        min-height: 27px;
+        gap: 4px;
+        padding: 2px 4px;
+        font-size: 9px;
+      }
+      .pokemon-suggestion img {
+        width: 21px;
+        height: 21px;
+      }
       .iv-row {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         padding: 0 4px 5px;
@@ -2386,11 +2597,15 @@
       <section class="trainer-card a">
         <div class="control-stack">
           <div class="section-kicker setup-kicker">Setup</div>
-          <label>Search <input id="p1Search" class="search-input" placeholder="e.g. Swampert"></label>
-          <label>Pokemon <select id="p1Pokemon" class="pokemon-select"></select></label>
-          <label>Fast <select id="p1Fast" class="move-select"></select></label>
-          <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
-          <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
+          <div class="pokemon-picker" data-prefix="p1">
+            <span>Pokemon</span>
+            <div class="pokemon-picker-control">
+              <input id="p1Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
+              <button id="p1PokemonToggle" class="pokemon-picker-toggle" type="button" title="Show Pokemon"></button>
+            </div>
+            <div id="p1PokemonSuggestions" class="pokemon-suggestions"></div>
+            <select id="p1Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
+          </div>
         </div>
         <div class="field-box">
           <div class="section-kicker battle-kicker">Battle state</div>
@@ -2446,15 +2661,25 @@
             </div>
           </div>
         </div>
+        <div class="control-stack moves-stack">
+          <div class="section-kicker setup-kicker">Moves</div>
+          <label>Fast <select id="p1Fast" class="move-select"></select></label>
+          <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
+          <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
+        </div>
       </section>
       <section class="trainer-card b">
         <div class="control-stack">
           <div class="section-kicker setup-kicker">Setup</div>
-          <label>Search <input id="p2Search" class="search-input" placeholder="e.g. Skarmory"></label>
-          <label>Pokemon <select id="p2Pokemon" class="pokemon-select"></select></label>
-          <label>Fast <select id="p2Fast" class="move-select"></select></label>
-          <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
-          <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
+          <div class="pokemon-picker" data-prefix="p2">
+            <span>Pokemon</span>
+            <div class="pokemon-picker-control">
+              <input id="p2Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
+              <button id="p2PokemonToggle" class="pokemon-picker-toggle" type="button" title="Show Pokemon"></button>
+            </div>
+            <div id="p2PokemonSuggestions" class="pokemon-suggestions"></div>
+            <select id="p2Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
+          </div>
         </div>
         <div class="field-box">
           <div class="section-kicker battle-kicker">Battle state</div>
@@ -2509,6 +2734,12 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="control-stack moves-stack">
+          <div class="section-kicker setup-kicker">Moves</div>
+          <label>Fast <select id="p2Fast" class="move-select"></select></label>
+          <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
+          <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
         </div>
       </section>
     </div>
@@ -2734,10 +2965,16 @@
 
       $("releasedOnly").onchange = refreshPokemonLists;
       $("showForms").onchange = refreshPokemonLists;
-      $("p1Search").oninput = () => refreshOnePokemonList("p1", "Swampert");
-      $("p2Search").oninput = () => refreshOnePokemonList("p2", "Skarmory");
-      $("p1Pokemon").onchange = () => fillMoves("p1");
-      $("p2Pokemon").onchange = () => fillMoves("p2");
+      setupPokemonPicker("p1");
+      setupPokemonPicker("p2");
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".pokemon-picker")) {
+          closePokemonSuggestions("p1");
+          closePokemonSuggestions("p2");
+        }
+      });
+      $("p1Pokemon").onchange = () => selectPokemon("p1", $("p1Pokemon").value, true);
+      $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
       ["p1Fast", "p1Charged1", "p1Charged2"].forEach(id => $(id).onchange = () => syncSelection("p1"));
       ["p2Fast", "p2Charged1", "p2Charged2"].forEach(id => $(id).onchange = () => syncSelection("p2"));
       document.querySelectorAll(".bait-toggle button").forEach(button => {
@@ -2849,17 +3086,102 @@
     function refreshOnePokemonList(prefix, preferred) {
       const select = $(`${prefix}Pokemon`);
       const previous = select.value;
-      const q = $(`${prefix}Search`).value.trim().toLowerCase();
+      let list = visiblePokemon;
+      if (!list.length) list = visiblePokemon.slice(0, 1);
+      select.innerHTML = list.map(p => `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`).join("");
+      const preferredMatch = list.find(p => p.name.toLowerCase() === preferred.toLowerCase() || p.id === preferred);
+      if (list.some(p => p.id === previous)) select.value = previous;
+      else if (preferredMatch) select.value = preferredMatch.id;
+      else select.selectedIndex = 0;
+      syncPokemonPickerInput(prefix);
+      applyDefaultIvs(prefix);
+      fillMoves(prefix);
+    }
+
+    function setupPokemonPicker(prefix) {
+      const input = $(`${prefix}Search`);
+      const toggle = $(`${prefix}PokemonToggle`);
+      input.oninput = () => openPokemonSuggestions(prefix, false);
+      input.onfocus = () => openPokemonSuggestions(prefix, false);
+      input.onkeydown = event => {
+        if (event.key === "Escape") closePokemonSuggestions(prefix);
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const first = $(`${prefix}PokemonSuggestions`).querySelector(".pokemon-suggestion");
+          if (first) first.click();
+        }
+      };
+      input.onblur = () => {
+        window.setTimeout(() => {
+          if (!document.activeElement || !document.activeElement.closest(`.pokemon-picker[data-prefix="${prefix}"]`)) {
+            syncPokemonPickerInput(prefix);
+            closePokemonSuggestions(prefix);
+          }
+        }, 120);
+      };
+      toggle.onclick = event => {
+        event.preventDefault();
+        const picker = document.querySelector(`.pokemon-picker[data-prefix="${prefix}"]`);
+        if (picker.classList.contains("open")) closePokemonSuggestions(prefix);
+        else openPokemonSuggestions(prefix, true);
+      };
+    }
+
+    function openPokemonSuggestions(prefix, showAll) {
+      const picker = document.querySelector(`.pokemon-picker[data-prefix="${prefix}"]`);
+      const input = $(`${prefix}Search`);
+      const q = showAll ? "" : input.value.trim().toLowerCase();
       let list = visiblePokemon;
       if (q) {
         list = list.filter(p => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
       }
-      if (!list.length) list = visiblePokemon.slice(0, 1);
-      select.innerHTML = list.map(p => `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`).join("");
-      const preferredMatch = list.find(p => p.name.toLowerCase() === preferred.toLowerCase());
-      if (list.some(p => p.id === previous)) select.value = previous;
-      else if (preferredMatch) select.value = preferredMatch.id;
-      else select.selectedIndex = 0;
+      renderPokemonSuggestions(prefix, list.slice(0, 28));
+      picker.classList.add("open");
+    }
+
+    function closePokemonSuggestions(prefix) {
+      document.querySelector(`.pokemon-picker[data-prefix="${prefix}"]`)?.classList.remove("open");
+    }
+
+    function renderPokemonSuggestions(prefix, list) {
+      const box = $(`${prefix}PokemonSuggestions`);
+      if (!list.length) {
+        box.innerHTML = `<div class="pokemon-suggestion-empty">No Pokemon found</div>`;
+        return;
+      }
+      box.innerHTML = list.map(p => `
+        <button class="pokemon-suggestion" type="button" data-pokemon-id="${p.id}">
+          <img alt="">
+          <span>${escapeHtml(displayName(p))}<small>${escapeHtml(pokemonPickerMeta(p))}</small></span>
+        </button>
+      `).join("");
+      box.querySelectorAll(".pokemon-suggestion").forEach((button, index) => {
+        const p = list[index];
+        setPokemonImage(button.querySelector("img"), p);
+        button.onclick = () => selectPokemon(prefix, p.id, true);
+      });
+    }
+
+    function pokemonPickerMeta(p) {
+      if (!p) return "";
+      return p.types.map(title).join(" / ");
+    }
+
+    function syncPokemonPickerInput(prefix) {
+      const p = findPokemon($(`${prefix}Pokemon`).value);
+      if (p) $(`${prefix}Search`).value = displayName(p);
+    }
+
+    function selectPokemon(prefix, pokemonId, updateInput) {
+      const p = findPokemon(pokemonId);
+      if (!p) return;
+      const select = $(`${prefix}Pokemon`);
+      if (![...select.options].some(option => option.value === pokemonId)) {
+        select.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`);
+      }
+      select.value = pokemonId;
+      if (updateInput) $(`${prefix}Search`).value = displayName(p);
+      closePokemonSuggestions(prefix);
       applyDefaultIvs(prefix);
       fillMoves(prefix);
     }
@@ -3062,8 +3384,7 @@
         refreshOnePokemonList(prefix, pokemonId);
       }
       if ([...select.options].some(option => option.value === pokemonId)) {
-        select.value = pokemonId;
-        fillMoves(prefix);
+        selectPokemon(prefix, pokemonId, true);
       }
     }
 
