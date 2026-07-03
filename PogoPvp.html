@@ -309,7 +309,8 @@
       position: relative;
       display: grid;
       gap: 4px;
-      max-width: 250px;
+      width: 100%;
+      max-width: none;
       z-index: 20;
     }
     .pokemon-picker > span {
@@ -319,31 +320,11 @@
     }
     .pokemon-picker-control {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 30px;
-      gap: 4px;
+      grid-template-columns: minmax(0, 1fr);
       align-items: center;
     }
     .pokemon-picker-input {
       max-width: none;
-    }
-    .pokemon-picker-toggle {
-      min-height: 30px;
-      width: 30px;
-      padding: 0;
-      border-color: #bac5d1;
-      background: white;
-      color: var(--accent);
-      box-shadow: none;
-    }
-    .pokemon-picker-toggle::before {
-      content: "v";
-      font-size: 13px;
-      font-weight: 900;
-      line-height: 1;
-      transition: transform .16s ease;
-    }
-    .pokemon-picker.open .pokemon-picker-toggle::before {
-      transform: rotate(180deg);
     }
     .pokemon-suggestions {
       position: absolute;
@@ -389,6 +370,15 @@
       height: 28px;
       object-fit: contain;
     }
+    .pokemon-suggestion img.shadow-pokemon {
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 54%, rgba(143, 79, 184, .24) 0 34%, rgba(143, 79, 184, .13) 35% 54%, transparent 68%),
+        radial-gradient(circle, rgba(98, 49, 158, .18), transparent 72%);
+      filter:
+        drop-shadow(0 0 4px rgba(143, 79, 184, .92))
+        drop-shadow(0 0 10px rgba(92, 45, 145, .64));
+    }
     .pokemon-suggestion small {
       display: block;
       margin-top: 1px;
@@ -401,11 +391,6 @@
       color: var(--muted);
       font-size: 11px;
       font-weight: 800;
-    }
-    body[data-theme="dark"] .pokemon-picker-toggle {
-      background: #111822;
-      border-color: #3a4a5d;
-      color: var(--accent-2);
     }
     body[data-theme="dark"] .pokemon-suggestion:hover,
     body[data-theme="dark"] .pokemon-suggestion.active {
@@ -678,19 +663,6 @@
       box-shadow: 0 2px 6px rgba(23, 33, 47, .12);
     }
     button:active { transform: translateY(1px); }
-    .pokemon-picker-toggle {
-      min-height: 30px;
-      width: 30px;
-      padding: 0;
-      border-color: #bac5d1;
-      background: white;
-      color: var(--accent);
-      box-shadow: none;
-    }
-    .pokemon-picker-toggle:hover {
-      background: rgba(21, 111, 143, .08);
-      box-shadow: none;
-    }
     .pokemon-suggestion {
       min-height: 34px;
       padding: 4px 6px;
@@ -708,14 +680,6 @@
     }
     .pokemon-suggestion:active {
       transform: none;
-    }
-    body[data-theme="dark"] .pokemon-picker-toggle {
-      background: #111822;
-      border-color: #3a4a5d;
-      color: var(--accent-2);
-    }
-    body[data-theme="dark"] .pokemon-picker-toggle:hover {
-      background: rgba(78, 177, 209, .12);
     }
     body[data-theme="dark"] .pokemon-suggestion:hover,
     body[data-theme="dark"] .pokemon-suggestion.active {
@@ -2040,11 +2004,7 @@
         max-width: none;
       }
       .pokemon-picker-control {
-        grid-template-columns: minmax(0, 1fr) 27px;
-      }
-      .pokemon-picker-toggle {
-        width: 27px;
-        min-height: 25px;
+        grid-template-columns: minmax(0, 1fr);
       }
       .pokemon-suggestions {
         max-height: 190px;
@@ -2449,12 +2409,7 @@
         font-size: 10px;
       }
       .pokemon-picker-control {
-        grid-template-columns: minmax(0, 1fr) 24px;
-        gap: 3px;
-      }
-      .pokemon-picker-toggle {
-        width: 24px;
-        min-height: 23px;
+        grid-template-columns: minmax(0, 1fr);
       }
       .pokemon-suggestions {
         max-height: 165px;
@@ -2693,7 +2648,6 @@
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
               <input id="p1Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
-              <button id="p1PokemonToggle" class="pokemon-picker-toggle" type="button" title="Show Pokemon"></button>
             </div>
             <div id="p1PokemonSuggestions" class="pokemon-suggestions"></div>
             <select id="p1Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
@@ -2769,7 +2723,6 @@
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
               <input id="p2Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
-              <button id="p2PokemonToggle" class="pokemon-picker-toggle" type="button" title="Show Pokemon"></button>
             </div>
             <div id="p2PokemonSuggestions" class="pokemon-suggestions"></div>
             <select id="p2Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
@@ -3200,7 +3153,6 @@
 
     function setupPokemonPicker(prefix) {
       const input = $(`${prefix}Search`);
-      const toggle = $(`${prefix}PokemonToggle`);
       input.oninput = () => openPokemonSuggestions(prefix, false);
       input.onfocus = () => openPokemonSuggestions(prefix, false);
       input.onkeydown = event => {
@@ -3218,12 +3170,6 @@
             closePokemonSuggestions(prefix);
           }
         }, 120);
-      };
-      toggle.onclick = event => {
-        event.preventDefault();
-        const picker = document.querySelector(`.pokemon-picker[data-prefix="${prefix}"]`);
-        if (picker.classList.contains("open")) closePokemonSuggestions(prefix);
-        else openPokemonSuggestions(prefix, true);
       };
     }
 
