@@ -1885,22 +1885,61 @@
         font-size: 13px;
       }
       .key-numbers {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 5px;
+        display: flex;
+        gap: 6px;
         padding: 6px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
       }
+      .key-card,
       .key-card.wide {
-        grid-column: span 2;
-      }
-      .key-card {
+        flex: 0 0 168px;
+        min-width: 168px;
+        grid-column: auto;
         padding: 6px;
         font-size: 10px;
+        scroll-snap-align: start;
       }
       .key-card strong {
+        margin-top: 4px;
         font-size: 11px;
+        line-height: 1.15;
+      }
+      .key-rows {
+        gap: 3px;
+      }
+      .key-row {
+        grid-template-columns: 18px minmax(0, 1fr);
+        gap: 5px;
+      }
+      .key-tag {
+        width: 18px;
+        height: 18px;
+      }
+      .key-tag img {
+        width: 21px;
+        height: 21px;
       }
       .key-entry-grid {
         grid-template-columns: 1fr;
+        gap: 3px;
+      }
+      .key-entry {
+        padding: 3px 4px;
+      }
+      .key-text,
+      .key-move-name,
+      .key-damage {
+        font-size: 10px;
+      }
+      .key-cmp {
+        font-size: 11px;
+      }
+      .key-cmp img {
+        width: 22px;
+        height: 22px;
       }
       .timeline {
         padding: 8px;
@@ -2126,6 +2165,31 @@
         min-height: 30px;
         padding: 5px 14px;
         font-size: 12px;
+      }
+      .key-numbers {
+        gap: 5px;
+        padding: 5px;
+      }
+      .key-card,
+      .key-card.wide {
+        flex-basis: 142px;
+        min-width: 142px;
+        padding: 5px;
+        font-size: 9px;
+      }
+      .key-card strong,
+      .key-text,
+      .key-move-name,
+      .key-damage {
+        font-size: 9px;
+      }
+      .key-tag {
+        width: 16px;
+        height: 16px;
+      }
+      .key-tag img {
+        width: 19px;
+        height: 19px;
       }
     }
   </style>
