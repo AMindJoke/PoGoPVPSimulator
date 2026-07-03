@@ -2848,7 +2848,6 @@
     let previewTimelineIndex = null;
     let selectedTimelineIndex = null;
     let lastTimelineHoverClientX = null;
-    let lastTimelineHoverClientY = null;
     let lastTimelineHoverText = "";
     const rankCache = new Map();
     const chargeWindowTurns = 7;
@@ -3021,7 +3020,8 @@
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
         updateTimelineHover(event);
-        updateTimelineMoveTooltip(event, true);
+        updateTimelineActionPreview(event);
+        updateTimelineMoveTooltip(event);
       });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
       $("timelineScroll").addEventListener("pointerleave", () => {
@@ -3038,7 +3038,7 @@
       $("timelineScroll").addEventListener("touchcancel", hideTimelineHover);
       $("timelineScroll").addEventListener("scroll", () => {
         if ($("timelineScroll").classList.contains("hovering") && lastTimelineHoverClientX !== null) {
-          updateTimelineHover({ clientX: lastTimelineHoverClientX, clientY: lastTimelineHoverClientY });
+          updateTimelineHover({ clientX: lastTimelineHoverClientX });
         }
       }, { passive: true });
       window.addEventListener("resize", renderTimeline);
@@ -4206,7 +4206,6 @@
       const rulerLane = $("timelineRuler").querySelector(".timeline-lane");
       if (!scroll || !line || !label || !rulerLane) return;
       lastTimelineHoverClientX = event.clientX;
-      lastTimelineHoverClientY = event.clientY;
       const rect = scroll.getBoundingClientRect();
       const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
       const contentX = scroll.scrollLeft + visibleX;
@@ -4228,12 +4227,19 @@
 
     function hideTimelineHover() {
       lastTimelineHoverClientX = null;
-      lastTimelineHoverClientY = null;
       lastTimelineHoverText = "";
       $("timelineScroll").classList.remove("hovering");
     }
 
-    function timelineCrosshairHit(event) {
+    function updateTimelineActionPreview(event) {
+      if (event.target.closest("[data-event-index]")) return;
+      const hit = timelineActionCrosshairHit(event);
+      if (!hit) return;
+      previewTimelineState(hit.index);
+      highlightTimelineIndex(hit.index);
+    }
+
+    function timelineActionCrosshairHit(event) {
       const scroll = $("timelineScroll");
       const trainer = timelineTrainerAtPointer(event);
       if (!scroll || !trainer) return null;
@@ -4246,33 +4252,39 @@
       const candidates = [];
       timeline.forEach((timelineEvent, index) => {
         if (timelineEvent.trainer !== trainer) return;
+        let ranges = [];
         if (timelineEvent.kind === "fast") {
-          timelineFastHitRanges(timelineEvent, chargeSlots, chargeStarts, turnPx).forEach(range => {
-            const distance = timelineRangeDistance(contentX, range.start, range.end);
-            if (distance <= range.tolerance) candidates.push({ index, distance, isSwipe: false });
-          });
+          ranges = timelineFastHitRanges(timelineEvent, chargeSlots, chargeStarts, turnPx);
         } else if (timelineEvent.kind === "charge") {
-          timelineChargeHitRanges(timelineEvent, index, chargeSlots, turnPx).forEach(range => {
-            const distance = timelineRangeDistance(contentX, range.start, range.end);
-            if (distance <= range.tolerance) candidates.push({ index, distance, isSwipe: range.isSwipe });
-          });
+          ranges = timelineChargePreviewRanges(timelineEvent, index, chargeSlots, turnPx);
         }
+        ranges.forEach(range => {
+          const distance = timelineRangeDistance(contentX, range.start, range.end);
+          if (distance <= range.tolerance) candidates.push({ index, distance, previous: false, end: range.end });
+          else if (contentX > range.end) candidates.push({ index, distance: contentX - range.end, previous: true, end: range.end });
+        });
       });
       if (!candidates.length) return null;
-      candidates.sort((a, b) => a.distance - b.distance || (a.isSwipe === b.isSwipe ? 0 : a.isSwipe ? 1 : -1));
+      const exact = candidates.filter(candidate => !candidate.previous);
+      if (exact.length) {
+        exact.sort((a, b) => a.distance - b.distance);
+        return exact[0];
+      }
+      candidates.sort((a, b) => b.end - a.end);
       return candidates[0];
     }
 
     function timelineTrainerAtPointer(event) {
       const rowA = $("p1Timeline").getBoundingClientRect();
       const rowB = $("p2Timeline").getBoundingClientRect();
+      const scroll = $("timelineScroll").getBoundingClientRect();
       const y = event.clientY;
       if (y >= rowA.top && y <= rowA.bottom) return "A";
       if (y >= rowB.top && y <= rowB.bottom) return "B";
       const centerA = rowA.top + rowA.height / 2;
       const centerB = rowB.top + rowB.height / 2;
       const closest = Math.abs(y - centerA) <= Math.abs(y - centerB) ? { trainer: "A", distance: Math.abs(y - centerA) } : { trainer: "B", distance: Math.abs(y - centerB) };
-      return closest.distance <= 14 ? closest.trainer : null;
+      return y >= scroll.top && y <= scroll.bottom ? closest.trainer : null;
     }
 
     function timelineFastHitRanges(timelineEvent, chargeSlots, chargeStarts, turnPx) {
@@ -4281,6 +4293,7 @@
       return points.slice(0, -1).map((start, index) => {
         const end = points[index + 1];
         if (end <= start) return null;
+        if (points.length > 2 && index > 0) return null;
         const isSneak = chargeStarts.includes(start);
         const visualStart = isSneak
           ? visualTurn(start, chargeSlots, false) + .42
@@ -4292,17 +4305,13 @@
       }).filter(Boolean);
     }
 
-    function timelineChargeHitRanges(timelineEvent, index, chargeSlots, turnPx) {
+    function timelineChargePreviewRanges(timelineEvent, index, chargeSlots, turnPx) {
       const baseTurn = chargeVisualTurn(timelineEvent, index, chargeSlots);
       const center = (baseTurn + chargeWindowTurns) * turnPx;
       const width = Math.max(34, Math.min(46, turnPx + 18));
-      const markerStart = center - width / 2;
-      const markerEnd = center + width / 2;
-      const trailStart = Math.max(0, baseTurn * turnPx + 4);
-      const trailEnd = markerStart - 6;
-      const ranges = [{ start: markerStart - 8, end: markerEnd + 8, tolerance: 8, isSwipe: false }];
-      if (trailEnd > trailStart) ranges.push({ start: trailStart, end: trailEnd, tolerance: Math.max(5, turnPx * .25), isSwipe: true });
-      return ranges;
+      const start = center - width / 2;
+      const end = center + width / 2;
+      return [{ start: start - 5, end: end + 5, tolerance: 6 }];
     }
 
     function timelineRangeDistance(x, start, end) {
@@ -4310,28 +4319,20 @@
       return Math.min(Math.abs(x - start), Math.abs(x - end));
     }
 
-    function updateTimelineMoveTooltip(event, useCrosshairHit = false) {
-      const hit = useCrosshairHit ? timelineCrosshairHit(event) : null;
-      const block = hit ? null : event.target.closest(".timeline-block[data-event-index], .charge-trail[data-event-index]");
+    function updateTimelineMoveTooltip(event) {
+      const block = event.target.closest(".timeline-block[data-event-index], .charge-trail[data-event-index]");
       const tooltip = $("timelineMoveTooltip");
       const scroll = $("timelineScroll");
-      if ((!hit && !block) || !tooltip || !scroll) {
+      if (!block || !tooltip || !scroll) {
         hideTimelineMoveTooltip();
-        if (useCrosshairHit) clearTimelinePreview();
         return;
       }
-      const eventIndex = hit ? hit.index : Number(block.dataset.eventIndex);
-      const timelineEvent = timeline[eventIndex];
+      const timelineEvent = timeline[Number(block.dataset.eventIndex)];
       if (!timelineEvent || (timelineEvent.kind !== "fast" && timelineEvent.kind !== "charge" && timelineEvent.kind !== "shield")) {
         hideTimelineMoveTooltip();
-        if (useCrosshairHit) clearTimelinePreview();
         return;
       }
-      if (useCrosshairHit) {
-        previewTimelineState(eventIndex);
-        highlightTimelineIndex(eventIndex);
-      }
-      const isSwipe = hit ? hit.isSwipe : block.classList.contains("charge-trail") || block.classList.contains("charge-dot");
+      const isSwipe = block.classList.contains("charge-trail") || block.classList.contains("charge-dot");
       const color = timelineEvent.kind === "shield" ? "#d7a6e7" : typeColors[timelineEvent.move.type] || "#156f8f";
       const rect = scroll.getBoundingClientRect();
       const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
