@@ -1135,6 +1135,7 @@
     .timeline-scroll {
       grid-column: 2;
       grid-row: 1 / span 3;
+      position: relative;
       overflow-x: auto;
       overflow-y: hidden;
       border: 1px solid #cfd7e1;
@@ -1145,10 +1146,57 @@
       padding-bottom: 14px;
       scrollbar-gutter: stable;
     }
+    .timeline-hover-line {
+      position: absolute;
+      top: 0;
+      bottom: 14px;
+      left: 0;
+      width: 1px;
+      background: rgba(21, 111, 143, .72);
+      box-shadow: 0 0 0 1px rgba(21, 111, 143, .12);
+      opacity: 0;
+      transform: translateX(-1px);
+      pointer-events: none;
+      z-index: 20;
+    }
+    .timeline-hover-label {
+      position: absolute;
+      top: 3px;
+      left: 0;
+      min-width: 44px;
+      padding: 2px 6px;
+      border: 1px solid rgba(21, 111, 143, .32);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .94);
+      color: #0f526b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-align: center;
+      opacity: 0;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 21;
+      box-shadow: 0 2px 6px rgba(23, 33, 47, .12);
+      white-space: nowrap;
+    }
+    .timeline-scroll.hovering .timeline-hover-line,
+    .timeline-scroll.hovering .timeline-hover-label {
+      opacity: 1;
+    }
     body[data-theme="dark"] .timeline-scroll,
     body[data-theme="dark"] .timeline-track {
       background: var(--soft);
       border-color: var(--line);
+    }
+    body[data-theme="dark"] .timeline-hover-line {
+      background: rgba(109, 196, 224, .82);
+      box-shadow: 0 0 0 1px rgba(109, 196, 224, .16);
+    }
+    body[data-theme="dark"] .timeline-hover-label {
+      background: rgba(20, 34, 45, .96);
+      border-color: rgba(109, 196, 224, .34);
+      color: #bce8f5;
     }
     .timeline-label {
       color: var(--muted);
@@ -2385,6 +2433,8 @@
           <div class="timeline-label" id="p1TimelineLabel">A</div>
           <div class="timeline-label" id="p2TimelineLabel">B</div>
           <div class="timeline-scroll" id="timelineScroll">
+            <div class="timeline-hover-line" id="timelineHoverLine"></div>
+            <div class="timeline-hover-label" id="timelineHoverLabel"></div>
             <div class="timeline-ruler" id="timelineRuler"></div>
             <div class="timeline-track" id="p1Timeline"></div>
             <div class="timeline-track" id="p2Timeline"></div>
@@ -2453,6 +2503,7 @@
     let previewingTimeline = false;
     let previewTimelineIndex = null;
     let selectedTimelineIndex = null;
+    let lastTimelineHoverClientX = null;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -2612,6 +2663,20 @@
         highlightTimelineIndex(selectedTimelineIndex);
         openEventModal(selectedTimelineIndex);
       });
+      $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
+      $("timelineScroll").addEventListener("pointermove", updateTimelineHover);
+      $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
+      $("timelineScroll").addEventListener("pointerleave", hideTimelineHover);
+      $("timelineScroll").addEventListener("pointerup", hideTimelineHover);
+      $("timelineScroll").addEventListener("touchstart", updateTimelineHoverFromTouch, { passive: true });
+      $("timelineScroll").addEventListener("touchmove", updateTimelineHoverFromTouch, { passive: true });
+      $("timelineScroll").addEventListener("touchend", hideTimelineHover);
+      $("timelineScroll").addEventListener("touchcancel", hideTimelineHover);
+      $("timelineScroll").addEventListener("scroll", () => {
+        if ($("timelineScroll").classList.contains("hovering") && lastTimelineHoverClientX !== null) {
+          updateTimelineHover({ clientX: lastTimelineHoverClientX });
+        }
+      }, { passive: true });
       window.addEventListener("resize", renderTimeline);
       $("p1UseFast").onclick = () => useFast(left, right);
       $("p1UseCharge1").onclick = () => useCharge(left, right, 0);
@@ -3669,6 +3734,38 @@
     function closeEventModal() {
       $("eventModal").classList.remove("open");
       $("eventModal").setAttribute("aria-hidden", "true");
+    }
+
+    function updateTimelineHoverFromTouch(event) {
+      if (!event.touches || !event.touches.length) return;
+      updateTimelineHover(event.touches[0]);
+    }
+
+    function updateTimelineHover(event) {
+      const scroll = $("timelineScroll");
+      const line = $("timelineHoverLine");
+      const label = $("timelineHoverLabel");
+      const rulerLane = $("timelineRuler").querySelector(".timeline-lane");
+      if (!scroll || !line || !label || !rulerLane) return;
+      lastTimelineHoverClientX = event.clientX;
+      const rect = scroll.getBoundingClientRect();
+      const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+      const contentX = scroll.scrollLeft + visibleX;
+      const turnPx = Number.parseFloat($("timelineRuler").style.getPropertyValue("--turn-px")) || 18;
+      const maxContentX = Math.max(0, rulerLane.offsetWidth);
+      const clampedContentX = Math.max(0, Math.min(maxContentX, contentX));
+      const turn = clampedContentX / Math.max(1, turnPx);
+      const seconds = turn * .5;
+      const labelVisibleX = Math.max(34, Math.min(rect.width - 34, visibleX));
+      line.style.left = `${clampedContentX}px`;
+      label.style.left = `${scroll.scrollLeft + labelVisibleX}px`;
+      label.textContent = `T${turn.toFixed(1)} / ${seconds.toFixed(1)}s`;
+      scroll.classList.add("hovering");
+    }
+
+    function hideTimelineHover() {
+      lastTimelineHoverClientX = null;
+      $("timelineScroll").classList.remove("hovering");
     }
 
     function renderTimeline() {
