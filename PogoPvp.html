@@ -3326,6 +3326,7 @@
       const buffMessages = applyMoveBuffs(attacker, defender, move);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
       chargeEvent.buffs = buffMessages;
+      chargeEvent.unshieldedDamage = unshieldedDamage;
       defender.chargedTaken++;
       const buffText = buffMessages.length ? ` Buff: ${buffMessages.join(", ")}.` : "";
       if (shielded) {
@@ -3388,6 +3389,7 @@
         move,
         kind: "shield",
         damage: 1,
+        absorbedDamage: chargeEvent.unshieldedDamage,
         shielded: true,
         start: chargeEvent.start,
         chargeEvent,
@@ -3844,11 +3846,12 @@
         return;
       }
       const timelineEvent = timeline[Number(block.dataset.eventIndex)];
-      if (!timelineEvent || (timelineEvent.kind !== "fast" && timelineEvent.kind !== "charge")) {
+      if (!timelineEvent || (timelineEvent.kind !== "fast" && timelineEvent.kind !== "charge" && timelineEvent.kind !== "shield")) {
         hideTimelineMoveTooltip();
         return;
       }
-      const color = typeColors[timelineEvent.move.type] || "#156f8f";
+      const isSwipe = block.classList.contains("charge-trail") || block.classList.contains("charge-dot");
+      const color = timelineEvent.kind === "shield" ? "#d7a6e7" : typeColors[timelineEvent.move.type] || "#156f8f";
       const rect = scroll.getBoundingClientRect();
       const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
       const visibleY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
@@ -3858,7 +3861,7 @@
       tooltip.style.borderColor = darken(color, .12);
       tooltip.style.color = "#111";
       tooltip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      tooltip.innerHTML = timelineMoveTooltipHtml(timelineEvent);
+      tooltip.innerHTML = timelineMoveTooltipHtml(timelineEvent, isSwipe);
       tooltip.classList.add("show");
     }
 
@@ -3987,12 +3990,15 @@
       }).join("");
     }
 
-    function timelineMoveTooltipHtml(event) {
-      const lines = timelineMoveTitle(event).split("\n");
-      return `<strong>${escapeHtml(lines[0])}</strong><span>${escapeHtml(lines[1])}</span><span>${escapeHtml(lines[2])}</span>`;
+    function timelineMoveTooltipHtml(event, isSwipe = false) {
+      const lines = timelineMoveTitle(event, isSwipe).split("\n");
+      return `<strong>${escapeHtml(lines[0] || "")}</strong>` +
+        lines.slice(1).filter(Boolean).map(line => `<span>${escapeHtml(line)}</span>`).join("");
     }
 
-    function timelineMoveTitle(event) {
+    function timelineMoveTitle(event, isSwipe = false) {
+      if (isSwipe) return "Swipe";
+      if (event.kind === "shield") return `Shielded\n${event.absorbedDamage || 0} Absorbed`;
       const state = event.state || {};
       const targetState = event.trainer === "A" ? state.B : state.A;
       const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
