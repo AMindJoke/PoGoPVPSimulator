@@ -1186,7 +1186,7 @@
     .timeline-scroll.hovering .timeline-hover-label {
       opacity: 1;
     }
-    .timeline-fast-tooltip {
+    .timeline-move-tooltip {
       position: absolute;
       left: 0;
       top: 0;
@@ -1205,15 +1205,15 @@
       will-change: transform;
       box-shadow: 0 4px 10px rgba(23, 33, 47, .18);
     }
-    .timeline-fast-tooltip strong {
+    .timeline-move-tooltip strong {
       display: block;
       font-weight: 900;
     }
-    .timeline-fast-tooltip span {
+    .timeline-move-tooltip span {
       display: block;
       font-weight: 500;
     }
-    .timeline-fast-tooltip.show {
+    .timeline-move-tooltip.show {
       opacity: 1;
     }
     body[data-theme="dark"] .timeline-scroll,
@@ -2483,7 +2483,7 @@
           <div class="timeline-scroll" id="timelineScroll">
             <div class="timeline-hover-line" id="timelineHoverLine"></div>
             <div class="timeline-hover-label" id="timelineHoverLabel"></div>
-            <div class="timeline-fast-tooltip" id="timelineFastTooltip"></div>
+            <div class="timeline-move-tooltip" id="timelineMoveTooltip"></div>
             <div class="timeline-ruler" id="timelineRuler"></div>
             <div class="timeline-track" id="p1Timeline"></div>
             <div class="timeline-track" id="p2Timeline"></div>
@@ -2701,13 +2701,13 @@
           const index = Number(block.dataset.eventIndex);
           previewTimelineState(index);
           highlightTimelineIndex(index);
-          updateFastMoveTooltip(event);
+          updateTimelineMoveTooltip(event);
         }
       });
       $("timelineScroll").addEventListener("mouseout", event => {
         if (!event.relatedTarget || !$("timelineScroll").contains(event.relatedTarget)) {
           clearTimelinePreview();
-          hideFastMoveTooltip();
+          hideTimelineMoveTooltip();
         }
       });
       $("timelineScroll").addEventListener("click", event => {
@@ -2715,21 +2715,20 @@
         if (!block) return;
         selectedTimelineIndex = Number(block.dataset.eventIndex);
         highlightTimelineIndex(selectedTimelineIndex);
-        openEventModal(selectedTimelineIndex);
       });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
         updateTimelineHover(event);
-        updateFastMoveTooltip(event);
+        updateTimelineMoveTooltip(event);
       });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
       $("timelineScroll").addEventListener("pointerleave", () => {
         hideTimelineHover();
-        hideFastMoveTooltip();
+        hideTimelineMoveTooltip();
       });
       $("timelineScroll").addEventListener("pointerup", () => {
         hideTimelineHover();
-        hideFastMoveTooltip();
+        hideTimelineMoveTooltip();
       });
       $("timelineScroll").addEventListener("touchstart", updateTimelineHoverFromTouch, { passive: true });
       $("timelineScroll").addEventListener("touchmove", updateTimelineHoverFromTouch, { passive: true });
@@ -3836,17 +3835,17 @@
       $("timelineScroll").classList.remove("hovering");
     }
 
-    function updateFastMoveTooltip(event) {
-      const block = event.target.closest(".timeline-block.fast[data-event-index]");
-      const tooltip = $("timelineFastTooltip");
+    function updateTimelineMoveTooltip(event) {
+      const block = event.target.closest(".timeline-block[data-event-index], .charge-trail[data-event-index]");
+      const tooltip = $("timelineMoveTooltip");
       const scroll = $("timelineScroll");
       if (!block || !tooltip || !scroll) {
-        hideFastMoveTooltip();
+        hideTimelineMoveTooltip();
         return;
       }
       const timelineEvent = timeline[Number(block.dataset.eventIndex)];
-      if (!timelineEvent || timelineEvent.kind !== "fast") {
-        hideFastMoveTooltip();
+      if (!timelineEvent || (timelineEvent.kind !== "fast" && timelineEvent.kind !== "charge")) {
+        hideTimelineMoveTooltip();
         return;
       }
       const color = typeColors[timelineEvent.move.type] || "#156f8f";
@@ -3859,12 +3858,12 @@
       tooltip.style.borderColor = darken(color, .12);
       tooltip.style.color = "#111";
       tooltip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      tooltip.innerHTML = fastTimelineTooltipHtml(timelineEvent);
+      tooltip.innerHTML = timelineMoveTooltipHtml(timelineEvent);
       tooltip.classList.add("show");
     }
 
-    function hideFastMoveTooltip() {
-      $("timelineFastTooltip")?.classList.remove("show");
+    function hideTimelineMoveTooltip() {
+      $("timelineMoveTooltip")?.classList.remove("show");
     }
 
     function renderTimeline() {
@@ -3955,14 +3954,13 @@
         const left = Math.max(2, center - width / 2);
         const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
         const cls = (isShield ? "timeline-block shield" : isCharge ? "timeline-block charge" : "timeline-block") + (selectedTimelineIndex === index ? " selected" : "");
-        const shield = event.shielded ? " | shield: 1 damage" : "";
-        const titleText = isShield
+        const labelText = isShield
           ? `Shield used against ${event.move.name} - turn ${event.start}`
-          : `${event.move.name} - ${title(event.move.type)} - turn ${event.start}${shield} - ${event.damage} damage`;
+          : timelineMoveTitle(event);
         const borderColor = isShield ? "rgba(178, 69, 197, .65)" : darken(color, .18);
         const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index) : "";
         const markers = timelineMarkers(event, index, left + width + 8);
-        return `${trail}<div class="${cls}" data-event-index="${index}" title="${escapeHtml(titleText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
+        return `${trail}<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(labelText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
       }).join("") + `</div>`;
     }
 
@@ -3985,21 +3983,22 @@
         if (isContinuation) return index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
         const cls = `timeline-block fast${isSneak ? " sneak" : ""}${isContinuation ? " continuation" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
         const markers = index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
-        return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(fastTimelineTitle(event))}" style="left:${left}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${markers}`;
+        return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${markers}`;
       }).join("");
     }
 
-    function fastTimelineTooltipHtml(event) {
-      const lines = fastTimelineTitle(event).split("\n");
+    function timelineMoveTooltipHtml(event) {
+      const lines = timelineMoveTitle(event).split("\n");
       return `<strong>${escapeHtml(lines[0])}</strong><span>${escapeHtml(lines[1])}</span><span>${escapeHtml(lines[2])}</span>`;
     }
 
-    function fastTimelineTitle(event) {
+    function timelineMoveTitle(event) {
       const state = event.state || {};
       const targetState = event.trainer === "A" ? state.B : state.A;
       const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
       const damagePct = maxHp ? ` (${(event.damage / maxHp * 100).toFixed(1)}%)` : "";
-      return `${event.move.name}\n${event.damage} damage${damagePct}\n${event.move.energyGain || 0} energy`;
+      const energy = event.kind === "fast" ? event.move.energyGain || 0 : event.move.energyCost || 0;
+      return `${event.move.name}\n${event.damage} damage${damagePct}\n${energy} energy`;
     }
 
     function chargeTrail(startX, center, width, color, eventIndex) {
