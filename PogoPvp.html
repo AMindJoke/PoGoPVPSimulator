@@ -2939,6 +2939,7 @@
     let right = null;
     let log = [];
     let timeline = [];
+    let initialTimelineState = null;
     let battleTurns = { A: 0, B: 0 };
     let previewingTimeline = false;
     let previewTimelineIndex = null;
@@ -3103,7 +3104,6 @@
       });
       $("timelineScroll").addEventListener("mouseout", event => {
         if (!event.relatedTarget || !$("timelineScroll").contains(event.relatedTarget)) {
-          clearTimelinePreview();
           hideTimelineMoveTooltip();
         }
       });
@@ -3121,8 +3121,8 @@
         updateTimelineMoveTooltip(event);
       });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
-      $("timelineScroll").addEventListener("pointerleave", () => {
-        hideTimelineHover();
+      $("timelineScroll").addEventListener("pointerleave", event => {
+        handleTimelinePointerLeave(event);
         clearTimelineLaneHover();
         hideTimelineMoveTooltip();
       });
@@ -4048,6 +4048,7 @@
       right = create("p2", "B");
       log = [];
       timeline = [];
+      initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       render();
@@ -4233,8 +4234,13 @@
       if (previewingTimeline && previewTimelineIndex === index) return;
       previewingTimeline = true;
       previewTimelineIndex = index;
-      if (event.state.A) renderResourceBars("p1", event.state.A.hp, event.state.A.maxHp, event.state.A.energy);
-      if (event.state.B) renderResourceBars("p2", event.state.B.hp, event.state.B.maxHp, event.state.B.energy);
+      renderTimelineState(event.state);
+    }
+
+    function renderTimelineState(state) {
+      if (!state) return;
+      if (state.A) renderResourceBars("p1", state.A.hp, state.A.maxHp, state.A.energy);
+      if (state.B) renderResourceBars("p2", state.B.hp, state.B.maxHp, state.B.energy);
     }
 
     function highlightTimelineIndex(index) {
@@ -4354,6 +4360,40 @@
       lastTimelineHoverClientX = null;
       lastTimelineHoverText = "";
       $("timelineScroll").classList.remove("hovering");
+    }
+
+    function handleTimelinePointerLeave(event) {
+      const scroll = $("timelineScroll");
+      if (!scroll) return;
+      const rect = scroll.getBoundingClientRect();
+      if (event.clientX <= rect.left) {
+        updateTimelineHover({ clientX: rect.left });
+        previewingTimeline = true;
+        previewTimelineIndex = "start";
+        renderTimelineState(initialTimelineState);
+        clearTimelineHighlight();
+        return;
+      }
+      if (event.clientX >= rect.right) {
+        updateTimelineHover({ clientX: rect.right });
+        previewingTimeline = true;
+        previewTimelineIndex = "end";
+        if (left) renderResourceBars("p1", left.hp, left.maxHp, left.energy);
+        if (right) renderResourceBars("p2", right.hp, right.maxHp, right.energy);
+        if (timeline.length) highlightTimelineIndex(timeline.length - 1);
+        return;
+      }
+      updateTimelineHover({ clientX: Math.max(rect.left, Math.min(rect.right, event.clientX)) });
+    }
+
+    function clearTimelineHighlight() {
+      document.querySelectorAll(".timeline-block.previewed, .timeline-marker.previewed").forEach(el => el.classList.remove("previewed"));
+      document.querySelectorAll(".timeline-block.ghosted").forEach(el => el.classList.remove("ghosted"));
+      document.querySelectorAll(".trainer-card.timeline-focus").forEach(el => el.classList.remove("timeline-focus"));
+      document.querySelectorAll(".timeline-block.selected, .timeline-marker.selected").forEach(el => el.classList.remove("selected"));
+      if (selectedTimelineIndex !== null) {
+        document.querySelectorAll(`[data-event-index="${selectedTimelineIndex}"]`).forEach(el => el.classList.add("selected"));
+      }
     }
 
     function updateTimelineLaneHover(event) {
