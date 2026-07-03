@@ -147,6 +147,27 @@
     .moves-stack {
       margin-top: 8px;
     }
+    .moves-stack .hp,
+    .moves-stack .resource-row {
+      margin-bottom: 0;
+    }
+    .moves-stack .hp {
+      width: 100%;
+      max-width: 282px;
+      justify-self: center;
+      height: 22px;
+      border-radius: 5px;
+      border-color: #aeb9c5;
+      background: #17212f;
+      box-shadow: inset 0 1px 2px rgba(23, 33, 47, .12);
+    }
+    .moves-stack .resource-row {
+      width: 100%;
+      max-width: 282px;
+      justify-self: center;
+      justify-items: center;
+      margin-top: 6px;
+    }
     .section-kicker {
       display: flex;
       align-items: center;
@@ -441,25 +462,22 @@
     }
     .advanced-body {
       display: grid;
-      gap: 6px;
-      padding: 0 7px 7px;
+      justify-items: center;
+      gap: 7px;
+      padding: 0 8px 8px;
     }
     .advanced-body .iv-row {
       padding: 0;
+      grid-template-columns: repeat(4, 48px);
+      justify-content: center;
     }
-    .advanced-body .meta-ai-row,
-    .advanced-body .stat-bars {
-      max-width: 270px;
-    }
-    .advanced-body .overall {
-      max-width: 270px;
-    }
-    .advanced-body .meta-ai-row,
-    .advanced-body .stat-bars {
+    .advanced-body .meta-ai-row {
+      width: 100%;
+      max-width: 248px;
       margin: 0;
-    }
-    .advanced-body .overall {
-      margin: 0 0 0 6px;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      padding: 0;
     }
     .iv-row {
       display: grid;
@@ -483,15 +501,18 @@
       padding-left: 4px;
       padding-right: 4px;
     }
+    .cp-iv-field {
+      display: none;
+    }
     .iv-row input {
       min-width: 0;
     }
     .iv-row input::placeholder { color: #6f7c8c; }
     .rank-meter {
-      width: 122px;
+      width: 150px;
       max-width: 100%;
       margin: 0;
-      padding: 5px 7px;
+      padding: 5px 9px;
       border: 1px solid var(--line);
       border-radius: 999px;
       background: linear-gradient(90deg, #1fb878, #d6ad39, #d94c4c);
@@ -506,11 +527,19 @@
       text-shadow: 0 1px 1px rgba(0, 0, 0, .28);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
     }
-    .rank-bait-row {
-      display: contents;
+    .rank-meter strong {
+      font-size: 13px;
+      font-weight: 950;
     }
-    .rank-bait-row .bait-control {
-      justify-self: start;
+    .rank-meter span {
+      opacity: .72;
+      font-weight: 750;
+    }
+    .rank-bait-row {
+      display: grid;
+      width: 100%;
+      justify-items: center;
+      gap: 6px;
     }
     .legacy-rank-bait-row {
       display: flex;
@@ -523,7 +552,9 @@
     .bait-control {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
+      width: 100%;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
@@ -903,65 +934,81 @@
     .energy-panel {
       width: 100%;
       min-width: 0;
-      padding: 6px 8px 7px;
-      border: 1px solid #d7c06b;
-      border-radius: 8px;
-      background: #fff9de;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       display: grid;
-      align-content: center;
-      gap: 5px;
-      box-shadow: none;
-    }
-    .energy-head {
-      display: flex;
-      justify-content: space-between;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
       align-items: center;
-      gap: 8px;
-      color: #6a5421;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .energy-head strong {
-      color: #1f2c38;
-      font-size: 14px;
-      font-weight: 900;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .72);
+      gap: 9px;
       box-shadow: none;
     }
-    .energy-track {
-      height: 12px;
+    .energy-core {
+      display: grid;
+      justify-items: center;
+      gap: 0;
+      color: var(--ink);
+      line-height: 1;
+      min-width: 0;
+    }
+    .energy-core strong {
+      font-size: 18px;
+      font-weight: 950;
+    }
+    .energy-core span {
+      font-size: 11px;
+      font-weight: 850;
+      color: #111827;
+    }
+    .energy-orb {
+      --move-color: #67c7b8;
+      --move-color-strong: #1fae98;
+      position: relative;
+      width: 38px;
+      height: 38px;
+      justify-self: center;
       overflow: hidden;
       border-radius: 999px;
-      background: #eadfa9;
-      border: 1px solid rgba(124, 94, 20, .28);
-      box-shadow: inset 0 1px 2px rgba(92, 69, 16, .16);
-      position: relative;
+      border: 2px solid color-mix(in srgb, var(--move-color) 70%, #17212f);
+      background: color-mix(in srgb, var(--move-color) 78%, #fff);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.5), 0 1px 3px rgba(23,33,47,.14);
     }
-    .energy-fill {
-      width: 0%;
-      height: 100%;
-      border-radius: inherit;
-      background: #d6ad39;
-      transition: width .15s ease;
-      box-shadow: none;
+    .energy-orb-fill,
+    .energy-orb-overfill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--fill, 0%);
+      transition: height .18s ease;
+    }
+    .energy-orb-fill {
+      background: color-mix(in srgb, var(--move-color) 88%, #fff);
+    }
+    .energy-orb-overfill {
+      height: var(--overfill, 0%);
+      background: var(--move-color-strong);
+      opacity: .92;
+    }
+    .energy-orb-label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 950;
+      text-shadow: 0 1px 2px rgba(0,0,0,.34);
+      z-index: 2;
+      letter-spacing: 0;
     }
     body[data-theme="dark"] .energy-panel {
-      background: #282618;
-      border-color: #6e612b;
+      background: transparent;
+      border-color: transparent;
     }
-    body[data-theme="dark"] .energy-head,
-    body[data-theme="dark"] .energy-head strong {
-      color: var(--ink);
-    }
-    body[data-theme="dark"] .energy-head strong {
-      background: rgba(255, 255, 255, .08);
-    }
-    body[data-theme="dark"] .energy-track {
-      background: #4a4224;
-      border-color: #6e612b;
+    body[data-theme="dark"] .energy-core span {
+      color: var(--muted);
     }
     .manual-panel {
       width: 100%;
@@ -2121,18 +2168,22 @@
       }
       .energy-panel {
         min-width: 0;
-        padding: 5px 6px;
+        padding: 0;
         gap: 3px;
+        grid-template-columns: 36px minmax(0, 1fr) 36px;
       }
-      .energy-head {
+      .energy-orb {
+        width: 32px;
+        height: 32px;
+      }
+      .energy-orb-label {
         font-size: 10px;
       }
-      .energy-head strong {
-        font-size: 11px;
-        padding: 0 4px;
+      .energy-core strong {
+        font-size: 15px;
       }
-      .energy-track {
-        height: 9px;
+      .energy-core span {
+        font-size: 9px;
       }
       .stat-bars {
         gap: 3px;
@@ -2397,8 +2448,6 @@
       .advanced-body .iv-row {
         padding: 0;
       }
-      .iv-field:has(#p1Level),
-      .iv-field:has(#p2Level),
       .iv-field:has(#p1Cp),
       .iv-field:has(#p2Cp) {
         display: none;
@@ -2473,17 +2522,21 @@
         font-size: 9px;
       }
       .energy-panel {
-        padding: 4px;
+        padding: 0;
+        grid-template-columns: 30px minmax(0, 1fr) 30px;
       }
-      .energy-head {
+      .energy-orb {
+        width: 28px;
+        height: 28px;
+      }
+      .energy-orb-label {
         font-size: 8px;
       }
-      .energy-head strong {
-        font-size: 9px;
-        padding: 0 3px;
+      .energy-core strong {
+        font-size: 13px;
       }
-      .energy-track {
-        height: 7px;
+      .energy-core span {
+        font-size: 8px;
       }
       .stat-bars {
         padding: 4px;
@@ -2613,6 +2666,8 @@
             <img id="p1BattleImg" alt="">
             <div><strong id="p1BattleName"></strong><span id="p1BattleMeta"></span><div id="p1Types" class="type-badges"></div></div>
           </div>
+          <div id="p1StatBars" class="stat-bars"></div>
+          <div id="p1Overall" class="overall"></div>
           <details class="iv-details advanced-panel">
             <summary>Advanced</summary>
             <div class="advanced-body">
@@ -2621,11 +2676,11 @@
                 <span class="iv-field"><input id="p1IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
                 <span class="iv-field"><input id="p1IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
                 <span class="iv-field"><input id="p1IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
-                <span class="iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+                <span class="iv-field cp-iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
               </span>
               <div class="meta-ai-row">
                 <div class="rank-bait-row">
-                  <div id="p1RankMeter" class="rank-meter">Rank -/4096</div>
+                  <div id="p1RankMeter" class="rank-meter"><strong>Rank -</strong><span>/4096</span></div>
                   <input id="p1Baiting" type="hidden" value="selective">
                   <div class="bait-control">
                     <span>Baiting</span>
@@ -2637,13 +2692,9 @@
                   </div>
                 </div>
               </div>
-              <div id="p1StatBars" class="stat-bars"></div>
-              <div id="p1Overall" class="overall"></div>
             </div>
           </details>
-          <div class="hp"><div id="p1Hp"></div><span id="p1HpText" class="hp-text"></span></div>
-          <div class="resource-row">
-            <div id="p1EnergyPanel" class="energy-panel"></div>
+          <div class="resource-row shield-only-row">
             <div class="section-kicker shields-kicker">Shields</div>
             <div class="shield-resource-row">
               <div class="shield-row">
@@ -2666,6 +2717,10 @@
           <label>Fast <select id="p1Fast" class="move-select"></select></label>
           <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
           <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
+          <div class="hp"><div id="p1Hp"></div><span id="p1HpText" class="hp-text"></span></div>
+          <div class="resource-row">
+            <div id="p1EnergyPanel" class="energy-panel"></div>
+          </div>
         </div>
       </section>
       <section class="trainer-card b">
@@ -2687,6 +2742,8 @@
             <img id="p2BattleImg" alt="">
             <div><strong id="p2BattleName"></strong><span id="p2BattleMeta"></span><div id="p2Types" class="type-badges"></div></div>
           </div>
+          <div id="p2StatBars" class="stat-bars"></div>
+          <div id="p2Overall" class="overall"></div>
           <details class="iv-details advanced-panel">
             <summary>Advanced</summary>
             <div class="advanced-body">
@@ -2695,11 +2752,11 @@
                 <span class="iv-field"><input id="p2IvAtk" class="short-input" type="number" min="0" max="15" title="Attack IV" placeholder="Atk"><span>Atk</span></span>
                 <span class="iv-field"><input id="p2IvDef" class="short-input" type="number" min="0" max="15" title="Defense IV" placeholder="Def"><span>Def</span></span>
                 <span class="iv-field"><input id="p2IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
-                <span class="iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
+                <span class="iv-field cp-iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
               </span>
               <div class="meta-ai-row">
                 <div class="rank-bait-row">
-                  <div id="p2RankMeter" class="rank-meter">Rank -/4096</div>
+                  <div id="p2RankMeter" class="rank-meter"><strong>Rank -</strong><span>/4096</span></div>
                   <input id="p2Baiting" type="hidden" value="selective">
                   <div class="bait-control">
                     <span>Baiting</span>
@@ -2711,13 +2768,9 @@
                   </div>
                 </div>
               </div>
-              <div id="p2StatBars" class="stat-bars"></div>
-              <div id="p2Overall" class="overall"></div>
             </div>
           </details>
-          <div class="hp"><div id="p2Hp"></div><span id="p2HpText" class="hp-text"></span></div>
-          <div class="resource-row">
-            <div id="p2EnergyPanel" class="energy-panel"></div>
+          <div class="resource-row shield-only-row">
             <div class="section-kicker shields-kicker">Shields</div>
             <div class="shield-resource-row">
               <div class="shield-row">
@@ -2740,6 +2793,10 @@
           <label>Fast <select id="p2Fast" class="move-select"></select></label>
           <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
           <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
+          <div class="hp"><div id="p2Hp"></div><span id="p2HpText" class="hp-text"></span></div>
+          <div class="resource-row">
+            <div id="p2EnergyPanel" class="energy-panel"></div>
+          </div>
         </div>
       </section>
     </div>
@@ -3985,10 +4042,34 @@
     }
 
     function renderEnergy(id, energy) {
-      const pct = Math.max(0, Math.min(100, energy));
+      const prefix = id.slice(0, 2);
+      const combatant = prefix === "p1" ? left : right;
+      const charged = combatant && combatant.charged ? combatant.charged : [];
       $(id).innerHTML =
-        `<div class="energy-head"><span>Energy</span><strong>${energy}/100</strong></div>` +
-        `<div class="energy-track"><div class="energy-fill" style="width:${pct}%"></div></div>`;
+        `${energyMoveOrb(charged[0], energy)}` +
+        `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>` +
+        `${energyMoveOrb(charged[1], energy)}`;
+    }
+
+    function energyMoveOrb(move, energy) {
+      if (!move) {
+        return `<div class="energy-orb" aria-hidden="true"><span class="energy-orb-label">-</span></div>`;
+      }
+      const cost = Math.max(1, Number(move.energyCost || 1));
+      const fill = Math.max(0, Math.min(100, energy / cost * 100));
+      const overfill = Math.max(0, Math.min(100, (energy - cost) / cost * 100));
+      const color = typeColors[move.type] || "#67c7b8";
+      const strongColor = darken(color, .16);
+      const label = energyMoveLabel(move);
+      return `<div class="energy-orb" title="${escapeHtml(move.name)} - ${cost} energy" style="--move-color:${color};--move-color-strong:${strongColor};--fill:${fill}%;--overfill:${overfill}%">` +
+        `<span class="energy-orb-fill"></span>` +
+        `<span class="energy-orb-overfill"></span>` +
+        `<span class="energy-orb-label">${escapeHtml(label)}</span>` +
+        `</div>`;
+    }
+
+    function energyMoveLabel(move) {
+      return moveShortLabel(move).replace(/\s+/g, "").slice(0, 3).toUpperCase();
     }
 
     function renderTypeBadges(prefix, types) {
@@ -4024,7 +4105,7 @@
       if (!meter || !stats.rank) return;
       const pct = Math.max(0, Math.min(1, stats.rankPercent || 0));
       const hue = Math.round(5 + pct * 135);
-      meter.textContent = `Rank #${stats.rank}/4096`;
+      meter.innerHTML = `<strong>Rank #${stats.rank}</strong><span>/4096</span>`;
       meter.style.borderColor = `hsl(${hue}, 48%, 38%)`;
       meter.style.background = `linear-gradient(90deg, hsl(${hue}, 68%, 42%), hsl(${Math.max(0, hue - 22)}, 70%, 52%))`;
     }
