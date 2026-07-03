@@ -1155,9 +1155,10 @@
       background: rgba(21, 111, 143, .72);
       box-shadow: 0 0 0 1px rgba(21, 111, 143, .12);
       opacity: 0;
-      transform: translateX(-1px);
+      transform: translate3d(-1px, 0, 0);
       pointer-events: none;
       z-index: 20;
+      will-change: transform;
     }
     .timeline-hover-label {
       position: absolute;
@@ -1174,14 +1175,45 @@
       line-height: 1.1;
       text-align: center;
       opacity: 0;
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
       pointer-events: none;
       z-index: 21;
       box-shadow: 0 2px 6px rgba(23, 33, 47, .12);
       white-space: nowrap;
+      will-change: transform;
     }
     .timeline-scroll.hovering .timeline-hover-line,
     .timeline-scroll.hovering .timeline-hover-label {
+      opacity: 1;
+    }
+    .timeline-fast-tooltip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 118px;
+      max-width: 170px;
+      padding: 5px 8px;
+      border: 1px solid rgba(0, 0, 0, .24);
+      border-radius: 6px;
+      color: #111;
+      font-size: 12px;
+      line-height: 1.18;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+      box-shadow: 0 4px 10px rgba(23, 33, 47, .18);
+    }
+    .timeline-fast-tooltip strong {
+      display: block;
+      font-weight: 900;
+    }
+    .timeline-fast-tooltip span {
+      display: block;
+      font-weight: 500;
+    }
+    .timeline-fast-tooltip.show {
       opacity: 1;
     }
     body[data-theme="dark"] .timeline-scroll,
@@ -1302,6 +1334,22 @@
       box-shadow: 0 0 0 3px rgba(21, 111, 143, .28), 0 0 12px rgba(21, 111, 143, .28);
       z-index: 5;
     }
+    .timeline-block.fast {
+      top: 7px;
+      height: 9px;
+      width: 9px;
+      padding: 0;
+      border-radius: 2px;
+      text-shadow: none;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .6);
+    }
+    .timeline-block.fast:hover,
+    .timeline-block.fast.previewed,
+    .timeline-block.fast.selected {
+      outline: 2px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 0 3px rgba(21, 111, 143, .24), 0 0 8px rgba(21, 111, 143, .26);
+      z-index: 5;
+    }
     .timeline-block.charge {
       height: 26px;
       top: -1px;
@@ -1368,8 +1416,8 @@
         inset 0 0 0 2px rgba(255, 255, 255, .18);
     }
     .timeline-block.continuation {
-      top: 6px;
-      height: 12px;
+      top: 9px;
+      height: 6px;
       opacity: .72;
       border-style: dashed;
       text-shadow: none;
@@ -2435,6 +2483,7 @@
           <div class="timeline-scroll" id="timelineScroll">
             <div class="timeline-hover-line" id="timelineHoverLine"></div>
             <div class="timeline-hover-label" id="timelineHoverLabel"></div>
+            <div class="timeline-fast-tooltip" id="timelineFastTooltip"></div>
             <div class="timeline-ruler" id="timelineRuler"></div>
             <div class="timeline-track" id="p1Timeline"></div>
             <div class="timeline-track" id="p2Timeline"></div>
@@ -2504,6 +2553,7 @@
     let previewTimelineIndex = null;
     let selectedTimelineIndex = null;
     let lastTimelineHoverClientX = null;
+    let lastTimelineHoverText = "";
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -2651,10 +2701,14 @@
           const index = Number(block.dataset.eventIndex);
           previewTimelineState(index);
           highlightTimelineIndex(index);
+          updateFastMoveTooltip(event);
         }
       });
       $("timelineScroll").addEventListener("mouseout", event => {
-        if (!event.relatedTarget || !$("timelineScroll").contains(event.relatedTarget)) clearTimelinePreview();
+        if (!event.relatedTarget || !$("timelineScroll").contains(event.relatedTarget)) {
+          clearTimelinePreview();
+          hideFastMoveTooltip();
+        }
       });
       $("timelineScroll").addEventListener("click", event => {
         const block = event.target.closest("[data-event-index]");
@@ -2664,10 +2718,19 @@
         openEventModal(selectedTimelineIndex);
       });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
-      $("timelineScroll").addEventListener("pointermove", updateTimelineHover);
+      $("timelineScroll").addEventListener("pointermove", event => {
+        updateTimelineHover(event);
+        updateFastMoveTooltip(event);
+      });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
-      $("timelineScroll").addEventListener("pointerleave", hideTimelineHover);
-      $("timelineScroll").addEventListener("pointerup", hideTimelineHover);
+      $("timelineScroll").addEventListener("pointerleave", () => {
+        hideTimelineHover();
+        hideFastMoveTooltip();
+      });
+      $("timelineScroll").addEventListener("pointerup", () => {
+        hideTimelineHover();
+        hideFastMoveTooltip();
+      });
       $("timelineScroll").addEventListener("touchstart", updateTimelineHoverFromTouch, { passive: true });
       $("timelineScroll").addEventListener("touchmove", updateTimelineHoverFromTouch, { passive: true });
       $("timelineScroll").addEventListener("touchend", hideTimelineHover);
@@ -3757,15 +3820,51 @@
       const turn = clampedContentX / Math.max(1, turnPx);
       const seconds = turn * .5;
       const labelVisibleX = Math.max(34, Math.min(rect.width - 34, visibleX));
-      line.style.left = `${clampedContentX}px`;
-      label.style.left = `${scroll.scrollLeft + labelVisibleX}px`;
-      label.textContent = `T${turn.toFixed(1)} / ${seconds.toFixed(1)}s`;
+      line.style.transform = `translate3d(${clampedContentX}px, 0, 0)`;
+      label.style.transform = `translate3d(${scroll.scrollLeft + labelVisibleX}px, 0, 0) translateX(-50%)`;
+      const hoverText = `T${turn.toFixed(1)} / ${seconds.toFixed(1)}s`;
+      if (hoverText !== lastTimelineHoverText) {
+        label.textContent = hoverText;
+        lastTimelineHoverText = hoverText;
+      }
       scroll.classList.add("hovering");
     }
 
     function hideTimelineHover() {
       lastTimelineHoverClientX = null;
+      lastTimelineHoverText = "";
       $("timelineScroll").classList.remove("hovering");
+    }
+
+    function updateFastMoveTooltip(event) {
+      const block = event.target.closest(".timeline-block.fast[data-event-index]");
+      const tooltip = $("timelineFastTooltip");
+      const scroll = $("timelineScroll");
+      if (!block || !tooltip || !scroll) {
+        hideFastMoveTooltip();
+        return;
+      }
+      const timelineEvent = timeline[Number(block.dataset.eventIndex)];
+      if (!timelineEvent || timelineEvent.kind !== "fast") {
+        hideFastMoveTooltip();
+        return;
+      }
+      const color = typeColors[timelineEvent.move.type] || "#156f8f";
+      const rect = scroll.getBoundingClientRect();
+      const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+      const visibleY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
+      const x = scroll.scrollLeft + Math.max(8, Math.min(rect.width - 126, visibleX + 10));
+      const y = Math.max(4, visibleY - 50);
+      tooltip.style.background = mixColor(color, "#ffffff", .24);
+      tooltip.style.borderColor = darken(color, .12);
+      tooltip.style.color = "#111";
+      tooltip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      tooltip.innerHTML = fastTimelineTooltipHtml(timelineEvent);
+      tooltip.classList.add("show");
+    }
+
+    function hideFastMoveTooltip() {
+      $("timelineFastTooltip")?.classList.remove("show");
     }
 
     function renderTimeline() {
@@ -3869,9 +3968,7 @@
 
     function renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, eventIndex) {
       const color = typeColors[event.move.type] || "#156f8f";
-      const textColor = contrastText(color);
       const borderColor = darken(color, .18);
-      const label = `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
       const cuts = chargeStarts.filter(start => start > event.start && start < event.start + event.duration);
       const points = [event.start, ...cuts, event.start + event.duration];
       return points.slice(0, -1).map((start, index) => {
@@ -3882,15 +3979,27 @@
           ? visualTurn(start, chargeSlots, false) + .42
           : visualTurn(start, chargeSlots, true);
         const width = Math.max(10, (end - start) * turnPx - 4);
+        const size = Math.max(8, Math.min(11, Math.round(turnPx * .6)));
         const left = visualStart * turnPx + 2;
         const isContinuation = points.length > 2 && index > 0;
-        const readyText = reachesChargedEnergy(event) ? " - charged move ready" : "";
-        const titleText = `${event.move.name} - ${title(event.move.type)} - turns ${start}-${end} - ${event.damage} damage${isSneak ? " - sneaked during charged move" : ""}${readyText}`;
         if (isContinuation) return index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
-        const cls = `timeline-block${isSneak ? " sneak" : ""}${isContinuation ? " continuation" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+        const cls = `timeline-block fast${isSneak ? " sneak" : ""}${isContinuation ? " continuation" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
         const markers = index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
-        return `<div class="${cls}" data-event-index="${eventIndex}" title="${escapeHtml(titleText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
+        return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(fastTimelineTitle(event))}" style="left:${left}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${markers}`;
       }).join("");
+    }
+
+    function fastTimelineTooltipHtml(event) {
+      const lines = fastTimelineTitle(event).split("\n");
+      return `<strong>${escapeHtml(lines[0])}</strong><span>${escapeHtml(lines[1])}</span><span>${escapeHtml(lines[2])}</span>`;
+    }
+
+    function fastTimelineTitle(event) {
+      const state = event.state || {};
+      const targetState = event.trainer === "A" ? state.B : state.A;
+      const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
+      const damagePct = maxHp ? ` (${(event.damage / maxHp * 100).toFixed(1)}%)` : "";
+      return `${event.move.name}\n${event.damage} damage${damagePct}\n${event.move.energyGain || 0} energy`;
     }
 
     function chargeTrail(startX, center, width, color, eventIndex) {
@@ -3987,6 +4096,21 @@
       const g = Math.max(0, Math.round(((n >> 8) & 255) * (1 - amount)));
       const b = Math.max(0, Math.round((n & 255) * (1 - amount)));
       return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function mixColor(hex, targetHex, amount) {
+      const a = parseInt(hex.slice(1), 16);
+      const b = parseInt(targetHex.slice(1), 16);
+      const ar = (a >> 16) & 255;
+      const ag = (a >> 8) & 255;
+      const ab = a & 255;
+      const br = (b >> 16) & 255;
+      const bg = (b >> 8) & 255;
+      const bb = b & 255;
+      const r = Math.round(ar + (br - ar) * amount);
+      const g = Math.round(ag + (bg - ag) * amount);
+      const bl = Math.round(ab + (bb - ab) * amount);
+      return `rgb(${r}, ${g}, ${bl})`;
     }
 
     function contrastText(hex) {
