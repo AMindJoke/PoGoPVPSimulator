@@ -198,12 +198,10 @@
       background: transparent;
     }
     body[data-theme="dark"] .control-stack,
-    body[data-theme="dark"] .field-box,
-    body[data-theme="dark"] .stat-bars {
+    body[data-theme="dark"] .field-box {
       background: rgba(32, 43, 58, .72);
     }
     body[data-theme="dark"] .rank-meter,
-    body[data-theme="dark"] .shield-row,
     body[data-theme="dark"] .shield-count-toggle,
     body[data-theme="dark"] .bait-toggle,
     body[data-theme="dark"] .compact-toggle,
@@ -438,6 +436,8 @@
       cursor: pointer;
       list-style: none;
       user-select: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,.38);
     }
     .iv-details summary::-webkit-details-marker {
       display: none;
@@ -448,6 +448,12 @@
       font-size: 13px;
       font-weight: 900;
       line-height: 1;
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(21, 111, 143, .10);
       transition: transform .16s ease;
     }
     .iv-details[open] summary::after {
@@ -458,7 +464,7 @@
     }
     .advanced-panel {
       margin: 8px 0;
-      max-width: 298px;
+      max-width: 282px;
     }
     .advanced-body {
       display: grid;
@@ -798,11 +804,11 @@
       display: grid;
       gap: 4px;
       margin: 8px 0 5px;
-      max-width: 270px;
-      padding: 6px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255,255,255,.66);
+      max-width: 282px;
+      padding: 2px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
     .stat-row {
       display: grid;
@@ -862,10 +868,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 5px;
-      padding: 4px 5px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       min-width: 0;
     }
     .shield-row label {
@@ -1403,9 +1409,9 @@
     }
     .timeline-grid {
       display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
+      grid-template-columns: 54px minmax(0, 1fr);
       grid-template-rows: 18px 38px 54px;
-      gap: 0 8px;
+      gap: 0 7px;
       align-items: stretch;
     }
     .timeline-scroll {
@@ -1508,12 +1514,9 @@
     }
     .timeline-label {
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 650;
-      text-align: right;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       box-sizing: border-box;
       height: 100%;
       line-height: 1.15;
@@ -1522,13 +1525,20 @@
       max-width: 100%;
       overflow: hidden;
     }
-    .timeline-label span {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      max-width: 100%;
-      overflow: hidden;
-      overflow-wrap: anywhere;
+    .timeline-label img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 3px rgba(23,33,47,.18));
+    }
+    .timeline-label img.shadow-pokemon {
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 54%, rgba(143, 79, 184, .25) 0 34%, rgba(143, 79, 184, .13) 35% 56%, transparent 70%),
+        radial-gradient(circle, rgba(98, 49, 158, .18), transparent 72%);
+      filter:
+        drop-shadow(0 0 4px rgba(143, 79, 184, .82))
+        drop-shadow(0 0 9px rgba(92, 45, 145, .55));
     }
     #p1TimelineLabel { grid-column: 1; grid-row: 2; }
     #p2TimelineLabel { grid-column: 1; grid-row: 3; }
@@ -1564,12 +1574,20 @@
       border-top: 1px solid #d7dee8;
       background: #f8fafc;
       padding: 8px 3px;
+      transition: background-color .12s ease;
+    }
+    .timeline-track.lane-hover {
+      background: rgba(21, 111, 143, .06);
     }
     #p1Timeline {
       background: #f4f8fb;
     }
     #p2Timeline {
       background: #f8f5fb;
+    }
+    #p1Timeline.lane-hover,
+    #p2Timeline.lane-hover {
+      background: rgba(21, 111, 143, .07);
     }
     .timeline-lane {
       position: relative;
@@ -2370,11 +2388,15 @@
         gap: 5px;
       }
       .timeline-grid {
-        grid-template-columns: 76px minmax(0, 1fr);
+        grid-template-columns: 42px minmax(0, 1fr);
         gap: 0 5px;
       }
       .timeline-label {
-        font-size: 10px;
+        padding-right: 0;
+      }
+      .timeline-label img {
+        width: 28px;
+        height: 28px;
       }
       .log-head {
         padding: 6px 8px;
@@ -3094,16 +3116,19 @@
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
         updateTimelineHover(event);
+        updateTimelineLaneHover(event);
         updateTimelineActionPreview(event);
         updateTimelineMoveTooltip(event);
       });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
       $("timelineScroll").addEventListener("pointerleave", () => {
         hideTimelineHover();
+        clearTimelineLaneHover();
         hideTimelineMoveTooltip();
       });
       $("timelineScroll").addEventListener("pointerup", () => {
         hideTimelineHover();
+        clearTimelineLaneHover();
         hideTimelineMoveTooltip();
       });
       $("timelineScroll").addEventListener("touchstart", updateTimelineHoverFromTouch, { passive: true });
@@ -4331,6 +4356,17 @@
       $("timelineScroll").classList.remove("hovering");
     }
 
+    function updateTimelineLaneHover(event) {
+      const trainer = timelineTrainerAtPointer(event);
+      $("p1Timeline").classList.toggle("lane-hover", trainer === "A");
+      $("p2Timeline").classList.toggle("lane-hover", trainer === "B");
+    }
+
+    function clearTimelineLaneHover() {
+      $("p1Timeline").classList.remove("lane-hover");
+      $("p2Timeline").classList.remove("lane-hover");
+    }
+
     function updateTimelineActionPreview(event) {
       const hit = timelineActionCrosshairHit(event);
       if (!hit) return;
@@ -4451,12 +4487,14 @@
 
     function renderTimeline() {
       if (left) {
-        $("p1TimelineLabel").innerHTML = `<span>${escapeHtml(`A - ${left.p.name}`)}</span>`;
+        $("p1TimelineLabel").innerHTML = `<img alt="">`;
         $("p1TimelineLabel").title = left.p.name;
+        setPokemonImage($("p1TimelineLabel").querySelector("img"), left.p);
       }
       if (right) {
-        $("p2TimelineLabel").innerHTML = `<span>${escapeHtml(`B - ${right.p.name}`)}</span>`;
+        $("p2TimelineLabel").innerHTML = `<img alt="">`;
         $("p2TimelineLabel").title = right.p.name;
+        setPokemonImage($("p2TimelineLabel").querySelector("img"), right.p);
       }
       const chargeSlots = timelineChargeSlots();
       const chargeStarts = uniqueChargeStarts(chargeSlots);
