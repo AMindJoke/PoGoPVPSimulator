@@ -971,7 +971,7 @@
       overflow: hidden;
       border-radius: 999px;
       border: 2px solid color-mix(in srgb, var(--move-color) 70%, #17212f);
-      background: color-mix(in srgb, var(--move-color) 78%, #fff);
+      background: color-mix(in srgb, var(--move-color) 50%, #fff);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.5), 0 1px 3px rgba(23,33,47,.14);
     }
     .energy-orb-fill,
@@ -1002,6 +1002,23 @@
       text-shadow: 0 1px 2px rgba(0,0,0,.34);
       z-index: 2;
       letter-spacing: 0;
+    }
+    .energy-orb-divider {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      bottom: var(--fill, 0%);
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 1px 2px rgba(23,33,47,.22);
+      transform: translateY(50%);
+      opacity: var(--divider-opacity, 0);
+      z-index: 1;
+    }
+    .energy-orb-over-divider {
+      bottom: var(--overfill, 0%);
+      opacity: var(--over-divider-opacity, 0);
     }
     body[data-theme="dark"] .energy-panel {
       background: transparent;
@@ -4064,6 +4081,8 @@
       return `<div class="energy-orb" title="${escapeHtml(move.name)} - ${cost} energy" style="--move-color:${color};--move-color-strong:${strongColor};--fill:${fill}%;--overfill:${overfill}%">` +
         `<span class="energy-orb-fill"></span>` +
         `<span class="energy-orb-overfill"></span>` +
+        `<span class="energy-orb-divider" style="--divider-opacity:${fill > 0 && fill < 100 ? .95 : 0}"></span>` +
+        `<span class="energy-orb-divider energy-orb-over-divider" style="--over-divider-opacity:${overfill > 0 && overfill < 100 ? .95 : 0}"></span>` +
         `<span class="energy-orb-label">${escapeHtml(label)}</span>` +
         `</div>`;
     }
@@ -4313,7 +4332,6 @@
     }
 
     function updateTimelineActionPreview(event) {
-      if (event.target.closest("[data-event-index]")) return;
       const hit = timelineActionCrosshairHit(event);
       if (!hit) return;
       previewTimelineState(hit.index);
@@ -4322,8 +4340,8 @@
 
     function timelineActionCrosshairHit(event) {
       const scroll = $("timelineScroll");
-      const trainer = timelineTrainerAtPointer(event);
-      if (!scroll || !trainer) return null;
+      const preferredTrainer = timelineTrainerAtPointer(event);
+      if (!scroll) return null;
       const turnPx = Number.parseFloat($("timelineRuler").style.getPropertyValue("--turn-px")) || 18;
       const rect = scroll.getBoundingClientRect();
       const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
@@ -4332,7 +4350,6 @@
       const chargeStarts = uniqueChargeStarts(chargeSlots);
       const candidates = [];
       timeline.forEach((timelineEvent, index) => {
-        if (timelineEvent.trainer !== trainer) return;
         let ranges = [];
         if (timelineEvent.kind === "fast") {
           ranges = timelineFastHitRanges(timelineEvent, chargeSlots, chargeStarts, turnPx);
@@ -4341,8 +4358,9 @@
         }
         ranges.forEach(range => {
           const distance = timelineRangeDistance(contentX, range.start, range.end);
-          if (distance <= range.tolerance) candidates.push({ index, distance, previous: false, end: range.end });
-          else if (contentX > range.end) candidates.push({ index, distance: contentX - range.end, previous: true, end: range.end });
+          const rowPenalty = preferredTrainer && timelineEvent.trainer !== preferredTrainer ? .25 : 0;
+          if (distance <= range.tolerance) candidates.push({ index, distance: distance + rowPenalty, previous: false, end: range.end });
+          else if (contentX > range.end) candidates.push({ index, distance: contentX - range.end + rowPenalty, previous: true, end: range.end });
         });
       });
       if (!candidates.length) return null;
@@ -4379,10 +4397,9 @@
         const visualStart = isSneak
           ? visualTurn(start, chargeSlots, false) + .42
           : visualTurn(start, chargeSlots, true);
-        const visualEnd = visualTurn(end, chargeSlots, false);
-        const startX = visualStart * turnPx;
-        const endX = Math.max(startX + Math.max(10, turnPx * .55), visualEnd * turnPx);
-        return { start: startX - 4, end: endX + 4, tolerance: Math.max(4, turnPx * .28) };
+        const size = Math.max(8, Math.min(11, Math.round(turnPx * .6)));
+        const left = visualStart * turnPx + 2;
+        return { start: left - 4, end: left + size + 4, tolerance: Math.max(4, turnPx * .28) };
       }).filter(Boolean);
     }
 
