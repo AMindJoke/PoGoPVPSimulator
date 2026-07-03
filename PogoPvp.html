@@ -1091,13 +1091,17 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 8px;
       background:
-        linear-gradient(45deg, transparent 42%, #f7c51d 42% 58%, transparent 58%),
-        linear-gradient(-45deg, transparent 42%, #f7c51d 42% 58%, transparent 58%),
-        #156f8f;
+        radial-gradient(circle at 50% 50%, #f7c51d 0 13%, transparent 14%),
+        linear-gradient(90deg, transparent 0 27%, rgba(247, 197, 29, .95) 27% 35%, transparent 35% 65%, rgba(247, 197, 29, .95) 65% 73%, transparent 73%),
+        linear-gradient(0deg, transparent 0 27%, rgba(247, 197, 29, .95) 27% 35%, transparent 35% 65%, rgba(247, 197, 29, .95) 65% 73%, transparent 73%),
+        #12374a;
       border: 2px solid #102532;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.20);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.18),
+        inset 0 -2px 0 rgba(0,0,0,.18);
+      transform: rotate(45deg);
     }
     .battle-cta::after {
       content: none;
@@ -1569,6 +1573,9 @@
       grid-template-columns: 1fr;
       gap: 10px;
       align-items: start;
+    }
+    body:not(.battle-results-visible) .analysis-grid {
+      display: none;
     }
     .log-panel summary.log-head {
       cursor: pointer;
@@ -2510,12 +2517,6 @@
       <button id="battleCta" class="battle-cta">Battle</button>
     </div>
 
-    <section class="key-numbers" id="keyNumbers">
-      <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
-      <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
-      <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
-    </section>
-
     <div class="analysis-grid">
       <section class="timeline">
         <div class="timeline-head">
@@ -2546,6 +2547,12 @@
             <div class="timeline-track" id="p2Timeline"></div>
           </div>
         </div>
+      </section>
+
+      <section class="key-numbers" id="keyNumbers">
+        <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
+        <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
+        <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
       </section>
 
       <section class="manual-panel">
@@ -3581,6 +3588,7 @@
     }
 
     function runBattleToEnd() {
+      document.body.classList.add("battle-results-visible");
       if (!left || !right || battleEnded()) startBattle();
       let guard = 0;
       while (!battleEnded() && guard < 1000) {
