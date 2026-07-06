@@ -3036,7 +3036,7 @@
       ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
       ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
       $("battleCta").onclick = runBattleToEnd;
-      $("reset").onclick = startBattle;
+      $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
       $("logFilter").onchange = renderLog;
@@ -3723,7 +3723,7 @@
     function ready() {
       if (!left || !right) startBattle();
       if (battleEnded()) {
-        add("The battle is over. Press Battle to restart.", "ko");
+        add("The battle is over. Press Reset to start manual testing from turn 0.", "ko");
         return false;
       }
       return true;
@@ -3987,6 +3987,12 @@
       requestAnimationFrame(() => {
         $("battleTimeline")?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
       });
+    }
+
+    function resetForManualBattle() {
+      document.body.classList.add("battle-results-visible");
+      startBattle();
+      scrollTimelineIntoView();
     }
 
     function startBattle() {
