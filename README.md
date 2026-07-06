@@ -1,6 +1,6 @@
 # Pokemon GO PvP Simulator
 
-Browser-based Pokemon GO PvP simulator inspired by PvPoke battle timelines.
+Browser-based Pokemon GO PvP simulator inspired by PvPoke.
 
 ## Open locally
 
