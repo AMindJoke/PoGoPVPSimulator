@@ -1880,6 +1880,25 @@
       padding: 0;
       border-radius: 50%;
     }
+    .decision-body {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .decision-body strong {
+      color: var(--ink);
+    }
+    .decision-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .decision-actions button {
+      min-height: 34px;
+    }
     .detail-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2882,6 +2901,21 @@
     </div>
   </div>
 
+  <div class="modal" id="manualDecisionModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="manualDecisionTitle">Manual decision</h2>
+      </div>
+      <div class="decision-body">
+        <div id="manualDecisionBody"></div>
+        <div class="decision-actions">
+          <button id="manualDecisionNo" class="secondary" type="button">No</button>
+          <button id="manualDecisionYes" type="button">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
@@ -2899,6 +2933,7 @@
     let selectedTimelineIndex = null;
     let lastTimelineHoverClientX = null;
     let lastTimelineHoverText = "";
+    let manualDecisionResolve = null;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -3045,6 +3080,9 @@
       $("eventModal").addEventListener("click", event => {
         if (event.target.id === "eventModal") closeEventModal();
       });
+      $("manualDecisionModal").addEventListener("click", event => {
+        if (event.target.id === "manualDecisionModal") manualDecisionResolve?.(false);
+      });
       $("timelineZoom").onchange = renderTimeline;
       $("timelineScroll").addEventListener("mouseover", event => {
         const block = event.target.closest("[data-event-index]");
@@ -3095,11 +3133,11 @@
       }, { passive: true });
       window.addEventListener("resize", renderTimeline);
       $("p1UseFast").onclick = () => useFast(left, right);
-      $("p1UseCharge1").onclick = () => useCharge(left, right, 0);
-      $("p1UseCharge2").onclick = () => useCharge(left, right, 1);
+      $("p1UseCharge1").onclick = () => useManualCharge(left, right, 0);
+      $("p1UseCharge2").onclick = () => useManualCharge(left, right, 1);
       $("p2UseFast").onclick = () => useFast(right, left);
-      $("p2UseCharge1").onclick = () => useCharge(right, left, 0);
-      $("p2UseCharge2").onclick = () => useCharge(right, left, 1);
+      $("p2UseCharge1").onclick = () => useManualCharge(right, left, 0);
+      $("p2UseCharge2").onclick = () => useManualCharge(right, left, 1);
 
       refreshPokemonLists();
       startBattle();
@@ -3673,9 +3711,10 @@
       return damage;
     }
 
-    function applyMoveBuffs(attacker, defender, move) {
+    function applyMoveBuffs(attacker, defender, move, forceApply = null) {
       if (!move || (!move.buffs && !move.buffsSelf && !move.buffsOpponent)) return [];
-      if (Number(move.buffApplyChance || 0) < 1) return [];
+      const chance = Number(move.buffApplyChance || 0);
+      if (chance < 1 && forceApply !== true) return [];
       if (move.buffTarget === "both") {
         return [
           ...applyBuffArray(attacker, move.buffsSelf, attacker.p.name),
@@ -3743,7 +3782,22 @@
       return finish();
     }
 
-    function useCharge(attacker, defender, index) {
+    async function useManualCharge(attacker, defender, index) {
+      if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const move = attacker.charged[index];
+      if (!move) return false;
+      if (attacker.energy < move.energyCost) {
+        add(`${attacker.trainer}: not enough energy for ${move.name} (${attacker.energy}/${move.energyCost}).`, "charge");
+        render();
+        return false;
+      }
+      const unshieldedDamage = estimate(attacker, defender, move);
+      const shielded = await askManualShieldDecision(attacker, defender, move, unshieldedDamage);
+      const forceBuffs = await askManualBuffDecision(move);
+      return useCharge(attacker, defender, index, { shielded, forceBuffs });
+    }
+
+    function useCharge(attacker, defender, index, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const move = attacker.charged[index];
       if (attacker.energy < move.energyCost) {
@@ -3752,9 +3806,11 @@
         return false;
       }
       const unshieldedDamage = estimate(attacker, defender, move);
-      const shielded = shouldShield(defender, move, unshieldedDamage);
+      const shielded = options.shielded !== undefined
+        ? !!options.shielded && defender.shields > 0
+        : shouldShield(defender, move, unshieldedDamage);
       const damage = apply(attacker, defender, move, shielded);
-      const buffMessages = applyMoveBuffs(attacker, defender, move);
+      const buffMessages = applyMoveBuffs(attacker, defender, move, options.forceBuffs ?? null);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
       chargeEvent.buffs = buffMessages;
       chargeEvent.unshieldedDamage = unshieldedDamage;
@@ -3768,6 +3824,54 @@
         add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}`, "charge");
       }
       return finish();
+    }
+
+    function askManualShieldDecision(attacker, defender, move, unshieldedDamage) {
+      if (!defender || defender.shields <= 0) return false;
+      return manualDecision(
+        "Shield decision",
+        `<strong>${escapeHtml(defender.p.name)}</strong> can shield <strong>${escapeHtml(attacker.p.name)}'s ${escapeHtml(move.name)}</strong>.<br>Unshielded damage: <strong>${unshieldedDamage}</strong><br>Shields left: <strong>${defender.shields}</strong>`,
+        "Shield",
+        "No shield"
+      );
+    }
+
+    function askManualBuffDecision(move) {
+      if (!move || (!move.buffs && !move.buffsSelf && !move.buffsOpponent)) return null;
+      const chance = Number(move.buffApplyChance || 0);
+      if (chance >= 1) return null;
+      if (chance <= 0) return false;
+      const pct = Math.round(chance * 100);
+      return manualDecision(
+        "Buff/debuff chance",
+        `<strong>${escapeHtml(move.name)}</strong> has a <strong>${pct}%</strong> buff/debuff chance.<br>Apply the effect for this manual test?`,
+        "Apply",
+        "Skip"
+      );
+    }
+
+    function manualDecision(titleText, bodyHtml, yesText, noText) {
+      const modal = $("manualDecisionModal");
+      const yes = $("manualDecisionYes");
+      const no = $("manualDecisionNo");
+      if (!modal || !yes || !no) return Promise.resolve(false);
+      if (manualDecisionResolve) manualDecisionResolve(false);
+      $("manualDecisionTitle").textContent = titleText;
+      $("manualDecisionBody").innerHTML = bodyHtml;
+      yes.textContent = yesText;
+      no.textContent = noText;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      return new Promise(resolve => {
+        manualDecisionResolve = value => {
+          modal.classList.remove("open");
+          modal.setAttribute("aria-hidden", "true");
+          manualDecisionResolve = null;
+          resolve(value);
+        };
+        yes.onclick = () => manualDecisionResolve?.(true);
+        no.onclick = () => manualDecisionResolve?.(false);
+      });
     }
 
     function shouldShield(defender, move, unshieldedDamage) {
