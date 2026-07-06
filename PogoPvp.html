@@ -25,6 +25,14 @@
       --page-bg: linear-gradient(135deg, #dcebe8 0%, #edf4f1 45%, #e8eef4 76%, #f1eddc 100%);
       --page-grid: rgba(23, 33, 47, .035);
       --panel-shadow: 0 8px 22px rgba(23, 33, 47, .07);
+      --stat-attack: #d56a36;
+      --stat-defense: #617385;
+      --stat-stamina: #4f7d5f;
+      --battle-bg: linear-gradient(180deg, #FFCC00, #FF8800);
+      --battle-bg-hover: linear-gradient(180deg, #FFD84A, #FF9900);
+      --battle-ink: #141A2E;
+      --battle-border: #202638;
+      --battle-shadow-edge: #202638;
     }
     body[data-theme="dark"] {
       --bg: #111822;
@@ -44,6 +52,41 @@
       --page-bg: linear-gradient(135deg, #111822 0%, #13201f 44%, #141c29 78%, #201d14 100%);
       --page-grid: rgba(226, 235, 244, .045);
       --panel-shadow: 0 10px 26px rgba(0, 0, 0, .24);
+      --stat-attack: #d56a36;
+      --stat-defense: #617385;
+      --stat-stamina: #4f7d5f;
+      --battle-bg: linear-gradient(180deg, #FFD95A, #F0A21A);
+      --battle-bg-hover: linear-gradient(180deg, #FFE277, #FFB12A);
+      --battle-ink: #102532;
+      --battle-border: #0b1720;
+      --battle-shadow-edge: #0b1720;
+    }
+    body[data-theme="neo"] {
+      --bg: #0B0F1C;
+      --panel: #141A2E;
+      --ink: #F0F4FF;
+      --muted: #9CA9C7;
+      --line: rgba(0, 228, 255, .58);
+      --soft: #10172A;
+      --accent: #00E4FF;
+      --accent-dark: #00AFC8;
+      --danger: #FF4D6E;
+      --warn: #FFCC00;
+      --good: #00E8B0;
+      --shadow: rgba(0, 228, 255, .12);
+      --grid: rgba(0, 228, 255, .18);
+      --ruler: #10172A;
+      --page-bg: radial-gradient(circle at 18% 8%, rgba(0, 228, 255, .16), transparent 28%), radial-gradient(circle at 84% 18%, rgba(255, 46, 255, .12), transparent 30%), #0B0F1C;
+      --page-grid: rgba(0, 228, 255, .055);
+      --panel-shadow: 0 12px 28px rgba(0, 0, 0, .34), 0 0 18px rgba(0, 228, 255, .10);
+      --stat-attack: #FF4D6E;
+      --stat-defense: #4A9EFF;
+      --stat-stamina: #00E8B0;
+      --battle-bg: linear-gradient(180deg, #FFCC00, #FF8800);
+      --battle-bg-hover: linear-gradient(180deg, #FFD84A, #FF9900);
+      --battle-ink: #141A2E;
+      --battle-border: #FFE07A;
+      --battle-shadow-edge: #6f3f00;
     }
     * { box-sizing: border-box; }
     body {
@@ -66,6 +109,12 @@
       background: #102532;
       color: white;
       border-bottom: 2px solid #d6ad39;
+    }
+    body[data-theme="neo"] header {
+      background: rgba(11, 15, 28, .94);
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
     h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
     main { padding: 16px; display: grid; gap: 14px; }
@@ -105,8 +154,8 @@
       max-width: 240px;
     }
     .setup {
-      grid-template-columns: repeat(2, 360px);
-      column-gap: 100px;
+      grid-template-columns: repeat(2, 320px);
+      column-gap: 180px;
       align-items: start;
       justify-content: center;
     }
@@ -114,7 +163,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
-      max-width: 360px;
+      max-width: 320px;
       border-radius: 8px;
       box-shadow: var(--panel-shadow);
       position: relative;
@@ -201,12 +250,25 @@
     body[data-theme="dark"] .field-box {
       background: rgba(32, 43, 58, .72);
     }
+    body[data-theme="neo"] .control-stack,
+    body[data-theme="neo"] .field-box {
+      background: rgba(16, 23, 42, .82);
+      border-color: rgba(0, 228, 255, .42);
+    }
     body[data-theme="dark"] .rank-meter,
     body[data-theme="dark"] .shield-count-toggle,
     body[data-theme="dark"] .bait-toggle,
     body[data-theme="dark"] .compact-toggle,
     body[data-theme="dark"] .iv-details {
       background: var(--soft);
+    }
+    body[data-theme="neo"] .rank-meter,
+    body[data-theme="neo"] .shield-count-toggle,
+    body[data-theme="neo"] .bait-toggle,
+    body[data-theme="neo"] .compact-toggle,
+    body[data-theme="neo"] .iv-details {
+      background: rgba(11, 15, 28, .72);
+      border-color: rgba(0, 228, 255, .38);
     }
     label {
       display: grid;
@@ -301,7 +363,27 @@
       color: var(--ink);
       border-color: #3a4a5d;
     }
-    .search-input, .pokemon-select, .move-select { max-width: 250px; }
+    body[data-theme="neo"] select,
+    body[data-theme="neo"] input {
+      background: #0F1528;
+      color: var(--ink);
+      border-color: rgba(0, 228, 255, .46);
+    }
+    body[data-theme="neo"] select:hover,
+    body[data-theme="neo"] input:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0, 228, 255, .10);
+    }
+    .search-input, .pokemon-select, .move-select { max-width: 100%; }
+    .pokemon-picker,
+    .moves-stack label {
+      width: 100%;
+      max-width: 282px;
+      justify-self: center;
+    }
+    .moves-stack label {
+      grid-template-columns: 64px minmax(0, 1fr);
+    }
     .move-select {
       --move-color: var(--accent);
       border-color: color-mix(in srgb, var(--move-color) 46%, var(--line));
@@ -715,6 +797,19 @@
       border-color: #bfc8d3;
     }
     button.secondary:hover { background: #e9eef3; }
+    body[data-theme="dark"] button.secondary,
+    body[data-theme="neo"] button.secondary {
+      background: rgba(11, 15, 28, .72);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+    body[data-theme="dark"] button.secondary:hover,
+    body[data-theme="neo"] button.secondary:hover {
+      background: rgba(0, 228, 255, .14);
+      color: var(--ink);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0, 228, 255, .10);
+    }
     .bait-toggle button:hover,
     .compact-toggle button:hover,
     .shield-count-toggle button:hover {
@@ -952,7 +1047,11 @@
     .energy-core span {
       font-size: 11px;
       font-weight: 850;
-      color: #111827;
+      color: var(--muted);
+    }
+    body[data-theme="neo"] .energy-core span {
+      color: #F0F4FF;
+      text-shadow: 0 0 8px rgba(0, 228, 255, .36);
     }
     .energy-orb {
       --move-color: #67c7b8;
@@ -1285,9 +1384,9 @@
       min-height: 44px;
       padding: 8px 24px 8px 18px;
       border-radius: 999px;
-      border: 2px solid #102532;
-      background: #f7c51d;
-      color: #102532;
+      border: 2px solid var(--battle-border);
+      background: var(--battle-bg);
+      color: var(--battle-ink);
       font-size: 16px;
       font-weight: 850;
       letter-spacing: 0;
@@ -1297,7 +1396,7 @@
       gap: 9px;
       text-transform: none;
       box-shadow:
-        0 5px 0 #102532,
+        0 5px 0 var(--battle-shadow-edge),
         0 10px 18px rgba(23, 33, 47, .18),
         inset 0 1px 0 rgba(255, 255, 255, .46);
       position: relative;
@@ -1327,12 +1426,40 @@
       content: none;
     }
     .battle-cta:hover {
-      background: #ffd43a;
+      background: var(--battle-bg-hover);
       transform: translateY(-1px);
       box-shadow:
-        0 6px 0 #102532,
+        0 6px 0 var(--battle-shadow-edge),
         0 12px 20px rgba(23, 33, 47, .20),
         inset 0 1px 0 rgba(255, 255, 255, .50);
+    }
+    body[data-theme="dark"] .battle-cta {
+      box-shadow:
+        0 5px 0 var(--battle-shadow-edge),
+        0 0 18px rgba(255, 198, 42, .14),
+        0 12px 24px rgba(0, 0, 0, .30),
+        inset 0 1px 0 rgba(255, 255, 255, .46);
+    }
+    body[data-theme="dark"] .battle-cta:hover {
+      box-shadow:
+        0 6px 0 var(--battle-shadow-edge),
+        0 0 24px rgba(255, 198, 42, .20),
+        0 14px 28px rgba(0, 0, 0, .34),
+        inset 0 1px 0 rgba(255, 255, 255, .52);
+    }
+    body[data-theme="neo"] .battle-cta {
+      box-shadow:
+        0 5px 0 #6f3f00,
+        0 0 20px rgba(255, 204, 0, .22),
+        0 12px 24px rgba(0, 0, 0, .32),
+        inset 0 1px 0 rgba(255, 255, 255, .52);
+    }
+    body[data-theme="neo"] .battle-cta:hover {
+      box-shadow:
+        0 6px 0 #6f3f00,
+        0 0 26px rgba(255, 204, 0, .30),
+        0 14px 28px rgba(0, 0, 0, .34),
+        inset 0 1px 0 rgba(255, 255, 255, .56);
     }
     .timeline-head {
       display: flex;
@@ -1414,6 +1541,10 @@
       height: 110px;
       padding-bottom: 14px;
       scrollbar-gutter: stable;
+    }
+    .timeline-scroll.fit-mode {
+      overflow-x: hidden;
+      scrollbar-gutter: auto;
     }
     .timeline-hover-line {
       position: absolute;
@@ -3084,8 +3215,12 @@
       });
       $("p1Pokemon").onchange = () => selectPokemon("p1", $("p1Pokemon").value, true);
       $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
-      ["p1Fast", "p1Charged1", "p1Charged2"].forEach(id => $(id).onchange = () => syncSelection("p1"));
-      ["p2Fast", "p2Charged1", "p2Charged2"].forEach(id => $(id).onchange = () => syncSelection("p2"));
+      $("p1Fast").onchange = () => syncSelection("p1");
+      $("p2Fast").onchange = () => syncSelection("p2");
+      ["1", "2"].forEach(slot => {
+        $(`p1Charged${slot}`).onchange = () => handleChargedMoveChange("p1", slot);
+        $(`p2Charged${slot}`).onchange = () => handleChargedMoveChange("p2", slot);
+      });
       document.querySelectorAll(".bait-toggle button").forEach(button => {
         button.onclick = () => setBaiting(button.closest(".bait-toggle").dataset.prefix, button.dataset.bait);
       });
@@ -3454,9 +3589,49 @@
       colorMoveSelect(`${prefix}Fast`);
       colorMoveSelect(`${prefix}Charged1`);
       colorMoveSelect(`${prefix}Charged2`);
-      if (prefix === "p1") left = create("p1", "A");
-      else right = create("p2", "B");
+      rememberMoveSelections(prefix);
+      if (!setupReadyForBattle()) return;
+      resetBattleStateFromSetup();
+    }
+
+    function setupReadyForBattle() {
+      return ["p1", "p2"].every(prefix =>
+        findPokemon($(`${prefix}Pokemon`).value) &&
+        moveMap.get($(`${prefix}Fast`).value) &&
+        moveMap.get($(`${prefix}Charged1`).value) &&
+        moveMap.get($(`${prefix}Charged2`).value)
+      );
+    }
+
+    function resetBattleStateFromSetup() {
+      left = create("p1", "A");
+      right = create("p2", "B");
+      log = [];
+      timeline = [];
+      initialTimelineState = battleSnapshot();
+      battleTurns = { A: 0, B: 0 };
+      selectedTimelineIndex = null;
+      previewTimelineIndex = null;
+      previewingTimeline = false;
       render();
+    }
+
+    function handleChargedMoveChange(prefix, changedSlot) {
+      const changed = $(`${prefix}Charged${changedSlot}`);
+      const otherSlot = changedSlot === "1" ? "2" : "1";
+      const other = $(`${prefix}Charged${otherSlot}`);
+      const previous = changed.dataset.current || "";
+      if (changed.value && changed.value === other.value && previous && previous !== changed.value) {
+        other.value = previous;
+      }
+      syncSelection(prefix);
+    }
+
+    function rememberMoveSelections(prefix) {
+      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
+        const select = $(id);
+        select.dataset.current = select.value;
+      });
     }
 
     function setBaiting(prefix, value) {
@@ -4124,6 +4299,7 @@
     }
 
     function startBattle() {
+      if (!setupReadyForBattle()) return;
       left = create("p1", "A");
       right = create("p2", "B");
       log = [];
@@ -4211,9 +4387,9 @@
       const bp = breakpointInfo(c, opponent);
       const bulk = bulkpointInfo(c, opponent);
       const rows = [
-        ["attack", c.attack, maxAttack, "#d56a36", bp],
-        ["defense", c.defense, maxDefense, "#617385", bulk],
-        ["stamina", c.maxHp, maxHp, "#4f7d5f", null]
+        ["attack", c.attack, maxAttack, "var(--stat-attack)", bp],
+        ["defense", c.defense, maxDefense, "var(--stat-defense)", bulk],
+        ["stamina", c.maxHp, maxHp, "var(--stat-stamina)", null]
       ];
       $(`${prefix}StatBars`).innerHTML = rows.map(([name, value, max, color, alert]) => {
         const pct = Math.max(4, Math.min(100, Math.round(value / max * 100)));
@@ -4553,7 +4729,7 @@
         const visualStart = isSneak
           ? visualTurn(start, chargeSlots, false) + .42
           : visualTurn(start, chargeSlots, true);
-        const size = Math.max(8, Math.min(11, Math.round(turnPx * .6)));
+        const size = timelineFastSize(turnPx);
         const left = visualStart * turnPx + 2;
         return { start: left - 4, end: left + size + 4, tolerance: Math.max(4, turnPx * .28) };
       }).filter(Boolean);
@@ -4562,7 +4738,7 @@
     function timelineChargePreviewRanges(timelineEvent, index, chargeSlots, turnPx) {
       const baseTurn = chargeVisualTurn(timelineEvent, index, chargeSlots);
       const center = (baseTurn + chargeWindowTurns) * turnPx;
-      const width = Math.max(34, Math.min(46, turnPx + 18));
+      const width = timelineChargeWidth(turnPx);
       const start = center - width / 2;
       const end = center + width / 2;
       return [{ start: start - 5, end: end + 5, tolerance: 6 }];
@@ -4618,22 +4794,29 @@
       }
       const chargeSlots = timelineChargeSlots();
       const chargeStarts = uniqueChargeStarts(chargeSlots);
+      const isFit = timelineIsFit();
       const rawMaxTurn = Math.max(20, ...timeline.map(event => event.start + event.duration + 1));
-      const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns;
+      const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns + (isFit ? 3 : 0);
       const scroll = $("timelineScroll");
+      scroll.classList.toggle("fit-mode", isFit);
       const turnPx = timelineTurnPixels(maxTurn, scroll);
       const keepAtEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 4;
       renderTimelineRuler(maxTurn, turnPx);
       renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
-      if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+      if (isFit) scroll.scrollLeft = 0;
+      else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+    }
+
+    function timelineIsFit() {
+      return $("timelineZoom").value === "fit";
     }
 
     function timelineTurnPixels(maxTurn, scroll) {
       const zoom = $("timelineZoom").value;
       if (zoom !== "fit") return Number(zoom || 18);
-      const available = Math.max(260, scroll.clientWidth - 10);
-      return Math.max(10, Math.min(24, Math.floor(available / Math.max(1, maxTurn))));
+      const available = Math.max(1, scroll.clientWidth - 2);
+      return Math.min(24, available / Math.max(1, maxTurn));
     }
 
     function timelineChargeSlots() {
@@ -4685,7 +4868,7 @@
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
-        const width = isCharge ? Math.max(34, Math.min(46, turnPx + 18)) : Math.max(24, Math.min(32, turnPx + 10));
+        const width = isCharge ? timelineChargeWidth(turnPx) : timelineShieldWidth(turnPx);
         const baseTurn = isCharge
           ? chargeVisualTurn(event, index, chargeSlots)
           : event.chargeEvent
@@ -4699,7 +4882,7 @@
           ? `Shield used against ${event.move.name} - turn ${event.start}`
           : timelineMoveTitle(event);
         const borderColor = isShield ? "rgba(178, 69, 197, .65)" : darken(color, .18);
-        const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index) : "";
+        const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index, turnPx) : "";
         const markers = timelineMarkers(event, index, left + width + 8);
         return `${trail}<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(labelText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
       }).join("") + `</div>`;
@@ -4717,8 +4900,8 @@
         const visualStart = isSneak
           ? visualTurn(start, chargeSlots, false) + .42
           : visualTurn(start, chargeSlots, true);
-        const width = Math.max(10, (end - start) * turnPx - 4);
-        const size = Math.max(8, Math.min(11, Math.round(turnPx * .6)));
+        const width = Math.max(timelineIsFit() ? 4 : 10, (end - start) * turnPx - 4);
+        const size = timelineFastSize(turnPx);
         const left = visualStart * turnPx + 2;
         const isContinuation = points.length > 2 && index > 0;
         if (isContinuation) return index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
@@ -4745,10 +4928,28 @@
       return `${event.move.name}\n${event.damage} damage${damagePct}\n${energy} energy`;
     }
 
-    function chargeTrail(startX, center, width, color, eventIndex) {
+    function timelineFastSize(turnPx) {
+      return timelineIsFit()
+        ? Math.max(5, Math.min(9, Math.round(turnPx * .72)))
+        : Math.max(8, Math.min(11, Math.round(turnPx * .6)));
+    }
+
+    function timelineChargeWidth(turnPx) {
+      return timelineIsFit()
+        ? Math.max(20, Math.min(34, turnPx + 16))
+        : Math.max(34, Math.min(46, turnPx + 18));
+    }
+
+    function timelineShieldWidth(turnPx) {
+      return timelineIsFit()
+        ? Math.max(18, Math.min(26, turnPx + 8))
+        : Math.max(24, Math.min(32, turnPx + 10));
+    }
+
+    function chargeTrail(startX, center, width, color, eventIndex, turnPx) {
       const trailEnd = center - width / 2 - 6;
-      const trailWidth = Math.max(24, trailEnd - startX);
-      const dots = [5, 7, 9, 11, 13, 15];
+      const trailWidth = Math.max(timelineIsFit() ? Math.max(10, turnPx * 2.5) : 24, trailEnd - startX);
+      const dots = timelineIsFit() ? [4, 5, 6, 7, 8, 9] : [5, 7, 9, 11, 13, 15];
       const spacing = trailWidth / dots.length;
       return `<div class="charge-trail" data-event-index="${eventIndex}" style="left:${Math.max(0, startX + 4)}px;width:${trailWidth}px;color:${color}">` +
         dots.map((size, index) => {
@@ -4765,10 +4966,30 @@
 
     function timelineMarkers(event, eventIndex, left) {
       const markers = [];
-      const state = event.state || {};
-      const opponent = event.trainer === "A" ? state.B : state.A;
-      if (opponent && opponent.hp <= 0) markers.push(`<span class="timeline-marker ko" data-event-index="${eventIndex}" title="KO" style="left:${left + markers.length * 22}px"></span>`);
+      if (timelineEventCausesKo(event, eventIndex)) {
+        markers.push(`<span class="timeline-marker ko" data-event-index="${eventIndex}" title="KO" style="left:${left + markers.length * 22}px"></span>`);
+      }
       return markers.join("");
+    }
+
+    function timelineEventCausesKo(event, eventIndex) {
+      if (!event || event.kind === "shield") return false;
+      const targetKey = event.trainer === "A" ? "B" : "A";
+      return eventIndex === firstKoTimelineIndex(targetKey);
+    }
+
+    function firstKoTimelineIndex(targetKey) {
+      let previousHp = initialTimelineState && initialTimelineState[targetKey]
+        ? initialTimelineState[targetKey].hp
+        : Infinity;
+      for (let i = 0; i < timeline.length; i++) {
+        const event = timeline[i];
+        const state = event.state && event.state[targetKey];
+        if (!state) continue;
+        if (event.kind !== "shield" && previousHp > 0 && state.hp <= 0) return i;
+        previousHp = state.hp;
+      }
+      return -1;
     }
 
     function reachesChargedEnergy(event) {
@@ -4780,9 +5001,10 @@
     }
 
     function toggleTheme() {
-      const next = document.body.dataset.theme === "dark" ? "light" : "dark";
+      const current = document.body.dataset.theme || "light";
+      const next = current === "neo" ? "light" : current === "light" ? "dark" : "neo";
       document.body.dataset.theme = next;
-      $("themeToggle").textContent = next === "dark" ? "Light" : "Dark";
+      $("themeToggle").textContent = next === "neo" ? "Light" : next === "light" ? "Dark" : "Neo";
     }
 
     function moveShortLabel(move) {
