@@ -1219,6 +1219,138 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .matrix-panel {
+      width: 100%;
+      max-width: 520px;
+      justify-self: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--panel-shadow);
+      padding: 8px;
+      overflow: hidden;
+    }
+    .matrix-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .matrix-head h2 {
+      margin: 0;
+      font-size: 13px;
+    }
+    .matrix-head span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+    }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 42px 54px repeat(3, 72px);
+      grid-template-rows: 28px 28px repeat(3, 32px);
+      gap: 4px;
+      align-items: stretch;
+      justify-content: center;
+      width: max-content;
+      margin: 0 auto;
+      transform: translateX(-23px);
+    }
+    .matrix-axis,
+    .matrix-cell {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-weight: 850;
+    }
+    .matrix-axis {
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .matrix-cell {
+      position: relative;
+      color: #fff;
+      font-size: 11px;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .22);
+      overflow: hidden;
+      border-radius: 999px;
+    }
+    .matrix-cell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: var(--edge-opacity, .9);
+      background: var(--edge-color, #66727f);
+    }
+    .matrix-cell > span {
+      position: relative;
+      z-index: 1;
+    }
+    .matrix-value {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      line-height: 1;
+    }
+    .matrix-symbol {
+      font-size: 10px;
+      font-weight: 950;
+      opacity: .95;
+      transform: translateY(-.5px);
+    }
+    .matrix-cell.edge-a { --edge-color: #00B8A9; }
+    .matrix-cell.edge-b { --edge-color: #E0448E; }
+    .matrix-cell.edge-close { --edge-color: #6F7A86; }
+    .matrix-cell.current {
+      outline: 2px solid var(--warn);
+      outline-offset: 1px;
+    }
+    .matrix-axis-top {
+      grid-column: 3 / 6;
+      grid-row: 1;
+      align-self: end;
+    }
+    .matrix-axis-side {
+      grid-column: 1;
+      grid-row: 3 / 6;
+      align-self: center;
+    }
+    .matrix-shield-head {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .matrix-pokemon-sprite {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(23,33,47,.16));
+    }
+    .matrix-shield {
+      width: 18px;
+      height: 18px;
+      color: #b245c5;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .matrix-shield svg {
+      width: 17px;
+      height: 17px;
+    }
     .effect-chip {
       display: inline-flex;
       align-items: center;
@@ -2774,6 +2906,46 @@
       .key-damage {
         font-size: 9px;
       }
+      .matrix-panel {
+        padding: 6px;
+        max-width: 360px;
+      }
+      .matrix-head {
+        margin-bottom: 6px;
+      }
+      .matrix-head h2 {
+        font-size: 13px;
+      }
+      .matrix-head span {
+        font-size: 10px;
+      }
+      .matrix-grid {
+        grid-template-columns: 34px 42px repeat(3, 56px);
+        grid-template-rows: 24px 24px repeat(3, 30px);
+        gap: 4px;
+        transform: translateX(-18px);
+      }
+      .matrix-axis,
+      .matrix-cell {
+        min-height: 30px;
+        border-radius: 6px;
+        font-size: 9px;
+      }
+      .matrix-pokemon-sprite {
+        width: 42px;
+        height: 42px;
+      }
+      .matrix-shield-head {
+        font-size: 12px;
+      }
+      .matrix-shield {
+        width: 15px;
+        height: 15px;
+      }
+      .matrix-shield svg {
+        width: 14px;
+        height: 14px;
+      }
       .key-tag {
         width: 16px;
         height: 16px;
@@ -3027,6 +3199,14 @@
         </div>
       </section>
 
+      <section class="matrix-panel">
+        <div class="matrix-head">
+          <h2>Matchup</h2>
+          <span>Battle edge</span>
+        </div>
+        <div id="shieldMatrix" class="matrix-grid"></div>
+      </section>
+
       <details class="log-panel">
         <summary class="log-head">
           <h2>Battle log</h2>
@@ -3088,6 +3268,7 @@
     let lastTimelineHoverClientX = null;
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
+    let suppressRender = false;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -4087,7 +4268,7 @@
       if (left.hp <= 0 && right.hp <= 0) add("Tie.", "ko");
       else if (left.hp <= 0) add("Trainer B wins.", "ko");
       else if (right.hp <= 0) add("Trainer A wins.", "ko");
-      render();
+      if (!suppressRender) render();
       return !ended;
     }
 
@@ -4166,9 +4347,10 @@
       if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
       if (defender.shields <= 0) return straight;
 
-      const mostExpensive = [...attacker.charged].sort((a, b) => b.energyCost - a.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
-      if (attacker.baiting === "selective" && mostExpensive && attacker.energy < mostExpensive.energyCost && attacker.energy < 100) {
+      const credibleNuke = credibleShieldPressureMove(attacker, defender, cheapest);
+      if (opponentPressureForcesThrow(attacker, defender)) return cheapest || straight;
+      if (attacker.baiting === "selective" && credibleNuke && attacker.energy < credibleNuke.energyCost && attacker.energy < 100) {
         return null;
       }
 
@@ -4176,11 +4358,27 @@
       if (attacker.baiting === "on") return cheapest;
       if (attacker.baiting !== "selective") return straight;
 
-      const hasNukeReady = mostExpensive && attacker.energy >= mostExpensive.energyCost;
+      const hasNukeReady = credibleNuke && attacker.energy >= credibleNuke.energyCost;
       const straightDamage = estimate(attacker, defender, straight);
       const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
       if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
       return hasNukeReady ? cheapest : straight;
+    }
+
+    function credibleShieldPressureMove(attacker, defender, cheapest) {
+      if (!attacker || !defender || !cheapest) return null;
+      const cheapestDamage = estimate(attacker, defender, cheapest);
+      return [...attacker.charged]
+        .filter(move => move.energyCost > cheapest.energyCost)
+        .map(move => ({ move, damage: estimate(attacker, defender, move) }))
+        .filter(item => item.damage > cheapestDamage * 1.15)
+        .sort((a, b) => b.damage - a.damage || b.move.energyCost - a.move.energyCost)[0]?.move || null;
+    }
+
+    function opponentPressureForcesThrow(attacker, defender) {
+      if (!attacker || !defender) return false;
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return true;
+      return opponentChargedThreatens(attacker, defender);
     }
 
     function shouldOverfarmForCloser(attacker, defender, available, currentMove) {
@@ -4237,6 +4435,7 @@
     function autoPlay() {
       if (!left || !right) startBattle();
       const targetTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0) + 20;
+      suppressRender = true;
       while (!battleEnded() && Math.min(battleTurns.A || 0, battleTurns.B || 0) < targetTurn) {
         const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
         const actors = [];
@@ -4254,6 +4453,7 @@
           if (!autoAction(attacker, defender) && !battleEnded()) break;
         }
       }
+      suppressRender = false;
       render();
     }
 
@@ -4261,6 +4461,7 @@
       document.body.classList.add("battle-results-visible");
       if (!left || !right || battleEnded()) startBattle();
       let guard = 0;
+      suppressRender = true;
       while (!battleEnded() && guard < 1000) {
         const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
         const actors = [];
@@ -4281,6 +4482,7 @@
         if (!progressed) break;
         guard++;
       }
+      suppressRender = false;
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
       scrollTimelineIntoView();
@@ -4436,6 +4638,152 @@
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
       renderKeyNumbers();
       renderTimeline();
+      renderShieldMatrix();
+    }
+
+    function renderShieldMatrix() {
+      const box = $("shieldMatrix");
+      if (!box || !left || !right || suppressRender) return;
+      const currentA = Number($("p1Shields").value || 0);
+      const currentB = Number($("p2Shields").value || 0);
+      const rows = [];
+      rows.push(`<div class="matrix-axis matrix-axis-top">${pokemonMatrixSprite(right.p)}</div>`);
+      rows.push(`<div class="matrix-axis matrix-axis-side">${pokemonMatrixSprite(left.p)}</div>`);
+      [0, 1, 2].forEach((count, column) => {
+        rows.push(`<div class="matrix-axis" style="grid-column:${column + 3};grid-row:2">${shieldCountLabel(count)}</div>`);
+      });
+      [0, 1, 2].forEach((aShields, row) => {
+        rows.push(`<div class="matrix-axis" style="grid-column:2;grid-row:${row + 3}">${shieldCountLabel(aShields)}</div>`);
+        [0, 1, 2].forEach((bShields, column) => {
+          const result = simulateShieldMatrixCell(aShields, bShields);
+          const cls = result.score > 535 ? "edge-a" : result.score < 465 ? "edge-b" : "edge-close";
+          const current = aShields === currentA && bShields === currentB ? " current" : "";
+          const heat = matrixHeat(result.score);
+          rows.push(`<div class="matrix-cell ${cls}${current}" title="${escapeHtml(result.title)}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span></div>`);
+        });
+      });
+      box.innerHTML = rows.join("");
+    }
+
+    function matrixHeat(score) {
+      const distance = Math.min(1, Math.abs(score - 500) / 420);
+      const color = score > 535
+        ? mixColor("#6F7A86", "#00B8A9", distance)
+        : score < 465
+          ? mixColor("#6F7A86", "#E0448E", distance)
+          : "#6F7A86";
+      return {
+        color,
+        opacity: (0.72 + distance * .26).toFixed(2),
+        symbol: score > 535 ? "▲" : score < 465 ? "▼" : "◆"
+      };
+    }
+
+    function pokemonMatrixSprite(pokemon) {
+      return `<img class="matrix-pokemon-sprite" src="${escapeHtml(imageUrl(pokemon))}" alt="" title="${escapeHtml(pokemon.name)}" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(pokemon))}'">`;
+    }
+
+    function shieldCountLabel(count) {
+      return `<span class="matrix-shield-head"><span class="matrix-shield">${shieldSvg()}</span>${count}</span>`;
+    }
+
+    function simulateShieldMatrixCell(aShields, bShields) {
+      const snapshot = snapshotBattleState();
+      suppressRender = true;
+      $("p1Shields").value = aShields;
+      $("p2Shields").value = bShields;
+      left = create("p1", "A");
+      right = create("p2", "B");
+      log = [];
+      timeline = [];
+      initialTimelineState = battleSnapshot();
+      battleTurns = { A: 0, B: 0 };
+      let guard = 0;
+      while (!battleEnded() && guard < 1000) {
+        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+        const actors = [];
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+        if (!actors.length) break;
+        actors.sort(([a], [b]) => {
+          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
+          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
+          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
+        });
+        let progressed = false;
+        for (const [attacker, defender] of actors) {
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          progressed = autoAction(attacker, defender) || progressed;
+        }
+        if (!progressed) break;
+        guard++;
+      }
+      const result = scoreShieldMatrixResult(left, right);
+      restoreBattleState(snapshot);
+      suppressRender = false;
+      return result;
+    }
+
+    function scoreShieldMatrixResult(a, b) {
+      const aHp = a.maxHp ? a.hp / a.maxHp : 0;
+      const bHp = b.maxHp ? b.hp / b.maxHp : 0;
+      const aChargeProgress = chargedReadiness(a);
+      const bChargeProgress = chargedReadiness(b);
+      const hpEdge = (aHp - bHp) * 270;
+      const energyEdge = (a.energy - b.energy) * 1.15;
+      const shieldEdge = (a.shields - b.shields) * 75;
+      const readyEdge = (aChargeProgress - bChargeProgress) * 70;
+      const winnerEdge = a.hp > 0 && b.hp <= 0 ? 170 : b.hp > 0 && a.hp <= 0 ? -170 : 0;
+      const dangerEdge = nearChargeDanger(a, b) * -45 + nearChargeDanger(b, a) * 45;
+      const score = Math.max(0, Math.min(1000, Math.round(500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge)));
+      const winner = score > 535 ? a.p.name : score < 465 ? b.p.name : "Close";
+      return {
+        score,
+        title: `${winner} edge | ${a.p.name}: ${a.hp}/${a.maxHp} HP, ${a.energy} energy, ${a.shields} shields | ${b.p.name}: ${b.hp}/${b.maxHp} HP, ${b.energy} energy, ${b.shields} shields`
+      };
+    }
+
+    function chargedReadiness(combatant) {
+      if (!combatant || !combatant.charged.length) return 0;
+      const cheapest = Math.min(...combatant.charged.map(move => move.energyCost || 100).filter(Boolean));
+      return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
+    }
+
+    function nearChargeDanger(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast) return 0;
+      const nextEnergy = Math.min(100, attacker.energy + Number(attacker.fast.energyGain || 0));
+      return attacker.charged.some(move => nextEnergy >= move.energyCost && estimate(attacker, defender, move) >= defender.hp) ? 1 : 0;
+    }
+
+    function snapshotBattleState() {
+      return {
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns: { ...battleTurns },
+        selectedTimelineIndex,
+        previewTimelineIndex,
+        previewingTimeline,
+        p1Shields: $("p1Shields").value,
+        p2Shields: $("p2Shields").value
+      };
+    }
+
+    function restoreBattleState(snapshot) {
+      left = snapshot.left;
+      right = snapshot.right;
+      log = snapshot.log;
+      timeline = snapshot.timeline;
+      initialTimelineState = snapshot.initialTimelineState;
+      battleTurns = snapshot.battleTurns;
+      selectedTimelineIndex = snapshot.selectedTimelineIndex;
+      previewTimelineIndex = snapshot.previewTimelineIndex;
+      previewingTimeline = snapshot.previewingTimeline;
+      $("p1Shields").value = snapshot.p1Shields;
+      $("p2Shields").value = snapshot.p2Shields;
     }
 
     function renderKeyNumbers() {
