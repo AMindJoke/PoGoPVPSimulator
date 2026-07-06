@@ -1351,6 +1351,43 @@
       width: 17px;
       height: 17px;
     }
+    .matrix-explanation {
+      margin: 8px 2px 0;
+      padding-top: 7px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.35;
+    }
+    .matrix-explanation strong {
+      color: var(--ink);
+      font-weight: 900;
+    }
+    .matrix-explanation .score-positive {
+      color: var(--good);
+      font-weight: 850;
+    }
+    .matrix-explanation .score-negative {
+      color: var(--danger);
+      font-weight: 850;
+    }
+    .matrix-explanation .score-neutral {
+      color: var(--muted);
+      font-weight: 850;
+    }
+    .matrix-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 5px;
+    }
+    .matrix-breakdown span {
+      padding: 2px 5px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--soft);
+      white-space: nowrap;
+    }
     .effect-chip {
       display: inline-flex;
       align-items: center;
@@ -2946,6 +2983,18 @@
         width: 14px;
         height: 14px;
       }
+      .matrix-explanation {
+        margin-top: 6px;
+        font-size: 9px;
+        line-height: 1.3;
+      }
+      .matrix-breakdown {
+        gap: 3px;
+        margin-top: 4px;
+      }
+      .matrix-breakdown span {
+        padding: 2px 4px;
+      }
       .key-tag {
         width: 16px;
         height: 16px;
@@ -3205,6 +3254,7 @@
           <span>Battle edge</span>
         </div>
         <div id="shieldMatrix" class="matrix-grid"></div>
+        <div id="matrixExplanation" class="matrix-explanation"></div>
       </section>
 
       <details class="log-panel">
@@ -4647,6 +4697,7 @@
       const currentA = Number($("p1Shields").value || 0);
       const currentB = Number($("p2Shields").value || 0);
       const rows = [];
+      let currentResult = null;
       rows.push(`<div class="matrix-axis matrix-axis-top">${pokemonMatrixSprite(right.p)}</div>`);
       rows.push(`<div class="matrix-axis matrix-axis-side">${pokemonMatrixSprite(left.p)}</div>`);
       [0, 1, 2].forEach((count, column) => {
@@ -4658,11 +4709,38 @@
           const result = simulateShieldMatrixCell(aShields, bShields);
           const cls = result.score > 535 ? "edge-a" : result.score < 465 ? "edge-b" : "edge-close";
           const current = aShields === currentA && bShields === currentB ? " current" : "";
+          if (current) currentResult = result;
           const heat = matrixHeat(result.score);
           rows.push(`<div class="matrix-cell ${cls}${current}" title="${escapeHtml(result.title)}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span></div>`);
         });
       });
       box.innerHTML = rows.join("");
+      renderMatrixExplanation(currentResult);
+    }
+
+    function renderMatrixExplanation(result) {
+      const box = $("matrixExplanation");
+      if (!box || !result || !result.details || !left || !right) return;
+      const d = result.details;
+      const direction = result.score > 535
+        ? `${left.p.name} is ahead`
+        : result.score < 465
+          ? `${right.p.name} is ahead`
+          : "This is close";
+      const parts = [
+        ["HP", d.hpEdge],
+        ["Energy", d.energyEdge],
+        ["Ready", d.readyEdge],
+        ["Closing", d.closingCostEdge],
+        ["Farm", d.farmPressureEdge]
+      ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
+      box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, and farm pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.<div class="matrix-breakdown">${parts}</div>`;
+    }
+
+    function edgeClass(value) {
+      if (value > .5) return "score-positive";
+      if (value < -.5) return "score-negative";
+      return "score-neutral";
     }
 
     function matrixHeat(score) {
@@ -4736,18 +4814,95 @@
       const readyEdge = (aChargeProgress - bChargeProgress) * 70;
       const winnerEdge = a.hp > 0 && b.hp <= 0 ? 170 : b.hp > 0 && a.hp <= 0 ? -170 : 0;
       const dangerEdge = nearChargeDanger(a, b) * -45 + nearChargeDanger(b, a) * 45;
-      const score = Math.max(0, Math.min(1000, Math.round(500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge)));
+      const closingCostEdge = closingCostPressure(b, a) - closingCostPressure(a, b);
+      const farmPressureEdge = farmDownPressure(a, b) - farmDownPressure(b, a);
+      const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge;
+      const score = Math.max(0, Math.min(1000, Math.round(total)));
       const winner = score > 535 ? a.p.name : score < 465 ? b.p.name : "Close";
+      const parts = [
+        `base 500`,
+        `winner ${formatEdge(winnerEdge)}`,
+        `HP ${formatEdge(hpEdge)}`,
+        `energy ${formatEdge(energyEdge)}`,
+        `shields ${formatEdge(shieldEdge)}`,
+        `ready ${formatEdge(readyEdge)}`,
+        `danger ${formatEdge(dangerEdge)}`,
+        `closing cost ${formatEdge(closingCostEdge)}`,
+        `farm pressure ${formatEdge(farmPressureEdge)}`
+      ].join(" | ");
       return {
         score,
-        title: `${winner} edge | ${a.p.name}: ${a.hp}/${a.maxHp} HP, ${a.energy} energy, ${a.shields} shields | ${b.p.name}: ${b.hp}/${b.maxHp} HP, ${b.energy} energy, ${b.shields} shields`
+        title: `${winner} edge | ${a.p.name}: ${a.hp}/${a.maxHp} HP, ${a.energy} energy, ${a.shields} shields, ready ${aChargeProgress.toFixed(2)} | ${b.p.name}: ${b.hp}/${b.maxHp} HP, ${b.energy} energy, ${b.shields} shields, ready ${bChargeProgress.toFixed(2)} | ${parts}`,
+        details: {
+          aHp,
+          bHp,
+          aChargeProgress,
+          bChargeProgress,
+          winnerEdge,
+          hpEdge,
+          energyEdge,
+          shieldEdge,
+          readyEdge,
+          dangerEdge,
+          closingCostEdge,
+          farmPressureEdge,
+          total
+        }
       };
+    }
+
+    function formatEdge(value) {
+      const rounded = Math.round(value);
+      return `${rounded >= 0 ? "+" : ""}${rounded}`;
     }
 
     function chargedReadiness(combatant) {
       if (!combatant || !combatant.charged.length) return 0;
       const cheapest = Math.min(...combatant.charged.map(move => move.energyCost || 100).filter(Boolean));
       return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
+    }
+
+    function closingCostPressure(winner, loser) {
+      if (!winner || !loser || winner.hp <= 0 || loser.hp > 0) return 0;
+      const closer = lastUnshieldedKoCharge(winner.trainer);
+      if (!closer) return 0;
+      const cheapest = Math.min(...winner.charged.map(move => move.energyCost || 100).filter(Boolean));
+      const costPremium = Math.max(0, (closer.move.energyCost || 0) - cheapest);
+      const expensiveCloser = Math.min(28, costPremium * 1.8);
+      const riskyCloser = riskyMovePenalty(closer.move);
+      return Math.min(55, expensiveCloser + riskyCloser);
+    }
+
+    function lastUnshieldedKoCharge(trainer) {
+      for (let i = timeline.length - 1; i >= 0; i--) {
+        const event = timeline[i];
+        if (event.kind !== "charge" || event.trainer !== trainer || event.shielded) continue;
+        const opponent = trainer === "A" ? event.state?.B : event.state?.A;
+        if (opponent && opponent.hp <= 0) return event;
+      }
+      return null;
+    }
+
+    function riskyMovePenalty(move) {
+      if (!move) return 0;
+      const selfDefenseDrop = Array.isArray(move.buffsSelf) ? Math.max(0, -(move.buffsSelf[1] || 0)) : 0;
+      const selfAttackDrop = Array.isArray(move.buffsSelf) ? Math.max(0, -(move.buffsSelf[0] || 0)) : 0;
+      return Math.min(24, selfDefenseDrop * 12 + selfAttackDrop * 8);
+    }
+
+    function farmDownPressure(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return 0;
+      const fastDamage = estimate(attacker, defender, attacker.fast);
+      const fastsToKo = fastDamage ? Math.ceil(defender.hp / fastDamage) : 99;
+      const fastWindow = Math.max(0, 7 - fastsToKo) * 6;
+      const chargedHits = unshieldedChargesLanded(attacker.trainer);
+      const repeatedPressure = Math.max(0, chargedHits - 1) * 12;
+      const hpPressure = Math.max(0, (1 - defender.hp / defender.maxHp) - .55) * 45;
+      return Math.min(70, fastWindow + repeatedPressure + hpPressure);
+    }
+
+    function unshieldedChargesLanded(trainer) {
+      return timeline.filter(event => event.kind === "charge" && event.trainer === trainer && !event.shielded && event.damage > 1).length;
     }
 
     function nearChargeDanger(attacker, defender) {
