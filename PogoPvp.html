@@ -686,6 +686,36 @@
     body[data-theme="dark"] .bait-toggle button.active {
       background: var(--accent);
     }
+    .start-energy-control {
+      display: grid;
+      grid-template-columns: auto 48px 18px;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .start-energy-control input {
+      width: 48px;
+      min-height: 26px;
+      padding: 3px 4px;
+      text-align: center;
+    }
+    .energy-stepper {
+      display: grid;
+      gap: 2px;
+    }
+    .energy-stepper button {
+      width: 18px;
+      min-height: 12px;
+      height: 12px;
+      padding: 0;
+      border-radius: 4px;
+      font-size: 9px;
+      line-height: 1;
+    }
     .compact-toggle {
       display: inline-grid;
       grid-template-columns: repeat(3, max-content);
@@ -1241,6 +1271,13 @@
       margin: 0;
       font-size: 13px;
     }
+    .matrix-reset {
+      min-height: 24px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 850;
+    }
     .matrix-head span {
       color: var(--muted);
       font-size: 10px;
@@ -1282,6 +1319,7 @@
       text-shadow: 0 1px 1px rgba(0, 0, 0, .22);
       overflow: hidden;
       border-radius: 999px;
+      cursor: pointer;
     }
     .matrix-cell::before {
       content: "";
@@ -1314,6 +1352,30 @@
       outline: 2px solid var(--warn);
       outline-offset: 1px;
     }
+    .matrix-swing {
+      position: absolute;
+      right: 3px;
+      top: 50%;
+      z-index: 2;
+      width: 15px;
+      height: 15px;
+      min-height: 15px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 999px;
+      background: rgba(255,255,255,.28);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      box-shadow: 0 1px 4px rgba(23, 33, 47, .18);
+      transform: translateY(-50%);
+    }
+    .matrix-swing:hover {
+      background: rgba(255,255,255,.42);
+    }
     .matrix-axis-top {
       grid-column: 3 / 6;
       grid-row: 1;
@@ -1323,6 +1385,7 @@
       grid-column: 1;
       grid-row: 3 / 6;
       align-self: center;
+      transform: translateY(-3px);
     }
     .matrix-shield-head {
       display: inline-flex;
@@ -2431,6 +2494,22 @@
         padding: 2px 4px;
         font-size: 9px;
       }
+      .start-energy-control {
+        grid-template-columns: auto 42px 16px;
+        gap: 4px;
+        font-size: 10px;
+      }
+      .start-energy-control input {
+        width: 42px;
+        min-height: 22px;
+        font-size: 10px;
+      }
+      .energy-stepper button {
+        width: 16px;
+        height: 10px;
+        min-height: 10px;
+        font-size: 8px;
+      }
       .field-box {
         margin-top: 8px;
         padding: 7px;
@@ -2750,6 +2829,15 @@
         padding: 2px 4px;
         font-size: 10px;
       }
+      .start-energy-control {
+        grid-template-columns: auto 36px 15px;
+        font-size: 9px;
+      }
+      .start-energy-control input {
+        width: 36px;
+        min-height: 20px;
+        font-size: 9px;
+      }
       .pokemon-picker-control {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -2953,7 +3041,9 @@
       .matrix-head h2 {
         font-size: 13px;
       }
-      .matrix-head span {
+      .matrix-reset {
+        min-height: 22px;
+        padding: 2px 7px;
         font-size: 10px;
       }
       .matrix-grid {
@@ -2967,6 +3057,13 @@
         min-height: 30px;
         border-radius: 6px;
         font-size: 9px;
+      }
+      .matrix-swing {
+        right: 2px;
+        width: 13px;
+        height: 13px;
+        min-height: 13px;
+        font-size: 8px;
       }
       .matrix-pokemon-sprite {
         width: 42px;
@@ -3077,6 +3174,14 @@
                       <button type="button" data-bait="on">On</button>
                     </div>
                   </div>
+                  <div class="start-energy-control">
+                    <span>Start energy</span>
+                    <input id="p1StartEnergy" type="number" min="0" max="100" value="0" title="Starting energy">
+                    <span class="energy-stepper">
+                      <button type="button" data-prefix="p1" data-energy-step="up" title="Add one fast move worth of energy">+</button>
+                      <button type="button" data-prefix="p1" data-energy-step="down" title="Remove one fast move worth of energy">-</button>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3151,6 +3256,14 @@
                       <button type="button" data-bait="selective" class="active">Selective</button>
                       <button type="button" data-bait="on">On</button>
                     </div>
+                  </div>
+                  <div class="start-energy-control">
+                    <span>Start energy</span>
+                    <input id="p2StartEnergy" type="number" min="0" max="100" value="0" title="Starting energy">
+                    <span class="energy-stepper">
+                      <button type="button" data-prefix="p2" data-energy-step="up" title="Add one fast move worth of energy">+</button>
+                      <button type="button" data-prefix="p2" data-energy-step="down" title="Remove one fast move worth of energy">-</button>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -3251,7 +3364,7 @@
       <section class="matrix-panel">
         <div class="matrix-head">
           <h2>Matchup</h2>
-          <span>Battle edge</span>
+          <button id="matrixReset" class="secondary matrix-reset" type="button">Reset</button>
         </div>
         <div id="shieldMatrix" class="matrix-grid"></div>
         <div id="matrixExplanation" class="matrix-explanation"></div>
@@ -3460,10 +3573,18 @@
       });
       ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
       ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
+      ["p1StartEnergy", "p2StartEnergy"].forEach(id => {
+        $(id).onchange = () => setStartEnergy(id.slice(0, 2), $(id).value);
+      });
+      document.querySelectorAll(".energy-stepper button").forEach(button => {
+        button.onclick = () => stepStartEnergy(button.dataset.prefix, button.dataset.energyStep === "up" ? 1 : -1);
+      });
       $("battleCta").onclick = runBattleToEnd;
       $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
+      $("shieldMatrix").onclick = handleMatrixClick;
+      $("matrixReset").onclick = resetMatchupPreview;
       $("logFilter").onchange = renderLog;
       $("logFilter").onclick = event => event.stopPropagation();
       $("eventModalClose").onclick = closeEventModal;
@@ -3881,6 +4002,21 @@
       syncSelection(prefix);
     }
 
+    function setStartEnergy(prefix, value) {
+      $(`${prefix}StartEnergy`).value = clampEnergy(value);
+      syncSelection(prefix);
+    }
+
+    function stepStartEnergy(prefix, direction) {
+      const fast = moveMap.get($(`${prefix}Fast`).value);
+      const step = Math.max(1, Number(fast?.energyGain || 1));
+      setStartEnergy(prefix, Number($(`${prefix}StartEnergy`).value || 0) + direction * step);
+    }
+
+    function clampEnergy(value) {
+      return Math.max(0, Math.min(100, Math.round(Number(value || 0))));
+    }
+
     function loadPresetMatchup() {
       const value = $("presetMatchup").value;
       if (!value) return;
@@ -4013,7 +4149,7 @@
         statProduct: stats.statProduct,
         maxHp: stats.hp,
         hp: stats.hp,
-        energy: 0,
+        energy: clampEnergy($(`${prefix}StartEnergy`)?.value || 0),
         shields: Math.max(0, Math.min(2, Number($(`${prefix}Shields`).value || 0))),
         baiting: $(`${prefix}Baiting`).value,
         shieldMode: $(`${prefix}ShieldMode`).value,
@@ -4550,6 +4686,11 @@
       scrollTimelineIntoView();
     }
 
+    function resetMatchupPreview() {
+      document.body.classList.add("battle-results-visible");
+      startBattle();
+    }
+
     function startBattle() {
       if (!setupReadyForBattle()) return;
       left = create("p1", "A");
@@ -4680,7 +4821,7 @@
     }
 
     function shieldSvg() {
-      return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 2.4 20 5.7v5.8c0 4.6-3.1 8.3-8 10.1-4.9-1.8-8-5.5-8-10.1V5.7l8-3.3Zm0 3.1L6.6 7.7v3.8c0 3.1 1.9 5.7 5.4 7.1 3.5-1.4 5.4-4 5.4-7.1V7.7L12 5.5Z"/></svg>`;
+      return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><g fill="currentColor" stroke="rgba(255,255,255,.75)" stroke-width=".55" stroke-linejoin="round"><path opacity=".76" d="M12 2.4 14.5 3.9v2.9L12 8.2 9.5 6.8V3.9L12 2.4Z"/><path opacity=".86" d="M7.4 5.1 9.9 6.5v2.9l-2.5 1.4-2.5-1.4V6.5l2.5-1.4Z"/><path opacity=".92" d="M16.6 5.1 19.1 6.5v2.9l-2.5 1.4-2.5-1.4V6.5l2.5-1.4Z"/><path d="M12 7.8 14.5 9.2v2.9L12 13.6l-2.5-1.5V9.2L12 7.8Z"/><path opacity=".96" d="M5.2 10.2 7.7 11.6v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".9" d="M18.8 10.2 21.3 11.6v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".94" d="M9.7 12.9 12.2 14.3v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".82" d="M14.3 12.9 16.8 14.3v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".7" d="M12 17.2 14.5 18.6v2.9L12 22.9l-2.5-1.4v-2.9l2.5-1.4Z"/></g></svg>`;
     }
 
     function render() {
@@ -4711,11 +4852,34 @@
           const current = aShields === currentA && bShields === currentB ? " current" : "";
           if (current) currentResult = result;
           const heat = matrixHeat(result.score);
-          rows.push(`<div class="matrix-cell ${cls}${current}" title="${escapeHtml(result.title)}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span></div>`);
+          const swing = result.swing
+            ? `<button type="button" class="matrix-swing" data-swing-side="${result.swing.side}" data-swing-energy="${result.swing.startEnergy}" title="${escapeHtml(result.swing.title)}">↯</button>`
+            : "";
+          rows.push(`<div class="matrix-cell ${cls}${current}" role="button" tabindex="0" data-a-shields="${aShields}" data-b-shields="${bShields}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span>${swing}</div>`);
         });
       });
       box.innerHTML = rows.join("");
       renderMatrixExplanation(currentResult);
+    }
+
+    function handleMatrixClick(event) {
+      const cell = event.target.closest(".matrix-cell");
+      if (!cell) return;
+      const aShields = Number(cell.dataset.aShields || 0);
+      const bShields = Number(cell.dataset.bShields || 0);
+      const swing = event.target.closest(".matrix-swing");
+      runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingEnergy || 0) : 0);
+    }
+
+    function runMatrixScenario(aShields, bShields, swingSide = null, swingEnergy = 0) {
+      $("p1Shields").value = aShields;
+      $("p2Shields").value = bShields;
+      if (swingSide && swingEnergy > 0) {
+        const prefix = swingSide === "A" ? "p1" : "p2";
+        $(`${prefix}StartEnergy`).value = clampEnergy(swingEnergy);
+      }
+      startBattle();
+      runBattleToEnd();
     }
 
     function renderMatrixExplanation(result) {
@@ -4732,9 +4896,11 @@
         ["Energy", d.energyEdge],
         ["Ready", d.readyEdge],
         ["Closing", d.closingCostEdge],
-        ["Farm", d.farmPressureEdge]
+        ["Farm", d.farmPressureEdge],
+        ["Outpace", d.outpacePressureEdge]
       ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
-      box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, and farm pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.<div class="matrix-breakdown">${parts}</div>`;
+      const swingText = result.swing ? ` <strong>Swing:</strong> ${escapeHtml(result.swing.title)}` : "";
+      box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
     }
 
     function edgeClass(value) {
@@ -4765,7 +4931,7 @@
       return `<span class="matrix-shield-head"><span class="matrix-shield">${shieldSvg()}</span>${count}</span>`;
     }
 
-    function simulateShieldMatrixCell(aShields, bShields) {
+    function simulateShieldMatrixCell(aShields, bShields, options = {}) {
       const snapshot = snapshotBattleState();
       suppressRender = true;
       $("p1Shields").value = aShields;
@@ -4797,13 +4963,19 @@
         if (!progressed) break;
         guard++;
       }
-      const result = scoreShieldMatrixResult(left, right);
+      const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
       restoreBattleState(snapshot);
       suppressRender = false;
       return result;
     }
 
-    function scoreShieldMatrixResult(a, b) {
+    const MAX_DANGER_EDGE = 45;
+    const MAX_CLOSING_COST_EDGE = 55;
+    const MAX_FARM_PRESSURE_EDGE = 95;
+    const MAX_OUTPACE_PRESSURE_EDGE = 55;
+    const DECISIVE_WIN_EDGE = 171;
+
+    function scoreShieldMatrixResult(a, b, options = {}) {
       const aHp = a.maxHp ? a.hp / a.maxHp : 0;
       const bHp = b.maxHp ? b.hp / b.maxHp : 0;
       const aChargeProgress = chargedReadiness(a);
@@ -4812,13 +4984,15 @@
       const energyEdge = (a.energy - b.energy) * 1.15;
       const shieldEdge = (a.shields - b.shields) * 75;
       const readyEdge = (aChargeProgress - bChargeProgress) * 70;
-      const winnerEdge = a.hp > 0 && b.hp <= 0 ? 170 : b.hp > 0 && a.hp <= 0 ? -170 : 0;
-      const dangerEdge = nearChargeDanger(a, b) * -45 + nearChargeDanger(b, a) * 45;
+      const winnerEdge = a.hp > 0 && b.hp <= 0 ? DECISIVE_WIN_EDGE : b.hp > 0 && a.hp <= 0 ? -DECISIVE_WIN_EDGE : 0;
+      const dangerEdge = nearChargeDanger(a, b) * -MAX_DANGER_EDGE + nearChargeDanger(b, a) * MAX_DANGER_EDGE;
       const closingCostEdge = closingCostPressure(b, a) - closingCostPressure(a, b);
       const farmPressureEdge = farmDownPressure(a, b) - farmDownPressure(b, a);
-      const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge;
+      const outpacePressureEdge = outpacePressure(a, b) - outpacePressure(b, a);
+      const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
       const score = Math.max(0, Math.min(1000, Math.round(total)));
       const winner = score > 535 ? a.p.name : score < 465 ? b.p.name : "Close";
+      const swing = options.includeSwing ? matchupSwingHint(a, b, options) : null;
       const parts = [
         `base 500`,
         `winner ${formatEdge(winnerEdge)}`,
@@ -4828,11 +5002,13 @@
         `ready ${formatEdge(readyEdge)}`,
         `danger ${formatEdge(dangerEdge)}`,
         `closing cost ${formatEdge(closingCostEdge)}`,
-        `farm pressure ${formatEdge(farmPressureEdge)}`
+        `farm pressure ${formatEdge(farmPressureEdge)}`,
+        `outpace ${formatEdge(outpacePressureEdge)}`
       ].join(" | ");
       return {
         score,
         title: `${winner} edge | ${a.p.name}: ${a.hp}/${a.maxHp} HP, ${a.energy} energy, ${a.shields} shields, ready ${aChargeProgress.toFixed(2)} | ${b.p.name}: ${b.hp}/${b.maxHp} HP, ${b.energy} energy, ${b.shields} shields, ready ${bChargeProgress.toFixed(2)} | ${parts}`,
+        swing,
         details: {
           aHp,
           bHp,
@@ -4846,6 +5022,7 @@
           dangerEdge,
           closingCostEdge,
           farmPressureEdge,
+          outpacePressureEdge,
           total
         }
       };
@@ -4862,6 +5039,55 @@
       return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
     }
 
+    function matchupSwingHint(a, b, options = {}) {
+      const losingThreat = a.hp <= 0 && b.hp > 0
+        ? chargedSwingThreat(a, b, options)
+        : b.hp <= 0 && a.hp > 0
+          ? chargedSwingThreat(b, a, options)
+          : null;
+      return losingThreat;
+    }
+
+    function chargedSwingThreat(attacker, defender, options = {}) {
+      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return null;
+      const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
+      const threats = attacker.charged
+        .map(move => {
+          const needed = Math.max(0, (move.energyCost || 0) - attacker.energy);
+          const fastsNeeded = Math.ceil(needed / gain);
+          const damage = estimate(attacker, defender, move);
+          return { move, needed, fastsNeeded, damage };
+        })
+        .filter(item => item.fastsNeeded <= 2 && item.damage >= defender.hp * .85)
+        .sort((a, b) => a.fastsNeeded - b.fastsNeeded || b.damage - a.damage);
+      if (!threats.length) return null;
+      for (const threat of threats) {
+        const energy = Math.max(gain, threat.fastsNeeded * gain);
+        const winner = simulateEnergySwingWinner(attacker.trainer, energy, options.aShields, options.bShields);
+        if (winner === attacker.trainer) {
+          return {
+            side: attacker.trainer,
+            energy,
+            startEnergy: clampEnergy(Number($(`${attacker.trainer === "A" ? "p1" : "p2"}StartEnergy`).value || 0) + energy),
+            title: `${attacker.p.name} swing: +${energy} starting energy flips the matchup with ${threat.move.name} pressure.`
+          };
+        }
+      }
+      return null;
+    }
+
+    function simulateEnergySwingWinner(side, extraEnergy, aShields, bShields) {
+      const snapshot = snapshotBattleState();
+      const prefix = side === "A" ? "p1" : "p2";
+      const previousEnergy = $(`${prefix}StartEnergy`).value;
+      $(`${prefix}StartEnergy`).value = clampEnergy(Number(previousEnergy || 0) + extraEnergy);
+      const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
+      restoreBattleState(snapshot);
+      const isAWin = result.details && result.details.winnerEdge > 0;
+      const isBWin = result.details && result.details.winnerEdge < 0;
+      return isAWin ? "A" : isBWin ? "B" : null;
+    }
+
     function closingCostPressure(winner, loser) {
       if (!winner || !loser || winner.hp <= 0 || loser.hp > 0) return 0;
       const closer = lastUnshieldedKoCharge(winner.trainer);
@@ -4870,7 +5096,7 @@
       const costPremium = Math.max(0, (closer.move.energyCost || 0) - cheapest);
       const expensiveCloser = Math.min(28, costPremium * 1.8);
       const riskyCloser = riskyMovePenalty(closer.move);
-      return Math.min(55, expensiveCloser + riskyCloser);
+      return Math.min(MAX_CLOSING_COST_EDGE, expensiveCloser + riskyCloser);
     }
 
     function lastUnshieldedKoCharge(trainer) {
@@ -4896,13 +5122,30 @@
       const fastsToKo = fastDamage ? Math.ceil(defender.hp / fastDamage) : 99;
       const fastWindow = Math.max(0, 7 - fastsToKo) * 6;
       const chargedHits = unshieldedChargesLanded(attacker.trainer);
-      const repeatedPressure = Math.max(0, chargedHits - 1) * 12;
-      const hpPressure = Math.max(0, (1 - defender.hp / defender.maxHp) - .55) * 45;
-      return Math.min(70, fastWindow + repeatedPressure + hpPressure);
+      const repeatedPressure = Math.max(0, chargedHits - 1) * 18;
+      const hpPressure = Math.max(0, (1 - defender.hp / defender.maxHp) - .45) * 70;
+      return Math.min(MAX_FARM_PRESSURE_EDGE, fastWindow + repeatedPressure + hpPressure);
     }
 
     function unshieldedChargesLanded(trainer) {
       return timeline.filter(event => event.kind === "charge" && event.trainer === trainer && !event.shielded && event.damage > 1).length;
+    }
+
+    function outpacePressure(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return 0;
+      const attackerCharges = unshieldedChargeEvents(attacker.trainer);
+      const defenderCharges = unshieldedChargeEvents(defender.trainer);
+      const attackerFirstTwo = attackerCharges.slice(0, 2);
+      const defenderFirstNuke = defenderCharges.find(event => (event.move.energyCost || 0) >= 55);
+      let pressure = Math.max(0, attackerFirstTwo.length - 1) * 18;
+      if (attackerFirstTwo.length >= 2 && defenderFirstNuke && attackerFirstTwo[1].start < defenderFirstNuke.start) pressure += 18;
+      const lowHpAfterPressure = defender.hp / defender.maxHp <= .12;
+      if (attackerFirstTwo.length >= 2 && lowHpAfterPressure) pressure += 14;
+      return Math.min(MAX_OUTPACE_PRESSURE_EDGE, pressure);
+    }
+
+    function unshieldedChargeEvents(trainer) {
+      return timeline.filter(event => event.kind === "charge" && event.trainer === trainer && !event.shielded && event.damage > 1);
     }
 
     function nearChargeDanger(attacker, defender) {
@@ -4923,7 +5166,9 @@
         previewTimelineIndex,
         previewingTimeline,
         p1Shields: $("p1Shields").value,
-        p2Shields: $("p2Shields").value
+        p2Shields: $("p2Shields").value,
+        p1StartEnergy: $("p1StartEnergy").value,
+        p2StartEnergy: $("p2StartEnergy").value
       };
     }
 
@@ -4939,6 +5184,8 @@
       previewingTimeline = snapshot.previewingTimeline;
       $("p1Shields").value = snapshot.p1Shields;
       $("p2Shields").value = snapshot.p2Shields;
+      $("p1StartEnergy").value = snapshot.p1StartEnergy;
+      $("p2StartEnergy").value = snapshot.p2StartEnergy;
     }
 
     function renderKeyNumbers() {
