@@ -4911,14 +4911,14 @@
 
     function matrixHeat(score) {
       const distance = Math.min(1, Math.abs(score - 500) / 420);
-      const color = score > 535
+      const color = score > 500
         ? mixColor("#6F7A86", "#00B8A9", distance)
-        : score < 465
+        : score < 500
           ? mixColor("#6F7A86", "#E0448E", distance)
           : "#6F7A86";
       return {
         color,
-        opacity: (0.72 + distance * .26).toFixed(2),
+        opacity: (score === 500 ? .72 : 0.76 + distance * .22).toFixed(2),
         symbol: score > 535 ? "▲" : score < 465 ? "▼" : "◆"
       };
     }
