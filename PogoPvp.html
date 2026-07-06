@@ -302,6 +302,29 @@
       border-color: #3a4a5d;
     }
     .search-input, .pokemon-select, .move-select { max-width: 250px; }
+    .move-select {
+      --move-color: var(--accent);
+      border-color: color-mix(in srgb, var(--move-color) 46%, var(--line));
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--move-color) 24%, transparent), transparent 62%),
+        var(--panel);
+      box-shadow:
+        inset 5px 0 0 var(--move-color),
+        inset 0 0 0 1px color-mix(in srgb, var(--move-color) 12%, transparent);
+      font-weight: 800;
+    }
+    .move-select:hover {
+      border-color: color-mix(in srgb, var(--move-color) 68%, var(--line));
+      box-shadow:
+        inset 5px 0 0 var(--move-color),
+        inset 0 0 0 1px color-mix(in srgb, var(--move-color) 22%, transparent),
+        0 2px 7px rgba(23, 33, 47, .08);
+    }
+    body[data-theme="dark"] .move-select {
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--move-color) 28%, transparent), transparent 64%),
+        #111822;
+    }
     .pokemon-select-hidden {
       display: none;
     }
@@ -3043,6 +3066,7 @@
           defaultIVs: p.defaultIVs || {},
           fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
           charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+          eliteMoves: p.eliteMoves || [],
           tags: p.tags || []
         }))
         .filter(p => p.fast.length && p.charged.length)
@@ -3273,17 +3297,19 @@
     function fillMoves(prefix) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
       if (!p) return;
-      fillMoveSelect(`${prefix}Fast`, p.fast);
-      fillMoveSelect(`${prefix}Charged1`, p.charged);
-      fillMoveSelect(`${prefix}Charged2`, p.charged);
+      fillMoveSelect(`${prefix}Fast`, p.fast, p);
+      fillMoveSelect(`${prefix}Charged1`, p.charged, p);
+      fillMoveSelect(`${prefix}Charged2`, p.charged, p);
       chooseRecommendedMoves(prefix, p);
       syncSelection(prefix);
     }
 
-    function fillMoveSelect(id, moveIds) {
+    function fillMoveSelect(id, moveIds, pokemon = null) {
+      const eliteMoves = new Set((pokemon && pokemon.eliteMoves) || []);
       $(id).innerHTML = moveIds.map(moveId => {
         const m = moveMap.get(moveId);
-        return `<option value="${m.id}">${escapeHtml(m.name)}</option>`;
+        const legacyMark = eliteMoves.has(moveId) ? " *" : "";
+        return `<option value="${m.id}">${escapeHtml(m.name + legacyMark)}</option>`;
       }).join("");
       colorMoveSelect(id);
     }
@@ -3362,10 +3388,8 @@
       const move = moveMap.get(select.value);
       if (!move) return;
       const color = typeColors[move.type] || "#fff";
-      select.style.background = "";
-      select.style.borderColor = "";
-      select.style.borderLeft = `4px solid ${color}`;
-      select.style.color = "";
+      select.style.setProperty("--move-color", color);
+      select.title = move.name;
     }
 
     function findPokemon(id) {

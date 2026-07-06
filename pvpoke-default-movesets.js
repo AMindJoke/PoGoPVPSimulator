@@ -7662,7 +7662,7 @@ window.PVPOKE_DEFAULT_MOVESETS = {
     "inteleon":  {
                      "fast":  "WATER_GUN",
                      "charged":  [
-                                     "SURF",
+                                     "SNIPE_SHOT",
                                      "SHADOW_BALL"
                                  ]
                  },
