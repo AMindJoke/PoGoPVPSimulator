@@ -172,6 +172,10 @@
     .trainer-card {
       overflow: visible;
     }
+    .trainer-card:not(.has-pokemon) .field-box,
+    .trainer-card:not(.has-pokemon) .moves-stack {
+      display: none;
+    }
     .trainer-card:focus-within {
       z-index: 30;
     }
@@ -1377,6 +1381,12 @@
       box-shadow: 0 1px 4px rgba(23, 33, 47, .18);
       transform: translateY(-50%);
     }
+    .matrix-swing::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 999px;
+    }
     .matrix-swing:hover {
       background: rgba(255,255,255,.42);
     }
@@ -1735,6 +1745,15 @@
         0 6px 0 var(--battle-shadow-edge),
         0 12px 20px rgba(23, 33, 47, .20),
         inset 0 1px 0 rgba(255, 255, 255, .50);
+    }
+    .battle-cta:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow:
+        0 3px 0 var(--battle-shadow-edge),
+        0 6px 14px rgba(23, 33, 47, .12),
+        inset 0 1px 0 rgba(255, 255, 255, .30);
     }
     body[data-theme="dark"] .battle-cta {
       box-shadow:
@@ -3409,12 +3428,6 @@
         </div>
       </section>
 
-      <section class="key-numbers" id="keyNumbers">
-        <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
-        <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
-        <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
-      </section>
-
       <section class="manual-panel">
         <div class="manual-head">
           <h2>Manual controls</h2>
@@ -3441,6 +3454,12 @@
         </div>
         <div id="shieldMatrix" class="matrix-grid"></div>
         <div id="matrixExplanation" class="matrix-explanation"></div>
+      </section>
+
+      <section class="key-numbers" id="keyNumbers">
+        <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
+        <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
+        <div class="key-card">CMP winner<strong id="keyCmp">-</strong></div>
       </section>
 
       <details class="log-panel">
@@ -3505,6 +3524,7 @@
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
     let suppressRender = false;
+    let pageScrollAnimation = null;
     let previewState = {
       active: false,
       originalState: null,
@@ -3730,7 +3750,8 @@
       $("p2UseCharge2").onclick = () => useManualCharge(right, left, 1);
 
       refreshPokemonLists();
-      startBattle();
+      resetBattleStateFromSetup();
+      updateBattleAvailability();
     }
 
     function showError(message) {
@@ -3760,8 +3781,9 @@
     function refreshPokemonLists() {
       visiblePokemon = filteredBaseList();
       $("counts").textContent = `${visiblePokemon.length} selectable Pokemon, ${moveMap.size} moves from PvPoke`;
-      refreshOnePokemonList("p1", "Swampert");
-      refreshOnePokemonList("p2", "Skarmory");
+      refreshOnePokemonList("p1", null);
+      refreshOnePokemonList("p2", null);
+      updateBattleAvailability();
     }
 
     function refreshOnePokemonList(prefix, preferred) {
@@ -3769,20 +3791,26 @@
       const previous = select.value;
       let list = visiblePokemon;
       if (!list.length) list = visiblePokemon.slice(0, 1);
-      select.innerHTML = list.map(p => `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`).join("");
-      const preferredMatch = list.find(p => p.name.toLowerCase() === preferred.toLowerCase() || p.id === preferred);
+      select.innerHTML = `<option value=""></option>` + list.map(p => `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`).join("");
+      const preferredMatch = preferred ? list.find(p => p.name.toLowerCase() === String(preferred).toLowerCase() || p.id === preferred) : null;
       if (list.some(p => p.id === previous)) select.value = previous;
       else if (preferredMatch) select.value = preferredMatch.id;
-      else select.selectedIndex = 0;
+      else select.value = "";
       syncPokemonPickerInput(prefix);
-      applyDefaultIvs(prefix);
-      fillMoves(prefix);
+      if (select.value) {
+        setPokemonCardSelected(prefix, true);
+        applyDefaultIvs(prefix);
+        fillMoves(prefix);
+      } else {
+        clearPokemonSide(prefix);
+      }
     }
 
     function setupPokemonPicker(prefix) {
       const input = $(`${prefix}Search`);
+      input.onfocus = () => beginPokemonEdit(prefix);
+      input.onclick = () => beginPokemonEdit(prefix);
       input.oninput = () => openPokemonSuggestions(prefix, false);
-      input.onfocus = () => openPokemonSuggestions(prefix, false);
       input.onkeydown = event => {
         if (event.key === "Escape") closePokemonSuggestions(prefix);
         if (event.key === "Enter") {
@@ -3878,17 +3906,29 @@
 
     function syncPokemonPickerInput(prefix) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
-      if (p) $(`${prefix}Search`).value = displayName(p);
+      $(`${prefix}Search`).value = p ? displayName(p) : "";
+    }
+
+    function setPokemonCardSelected(prefix, selected) {
+      document.querySelector(`.trainer-card.${prefix === "p1" ? "a" : "b"}`)?.classList.toggle("has-pokemon", !!selected);
     }
 
     function selectPokemon(prefix, pokemonId, updateInput) {
       const p = findPokemon(pokemonId);
-      if (!p) return;
+      if (!p) {
+        $(`${prefix}Pokemon`).value = "";
+        if (updateInput) $(`${prefix}Search`).value = "";
+        closePokemonSuggestions(prefix);
+        clearPokemonSide(prefix);
+        resetBattleStateFromSetup();
+        return;
+      }
       const select = $(`${prefix}Pokemon`);
       if (![...select.options].some(option => option.value === pokemonId)) {
         select.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`);
       }
       select.value = pokemonId;
+      setPokemonCardSelected(prefix, true);
       if (updateInput) $(`${prefix}Search`).value = displayName(p);
       closePokemonSuggestions(prefix);
       applyDefaultIvs(prefix);
@@ -3897,7 +3937,10 @@
 
     function fillMoves(prefix) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
-      if (!p) return;
+      if (!p) {
+        clearPokemonSide(prefix);
+        return;
+      }
       fillMoveSelect(`${prefix}Fast`, p.fast, p);
       fillMoveSelect(`${prefix}Charged1`, p.charged, p);
       fillMoveSelect(`${prefix}Charged2`, p.charged, p);
@@ -4056,12 +4099,20 @@
       colorMoveSelect(`${prefix}Charged1`);
       colorMoveSelect(`${prefix}Charged2`);
       rememberMoveSelections(prefix);
-      if (!setupReadyForBattle()) return;
+      updateBattleAvailability();
+      if (!setupReadyForBattle()) {
+        resetBattleStateFromSetup();
+        return;
+      }
       resetBattleStateFromSetup();
     }
 
     function setupReadyForBattle() {
-      return ["p1", "p2"].every(prefix =>
+      return ["p1", "p2"].every(sideReadyForBattle);
+    }
+
+    function sideReadyForBattle(prefix) {
+      return (
         findPokemon($(`${prefix}Pokemon`).value) &&
         moveMap.get($(`${prefix}Fast`).value) &&
         moveMap.get($(`${prefix}Charged1`).value) &&
@@ -4071,6 +4122,19 @@
 
     function resetBattleStateFromSetup() {
       exitPreviewMode();
+      if (!setupReadyForBattle()) {
+        left = sideReadyForBattle("p1") ? create("p1", "A") : null;
+        right = sideReadyForBattle("p2") ? create("p2", "B") : null;
+        log = [];
+        timeline = [];
+        initialTimelineState = null;
+        battleTurns = { A: 0, B: 0 };
+        selectedTimelineIndex = null;
+        previewTimelineIndex = null;
+        previewingTimeline = false;
+        render();
+        return;
+      }
       left = create("p1", "A");
       right = create("p2", "B");
       log = [];
@@ -4115,6 +4179,21 @@
         button.classList.toggle("active", button.dataset.shieldMode === value);
       });
       syncSelection(prefix);
+    }
+
+    function clearPokemonSide(prefix) {
+      setPokemonCardSelected(prefix, false);
+      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
+        if ($(id)) $(id).innerHTML = "";
+      });
+      $(`${prefix}BattleName`).textContent = "";
+      $(`${prefix}BattleMeta`).textContent = "";
+      $(`${prefix}Types`).innerHTML = "";
+      $(`${prefix}StatBars`).innerHTML = "";
+      $(`${prefix}Overall`).textContent = "";
+      $(`${prefix}Hp`).style.width = "0%";
+      $(`${prefix}HpText`).textContent = "";
+      $(`${prefix}EnergyPanel`).innerHTML = "";
     }
 
     function setStartEnergy(prefix, value) {
@@ -4790,7 +4869,8 @@
       render();
     }
 
-    function runBattleToEnd() {
+    function runBattleToEnd(options = {}) {
+      if (!setupReadyForBattle()) return;
       document.body.classList.add("battle-results-visible");
       if (!left || !right || battleEnded()) startBattle();
       let guard = 0;
@@ -4818,22 +4898,68 @@
       suppressRender = false;
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
-      scrollTimelineIntoView();
+      if (options.scrollTarget === "preview") scrollPreviewIntoView();
+      else if (options.scrollTarget === "timeline") scrollTimelineIntoView();
+      else scrollBattleResultsIntoView();
     }
 
     function scrollTimelineIntoView() {
       requestAnimationFrame(() => {
-        $("battleTimeline")?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        smoothScrollToElement($("battleTimeline"), "end");
+      });
+    }
+
+    function scrollBattleResultsIntoView() {
+      requestAnimationFrame(() => {
+        smoothScrollToElement(battleResourceScrollAnchor(), "start", 8);
+      });
+    }
+
+    function scrollPreviewIntoView() {
+      requestAnimationFrame(() => {
+        smoothScrollToElement(document.querySelector(".setup"), "start", 10);
       });
     }
 
     function scrollMatrixIntoView() {
       requestAnimationFrame(() => {
-        document.querySelector(".matrix-panel")?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        smoothScrollToElement(document.querySelector(".matrix-panel"), "center");
       });
     }
 
+    function battleResourceScrollAnchor() {
+      return $("p1Hp")?.closest(".hp") || $("p2Hp")?.closest(".hp") || $("battleTimeline");
+    }
+
+    function smoothScrollToElement(element, block = "start", offset = 14) {
+      if (!element) return;
+      if (pageScrollAnimation) cancelAnimationFrame(pageScrollAnimation);
+      const rect = element.getBoundingClientRect();
+      const startY = window.scrollY || document.documentElement.scrollTop || 0;
+      const viewport = window.innerHeight || document.documentElement.clientHeight || 0;
+      const doc = document.documentElement;
+      const maxY = Math.max(0, doc.scrollHeight - viewport);
+      let targetY = rect.top + startY;
+      if (block === "center") targetY -= (viewport - rect.height) / 2;
+      if (block === "end") targetY -= viewport - rect.height - 18;
+      if (block === "start") targetY -= offset;
+      targetY = Math.max(0, Math.min(maxY, targetY));
+      const delta = targetY - startY;
+      if (Math.abs(delta) < 2) return;
+      const duration = Math.min(720, Math.max(360, Math.abs(delta) * .45));
+      const startedAt = performance.now();
+      const ease = t => 1 - Math.pow(1 - t, 3);
+      const step = now => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        window.scrollTo(0, startY + delta * ease(progress));
+        if (progress < 1) pageScrollAnimation = requestAnimationFrame(step);
+        else pageScrollAnimation = null;
+      };
+      pageScrollAnimation = requestAnimationFrame(step);
+    }
+
     function resetForManualBattle() {
+      if (!setupReadyForBattle()) return;
       document.body.classList.add("battle-results-visible");
       exitPreviewMode();
       startBattle();
@@ -4871,6 +4997,12 @@
       render();
     }
 
+    function updateBattleAvailability() {
+      const ready = setupReadyForBattle();
+      $("battleCta").disabled = !ready;
+      $("battleCta").title = ready ? "Start battle" : "Choose both Pokemon first";
+    }
+
     function applyInitialFastAdvantage(side, fastMoves, options = {}) {
       const attacker = side === "A" ? left : right;
       const defender = side === "A" ? right : left;
@@ -4886,6 +5018,7 @@
     function renderSide(c, opponent, hpId, energyId, c1Id, c2Id) {
       if (!c) return;
       const prefix = hpId.slice(0, 2);
+      setPokemonCardSelected(prefix, true);
       const hpPct = c.maxHp ? c.hp / c.maxHp : 1;
       const box = $(`${prefix}BattleImg`).closest(".field-box");
       box.classList.toggle("low-hp", hpPct <= .45 && hpPct > .20);
@@ -5034,7 +5167,12 @@
 
     function renderShieldMatrix() {
       const box = $("shieldMatrix");
-      if (!box || !left || !right || suppressRender) return;
+      if (!box || suppressRender) return;
+      if (!left || !right) {
+        box.innerHTML = "";
+        $("matrixExplanation").innerHTML = "";
+        return;
+      }
       const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
       if (previewRenderState) restoreFullSimulatorState(previewState.originalState);
       const currentA = Number($("p1Shields").value || 0);
@@ -5071,8 +5209,18 @@
       if (!cell) return;
       const aShields = Number(cell.dataset.aShields || 0);
       const bShields = Number(cell.dataset.bShields || 0);
-      const swing = event.target.closest(".matrix-swing");
+      const directSwing = event.target.closest(".matrix-swing");
+      const cellSwing = cell.querySelector(".matrix-swing");
+      const swing = directSwing || (cellSwing && clickNearElement(event, cellSwing, 8) ? cellSwing : null);
       runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingFastMoves || 0) : 0, swing ? swing.dataset.swingLineType : null);
+    }
+
+    function clickNearElement(event, element, padding = 0) {
+      const rect = element.getBoundingClientRect();
+      return event.clientX >= rect.left - padding &&
+        event.clientX <= rect.right + padding &&
+        event.clientY >= rect.top - padding &&
+        event.clientY <= rect.bottom + padding;
     }
 
     function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0, swingLineType = null) {
@@ -5099,7 +5247,7 @@
         exitPreviewMode();
         startBattle();
       }
-      runBattleToEnd();
+      runBattleToEnd({ scrollTarget: swingSide && swingFastMoves > 0 ? "preview" : "timeline" });
     }
 
     function enterPreviewMode(originalState, suggestion) {
@@ -5109,6 +5257,13 @@
         source: "matrix-flip",
         suggestion
       };
+    }
+
+    function beginPokemonEdit(prefix) {
+      const input = $(`${prefix}Search`);
+      const selected = findPokemon($(`${prefix}Pokemon`).value);
+      if (selected && input.value === displayName(selected)) input.value = "";
+      openPokemonSuggestions(prefix, false);
     }
 
     function exitPreviewMode() {
@@ -5684,7 +5839,12 @@
     }
 
     function renderKeyNumbers() {
-      if (!left || !right) return;
+      if (!left || !right) {
+        $("keyFastDamage").innerHTML = "-";
+        $("keyChargedDamage").innerHTML = "-";
+        $("keyCmp").innerHTML = "-";
+        return;
+      }
       $("keyFastDamage").innerHTML =
         keyRows(
           keyRow(left.p, [keyEntry(left.fast, `${baseEstimate(left, right, left.fast)} dmg`)]),
@@ -6027,6 +6187,16 @@
     }
 
     function renderTimeline() {
+      if (!left || !right) {
+        $("p1TimelineLabel").textContent = "A";
+        $("p2TimelineLabel").textContent = "B";
+        $("timelineRuler").innerHTML = "";
+        $("p1Timeline").innerHTML = "";
+        $("p2Timeline").innerHTML = "";
+        hideTimelineHover();
+        hideTimelineMoveTooltip();
+        return;
+      }
       if (left) {
         $("p1TimelineLabel").innerHTML = `<img alt="">`;
         $("p1TimelineLabel").title = left.p.name;
