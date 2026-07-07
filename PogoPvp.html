@@ -4738,6 +4738,8 @@
         const safeBait = safeBaitMove(attacker, defender, available, straight);
         if (safeBait) return safeBait;
       }
+      const safeDefaultBait = safeDefaultBaitMove(attacker, defender, available, straight);
+      if (safeDefaultBait) return safeDefaultBait;
 
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const credibleNuke = credibleShieldPressureMove(attacker, defender, cheapest);
@@ -4755,6 +4757,13 @@
       const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
       if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
       return hasNukeReady ? cheapest : straight;
+    }
+
+    function safeDefaultBaitMove(attacker, defender, available, straight) {
+      if (!attacker || attacker.baiting === "off" || !straight || !hasSelfDebuff(straight)) return null;
+      const safeBait = safeBaitMove(attacker, defender, available, straight);
+      if (!safeBait || safeBait.energyCost > straight.energyCost) return null;
+      return safeBait;
     }
 
     function safeBaitMove(attacker, defender, available, straight) {
@@ -5008,10 +5017,16 @@
       const defender = side === "A" ? right : left;
       const count = Math.max(0, Math.min(4, Math.round(Number(fastMoves || 0))));
       if (!attacker || !defender || !attacker.fast || count <= 0) return;
-      for (let i = 0; i < count && attacker.hp > 0 && defender.hp > 0; i++) {
-        const energyBefore = attacker.energy;
-        apply(attacker, defender, attacker.fast, false);
-        if (options.energyAlreadyApplied) attacker.energy = energyBefore;
+      const extraEnergy = Math.max(0, Number(attacker.fast.energyGain || 0) * count);
+      if (!options.energyAlreadyApplied) {
+        attacker.energy = clampEnergy(attacker.energy + extraEnergy);
+      }
+      if (options.applyDamage) {
+        for (let i = 0; i < count && attacker.hp > 0 && defender.hp > 0; i++) {
+          const energyBefore = attacker.energy;
+          apply(attacker, defender, attacker.fast, false);
+          attacker.energy = energyBefore;
+        }
       }
     }
 
