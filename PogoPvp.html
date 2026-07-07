@@ -1431,7 +1431,15 @@
       display: flex;
     }
     .matrix-preview strong {
+      display: block;
       font-weight: 950;
+    }
+    .matrix-preview small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.25;
     }
     .matrix-preview button {
       min-height: 26px;
@@ -3497,7 +3505,12 @@
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
     let suppressRender = false;
-    let matrixPreviewState = null;
+    let previewState = {
+      active: false,
+      originalState: null,
+      source: null,
+      suggestion: null
+    };
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -4057,7 +4070,7 @@
     }
 
     function resetBattleStateFromSetup() {
-      matrixPreviewState = null;
+      exitPreviewMode();
       left = create("p1", "A");
       right = create("p2", "B");
       log = [];
@@ -4822,26 +4835,25 @@
 
     function resetForManualBattle() {
       document.body.classList.add("battle-results-visible");
+      exitPreviewMode();
       startBattle();
       scrollTimelineIntoView();
     }
 
     function resetMatchupPreview() {
+      backToOriginalMatchup();
+    }
+
+    function backToOriginalMatchup() {
       document.body.classList.add("battle-results-visible");
-      if (matrixPreviewState) {
-        if (matrixPreviewState.battleSnapshot) {
-          restoreBattleState(matrixPreviewState.battleSnapshot);
-        } else {
-          $("p1Shields").value = matrixPreviewState.p1Shields;
-          $("p2Shields").value = matrixPreviewState.p2Shields;
-          $("p1StartEnergy").value = matrixPreviewState.p1StartEnergy;
-          $("p2StartEnergy").value = matrixPreviewState.p2StartEnergy;
-        }
-        matrixPreviewState = null;
+      if (previewState.active && previewState.originalState) {
+        restoreFullSimulatorState(previewState.originalState);
+        exitPreviewMode();
         render();
         scrollMatrixIntoView();
         return;
       }
+      exitPreviewMode();
       startBattle();
     }
 
@@ -5004,7 +5016,8 @@
     function renderMatrixPreview() {
       const box = $("matrixPreview");
       if (!box) return;
-      if (!matrixPreviewState) {
+      if (!previewState.active || !previewState.originalState || !previewState.suggestion) {
+        exitPreviewMode();
         document.body.classList.remove("matrix-preview-active");
         box.classList.remove("active");
         box.innerHTML = "";
@@ -5012,12 +5025,18 @@
       }
       document.body.classList.add("matrix-preview-active");
       box.classList.add("active");
-      box.innerHTML = `<span><strong>Preview:</strong> ${escapeHtml(matrixPreviewState.label)}</span><button type="button" class="secondary" onclick="resetMatchupPreview()">Reset preview</button>`;
+      const suggestion = previewState.suggestion;
+      box.innerHTML =
+        `<span><strong>&#128065; Preview Mode</strong><small>Showing suggested flip line: ${escapeHtml(suggestion.pokemonName)} +${suggestion.fastMoveCount} ${escapeHtml(suggestion.fastMoveName)}${suggestion.lineType ? `<br>Line: ${escapeHtml(suggestion.lineType)}` : ""}<br>Matrix remains anchored to the original matchup.</small></span>` +
+        `<button type="button" class="secondary">&larr; Back to Original Matchup</button>`;
+      box.querySelector("button")?.addEventListener("click", backToOriginalMatchup);
     }
 
     function renderShieldMatrix() {
       const box = $("shieldMatrix");
       if (!box || !left || !right || suppressRender) return;
+      const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
+      if (previewRenderState) restoreFullSimulatorState(previewState.originalState);
       const currentA = Number($("p1Shields").value || 0);
       const currentB = Number($("p2Shields").value || 0);
       const rows = [];
@@ -5044,6 +5063,7 @@
       });
       box.innerHTML = rows.join("");
       renderMatrixExplanation(currentResult);
+      if (previewRenderState) restoreFullSimulatorState(previewRenderState);
     }
 
     function handleMatrixClick(event) {
@@ -5056,7 +5076,12 @@
     }
 
     function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0, swingLineType = null) {
-      const baseState = matrixPreviewState ? restoreMatrixPreviewBase() : snapshotMatrixSetup();
+      const originalState = previewState.active && previewState.originalState
+        ? previewState.originalState
+        : snapshotFullSimulatorState();
+      if (previewState.active && previewState.originalState) {
+        restoreFullSimulatorState(previewState.originalState);
+      }
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
       if (swingSide && swingFastMoves > 0) {
@@ -5065,49 +5090,47 @@
         const extraEnergy = Math.max(0, Number(fast?.energyGain || 0) * swingFastMoves);
         const previousEnergy = Number($(`${prefix}StartEnergy`).value || 0);
         $(`${prefix}StartEnergy`).value = clampEnergy(previousEnergy + extraEnergy);
-        matrixPreviewState = {
-          ...baseState,
-          label: matrixPreviewLabel(swingSide, swingFastMoves, fast, swingLineType)
-        };
+        enterPreviewMode(originalState, matrixPreviewSuggestion(swingSide, swingFastMoves, fast, swingLineType));
         startBattle({
           preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves, energyAlreadyApplied: true },
           policy: matrixPolicyForLine(swingSide, swingLineType)
         });
       } else {
-        matrixPreviewState = null;
+        exitPreviewMode();
         startBattle();
       }
       runBattleToEnd();
     }
 
-    function snapshotMatrixSetup() {
-      return {
-        p1Shields: $("p1Shields").value,
-        p2Shields: $("p2Shields").value,
-        p1StartEnergy: $("p1StartEnergy").value,
-        p2StartEnergy: $("p2StartEnergy").value,
-        battleSnapshot: snapshotBattleState()
+    function enterPreviewMode(originalState, suggestion) {
+      previewState = {
+        active: true,
+        originalState,
+        source: "matrix-flip",
+        suggestion
       };
     }
 
-    function restoreMatrixPreviewBase() {
-      const base = { ...matrixPreviewState };
-      if (base.battleSnapshot) {
-        restoreBattleState(base.battleSnapshot);
-      } else {
-        $("p1Shields").value = base.p1Shields;
-        $("p2Shields").value = base.p2Shields;
-        $("p1StartEnergy").value = base.p1StartEnergy;
-        $("p2StartEnergy").value = base.p2StartEnergy;
-      }
-      matrixPreviewState = null;
-      return base;
+    function exitPreviewMode() {
+      previewState = {
+        active: false,
+        originalState: null,
+        source: null,
+        suggestion: null
+      };
+      document.body.classList.remove("matrix-preview-active");
     }
 
-    function matrixPreviewLabel(side, fastMoves, fast, lineType) {
+    function matrixPreviewSuggestion(side, fastMoves, fast, lineType) {
       const pokemon = side === "A" ? $("p1BattleName").textContent || "Pokemon A" : $("p2BattleName").textContent || "Pokemon B";
-      const line = lineType ? `${flipLineLabel(lineType)} - ` : "";
-      return `${line}${pokemon} starts with +${fastMoves} ${fast?.name || "fast move"}`;
+      return {
+        pokemonName: pokemon,
+        fastMoveName: fast?.name || "fast move",
+        fastMoveCount: fastMoves,
+        totalTurnCost: Math.max(1, Number(fast?.turns || 1)) * fastMoves,
+        lineType: lineType || "mixed",
+        reason: flipLineLabel(lineType)
+      };
     }
 
     function renderMatrixExplanation(result) {
@@ -5545,6 +5568,85 @@
       if (!attacker || !defender || !attacker.fast) return 0;
       const nextEnergy = Math.min(100, attacker.energy + Number(attacker.fast.energyGain || 0));
       return attacker.charged.some(move => nextEnergy >= move.energyCost && estimate(attacker, defender, move) >= defender.hp) ? 1 : 0;
+    }
+
+    function snapshotFullSimulatorState() {
+      const controlIds = [
+        "p1Pokemon", "p1Search", "p1Fast", "p1Charged1", "p1Charged2", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
+        "p2Pokemon", "p2Search", "p2Fast", "p2Charged1", "p2Charged2", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
+        "releasedOnly", "showForms", "timelineZoom", "presetMatchup", "logFilter"
+      ];
+      const controls = {};
+      controlIds.forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        controls[id] = el.type === "checkbox" ? !!el.checked : el.value;
+      });
+      return {
+        controls,
+        advancedOpen: {
+          p1: document.querySelector(".trainer-card.a .advanced-panel")?.open || false,
+          p2: document.querySelector(".trainer-card.b .advanced-panel")?.open || false
+        },
+        battle: snapshotBattleState(),
+        battleResultsVisible: document.body.classList.contains("battle-results-visible")
+      };
+    }
+
+    function restoreFullSimulatorState(state) {
+      if (!state) return;
+      restorePokemonSetupFromState("p1", state.controls);
+      restorePokemonSetupFromState("p2", state.controls);
+      restoreSimpleControls(state.controls);
+      restoreAdvancedOpenState(state.advancedOpen);
+      restoreToggleVisuals("p1");
+      restoreToggleVisuals("p2");
+      restoreBattleState(state.battle);
+      document.body.classList.toggle("battle-results-visible", !!state.battleResultsVisible);
+    }
+
+    function restorePokemonSetupFromState(prefix, controls) {
+      const pokemonId = controls?.[`${prefix}Pokemon`];
+      const p = findPokemon(pokemonId);
+      if (!p) return;
+      const select = $(`${prefix}Pokemon`);
+      if (![...select.options].some(option => option.value === pokemonId)) {
+        select.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(displayName(p))}</option>`);
+      }
+      select.value = pokemonId;
+      fillMoveSelect(`${prefix}Fast`, p.fast, p);
+      fillMoveSelect(`${prefix}Charged1`, p.charged, p);
+      fillMoveSelect(`${prefix}Charged2`, p.charged, p);
+      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
+        if (controls[id]) $(id).value = controls[id];
+        colorMoveSelect(id);
+      });
+      rememberMoveSelections(prefix);
+    }
+
+    function restoreSimpleControls(controls) {
+      Object.entries(controls || {}).forEach(([id, value]) => {
+        const el = $(id);
+        if (!el) return;
+        if (el.type === "checkbox") el.checked = !!value;
+        else el.value = value;
+      });
+    }
+
+    function restoreAdvancedOpenState(advancedOpen) {
+      const p1Panel = document.querySelector(".trainer-card.a .advanced-panel");
+      const p2Panel = document.querySelector(".trainer-card.b .advanced-panel");
+      if (p1Panel) p1Panel.open = !!advancedOpen?.p1;
+      if (p2Panel) p2Panel.open = !!advancedOpen?.p2;
+    }
+
+    function restoreToggleVisuals(prefix) {
+      document.querySelectorAll(`.bait-toggle[data-prefix="${prefix}"] button`).forEach(button => {
+        button.classList.toggle("active", button.dataset.bait === $(`${prefix}Baiting`).value);
+      });
+      document.querySelectorAll(`.shield-mode-toggle[data-prefix="${prefix}"] button`).forEach(button => {
+        button.classList.toggle("active", button.dataset.shieldMode === $(`${prefix}ShieldMode`).value);
+      });
     }
 
     function snapshotBattleState() {
