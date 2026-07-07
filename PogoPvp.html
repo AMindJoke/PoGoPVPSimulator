@@ -4750,6 +4750,7 @@
       if (!setupReadyForBattle()) return;
       left = create("p1", "A");
       right = create("p2", "B");
+      applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
@@ -4920,7 +4921,7 @@
           if (current) currentResult = result;
           const heat = matrixHeat(result.score);
           const swing = result.swing
-            ? `<button type="button" class="matrix-swing ${result.swing.tier}" data-swing-side="${result.swing.side}" data-swing-fast-moves="${result.swing.fastMoves}" title="${escapeHtml(result.swing.title)}">↯</button>`
+            ? `<button type="button" class="matrix-swing ${result.swing.tier}" data-swing-side="${result.swing.side}" data-swing-fast-moves="${result.swing.fastMoves}" data-swing-line-type="${escapeHtml(result.swing.lineType || "mixed")}" title="${escapeHtml(result.swing.title)}">↯</button>`
             : "";
           rows.push(`<div class="matrix-cell ${cls}${current}" role="button" tabindex="0" data-a-shields="${aShields}" data-b-shields="${bShields}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span>${swing}</div>`);
         });
@@ -4935,13 +4936,16 @@
       const aShields = Number(cell.dataset.aShields || 0);
       const bShields = Number(cell.dataset.bShields || 0);
       const swing = event.target.closest(".matrix-swing");
-      runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingFastMoves || 0) : 0);
+      runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingFastMoves || 0) : 0, swing ? swing.dataset.swingLineType : null);
     }
 
-    function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0) {
+    function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0, swingLineType = null) {
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
-      startBattle(swingSide && swingFastMoves > 0 ? { preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves } } : {});
+      startBattle(swingSide && swingFastMoves > 0 ? {
+        preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves },
+        policy: matrixPolicyForLine(swingSide, swingLineType)
+      } : {});
       runBattleToEnd();
     }
 
@@ -5214,20 +5218,30 @@
       const opponent = side === "A" ? "B" : "A";
       const variants = [
         { lineType: "mixed", confidence: .6, reason: "Current automatic battle policy.", policy: null },
-        { lineType: "straight", confidence: .85, reason: "Both sides prefer direct charged-move pressure.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "off" } } },
-        { lineType: "bait", confidence: .65, reason: `${combatant.p.name} is allowed to bait before committing to its stronger line.`, policy: { [side]: { baiting: "on" }, [opponent]: { baiting: "off" } } },
-        { lineType: "opponent-bait", confidence: .55, reason: "The opponent may spend energy on a bait move.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "on" } } },
-        { lineType: "shield-dependent", confidence: .58, reason: "The flip depends on the opponent not shielding the first charged move.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "off", shieldMode: "no-first" } } }
+        { lineType: "straight", confidence: .85, reason: "Both sides prefer direct charged-move pressure.", policy: matrixPolicyForLine(side, "straight") },
+        { lineType: "bait", confidence: .65, reason: `${combatant.p.name} is allowed to bait before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") },
+        { lineType: "opponent-bait", confidence: .55, reason: "The opponent may spend energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") },
+        { lineType: "shield-dependent", confidence: .58, reason: "The flip depends on the opponent not shielding the first charged move.", policy: matrixPolicyForLine(side, "shield-dependent") }
       ];
       if (combatant.charged.some(hasSelfDebuff)) {
         variants.push({
           lineType: "debuff-sensitive",
           confidence: .7,
           reason: `${combatant.p.name} has a self-debuff move, so an alternate safer charged-move line is tested.`,
-          policy: { [side]: { baiting: "off", linePolicy: "avoid-self-debuff" }, [opponent]: { baiting: "off" } }
+          policy: matrixPolicyForLine(side, "debuff-sensitive")
         });
       }
       return variants;
+    }
+
+    function matrixPolicyForLine(side, lineType) {
+      const opponent = side === "A" ? "B" : "A";
+      if (lineType === "straight") return { [side]: { baiting: "off" }, [opponent]: { baiting: "off" } };
+      if (lineType === "bait") return { [side]: { baiting: "on" }, [opponent]: { baiting: "off" } };
+      if (lineType === "opponent-bait") return { [side]: { baiting: "off" }, [opponent]: { baiting: "on" } };
+      if (lineType === "shield-dependent") return { [side]: { baiting: "off" }, [opponent]: { baiting: "off", shieldMode: "no-first" } };
+      if (lineType === "debuff-sensitive") return { [side]: { baiting: "off", linePolicy: "avoid-self-debuff" }, [opponent]: { baiting: "off" } };
+      return null;
     }
 
     function flipCandidateLines(candidate) {
