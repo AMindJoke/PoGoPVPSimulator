@@ -4707,16 +4707,27 @@
       startBattle();
     }
 
-    function startBattle() {
+    function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
       left = create("p1", "A");
       right = create("p2", "B");
       log = [];
       timeline = [];
+      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       render();
+    }
+
+    function applyInitialFastAdvantage(side, fastMoves) {
+      const attacker = side === "A" ? left : right;
+      const defender = side === "A" ? right : left;
+      const count = Math.max(0, Math.min(4, Math.round(Number(fastMoves || 0))));
+      if (!attacker || !defender || !attacker.fast || count <= 0) return;
+      for (let i = 0; i < count && attacker.hp > 0 && defender.hp > 0; i++) {
+        apply(attacker, defender, attacker.fast, false);
+      }
     }
 
     function renderSide(c, opponent, hpId, energyId, c1Id, c2Id) {
@@ -4870,7 +4881,7 @@
           if (current) currentResult = result;
           const heat = matrixHeat(result.score);
           const swing = result.swing
-            ? `<button type="button" class="matrix-swing ${result.swing.tier}" data-swing-side="${result.swing.side}" data-swing-energy="${result.swing.startEnergy}" title="${escapeHtml(result.swing.title)}">↯</button>`
+            ? `<button type="button" class="matrix-swing ${result.swing.tier}" data-swing-side="${result.swing.side}" data-swing-fast-moves="${result.swing.fastMoves}" title="${escapeHtml(result.swing.title)}">↯</button>`
             : "";
           rows.push(`<div class="matrix-cell ${cls}${current}" role="button" tabindex="0" data-a-shields="${aShields}" data-b-shields="${bShields}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span>${swing}</div>`);
         });
@@ -4885,17 +4896,13 @@
       const aShields = Number(cell.dataset.aShields || 0);
       const bShields = Number(cell.dataset.bShields || 0);
       const swing = event.target.closest(".matrix-swing");
-      runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingEnergy || 0) : 0);
+      runMatrixScenario(aShields, bShields, swing ? swing.dataset.swingSide : null, swing ? Number(swing.dataset.swingFastMoves || 0) : 0);
     }
 
-    function runMatrixScenario(aShields, bShields, swingSide = null, swingEnergy = 0) {
+    function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0) {
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
-      if (swingSide && swingEnergy > 0) {
-        const prefix = swingSide === "A" ? "p1" : "p2";
-        $(`${prefix}StartEnergy`).value = clampEnergy(swingEnergy);
-      }
-      startBattle();
+      startBattle(swingSide && swingFastMoves > 0 ? { preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves } } : {});
       runBattleToEnd();
     }
 
@@ -4968,6 +4975,7 @@
       right = create("p2", "B");
       log = [];
       timeline = [];
+      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       let guard = 0;
@@ -5090,10 +5098,10 @@
       const fastTurns = Math.max(1, Number(combatant.fast.turns || 1));
       for (let fastMoves = 1; fastMoves <= 4; fastMoves++) {
         const extraEnergy = fastMoves * gain;
-        const winner = simulateFastMoveAdvantageWinner(combatant.trainer, extraEnergy, options.aShields, options.bShields);
+        const turnCost = fastMoves * fastTurns;
+        const winner = simulateFastMoveAdvantageWinner(combatant.trainer, fastMoves, options.aShields, options.bShields);
         if (winner === combatant.trainer) {
-          const prefix = combatant.trainer === "A" ? "p1" : "p2";
-          const turnCost = fastMoves * fastTurns;
+          if (!isVisibleFlipThreshold(fastMoves, turnCost)) return null;
           const tier = flipTier(fastMoves, turnCost);
           return {
             side: combatant.trainer,
@@ -5103,7 +5111,6 @@
             fastTurns,
             turnCost,
             energy: extraEnergy,
-            startEnergy: clampEnergy(Number($(`${prefix}StartEnergy`).value || 0) + extraEnergy),
             tier,
             lines: {
               detected: { fastMoves, fastMove: combatant.fast.name, turnCost },
@@ -5118,18 +5125,22 @@
       return null;
     }
 
+    function isVisibleFlipThreshold(fastMoves, turnCost) {
+      return turnCost <= 4 || fastMoves === 1;
+    }
+
     function flipTier(fastMoves, turnCost) {
-      if (turnCost <= 4 || fastMoves === 1) return "easy";
+      if (isVisibleFlipThreshold(fastMoves, turnCost)) return "easy";
       if (turnCost <= 8) return "medium";
       return "hard";
     }
 
-    function simulateFastMoveAdvantageWinner(side, extraEnergy, aShields, bShields) {
+    function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields) {
       const snapshot = snapshotBattleState();
-      const prefix = side === "A" ? "p1" : "p2";
-      const previousEnergy = $(`${prefix}StartEnergy`).value;
-      $(`${prefix}StartEnergy`).value = clampEnergy(Number(previousEnergy || 0) + extraEnergy);
-      const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
+      const result = simulateShieldMatrixCell(aShields, bShields, {
+        includeSwing: false,
+        preFastAdvantage: { side, fastMoves }
+      });
       restoreBattleState(snapshot);
       const isAWin = result.details && result.details.winnerEdge > 0;
       const isBWin = result.details && result.details.winnerEdge < 0;
