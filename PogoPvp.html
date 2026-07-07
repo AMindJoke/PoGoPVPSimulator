@@ -5658,7 +5658,15 @@
     }
 
     function hasSelfDebuff(move) {
-      return !!(move && Array.isArray(move.buffsSelf) && (Number(move.buffsSelf[0] || 0) < 0 || Number(move.buffsSelf[1] || 0) < 0));
+      const selfBuffs = selfBuffArray(move);
+      return !!(selfBuffs && (Number(selfBuffs[0] || 0) < 0 || Number(selfBuffs[1] || 0) < 0));
+    }
+
+    function selfBuffArray(move) {
+      if (!move) return null;
+      if (Array.isArray(move.buffsSelf)) return move.buffsSelf;
+      if (move.buffTarget === "self" && Array.isArray(move.buffs)) return move.buffs;
+      return null;
     }
 
     function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
@@ -5697,8 +5705,9 @@
 
     function riskyMovePenalty(move) {
       if (!move) return 0;
-      const selfDefenseDrop = Array.isArray(move.buffsSelf) ? Math.max(0, -(move.buffsSelf[1] || 0)) : 0;
-      const selfAttackDrop = Array.isArray(move.buffsSelf) ? Math.max(0, -(move.buffsSelf[0] || 0)) : 0;
+      const selfBuffs = selfBuffArray(move);
+      const selfDefenseDrop = Array.isArray(selfBuffs) ? Math.max(0, -(selfBuffs[1] || 0)) : 0;
+      const selfAttackDrop = Array.isArray(selfBuffs) ? Math.max(0, -(selfBuffs[0] || 0)) : 0;
       return Math.min(24, selfDefenseDrop * 12 + selfAttackDrop * 8);
     }
 
