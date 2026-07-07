@@ -3741,13 +3741,48 @@
     function openPokemonSuggestions(prefix, showAll) {
       const picker = document.querySelector(`.pokemon-picker[data-prefix="${prefix}"]`);
       const input = $(`${prefix}Search`);
-      const q = showAll ? "" : input.value.trim().toLowerCase();
+      const q = showAll ? "" : normalizeSearchText(input.value);
       let list = visiblePokemon;
       if (q) {
-        list = list.filter(p => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
+        list = list
+          .map(p => ({ p, score: pokemonSearchScore(p, q) }))
+          .filter(item => item.score < 100)
+          .sort((a, b) => a.score - b.score || a.p.name.localeCompare(b.p.name) || a.p.id.localeCompare(b.p.id))
+          .map(item => item.p);
       }
       renderPokemonSuggestions(prefix, list.slice(0, 28));
       picker.classList.add("open");
+    }
+
+    function pokemonSearchScore(p, query) {
+      const name = normalizeSearchText(p.name);
+      const id = normalizeSearchText(p.id);
+      const base = normalizeSearchText(p.id.replace(/_shadow$/, "").replace(/_/g, " "));
+      if (name === query || id === query) return 0;
+      if (name.startsWith(query)) return 1;
+      if (name.includes(query)) return 2;
+      if (base.startsWith(query)) return 3;
+      if (base.includes(query) || id.includes(query)) return 4;
+      return fuzzySearchMatch(name, query) || fuzzySearchMatch(id, query) ? 8 : 100;
+    }
+
+    function normalizeSearchText(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    }
+
+    function fuzzySearchMatch(text, query) {
+      let index = 0;
+      for (const char of query) {
+        index = text.indexOf(char, index);
+        if (index === -1) return false;
+        index++;
+      }
+      return true;
     }
 
     function closePokemonSuggestions(prefix) {
@@ -4537,6 +4572,10 @@
     }
 
     function chooseChargedMove(attacker, defender, available) {
+      if (attacker.linePolicy === "avoid-self-debuff") {
+        const safer = available.filter(move => !hasSelfDebuff(move));
+        if (safer.length) available = safer;
+      }
       const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost);
       const straight = byDamage[0];
       const lethal = [...available]
@@ -4923,8 +4962,15 @@
         ["Farm", d.farmPressureEdge],
         ["Outpace", d.outpacePressureEdge]
       ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
-      const swingText = result.swing ? ` <strong>Flippable:</strong> ${escapeHtml(result.swing.pokemon)} can flip with +${result.swing.fastMoves} ${escapeHtml(result.swing.fastMove)} (${result.swing.turnCost} turns).` : "";
+      const swingText = result.swing ? matrixSwingSummary(result.swing) : "";
       box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
+    }
+
+    function matrixSwingSummary(swing) {
+      const label = swing.lineType === "straight" ? "Flippable" : "Potential flip";
+      const line = swing.lineType ? `, ${escapeHtml(swing.lineType)} line` : "";
+      const turns = `${swing.turnCost} turn${swing.turnCost === 1 ? "" : "s"}`;
+      return ` <strong>${label}:</strong> ${escapeHtml(swing.pokemon)} with +${swing.fastMoves} ${escapeHtml(swing.fastMove)} (${turns}${line}).`;
     }
 
     function edgeClass(value) {
@@ -4973,6 +5019,7 @@
       $("p2Shields").value = bShields;
       left = create("p1", "A");
       right = create("p2", "B");
+      applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
@@ -5005,6 +5052,18 @@
       return result;
     }
 
+    function applyMatrixSimulationPolicy(policy) {
+      if (!policy) return;
+      ["A", "B"].forEach(side => {
+        const combatant = side === "A" ? left : right;
+        if (!combatant) return;
+        const sidePolicy = policy[side] || {};
+        if (sidePolicy.baiting) combatant.baiting = sidePolicy.baiting;
+        if (sidePolicy.shieldMode) combatant.shieldMode = sidePolicy.shieldMode;
+        if (sidePolicy.linePolicy) combatant.linePolicy = sidePolicy.linePolicy;
+      });
+    }
+
     const MAX_DANGER_EDGE = 45;
     const MAX_CLOSING_COST_EDGE = 55;
     const MAX_FARM_PRESSURE_EDGE = 95;
@@ -5028,7 +5087,8 @@
       const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
       const score = Math.max(0, Math.min(1000, Math.round(total)));
       const winner = score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
-      const swing = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
+      const flipPotential = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
+      const swing = flipPotential && flipPotential.visible ? flipPotential.best : null;
       const parts = [
         `base 500`,
         `winner ${formatEdge(winnerEdge)}`,
@@ -5059,6 +5119,7 @@
           closingCostEdge,
           farmPressureEdge,
           outpacePressureEdge,
+          flipPotential,
           total
         }
       };
@@ -5077,13 +5138,18 @@
 
     function detectFlippableMatchup(a, b, options = {}) {
       const baseWinner = matchupWinnerSide(a, b);
-      const flips = [a, b]
-        .map(side => detectSideFlip(side, baseWinner, options))
-        .filter(Boolean)
-        .sort((x, y) => x.turnCost - y.turnCost || x.fastMoves - y.fastMoves || x.energy - y.energy);
-      const best = flips[0] || null;
-      if (best) best.alternatives = flips;
-      return best;
+      const sides = baseWinner === "A" ? [b] : baseWinner === "B" ? [a] : [a, b];
+      const candidates = sides
+        .flatMap(side => detectSideFlipCandidates(side, baseWinner, options))
+        .sort(compareFlipCandidates);
+      const visibleCandidates = candidates.filter(candidate => candidate.visible);
+      const best = visibleCandidates[0] || null;
+      if (best) best.alternatives = candidates;
+      return {
+        visible: !!best,
+        best,
+        candidates
+      };
     }
 
     function matchupWinnerSide(a, b) {
@@ -5092,37 +5158,96 @@
       return null;
     }
 
-    function detectSideFlip(combatant, baseWinner, options = {}) {
-      if (!combatant || !combatant.fast || baseWinner === combatant.trainer) return null;
+    function detectSideFlipCandidates(combatant, baseWinner, options = {}) {
+      if (!combatant || !combatant.fast || baseWinner === combatant.trainer) return [];
       const gain = Math.max(1, Number(combatant.fast.energyGain || 1));
       const fastTurns = Math.max(1, Number(combatant.fast.turns || 1));
+      const policies = flipPolicyVariants(combatant, baseWinner);
+      const candidates = [];
       for (let fastMoves = 1; fastMoves <= 4; fastMoves++) {
         const extraEnergy = fastMoves * gain;
         const turnCost = fastMoves * fastTurns;
-        const winner = simulateFastMoveAdvantageWinner(combatant.trainer, fastMoves, options.aShields, options.bShields);
-        if (winner === combatant.trainer) {
-          if (!isVisibleFlipThreshold(fastMoves, turnCost)) return null;
-          const tier = flipTier(fastMoves, turnCost);
-          return {
+        for (const policy of policies) {
+          const winner = simulateFastMoveAdvantageWinner(combatant.trainer, fastMoves, options.aShields, options.bShields, policy.policy);
+          if (winner !== combatant.trainer) continue;
+          const visible = isVisibleFlipThreshold(fastMoves, turnCost);
+          const candidate = {
+            visible,
+            pokemonId: combatant.p.id,
             side: combatant.trainer,
             pokemon: combatant.p.name,
+            fastMoveName: combatant.fast.name,
             fastMove: combatant.fast.name,
+            fastMoveCount: fastMoves,
             fastMoves,
+            fastMoveDurationTurns: fastTurns,
             fastTurns,
+            totalTurnCost: turnCost,
             turnCost,
+            lineType: policy.lineType,
+            confidence: policy.confidence,
+            reason: policy.reason,
             energy: extraEnergy,
-            tier,
-            lines: {
-              detected: { fastMoves, fastMove: combatant.fast.name, turnCost },
-              straight: null,
-              baitDependent: null,
-              shieldDependent: null
-            },
-            title: `Flippable\n${combatant.p.name} can flip with:\nDetected line: +${fastMoves} ${combatant.fast.name}\nTiming cost: ${turnCost} turn${turnCost === 1 ? "" : "s"}\nAlternate charged-move lines may change the required fast-move advantage.`
+            tier: flipTier(fastMoves, turnCost)
           };
+          candidate.lines = flipCandidateLines(candidate);
+          candidate.title = flipCandidateTitle(candidate);
+          candidates.push(candidate);
         }
       }
-      return null;
+      return candidates;
+    }
+
+    function compareFlipCandidates(a, b) {
+      return a.totalTurnCost - b.totalTurnCost
+        || a.fastMoveCount - b.fastMoveCount
+        || b.confidence - a.confidence
+        || lineTypeRank(a.lineType) - lineTypeRank(b.lineType);
+    }
+
+    function lineTypeRank(lineType) {
+      return { straight: 0, mixed: 1, bait: 2, "debuff-sensitive": 3, "opponent-bait": 4, "shield-dependent": 5 }[lineType] ?? 9;
+    }
+
+    function flipPolicyVariants(combatant, baseWinner) {
+      const side = combatant.trainer;
+      const opponent = side === "A" ? "B" : "A";
+      const variants = [
+        { lineType: "mixed", confidence: .6, reason: "Current automatic battle policy.", policy: null },
+        { lineType: "straight", confidence: .85, reason: "Both sides prefer direct charged-move pressure.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "off" } } },
+        { lineType: "bait", confidence: .65, reason: `${combatant.p.name} is allowed to bait before committing to its stronger line.`, policy: { [side]: { baiting: "on" }, [opponent]: { baiting: "off" } } },
+        { lineType: "opponent-bait", confidence: .55, reason: "The opponent may spend energy on a bait move.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "on" } } },
+        { lineType: "shield-dependent", confidence: .58, reason: "The flip depends on the opponent not shielding the first charged move.", policy: { [side]: { baiting: "off" }, [opponent]: { baiting: "off", shieldMode: "no-first" } } }
+      ];
+      if (combatant.charged.some(hasSelfDebuff)) {
+        variants.push({
+          lineType: "debuff-sensitive",
+          confidence: .7,
+          reason: `${combatant.p.name} has a self-debuff move, so an alternate safer charged-move line is tested.`,
+          policy: { [side]: { baiting: "off", linePolicy: "avoid-self-debuff" }, [opponent]: { baiting: "off" } }
+        });
+      }
+      return variants;
+    }
+
+    function flipCandidateLines(candidate) {
+      return {
+        detected: {
+          fastMoves: candidate.fastMoveCount,
+          fastMove: candidate.fastMoveName,
+          turnCost: candidate.totalTurnCost,
+          lineType: candidate.lineType
+        },
+        straight: candidate.lineType === "straight" ? candidate : null,
+        baitDependent: candidate.lineType === "bait" || candidate.lineType === "opponent-bait" ? candidate : null,
+        shieldDependent: candidate.lineType === "shield-dependent" ? candidate : null,
+        debuffSensitive: candidate.lineType === "debuff-sensitive" ? candidate : null
+      };
+    }
+
+    function flipCandidateTitle(candidate) {
+      const label = candidate.lineType === "straight" ? "Flippable" : "Potential flip line";
+      return `${label}: ${candidate.pokemon} +${candidate.fastMoveCount} ${candidate.fastMoveName}\nTiming cost: ${candidate.totalTurnCost} turn${candidate.totalTurnCost === 1 ? "" : "s"}\nLine: ${candidate.lineType}\n${candidate.reason}\nBaiting, debuffs, and shield order can change the exact threshold.`;
     }
 
     function isVisibleFlipThreshold(fastMoves, turnCost) {
@@ -5135,11 +5260,16 @@
       return "hard";
     }
 
-    function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields) {
+    function hasSelfDebuff(move) {
+      return !!(move && Array.isArray(move.buffsSelf) && (Number(move.buffsSelf[0] || 0) < 0 || Number(move.buffsSelf[1] || 0) < 0));
+    }
+
+    function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
       const snapshot = snapshotBattleState();
       const result = simulateShieldMatrixCell(aShields, bShields, {
         includeSwing: false,
-        preFastAdvantage: { side, fastMoves }
+        preFastAdvantage: { side, fastMoves },
+        policy
       });
       restoreBattleState(snapshot);
       const isAWin = result.details && result.details.winnerEdge > 0;
