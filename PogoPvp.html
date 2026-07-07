@@ -4916,7 +4916,7 @@
         ["Farm", d.farmPressureEdge],
         ["Outpace", d.outpacePressureEdge]
       ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
-      const swingText = result.swing ? ` <strong>Flippable:</strong> ${escapeHtml(result.swing.pokemon)} can flip with +${result.swing.fastMoves} ${escapeHtml(result.swing.fastMove)}.` : "";
+      const swingText = result.swing ? ` <strong>Flippable:</strong> ${escapeHtml(result.swing.pokemon)} can flip with +${result.swing.fastMoves} ${escapeHtml(result.swing.fastMove)} (${result.swing.turnCost} turns).` : "";
       box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
     }
 
@@ -5072,8 +5072,10 @@
       const flips = [a, b]
         .map(side => detectSideFlip(side, baseWinner, options))
         .filter(Boolean)
-        .sort((x, y) => x.fastMoves - y.fastMoves || x.energy - y.energy);
-      return flips[0] || null;
+        .sort((x, y) => x.turnCost - y.turnCost || x.fastMoves - y.fastMoves || x.energy - y.energy);
+      const best = flips[0] || null;
+      if (best) best.alternatives = flips;
+      return best;
     }
 
     function matchupWinnerSide(a, b) {
@@ -5085,24 +5087,41 @@
     function detectSideFlip(combatant, baseWinner, options = {}) {
       if (!combatant || !combatant.fast || baseWinner === combatant.trainer) return null;
       const gain = Math.max(1, Number(combatant.fast.energyGain || 1));
+      const fastTurns = Math.max(1, Number(combatant.fast.turns || 1));
       for (let fastMoves = 1; fastMoves <= 4; fastMoves++) {
         const extraEnergy = fastMoves * gain;
         const winner = simulateFastMoveAdvantageWinner(combatant.trainer, extraEnergy, options.aShields, options.bShields);
         if (winner === combatant.trainer) {
           const prefix = combatant.trainer === "A" ? "p1" : "p2";
+          const turnCost = fastMoves * fastTurns;
+          const tier = flipTier(fastMoves, turnCost);
           return {
             side: combatant.trainer,
             pokemon: combatant.p.name,
             fastMove: combatant.fast.name,
             fastMoves,
+            fastTurns,
+            turnCost,
             energy: extraEnergy,
             startEnergy: clampEnergy(Number($(`${prefix}StartEnergy`).value || 0) + extraEnergy),
-            tier: fastMoves === 1 ? "easy" : fastMoves <= 3 ? "medium" : "hard",
-            title: `Flippable\n${combatant.p.name} can flip with:\nDetected line: +${fastMoves} ${combatant.fast.name}\nAlternate charged-move lines may change the required fast-move advantage.`
+            tier,
+            lines: {
+              detected: { fastMoves, fastMove: combatant.fast.name, turnCost },
+              straight: null,
+              baitDependent: null,
+              shieldDependent: null
+            },
+            title: `Flippable\n${combatant.p.name} can flip with:\nDetected line: +${fastMoves} ${combatant.fast.name}\nTiming cost: ${turnCost} turn${turnCost === 1 ? "" : "s"}\nAlternate charged-move lines may change the required fast-move advantage.`
           };
         }
       }
       return null;
+    }
+
+    function flipTier(fastMoves, turnCost) {
+      if (turnCost <= 4 || fastMoves === 1) return "easy";
+      if (turnCost <= 8) return "medium";
+      return "hard";
     }
 
     function simulateFastMoveAdvantageWinner(side, extraEnergy, aShields, bShields) {
