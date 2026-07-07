@@ -1345,8 +1345,12 @@
       opacity: .95;
       transform: translateY(-.5px);
     }
-    .matrix-cell.edge-a { --edge-color: #00B8A9; }
-    .matrix-cell.edge-b { --edge-color: #E0448E; }
+    .matrix-cell.edge-strong-a,
+    .matrix-cell.edge-a,
+    .matrix-cell.edge-slight-a { --edge-color: #00B8A9; }
+    .matrix-cell.edge-strong-b,
+    .matrix-cell.edge-b,
+    .matrix-cell.edge-slight-b { --edge-color: #E0448E; }
     .matrix-cell.edge-close { --edge-color: #6F7A86; }
     .matrix-cell.current {
       outline: 2px solid var(--warn);
@@ -1375,6 +1379,18 @@
     }
     .matrix-swing:hover {
       background: rgba(255,255,255,.42);
+    }
+    .matrix-swing.easy {
+      background: #2fbf71;
+      border-color: rgba(255,255,255,.82);
+    }
+    .matrix-swing.medium {
+      background: #d5a928;
+      border-color: rgba(255,255,255,.82);
+    }
+    .matrix-swing.hard {
+      background: #d9653b;
+      border-color: rgba(255,255,255,.82);
     }
     .matrix-axis-top {
       grid-column: 3 / 6;
@@ -4848,12 +4864,13 @@
         rows.push(`<div class="matrix-axis" style="grid-column:2;grid-row:${row + 3}">${shieldCountLabel(aShields)}</div>`);
         [0, 1, 2].forEach((bShields, column) => {
           const result = simulateShieldMatrixCell(aShields, bShields);
-          const cls = result.score > 535 ? "edge-a" : result.score < 465 ? "edge-b" : "edge-close";
+          const rating = matrixScoreRating(result.score);
+          const cls = rating.className;
           const current = aShields === currentA && bShields === currentB ? " current" : "";
           if (current) currentResult = result;
           const heat = matrixHeat(result.score);
           const swing = result.swing
-            ? `<button type="button" class="matrix-swing" data-swing-side="${result.swing.side}" data-swing-energy="${result.swing.startEnergy}" title="${escapeHtml(result.swing.title)}">↯</button>`
+            ? `<button type="button" class="matrix-swing ${result.swing.tier}" data-swing-side="${result.swing.side}" data-swing-energy="${result.swing.startEnergy}" title="${escapeHtml(result.swing.title)}">↯</button>`
             : "";
           rows.push(`<div class="matrix-cell ${cls}${current}" role="button" tabindex="0" data-a-shields="${aShields}" data-b-shields="${bShields}" style="grid-column:${column + 3};grid-row:${row + 3};--edge-color:${heat.color};--edge-opacity:${heat.opacity}"><span class="matrix-value"><span class="matrix-symbol">${heat.symbol}</span>${result.score}</span>${swing}</div>`);
         });
@@ -4886,9 +4903,9 @@
       const box = $("matrixExplanation");
       if (!box || !result || !result.details || !left || !right) return;
       const d = result.details;
-      const direction = result.score > 535
+      const direction = result.score > 500
         ? `${left.p.name} is ahead`
-        : result.score < 465
+        : result.score < 500
           ? `${right.p.name} is ahead`
           : "This is close";
       const parts = [
@@ -4899,7 +4916,7 @@
         ["Farm", d.farmPressureEdge],
         ["Outpace", d.outpacePressureEdge]
       ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
-      const swingText = result.swing ? ` <strong>Swing:</strong> ${escapeHtml(result.swing.title)}` : "";
+      const swingText = result.swing ? ` <strong>Flippable:</strong> ${escapeHtml(result.swing.pokemon)} can flip with +${result.swing.fastMoves} ${escapeHtml(result.swing.fastMove)}.` : "";
       box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
     }
 
@@ -4909,17 +4926,28 @@
       return "score-neutral";
     }
 
+    function matrixScoreRating(score) {
+      if (score === 500) return { label: "Neutral", className: "edge-close", side: "neutral" };
+      if (score >= 651) return { label: "Strong Advantage", className: "edge-strong-a", side: "A" };
+      if (score >= 536) return { label: "Advantage", className: "edge-a", side: "A" };
+      if (score >= 501) return { label: "Slight Advantage", className: "edge-slight-a", side: "A" };
+      if (score >= 465) return { label: "Slight Disadvantage", className: "edge-slight-b", side: "B" };
+      if (score >= 350) return { label: "Disadvantage", className: "edge-b", side: "B" };
+      return { label: "Strong Disadvantage", className: "edge-strong-b", side: "B" };
+    }
+
     function matrixHeat(score) {
       const distance = Math.min(1, Math.abs(score - 500) / 420);
+      const tint = score === 500 ? 0 : Math.max(.08, distance);
       const color = score > 500
-        ? mixColor("#6F7A86", "#00B8A9", distance)
+        ? mixColor("#6F7A86", "#00B8A9", tint)
         : score < 500
-          ? mixColor("#6F7A86", "#E0448E", distance)
+          ? mixColor("#6F7A86", "#E0448E", tint)
           : "#6F7A86";
       return {
         color,
         opacity: (score === 500 ? .72 : 0.76 + distance * .22).toFixed(2),
-        symbol: score > 535 ? "▲" : score < 465 ? "▼" : "◆"
+        symbol: score > 500 ? "▲" : score < 500 ? "▼" : "◆"
       };
     }
 
@@ -4991,8 +5019,8 @@
       const outpacePressureEdge = outpacePressure(a, b) - outpacePressure(b, a);
       const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
       const score = Math.max(0, Math.min(1000, Math.round(total)));
-      const winner = score > 535 ? a.p.name : score < 465 ? b.p.name : "Close";
-      const swing = options.includeSwing ? matchupSwingHint(a, b, options) : null;
+      const winner = score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
+      const swing = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
       const parts = [
         `base 500`,
         `winner ${formatEdge(winnerEdge)}`,
@@ -5039,44 +5067,45 @@
       return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
     }
 
-    function matchupSwingHint(a, b, options = {}) {
-      const losingThreat = a.hp <= 0 && b.hp > 0
-        ? chargedSwingThreat(a, b, options)
-        : b.hp <= 0 && a.hp > 0
-          ? chargedSwingThreat(b, a, options)
-          : null;
-      return losingThreat;
+    function detectFlippableMatchup(a, b, options = {}) {
+      const baseWinner = matchupWinnerSide(a, b);
+      const flips = [a, b]
+        .map(side => detectSideFlip(side, baseWinner, options))
+        .filter(Boolean)
+        .sort((x, y) => x.fastMoves - y.fastMoves || x.energy - y.energy);
+      return flips[0] || null;
     }
 
-    function chargedSwingThreat(attacker, defender, options = {}) {
-      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return null;
-      const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
-      const threats = attacker.charged
-        .map(move => {
-          const needed = Math.max(0, (move.energyCost || 0) - attacker.energy);
-          const fastsNeeded = Math.ceil(needed / gain);
-          const damage = estimate(attacker, defender, move);
-          return { move, needed, fastsNeeded, damage };
-        })
-        .filter(item => item.fastsNeeded <= 2 && item.damage >= defender.hp * .85)
-        .sort((a, b) => a.fastsNeeded - b.fastsNeeded || b.damage - a.damage);
-      if (!threats.length) return null;
-      for (const threat of threats) {
-        const energy = Math.max(gain, threat.fastsNeeded * gain);
-        const winner = simulateEnergySwingWinner(attacker.trainer, energy, options.aShields, options.bShields);
-        if (winner === attacker.trainer) {
+    function matchupWinnerSide(a, b) {
+      if (a.hp > 0 && b.hp <= 0) return "A";
+      if (b.hp > 0 && a.hp <= 0) return "B";
+      return null;
+    }
+
+    function detectSideFlip(combatant, baseWinner, options = {}) {
+      if (!combatant || !combatant.fast || baseWinner === combatant.trainer) return null;
+      const gain = Math.max(1, Number(combatant.fast.energyGain || 1));
+      for (let fastMoves = 1; fastMoves <= 4; fastMoves++) {
+        const extraEnergy = fastMoves * gain;
+        const winner = simulateFastMoveAdvantageWinner(combatant.trainer, extraEnergy, options.aShields, options.bShields);
+        if (winner === combatant.trainer) {
+          const prefix = combatant.trainer === "A" ? "p1" : "p2";
           return {
-            side: attacker.trainer,
-            energy,
-            startEnergy: clampEnergy(Number($(`${attacker.trainer === "A" ? "p1" : "p2"}StartEnergy`).value || 0) + energy),
-            title: `${attacker.p.name} swing: +${energy} starting energy flips the matchup with ${threat.move.name} pressure.`
+            side: combatant.trainer,
+            pokemon: combatant.p.name,
+            fastMove: combatant.fast.name,
+            fastMoves,
+            energy: extraEnergy,
+            startEnergy: clampEnergy(Number($(`${prefix}StartEnergy`).value || 0) + extraEnergy),
+            tier: fastMoves === 1 ? "easy" : fastMoves <= 3 ? "medium" : "hard",
+            title: `Flippable\n${combatant.p.name} can flip with:\nDetected line: +${fastMoves} ${combatant.fast.name}\nAlternate charged-move lines may change the required fast-move advantage.`
           };
         }
       }
       return null;
     }
 
-    function simulateEnergySwingWinner(side, extraEnergy, aShields, bShields) {
+    function simulateFastMoveAdvantageWinner(side, extraEnergy, aShields, bShields) {
       const snapshot = snapshotBattleState();
       const prefix = side === "A" ? "p1" : "p2";
       const previousEnergy = $(`${prefix}StartEnergy`).value;
