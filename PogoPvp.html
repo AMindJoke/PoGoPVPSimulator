@@ -5192,14 +5192,18 @@
       const move = attacker?.charged?.[moveIndex];
       if (!attacker || !defender || !move) return;
       const color = typeColors[move.type] || "#67c7b8";
+      const damageInfo = chargedDamagePreviewInfo(prefix, defenderPrefix, move);
       const tooltip = $("chargeInfoTooltip");
       tooltip.style.setProperty("--move-color", mixColor(color, "#ffffff", .18));
       tooltip.style.borderColor = darken(color, .12);
-      tooltip.innerHTML = `<strong>${escapeHtml(move.name)}</strong><span>Counting ${escapeHtml(chargeCountingText(attacker.fast, move))}</span>`;
+      tooltip.innerHTML =
+        `<strong>${escapeHtml(move.name)}</strong>` +
+        `${damageInfo ? `<span>${damageInfo.damage} damage (${damageInfo.percent}%)</span>` : ""}` +
+        `<span>Counting ${escapeHtml(chargeCountingText(attacker.fast, move))}</span>`;
       tooltip.classList.add("show");
       tooltip.setAttribute("aria-hidden", "false");
       positionChargeInfoTooltip(event);
-      previewChargedDamage(prefix, defenderPrefix, move);
+      previewChargedDamage(defenderPrefix, damageInfo);
     }
 
     function hideChargeInfo() {
@@ -5236,12 +5240,12 @@
       return counts.join("-");
     }
 
-    function previewChargedDamage(attackerPrefix, defenderPrefix, move) {
+    function chargedDamagePreviewInfo(attackerPrefix, defenderPrefix, move) {
       const attackerBase = attackerPrefix === "p1" ? left : right;
       const defenderBase = defenderPrefix === "p1" ? left : right;
       const attackerState = displayedResources[attackerPrefix];
       const defenderState = displayedResources[defenderPrefix];
-      if (!attackerBase || !defenderBase || !attackerState || !defenderState) return;
+      if (!attackerBase || !defenderBase || !attackerState || !defenderState) return null;
       const attacker = {
         ...attackerBase,
         hp: attackerState.hp,
@@ -5257,8 +5261,14 @@
         attackStage: defenderState.attackStage || 0,
         defenseStage: defenderState.defenseStage || 0
       };
-      const damage = Math.min(defender.hp, estimate(attacker, defender, move));
-      showHpDamagePreview(defenderPrefix, defender.hp, defender.maxHp, damage);
+      const damage = estimate(attacker, defender, move);
+      const percent = defender.maxHp ? (damage / defender.maxHp * 100).toFixed(1) : "0.0";
+      return { damage, percent, hp: defender.hp, maxHp: defender.maxHp };
+    }
+
+    function previewChargedDamage(defenderPrefix, damageInfo) {
+      if (!damageInfo) return;
+      showHpDamagePreview(defenderPrefix, damageInfo.hp, damageInfo.maxHp, Math.min(damageInfo.hp, damageInfo.damage));
     }
 
     function showHpDamagePreview(prefix, hp, maxHp, damage) {
