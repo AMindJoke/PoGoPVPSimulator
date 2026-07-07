@@ -1392,6 +1392,53 @@
       background: #d9653b;
       border-color: rgba(255,255,255,.82);
     }
+    .matrix-preview {
+      display: none;
+      position: sticky;
+      top: 8px;
+      z-index: 45;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      max-width: 1080px;
+      margin: 8px auto 10px;
+      padding: 7px 9px;
+      border: 1px solid rgba(0, 184, 169, .35);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--panel) 82%, #00b8a9 18%);
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.25;
+      box-shadow: 0 6px 16px rgba(23, 33, 47, .08);
+    }
+    body.matrix-preview-active .trainer-card,
+    body.matrix-preview-active .timeline {
+      box-shadow:
+        0 0 0 2px rgba(0, 184, 169, .28),
+        0 0 24px rgba(0, 184, 169, .18),
+        var(--shadow);
+    }
+    body.matrix-preview-active .trainer-card::after,
+    body.matrix-preview-active .timeline::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1px solid rgba(0, 184, 169, .28);
+      pointer-events: none;
+    }
+    .matrix-preview.active {
+      display: flex;
+    }
+    .matrix-preview strong {
+      font-weight: 950;
+    }
+    .matrix-preview button {
+      min-height: 26px;
+      padding: 4px 10px;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
     .matrix-axis-top {
       grid-column: 3 / 6;
       grid-row: 1;
@@ -3147,6 +3194,8 @@
       <span class="hint" id="counts"></span>
     </div>
 
+    <div id="matrixPreview" class="matrix-preview" aria-live="polite"></div>
+
     <div class="setup">
       <section class="trainer-card a">
         <div class="control-stack">
@@ -3448,6 +3497,7 @@
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
     let suppressRender = false;
+    let matrixPreviewState = null;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -4007,6 +4057,7 @@
     }
 
     function resetBattleStateFromSetup() {
+      matrixPreviewState = null;
       left = create("p1", "A");
       right = create("p2", "B");
       log = [];
@@ -4578,6 +4629,10 @@
       }
       const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost);
       const straight = byDamage[0];
+      if (attacker.linePolicy === "force-straight") {
+        const preferredStraight = [...attacker.charged].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
+        return available.includes(preferredStraight) ? preferredStraight : null;
+      }
       const lethal = [...available]
         .filter(move => {
           const damage = estimate(attacker, defender, move);
@@ -4587,6 +4642,10 @@
       if (lethal) return lethal;
       if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
       if (defender.shields <= 0) return straight;
+      if (attacker.linePolicy === "safe-bait") {
+        const safeBait = safeBaitMove(attacker, defender, available, straight);
+        if (safeBait) return safeBait;
+      }
 
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const credibleNuke = credibleShieldPressureMove(attacker, defender, cheapest);
@@ -4604,6 +4663,26 @@
       const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
       if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
       return hasNukeReady ? cheapest : straight;
+    }
+
+    function safeBaitMove(attacker, defender, available, straight) {
+      if (!attacker || !defender || !straight || defender.shields <= 0) return null;
+      const baitOptions = available
+        .filter(move => move !== straight && !hasSelfDebuff(move))
+        .map(move => ({ move, damage: estimate(attacker, defender, move), nuke: credibleNukeBehindBait(attacker, defender, move) }))
+        .filter(item => item.nuke)
+        .sort((a, b) => a.move.energyCost - b.move.energyCost || a.damage - b.damage);
+      return baitOptions[0]?.move || null;
+    }
+
+    function credibleNukeBehindBait(attacker, defender, baitMove) {
+      if (!attacker || !defender || !baitMove) return null;
+      const baitDamage = estimate(attacker, defender, baitMove);
+      return attacker.charged
+        .filter(move => move !== baitMove)
+        .map(move => ({ move, damage: estimate(attacker, defender, move) }))
+        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .65 || item.damage > baitDamage * 2)
+        .sort((a, b) => b.damage - a.damage || b.move.energyCost - a.move.energyCost)[0]?.move || null;
     }
 
     function credibleShieldPressureMove(attacker, defender, cheapest) {
@@ -4735,6 +4814,12 @@
       });
     }
 
+    function scrollMatrixIntoView() {
+      requestAnimationFrame(() => {
+        document.querySelector(".matrix-panel")?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      });
+    }
+
     function resetForManualBattle() {
       document.body.classList.add("battle-results-visible");
       startBattle();
@@ -4743,6 +4828,20 @@
 
     function resetMatchupPreview() {
       document.body.classList.add("battle-results-visible");
+      if (matrixPreviewState) {
+        if (matrixPreviewState.battleSnapshot) {
+          restoreBattleState(matrixPreviewState.battleSnapshot);
+        } else {
+          $("p1Shields").value = matrixPreviewState.p1Shields;
+          $("p2Shields").value = matrixPreviewState.p2Shields;
+          $("p1StartEnergy").value = matrixPreviewState.p1StartEnergy;
+          $("p2StartEnergy").value = matrixPreviewState.p2StartEnergy;
+        }
+        matrixPreviewState = null;
+        render();
+        scrollMatrixIntoView();
+        return;
+      }
       startBattle();
     }
 
@@ -4753,20 +4852,22 @@
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
-      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
+      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       render();
     }
 
-    function applyInitialFastAdvantage(side, fastMoves) {
+    function applyInitialFastAdvantage(side, fastMoves, options = {}) {
       const attacker = side === "A" ? left : right;
       const defender = side === "A" ? right : left;
       const count = Math.max(0, Math.min(4, Math.round(Number(fastMoves || 0))));
       if (!attacker || !defender || !attacker.fast || count <= 0) return;
       for (let i = 0; i < count && attacker.hp > 0 && defender.hp > 0; i++) {
+        const energyBefore = attacker.energy;
         apply(attacker, defender, attacker.fast, false);
+        if (options.energyAlreadyApplied) attacker.energy = energyBefore;
       }
     }
 
@@ -4897,6 +4998,21 @@
       renderKeyNumbers();
       renderTimeline();
       renderShieldMatrix();
+      renderMatrixPreview();
+    }
+
+    function renderMatrixPreview() {
+      const box = $("matrixPreview");
+      if (!box) return;
+      if (!matrixPreviewState) {
+        document.body.classList.remove("matrix-preview-active");
+        box.classList.remove("active");
+        box.innerHTML = "";
+        return;
+      }
+      document.body.classList.add("matrix-preview-active");
+      box.classList.add("active");
+      box.innerHTML = `<span><strong>Preview:</strong> ${escapeHtml(matrixPreviewState.label)}</span><button type="button" class="secondary" onclick="resetMatchupPreview()">Reset preview</button>`;
     }
 
     function renderShieldMatrix() {
@@ -4940,13 +5056,58 @@
     }
 
     function runMatrixScenario(aShields, bShields, swingSide = null, swingFastMoves = 0, swingLineType = null) {
+      const baseState = matrixPreviewState ? restoreMatrixPreviewBase() : snapshotMatrixSetup();
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
-      startBattle(swingSide && swingFastMoves > 0 ? {
-        preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves },
-        policy: matrixPolicyForLine(swingSide, swingLineType)
-      } : {});
+      if (swingSide && swingFastMoves > 0) {
+        const prefix = swingSide === "A" ? "p1" : "p2";
+        const fast = moveMap.get($(`${prefix}Fast`).value);
+        const extraEnergy = Math.max(0, Number(fast?.energyGain || 0) * swingFastMoves);
+        const previousEnergy = Number($(`${prefix}StartEnergy`).value || 0);
+        $(`${prefix}StartEnergy`).value = clampEnergy(previousEnergy + extraEnergy);
+        matrixPreviewState = {
+          ...baseState,
+          label: matrixPreviewLabel(swingSide, swingFastMoves, fast, swingLineType)
+        };
+        startBattle({
+          preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves, energyAlreadyApplied: true },
+          policy: matrixPolicyForLine(swingSide, swingLineType)
+        });
+      } else {
+        matrixPreviewState = null;
+        startBattle();
+      }
       runBattleToEnd();
+    }
+
+    function snapshotMatrixSetup() {
+      return {
+        p1Shields: $("p1Shields").value,
+        p2Shields: $("p2Shields").value,
+        p1StartEnergy: $("p1StartEnergy").value,
+        p2StartEnergy: $("p2StartEnergy").value,
+        battleSnapshot: snapshotBattleState()
+      };
+    }
+
+    function restoreMatrixPreviewBase() {
+      const base = { ...matrixPreviewState };
+      if (base.battleSnapshot) {
+        restoreBattleState(base.battleSnapshot);
+      } else {
+        $("p1Shields").value = base.p1Shields;
+        $("p2Shields").value = base.p2Shields;
+        $("p1StartEnergy").value = base.p1StartEnergy;
+        $("p2StartEnergy").value = base.p2StartEnergy;
+      }
+      matrixPreviewState = null;
+      return base;
+    }
+
+    function matrixPreviewLabel(side, fastMoves, fast, lineType) {
+      const pokemon = side === "A" ? $("p1BattleName").textContent || "Pokemon A" : $("p2BattleName").textContent || "Pokemon B";
+      const line = lineType ? `${flipLineLabel(lineType)} - ` : "";
+      return `${line}${pokemon} starts with +${fastMoves} ${fast?.name || "fast move"}`;
     }
 
     function renderMatrixExplanation(result) {
@@ -4971,7 +5132,7 @@
     }
 
     function matrixSwingSummary(swing) {
-      const label = swing.lineType === "straight" ? "Flippable" : "Potential flip";
+      const label = flipLineLabel(swing.lineType);
       const line = swing.lineType ? `, ${escapeHtml(swing.lineType)} line` : "";
       const turns = `${swing.turnCost} turn${swing.turnCost === 1 ? "" : "s"}`;
       return ` <strong>${label}:</strong> ${escapeHtml(swing.pokemon)} with +${swing.fastMoves} ${escapeHtml(swing.fastMove)} (${turns}${line}).`;
@@ -5026,7 +5187,7 @@
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
-      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves);
+      if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       let guard = 0;
@@ -5174,9 +5335,9 @@
         for (const policy of policies) {
           const winner = simulateFastMoveAdvantageWinner(combatant.trainer, fastMoves, options.aShields, options.bShields, policy.policy);
           if (winner !== combatant.trainer) continue;
-          const visible = isVisibleFlipThreshold(fastMoves, turnCost);
+          const visibility = flipCandidateVisibility(policy, fastMoves, turnCost);
           const candidate = {
-            visible,
+            visible: visibility.visible,
             pokemonId: combatant.p.id,
             side: combatant.trainer,
             pokemon: combatant.p.name,
@@ -5188,9 +5349,13 @@
             fastTurns,
             totalTurnCost: turnCost,
             turnCost,
+            timingCost: turnCost,
             lineType: policy.lineType,
             confidence: policy.confidence,
             reason: policy.reason,
+            excludedReason: visibility.excludedReason,
+            requiresOpponentBlunder: !!policy.requiresOpponentBlunder,
+            requiresBadNoShield: !!policy.requiresBadNoShield,
             energy: extraEnergy,
             tier: flipTier(fastMoves, turnCost)
           };
@@ -5218,15 +5383,16 @@
       const opponent = side === "A" ? "B" : "A";
       const variants = [
         { lineType: "mixed", confidence: .6, reason: "Current automatic battle policy.", policy: null },
-        { lineType: "straight", confidence: .85, reason: "Both sides prefer direct charged-move pressure.", policy: matrixPolicyForLine(side, "straight") },
-        { lineType: "bait", confidence: .65, reason: `${combatant.p.name} is allowed to bait before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") },
-        { lineType: "opponent-bait", confidence: .55, reason: "The opponent may spend energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") },
-        { lineType: "shield-dependent", confidence: .58, reason: "The flip depends on the opponent not shielding the first charged move.", policy: matrixPolicyForLine(side, "shield-dependent") }
+        { lineType: "straight", confidence: .85, visibleInMatrix: true, reason: "Both sides prefer direct charged-move pressure.", policy: matrixPolicyForLine(side, "straight") },
+        { lineType: "bait", confidence: .68, visibleInMatrix: true, reason: `${combatant.p.name} can use a plausible bait before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") },
+        { lineType: "opponent-bait", confidence: .55, visibleInMatrix: false, excludedReason: "unstable-bait-guess", reason: "The opponent may spend energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") },
+        { lineType: "shield-dependent", confidence: .58, visibleInMatrix: false, excludedReason: "bad-no-shield", requiresOpponentBlunder: true, requiresBadNoShield: true, reason: "The flip depends on the opponent not shielding a major charged-move threat.", policy: matrixPolicyForLine(side, "shield-dependent") }
       ];
       if (combatant.charged.some(hasSelfDebuff)) {
         variants.push({
           lineType: "debuff-sensitive",
           confidence: .7,
+          visibleInMatrix: true,
           reason: `${combatant.p.name} has a self-debuff move, so an alternate safer charged-move line is tested.`,
           policy: matrixPolicyForLine(side, "debuff-sensitive")
         });
@@ -5234,10 +5400,26 @@
       return variants;
     }
 
+    function flipCandidateVisibility(policy, fastMoves, turnCost) {
+      if (!isVisibleFlipThreshold(fastMoves, turnCost)) {
+        return { visible: false, excludedReason: "medium-hard-timing" };
+      }
+      if (policy.requiresOpponentBlunder) {
+        return { visible: false, excludedReason: policy.excludedReason || "opponent-blunder" };
+      }
+      if (policy.requiresBadNoShield) {
+        return { visible: false, excludedReason: policy.excludedReason || "bad-no-shield" };
+      }
+      if (policy.visibleInMatrix === false) {
+        return { visible: false, excludedReason: policy.excludedReason || "branch-not-main-matrix" };
+      }
+      return { visible: true, excludedReason: null };
+    }
+
     function matrixPolicyForLine(side, lineType) {
       const opponent = side === "A" ? "B" : "A";
       if (lineType === "straight") return { [side]: { baiting: "off" }, [opponent]: { baiting: "off" } };
-      if (lineType === "bait") return { [side]: { baiting: "on" }, [opponent]: { baiting: "off" } };
+      if (lineType === "bait") return { [side]: { baiting: "on", linePolicy: "safe-bait" }, [opponent]: { baiting: "off", linePolicy: "force-straight" } };
       if (lineType === "opponent-bait") return { [side]: { baiting: "off" }, [opponent]: { baiting: "on" } };
       if (lineType === "shield-dependent") return { [side]: { baiting: "off" }, [opponent]: { baiting: "off", shieldMode: "no-first" } };
       if (lineType === "debuff-sensitive") return { [side]: { baiting: "off", linePolicy: "avoid-self-debuff" }, [opponent]: { baiting: "off" } };
@@ -5260,8 +5442,16 @@
     }
 
     function flipCandidateTitle(candidate) {
-      const label = candidate.lineType === "straight" ? "Flippable" : "Potential flip line";
+      const label = flipLineLabel(candidate.lineType);
       return `${label}: ${candidate.pokemon} +${candidate.fastMoveCount} ${candidate.fastMoveName}\nTiming cost: ${candidate.totalTurnCost} turn${candidate.totalTurnCost === 1 ? "" : "s"}\nLine: ${candidate.lineType}\n${candidate.reason}\nBaiting, debuffs, and shield order can change the exact threshold.`;
+    }
+
+    function flipLineLabel(lineType) {
+      if (lineType === "straight") return "Flippable";
+      if (lineType === "bait") return "Bait-dependent flip";
+      if (lineType === "debuff-sensitive") return "Debuff-sensitive flip";
+      if (lineType === "shield-dependent") return "Shield-call dependent";
+      return "Potential flip";
     }
 
     function isVisibleFlipThreshold(fastMoves, turnCost) {
