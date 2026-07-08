@@ -1571,6 +1571,14 @@
       color: var(--muted);
       font-weight: 850;
     }
+    .matrix-loading {
+      min-height: 118px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
     .matrix-breakdown {
       display: flex;
       flex-wrap: wrap;
@@ -3580,6 +3588,10 @@
     let manualDecisionResolve = null;
     let suppressRender = false;
     let pageScrollAnimation = null;
+    let shieldMatrixPendingSignature = "";
+    let shieldMatrixPendingTimer = null;
+    const shieldMatrixCache = new Map();
+    const shieldMatrixCacheLimit = 360;
     let previewState = {
       active: false,
       originalState: null,
@@ -4792,6 +4804,7 @@
         })
         .sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       if (lethal) return lethal;
+      if (shouldWaitForBetterChargedMove(attacker, defender, available, straight)) return null;
       if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
       if (defender.shields <= 0) return straight;
       if (attacker.linePolicy === "safe-bait") {
@@ -4803,7 +4816,7 @@
 
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const credibleNuke = credibleShieldPressureMove(attacker, defender, cheapest);
-      if (opponentPressureForcesThrow(attacker, defender)) return cheapest || straight;
+      if (opponentPressureForcesThrow(attacker, defender)) return urgentChargedMove(attacker, defender, available, straight, cheapest);
       if (attacker.baiting === "selective" && credibleNuke && attacker.energy < credibleNuke.energyCost && attacker.energy < 100) {
         return null;
       }
@@ -4817,6 +4830,41 @@
       const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
       if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
       return hasNukeReady ? cheapest : straight;
+    }
+
+    function shouldWaitForBetterChargedMove(attacker, defender, available, currentMove) {
+      if (!attacker || !defender || !attacker.fast || !currentMove) return false;
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
+      const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
+      const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      if (!gain) return false;
+      const currentDamage = estimate(attacker, defender, currentMove);
+      const currentPressure = effectiveness(currentMove.type, defender.p.types);
+      const better = attacker.charged
+        .filter(move => !available.includes(move) && move.energyCost > attacker.energy)
+        .map(move => {
+          const needed = move.energyCost - attacker.energy;
+          const fasts = Math.ceil(needed / gain);
+          const turnCost = fasts * fastTurns;
+          const damage = estimate(attacker, defender, move);
+          const pressure = effectiveness(move.type, defender.p.types);
+          return { move, fasts, turnCost, damage, pressure };
+        })
+        .filter(item => isVisibleFlipThreshold(item.fasts, item.turnCost))
+        .filter(item => item.damage >= currentDamage * 1.25 || item.pressure > currentPressure + .2)
+        .sort((a, b) => a.turnCost - b.turnCost || b.damage - a.damage)[0];
+      return !!better;
+    }
+
+    function urgentChargedMove(attacker, defender, available, straight, cheapest) {
+      if (!cheapest || cheapest === straight) return straight;
+      if (attacker.baiting === "on") return cheapest;
+      const cheapestDamage = estimate(attacker, defender, cheapest);
+      const straightDamage = estimate(attacker, defender, straight);
+      const cheapestTypePressure = effectiveness(cheapest.type, defender.p.types);
+      const straightTypePressure = effectiveness(straight.type, defender.p.types);
+      const straightClearlyBetter = straightDamage >= cheapestDamage * 1.35 || straightTypePressure > cheapestTypePressure + .2;
+      return straightClearlyBetter ? straight : cheapest;
     }
 
     function safeDefaultBaitMove(attacker, defender, available, straight) {
@@ -5379,6 +5427,7 @@
     function renderShieldMatrix() {
       const box = $("shieldMatrix");
       if (!box || suppressRender) return;
+      if (!document.body.classList.contains("battle-results-visible") && !previewState.active) return;
       if (!left || !right) {
         box.innerHTML = "";
         $("matrixExplanation").innerHTML = "";
@@ -5386,8 +5435,16 @@
       }
       const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
       if (previewRenderState) restoreFullSimulatorState(previewState.originalState);
+      const signature = shieldMatrixSignature();
       const currentA = Number($("p1Shields").value || 0);
       const currentB = Number($("p2Shields").value || 0);
+      if (!shieldMatrixReady(signature)) {
+        box.innerHTML = `<div class="matrix-loading">Calculating matchup...</div>`;
+        $("matrixExplanation").innerHTML = "";
+        scheduleShieldMatrixCalculation(signature);
+        if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+        return;
+      }
       const rows = [];
       let currentResult = null;
       rows.push(`<div class="matrix-axis matrix-axis-top">${pokemonMatrixSprite(right.p)}</div>`);
@@ -5398,7 +5455,7 @@
       [0, 1, 2].forEach((aShields, row) => {
         rows.push(`<div class="matrix-axis" style="grid-column:2;grid-row:${row + 3}">${shieldCountLabel(aShields)}</div>`);
         [0, 1, 2].forEach((bShields, column) => {
-          const result = simulateShieldMatrixCell(aShields, bShields);
+          const result = cachedShieldMatrixCell(signature, aShields, bShields);
           const rating = matrixScoreRating(result.score);
           const cls = rating.className;
           const current = aShields === currentA && bShields === currentB ? " current" : "";
@@ -5413,6 +5470,71 @@
       box.innerHTML = rows.join("");
       renderMatrixExplanation(currentResult);
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+    }
+
+    function cachedShieldMatrixCell(signature, aShields, bShields) {
+      const key = `${signature}|${aShields}-${bShields}`;
+      if (!shieldMatrixCache.has(key)) {
+        shieldMatrixCache.set(key, simulateShieldMatrixCell(aShields, bShields));
+        trimShieldMatrixCache();
+      }
+      return shieldMatrixCache.get(key);
+    }
+
+    function shieldMatrixReady(signature) {
+      for (let a = 0; a <= 2; a++) {
+        for (let b = 0; b <= 2; b++) {
+          if (!shieldMatrixCache.has(`${signature}|${a}-${b}`)) return false;
+        }
+      }
+      return true;
+    }
+
+    function scheduleShieldMatrixCalculation(signature) {
+      if (shieldMatrixPendingSignature === signature) return;
+      if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
+      shieldMatrixPendingSignature = signature;
+      const cells = [];
+      for (let a = 0; a <= 2; a++) {
+        for (let b = 0; b <= 2; b++) cells.push([a, b]);
+      }
+      const step = () => {
+        const cell = cells.find(([a, b]) => !shieldMatrixCache.has(`${signature}|${a}-${b}`));
+        if (!cell) {
+          shieldMatrixPendingSignature = "";
+          shieldMatrixPendingTimer = null;
+          if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+            renderShieldMatrix();
+          }
+          return;
+        }
+        cachedShieldMatrixCell(signature, cell[0], cell[1]);
+        shieldMatrixPendingTimer = setTimeout(step, 0);
+      };
+      shieldMatrixPendingTimer = setTimeout(step, 40);
+    }
+
+    function trimShieldMatrixCache() {
+      while (shieldMatrixCache.size > shieldMatrixCacheLimit) {
+        const oldestKey = shieldMatrixCache.keys().next().value;
+        if (!oldestKey) break;
+        shieldMatrixCache.delete(oldestKey);
+      }
+    }
+
+    function shieldMatrixSignature() {
+      return ["p1", "p2"].map(prefix => [
+        $(`${prefix}Pokemon`).value,
+        $(`${prefix}Fast`).value,
+        $(`${prefix}Charged1`).value,
+        $(`${prefix}Charged2`).value,
+        $(`${prefix}IvAtk`).value,
+        $(`${prefix}IvDef`).value,
+        $(`${prefix}IvHp`).value,
+        $(`${prefix}StartEnergy`).value,
+        $(`${prefix}Baiting`).value,
+        $(`${prefix}ShieldMode`).value
+      ].join(":")).join("|");
     }
 
     function handleMatrixClick(event) {
