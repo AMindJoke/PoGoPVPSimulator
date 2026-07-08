@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -154,8 +154,8 @@
       max-width: 240px;
     }
     .setup {
-      grid-template-columns: repeat(2, 320px);
-      column-gap: 180px;
+      grid-template-columns: repeat(2, 296px);
+      column-gap: 228px;
       align-items: start;
       justify-content: center;
     }
@@ -163,7 +163,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
-      max-width: 320px;
+      max-width: 296px;
       border-radius: 8px;
       box-shadow: var(--panel-shadow);
       position: relative;
@@ -206,20 +206,51 @@
     }
     .moves-stack .hp {
       width: 100%;
-      max-width: 282px;
+      max-width: 248px;
       justify-self: center;
-      height: 22px;
-      border-radius: 5px;
+      height: 28px;
+      margin-top: 10px;
+      border-radius: 2px;
       border-color: #aeb9c5;
       background: #17212f;
       box-shadow: inset 0 1px 2px rgba(23, 33, 47, .12);
     }
     .moves-stack .resource-row {
       width: 100%;
-      max-width: 282px;
+      max-width: 248px;
       justify-self: center;
       justify-items: center;
       margin-top: 6px;
+    }
+    .move-group {
+      display: grid;
+      gap: 4px;
+      width: 100%;
+      max-width: 248px;
+      justify-self: center;
+    }
+    .move-group + .move-group {
+      margin-top: 7px;
+    }
+    .move-group-title {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .move-group label {
+      display: block;
+    }
+    .move-group label > span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     .section-kicker {
       display: flex;
@@ -310,6 +341,11 @@
       font-size: 13px;
       line-height: 1.35;
     }
+    .battle-identity span strong {
+      color: inherit;
+      font-size: inherit;
+      font-weight: 850;
+    }
     .type-badges {
       display: flex;
       gap: 5px;
@@ -382,7 +418,7 @@
     .pokemon-picker,
     .moves-stack label {
       width: 100%;
-      max-width: 282px;
+      max-width: 248px;
       justify-self: center;
     }
     .moves-stack label {
@@ -558,7 +594,7 @@
     }
     .advanced-panel {
       margin: 8px 0;
-      max-width: 282px;
+      max-width: 248px;
     }
     .advanced-body {
       display: grid;
@@ -874,12 +910,12 @@
     }
     .hp {
       max-width: 298px;
-      height: 18px;
+      height: 28px;
       background: #dfe5ec;
       border: 1px solid #c7d0da;
       margin: 8px 0;
       overflow: hidden;
-      border-radius: 999px;
+      border-radius: 2px;
       position: relative;
     }
     .hp.damage-preview::after {
@@ -938,7 +974,7 @@
       display: grid;
       gap: 4px;
       margin: 8px 0 5px;
-      max-width: 282px;
+      max-width: 248px;
       padding: 2px 0;
       border: 0;
       border-radius: 0;
@@ -946,7 +982,7 @@
     }
     .stat-row {
       display: grid;
-      grid-template-columns: 46px 38px minmax(46px, 1fr) 52px;
+      grid-template-columns: 44px 34px minmax(28px, 1fr) 50px;
       align-items: center;
       gap: 3px;
       font-size: 12px;
@@ -971,16 +1007,18 @@
     }
     .stat-alert {
       min-height: 18px;
-      padding: 2px 4px;
+      padding: 2px 3px;
       border-radius: 4px;
       background: #fff4e0;
       color: #845a11;
       border: 1px solid #e7c37a;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       text-align: center;
       text-shadow: none;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
     }
     .stat-alert.empty {
       visibility: hidden;
@@ -1079,9 +1117,9 @@
       border-radius: 0;
       background: transparent;
       display: grid;
-      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
       align-items: center;
-      gap: 9px;
+      gap: 6px;
       box-shadow: none;
     }
     .energy-core {
@@ -1109,8 +1147,8 @@
       --move-color: #67c7b8;
       --move-color-strong: #1fae98;
       position: relative;
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       justify-self: center;
       overflow: hidden;
       border-radius: 999px;
@@ -2486,6 +2524,214 @@
       padding: 12px;
       display: none;
     }
+    /* Clarity UI visual hierarchy. */
+    body.clarity-ui .trainer-card {
+      background: rgba(255, 255, 255, .66);
+      border-color: rgba(215, 221, 230, .82);
+      box-shadow: 0 8px 18px rgba(23, 33, 47, .05);
+    }
+    body.clarity-ui[data-theme="dark"] .trainer-card,
+    body.clarity-ui[data-theme="neo"] .trainer-card {
+      background: color-mix(in srgb, var(--panel) 84%, transparent);
+    }
+    body.clarity-ui .control-stack,
+    body.clarity-ui .field-box {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    body.clarity-ui .field-box {
+      margin-top: 5px;
+      padding: 6px 7px 4px;
+    }
+    body.clarity-ui .moves-stack {
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(215, 221, 230, .78);
+    }
+    body.clarity-ui .section-kicker {
+      color: var(--accent-dark);
+      opacity: .78;
+      letter-spacing: .03em;
+    }
+    body.clarity-ui .battle-kicker,
+    body.clarity-ui .setup-kicker {
+      margin-bottom: 5px;
+    }
+    body.clarity-ui .battle-identity {
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 2px;
+      align-items: center;
+    }
+    body.clarity-ui .battle-identity img {
+      width: 58px;
+      height: 58px;
+    }
+    body.clarity-ui .battle-identity > div {
+      display: grid;
+      align-content: center;
+      gap: 3px;
+      min-height: 58px;
+    }
+    body.clarity-ui .battle-identity strong {
+      font-size: 17px;
+      margin-bottom: 0;
+    }
+    body.clarity-ui .battle-identity span {
+      margin-top: 0;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+    body.clarity-ui .battle-identity span strong {
+      font-size: 12px;
+      font-weight: 850;
+    }
+    body.clarity-ui .type-badges {
+      margin-top: 1px;
+    }
+    body.clarity-ui .stat-bars {
+      margin: 5px 0 0;
+    }
+    body.clarity-ui .stat-row {
+      color: var(--ink);
+      opacity: 1;
+    }
+    body.clarity-ui .stat-row > span,
+    body.clarity-ui .stat-row strong {
+      color: var(--ink);
+    }
+    body.clarity-ui .overall {
+      display: grid;
+      grid-template-columns: 44px 34px minmax(28px, 1fr) 50px;
+      align-items: center;
+      gap: 3px;
+      margin: 2px 0 0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 750;
+      text-align: left;
+      text-transform: lowercase;
+    }
+    body.clarity-ui .overall strong {
+      grid-column: 2;
+      color: var(--ink);
+      font-size: 13px;
+      text-align: left;
+    }
+    body.clarity-ui .advanced-panel {
+      margin-top: 4px;
+      border-top: 1px dashed rgba(92, 104, 120, .22);
+      padding-top: 3px;
+    }
+    body.clarity-ui .advanced-panel summary {
+      color: var(--accent-dark);
+      font-size: 11px;
+    }
+    body.clarity-ui .shield-only-row {
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px solid rgba(215, 221, 230, .72);
+    }
+    body.clarity-ui .shields-kicker {
+      margin-bottom: 3px;
+    }
+    body.clarity-ui .shield-row {
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+    body.clarity-ui .shield-count-toggle {
+      grid-template-columns: repeat(3, 38px);
+    }
+    body.clarity-ui .shield-mode-toggle {
+      grid-template-columns: repeat(2, max-content);
+    }
+    body.clarity-ui .shield-count-toggle button,
+    body.clarity-ui .shield-mode-toggle button {
+      min-height: 30px;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    body.clarity-ui .compact-toggle,
+    body.clarity-ui .shield-count-toggle {
+      box-shadow: none;
+    }
+    body.clarity-ui .moves-stack label {
+      gap: 3px;
+      color: var(--ink);
+      font-weight: 850;
+    }
+    body.clarity-ui .moves-stack label select.move-select {
+      min-height: 34px;
+      border-width: 2px;
+      border-radius: 9px;
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--move-color, var(--accent)) 62%, white 10%) 0%, color-mix(in srgb, var(--move-color, var(--accent)) 26%, transparent) 54%, transparent 86%),
+        var(--panel);
+      box-shadow: inset 6px 0 0 var(--move-color, var(--accent)), 0 1px 0 rgba(255, 255, 255, .54);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    body.clarity-ui .moves-stack .hp,
+    body.clarity-ui .moves-stack .resource-row {
+      max-width: 248px;
+    }
+    body.clarity-ui .moves-stack .hp {
+      height: 30px;
+      border-radius: 1px;
+      margin-top: 12px;
+    }
+    body.clarity-ui .energy-panel {
+      padding-top: 2px;
+    }
+    body.clarity-ui .battle-cta-row {
+      margin-top: 12px;
+    }
+    body.clarity-ui .battle-cta {
+      min-width: 184px;
+    }
+    body.clarity-ui .analysis-grid {
+      gap: 12px;
+    }
+    body.clarity-ui .timeline {
+      order: 1;
+      border-width: 2px;
+      box-shadow: 0 10px 24px rgba(23, 33, 47, .08);
+    }
+    body.clarity-ui .matrix-panel {
+      order: 2;
+    }
+    body.clarity-ui .key-numbers {
+      order: 3;
+    }
+    body.clarity-ui .manual-panel {
+      order: 4;
+    }
+    body.clarity-ui .log-panel {
+      order: 5;
+    }
+    body.clarity-ui .timeline-head {
+      min-height: 44px;
+      padding: 10px 12px;
+    }
+    body.clarity-ui .timeline-head h2 {
+      font-size: 18px;
+    }
+    body.clarity-ui .timeline-grid {
+      padding-bottom: 10px;
+    }
+    body.clarity-ui .manual-panel {
+      box-shadow: none;
+      background: color-mix(in srgb, var(--panel) 78%, transparent);
+    }
+    body.clarity-ui .manual-head h2 {
+      font-size: 13px;
+    }
+    body.clarity-ui .manual-head span {
+      font-size: 11px;
+    }
+
     @media (max-width: 900px) {
       header {
         align-items: flex-start;
@@ -2694,7 +2940,7 @@
         max-width: none;
       }
       .hp {
-        height: 15px;
+        height: 22px;
         margin: 6px 0;
       }
       .hp-text {
@@ -2710,6 +2956,7 @@
       }
       .shield-mode-toggle {
         justify-self: stretch;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .shield-mode-row .shield-mode-toggle {
         flex: 1 1 auto;
@@ -3067,7 +3314,7 @@
         font-size: 8px;
       }
       .hp {
-        height: 13px;
+        height: 20px;
       }
       .hp-text {
         font-size: 9px;
@@ -3253,7 +3500,7 @@
     }
   </style>
 </head>
-<body>
+<body class="clarity-ui">
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
   </header>
@@ -3349,7 +3596,6 @@
                 <input id="p1ShieldMode" type="hidden" value="always">
                 <div class="compact-toggle shield-mode-toggle" data-prefix="p1">
                   <button type="button" data-shield-mode="always" class="active">Always</button>
-                  <button type="button" data-shield-mode="nuke">Nuke</button>
                   <button type="button" data-shield-mode="no-first">No First</button>
                 </div>
               </div>
@@ -3358,9 +3604,15 @@
         </div>
         <div class="control-stack moves-stack">
           <div class="section-kicker setup-kicker">Moves</div>
-          <label>Fast <select id="p1Fast" class="move-select"></select></label>
-          <label>Charged 1 <select id="p1Charged1" class="move-select"></select></label>
-          <label>Charged 2 <select id="p1Charged2" class="move-select"></select></label>
+          <div class="move-group">
+            <div class="move-group-title">Fast Move</div>
+            <label><span>Fast</span><select id="p1Fast" class="move-select"></select></label>
+          </div>
+          <div class="move-group">
+            <div class="move-group-title">Charged Moves</div>
+            <label><span>Charged 1</span><select id="p1Charged1" class="move-select"></select></label>
+            <label><span>Charged 2</span><select id="p1Charged2" class="move-select"></select></label>
+          </div>
           <div class="hp"><div id="p1Hp"></div><span id="p1HpText" class="hp-text"></span></div>
           <div class="resource-row">
             <div id="p1EnergyPanel" class="energy-panel"></div>
@@ -3432,7 +3684,6 @@
                 <input id="p2ShieldMode" type="hidden" value="always">
                 <div class="compact-toggle shield-mode-toggle" data-prefix="p2">
                   <button type="button" data-shield-mode="always" class="active">Always</button>
-                  <button type="button" data-shield-mode="nuke">Nuke</button>
                   <button type="button" data-shield-mode="no-first">No First</button>
                 </div>
               </div>
@@ -3441,9 +3692,15 @@
         </div>
         <div class="control-stack moves-stack">
           <div class="section-kicker setup-kicker">Moves</div>
-          <label>Fast <select id="p2Fast" class="move-select"></select></label>
-          <label>Charged 1 <select id="p2Charged1" class="move-select"></select></label>
-          <label>Charged 2 <select id="p2Charged2" class="move-select"></select></label>
+          <div class="move-group">
+            <div class="move-group-title">Fast Move</div>
+            <label><span>Fast</span><select id="p2Fast" class="move-select"></select></label>
+          </div>
+          <div class="move-group">
+            <div class="move-group-title">Charged Moves</div>
+            <label><span>Charged 1</span><select id="p2Charged1" class="move-select"></select></label>
+            <label><span>Charged 2</span><select id="p2Charged2" class="move-select"></select></label>
+          </div>
           <div class="hp"><div id="p2Hp"></div><span id="p2HpText" class="hp-text"></span></div>
           <div class="resource-row">
             <div id="p2EnergyPanel" class="energy-panel"></div>
@@ -4020,7 +4277,8 @@
 
     function fillMoveSelect(id, moveIds, pokemon = null) {
       const eliteMoves = new Set((pokemon && pokemon.eliteMoves) || []);
-      $(id).innerHTML = moveIds.map(moveId => {
+      const noneOption = id.includes("Charged") ? `<option value="">&#60;None&#62;</option>` : "";
+      $(id).innerHTML = noneOption + moveIds.map(moveId => {
         const m = moveMap.get(moveId);
         const legacyMark = eliteMoves.has(moveId) ? " *" : "";
         return `<option value="${m.id}">${escapeHtml(m.name + legacyMark)}</option>`;
@@ -4100,7 +4358,11 @@
     function colorMoveSelect(id) {
       const select = $(id);
       const move = moveMap.get(select.value);
-      if (!move) return;
+      if (!move) {
+        select.style.removeProperty("--move-color");
+        select.title = "";
+        return;
+      }
       const color = typeColors[move.type] || "#fff";
       select.style.setProperty("--move-color", color);
       select.title = move.name;
@@ -4192,12 +4454,19 @@
     }
 
     function sideReadyForBattle(prefix) {
+      const charged = selectedChargedMoves(prefix);
       return (
         findPokemon($(`${prefix}Pokemon`).value) &&
         moveMap.get($(`${prefix}Fast`).value) &&
-        moveMap.get($(`${prefix}Charged1`).value) &&
-        moveMap.get($(`${prefix}Charged2`).value)
+        charged.length > 0
       );
+    }
+
+    function selectedChargedMoves(prefix) {
+      return [
+        moveMap.get($(`${prefix}Charged1`).value),
+        moveMap.get($(`${prefix}Charged2`).value)
+      ].filter(Boolean);
     }
 
     function resetBattleStateFromSetup() {
@@ -4233,7 +4502,7 @@
       const otherSlot = changedSlot === "1" ? "2" : "1";
       const other = $(`${prefix}Charged${otherSlot}`);
       const previous = changed.dataset.current || "";
-      if (changed.value && changed.value === other.value && previous && previous !== changed.value) {
+      if (changed.value && changed.value === other.value && previous !== changed.value) {
         other.value = previous;
       }
       syncSelection(prefix);
@@ -4415,7 +4684,7 @@
         trainer,
         p,
         fast: moveMap.get($(`${prefix}Fast`).value),
-        charged: [moveMap.get($(`${prefix}Charged1`).value), moveMap.get($(`${prefix}Charged2`).value)],
+        charged: [moveMap.get($(`${prefix}Charged1`).value) || null, moveMap.get($(`${prefix}Charged2`).value) || null],
         level: stats.level,
         cp: stats.cp,
         ivAtk: stats.ivAtk,
@@ -4643,6 +4912,7 @@
     function useCharge(attacker, defender, index, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const move = attacker.charged[index];
+      if (!move) return false;
       if (attacker.energy < move.energyCost) {
         add(`${attacker.trainer}: not enough energy for ${move.name} (${attacker.energy}/${move.energyCost}).`, "charge");
         render();
@@ -4784,9 +5054,13 @@
       };
     }
 
+    function validChargedMoves(combatant) {
+      return (combatant && Array.isArray(combatant.charged) ? combatant.charged : []).filter(Boolean);
+    }
+
     function autoAction(attacker, defender) {
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
-      const available = attacker.charged.filter(m => attacker.energy >= m.energyCost);
+      const available = validChargedMoves(attacker).filter(m => attacker.energy >= m.energyCost);
       if (available.length) {
         const best = chooseChargedMove(attacker, defender, available);
         if (!best) return useFast(attacker, defender);
@@ -4805,7 +5079,7 @@
       const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost);
       const straight = byDamage[0];
       if (attacker.linePolicy === "force-straight") {
-        const preferredStraight = [...attacker.charged].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
+        const preferredStraight = validChargedMoves(attacker).sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
         return available.includes(preferredStraight) ? preferredStraight : null;
       }
       const lethal = [...available]
@@ -4851,7 +5125,7 @@
       if (!gain) return false;
       const currentDamage = estimate(attacker, defender, currentMove);
       const currentPressure = effectiveness(currentMove.type, defender.p.types);
-      const better = attacker.charged
+      const better = validChargedMoves(attacker)
         .filter(move => !available.includes(move) && move.energyCost > attacker.energy)
         .map(move => {
           const needed = move.energyCost - attacker.energy;
@@ -4898,7 +5172,7 @@
     function credibleNukeBehindBait(attacker, defender, baitMove) {
       if (!attacker || !defender || !baitMove) return null;
       const baitDamage = estimate(attacker, defender, baitMove);
-      return attacker.charged
+      return validChargedMoves(attacker)
         .filter(move => move !== baitMove)
         .map(move => ({ move, damage: estimate(attacker, defender, move) }))
         .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .65 || item.damage > baitDamage * 2)
@@ -4908,7 +5182,7 @@
     function credibleShieldPressureMove(attacker, defender, cheapest) {
       if (!attacker || !defender || !cheapest) return null;
       const cheapestDamage = estimate(attacker, defender, cheapest);
-      return [...attacker.charged]
+      return validChargedMoves(attacker)
         .filter(move => move.energyCost > cheapest.energyCost)
         .map(move => ({ move, damage: estimate(attacker, defender, move) }))
         .filter(item => item.damage > cheapestDamage * 1.15)
@@ -4924,7 +5198,7 @@
     function shouldOverfarmForCloser(attacker, defender, available, currentMove) {
       if (!attacker || !defender || !currentMove || !attacker.fast) return false;
       if (defender.shields > 0) return false;
-      const bestOverall = [...attacker.charged]
+      const bestOverall = validChargedMoves(attacker)
         .sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
       if (!bestOverall || available.includes(bestOverall)) return false;
       const fastGain = Number(attacker.fast.energyGain || 0);
@@ -4961,9 +5235,9 @@
     }
 
     function opponentChargedThreatens(attacker, defender) {
-      if (!attacker || !defender || !defender.charged || !defender.fast) return false;
+      if (!attacker || !defender || !defender.fast) return false;
       const nextEnergy = Math.min(100, defender.energy + Number(defender.fast.energyGain || 0));
-      const threatening = defender.charged
+      const threatening = validChargedMoves(defender)
         .filter(move => defender.energy >= move.energyCost || nextEnergy >= move.energyCost)
         .some(move => {
           const damage = estimate(defender, attacker, move);
@@ -4983,8 +5257,8 @@
         if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
         if (!actors.length) break;
         actors.sort(([a], [b]) => {
-          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
-          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
+          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
           if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
           return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
         });
@@ -5010,8 +5284,8 @@
         if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
         if (!actors.length) break;
         actors.sort(([a], [b]) => {
-          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
-          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
+          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
           if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
           return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
         });
@@ -5168,17 +5442,19 @@
       box.classList.toggle("critical-hp", hpPct <= .20);
       setPokemonImage($(`${prefix}BattleImg`), c.p);
       $(`${prefix}BattleName`).textContent = c.p.name;
-      $(`${prefix}BattleMeta`).textContent = `CP ${c.cp} | L${formatLevel(c.level)}`;
+      $(`${prefix}BattleMeta`).innerHTML = `<strong>CP ${c.cp}</strong>`;
       renderTypeBadges(prefix, c.p.types);
       renderStatBars(prefix, c, opponent);
       updateRankMeter(prefix, c);
       renderShields(prefix);
       renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
       setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, "Fast", opponent);
-      setMoveButton(c1Id, c.charged[0], c.charged[0].name, "Charged", opponent);
-      setMoveButton(c2Id, c.charged[1], c.charged[1].name, "Charged", opponent);
-      $(c1Id).classList.toggle("ready", c.energy >= c.charged[0].energyCost);
-      $(c2Id).classList.toggle("ready", c.energy >= c.charged[1].energyCost);
+      setMoveButton(c1Id, c.charged[0], c.charged[0]?.name || "None", "Charged", opponent);
+      setMoveButton(c2Id, c.charged[1], c.charged[1]?.name || "None", "Charged", opponent);
+      $(c1Id).classList.toggle("ready", !!c.charged[0] && c.energy >= c.charged[0].energyCost);
+      $(c2Id).classList.toggle("ready", !!c.charged[1] && c.energy >= c.charged[1].energyCost);
+      $(c1Id).disabled = !c.charged[0];
+      $(c2Id).disabled = !c.charged[1];
     }
 
     function renderResourceBars(prefix, hp, maxHp, energy, state = null) {
@@ -5735,8 +6011,8 @@
         if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
         if (!actors.length) break;
         actors.sort(([a], [b]) => {
-          const aChargeReady = a.charged.some(move => a.energy >= move.energyCost);
-          const bChargeReady = b.charged.some(move => b.energy >= move.energyCost);
+          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
+          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
           if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
           return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
         });
@@ -5833,8 +6109,9 @@
     }
 
     function chargedReadiness(combatant) {
-      if (!combatant || !combatant.charged.length) return 0;
-      const cheapest = Math.min(...combatant.charged.map(move => move.energyCost || 100).filter(Boolean));
+      const charged = validChargedMoves(combatant);
+      if (!charged.length) return 0;
+      const cheapest = Math.min(...charged.map(move => move.energyCost || 100).filter(Boolean));
       return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
     }
 
@@ -5925,7 +6202,7 @@
         { lineType: "opponent-bait", confidence: .55, visibleInMatrix: false, excludedReason: "unstable-bait-guess", reason: "The opponent may spend energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") },
         { lineType: "shield-dependent", confidence: .58, visibleInMatrix: false, excludedReason: "bad-no-shield", requiresOpponentBlunder: true, requiresBadNoShield: true, reason: "The flip depends on the opponent not shielding a major charged-move threat.", policy: matrixPolicyForLine(side, "shield-dependent") }
       ];
-      if (combatant.charged.some(hasSelfDebuff)) {
+      if (validChargedMoves(combatant).some(hasSelfDebuff)) {
         variants.push({
           lineType: "debuff-sensitive",
           confidence: .7,
@@ -6030,7 +6307,7 @@
       if (!winner || !loser || winner.hp <= 0 || loser.hp > 0) return 0;
       const closer = lastUnshieldedKoCharge(winner.trainer);
       if (!closer) return 0;
-      const cheapest = Math.min(...winner.charged.map(move => move.energyCost || 100).filter(Boolean));
+      const cheapest = Math.min(...validChargedMoves(winner).map(move => move.energyCost || 100).filter(Boolean));
       const costPremium = Math.max(0, (closer.move.energyCost || 0) - cheapest);
       const expensiveCloser = Math.min(28, costPremium * 1.8);
       const riskyCloser = riskyMovePenalty(closer.move);
@@ -6090,7 +6367,7 @@
     function nearChargeDanger(attacker, defender) {
       if (!attacker || !defender || !attacker.fast) return 0;
       const nextEnergy = Math.min(100, attacker.energy + Number(attacker.fast.energyGain || 0));
-      return attacker.charged.some(move => nextEnergy >= move.energyCost && estimate(attacker, defender, move) >= defender.hp) ? 1 : 0;
+      return validChargedMoves(attacker).some(move => nextEnergy >= move.energyCost && estimate(attacker, defender, move) >= defender.hp) ? 1 : 0;
     }
 
     function snapshotFullSimulatorState() {
@@ -6220,8 +6497,8 @@
         );
       $("keyChargedDamage").innerHTML =
         keyRows(
-          keyRow(left.p, left.charged.map(move => keyEntry(move, `${baseEstimate(left, right, move)} dmg`))),
-          keyRow(right.p, right.charged.map(move => keyEntry(move, `${baseEstimate(right, left, move)} dmg`)))
+          keyRow(left.p, validChargedMoves(left).map(move => keyEntry(move, `${baseEstimate(left, right, move)} dmg`))),
+          keyRow(right.p, validChargedMoves(right).map(move => keyEntry(move, `${baseEstimate(right, left, move)} dmg`)))
         );
       const cmp = left.attack > right.attack ? left : right.attack > left.attack ? right : null;
       $("keyCmp").innerHTML = cmp ? keyCmp(cmp.p) : `<span class="key-cmp">Tie</span>`;
@@ -6778,8 +7055,9 @@
     function reachesChargedEnergy(event) {
       const combatant = event.trainer === "A" ? left : right;
       const state = event.state && event.state[event.trainer];
-      if (!combatant || !state || !combatant.charged.length) return false;
-      const cheapest = Math.min(...combatant.charged.map(move => move.energyCost || 0).filter(Boolean));
+      const charged = validChargedMoves(combatant);
+      if (!combatant || !state || !charged.length) return false;
+      const cheapest = Math.min(...charged.map(move => move.energyCost || 0).filter(Boolean));
       return cheapest > 0 && event.energyBefore < cheapest && state.energy >= cheapest;
     }
 
@@ -6801,6 +7079,17 @@
 
     function setMoveButton(id, move, text, kind = "", opponent = null) {
       const button = $(id);
+      if (!move) {
+        button.innerHTML =
+          `<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span><span class="move-kind">${escapeHtml(kind)}</span></span></span>`;
+        button.style.background = "var(--soft)";
+        button.style.borderColor = "var(--line)";
+        button.style.color = "var(--muted)";
+        button.title = "No charged move selected";
+        button.disabled = true;
+        return;
+      }
+      button.disabled = false;
       const color = typeColors[move.type] || "#156f8f";
       const effect = opponent ? moveEffectLabel(move, opponent) : "";
       const effectClass = effect ? effect.toLowerCase() : "";
