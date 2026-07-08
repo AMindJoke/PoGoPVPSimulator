@@ -2427,8 +2427,8 @@
     }
     #log {
       width: 100%;
-      min-height: 106px;
-      max-height: 146px;
+      min-height: 180px;
+      max-height: 260px;
       border: 0;
       background: var(--panel);
       color: var(--ink);
@@ -2438,6 +2438,14 @@
       white-space: pre-wrap;
       overflow: auto;
       border-radius: 8px;
+    }
+    #log strong {
+      color: #050b14;
+      font-weight: 950;
+    }
+    body[data-theme="dark"] #log strong,
+    body[data-theme="neo"] #log strong {
+      color: #ffffff;
     }
     .modal {
       position: fixed;
@@ -4794,8 +4802,16 @@
     function renderLog() {
       const filter = $("logFilter") ? $("logFilter").value : "all";
       const visible = log.filter(entry => filter === "all" || entry.type === filter);
-      $("log").textContent = visible.map(entry => `[${entry.time}] ${entry.line}`).join("\n");
+      $("log").innerHTML = visible.map(entry => renderLogLine(entry)).join("\n");
       $("log").scrollTop = $("log").scrollHeight;
+    }
+
+    function renderLogLine(entry) {
+      const line = `[${entry.time}] ${entry.line}`;
+      const marker = "Reasoning:";
+      const index = line.indexOf(marker);
+      if (index < 0) return escapeHtml(line);
+      return `${escapeHtml(line.slice(0, index))}<strong>${escapeHtml(line.slice(index))}</strong>`;
     }
 
     function effectiveness(moveType, defenderTypes) {
@@ -5002,14 +5018,16 @@
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
       chargeEvent.buffs = buffMessages;
       chargeEvent.unshieldedDamage = unshieldedDamage;
+      if (options.aiReason) chargeEvent.aiReason = options.aiReason;
       defender.chargedTaken++;
       const buffText = buffMessages.length ? ` Buff: ${buffMessages.join(", ")}.` : "";
+      const reasonText = options.aiReason ? ` Reasoning: ${options.aiReason}.` : "";
       if (shielded) {
         defender.shields--;
         recordShield(defender, move, chargeEvent);
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}`, "shield");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}${reasonText}`, "shield");
       } else {
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}`, "charge");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}${reasonText}`, "charge");
       }
       return finish();
     }
@@ -5137,13 +5155,27 @@
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const available = validChargedMoves(attacker).filter(m => attacker.energy >= m.energyCost);
       if (available.length) {
-        const best = chooseChargedMove(attacker, defender, available);
-        if (!best) return useFast(attacker, defender);
-        if (shouldWaitForChargeTiming(attacker, defender, best)) return useFast(attacker, defender);
-        return useCharge(attacker, defender, attacker.charged.indexOf(best));
+        const decision = chooseChargedMoveDecision(attacker, defender, available);
+        if (!decision.move) {
+          if (decision.reason) add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${decision.reason}.`, "info");
+          return useFast(attacker, defender);
+        }
+        const timingReason = chargeTimingWaitReason(attacker, defender, decision.move);
+        if (timingReason) {
+          add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits before ${decision.move.name}. Reasoning: ${timingReason}.`, "info");
+          return useFast(attacker, defender);
+        }
+        return useCharge(attacker, defender, attacker.charged.indexOf(decision.move), { aiReason: decision.reason });
       } else {
         return useFast(attacker, defender);
       }
+    }
+
+    function chooseChargedMoveDecision(attacker, defender, available) {
+      const decision = chooseChargedMove(attacker, defender, available);
+      return typeof decision === "object" && decision && Object.prototype.hasOwnProperty.call(decision, "move")
+        ? decision
+        : { move: decision, reason: decision ? "best available charged move" : "" };
     }
 
     function chooseChargedMove(attacker, defender, available) {
@@ -5155,7 +5187,9 @@
       const straight = byDamage[0];
       if (attacker.linePolicy === "force-straight") {
         const preferredStraight = validChargedMoves(attacker).sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
-        return available.includes(preferredStraight) ? preferredStraight : null;
+        return available.includes(preferredStraight)
+          ? { move: preferredStraight, reason: "forced straight-line pressure" }
+          : { move: null, reason: `waiting for ${preferredStraight.name}` };
       }
       const lethal = [...available]
         .filter(move => {
@@ -5163,35 +5197,50 @@
           return damage >= defender.hp && !shouldShield(defender, move, damage);
         })
         .sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
-      if (lethal) return lethal;
+      if (lethal) return { move: lethal, reason: "lowest-cost KO move" };
       const noShieldPlan = bestNoShieldChargedPlan(attacker, defender, available);
-      if (noShieldPlan) return noShieldPlan.ready ? noShieldPlan.move : null;
-      if (shouldWaitForBetterChargedMove(attacker, defender, available, straight)) return null;
-      if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
-      if (defender.shields <= 0) return straight;
+      if (noShieldPlan) {
+        return noShieldPlan.ready
+          ? { move: noShieldPlan.move, reason: `fastest no-shield KO line (${noShieldPlan.turns} turns)` }
+          : { move: null, reason: `waiting for fastest no-shield KO line into ${noShieldPlan.move.name}` };
+      }
+      const shieldPlan = bestShieldPressurePlan(attacker, defender, available);
+      if (shieldPlan) {
+        return shieldPlan.ready
+          ? { move: shieldPlan.move, reason: shieldPlan.reason }
+          : { move: null, reason: `waiting for shield-pressure line into ${shieldPlan.move.name}` };
+      }
+      const betterWait = betterChargedWaitReason(attacker, defender, available, straight);
+      if (betterWait) return { move: null, reason: betterWait };
+      if (shouldOverfarmForCloser(attacker, defender, available, straight)) return { move: null, reason: `overfarming for ${bestDamageMoveName(attacker, defender)}` };
+      if (defender.shields <= 0) return { move: straight, reason: "highest damage with no shields remaining" };
       if (attacker.linePolicy === "safe-bait") {
         const safeBait = safeBaitMove(attacker, defender, available, straight);
-        if (safeBait) return safeBait;
+        if (safeBait) return { move: safeBait, reason: "safe bait before stronger shield pressure" };
       }
       const safeDefaultBait = safeDefaultBaitMove(attacker, defender, available, straight);
-      if (safeDefaultBait) return safeDefaultBait;
+      if (safeDefaultBait) return { move: safeDefaultBait, reason: "safe bait avoids self-debuff risk" };
 
       const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       const credibleNuke = credibleShieldPressureMove(attacker, defender, cheapest);
-      if (opponentPressureForcesThrow(attacker, defender)) return urgentChargedMove(attacker, defender, available, straight, cheapest);
+      if (opponentPressureForcesThrow(attacker, defender)) {
+        return { move: urgentChargedMove(attacker, defender, available, straight, cheapest), reason: "opponent pressure forces a throw now" };
+      }
       if (attacker.baiting === "selective" && credibleNuke && attacker.energy < credibleNuke.energyCost && attacker.energy < 100) {
-        return null;
+        return { move: null, reason: `building to ${credibleNuke.name} shield pressure` };
       }
 
-      if (!cheapest || cheapest === straight) return straight;
-      if (attacker.baiting === "on") return cheapest;
-      if (attacker.baiting !== "selective") return straight;
+      if (!cheapest || cheapest === straight) return { move: straight, reason: "best direct pressure" };
+      if (attacker.baiting === "on") return { move: cheapest, reason: "baiting enabled" };
+      if (attacker.baiting !== "selective") return { move: straight, reason: "baiting disabled, straight pressure" };
 
       const hasNukeReady = credibleNuke && attacker.energy >= credibleNuke.energyCost;
       const straightDamage = estimate(attacker, defender, straight);
       const straightWouldBeShielded = shouldShield(defender, straight, straightDamage);
-      if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return straight;
-      return hasNukeReady ? cheapest : straight;
+      if (hasNukeReady && !straightWouldBeShielded && straightDamage > estimate(attacker, defender, cheapest)) return { move: straight, reason: "unshielded nuke is available" };
+      return hasNukeReady
+        ? { move: cheapest, reason: `baiting behind ${credibleNuke.name}` }
+        : { move: straight, reason: "best available charged move" };
     }
 
     function bestNoShieldChargedPlan(attacker, defender, available) {
@@ -5254,6 +5303,91 @@
       return { move: best.firstMove, ready: available.includes(best.firstMove), turns: best.turns };
     }
 
+    function bestShieldPressurePlan(attacker, defender, available) {
+      if (!attacker || !defender || defender.shields <= 0 || !attacker.fast || attacker.baiting === "off") return null;
+      const moves = validChargedMoves(attacker);
+      if (moves.length < 2) return null;
+      const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
+      const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      const fastDamage = estimate(attacker, defender, attacker.fast);
+      if (fastDamage <= 0) return null;
+      const initial = {
+        energy: attacker.energy,
+        hp: defender.hp,
+        shields: defender.shields,
+        chargedTaken: defender.chargedTaken || 0,
+        turns: 0,
+        firstMove: null,
+        path: []
+      };
+      const queue = [initial];
+      const seen = [];
+      const finished = [];
+      let stateCount = 0;
+      while (queue.length && stateCount < 520) {
+        stateCount++;
+        queue.sort((a, b) => a.turns - b.turns || a.shields - b.shields || b.energy - a.energy || a.hp - b.hp);
+        const state = queue.shift();
+        if (!state || state.hp <= 0) {
+          finished.push(state);
+          continue;
+        }
+        if (isDominatedShieldPlanState(state, seen)) continue;
+        seen.push(state);
+        for (const move of moves) {
+          const cost = Math.max(1, Number(move.energyCost || 1));
+          const fasts = Math.max(0, Math.ceil((cost - state.energy) / gain));
+          const turnsAfterFast = state.turns + fasts * fastTurns;
+          if (turnsAfterFast > 96) continue;
+          const energyAtThrow = Math.min(100, state.energy + fasts * gain);
+          const hpAfterFast = state.hp - fasts * fastDamage;
+          if (hpAfterFast <= 0) {
+            finished.push({ ...state, turns: turnsAfterFast, hp: 0 });
+            continue;
+          }
+          if (energyAtThrow < cost) continue;
+          const shadowDefender = {
+            ...defender,
+            hp: hpAfterFast,
+            shields: state.shields,
+            chargedTaken: state.chargedTaken
+          };
+          const unshieldedDamage = estimate(attacker, shadowDefender, move);
+          const shielded = shouldShield(shadowDefender, move, unshieldedDamage);
+          const damage = shielded ? 1 : unshieldedDamage;
+          const nextState = {
+            energy: Math.max(0, energyAtThrow - cost),
+            hp: hpAfterFast - damage,
+            shields: shielded ? Math.max(0, state.shields - 1) : state.shields,
+            chargedTaken: state.chargedTaken + 1,
+            turns: turnsAfterFast + 1,
+            firstMove: state.firstMove || move,
+            path: [...state.path, `${move.name}${shielded ? " shielded" : ""}`]
+          };
+          if (nextState.hp <= 0) finished.push(nextState);
+          else queue.push(nextState);
+        }
+      }
+      const best = finished
+        .filter(state => state && state.firstMove && state.path.length)
+        .sort((a, b) =>
+          a.turns - b.turns ||
+          a.shields - b.shields ||
+          b.energy - a.energy ||
+          (a.firstMove.energyCost || 0) - (b.firstMove.energyCost || 0)
+        )[0];
+      if (!best || !best.firstMove) return null;
+      const shieldedFirst = best.path[0]?.includes("shielded");
+      const hasUnshieldedClose = best.path.some(step => !step.includes("shielded"));
+      const lineType = shieldedFirst && hasUnshieldedClose ? "bait into closing pressure" : "shield-pressure sequence";
+      return {
+        move: best.firstMove,
+        ready: available.includes(best.firstMove),
+        turns: best.turns,
+        reason: `${lineType} (${best.turns} turns): ${best.path.slice(0, 3).join(" -> ")}`
+      };
+    }
+
     function isDominatedPlanState(state, seen) {
       return seen.some(other =>
         other.turns <= state.turns &&
@@ -5262,7 +5396,17 @@
       );
     }
 
-    function shouldWaitForBetterChargedMove(attacker, defender, available, currentMove) {
+    function isDominatedShieldPlanState(state, seen) {
+      return seen.some(other =>
+        other.turns <= state.turns &&
+        other.energy >= state.energy &&
+        other.hp <= state.hp &&
+        other.shields <= state.shields &&
+        other.chargedTaken === state.chargedTaken
+      );
+    }
+
+    function betterChargedWaitReason(attacker, defender, available, currentMove) {
       if (!attacker || !defender || !attacker.fast || !currentMove) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
       const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
@@ -5286,7 +5430,14 @@
         .filter(item => isVisibleFlipThreshold(item.fasts, item.turnCost) || item.tacticalCloser || item.shortWaitUpgrade)
         .filter(item => item.damage >= currentDamage * 1.25 || item.pressure > currentPressure + .2 || item.tacticalCloser || item.shortWaitUpgrade)
         .sort((a, b) => Number(b.tacticalCloser) - Number(a.tacticalCloser) || Number(b.shortWaitUpgrade) - Number(a.shortWaitUpgrade) || a.turnCost - b.turnCost || b.damage - a.damage)[0];
-      return !!better;
+      if (!better) return "";
+      if (better.tacticalCloser) return `waiting ${better.fasts} ${attacker.fast.name} for ${better.move.name}, faster closing line`;
+      if (better.shortWaitUpgrade) return `waiting ${better.fasts} ${attacker.fast.name} for stronger ${better.move.name}`;
+      return `waiting ${better.fasts} ${attacker.fast.name} for higher-impact ${better.move.name}`;
+    }
+
+    function shouldWaitForBetterChargedMove(attacker, defender, available, currentMove) {
+      return !!betterChargedWaitReason(attacker, defender, available, currentMove);
     }
 
     function chargedMoveIsShortWaitUpgrade(attacker, defender, currentMove, betterMove, fasts, turnCost, betterDamage, currentDamage, betterPressure, currentPressure) {
@@ -5425,6 +5576,10 @@
     }
 
     function shouldWaitForChargeTiming(attacker, defender, move) {
+      return !!chargeTimingWaitReason(attacker, defender, move);
+    }
+
+    function chargeTimingWaitReason(attacker, defender, move) {
       if (!attacker || !defender || !attacker.fast || !defender.fast || !move) return false;
       const attackerTurn = battleTurns[attacker.trainer] || 0;
       const defenderTurn = battleTurns[defender.trainer] || 0;
@@ -5442,7 +5597,7 @@
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
       if (opponentChargedThreatens(attacker, defender)) return false;
       if (opponentCanPunishTimingWait(attacker, defender, attackerFastTurns, opponentCooldown)) return false;
-      return true;
+      return `optimizing charged timing; opponent cooldown ${opponentCooldown}, target ${targetCooldown}`;
     }
 
     function optimalChargeTimingTarget(attackerFastTurns, defenderFastTurns) {
@@ -5470,6 +5625,11 @@
         const chargeDamage = attacker.shields > 0 ? 1 : estimate(defender, attacker, move);
         return chargeDamage + fastDamage * fastsInWindow >= attacker.hp;
       });
+    }
+
+    function bestDamageMoveName(attacker, defender) {
+      return validChargedMoves(attacker)
+        .sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0]?.name || "a stronger charged move";
     }
 
     function wouldOvercapAfterFast(combatant) {
@@ -7296,7 +7456,8 @@
       const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
       const damagePct = maxHp ? ` (${(event.damage / maxHp * 100).toFixed(1)}%)` : "";
       const energy = event.kind === "fast" ? event.move.energyGain || 0 : event.move.energyCost || 0;
-      return `${event.move.name}\n${event.damage} damage${damagePct}\n${energy} energy`;
+      const aiReason = event.aiReason ? `\nReasoning: ${event.aiReason}` : "";
+      return `${event.move.name}\n${event.damage} damage${damagePct}\n${energy} energy${aiReason}`;
     }
 
     function timelineFastSize(turnPx) {
