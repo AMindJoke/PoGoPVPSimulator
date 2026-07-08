@@ -809,6 +809,10 @@
       align-items: center;
       gap: 6px;
     }
+    .shield-only-row .shield-resource-row {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
     .shields-kicker {
       margin: 2px 0 0;
       font-size: 10px;
@@ -1075,7 +1079,7 @@
     .shield-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 5px;
       padding: 0;
       border: 0;
@@ -1107,15 +1111,15 @@
     }
     .shield-count-toggle {
       display: inline-grid;
-      grid-template-columns: repeat(3, 34px);
+      grid-template-columns: repeat(3, 42px);
       border: 1px solid #c8d0da;
       border-radius: 999px;
       overflow: hidden;
       background: rgba(255,255,255,.75);
     }
     .shield-count-toggle button {
-      min-height: 28px;
-      padding: 2px 4px;
+      min-height: 32px;
+      padding: 3px 5px;
       border: 0;
       border-radius: 0;
       color: var(--ink);
@@ -1134,13 +1138,13 @@
       box-shadow: none;
     }
     .shield-count-toggle svg {
-      width: 14px;
-      height: 14px;
+      width: 17px;
+      height: 17px;
       opacity: .72;
     }
     .shield-count-toggle strong {
       color: var(--ink);
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1;
     }
     .shield-count-toggle button.active strong {
@@ -3955,6 +3959,7 @@
     let pageScrollAnimation = null;
     let timelineReplayAnimation = null;
     let timelineReplayTimer = null;
+    let timelinePresentationPending = false;
     let shieldMatrixPendingSignature = "";
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
@@ -5810,8 +5815,24 @@
 
     function runBattleToEnd(options = {}) {
       if (!setupReadyForBattle()) return;
+      stopTimelineReplay();
+      timelinePresentationPending = true;
       document.body.classList.add("battle-results-visible");
-      if (!left || !right || battleEnded()) startBattle();
+      if (!left || !right || battleEnded()) startBattle({ skipRender: true });
+      render();
+      if (options.scrollTarget === "preview") scrollPreviewIntoView();
+      else if (options.scrollTarget === "timeline") scrollTimelineIntoView();
+      else scrollBattleResultsIntoView();
+      $("battleCta").disabled = true;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          runBattleToEndNow(options);
+          updateBattleAvailability();
+        });
+      });
+    }
+
+    function runBattleToEndNow(options = {}) {
       let guard = 0;
       suppressRender = true;
       while (!battleEnded() && guard < 1000) {
@@ -5837,9 +5858,6 @@
       suppressRender = false;
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
-      if (options.scrollTarget === "preview") scrollPreviewIntoView();
-      else if (options.scrollTarget === "timeline") scrollTimelineIntoView();
-      else scrollBattleResultsIntoView();
       queueTimelineReplay();
     }
 
@@ -5934,7 +5952,7 @@
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
-      render();
+      if (!options.skipRender) render();
     }
 
     function hideBattleResultsForSetupChange() {
@@ -6333,6 +6351,10 @@
         for (let b = 0; b <= 2; b++) cells.push([a, b]);
       }
       const step = () => {
+        if (timelineReplayIsRunning()) {
+          shieldMatrixPendingTimer = setTimeout(step, 160);
+          return;
+        }
         const cell = cells.find(([a, b]) => !shieldMatrixCache.has(`${signature}|${a}-${b}`));
         if (!cell) {
           shieldMatrixPendingSignature = "";
@@ -6346,6 +6368,10 @@
         shieldMatrixPendingTimer = setTimeout(step, 0);
       };
       shieldMatrixPendingTimer = setTimeout(step, 40);
+    }
+
+    function timelineReplayIsRunning() {
+      return !!(timelinePresentationPending || timelineReplayTimer || timelineReplayAnimation || $("timelineScroll")?.classList.contains("replay-active"));
     }
 
     function cancelShieldMatrixCalculation() {
@@ -7293,7 +7319,11 @@
 
     function queueTimelineReplay() {
       stopTimelineReplay();
-      if (!timeline.length) return;
+      timelinePresentationPending = true;
+      if (!timeline.length) {
+        timelinePresentationPending = false;
+        return;
+      }
       timelineReplayTimer = window.setTimeout(() => {
         timelineReplayTimer = null;
         startTimelineReplay();
@@ -7365,6 +7395,7 @@
       timelineReplayAnimation = null;
       const scroll = $("timelineScroll");
       if (scroll) scroll.classList.remove("replay-active");
+      timelinePresentationPending = false;
       if (clearHidden) {
         document.querySelectorAll("#timelineScroll .replay-hidden").forEach(element => element.classList.remove("replay-hidden"));
       }
