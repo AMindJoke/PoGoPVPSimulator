@@ -426,13 +426,19 @@
     }
     .move-select {
       --move-color: var(--accent);
+      --move-icon: none;
+      --move-icon-size: 25px;
       border-color: color-mix(in srgb, var(--move-color) 46%, var(--line));
+      padding-right: 58px;
       background:
-        linear-gradient(90deg, color-mix(in srgb, var(--move-color) 24%, transparent), transparent 62%),
+        var(--move-icon) right 34px center / var(--move-icon-size) var(--move-icon-size) no-repeat,
+        linear-gradient(180deg, color-mix(in srgb, var(--move-color) 88%, white 8%), color-mix(in srgb, var(--move-color) 82%, black 16%)),
         var(--panel);
       box-shadow:
         inset 5px 0 0 var(--move-color),
         inset 0 0 0 1px color-mix(in srgb, var(--move-color) 12%, transparent);
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .35);
       font-weight: 800;
     }
     .move-select:hover {
@@ -442,9 +448,14 @@
         inset 0 0 0 1px color-mix(in srgb, var(--move-color) 22%, transparent),
         0 2px 7px rgba(23, 33, 47, .08);
     }
+    .move-select option {
+      color: #17212f;
+      background: #fff;
+    }
     body[data-theme="dark"] .move-select {
       background:
-        linear-gradient(90deg, color-mix(in srgb, var(--move-color) 28%, transparent), transparent 64%),
+        var(--move-icon) right 34px center / var(--move-icon-size) var(--move-icon-size) no-repeat,
+        linear-gradient(180deg, color-mix(in srgb, var(--move-color) 86%, white 6%), color-mix(in srgb, var(--move-color) 76%, black 22%)),
         #111822;
     }
     .pokemon-select-hidden {
@@ -1774,6 +1785,11 @@
       flex: 0 0 auto;
     }
     .timeline {
+      --timeline-grid: color-mix(in srgb, var(--grid) 48%, transparent);
+      --timeline-ruler-grid: color-mix(in srgb, var(--grid) 58%, transparent);
+      --timeline-track-height: 36px;
+      --timeline-lane-height: 22px;
+      --timeline-fast-boost: 1px;
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
@@ -2085,7 +2101,7 @@
       height: 18px;
       overflow: visible;
       background:
-        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        repeating-linear-gradient(90deg, var(--timeline-ruler-grid) 0 1px, transparent 1px var(--turn-px, 18px)),
         var(--ruler);
       color: #667484;
       font-size: 10px;
@@ -2107,11 +2123,11 @@
     .timeline-track {
       position: relative;
       box-sizing: border-box;
-      height: 38px;
+      height: var(--timeline-track-height);
       overflow: visible;
       border-top: 1px solid #d7dee8;
       background: #f8fafc;
-      padding: 8px 3px;
+      padding: calc((var(--timeline-track-height) - var(--timeline-lane-height)) / 2) 3px;
       transition: background-color .12s ease;
     }
     .timeline-track.lane-hover {
@@ -2129,16 +2145,16 @@
     }
     .timeline-lane {
       position: relative;
-      height: 22px;
+      height: var(--timeline-lane-height);
       min-width: 100%;
       background:
-        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        repeating-linear-gradient(90deg, var(--timeline-grid) 0 1px, transparent 1px var(--turn-px, 18px)),
         transparent;
     }
     .timeline-ruler .timeline-lane {
       height: 18px;
       background:
-        repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px var(--turn-px, 18px)),
+        repeating-linear-gradient(90deg, var(--timeline-ruler-grid) 0 1px, transparent 1px var(--turn-px, 18px)),
         var(--ruler);
     }
     .timeline-block {
@@ -2167,13 +2183,16 @@
       z-index: 5;
     }
     .timeline-block.fast {
-      top: 7px;
-      height: 9px;
-      width: 9px;
+      top: calc((var(--timeline-lane-height) - 12px) / 2);
+      height: 12px;
+      width: 12px;
       padding: 0;
       border-radius: 2px;
       text-shadow: none;
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, .6);
+      border-color: rgba(0, 0, 0, .42);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .86),
+        0 1px 2px rgba(23, 33, 47, .18);
     }
     .timeline-block.fast:hover,
     .timeline-block.fast.previewed,
@@ -2667,9 +2686,12 @@
       border-width: 2px;
       border-radius: 9px;
       background:
-        linear-gradient(90deg, color-mix(in srgb, var(--move-color, var(--accent)) 62%, white 10%) 0%, color-mix(in srgb, var(--move-color, var(--accent)) 26%, transparent) 54%, transparent 86%),
+        var(--move-icon) right 34px center / var(--move-icon-size) var(--move-icon-size) no-repeat,
+        linear-gradient(180deg, color-mix(in srgb, var(--move-color, var(--accent)) 90%, white 8%), color-mix(in srgb, var(--move-color, var(--accent)) 82%, black 15%)),
         var(--panel);
       box-shadow: inset 6px 0 0 var(--move-color, var(--accent)), 0 1px 0 rgba(255, 255, 255, .54);
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .35);
       font-size: 13px;
       font-weight: 900;
     }
@@ -2803,6 +2825,11 @@
       .pokemon-picker,
       .move-select {
         max-width: none;
+      }
+      .move-select {
+        --move-icon-size: 20px;
+        padding-right: 48px;
+        background-position: right 28px center, 0 0, 0 0;
       }
       .pokemon-picker-control {
         grid-template-columns: minmax(0, 1fr);
@@ -3225,6 +3252,11 @@
         min-height: 23px;
         padding: 2px 4px;
         font-size: 10px;
+      }
+      .move-select {
+        --move-icon-size: 18px;
+        padding-right: 42px;
+        background-position: right 24px center, 0 0, 0 0;
       }
       .start-energy-control {
         grid-template-columns: auto 36px 15px;
@@ -4360,12 +4392,55 @@
       const move = moveMap.get(select.value);
       if (!move) {
         select.style.removeProperty("--move-color");
+        select.style.removeProperty("--move-icon");
         select.title = "";
         return;
       }
       const color = typeColors[move.type] || "#fff";
       select.style.setProperty("--move-color", color);
+      select.style.setProperty("--move-icon", `url("${typeIconDataUri(move.type, color)}")`);
       select.title = move.name;
+    }
+
+    function typeIconDataUri(type, color) {
+      const iconColor = darkenHex(color, .48);
+      const shape = typeIconShape(type);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${iconColor}" fill-opacity=".28">${shape}</svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    function darkenHex(hex, amount = .25) {
+      const clean = String(hex || "").replace("#", "");
+      if (clean.length !== 6) return "#17212f";
+      const value = parseInt(clean, 16);
+      const r = Math.max(0, Math.round(((value >> 16) & 255) * (1 - amount)));
+      const g = Math.max(0, Math.round(((value >> 8) & 255) * (1 - amount)));
+      const b = Math.max(0, Math.round((value & 255) * (1 - amount)));
+      return `#${[r, g, b].map(part => part.toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    function typeIconShape(type) {
+      const shapes = {
+        fire: `<path d="M34 58c-12 0-22-9-22-22 0-8 4-16 11-21-1 7 2 10 5 12 2-10 9-17 18-22-1 11 6 17 6 29 0 14-8 24-18 24Zm-1-7c6 0 11-5 11-12 0-5-2-9-5-13-1 5-4 8-8 10-2-2-3-4-3-7-5 4-8 8-8 13 0 5 5 9 13 9Z"/>`,
+        water: `<path d="M32 5c10 13 18 24 18 35 0 11-8 19-18 19s-18-8-18-19C14 29 22 18 32 5Zm-8 35c0 6 4 10 10 10 4 0 7-2 9-5-10 2-16-1-19-9v4Z"/>`,
+        grass: `<path d="M55 8C34 10 14 22 10 43c-2 10 5 17 15 14 20-5 29-27 30-49ZM21 47c6-13 15-22 27-31-7 11-15 20-27 31Z"/>`,
+        electric: `<path d="M37 3 12 36h17l-4 25 27-36H34l3-22Z"/>`,
+        ice: `<path d="M29 4h6v18l14-10 3 5-16 9 16 9-3 5-14-10v18h-6V30L15 40l-3-5 16-9-16-9 3-5 14 10V4Z"/>`,
+        rock: `<path d="m10 38 14-25 27 6 5 24-21 15-25-20Zm19-18-9 17 16 10 12-9-3-13-16-5Z"/>`,
+        ground: `<path d="M10 50 24 12h26l7 38H10Zm19-30-9 22h25l-4-22H29Z"/>`,
+        flying: `<path d="M7 43c19-2 34-16 50-34-3 17-12 32-27 43 0 0-9-6-23-9Zm21 9c6-9 15-16 26-21-6 12-14 20-26 21Z"/>`,
+        ghost: `<path d="M12 56V28c0-14 8-22 20-22s20 8 20 22v28l-7-4-6 5-7-5-7 5-6-5-7 4Zm13-27c4 0 7-3 7-7-5 0-10 2-10 5 0 1 1 2 3 2Zm21-2c0-3-5-5-10-5 0 4 3 7 7 7 2 0 3-1 3-2Z"/>`,
+        psychic: `<path d="M32 12c13 0 24 20 24 20S45 52 32 52 8 32 8 32s11-20 24-20Zm0 10a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/>`,
+        dark: `<path d="M41 8c-7 6-11 14-11 24s4 18 11 24c-16-2-29-12-29-24S25 10 41 8Zm9 11c-4 4-6 8-6 13s2 9 6 13c-8-1-14-6-14-13s6-12 14-13Z"/>`,
+        dragon: `<path d="M11 52c8-18 16-31 36-42l8 8-11 2 8 8-14 4 3 13-11-8c-5 4-11 9-19 15Zm20-25c4-3 9-6 15-8l-8 6 7 3-10 3-1 7-6-5c-4 3-7 6-10 10 3-6 7-11 13-16Z"/>`,
+        fairy: `<path d="m32 5 6 18 19 2-15 12 5 18-15-10-15 10 5-18L7 25l19-2 6-18Z"/>`,
+        steel: `<path d="M22 8h20l14 14v20L42 56H22L8 42V22L22 8Zm4 12-6 6v12l6 6h12l6-6V26l-6-6H26Z"/>`,
+        fighting: `<path d="M17 13h7v19h-7V13Zm9-5h7v24h-7V8Zm9 4h7v20h-7V12Zm9 6h7v22c0 9-7 16-16 16H25c-8 0-14-6-14-14V29h6v8h27V18Z"/>`,
+        poison: `<path d="M32 8c12 0 22 9 22 20 0 9-6 16-14 19l4 9H20l4-9c-8-3-14-10-14-19C10 17 20 8 32 8Zm-9 21c4 0 7-3 7-7-6 0-11 2-11 5 0 1 1 2 4 2Zm18 0c3 0 4-1 4-2 0-3-5-5-11-5 0 4 3 7 7 7Z"/>`,
+        bug: `<path d="M22 18c2-6 7-10 10-10s8 4 10 10l9-6 4 5-10 7c1 2 1 5 1 8h10v6H45c-1 4-2 7-4 10l9 8-4 4-10-8c-1 1-3 1-4 1s-3 0-4-1l-10 8-4-4 9-8c-2-3-3-6-4-10H8v-6h10c0-3 0-6 1-8L9 17l4-5 9 6Zm10 4c-5 0-9 5-9 13s4 14 9 14 9-6 9-14-4-13-9-13Z"/>`,
+        normal: `<path d="M32 8a24 24 0 1 1 0 48 24 24 0 0 1 0-48Zm0 12a12 12 0 1 0 0 24 12 12 0 0 0 0-24Z"/>`
+      };
+      return shapes[type] || shapes.normal;
     }
 
     function findPokemon(id) {
@@ -5089,6 +5164,8 @@
         })
         .sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0];
       if (lethal) return lethal;
+      const noShieldPlan = bestNoShieldChargedPlan(attacker, defender, available);
+      if (noShieldPlan) return noShieldPlan.ready ? noShieldPlan.move : null;
       if (shouldWaitForBetterChargedMove(attacker, defender, available, straight)) return null;
       if (shouldOverfarmForCloser(attacker, defender, available, straight)) return null;
       if (defender.shields <= 0) return straight;
@@ -5117,6 +5194,74 @@
       return hasNukeReady ? cheapest : straight;
     }
 
+    function bestNoShieldChargedPlan(attacker, defender, available) {
+      if (!attacker || !defender || defender.shields > 0 || !attacker.fast) return null;
+      const moves = validChargedMoves(attacker);
+      if (!moves.length) return null;
+      const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
+      const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      const fastDamage = estimate(attacker, defender, attacker.fast);
+      if (fastDamage <= 0) return null;
+      const initial = { energy: attacker.energy, hp: defender.hp, turns: 0, firstMove: null };
+      const queue = [initial];
+      const seen = [];
+      const finished = [];
+      let stateCount = 0;
+      while (queue.length && stateCount < 360) {
+        stateCount++;
+        queue.sort((a, b) => a.turns - b.turns || b.energy - a.energy || a.hp - b.hp);
+        const state = queue.shift();
+        if (!state || state.hp <= 0) {
+          finished.push(state);
+          continue;
+        }
+        if (isDominatedPlanState(state, seen)) continue;
+        seen.push(state);
+        const fastsToFarm = Math.ceil(state.hp / fastDamage);
+        finished.push({
+          turns: state.turns + fastsToFarm * fastTurns,
+          energy: Math.min(100, state.energy + fastsToFarm * gain),
+          hp: 0,
+          firstMove: state.firstMove
+        });
+        for (const move of moves) {
+          const cost = Math.max(1, Number(move.energyCost || 1));
+          const fasts = Math.max(0, Math.ceil((cost - state.energy) / gain));
+          const turnsAfterFast = state.turns + fasts * fastTurns;
+          if (turnsAfterFast > 80) continue;
+          const energyAtThrow = Math.min(100, state.energy + fasts * gain);
+          const hpAfterFast = state.hp - fasts * fastDamage;
+          if (hpAfterFast <= 0) {
+            finished.push({ turns: turnsAfterFast, energy: energyAtThrow, hp: 0, firstMove: state.firstMove });
+            continue;
+          }
+          if (energyAtThrow < cost) continue;
+          const moveDamage = estimate(attacker, defender, move);
+          const nextState = {
+            energy: Math.max(0, energyAtThrow - cost),
+            hp: hpAfterFast - moveDamage,
+            turns: turnsAfterFast + 1,
+            firstMove: state.firstMove || move
+          };
+          if (nextState.hp <= 0) finished.push(nextState);
+          else queue.push(nextState);
+        }
+      }
+      const best = finished
+        .filter(state => state && state.firstMove)
+        .sort((a, b) => a.turns - b.turns || b.energy - a.energy || (a.firstMove.energyCost || 0) - (b.firstMove.energyCost || 0))[0];
+      if (!best || !best.firstMove) return null;
+      return { move: best.firstMove, ready: available.includes(best.firstMove), turns: best.turns };
+    }
+
+    function isDominatedPlanState(state, seen) {
+      return seen.some(other =>
+        other.turns <= state.turns &&
+        other.energy >= state.energy &&
+        other.hp <= state.hp
+      );
+    }
+
     function shouldWaitForBetterChargedMove(attacker, defender, available, currentMove) {
       if (!attacker || !defender || !attacker.fast || !currentMove) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
@@ -5133,12 +5278,79 @@
           const turnCost = fasts * fastTurns;
           const damage = estimate(attacker, defender, move);
           const pressure = effectiveness(move.type, defender.p.types);
-          return { move, fasts, turnCost, damage, pressure };
+          const energyAtThrow = Math.min(100, attacker.energy + fasts * gain);
+          const tacticalCloser = chargedMoveChangesClosingRace(attacker, defender, currentMove, move, turnCost, energyAtThrow);
+          const shortWaitUpgrade = chargedMoveIsShortWaitUpgrade(attacker, defender, currentMove, move, fasts, turnCost, damage, currentDamage, pressure, currentPressure);
+          return { move, fasts, turnCost, damage, pressure, tacticalCloser, shortWaitUpgrade };
         })
-        .filter(item => isVisibleFlipThreshold(item.fasts, item.turnCost))
-        .filter(item => item.damage >= currentDamage * 1.25 || item.pressure > currentPressure + .2)
-        .sort((a, b) => a.turnCost - b.turnCost || b.damage - a.damage)[0];
+        .filter(item => isVisibleFlipThreshold(item.fasts, item.turnCost) || item.tacticalCloser || item.shortWaitUpgrade)
+        .filter(item => item.damage >= currentDamage * 1.25 || item.pressure > currentPressure + .2 || item.tacticalCloser || item.shortWaitUpgrade)
+        .sort((a, b) => Number(b.tacticalCloser) - Number(a.tacticalCloser) || Number(b.shortWaitUpgrade) - Number(a.shortWaitUpgrade) || a.turnCost - b.turnCost || b.damage - a.damage)[0];
       return !!better;
+    }
+
+    function chargedMoveIsShortWaitUpgrade(attacker, defender, currentMove, betterMove, fasts, turnCost, betterDamage, currentDamage, betterPressure, currentPressure) {
+      if (!attacker || !defender || !currentMove || !betterMove || defender.shields > 0) return false;
+      if (fasts !== 1 || turnCost > Math.max(1, Number(attacker.fast?.turns || 1))) return false;
+      if (attacker.energy + Number(attacker.fast?.energyGain || 0) > 100) return false;
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
+      const damageUpgrade = betterDamage >= currentDamage * 1.08;
+      const pressureUpgrade = betterPressure > currentPressure + .15;
+      return damageUpgrade || pressureUpgrade;
+    }
+
+    function chargedMoveChangesClosingRace(attacker, defender, currentMove, betterMove, turnCost, energyAtThrow = null) {
+      if (!attacker || !defender || !currentMove || !betterMove || !attacker.fast || defender.shields > 0) return false;
+      if (turnCost > Math.max(4, Number(attacker.fast.turns || 1))) return false;
+      const currentDamage = estimate(attacker, defender, currentMove);
+      const betterDamage = estimate(attacker, defender, betterMove);
+      if (betterDamage <= currentDamage) return false;
+      const defenderThreatTurns = turnsToNextThreateningCharged(defender, attacker);
+      if (!isFinite(defenderThreatTurns)) return false;
+      const currentCloseTurns = turnsToCloseAfterCharged(attacker, defender, currentMove, currentDamage);
+      const betterCloseTurns = turnCost + turnsToCloseAfterCharged(attacker, defender, betterMove, betterDamage, energyAtThrow);
+      return betterCloseTurns < currentCloseTurns && betterCloseTurns <= defenderThreatTurns;
+    }
+
+    function turnsToNextThreateningCharged(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast) return Infinity;
+      const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
+      const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      const threatening = validChargedMoves(attacker)
+        .filter(move => {
+          const damage = estimate(attacker, defender, move);
+          return damage >= defender.hp || damage >= defender.maxHp * .65;
+        })
+        .map(move => Math.max(0, Math.ceil(((move.energyCost || 0) - attacker.energy) / Math.max(1, gain))) * fastTurns);
+      return threatening.length ? Math.min(...threatening) : Infinity;
+    }
+
+    function turnsToCloseAfterCharged(attacker, defender, move, damage, energyAtThrow = null) {
+      if (!attacker || !defender || !move || !attacker.fast) return Infinity;
+      const remainingHp = Math.max(0, defender.hp - damage);
+      if (remainingHp <= 0) return 0;
+      const baseEnergy = energyAtThrow === null ? attacker.energy : energyAtThrow;
+      const energyAfter = Math.max(0, Math.min(100, baseEnergy - (move.energyCost || 0)));
+      return turnsToCloseFromState(attacker, defender, remainingHp, energyAfter);
+    }
+
+    function turnsToCloseFromState(attacker, defender, targetHp, energy) {
+      const fastDamage = estimate(attacker, defender, attacker.fast);
+      const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
+      const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      if (!fastDamage || fastDamage <= 0) return Infinity;
+      let hp = targetHp;
+      let currentEnergy = energy;
+      for (let fasts = 0; fasts <= 12; fasts++) {
+        if (hp <= 0) return fasts * fastTurns;
+        const closingCharge = validChargedMoves(attacker)
+          .filter(move => currentEnergy >= move.energyCost)
+          .some(move => estimate(attacker, defender, move) >= hp);
+        if (closingCharge) return fasts * fastTurns;
+        hp -= fastDamage;
+        currentEnergy = Math.min(100, currentEnergy + gain);
+      }
+      return Math.ceil(targetHp / fastDamage) * fastTurns;
     }
 
     function urgentChargedMove(attacker, defender, available, straight, cheapest) {
@@ -5213,21 +5425,51 @@
     }
 
     function shouldWaitForChargeTiming(attacker, defender, move) {
+      if (!attacker || !defender || !attacker.fast || !defender.fast || !move) return false;
       const attackerTurn = battleTurns[attacker.trainer] || 0;
       const defenderTurn = battleTurns[defender.trainer] || 0;
+      const attackerFastTurns = Math.max(1, attacker.fast.turns || 1);
       const defenderFastTurns = Math.max(1, defender.fast.turns || 1);
-      if (defenderFastTurns <= 1) return false;
+      const targetCooldown = optimalChargeTimingTarget(attackerFastTurns, defenderFastTurns);
+      const opponentCooldown = Math.max(0, defenderTurn - attackerTurn);
+      if (targetCooldown <= 0) return false;
+      if (!(opponentCooldown === 0 || opponentCooldown > targetCooldown)) return false;
       if (defender.shields <= 0) return false;
       if (attacker.energy >= 100) return false;
       if (wouldOvercapAfterFast(attacker)) return false;
-      if (opponentChargedThreatens(attacker, defender)) return false;
       const damage = estimate(attacker, defender, move);
       if (damage >= defender.hp && !shouldShield(defender, move, damage)) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
-      if (defenderTurn > attackerTurn) {
-        return defender.lastFastStart === attackerTurn;
-      }
+      if (opponentChargedThreatens(attacker, defender)) return false;
+      if (opponentCanPunishTimingWait(attacker, defender, attackerFastTurns, opponentCooldown)) return false;
       return true;
+    }
+
+    function optimalChargeTimingTarget(attackerFastTurns, defenderFastTurns) {
+      let target = 1;
+      if (attackerFastTurns >= 4) target = 2;
+      if (attackerFastTurns >= 3 && defenderFastTurns === 5) target = 2;
+      if (attackerFastTurns === 2 && defenderFastTurns === 4) target = 2;
+      if (attackerFastTurns === defenderFastTurns) return 0;
+      if (attackerFastTurns > defenderFastTurns && attackerFastTurns % defenderFastTurns === 0) return 0;
+      return target;
+    }
+
+    function opponentCanPunishTimingWait(attacker, defender, attackerFastTurns, opponentCooldown) {
+      if (!attacker || !defender || !defender.fast) return false;
+      const opponentFastTurns = Math.max(1, defender.fast.turns || 1);
+      const availableWindow = Math.max(0, attackerFastTurns - opponentCooldown);
+      const fastsInWindow = Math.max(0, Math.floor((availableWindow + 1) / opponentFastTurns));
+      const fastDamage = estimate(defender, attacker, defender.fast);
+      if (fastsInWindow && attacker.hp <= fastDamage * fastsInWindow) return true;
+      const projectedEnergy = Math.min(100, defender.energy + fastsInWindow * Number(defender.fast.energyGain || 0));
+      return validChargedMoves(defender).some(move => {
+        const fastsToMove = Math.max(0, Math.ceil(((move.energyCost || 0) - defender.energy) / Math.max(1, Number(defender.fast.energyGain || 1))));
+        const turnsToMove = Math.max(0, opponentCooldown) + fastsToMove * opponentFastTurns;
+        if (turnsToMove > attackerFastTurns || projectedEnergy < move.energyCost) return false;
+        const chargeDamage = attacker.shields > 0 ? 1 : estimate(defender, attacker, move);
+        return chargeDamage + fastDamage * fastsInWindow >= attacker.hp;
+      });
     }
 
     function wouldOvercapAfterFast(combatant) {
@@ -6854,20 +7096,11 @@
     }
 
     function timelineFastHitRanges(timelineEvent, chargeSlots, chargeStarts, turnPx) {
-      const cuts = chargeStarts.filter(start => start > timelineEvent.start && start < timelineEvent.start + timelineEvent.duration);
-      const points = [timelineEvent.start, ...cuts, timelineEvent.start + timelineEvent.duration];
-      return points.slice(0, -1).map((start, index) => {
-        const end = points[index + 1];
-        if (end <= start) return null;
-        if (points.length > 2 && index > 0) return null;
-        const isSneak = chargeStarts.includes(start);
-        const visualStart = isSneak
-          ? visualTurn(start, chargeSlots, false) + .42
-          : visualTurn(start, chargeSlots, true);
-        const size = timelineFastSize(turnPx);
-        const left = visualStart * turnPx + 2;
-        return { start: left - 4, end: left + size + 4, tolerance: Math.max(4, turnPx * .28) };
-      }).filter(Boolean);
+      const impactTurn = fastMoveImpactTurn(timelineEvent.start, timelineEvent.start + timelineEvent.duration);
+      const visualStart = visualTurn(impactTurn, chargeSlots, false);
+      const size = timelineFastSize(turnPx);
+      const left = visualStart * turnPx - size / 2;
+      return [{ start: left - 4, end: left + size + 4, tolerance: Math.max(4, turnPx * .28) }];
     }
 
     function timelineChargePreviewRanges(timelineEvent, index, chargeSlots, turnPx) {
@@ -7036,24 +7269,17 @@
     function renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, eventIndex) {
       const color = typeColors[event.move.type] || "#156f8f";
       const borderColor = darken(color, .18);
-      const cuts = chargeStarts.filter(start => start > event.start && start < event.start + event.duration);
-      const points = [event.start, ...cuts, event.start + event.duration];
-      return points.slice(0, -1).map((start, index) => {
-        const end = points[index + 1];
-        if (end <= start) return "";
-        const isSneak = chargeStarts.includes(start);
-        const visualStart = isSneak
-          ? visualTurn(start, chargeSlots, false) + .42
-          : visualTurn(start, chargeSlots, true);
-        const width = Math.max(timelineIsFit() ? 4 : 10, (end - start) * turnPx - 4);
-        const size = timelineFastSize(turnPx);
-        const left = visualStart * turnPx + 2;
-        const isContinuation = points.length > 2 && index > 0;
-        if (isContinuation) return index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
-        const cls = `timeline-block fast${isSneak ? " sneak" : ""}${isContinuation ? " continuation" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
-        const markers = index === points.length - 2 ? timelineMarkers(event, eventIndex, left + width + 8) : "";
-        return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${markers}`;
-      }).join("");
+      const impactTurn = fastMoveImpactTurn(event.start, event.start + event.duration);
+      const visualStart = visualTurn(impactTurn, chargeSlots, false);
+      const size = timelineFastSize(turnPx);
+      const left = visualStart * turnPx - size / 2;
+      const cls = `timeline-block fast${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+      const top = Math.max(2, (22 - size) / 2);
+      return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${timelineMarkers(event, eventIndex, left + size + 8)}`;
+    }
+
+    function fastMoveImpactTurn(start, end) {
+      return Math.max(start, end - 1);
     }
 
     function timelineMoveTooltipHtml(event, isSwipe = false) {
@@ -7075,8 +7301,8 @@
 
     function timelineFastSize(turnPx) {
       return timelineIsFit()
-        ? Math.max(5, Math.min(9, Math.round(turnPx * .72)))
-        : Math.max(8, Math.min(11, Math.round(turnPx * .6)));
+        ? Math.max(10, Math.min(14, Math.round(turnPx * 1.15)))
+        : Math.max(11, Math.min(14, Math.round(turnPx * .78)));
     }
 
     function timelineChargeWidth(turnPx) {
@@ -7095,10 +7321,10 @@
       const trailEnd = center - width / 2 - 6;
       const trailWidth = Math.max(timelineIsFit() ? Math.max(10, turnPx * 2.5) : 24, trailEnd - startX);
       const dots = timelineIsFit() ? [4, 5, 6, 7, 8, 9] : [5, 7, 9, 11, 13, 15];
-      const spacing = trailWidth / dots.length;
-      return `<div class="charge-trail" data-event-index="${eventIndex}" style="left:${Math.max(0, startX + 4)}px;width:${trailWidth}px;color:${color}">` +
+      const spacing = trailWidth / Math.max(1, dots.length - 1);
+      return `<div class="charge-trail" data-event-index="${eventIndex}" style="left:${Math.max(0, startX)}px;width:${trailWidth}px;color:${color}">` +
         dots.map((size, index) => {
-          const x = (index + .5) * spacing;
+          const x = Math.min(trailWidth - size / 2, index * spacing + size / 2);
           return `<span class="charge-dot" style="left:${x}px;width:${size}px;height:${size}px"></span>`;
         }).join("") +
         `</div>`;
