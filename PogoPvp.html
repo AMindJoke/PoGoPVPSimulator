@@ -5938,8 +5938,9 @@
         ["Ready", d.readyEdge],
         ["Closing", d.closingCostEdge],
         ["Farm", d.farmPressureEdge],
+        d.advantagePressureEdge ? ["Advantage", d.advantagePressureEdge] : null,
         ["Outpace", d.outpacePressureEdge]
-      ].map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
+      ].filter(Boolean).map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
       const swingText = result.swing ? matrixSwingSummary(result.swing) : "";
       box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
     }
@@ -5995,6 +5996,12 @@
       suppressRender = true;
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
+      const startEnergyA = clampEnergy($("p1StartEnergy")?.value || 0);
+      const startEnergyB = clampEnergy($("p2StartEnergy")?.value || 0);
+      if (options.baselineStartEnergy) {
+        $("p1StartEnergy").value = 0;
+        $("p2StartEnergy").value = 0;
+      }
       left = create("p1", "A");
       right = create("p2", "B");
       applyMatrixSimulationPolicy(options.policy);
@@ -6024,10 +6031,70 @@
         if (!progressed) break;
         guard++;
       }
-      const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
+      let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
+      result = applyAdvantagePressureFloor(result, {
+        aShields,
+        bShields,
+        options,
+        startEnergyA,
+        startEnergyB
+      });
       restoreBattleState(snapshot);
       suppressRender = false;
       return result;
+    }
+
+    function applyAdvantagePressureFloor(result, context) {
+      const advantage = matchupAdvantageContext(context);
+      if (!advantage || context.options.skipAdvantagePressureFloor) return result;
+      const baseline = simulateShieldMatrixCell(context.aShields, context.bShields, {
+        includeSwing: false,
+        policy: context.options.policy,
+        skipAdvantagePressureFloor: true,
+        baselineStartEnergy: true
+      });
+      const baseWinner = matrixWinnerSide(baseline);
+      const currentWinner = matrixWinnerSide(result);
+      if (!baseWinner || baseWinner !== currentWinner || advantage.side === currentWinner) return result;
+      const winnerHpDrop = Math.max(0, winnerHpRatio(baseline, currentWinner) - winnerHpRatio(result, currentWinner));
+      if (winnerHpDrop <= 0) return result;
+      const pressureGain = Math.min(18, Math.round(winnerHpDrop * 45));
+      if (pressureGain <= 0) return result;
+      const adjustedScore = advantage.side === "A"
+        ? Math.min(499, Math.max(result.score, baseline.score + pressureGain))
+        : Math.max(501, Math.min(result.score, baseline.score - pressureGain));
+      if (adjustedScore === result.score) return result;
+      const next = {
+        ...result,
+        score: adjustedScore,
+        details: {
+          ...result.details,
+          advantagePressureEdge: adjustedScore - result.score
+        }
+      };
+      next.title = `${result.title} | advantage pressure ${formatEdge(next.details.advantagePressureEdge)}`;
+      return next;
+    }
+
+    function matchupAdvantageContext(context) {
+      if (context.options.preFastAdvantage && context.options.preFastAdvantage.side) {
+        return { side: context.options.preFastAdvantage.side };
+      }
+      if (context.startEnergyA > 0 && context.startEnergyB <= 0) return { side: "A" };
+      if (context.startEnergyB > 0 && context.startEnergyA <= 0) return { side: "B" };
+      return null;
+    }
+
+    function matrixWinnerSide(result) {
+      if (!result || !result.details) return null;
+      if (result.details.winnerEdge > 0) return "A";
+      if (result.details.winnerEdge < 0) return "B";
+      return null;
+    }
+
+    function winnerHpRatio(result, side) {
+      if (!result || !result.details) return 0;
+      return side === "A" ? result.details.aHp : result.details.bHp;
     }
 
     function applyMatrixSimulationPolicy(policy) {
@@ -6051,8 +6118,8 @@
     function scoreShieldMatrixResult(a, b, options = {}) {
       const aHp = a.maxHp ? a.hp / a.maxHp : 0;
       const bHp = b.maxHp ? b.hp / b.maxHp : 0;
-      const aChargeProgress = chargedReadiness(a);
-      const bChargeProgress = chargedReadiness(b);
+      const aChargeProgress = chargedReadiness(a, b);
+      const bChargeProgress = chargedReadiness(b, a);
       const hpEdge = (aHp - bHp) * 270;
       const energyEdge = (a.energy - b.energy) * 1.15;
       const shieldEdge = (a.shields - b.shields) * 75;
@@ -6108,11 +6175,29 @@
       return `${rounded >= 0 ? "+" : ""}${rounded}`;
     }
 
-    function chargedReadiness(combatant) {
+    function chargedReadiness(combatant, opponent = null) {
       const charged = validChargedMoves(combatant);
       if (!charged.length) return 0;
       const cheapest = Math.min(...charged.map(move => move.energyCost || 100).filter(Boolean));
-      return cheapest ? Math.min(1.5, combatant.energy / cheapest) : 0;
+      if (!cheapest) return 0;
+      const progress = Math.min(1.5, combatant.energy / cheapest);
+      return progress * chargedReadinessImpact(combatant, opponent);
+    }
+
+    function chargedReadinessImpact(combatant, opponent) {
+      if (!combatant || !opponent || opponent.hp <= 0) return 1;
+      const charged = validChargedMoves(combatant);
+      if (!charged.length) return 1;
+      const bestDamage = Math.max(...charged.map(move => estimate(combatant, opponent, move)));
+      const hpRatio = opponent.maxHp ? opponent.hp / opponent.maxHp : 1;
+      const damageRatio = opponent.maxHp ? bestDamage / opponent.maxHp : 0;
+      const remainingAfterBest = opponent.hp - bestDamage;
+      if (remainingAfterBest <= 0) return 1.35;
+      if (opponent.hp > 0 && bestDamage >= opponent.hp * .75) return 1.1;
+      if (damageRatio >= .45) return 1;
+      if (damageRatio >= .30 || hpRatio <= .25) return .75;
+      if (damageRatio >= .18) return .5;
+      return .32;
     }
 
     function detectFlippableMatchup(a, b, options = {}) {
@@ -6945,7 +7030,7 @@
         const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index, turnPx) : "";
         const markers = timelineMarkers(event, index, left + width + 8);
         return `${trail}<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(labelText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}</div>${markers}`;
-      }).join("") + `</div>`;
+      }).join("") + timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) + `</div>`;
     }
 
     function renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, eventIndex) {
@@ -7025,11 +7110,27 @@
     }
 
     function timelineMarkers(event, eventIndex, left) {
-      const markers = [];
-      if (timelineEventCausesKo(event, eventIndex)) {
-        markers.push(`<span class="timeline-marker ko" data-event-index="${eventIndex}" title="KO" style="left:${left + markers.length * 22}px"></span>`);
+      return "";
+    }
+
+    function timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) {
+      const targetKey = trainer;
+      const koIndex = firstKoTimelineIndex(targetKey);
+      if (koIndex < 0) return "";
+      const event = timeline[koIndex];
+      const left = timelineKoMarkerLeft(event, koIndex, chargeSlots, turnPx);
+      return `<span class="timeline-marker ko" data-event-index="${koIndex}" title="KO" style="left:${left}px"></span>`;
+    }
+
+    function timelineKoMarkerLeft(event, eventIndex, chargeSlots, turnPx) {
+      if (!event) return 0;
+      if (event.kind === "charge") {
+        const baseTurn = chargeVisualTurn(event, eventIndex, chargeSlots);
+        const center = (baseTurn + chargeWindowTurns) * turnPx;
+        return center + timelineChargeWidth(turnPx) / 2 + 8;
       }
-      return markers.join("");
+      const endTurn = event.start + (event.duration || 1);
+      return visualTurn(endTurn, chargeSlots, true) * turnPx + 8;
     }
 
     function timelineEventCausesKo(event, eventIndex) {
