@@ -4123,10 +4123,19 @@
     }
 
     function setPokemonImage(img, p) {
+      const nextSrc = imageUrl(p);
+      const nextFallback = fallbackImageUrl(p);
+      const nextKey = p ? `${p.id}|${nextSrc}` : "";
+      if (img.dataset.spriteKey === nextKey) {
+        img.alt = p ? p.name : "";
+        img.classList.toggle("shadow-pokemon", isShadow(p));
+        return;
+      }
       img.alt = p ? p.name : "";
       img.classList.toggle("shadow-pokemon", isShadow(p));
-      img.dataset.fallback = fallbackImageUrl(p);
-      img.src = imageUrl(p);
+      img.dataset.spriteKey = nextKey;
+      img.dataset.fallback = nextFallback;
+      img.src = nextSrc;
       img.onerror = () => {
         if (img.dataset.fallback && img.src !== img.dataset.fallback) {
           img.src = img.dataset.fallback;
@@ -4170,6 +4179,7 @@
       colorMoveSelect(`${prefix}Charged2`);
       rememberMoveSelections(prefix);
       updateBattleAvailability();
+      hideBattleResultsForSetupChange();
       if (!setupReadyForBattle()) {
         resetBattleStateFromSetup();
         return;
@@ -4192,6 +4202,7 @@
 
     function resetBattleStateFromSetup() {
       exitPreviewMode();
+      cancelShieldMatrixCalculation();
       if (!setupReadyForBattle()) {
         left = sideReadyForBattle("p1") ? create("p1", "A") : null;
         right = sideReadyForBattle("p2") ? create("p2", "B") : null;
@@ -5114,6 +5125,15 @@
       render();
     }
 
+    function hideBattleResultsForSetupChange() {
+      document.body.classList.remove("battle-results-visible");
+      cancelShieldMatrixCalculation();
+      const matrix = $("shieldMatrix");
+      const explanation = $("matrixExplanation");
+      if (matrix) matrix.innerHTML = "";
+      if (explanation) explanation.innerHTML = "";
+    }
+
     function updateBattleAvailability() {
       const ready = setupReadyForBattle();
       $("battleCta").disabled = !ready;
@@ -5512,6 +5532,12 @@
         shieldMatrixPendingTimer = setTimeout(step, 0);
       };
       shieldMatrixPendingTimer = setTimeout(step, 40);
+    }
+
+    function cancelShieldMatrixCalculation() {
+      if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
+      shieldMatrixPendingTimer = null;
+      shieldMatrixPendingSignature = "";
     }
 
     function trimShieldMatrixCache() {
