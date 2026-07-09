@@ -4208,13 +4208,13 @@
       <section class="meta-hero">
         <div>
           <h2>Great League Meta</h2>
-          <p>Initial Great League ranking for the offline engine: meta pool, standard movesets, Rank 1/default IVs, and local matchup cache as the foundation for pre-computation.</p>
+          <p>Offline Great League ranking generated from matchup simulations across default and Rank 1 IV profiles.</p>
         </div>
         <div class="meta-status">
           <div class="meta-status-card"><span>Meta pool</span><strong id="metaPoolCount">-</strong></div>
-          <div class="meta-status-card"><span>Cached cells</span><strong id="metaCachedCells">-</strong></div>
-          <div class="meta-status-card"><span>Engine</span><strong id="metaEngineStatus">Local</strong></div>
-          <div class="meta-status-card meta-build-card"><span>Build</span><strong id="metaBuildStatus">Idle</strong></div>
+          <div class="meta-status-card"><span>Matchup cells</span><strong id="metaCachedCells">-</strong></div>
+          <div class="meta-status-card"><span>Source</span><strong id="metaEngineStatus">Loading</strong></div>
+          <div class="meta-status-card meta-build-card"><span>Coverage</span><strong id="metaBuildStatus">-</strong></div>
         </div>
       </section>
 
@@ -4227,7 +4227,7 @@
             <button id="metaRefresh" class="secondary" type="button">Refresh</button>
           </div>
         </div>
-        <p class="meta-note">This ranking starts from local stat/move signals, then improves as the offline Worker calculates cached matchup cells. The final goal is a fully matchup-driven Great League ranking.</p>
+        <p class="meta-note">This ranking loads the precomputed offline dataset first. The browser cache builder remains available as a fallback/testing tool.</p>
         <div id="metaRanking" class="meta-ranking"></div>
       </section>
     </div>
@@ -4296,12 +4296,17 @@
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
     const metaMatchupCacheVersion = "meta-v1";
+    const metaRankingDataUrl = "data/great-league-rankings.json";
     const metaMatchupCache = new Map();
     const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
     let metaBuildQueue = [];
     let metaBuildActive = false;
     let metaBuildTotal = 0;
     let metaBuildDone = 0;
+    let metaRankingData = null;
+    let metaRankingLoading = false;
+    let metaRankingLoadError = "";
+    let metaRankingLoadPromise = null;
     const shieldMatrixHydrating = new Set();
     const shieldMatrixHydrated = new Set();
     const shieldMatrixHydrateTimeouts = new Map();
@@ -4482,7 +4487,7 @@
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
       $("metaSearch").oninput = renderMetaRankings;
-      $("metaRefresh").onclick = renderMetaRankings;
+      $("metaRefresh").onclick = reloadMetaRankingData;
       $("metaBuild").onclick = startMetaOfflineBuild;
       $("shieldMatrix").onclick = handleMatrixClick;
       $("matrixReset").onclick = resetMatchupPreview;
@@ -4860,41 +4865,139 @@
       if (next === "meta") renderMetaRankings();
     }
 
+    function ensureMetaRankingData() {
+      if (metaRankingData || metaRankingLoading || metaRankingLoadPromise) return;
+      if (typeof fetch !== "function") {
+        metaRankingLoadError = "Offline ranking JSON cannot be loaded in this browser context.";
+        return;
+      }
+      metaRankingLoading = true;
+      metaRankingLoadError = "";
+      metaRankingLoadPromise = fetch(metaRankingDataUrl, { cache: "no-store" })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (!data || !Array.isArray(data.entries)) throw new Error("Invalid ranking file");
+          metaRankingData = data;
+        })
+        .catch(error => {
+          metaRankingLoadError = error && error.message ? error.message : String(error);
+        })
+        .finally(() => {
+          metaRankingLoading = false;
+          metaRankingLoadPromise = null;
+          renderMetaRankings();
+        });
+    }
+
+    function reloadMetaRankingData() {
+      metaRankingData = null;
+      metaRankingLoadError = "";
+      metaRankingLoadPromise = null;
+      metaRankingLoading = false;
+      renderMetaRankings();
+    }
+
     function renderMetaRankings() {
       const box = $("metaRanking");
       if (!box || !allPokemon.length) return;
+      ensureMetaRankingData();
       let rows = [];
+      const usingOfflineRanking = metaRankingData && Array.isArray(metaRankingData.entries);
       try {
         const query = normalizeSearchText($("metaSearch")?.value || "");
-        rows = greatLeagueMetaPool()
-          .map(metaRankingEntry)
-          .filter(Boolean)
-          .filter(entry => !query || normalizeSearchText(entry.p.name).includes(query) || normalizeSearchText(entry.p.id).includes(query))
-          .sort((a, b) => b.score - a.score || b.stats.statProduct - a.stats.statProduct || a.p.name.localeCompare(b.p.name));
+        rows = usingOfflineRanking
+          ? metaOfflineRankingRows(query)
+          : greatLeagueMetaPool()
+              .map(metaRankingEntry)
+              .filter(Boolean)
+              .filter(entry => !query || normalizeSearchText(entry.p.name).includes(query) || normalizeSearchText(entry.p.id).includes(query))
+              .sort((a, b) => b.score - a.score || b.stats.statProduct - a.stats.statProduct || a.p.name.localeCompare(b.p.name));
       } catch (error) {
         box.innerHTML = `<div class="matrix-loading">Meta ranking could not be rendered: ${escapeHtml(error.message || String(error))}</div>`;
         return;
       }
-      $("metaPoolCount").textContent = rows.length;
-      $("metaCachedCells").textContent = metaMatchupCache.size;
-      $("metaEngineStatus").textContent = matrixComputeWorker ? "Worker" : "Local";
-      $("metaBuildStatus").textContent = metaBuildActive
-        ? `${metaBuildDone}/${metaBuildTotal}`
-        : metaMatchupCache.size ? "Ready" : "Idle";
+      updateMetaStatus(rows, usingOfflineRanking);
       const buildButton = $("metaBuild");
       if (buildButton) {
         buildButton.disabled = metaBuildActive;
         buildButton.textContent = metaBuildActive ? "Building..." : "Build offline cache";
       }
-      if (!rows.length) {
-        box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
+      if (metaRankingLoading && !rows.length) {
+        box.innerHTML = `<div class="matrix-loading">Loading offline Great League ranking...</div>`;
         return;
       }
-      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Signal</span><span>Cache</span><span></span></div>` +
+      if (!rows.length) {
+        const fallback = metaRankingLoadError ? ` Offline JSON fallback: ${escapeHtml(metaRankingLoadError)}.` : "";
+        box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.${fallback}</div>`;
+        return;
+      }
+      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span>Data</span><span></span></div>` +
         rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("");
       box.querySelectorAll("[data-meta-id]").forEach(button => {
         button.onclick = () => loadMetaPokemon(button.dataset.metaId);
       });
+    }
+
+    function updateMetaStatus(rows, usingOfflineRanking) {
+      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
+      $("metaPoolCount").textContent = metadata ? metadata.pokemonCount : rows.length;
+      $("metaCachedCells").textContent = metadata
+        ? Number(metadata.cells || 0).toLocaleString()
+        : metaMatchupCache.size;
+      $("metaEngineStatus").textContent = usingOfflineRanking
+        ? "Offline JSON"
+        : metaRankingLoading
+          ? "Loading"
+          : metaRankingLoadError
+            ? "Fallback"
+            : matrixComputeWorker ? "Worker" : "Local";
+      $("metaBuildStatus").textContent = metaBuildActive
+        ? `${metaBuildDone}/${metaBuildTotal}`
+        : metadata
+          ? `${metadata.shieldScenarios?.length || 0} shield states`
+          : metaMatchupCache.size ? "Ready" : "Idle";
+    }
+
+    function metaOfflineRankingRows(query) {
+      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : {};
+      const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
+      const cellCount = metadata.cells || 0;
+      return metaRankingData.entries
+        .map(entry => metaOfflineRankingEntry(entry, shieldCount, cellCount))
+        .filter(Boolean)
+        .filter(entry => !query ||
+          normalizeSearchText(entry.name).includes(query) ||
+          normalizeSearchText(entry.id).includes(query) ||
+          normalizeSearchText(entry.profile).includes(query)
+        );
+    }
+
+    function metaOfflineRankingEntry(entry, shieldCount, cellCount) {
+      const p = findPokemon(entry.id);
+      if (!p) return null;
+      const moves = metaMovesForPokemon(p);
+      if (!moves.fast || !moves.charged.length) return null;
+      return {
+        p,
+        id: entry.id,
+        name: entry.name || p.name,
+        profile: entry.profile || "default",
+        rank: entry.rank,
+        score: entry.averageScore,
+        stats: null,
+        moves,
+        matchupScore: entry.averageScore,
+        sourceLabel: `${shieldCount} shields`,
+        sourceTitle: `${cellCount.toLocaleString()} precomputed matchup cells`,
+        tags: [
+          "Offline",
+          entry.profile === "rank1" ? "Rank 1 IVs" : "Default IVs",
+          `${shieldCount} shield states`
+        ]
+      };
     }
 
     function greatLeagueMetaPool() {
@@ -4928,7 +5031,17 @@
         closingPressure ? "Closer" : "Consistent",
         moves.charged.length > 1 ? "Coverage" : "Single line"
       ];
-      return { p, stats, moves, score, signalScore, matchupScore, tags };
+      return {
+        p,
+        stats,
+        moves,
+        score,
+        signalScore,
+        matchupScore,
+        profile: "default",
+        sourceLabel: metaCacheLabel(p),
+        tags
+      };
     }
 
     function metaRankingRow(entry, rank) {
@@ -4937,20 +5050,21 @@
         const color = typeColors[type] || "#66788c";
         return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
       }).join("");
-      const sourceText = entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`;
+      const profileText = entry.profile === "rank1" ? "Rank 1 IVs" : "Default IVs";
+      const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
       return `<div class="meta-row">
         <span class="meta-rank">${rank}</span>
         <span class="meta-mon">
           <img src="${escapeHtml(imageUrl(entry.p))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
-          <span><strong>${escapeHtml(entry.p.name)}</strong><small>CP ${entry.stats.cp} ${typeBadges}</small></span>
+          <span><strong>${escapeHtml(entry.p.name)}</strong><small>${escapeHtml(profileText)} ${typeBadges}</small></span>
         </span>
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
           <span class="meta-score-line" style="--score-width:${scoreWidth}"><i></i></span>
           <span class="meta-tags">${entry.tags.map(tag => `<span class="meta-tag">${escapeHtml(tag)}</span>`).join("")}</span>
         </span>
-        <span class="meta-cache">${metaCacheLabel(entry.p)}</span>
+        <span class="meta-cache">${escapeHtml(entry.sourceLabel || metaCacheLabel(entry.p))}</span>
         <button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">Use</button>
       </div>`;
     }
