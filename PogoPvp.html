@@ -230,11 +230,11 @@
     }
     .meta-row {
       display: grid;
-      grid-template-columns: 38px minmax(220px, 1.25fr) 110px minmax(260px, 1.2fr) 92px;
+      grid-template-columns: 44px minmax(320px, 1fr) 118px 92px;
       align-items: center;
-      gap: 10px;
-      min-height: 54px;
-      padding: 7px 9px;
+      gap: 12px;
+      min-height: 76px;
+      padding: 10px 12px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--soft);
@@ -252,20 +252,20 @@
     }
     .meta-rank {
       font-weight: 950;
-      font-size: 17px;
+      font-size: 19px;
       color: var(--accent-dark);
       text-align: center;
     }
     .meta-mon {
       display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
+      grid-template-columns: 52px minmax(0, 1fr);
       align-items: center;
-      gap: 9px;
+      gap: 11px;
       min-width: 0;
     }
     .meta-mon img {
-      width: 42px;
-      height: 42px;
+      width: 52px;
+      height: 52px;
       object-fit: contain;
       filter: drop-shadow(0 4px 8px rgba(23,33,47,.12));
     }
@@ -275,11 +275,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 14px;
+      font-size: 15px;
     }
     .meta-mon small {
-      color: var(--muted);
-      font-weight: 800;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
     }
     .meta-score {
       display: grid;
@@ -307,6 +310,7 @@
       gap: 5px;
       flex-wrap: wrap;
       min-width: 0;
+      margin-top: 6px;
     }
     .meta-move-pill {
       display: inline-flex;
@@ -334,25 +338,6 @@
       font-size: 12px;
       line-height: 1.35;
       padding: 2px 4px;
-    }
-    .meta-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .meta-tag {
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 900;
-    }
-    .meta-cache {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
     }
     .meta-row button {
       min-height: 30px;
@@ -3122,16 +3107,14 @@
       }
       .meta-row,
       .meta-row.header {
-        grid-template-columns: 30px minmax(120px, 1fr) 62px 72px;
-      }
-      .meta-row.header span:nth-child(4) {
-        display: none;
+        grid-template-columns: 30px minmax(0, 1fr) 58px 64px;
+        gap: 7px;
       }
       .meta-score {
         grid-column: 3;
       }
       .meta-moves {
-        grid-column: 2 / 5;
+        gap: 4px;
       }
       .meta-row button {
         grid-column: 4;
@@ -4918,7 +4901,7 @@
         box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
         return;
       }
-      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span>Moveset</span><span></span></div>` +
+      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span></span></div>` +
         rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("") +
         metaRankingLegend();
       box.querySelectorAll("[data-meta-id]").forEach(button => {
@@ -5033,7 +5016,6 @@
         const color = typeColors[type] || "#66788c";
         return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
       }).join("");
-      const profileText = entry.profile === "rank1" ? "Rank 1 IVs" : "Default IVs";
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
       const moveset = [entry.moves.fast, ...entry.moves.charged].filter(Boolean);
@@ -5041,13 +5023,16 @@
         <span class="meta-rank">${rank}</span>
         <span class="meta-mon">
           <img src="${escapeHtml(imageUrl(entry.p))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
-          <span><strong>${escapeHtml(entry.p.name)}</strong><small>${escapeHtml(profileText)} ${typeBadges}</small></span>
+          <span>
+            <strong>${escapeHtml(entry.p.name)}</strong>
+            <small>${typeBadges}</small>
+            <span class="meta-moves" title="${escapeHtml(moveText)}">${moveset.map(move => metaMovePill(move)).join("")}</span>
+          </span>
         </span>
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
           <span class="meta-score-line" style="--score-width:${scoreWidth}"><i></i></span>
         </span>
-        <span class="meta-moves" title="${escapeHtml(moveText)}">${moveset.map(move => metaMovePill(move)).join("")}</span>
         <button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">Use</button>
       </div>`;
     }
