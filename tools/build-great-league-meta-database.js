@@ -11,13 +11,24 @@ const RANKING_SCHEMA_VERSION = 1;
 const MATRIX_VERSION = "live-worker-v1";
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
+const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-cache.json");
 const statsCache = new Map();
 const movesCache = new Map();
+const persistentRank1Stats = loadPersistentRank1Stats();
+let persistentRank1StatsDirty = false;
 
 const args = new Set(process.argv.slice(2));
 const limitArg = process.argv.find(arg => arg.startsWith("--limit="));
 const limit = limitArg ? Math.max(1, Number(limitArg.split("=")[1] || 0)) : 0;
+const offsetArg = process.argv.find(arg => arg.startsWith("--offset="));
+const offset = offsetArg ? Math.max(0, Number(offsetArg.split("=")[1] || 0)) : 0;
 const includeAllShieldStates = args.has("--all-shield-states");
+const allPokemonRanking = args.has("--all-pokemon");
+const rankingOnly = args.has("--ranking-only");
+const chunkOutput = args.has("--chunk-output");
+const mergeChunks = args.has("--merge-chunks");
+const opponentPoolArg = process.argv.find(arg => arg.startsWith("--opponents="));
+const opponentPoolMode = opponentPoolArg ? opponentPoolArg.split("=")[1] : allPokemonRanking ? "meta" : "same";
 const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
 const profileFilter = profilesArg
   ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
@@ -53,6 +64,22 @@ function readWindowGlobal(relativePath, globalName) {
   vm.createContext(context);
   vm.runInContext(code, context, { filename: relativePath, timeout: 30000 });
   return context.window[globalName];
+}
+
+function loadPersistentRank1Stats() {
+  if (!fs.existsSync(rank1StatsCachePath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(rank1StatsCachePath, "utf8"));
+  } catch (_) {
+    return {};
+  }
+}
+
+function savePersistentRank1Stats() {
+  if (!persistentRank1StatsDirty) return;
+  ensureDir(path.relative(ROOT, path.dirname(rank1StatsCachePath)));
+  fs.writeFileSync(rank1StatsCachePath, `${JSON.stringify(persistentRank1Stats, null, 2)}\n`, "utf8");
+  persistentRank1StatsDirty = false;
 }
 
 function extractLiveWorkerSource() {
@@ -187,6 +214,10 @@ function defaultStats(p) {
 }
 
 function rank1Stats(p) {
+  const cached = persistentRank1Stats[p.id];
+  if (cached && cached.cp <= CP_CAP && cached.ivAtk !== undefined && cached.ivDef !== undefined && cached.ivHp !== undefined) {
+    return cached;
+  }
   let best = null;
   let rank = 0;
   for (let atk = 0; atk <= 15; atk++) {
@@ -206,7 +237,10 @@ function rank1Stats(p) {
       }
     }
   }
-  return { ...best, rank };
+  const result = { ...best, rank };
+  persistentRank1Stats[p.id] = result;
+  persistentRank1StatsDirty = true;
+  return result;
 }
 
 function standardMovesetFor(p, standardMovesets) {
@@ -242,6 +276,14 @@ function selectMoves(p, moveMap, standardMovesets) {
   const result = { fast, charged };
   movesCache.set(p.id, result);
   return result;
+}
+
+function moveIdsFor(p, moveMap, standardMovesets) {
+  const moves = selectMoves(p, moveMap, standardMovesets);
+  return {
+    fast: moves.fast ? moves.fast.id : null,
+    charged: moves.charged.map(move => move && move.id).filter(Boolean)
+  };
 }
 
 function cloneForMatrix(value) {
@@ -343,6 +385,7 @@ function createRankingAggregator(pool, profiles, scenarios) {
         wins: 0,
         losses: 0,
         ties: 0,
+        scoreSquaredTotal: 0,
         shieldStates: Object.fromEntries(scenarios.map(([a, b]) => [`${a}-${b}`, {
           scoreTotal: 0,
           matchups: 0,
@@ -361,6 +404,7 @@ function updateRanking(entries, cell) {
   if (!entry) return;
   const state = entry.shieldStates[cell.shieldState];
   entry.scoreTotal += cell.result.score;
+  entry.scoreSquaredTotal += cell.result.score * cell.result.score;
   entry.matchups++;
   state.scoreTotal += cell.result.score;
   state.matchups++;
@@ -390,6 +434,7 @@ function finalizeRankings(entries) {
       name: entry.name,
       profile: entry.profile,
       averageScore: entry.matchups ? Math.round(entry.scoreTotal / entry.matchups) : null,
+      scoreStdDev: entry.matchups ? Number(Math.sqrt(Math.max(0, (entry.scoreSquaredTotal / entry.matchups) - Math.pow(entry.scoreTotal / entry.matchups, 2))).toFixed(2)) : null,
       matchups: entry.matchups,
       wins: entry.wins,
       losses: entry.losses,
@@ -406,7 +451,34 @@ function finalizeRankings(entries) {
   return rows.map((entry, index) => ({ rank: index + 1, ...entry }));
 }
 
+function compactRankingEntries(rankings, moveMap, standardMovesets, allPokemon) {
+  return rankings.entries.map(row => {
+    const p = allPokemon.get(row.id);
+    const moves = p ? moveIdsFor(p, moveMap, standardMovesets) : { fast: null, charged: [] };
+    return {
+      ...row,
+      types: p ? p.types : [],
+      dex: p ? p.dex : 0,
+      moveset: moves
+    };
+  });
+}
+
 function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
+  if (!matchups) {
+    const rankingKeys = new Set();
+    for (const row of rankings.entries) {
+      const key = `${row.profile}:${row.id}`;
+      if (rankingKeys.has(key)) throw new Error(`Duplicate ranking row: ${key}`);
+      rankingKeys.add(key);
+      if (!Number.isFinite(row.averageScore)) throw new Error(`Ranking row has invalid score: ${key}`);
+    }
+    const expectedRankings = pool.length * profiles.length;
+    if (rankingKeys.size !== expectedRankings) {
+      throw new Error(`Expected ${expectedRankings} ranking rows, found ${rankingKeys.size}.`);
+    }
+    return;
+  }
   const expectedCells = pool.length * Math.max(0, pool.length - 1) * profiles.length * scenarios.length;
   if (matchups.cells.length !== expectedCells) {
     throw new Error(`Expected ${expectedCells} matchup cells, found ${matchups.cells.length}.`);
@@ -444,9 +516,19 @@ function main() {
     .filter(p => p.fast.length && p.charged.length)
     .map(p => [p.id, p]));
 
+  const eligiblePokemon = [...allPokemon.values()]
+    .filter(p => p.released !== false && p.fast.length && p.charged.length)
+    .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
   const skippedPokemon = metaConfig.pokemon.filter(id => !allPokemon.has(id));
-  let pool = metaConfig.pokemon.map(id => allPokemon.get(id)).filter(Boolean);
-  if (limit) pool = pool.slice(0, limit);
+  const metaPool = metaConfig.pokemon.map(id => allPokemon.get(id)).filter(Boolean);
+  let pool = allPokemonRanking ? eligiblePokemon : metaPool;
+  let opponentPool = opponentPoolMode === "all"
+    ? eligiblePokemon
+    : opponentPoolMode === "meta"
+      ? metaPool
+      : pool;
+  const fullCandidateCount = pool.length;
+  if (offset || limit) pool = pool.slice(offset, limit ? offset + limit : undefined);
   const configuredProfiles = metaConfig.ivProfiles && metaConfig.ivProfiles.length
     ? metaConfig.ivProfiles
     : [DEFAULT_PROFILE, RANK1_PROFILE];
@@ -455,24 +537,28 @@ function main() {
     ? metaConfig.shieldScenarios
     : metaConfig.shieldScenarios.filter(([a, b]) => a === b);
 
-  if (!pool.length) throw new Error("Great League meta pool is empty.");
+  if (!pool.length) throw new Error("Great League ranking pool is empty.");
+  if (!opponentPool.length) throw new Error("Great League opponent pool is empty.");
   if (!profiles.length) throw new Error("No valid IV profiles selected.");
   if (!scenarios.length) throw new Error("No shield scenarios selected.");
 
   console.log(`Loading live simulator matrix worker...`);
   const adapter = createWorkerAdapter(extractLiveWorkerSource());
-  const total = pool.length * Math.max(0, pool.length - 1) * profiles.length * scenarios.length;
-  console.log(`Generating Great League ranking: ${pool.length} Pokemon, ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} cells.`);
+  const selfMatchupsSkipped = opponentPool === pool || opponentPoolMode === "all";
+  const total = profiles.length * scenarios.length * pool.reduce((sum, p) => (
+    sum + opponentPool.filter(opponent => !selfMatchupsSkipped || opponent.id !== p.id).length
+  ), 0);
+  console.log(`Generating Great League ranking: ${pool.length} candidates, ${opponentPool.length} opponents (${opponentPoolMode}), ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} cells.`);
 
   const cells = [];
-  const rankingEntries = createRankingAggregator(pool, profiles, scenarios);
+  const rankingAggregator = createRankingAggregator(pool, profiles, scenarios);
   let done = 0;
   let seq = 0;
 
   for (const profile of profiles) {
     for (const a of pool) {
-      for (const b of pool) {
-        if (a.id === b.id) continue;
+      for (const b of opponentPool) {
+        if (selfMatchupsSkipped && a.id === b.id) continue;
         const config = createBattleConfig(a, b, profile, moveMap, standardMovesets);
         for (const [aShields, bShields] of scenarios) {
           const shieldState = `${aShields}-${bShields}`;
@@ -499,8 +585,8 @@ function main() {
             bShields,
             result: compactResult(workerResult, a.id, b.id)
           };
-          cells.push(cell);
-          updateRanking(rankingEntries, cell);
+          if (!rankingOnly) cells.push(cell);
+          updateRanking(rankingAggregator, cell);
           done++;
           if (done % 1000 === 0 || done === total) {
             const pct = total ? Math.round((done / total) * 1000) / 10 : 100;
@@ -517,21 +603,28 @@ function main() {
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
     matrixVersion: MATRIX_VERSION,
     cpCap: CP_CAP,
-    configuredPokemonCount: metaConfig.pokemon.length,
+    configuredPokemonCount: allPokemonRanking ? eligiblePokemon.length : metaConfig.pokemon.length,
+    fullCandidateCount,
+    offset,
+    limit: limit || null,
     pokemonCount: pool.length,
+    opponentPool: opponentPoolMode,
+    opponentPokemonCount: opponentPool.length,
     skippedPokemon,
     profiles,
     shieldScenarios: scenarios,
     allShieldStates: includeAllShieldStates,
-    cells: cells.length
+    rankingOnly,
+    cells: done
   };
+  const finalizedRankingEntries = finalizeRankings(rankingAggregator);
   const rankings = {
     schemaVersion: RANKING_SCHEMA_VERSION,
     league: "great",
     metadata,
-    entries: finalizeRankings(rankingEntries)
+    entries: compactRankingEntries({ entries: finalizedRankingEntries }, moveMap, standardMovesets, allPokemon)
   };
-  const matchups = {
+  const matchups = rankingOnly ? null : {
     schemaVersion: MATCHUP_SCHEMA_VERSION,
     league: "great",
     metadata,
@@ -539,12 +632,61 @@ function main() {
   };
 
   validateOutput({ rankings, matchups, pool, profiles, scenarios });
-  const rankingSize = writeJson("data/great-league-rankings.json", rankings);
-  const matchupSize = writeJson("data/great-league-matchups.json", matchups);
+  const rankingPath = chunkOutput ? `data/ranking-chunks/great-league-rankings-${String(offset).padStart(4, "0")}.json` : "data/great-league-rankings.json";
+  const rankingSize = writeJson(rankingPath, rankings);
+  if (!chunkOutput) writeRankingScript(rankings);
+  const matchupSize = matchups ? writeJson("data/great-league-matchups.json", matchups) : 0;
   const elapsed = Math.round((Date.now() - started) / 1000);
-  console.log(`Wrote data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
-  console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
+  console.log(`Wrote ${rankingPath} (${rankingSize.toLocaleString()} bytes).`);
+  if (!chunkOutput) console.log(`Wrote data/great-league-rankings.js.`);
+  if (matchups) console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
+  savePersistentRank1Stats();
   console.log(`Done in ${elapsed}s.`);
 }
 
-main();
+function mergeRankingChunks() {
+  const chunkDir = path.join(ROOT, "data", "ranking-chunks");
+  const files = fs.existsSync(chunkDir)
+    ? fs.readdirSync(chunkDir).filter(name => /^great-league-rankings-\d+\.json$/.test(name)).sort()
+    : [];
+  if (!files.length) throw new Error("No ranking chunks found.");
+  const chunks = files.map(name => readJson(path.join("data", "ranking-chunks", name)));
+  const entries = chunks.flatMap(chunk => chunk.entries || []);
+  const totalCells = chunks.reduce((sum, chunk) => sum + Number(chunk.metadata && chunk.metadata.cells || 0), 0);
+  entries.sort((a, b) =>
+    (b.averageScore || 0) - (a.averageScore || 0) ||
+    (b.winRate || 0) - (a.winRate || 0) ||
+    a.name.localeCompare(b.name)
+  );
+  const merged = {
+    schemaVersion: RANKING_SCHEMA_VERSION,
+    league: "great",
+    metadata: {
+      ...chunks[0].metadata,
+      generatedAt: new Date().toISOString(),
+      mergedFromChunks: files.length,
+      pokemonCount: entries.length,
+      cells: totalCells,
+      offset: 0,
+      limit: null,
+      rankingOnly: true
+    },
+    entries: entries.map((entry, index) => ({ ...entry, rank: index + 1 }))
+  };
+  const rankingSize = writeJson("data/great-league-rankings.json", merged);
+  writeRankingScript(merged);
+  console.log(`Merged ${files.length} chunks into data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
+  console.log(`Wrote data/great-league-rankings.js.`);
+}
+
+function writeRankingScript(rankings) {
+  const file = path.join(ROOT, "data", "great-league-rankings.js");
+  ensureDir(path.dirname("data/great-league-rankings.js"));
+  fs.writeFileSync(file, `window.GREAT_LEAGUE_RANKINGS = ${JSON.stringify(rankings, null, 2)};\n`, "utf8");
+}
+
+if (mergeChunks) {
+  mergeRankingChunks();
+} else {
+  main();
+}

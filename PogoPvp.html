@@ -4902,7 +4902,7 @@
         return;
       }
       box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span></span></div>` +
-        rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("") +
+        rows.map((entry, index) => metaRankingRow(entry, entry.rank || index + 1)).join("") +
         metaRankingLegend();
       box.querySelectorAll("[data-meta-id]").forEach(button => {
         button.onclick = () => loadMetaPokemon(button.dataset.metaId);
@@ -5046,7 +5046,9 @@
       const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
       const cells = metadata ? Number(metadata.cells || 0).toLocaleString() : "";
       const states = metadata && metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
-      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League matchup simulations using Rank 1 IVs${cells ? `, ${cells} matchup cells` : ""}${states ? `, and ${states} shield states` : ""}.</div>`;
+      const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
+      const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
+      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.</div>`;
     }
 
     function metaStatsForPokemon(p) {

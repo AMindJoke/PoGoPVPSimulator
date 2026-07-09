@@ -1,7 +1,10 @@
 param(
   [switch]$AllShieldStates,
+  [switch]$AllPokemon,
+  [switch]$RankingOnly,
   [int]$Limit = 0,
-  [string]$Profiles = ""
+  [string]$Profiles = "",
+  [string]$Opponents = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,11 +19,20 @@ $argsList = @($script)
 if ($AllShieldStates) {
   $argsList += "--all-shield-states"
 }
+if ($AllPokemon) {
+  $argsList += "--all-pokemon"
+}
+if ($RankingOnly) {
+  $argsList += "--ranking-only"
+}
 if ($Limit -gt 0) {
   $argsList += "--limit=$Limit"
 }
 if ($Profiles) {
   $argsList += "--profiles=$Profiles"
+}
+if ($Opponents) {
+  $argsList += "--opponents=$Opponents"
 }
 
 Push-Location $root
