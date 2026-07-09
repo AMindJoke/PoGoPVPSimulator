@@ -1,5 +1,7 @@
 param(
-  [switch]$IncludeMatchups
+  [switch]$AllShieldStates,
+  [int]$Limit = 0,
+  [string]$Profiles = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -11,8 +13,14 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 }
 
 $argsList = @($script)
-if ($IncludeMatchups) {
-  $argsList += "--include-matchups"
+if ($AllShieldStates) {
+  $argsList += "--all-shield-states"
+}
+if ($Limit -gt 0) {
+  $argsList += "--limit=$Limit"
+}
+if ($Profiles) {
+  $argsList += "--profiles=$Profiles"
 }
 
 Push-Location $root

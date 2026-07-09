@@ -1,0 +1,4596 @@
+{
+  "schemaVersion": 1,
+  "league": "great",
+  "metadata": {
+    "generatedAt": "2026-07-09T12:21:13.165Z",
+    "generator": "tools/build-great-league-meta-database.js",
+    "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
+    "matrixVersion": "live-worker-v1",
+    "cpCap": 1500,
+    "configuredPokemonCount": 74,
+    "pokemonCount": 65,
+    "skippedPokemon": [
+      "clodsire_shadow",
+      "corsola_galarian_shadow",
+      "dunsparce_shadow",
+      "gastrodon_shadow",
+      "lanturn_shadow",
+      "toxapex_shadow",
+      "wigglytuff_shadow",
+      "clefable_shadow",
+      "goodra_shadow"
+    ],
+    "profiles": [
+      "default",
+      "rank1"
+    ],
+    "shieldScenarios": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "allShieldStates": false,
+    "cells": 24960
+  },
+  "entries": [
+    {
+      "rank": 1,
+      "id": "forretress",
+      "name": "Forretress",
+      "profile": "default",
+      "averageScore": 559,
+      "matchups": 192,
+      "wins": 114,
+      "losses": 78,
+      "ties": 0,
+      "winRate": 0.5938,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 494,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 594,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 589,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "id": "forretress",
+      "name": "Forretress",
+      "profile": "rank1",
+      "averageScore": 559,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 498,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 583,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 596,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 3,
+      "id": "forretress_shadow",
+      "name": "Forretress (Shadow)",
+      "profile": "rank1",
+      "averageScore": 559,
+      "matchups": 192,
+      "wins": 111,
+      "losses": 81,
+      "ties": 0,
+      "winRate": 0.5781,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 494,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 584,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 599,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 4,
+      "id": "forretress_shadow",
+      "name": "Forretress (Shadow)",
+      "profile": "default",
+      "averageScore": 557,
+      "matchups": 192,
+      "wins": 110,
+      "losses": 82,
+      "ties": 0,
+      "winRate": 0.5729,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 498,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 577,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 596,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 5,
+      "id": "talonflame",
+      "name": "Talonflame",
+      "profile": "default",
+      "averageScore": 549,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 544,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 546,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 556,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 6,
+      "id": "primeape_shadow",
+      "name": "Primeape (Shadow)",
+      "profile": "default",
+      "averageScore": 547,
+      "matchups": 192,
+      "wins": 116,
+      "losses": 76,
+      "ties": 0,
+      "winRate": 0.6042,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 411,
+          "matchups": 64,
+          "wins": 19,
+          "losses": 45,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 611,
+          "matchups": 64,
+          "wins": 44,
+          "losses": 20,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 619,
+          "matchups": 64,
+          "wins": 53,
+          "losses": 11,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 7,
+      "id": "jumpluff",
+      "name": "Jumpluff",
+      "profile": "rank1",
+      "averageScore": 547,
+      "matchups": 192,
+      "wins": 115,
+      "losses": 77,
+      "ties": 0,
+      "winRate": 0.599,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 555,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 538,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 8,
+      "id": "talonflame",
+      "name": "Talonflame",
+      "profile": "rank1",
+      "averageScore": 547,
+      "matchups": 192,
+      "wins": 112,
+      "losses": 80,
+      "ties": 0,
+      "winRate": 0.5833,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 544,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 538,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 560,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 9,
+      "id": "jumpluff_shadow",
+      "name": "Jumpluff (Shadow)",
+      "profile": "rank1",
+      "averageScore": 545,
+      "matchups": 192,
+      "wins": 115,
+      "losses": 77,
+      "ties": 0,
+      "winRate": 0.599,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 564,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 551,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 520,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 10,
+      "id": "jumpluff",
+      "name": "Jumpluff",
+      "profile": "default",
+      "averageScore": 545,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 548,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 562,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 11,
+      "id": "abomasnow",
+      "name": "Abomasnow",
+      "profile": "rank1",
+      "averageScore": 544,
+      "matchups": 192,
+      "wins": 118,
+      "losses": 74,
+      "ties": 0,
+      "winRate": 0.6146,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 537,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 550,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 12,
+      "id": "primeape_shadow",
+      "name": "Primeape (Shadow)",
+      "profile": "rank1",
+      "averageScore": 544,
+      "matchups": 192,
+      "wins": 114,
+      "losses": 78,
+      "ties": 0,
+      "winRate": 0.5938,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 401,
+          "matchups": 64,
+          "wins": 16,
+          "losses": 48,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 599,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 632,
+          "matchups": 64,
+          "wins": 56,
+          "losses": 8,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 13,
+      "id": "annihilape",
+      "name": "Annihilape",
+      "profile": "default",
+      "averageScore": 544,
+      "matchups": 192,
+      "wins": 108,
+      "losses": 84,
+      "ties": 0,
+      "winRate": 0.5625,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 454,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 553,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 626,
+          "matchups": 64,
+          "wins": 50,
+          "losses": 14,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 14,
+      "id": "primeape",
+      "name": "Primeape",
+      "profile": "default",
+      "averageScore": 540,
+      "matchups": 192,
+      "wins": 111,
+      "losses": 81,
+      "ties": 0,
+      "winRate": 0.5781,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 390,
+          "matchups": 64,
+          "wins": 13,
+          "losses": 51,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 581,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 648,
+          "matchups": 64,
+          "wins": 55,
+          "losses": 9,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 15,
+      "id": "lickilicky",
+      "name": "Lickilicky",
+      "profile": "rank1",
+      "averageScore": 540,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 533,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 560,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 16,
+      "id": "jumpluff_shadow",
+      "name": "Jumpluff (Shadow)",
+      "profile": "default",
+      "averageScore": 539,
+      "matchups": 192,
+      "wins": 112,
+      "losses": 80,
+      "ties": 0,
+      "winRate": 0.5833,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 565,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 508,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 17,
+      "id": "corsola_galarian",
+      "name": "Corsola (Galarian)",
+      "profile": "rank1",
+      "averageScore": 539,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 548,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 546,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 18,
+      "id": "lickilicky",
+      "name": "Lickilicky",
+      "profile": "default",
+      "averageScore": 539,
+      "matchups": 192,
+      "wins": 108,
+      "losses": 84,
+      "ties": 0,
+      "winRate": 0.5625,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 557,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 19,
+      "id": "annihilape",
+      "name": "Annihilape",
+      "profile": "rank1",
+      "averageScore": 539,
+      "matchups": 192,
+      "wins": 106,
+      "losses": 86,
+      "ties": 0,
+      "winRate": 0.5521,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 450,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 619,
+          "matchups": 64,
+          "wins": 47,
+          "losses": 17,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 20,
+      "id": "talonflame_shadow",
+      "name": "Talonflame (Shadow)",
+      "profile": "rank1",
+      "averageScore": 539,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 509,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 520,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 588,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 21,
+      "id": "morpeko_full_belly",
+      "name": "Morpeko (Full Belly)",
+      "profile": "default",
+      "averageScore": 538,
+      "matchups": 192,
+      "wins": 123,
+      "losses": 69,
+      "ties": 0,
+      "winRate": 0.6406,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 446,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 564,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 606,
+          "matchups": 64,
+          "wins": 52,
+          "losses": 12,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 22,
+      "id": "talonflame_shadow",
+      "name": "Talonflame (Shadow)",
+      "profile": "default",
+      "averageScore": 538,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 505,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 519,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 589,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 23,
+      "id": "gastrodon",
+      "name": "Gastrodon",
+      "profile": "default",
+      "averageScore": 537,
+      "matchups": 192,
+      "wins": 115,
+      "losses": 77,
+      "ties": 0,
+      "winRate": 0.599,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 545,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 530,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 24,
+      "id": "abomasnow_shadow",
+      "name": "Abomasnow (Shadow)",
+      "profile": "rank1",
+      "averageScore": 537,
+      "matchups": 192,
+      "wins": 112,
+      "losses": 80,
+      "ties": 0,
+      "winRate": 0.5833,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 521,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 563,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 25,
+      "id": "charjabug_shadow",
+      "name": "Charjabug (Shadow)",
+      "profile": "default",
+      "averageScore": 536,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 549,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 533,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 26,
+      "id": "abomasnow_shadow",
+      "name": "Abomasnow (Shadow)",
+      "profile": "default",
+      "averageScore": 535,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 533,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 557,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 27,
+      "id": "gastrodon",
+      "name": "Gastrodon",
+      "profile": "rank1",
+      "averageScore": 534,
+      "matchups": 192,
+      "wins": 116,
+      "losses": 76,
+      "ties": 0,
+      "winRate": 0.6042,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 535,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 28,
+      "id": "kingdra",
+      "name": "Kingdra",
+      "profile": "default",
+      "averageScore": 534,
+      "matchups": 192,
+      "wins": 115,
+      "losses": 77,
+      "ties": 0,
+      "winRate": 0.599,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 489,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 537,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 577,
+          "matchups": 64,
+          "wins": 46,
+          "losses": 18,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 29,
+      "id": "corsola_galarian",
+      "name": "Corsola (Galarian)",
+      "profile": "default",
+      "averageScore": 533,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 538,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 513,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 30,
+      "id": "medicham",
+      "name": "Medicham",
+      "profile": "rank1",
+      "averageScore": 532,
+      "matchups": 192,
+      "wins": 117,
+      "losses": 75,
+      "ties": 0,
+      "winRate": 0.6094,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 541,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 541,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 514,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 31,
+      "id": "kingdra_shadow",
+      "name": "Kingdra (Shadow)",
+      "profile": "default",
+      "averageScore": 532,
+      "matchups": 192,
+      "wins": 111,
+      "losses": 81,
+      "ties": 0,
+      "winRate": 0.5781,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 469,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 538,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 588,
+          "matchups": 64,
+          "wins": 48,
+          "losses": 16,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 32,
+      "id": "abomasnow",
+      "name": "Abomasnow",
+      "profile": "default",
+      "averageScore": 532,
+      "matchups": 192,
+      "wins": 110,
+      "losses": 82,
+      "ties": 0,
+      "winRate": 0.5729,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 536,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 33,
+      "id": "mandibuzz",
+      "name": "Mandibuzz",
+      "profile": "rank1",
+      "averageScore": 532,
+      "matchups": 192,
+      "wins": 106,
+      "losses": 86,
+      "ties": 0,
+      "winRate": 0.5521,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 34,
+      "id": "primeape",
+      "name": "Primeape",
+      "profile": "rank1",
+      "averageScore": 531,
+      "matchups": 192,
+      "wins": 108,
+      "losses": 84,
+      "ties": 0,
+      "winRate": 0.5625,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 385,
+          "matchups": 64,
+          "wins": 12,
+          "losses": 52,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 566,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 642,
+          "matchups": 64,
+          "wins": 55,
+          "losses": 9,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 35,
+      "id": "charjabug",
+      "name": "Charjabug",
+      "profile": "rank1",
+      "averageScore": 530,
+      "matchups": 192,
+      "wins": 99,
+      "losses": 93,
+      "ties": 0,
+      "winRate": 0.5156,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 540,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 529,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 522,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 36,
+      "id": "machoke_shadow",
+      "name": "Machoke (Shadow)",
+      "profile": "default",
+      "averageScore": 528,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 508,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 550,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 37,
+      "id": "medicham",
+      "name": "Medicham",
+      "profile": "default",
+      "averageScore": 528,
+      "matchups": 192,
+      "wins": 111,
+      "losses": 81,
+      "ties": 0,
+      "winRate": 0.5781,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 541,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 529,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 513,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 38,
+      "id": "machoke_shadow",
+      "name": "Machoke (Shadow)",
+      "profile": "rank1",
+      "averageScore": 527,
+      "matchups": 192,
+      "wins": 111,
+      "losses": 81,
+      "ties": 0,
+      "winRate": 0.5781,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 506,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 531,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 545,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 39,
+      "id": "mandibuzz",
+      "name": "Mandibuzz",
+      "profile": "default",
+      "averageScore": 527,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 519,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 40,
+      "id": "charjabug_shadow",
+      "name": "Charjabug (Shadow)",
+      "profile": "rank1",
+      "averageScore": 527,
+      "matchups": 192,
+      "wins": 99,
+      "losses": 93,
+      "ties": 0,
+      "winRate": 0.5156,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 531,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 516,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 41,
+      "id": "morpeko_full_belly",
+      "name": "Morpeko (Full Belly)",
+      "profile": "rank1",
+      "averageScore": 526,
+      "matchups": 192,
+      "wins": 114,
+      "losses": 78,
+      "ties": 0,
+      "winRate": 0.5938,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 441,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 593,
+          "matchups": 64,
+          "wins": 48,
+          "losses": 16,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 42,
+      "id": "clefable",
+      "name": "Clefable",
+      "profile": "rank1",
+      "averageScore": 526,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 558,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 522,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 497,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 43,
+      "id": "kingdra_shadow",
+      "name": "Kingdra (Shadow)",
+      "profile": "rank1",
+      "averageScore": 526,
+      "matchups": 192,
+      "wins": 110,
+      "losses": 82,
+      "ties": 0,
+      "winRate": 0.5729,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 471,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 582,
+          "matchups": 64,
+          "wins": 46,
+          "losses": 18,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 44,
+      "id": "clefable",
+      "name": "Clefable",
+      "profile": "default",
+      "averageScore": 525,
+      "matchups": 192,
+      "wins": 113,
+      "losses": 79,
+      "ties": 0,
+      "winRate": 0.5885,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 565,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 485,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 45,
+      "id": "charjabug",
+      "name": "Charjabug",
+      "profile": "default",
+      "averageScore": 524,
+      "matchups": 192,
+      "wins": 96,
+      "losses": 96,
+      "ties": 0,
+      "winRate": 0.5,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 520,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 46,
+      "id": "kingdra",
+      "name": "Kingdra",
+      "profile": "rank1",
+      "averageScore": 523,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 499,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 512,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 558,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 47,
+      "id": "dunsparce",
+      "name": "Dunsparce",
+      "profile": "rank1",
+      "averageScore": 522,
+      "matchups": 192,
+      "wins": 96,
+      "losses": 96,
+      "ties": 0,
+      "winRate": 0.5,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 510,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 522,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 535,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 48,
+      "id": "clodsire",
+      "name": "Clodsire",
+      "profile": "rank1",
+      "averageScore": 520,
+      "matchups": 192,
+      "wins": 110,
+      "losses": 82,
+      "ties": 0,
+      "winRate": 0.5729,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 564,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 520,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 476,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 49,
+      "id": "dunsparce",
+      "name": "Dunsparce",
+      "profile": "default",
+      "averageScore": 517,
+      "matchups": 192,
+      "wins": 94,
+      "losses": 98,
+      "ties": 0,
+      "winRate": 0.4896,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 513,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 522,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 518,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 50,
+      "id": "wigglytuff",
+      "name": "Wigglytuff",
+      "profile": "rank1",
+      "averageScore": 517,
+      "matchups": 192,
+      "wins": 86,
+      "losses": 106,
+      "ties": 0,
+      "winRate": 0.4479,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 490,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 51,
+      "id": "sableye",
+      "name": "Sableye",
+      "profile": "default",
+      "averageScore": 516,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 508,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 527,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 52,
+      "id": "sableye",
+      "name": "Sableye",
+      "profile": "rank1",
+      "averageScore": 516,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 506,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 514,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 528,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 53,
+      "id": "marowak_alolan_shadow",
+      "name": "Marowak (Alolan) (Shadow)",
+      "profile": "default",
+      "averageScore": 516,
+      "matchups": 192,
+      "wins": 93,
+      "losses": 99,
+      "ties": 0,
+      "winRate": 0.4844,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 502,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 524,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 54,
+      "id": "wigglytuff",
+      "name": "Wigglytuff",
+      "profile": "default",
+      "averageScore": 516,
+      "matchups": 192,
+      "wins": 88,
+      "losses": 104,
+      "ties": 0,
+      "winRate": 0.4583,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 491,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 516,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 542,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 55,
+      "id": "clodsire",
+      "name": "Clodsire",
+      "profile": "default",
+      "averageScore": 515,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 559,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 520,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 466,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 56,
+      "id": "dragonair",
+      "name": "Dragonair",
+      "profile": "default",
+      "averageScore": 513,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 477,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 57,
+      "id": "dragonair_shadow",
+      "name": "Dragonair (Shadow)",
+      "profile": "rank1",
+      "averageScore": 512,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 448,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 525,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 561,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 58,
+      "id": "marowak_alolan_shadow",
+      "name": "Marowak (Alolan) (Shadow)",
+      "profile": "rank1",
+      "averageScore": 512,
+      "matchups": 192,
+      "wins": 91,
+      "losses": 101,
+      "ties": 0,
+      "winRate": 0.474,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 495,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 59,
+      "id": "altaria",
+      "name": "Altaria",
+      "profile": "rank1",
+      "averageScore": 511,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 542,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 521,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 470,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 60,
+      "id": "swampert",
+      "name": "Swampert",
+      "profile": "default",
+      "averageScore": 510,
+      "matchups": 192,
+      "wins": 108,
+      "losses": 84,
+      "ties": 0,
+      "winRate": 0.5625,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 549,
+          "matchups": 64,
+          "wins": 44,
+          "losses": 20,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 510,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 470,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 61,
+      "id": "sableye_shadow",
+      "name": "Sableye (Shadow)",
+      "profile": "default",
+      "averageScore": 510,
+      "matchups": 192,
+      "wins": 97,
+      "losses": 95,
+      "ties": 0,
+      "winRate": 0.5052,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 498,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 514,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 62,
+      "id": "dragonair",
+      "name": "Dragonair",
+      "profile": "rank1",
+      "averageScore": 509,
+      "matchups": 192,
+      "wins": 101,
+      "losses": 91,
+      "ties": 0,
+      "winRate": 0.526,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 465,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 513,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 548,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 63,
+      "id": "marowak_alolan",
+      "name": "Marowak (Alolan)",
+      "profile": "default",
+      "averageScore": 508,
+      "matchups": 192,
+      "wins": 93,
+      "losses": 99,
+      "ties": 0,
+      "winRate": 0.4844,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 480,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 528,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 64,
+      "id": "pangoro",
+      "name": "Pangoro",
+      "profile": "default",
+      "averageScore": 506,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 464,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 511,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 543,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 65,
+      "id": "pangoro",
+      "name": "Pangoro",
+      "profile": "rank1",
+      "averageScore": 506,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 455,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 547,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 66,
+      "id": "machamp_shadow",
+      "name": "Machamp (Shadow)",
+      "profile": "default",
+      "averageScore": 506,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 475,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 501,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 541,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 67,
+      "id": "marowak_alolan",
+      "name": "Marowak (Alolan)",
+      "profile": "rank1",
+      "averageScore": 506,
+      "matchups": 192,
+      "wins": 92,
+      "losses": 100,
+      "ties": 0,
+      "winRate": 0.4792,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 480,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 68,
+      "id": "sableye_shadow",
+      "name": "Sableye (Shadow)",
+      "profile": "rank1",
+      "averageScore": 505,
+      "matchups": 192,
+      "wins": 94,
+      "losses": 98,
+      "ties": 0,
+      "winRate": 0.4896,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 487,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 513,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 69,
+      "id": "swampert",
+      "name": "Swampert",
+      "profile": "rank1",
+      "averageScore": 503,
+      "matchups": 192,
+      "wins": 107,
+      "losses": 85,
+      "ties": 0,
+      "winRate": 0.5573,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 536,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 507,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 466,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 70,
+      "id": "venusaur",
+      "name": "Venusaur",
+      "profile": "default",
+      "averageScore": 503,
+      "matchups": 192,
+      "wins": 103,
+      "losses": 89,
+      "ties": 0,
+      "winRate": 0.5365,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 512,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 471,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 71,
+      "id": "feraligatr",
+      "name": "Feraligatr",
+      "profile": "default",
+      "averageScore": 503,
+      "matchups": 192,
+      "wins": 100,
+      "losses": 92,
+      "ties": 0,
+      "winRate": 0.5208,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 524,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 496,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 488,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 72,
+      "id": "dragonair_shadow",
+      "name": "Dragonair (Shadow)",
+      "profile": "default",
+      "averageScore": 502,
+      "matchups": 192,
+      "wins": 100,
+      "losses": 92,
+      "ties": 0,
+      "winRate": 0.5208,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 445,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 512,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 551,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 73,
+      "id": "venusaur",
+      "name": "Venusaur",
+      "profile": "rank1",
+      "averageScore": 501,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 516,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 464,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 74,
+      "id": "quagsire",
+      "name": "Quagsire",
+      "profile": "rank1",
+      "averageScore": 501,
+      "matchups": 192,
+      "wins": 103,
+      "losses": 89,
+      "ties": 0,
+      "winRate": 0.5365,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 480,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 506,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 75,
+      "id": "altaria",
+      "name": "Altaria",
+      "profile": "default",
+      "averageScore": 501,
+      "matchups": 192,
+      "wins": 92,
+      "losses": 100,
+      "ties": 0,
+      "winRate": 0.4792,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 536,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 510,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 458,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 76,
+      "id": "venusaur_shadow",
+      "name": "Venusaur (Shadow)",
+      "profile": "rank1",
+      "averageScore": 500,
+      "matchups": 192,
+      "wins": 106,
+      "losses": 86,
+      "ties": 0,
+      "winRate": 0.5521,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 548,
+          "matchups": 64,
+          "wins": 41,
+          "losses": 23,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 483,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 469,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 77,
+      "id": "feraligatr_shadow",
+      "name": "Feraligatr (Shadow)",
+      "profile": "default",
+      "averageScore": 500,
+      "matchups": 192,
+      "wins": 103,
+      "losses": 89,
+      "ties": 0,
+      "winRate": 0.5365,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 509,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 503,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 487,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 78,
+      "id": "feraligatr",
+      "name": "Feraligatr",
+      "profile": "rank1",
+      "averageScore": 499,
+      "matchups": 192,
+      "wins": 97,
+      "losses": 95,
+      "ties": 0,
+      "winRate": 0.5052,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 491,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 79,
+      "id": "carbink",
+      "name": "Carbink",
+      "profile": "default",
+      "averageScore": 499,
+      "matchups": 192,
+      "wins": 96,
+      "losses": 96,
+      "ties": 0,
+      "winRate": 0.5,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 535,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 478,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 80,
+      "id": "feraligatr_shadow",
+      "name": "Feraligatr (Shadow)",
+      "profile": "rank1",
+      "averageScore": 498,
+      "matchups": 192,
+      "wins": 101,
+      "losses": 91,
+      "ties": 0,
+      "winRate": 0.526,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 504,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 503,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 486,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 81,
+      "id": "machamp_shadow",
+      "name": "Machamp (Shadow)",
+      "profile": "rank1",
+      "averageScore": 498,
+      "matchups": 192,
+      "wins": 95,
+      "losses": 97,
+      "ties": 0,
+      "winRate": 0.4948,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 471,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 492,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 531,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 82,
+      "id": "goodra",
+      "name": "Goodra",
+      "profile": "rank1",
+      "averageScore": 498,
+      "matchups": 192,
+      "wins": 92,
+      "losses": 100,
+      "ties": 0,
+      "winRate": 0.4792,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 436,
+          "matchups": 64,
+          "wins": 20,
+          "losses": 44,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 497,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 560,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 83,
+      "id": "goodra",
+      "name": "Goodra",
+      "profile": "default",
+      "averageScore": 498,
+      "matchups": 192,
+      "wins": 90,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.4688,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 428,
+          "matchups": 64,
+          "wins": 18,
+          "losses": 46,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 506,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 558,
+          "matchups": 64,
+          "wins": 42,
+          "losses": 22,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 84,
+      "id": "carbink",
+      "name": "Carbink",
+      "profile": "rank1",
+      "averageScore": 497,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 532,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 483,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 476,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 85,
+      "id": "quagsire_shadow",
+      "name": "Quagsire (Shadow)",
+      "profile": "rank1",
+      "averageScore": 496,
+      "matchups": 192,
+      "wins": 96,
+      "losses": 96,
+      "ties": 0,
+      "winRate": 0.5,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 474,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 492,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 521,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 86,
+      "id": "registeel",
+      "name": "Registeel",
+      "profile": "rank1",
+      "averageScore": 494,
+      "matchups": 192,
+      "wins": 108,
+      "losses": 84,
+      "ties": 0,
+      "winRate": 0.5625,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 556,
+          "matchups": 64,
+          "wins": 45,
+          "losses": 19,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 478,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 448,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 87,
+      "id": "registeel",
+      "name": "Registeel",
+      "profile": "default",
+      "averageScore": 493,
+      "matchups": 192,
+      "wins": 109,
+      "losses": 83,
+      "ties": 0,
+      "winRate": 0.5677,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 545,
+          "matchups": 64,
+          "wins": 43,
+          "losses": 21,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 488,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 447,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 88,
+      "id": "swampert_shadow",
+      "name": "Swampert (Shadow)",
+      "profile": "default",
+      "averageScore": 493,
+      "matchups": 192,
+      "wins": 104,
+      "losses": 88,
+      "ties": 0,
+      "winRate": 0.5417,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 487,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 474,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 89,
+      "id": "venusaur_shadow",
+      "name": "Venusaur (Shadow)",
+      "profile": "default",
+      "averageScore": 493,
+      "matchups": 192,
+      "wins": 99,
+      "losses": 93,
+      "ties": 0,
+      "winRate": 0.5156,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 532,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 464,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 90,
+      "id": "lickitung",
+      "name": "Lickitung",
+      "profile": "default",
+      "averageScore": 491,
+      "matchups": 192,
+      "wins": 90,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.4688,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 494,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 489,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 490,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 91,
+      "id": "quagsire",
+      "name": "Quagsire",
+      "profile": "default",
+      "averageScore": 489,
+      "matchups": 192,
+      "wins": 95,
+      "losses": 97,
+      "ties": 0,
+      "winRate": 0.4948,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 466,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 491,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 511,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 92,
+      "id": "swampert_shadow",
+      "name": "Swampert (Shadow)",
+      "profile": "rank1",
+      "averageScore": 488,
+      "matchups": 192,
+      "wins": 100,
+      "losses": 92,
+      "ties": 0,
+      "winRate": 0.5208,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 523,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 479,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 461,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 93,
+      "id": "diggersby",
+      "name": "Diggersby",
+      "profile": "rank1",
+      "averageScore": 488,
+      "matchups": 192,
+      "wins": 80,
+      "losses": 112,
+      "ties": 0,
+      "winRate": 0.4167,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 483,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 487,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 494,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 94,
+      "id": "quagsire_shadow",
+      "name": "Quagsire (Shadow)",
+      "profile": "default",
+      "averageScore": 487,
+      "matchups": 192,
+      "wins": 92,
+      "losses": 100,
+      "ties": 0,
+      "winRate": 0.4792,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 460,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 517,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 95,
+      "id": "azumarill",
+      "name": "Azumarill",
+      "profile": "rank1",
+      "averageScore": 486,
+      "matchups": 192,
+      "wins": 99,
+      "losses": 93,
+      "ties": 0,
+      "winRate": 0.5156,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 539,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 485,
+          "matchups": 64,
+          "wins": 32,
+          "losses": 32,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 435,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 96,
+      "id": "diggersby",
+      "name": "Diggersby",
+      "profile": "default",
+      "averageScore": 485,
+      "matchups": 192,
+      "wins": 81,
+      "losses": 111,
+      "ties": 0,
+      "winRate": 0.4219,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 476,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 494,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 97,
+      "id": "azumarill",
+      "name": "Azumarill",
+      "profile": "default",
+      "averageScore": 484,
+      "matchups": 192,
+      "wins": 100,
+      "losses": 92,
+      "ties": 0,
+      "winRate": 0.5208,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 533,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 496,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 425,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 98,
+      "id": "toxapex",
+      "name": "Toxapex",
+      "profile": "rank1",
+      "averageScore": 484,
+      "matchups": 192,
+      "wins": 90,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.4688,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 515,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 478,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 459,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 99,
+      "id": "serperior_shadow",
+      "name": "Serperior (Shadow)",
+      "profile": "rank1",
+      "averageScore": 483,
+      "matchups": 192,
+      "wins": 96,
+      "losses": 96,
+      "ties": 0,
+      "winRate": 0.5,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 503,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 489,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 456,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 100,
+      "id": "toxapex",
+      "name": "Toxapex",
+      "profile": "default",
+      "averageScore": 483,
+      "matchups": 192,
+      "wins": 89,
+      "losses": 103,
+      "ties": 0,
+      "winRate": 0.4635,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 512,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 470,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 467,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 101,
+      "id": "bastiodon_shadow",
+      "name": "Bastiodon (Shadow)",
+      "profile": "default",
+      "averageScore": 481,
+      "matchups": 192,
+      "wins": 93,
+      "losses": 99,
+      "ties": 0,
+      "winRate": 0.4844,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 452,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 464,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 102,
+      "id": "bastiodon_shadow",
+      "name": "Bastiodon (Shadow)",
+      "profile": "rank1",
+      "averageScore": 481,
+      "matchups": 192,
+      "wins": 90,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.4688,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 534,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 448,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 460,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 103,
+      "id": "serperior",
+      "name": "Serperior",
+      "profile": "default",
+      "averageScore": 481,
+      "matchups": 192,
+      "wins": 85,
+      "losses": 107,
+      "ties": 0,
+      "winRate": 0.4427,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 526,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 484,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 431,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 104,
+      "id": "lickitung",
+      "name": "Lickitung",
+      "profile": "rank1",
+      "averageScore": 481,
+      "matchups": 192,
+      "wins": 83,
+      "losses": 109,
+      "ties": 0,
+      "winRate": 0.4323,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 485,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 478,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 480,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 105,
+      "id": "bastiodon",
+      "name": "Bastiodon",
+      "profile": "default",
+      "averageScore": 479,
+      "matchups": 192,
+      "wins": 98,
+      "losses": 94,
+      "ties": 0,
+      "winRate": 0.5104,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 541,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 447,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 449,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 106,
+      "id": "serperior",
+      "name": "Serperior",
+      "profile": "rank1",
+      "averageScore": 477,
+      "matchups": 192,
+      "wins": 86,
+      "losses": 106,
+      "ties": 0,
+      "winRate": 0.4479,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 524,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 482,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 426,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 107,
+      "id": "bastiodon",
+      "name": "Bastiodon",
+      "profile": "rank1",
+      "averageScore": 475,
+      "matchups": 192,
+      "wins": 95,
+      "losses": 97,
+      "ties": 0,
+      "winRate": 0.4948,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 528,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 460,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 437,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 108,
+      "id": "froslass",
+      "name": "Froslass",
+      "profile": "rank1",
+      "averageScore": 475,
+      "matchups": 192,
+      "wins": 88,
+      "losses": 104,
+      "ties": 0,
+      "winRate": 0.4583,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 528,
+          "matchups": 64,
+          "wins": 35,
+          "losses": 29,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 468,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 431,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 109,
+      "id": "whiscash",
+      "name": "Whiscash",
+      "profile": "default",
+      "averageScore": 474,
+      "matchups": 192,
+      "wins": 91,
+      "losses": 101,
+      "ties": 0,
+      "winRate": 0.474,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 499,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 483,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 440,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 110,
+      "id": "froslass",
+      "name": "Froslass",
+      "profile": "default",
+      "averageScore": 474,
+      "matchups": 192,
+      "wins": 86,
+      "losses": 106,
+      "ties": 0,
+      "winRate": 0.4479,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 540,
+          "matchups": 64,
+          "wins": 37,
+          "losses": 27,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 458,
+          "matchups": 64,
+          "wins": 28,
+          "losses": 36,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 425,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 111,
+      "id": "serperior_shadow",
+      "name": "Serperior (Shadow)",
+      "profile": "default",
+      "averageScore": 472,
+      "matchups": 192,
+      "wins": 90,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.4688,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 500,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 471,
+          "matchups": 64,
+          "wins": 31,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 447,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 112,
+      "id": "whiscash_shadow",
+      "name": "Whiscash (Shadow)",
+      "profile": "rank1",
+      "averageScore": 470,
+      "matchups": 192,
+      "wins": 88,
+      "losses": 104,
+      "ties": 0,
+      "winRate": 0.4583,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 481,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 493,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 437,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 113,
+      "id": "whiscash_shadow",
+      "name": "Whiscash (Shadow)",
+      "profile": "default",
+      "averageScore": 470,
+      "matchups": 192,
+      "wins": 87,
+      "losses": 105,
+      "ties": 0,
+      "winRate": 0.4531,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 489,
+          "matchups": 64,
+          "wins": 30,
+          "losses": 34,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 487,
+          "matchups": 64,
+          "wins": 33,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 434,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 114,
+      "id": "whiscash",
+      "name": "Whiscash",
+      "profile": "rank1",
+      "averageScore": 468,
+      "matchups": 192,
+      "wins": 85,
+      "losses": 107,
+      "ties": 0,
+      "winRate": 0.4427,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 491,
+          "matchups": 64,
+          "wins": 34,
+          "losses": 30,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 474,
+          "matchups": 64,
+          "wins": 29,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 440,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 115,
+      "id": "froslass_shadow",
+      "name": "Froslass (Shadow)",
+      "profile": "rank1",
+      "averageScore": 463,
+      "matchups": 192,
+      "wins": 80,
+      "losses": 112,
+      "ties": 0,
+      "winRate": 0.4167,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 533,
+          "matchups": 64,
+          "wins": 38,
+          "losses": 26,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 433,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 424,
+          "matchups": 64,
+          "wins": 19,
+          "losses": 45,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 116,
+      "id": "froslass_shadow",
+      "name": "Froslass (Shadow)",
+      "profile": "default",
+      "averageScore": 462,
+      "matchups": 192,
+      "wins": 79,
+      "losses": 113,
+      "ties": 0,
+      "winRate": 0.4115,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 538,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 426,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 423,
+          "matchups": 64,
+          "wins": 19,
+          "losses": 45,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 117,
+      "id": "skarmory_shadow",
+      "name": "Skarmory (Shadow)",
+      "profile": "default",
+      "averageScore": 456,
+      "matchups": 192,
+      "wins": 80,
+      "losses": 112,
+      "ties": 0,
+      "winRate": 0.4167,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 508,
+          "matchups": 64,
+          "wins": 39,
+          "losses": 25,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 429,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 432,
+          "matchups": 64,
+          "wins": 20,
+          "losses": 44,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 118,
+      "id": "skarmory",
+      "name": "Skarmory",
+      "profile": "rank1",
+      "averageScore": 452,
+      "matchups": 192,
+      "wins": 80,
+      "losses": 112,
+      "ties": 0,
+      "winRate": 0.4167,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 519,
+          "matchups": 64,
+          "wins": 40,
+          "losses": 24,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 420,
+          "matchups": 64,
+          "wins": 20,
+          "losses": 44,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 417,
+          "matchups": 64,
+          "wins": 20,
+          "losses": 44,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 119,
+      "id": "skarmory_shadow",
+      "name": "Skarmory (Shadow)",
+      "profile": "rank1",
+      "averageScore": 452,
+      "matchups": 192,
+      "wins": 76,
+      "losses": 116,
+      "ties": 0,
+      "winRate": 0.3958,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 509,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 430,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 417,
+          "matchups": 64,
+          "wins": 17,
+          "losses": 47,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 120,
+      "id": "dewgong",
+      "name": "Dewgong",
+      "profile": "default",
+      "averageScore": 447,
+      "matchups": 192,
+      "wins": 67,
+      "losses": 125,
+      "ties": 0,
+      "winRate": 0.349,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 463,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 444,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 433,
+          "matchups": 64,
+          "wins": 18,
+          "losses": 46,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 121,
+      "id": "dewgong_shadow",
+      "name": "Dewgong (Shadow)",
+      "profile": "rank1",
+      "averageScore": 447,
+      "matchups": 192,
+      "wins": 66,
+      "losses": 126,
+      "ties": 0,
+      "winRate": 0.3438,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 456,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 443,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 444,
+          "matchups": 64,
+          "wins": 20,
+          "losses": 44,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 122,
+      "id": "dewgong_shadow",
+      "name": "Dewgong (Shadow)",
+      "profile": "default",
+      "averageScore": 446,
+      "matchups": 192,
+      "wins": 67,
+      "losses": 125,
+      "ties": 0,
+      "winRate": 0.349,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 444,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 447,
+          "matchups": 64,
+          "wins": 22,
+          "losses": 42,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 446,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 123,
+      "id": "skarmory",
+      "name": "Skarmory",
+      "profile": "default",
+      "averageScore": 444,
+      "matchups": 192,
+      "wins": 78,
+      "losses": 114,
+      "ties": 0,
+      "winRate": 0.4063,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 495,
+          "matchups": 64,
+          "wins": 36,
+          "losses": 28,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 416,
+          "matchups": 64,
+          "wins": 19,
+          "losses": 45,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 420,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 124,
+      "id": "dewgong",
+      "name": "Dewgong",
+      "profile": "rank1",
+      "averageScore": 444,
+      "matchups": 192,
+      "wins": 64,
+      "losses": 128,
+      "ties": 0,
+      "winRate": 0.3333,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 463,
+          "matchups": 64,
+          "wins": 24,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 448,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 420,
+          "matchups": 64,
+          "wins": 15,
+          "losses": 49,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 125,
+      "id": "lanturn",
+      "name": "Lanturn",
+      "profile": "default",
+      "averageScore": 433,
+      "matchups": 192,
+      "wins": 66,
+      "losses": 126,
+      "ties": 0,
+      "winRate": 0.3438,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 465,
+          "matchups": 64,
+          "wins": 26,
+          "losses": 38,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 426,
+          "matchups": 64,
+          "wins": 23,
+          "losses": 41,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 409,
+          "matchups": 64,
+          "wins": 17,
+          "losses": 47,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 126,
+      "id": "lanturn",
+      "name": "Lanturn",
+      "profile": "rank1",
+      "averageScore": 433,
+      "matchups": 192,
+      "wins": 66,
+      "losses": 126,
+      "ties": 0,
+      "winRate": 0.3438,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 465,
+          "matchups": 64,
+          "wins": 27,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 423,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 410,
+          "matchups": 64,
+          "wins": 18,
+          "losses": 46,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 127,
+      "id": "mimikyu",
+      "name": "Mimikyu",
+      "profile": "default",
+      "averageScore": 411,
+      "matchups": 192,
+      "wins": 53,
+      "losses": 139,
+      "ties": 0,
+      "winRate": 0.276,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 447,
+          "matchups": 64,
+          "wins": 21,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 396,
+          "matchups": 64,
+          "wins": 17,
+          "losses": 47,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 390,
+          "matchups": 64,
+          "wins": 15,
+          "losses": 49,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 128,
+      "id": "mimikyu",
+      "name": "Mimikyu",
+      "profile": "rank1",
+      "averageScore": 406,
+      "matchups": 192,
+      "wins": 50,
+      "losses": 142,
+      "ties": 0,
+      "winRate": 0.2604,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 433,
+          "matchups": 64,
+          "wins": 18,
+          "losses": 46,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 396,
+          "matchups": 64,
+          "wins": 16,
+          "losses": 48,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 388,
+          "matchups": 64,
+          "wins": 16,
+          "losses": 48,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 129,
+      "id": "malamar",
+      "name": "Malamar",
+      "profile": "default",
+      "averageScore": 384,
+      "matchups": 192,
+      "wins": 36,
+      "losses": 156,
+      "ties": 0,
+      "winRate": 0.1875,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 485,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 335,
+          "matchups": 64,
+          "wins": 5,
+          "losses": 59,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 332,
+          "matchups": 64,
+          "wins": 6,
+          "losses": 58,
+          "ties": 0
+        }
+      }
+    },
+    {
+      "rank": 130,
+      "id": "malamar",
+      "name": "Malamar",
+      "profile": "rank1",
+      "averageScore": 381,
+      "matchups": 192,
+      "wins": 37,
+      "losses": 155,
+      "ties": 0,
+      "winRate": 0.1927,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 485,
+          "matchups": 64,
+          "wins": 25,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 335,
+          "matchups": 64,
+          "wins": 6,
+          "losses": 58,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 325,
+          "matchups": 64,
+          "wins": 6,
+          "losses": 58,
+          "ties": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "generate:great-league-ranking": "node tools/build-great-league-meta-database.js",
+    "generate:great-league-ranking:full": "node tools/build-great-league-meta-database.js --all-shield-states"
+  }
+}

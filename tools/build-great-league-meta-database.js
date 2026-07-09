@@ -1,13 +1,27 @@
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "..");
-const INCLUDE_MATCHUPS = process.argv.includes("--include-matchups");
 const CP_CAP = 1500;
-const DAMAGE_BONUS = 1.2999999523162842;
-const SHADOW_ATK = 1.2;
-const SHADOW_DEF = 0.83333331;
+const MATCHUP_SCHEMA_VERSION = 2;
+const RANKING_SCHEMA_VERSION = 1;
+const MATRIX_VERSION = "live-worker-v1";
+const DEFAULT_PROFILE = "default";
+const RANK1_PROFILE = "rank1";
+const statsCache = new Map();
+const movesCache = new Map();
+
+const args = new Set(process.argv.slice(2));
+const limitArg = process.argv.find(arg => arg.startsWith("--limit="));
+const limit = limitArg ? Math.max(1, Number(limitArg.split("=")[1] || 0)) : 0;
+const includeAllShieldStates = args.has("--all-shield-states");
+const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
+const profileFilter = profilesArg
+  ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
+  : null;
 
 const cpMultipliers = [
   [1,.094],[1.5,.135137432],[2,.16639787],[2.5,.192650919],[3,.21573247],[3.5,.236572661],
@@ -26,44 +40,143 @@ const cpMultipliers = [
   [40,.79030001],[40.5,.79280395],[41,.79530001],[41.5,.7978039],[42,.8003],[42.5,.8028039],
   [43,.8053],[43.5,.8078039],[44,.81029999],[44.5,.8128039],[45,.81529999],[45.5,.8178039],
   [46,.82029999],[46.5,.8228039],[47,.82529999],[47.5,.8278039],[48,.83029999],[48.5,.8328039],
-  [49,.83529999],[49.5,.8378039],[50,.84029999],[50.5,.8428039],[51,.84530001]
+  [49,.83529999],[49.5,.8378039],[50,.84029999],[50.5,.8428039],[51,.84529999]
 ];
 
-const strong = {
-  bug:["dark","grass","psychic"], dark:["ghost","psychic"], dragon:["dragon"], electric:["flying","water"],
-  fairy:["dark","dragon","fighting"], fighting:["dark","ice","normal","rock","steel"], fire:["bug","grass","ice","steel"],
-  flying:["bug","fighting","grass"], ghost:["ghost","psychic"], grass:["ground","rock","water"], ground:["electric","fire","poison","rock","steel"],
-  ice:["dragon","flying","grass","ground"], normal:[], poison:["fairy","grass"], psychic:["fighting","poison"], rock:["bug","fire","flying","ice"],
-  steel:["fairy","ice","rock"], water:["fire","ground","rock"]
-};
-const weak = {
-  bug:["fairy","fighting","fire","flying","ghost","poison","steel"], dark:["dark","fairy","fighting"], dragon:["steel"],
-  electric:["dragon","electric","grass"], fairy:["fire","poison","steel"], fighting:["bug","fairy","flying","poison","psychic"],
-  fire:["dragon","fire","rock","water"], flying:["electric","rock","steel"], ghost:["dark"], grass:["bug","dragon","fire","flying","grass","poison","steel"],
-  ground:["bug","grass"], ice:["fire","ice","steel","water"], normal:["rock","steel"], poison:["ghost","ground","poison","rock"],
-  psychic:["psychic","steel"], rock:["fighting","ground","steel"], steel:["electric","fire","steel","water"], water:["dragon","grass","water"]
-};
-const immune = {
-  dragon:["fairy"], electric:["ground"], fighting:["ghost"], ghost:["normal"], normal:["ghost"], poison:["steel"], psychic:["dark"], ground:["flying"]
-};
+function readJson(relativePath) {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
+}
 
-function readGlobalScript(file, globalName) {
-  const code = fs.readFileSync(path.join(ROOT, file), "utf8");
+function readWindowGlobal(relativePath, globalName) {
+  const code = fs.readFileSync(path.join(ROOT, relativePath), "utf8");
   const context = { window: {}, console };
   vm.createContext(context);
-  vm.runInContext(code, context, { filename: file });
-  return context.window[globalName] || context[globalName];
+  vm.runInContext(code, context, { filename: relativePath, timeout: 30000 });
+  return context.window[globalName];
+}
+
+function extractLiveWorkerSource() {
+  const html = fs.readFileSync(path.join(ROOT, "PogoPvp.html"), "utf8");
+  const match = html.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/);
+  if (!match) throw new Error("Could not find simulator script in PogoPvp.html.");
+  const simulatorScript = match[1].replace(/\binit\(\);\s*$/, "");
+  const context = {
+    console,
+    window: {},
+    document: {},
+    indexedDB: null,
+    Blob: function Blob() {},
+    URL: { createObjectURL: () => "" },
+    Worker: function Worker() {},
+    setTimeout,
+    clearTimeout,
+    result: ""
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    `${simulatorScript}\nresult = buildMatrixComputeWorkerSource();`,
+    context,
+    { filename: "PogoPvp.html", timeout: 30000 }
+  );
+  if (!context.result || typeof context.result !== "string") {
+    throw new Error("Live matrix worker source was not generated.");
+  }
+  return context.result;
+}
+
+function createWorkerAdapter(source) {
+  const posted = [];
+  const context = {
+    console,
+    setTimeout,
+    clearTimeout,
+    self: {
+      postMessage(message) {
+        posted.push(message);
+      }
+    }
+  };
+  vm.createContext(context);
+  vm.runInContext(source, context, { filename: "matrix-worker.js", timeout: 30000 });
+  if (!context.self || typeof context.self.onmessage !== "function") {
+    throw new Error("Live matrix worker did not expose an onmessage handler.");
+  }
+  return {
+    simulate(payload) {
+      posted.length = 0;
+      context.self.onmessage({ data: payload });
+      const response = posted.shift();
+      if (!response) throw new Error(`No worker response for ${payload.key}.`);
+      if (response.error) throw new Error(`${payload.key}: ${response.error}`);
+      if (response.type !== "matrixCellResult") throw new Error(`${payload.key}: unexpected worker response.`);
+      return response.result;
+    }
+  };
+}
+
+function normalizeMove(move) {
+  return {
+    id: move.moveId,
+    name: move.name || move.moveId,
+    type: move.type,
+    power: Number(move.power || 0),
+    abbreviation: move.abbreviation || "",
+    energyGain: Number(move.energyGain || 0),
+    energyCost: Math.max(0, Number(move.energy || 0)),
+    turns: Number(move.turns || Math.max(1, Math.round(Number(move.cooldown || 500) / 500))),
+    buffs: move.buffs || null,
+    buffsSelf: move.buffsSelf || null,
+    buffsOpponent: move.buffsOpponent || null,
+    buffTarget: move.buffTarget || null,
+    buffApplyChance: Number(move.buffApplyChance ?? 0)
+  };
+}
+
+function normalizePokemon(p, moveMap) {
+  return {
+    id: p.speciesId,
+    name: p.speciesName,
+    dex: p.dex || 0,
+    released: p.released !== false,
+    types: (p.types || []).filter(type => type && type !== "none"),
+    atk: Number(p.baseStats.atk || 100),
+    def: Number(p.baseStats.def || 100),
+    hp: Number(p.baseStats.hp || 100),
+    defaultIVs: p.defaultIVs || {},
+    fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
+    charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+    eliteMoves: p.eliteMoves || [],
+    tags: p.tags || []
+  };
+}
+
+function isShadow(p) {
+  return p.id.endsWith("_shadow") || p.id.includes("_shadow_");
 }
 
 function pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm) {
   const attack = (p.atk + ivAtk) * cpm;
   const defense = (p.def + ivDef) * cpm;
-  const hp = Math.max(10, Math.floor((p.hp + ivHp) * cpm));
-  const cp = Math.max(10, Math.floor((p.atk + ivAtk) * Math.sqrt(p.def + ivDef) * Math.sqrt(p.hp + ivHp) * cpm * cpm / 10));
-  return { level, cp, attack, defense, hp, ivAtk, ivDef, ivHp, statProduct: attack * defense * hp };
+  const hp = Math.floor((p.hp + ivHp) * cpm);
+  const cp = Math.max(10, Math.floor(attack * Math.sqrt(defense) * Math.sqrt(hp) / 10));
+  return {
+    level,
+    cp,
+    ivAtk,
+    ivDef,
+    ivHp,
+    attack,
+    defense,
+    hp,
+    statProduct: attack * defense * hp
+  };
 }
 
-function bestStatsForIvs(p, ivAtk, ivDef, ivHp) {
+function defaultStats(p) {
+  const defaults = p.defaultIVs && p.defaultIVs.cp1500 ? p.defaultIVs.cp1500 : null;
+  const ivAtk = defaults ? defaults[1] : 0;
+  const ivDef = defaults ? defaults[2] : 15;
+  const ivHp = defaults ? defaults[3] : 15;
   let best = null;
   for (const [level, cpm] of cpMultipliers) {
     const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
@@ -75,171 +188,363 @@ function bestStatsForIvs(p, ivAtk, ivDef, ivHp) {
 
 function rank1Stats(p) {
   let best = null;
+  let rank = 0;
   for (let atk = 0; atk <= 15; atk++) {
     for (let def = 0; def <= 15; def++) {
       for (let hp = 0; hp <= 15; hp++) {
-        const stats = bestStatsForIvs(p, atk, def, hp);
-        if (!best || stats.statProduct > best.statProduct) best = stats;
+        let bestForIvs = null;
+        for (const [level, cpm] of cpMultipliers) {
+          const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
+          if (stats.cp <= CP_CAP) bestForIvs = stats;
+          else break;
+        }
+        if (!bestForIvs) bestForIvs = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
+        if (!best || bestForIvs.statProduct > best.statProduct) {
+          best = bestForIvs;
+          rank = 1;
+        }
       }
     }
   }
-  return best;
-}
-
-function defaultStats(p) {
-  const defaults = p.defaultIVs && p.defaultIVs.cp1500 ? p.defaultIVs.cp1500 : null;
-  return bestStatsForIvs(p, defaults ? defaults[1] : 0, defaults ? defaults[2] : 15, defaults ? defaults[3] : 15);
-}
-
-function effectiveness(moveType, defenderTypes) {
-  return defenderTypes.reduce((total, type) => {
-    if ((strong[moveType] || []).includes(type)) total *= 1.6;
-    if ((weak[moveType] || []).includes(type)) total *= 0.625;
-    if ((immune[moveType] || []).includes(type)) total *= 0.625;
-    return total;
-  }, 1);
-}
-
-function moveDamage(attacker, defender, move) {
-  if (!move || !move.power) return 1;
-  const stab = attacker.types.includes(move.type) ? 1.2 : 1;
-  const shadowAtk = attacker.id.includes("shadow") ? SHADOW_ATK : 1;
-  const shadowDef = defender.id.includes("shadow") ? SHADOW_DEF : 1;
-  const raw = move.power * attacker.stats.default.attack * shadowAtk * DAMAGE_BONUS * 0.5 / (defender.stats.default.defense * shadowDef) * stab * effectiveness(move.type, defender.types);
-  return Math.max(1, Math.floor(raw) + 1);
-}
-
-function fastScore(move, p) {
-  if (!move) return 0;
-  const turns = Math.max(1, move.turns || 1);
-  const stab = p.types.includes(move.type) ? 1.2 : 1;
-  return (move.power || 0) * stab / turns + (move.energyGain || 0) / turns * 1.8;
-}
-
-function chargedScore(move, p) {
-  if (!move) return 0;
-  const cost = Math.max(1, move.energy || 1);
-  const stab = p.types.includes(move.type) ? 1.2 : 1;
-  return (move.power || 0) * stab / cost;
+  return { ...best, rank };
 }
 
 function standardMovesetFor(p, standardMovesets) {
-  return standardMovesets[p.id] || standardMovesets[p.id.replace(/_shadow$/, "")] || null;
+  if (standardMovesets[p.id]) return standardMovesets[p.id];
+  const baseId = p.id.replace(/_shadow(_|$)/, "_").replace(/_shadow$/, "");
+  return standardMovesets[baseId] || null;
+}
+
+function fastMoveScore(move) {
+  return (move.energyGain * 2.2) + move.power;
+}
+
+function chargedMoveScore(move) {
+  const cost = Math.max(1, move.energyCost || 100);
+  const dpe = (move.power || 0) / cost;
+  const baitBonus = cost <= 40 ? 8 : 0;
+  const pressureBonus = move.power >= 90 ? 10 : 0;
+  return (dpe * 32) + baitBonus + pressureBonus;
 }
 
 function selectMoves(p, moveMap, standardMovesets) {
+  if (movesCache.has(p.id)) return movesCache.get(p.id);
   const standard = standardMovesetFor(p, standardMovesets);
-  const fastId = standard && p.fast.includes(standard.fast)
-    ? standard.fast
-    : [...p.fast].sort((a, b) => fastScore(moveMap[b], p) - fastScore(moveMap[a], p))[0];
-  const chargedIds = standard
-    ? (standard.charged || []).filter(id => p.charged.includes(id)).slice(0, 2)
+  const fast = standard && p.fast.includes(standard.fast)
+    ? moveMap.get(standard.fast)
+    : p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b) - fastMoveScore(a))[0];
+  const standardCharged = standard
+    ? (standard.charged || []).filter(id => p.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean)
     : [];
-  while (chargedIds.length < 2) {
-    const next = [...p.charged]
-      .filter(id => !chargedIds.includes(id))
-      .sort((a, b) => chargedScore(moveMap[b], p) - chargedScore(moveMap[a], p))[0];
-    if (!next) break;
-    chargedIds.push(next);
-  }
-  return { fast: fastId, charged: chargedIds };
+  const charged = standardCharged.length
+    ? standardCharged.slice(0, 2)
+    : p.charged.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => chargedMoveScore(b) - chargedMoveScore(a)).slice(0, 2);
+  const result = { fast, charged };
+  movesCache.set(p.id, result);
+  return result;
 }
 
-function signalMatchupScore(attacker, defender) {
-  const chargedDamage = attacker.moves.charged
-    .map(id => moveDamage(attacker, defender, attacker.moveMap[id]))
-    .sort((a, b) => b - a)[0] || 1;
-  const fastDamage = moveDamage(attacker, defender, attacker.moveMap[attacker.moves.fast]);
-  const hpPressure = chargedDamage / Math.max(1, defender.stats.default.hp);
-  const fastPressure = fastDamage / Math.max(1, defender.stats.default.hp);
-  const bulkEdge = attacker.stats.default.statProduct / Math.max(1, defender.stats.default.statProduct);
-  return Math.round(500 + (hpPressure - 0.35) * 220 + (fastPressure - 0.025) * 850 + (bulkEdge - 1) * 130);
+function cloneForMatrix(value) {
+  return value ? JSON.parse(JSON.stringify(value)) : null;
+}
+
+function createCombatant(p, trainer, profile, moveMap, standardMovesets) {
+  const statsKey = `${profile}:${p.id}`;
+  let stats = statsCache.get(statsKey);
+  if (!stats) {
+    stats = profile === RANK1_PROFILE ? rank1Stats(p) : defaultStats(p);
+    statsCache.set(statsKey, stats);
+  }
+  const moves = selectMoves(p, moveMap, standardMovesets);
+  if (!moves.fast || !moves.charged.length) {
+    throw new Error(`${p.id} has no usable default moves.`);
+  }
+  return {
+    trainer,
+    p: cloneForMatrix(p),
+    fast: cloneForMatrix(moves.fast),
+    charged: [cloneForMatrix(moves.charged[0]), cloneForMatrix(moves.charged[1] || null)],
+    level: stats.level,
+    cp: stats.cp,
+    ivAtk: stats.ivAtk,
+    ivDef: stats.ivDef,
+    ivHp: stats.ivHp,
+    rank: profile === RANK1_PROFILE ? 1 : null,
+    rankPercent: profile === RANK1_PROFILE ? 100 : null,
+    statProduct: Math.round(stats.statProduct),
+    maxHp: stats.hp,
+    hp: stats.hp,
+    energy: 0,
+    shields: 1,
+    baiting: "selective",
+    shieldMode: "always",
+    chargedTaken: 0,
+    attack: stats.attack,
+    defense: stats.defense,
+    attackStage: 0,
+    defenseStage: 0,
+    lastFastStart: null,
+    shadowAtkMult: isShadow(p) ? 1.2 : 1,
+    shadowDefMult: isShadow(p) ? 0.83333331 : 1
+  };
+}
+
+function createBattleConfig(a, b, profile, moveMap, standardMovesets) {
+  return {
+    left: createCombatant(a, "A", profile, moveMap, standardMovesets),
+    right: createCombatant(b, "B", profile, moveMap, standardMovesets),
+    startEnergyA: 0,
+    startEnergyB: 0
+  };
+}
+
+function compactResult(result, aId, bId) {
+  const details = result.details || {};
+  const winnerSide = details.winnerEdge > 0 ? "A" : details.winnerEdge < 0 ? "B" : "tie";
+  return {
+    score: Math.round(Number(result.score || 500)),
+    winnerSide,
+    winnerId: winnerSide === "A" ? aId : winnerSide === "B" ? bId : null,
+    hpRatioA: Number((details.aHpRatio || 0).toFixed(4)),
+    hpRatioB: Number((details.bHpRatio || 0).toFixed(4)),
+    winnerEdge: Number(details.winnerEdge || 0),
+    hpEdge: Number(details.hpEdge || 0),
+    energyEdge: Number(details.energyEdge || 0),
+    shieldEdge: Number(details.shieldEdge || 0),
+    readyEdge: Number(details.readyEdge || 0),
+    dangerEdge: Number(details.dangerEdge || 0),
+    closingCostEdge: Number(details.closingCostEdge || 0),
+    farmPressureEdge: Number(details.farmPressureEdge || 0),
+    outpacePressureEdge: Number(details.outpacePressureEdge || 0)
+  };
+}
+
+function ensureDir(relativePath) {
+  fs.mkdirSync(path.join(ROOT, relativePath), { recursive: true });
+}
+
+function writeJson(relativePath, value) {
+  const file = path.join(ROOT, relativePath);
+  ensureDir(path.dirname(relativePath));
+  fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  return fs.statSync(file).size;
+}
+
+function createRankingAggregator(pool, profiles, scenarios) {
+  const entries = new Map();
+  for (const profile of profiles) {
+    for (const p of pool) {
+      entries.set(`${profile}:${p.id}`, {
+        id: p.id,
+        name: p.name,
+        profile,
+        scoreTotal: 0,
+        matchups: 0,
+        wins: 0,
+        losses: 0,
+        ties: 0,
+        shieldStates: Object.fromEntries(scenarios.map(([a, b]) => [`${a}-${b}`, {
+          scoreTotal: 0,
+          matchups: 0,
+          wins: 0,
+          losses: 0,
+          ties: 0
+        }]))
+      });
+    }
+  }
+  return entries;
+}
+
+function updateRanking(entries, cell) {
+  const entry = entries.get(`${cell.profile}:${cell.attackerId}`);
+  if (!entry) return;
+  const state = entry.shieldStates[cell.shieldState];
+  entry.scoreTotal += cell.result.score;
+  entry.matchups++;
+  state.scoreTotal += cell.result.score;
+  state.matchups++;
+  if (cell.result.winnerSide === "A") {
+    entry.wins++;
+    state.wins++;
+  } else if (cell.result.winnerSide === "B") {
+    entry.losses++;
+    state.losses++;
+  } else {
+    entry.ties++;
+    state.ties++;
+  }
+}
+
+function finalizeRankings(entries) {
+  const rows = [...entries.values()].map(entry => {
+    const shieldStates = Object.fromEntries(Object.entries(entry.shieldStates).map(([key, value]) => [key, {
+      averageScore: value.matchups ? Math.round(value.scoreTotal / value.matchups) : null,
+      matchups: value.matchups,
+      wins: value.wins,
+      losses: value.losses,
+      ties: value.ties
+    }]));
+    return {
+      id: entry.id,
+      name: entry.name,
+      profile: entry.profile,
+      averageScore: entry.matchups ? Math.round(entry.scoreTotal / entry.matchups) : null,
+      matchups: entry.matchups,
+      wins: entry.wins,
+      losses: entry.losses,
+      ties: entry.ties,
+      winRate: entry.matchups ? Number((entry.wins / entry.matchups).toFixed(4)) : null,
+      shieldStates
+    };
+  }).sort((a, b) =>
+    (b.averageScore || 0) - (a.averageScore || 0) ||
+    (b.winRate || 0) - (a.winRate || 0) ||
+    a.name.localeCompare(b.name) ||
+    a.profile.localeCompare(b.profile)
+  );
+  return rows.map((entry, index) => ({ rank: index + 1, ...entry }));
+}
+
+function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
+  const expectedCells = pool.length * Math.max(0, pool.length - 1) * profiles.length * scenarios.length;
+  if (matchups.cells.length !== expectedCells) {
+    throw new Error(`Expected ${expectedCells} matchup cells, found ${matchups.cells.length}.`);
+  }
+  const rankingKeys = new Set();
+  for (const row of rankings.entries) {
+    const key = `${row.profile}:${row.id}`;
+    if (rankingKeys.has(key)) throw new Error(`Duplicate ranking row: ${key}`);
+    rankingKeys.add(key);
+    if (!Number.isFinite(row.averageScore)) throw new Error(`Ranking row has invalid score: ${key}`);
+  }
+  const expectedRankings = pool.length * profiles.length;
+  if (rankingKeys.size !== expectedRankings) {
+    throw new Error(`Expected ${expectedRankings} ranking rows, found ${rankingKeys.size}.`);
+  }
+  const missingScenario = rankings.entries.find(row =>
+    scenarios.some(([a, b]) => !row.shieldStates[`${a}-${b}`] || row.shieldStates[`${a}-${b}`].matchups !== pool.length - 1)
+  );
+  if (missingScenario) throw new Error(`Ranking row missing shield coverage: ${missingScenario.profile}:${missingScenario.id}`);
 }
 
 function main() {
-  const gm = readGlobalScript("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-  const standardMovesets = readGlobalScript("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
-  const config = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "great-league-meta.json"), "utf8"));
-  const moveMap = Object.fromEntries(gm.moves.map(move => [move.moveId, {
-    id: move.moveId,
-    name: move.name || move.moveId,
-    type: move.type,
-    power: Number(move.power || 0),
-    energy: Math.max(0, Number(move.energy || 0)),
-    energyGain: Number(move.energyGain || 0),
-    turns: Number(move.turns || Math.max(1, Math.round(Number(move.cooldown || 500) / 500)))
-  }]));
-  const pokemonMap = Object.fromEntries(gm.pokemon
+  const started = Date.now();
+  const metaConfig = readJson("data/great-league-meta.json");
+  const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
+  const standardMovesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+  if (!gamemaster || !Array.isArray(gamemaster.moves) || !Array.isArray(gamemaster.pokemon)) {
+    throw new Error("Could not load gamemaster-data.js.");
+  }
+
+  const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
+  const allPokemon = new Map(gamemaster.pokemon
     .filter(p => p && p.speciesId && p.speciesName && p.baseStats)
-    .map(p => [p.speciesId, {
-      id: p.speciesId,
-      name: p.speciesName,
-      dex: p.dex || 0,
-      released: p.released !== false,
-      types: (p.types || []).filter(type => type && type !== "none"),
-      atk: Number(p.baseStats.atk || 100),
-      def: Number(p.baseStats.def || 100),
-      hp: Number(p.baseStats.hp || 100),
-      defaultIVs: p.defaultIVs || {},
-      fast: (p.fastMoves || []).filter(id => moveMap[id]),
-      charged: (p.chargedMoves || []).filter(id => moveMap[id]),
-      eliteMoves: p.eliteMoves || []
-    }]));
-  const pokemon = config.pokemon
-    .map(id => pokemonMap[id] || pokemonMap[id.replace(/_shadow$/, "")])
-    .filter(Boolean)
-    .filter(p => p.released && p.fast.length && p.charged.length)
-    .map(p => {
-      const moves = selectMoves(p, moveMap, standardMovesets);
-      return {
-        id: p.id,
-        name: p.name,
-        dex: p.dex,
-        types: p.types,
-        moves,
-        moveMap,
-        stats: {
-          default: defaultStats(p),
-          rank1: rank1Stats(p)
-        }
-      };
-    });
-  const matchups = [];
-  if (INCLUDE_MATCHUPS) {
-    for (const attacker of pokemon) {
-      for (const defender of pokemon) {
-        if (attacker.id === defender.id) continue;
-        for (const shields of config.shieldScenarios) {
-          const score = Math.max(0, Math.min(1000, signalMatchupScore(attacker, defender)));
-          matchups.push({
-            key: `${attacker.id}>${defender.id}|${shields[0]}-${shields[1]}|default`,
-            attacker: attacker.id,
-            defender: defender.id,
-            ivProfile: "default",
-            shields,
-            score,
-            source: "signal-v1"
+    .map(p => normalizePokemon(p, moveMap))
+    .filter(p => p.fast.length && p.charged.length)
+    .map(p => [p.id, p]));
+
+  const skippedPokemon = metaConfig.pokemon.filter(id => !allPokemon.has(id));
+  let pool = metaConfig.pokemon.map(id => allPokemon.get(id)).filter(Boolean);
+  if (limit) pool = pool.slice(0, limit);
+  const configuredProfiles = metaConfig.ivProfiles && metaConfig.ivProfiles.length
+    ? metaConfig.ivProfiles
+    : [DEFAULT_PROFILE, RANK1_PROFILE];
+  const profiles = (profileFilter || configuredProfiles).filter(profile => [DEFAULT_PROFILE, RANK1_PROFILE].includes(profile));
+  const scenarios = includeAllShieldStates
+    ? metaConfig.shieldScenarios
+    : metaConfig.shieldScenarios.filter(([a, b]) => a === b);
+
+  if (!pool.length) throw new Error("Great League meta pool is empty.");
+  if (!profiles.length) throw new Error("No valid IV profiles selected.");
+  if (!scenarios.length) throw new Error("No shield scenarios selected.");
+
+  console.log(`Loading live simulator matrix worker...`);
+  const adapter = createWorkerAdapter(extractLiveWorkerSource());
+  const total = pool.length * Math.max(0, pool.length - 1) * profiles.length * scenarios.length;
+  console.log(`Generating Great League ranking: ${pool.length} Pokemon, ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} cells.`);
+
+  const cells = [];
+  const rankingEntries = createRankingAggregator(pool, profiles, scenarios);
+  let done = 0;
+  let seq = 0;
+
+  for (const profile of profiles) {
+    for (const a of pool) {
+      for (const b of pool) {
+        if (a.id === b.id) continue;
+        const config = createBattleConfig(a, b, profile, moveMap, standardMovesets);
+        for (const [aShields, bShields] of scenarios) {
+          const shieldState = `${aShields}-${bShields}`;
+          const key = `${MATRIX_VERSION}|${profile}|${a.id}>${b.id}|${shieldState}`;
+          const workerResult = adapter.simulate({
+            id: ++seq,
+            source: "offline-ranking",
+            key,
+            signature: MATRIX_VERSION,
+            aShields,
+            bShields,
+            includeSwing: false,
+            config
           });
+          const cell = {
+            key,
+            profile,
+            attackerId: a.id,
+            defenderId: b.id,
+            attackerName: a.name,
+            defenderName: b.name,
+            shieldState,
+            aShields,
+            bShields,
+            result: compactResult(workerResult, a.id, b.id)
+          };
+          cells.push(cell);
+          updateRanking(rankingEntries, cell);
+          done++;
+          if (done % 1000 === 0 || done === total) {
+            const pct = total ? Math.round((done / total) * 1000) / 10 : 100;
+            console.log(`  ${done}/${total} cells (${pct}%)`);
+          }
         }
       }
     }
   }
-  const output = {
-    schemaVersion: 1,
-    league: config.league,
-    cpCap: config.cpCap,
-    status: INCLUDE_MATCHUPS ? "signal-precomputed" : "roster-precomputed",
+
+  const metadata = {
     generatedAt: new Date().toISOString(),
-    source: {
-      gamemaster: "gamemaster-data.js",
-      movesets: "pvpoke-default-movesets.js",
-      metaConfig: "data/great-league-meta.json"
-    },
-    pokemon: pokemon.map(({ moveMap: _moveMap, ...p }) => p),
-    matchups
+    generator: "tools/build-great-league-meta-database.js",
+    simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
+    matrixVersion: MATRIX_VERSION,
+    cpCap: CP_CAP,
+    configuredPokemonCount: metaConfig.pokemon.length,
+    pokemonCount: pool.length,
+    skippedPokemon,
+    profiles,
+    shieldScenarios: scenarios,
+    allShieldStates: includeAllShieldStates,
+    cells: cells.length
   };
-  fs.writeFileSync(path.join(ROOT, "data", "great-league-matchups.json"), JSON.stringify(output, null, 2) + "\n");
-  console.log(`Wrote data/great-league-matchups.json (${pokemon.length} Pokemon, ${matchups.length} matchup cells).`);
+  const rankings = {
+    schemaVersion: RANKING_SCHEMA_VERSION,
+    league: "great",
+    metadata,
+    entries: finalizeRankings(rankingEntries)
+  };
+  const matchups = {
+    schemaVersion: MATCHUP_SCHEMA_VERSION,
+    league: "great",
+    metadata,
+    cells
+  };
+
+  validateOutput({ rankings, matchups, pool, profiles, scenarios });
+  const rankingSize = writeJson("data/great-league-rankings.json", rankings);
+  const matchupSize = writeJson("data/great-league-matchups.json", matchups);
+  const elapsed = Math.round((Date.now() - started) / 1000);
+  console.log(`Wrote data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
+  console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
+  console.log(`Done in ${elapsed}s.`);
 }
 
 main();

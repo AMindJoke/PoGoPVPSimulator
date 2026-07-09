@@ -28,3 +28,17 @@ The simulator uses a gamemaster stored in `gamemaster-data.js`.
 ```
 
 This writes `pvpoke-default-movesets.js`, a lightweight local `speciesId -> moveset` map.
+
+## Offline Great League data
+
+Generate the offline Great League ranking and matchup dataset with:
+
+```powershell
+npm run generate:great-league-ranking
+```
+
+The default build uses Rank 1 and default IV profiles for the 0-0, 1-1, and 2-2 shield states. To generate every configured shield state, run:
+
+```powershell
+npm run generate:great-league-ranking:full
+```
