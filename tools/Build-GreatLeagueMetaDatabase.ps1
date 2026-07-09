@@ -5,7 +5,9 @@ param(
   [int]$Limit = 0,
   [string]$Profiles = "",
   [string]$Opponents = "",
-  [string]$RankingModel = ""
+  [string]$RankingModel = "",
+  [switch]$SplitMatchups,
+  [switch]$FullOutput
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,6 +39,12 @@ if ($Opponents) {
 }
 if ($RankingModel) {
   $argsList += "--ranking-model=$RankingModel"
+}
+if ($SplitMatchups) {
+  $argsList += "--split-matchups"
+}
+if ($FullOutput) {
+  $argsList += "--full-output"
 }
 
 Push-Location $root

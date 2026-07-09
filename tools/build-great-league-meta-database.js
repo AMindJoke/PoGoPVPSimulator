@@ -42,6 +42,8 @@ const allPokemonRanking = args.has("--all-pokemon");
 const rankingOnly = args.has("--ranking-only");
 const chunkOutput = args.has("--chunk-output");
 const mergeChunks = args.has("--merge-chunks");
+const splitMatchups = args.has("--split-matchups");
+const fullOutput = args.has("--full-output");
 const opponentPoolArg = process.argv.find(arg => arg.startsWith("--opponents="));
 const opponentPoolMode = opponentPoolArg ? opponentPoolArg.split("=")[1] : allPokemonRanking ? "meta" : "same";
 const rankingModelArg = process.argv.find(arg => arg.startsWith("--ranking-model="));
@@ -429,6 +431,78 @@ function writeJson(relativePath, value) {
   return fs.statSync(file).size;
 }
 
+function shieldStateSlug(shieldState) {
+  return shieldState.replace("-", "v");
+}
+
+function compactMatchupSummary(cell) {
+  return {
+    opponentId: cell.defenderId,
+    opponentName: cell.defenderName,
+    shieldState: cell.shieldState,
+    winner: cell.result.winnerSide,
+    winnerId: cell.result.winnerId,
+    score: cell.result.score,
+    remainingHpRatio: {
+      pokemon: cell.result.hpRatioA,
+      opponent: cell.result.hpRatioB
+    },
+    edges: {
+      winner: cell.result.winnerEdge,
+      hp: cell.result.hpEdge,
+      energy: cell.result.energyEdge,
+      shields: cell.result.shieldEdge,
+      ready: cell.result.readyEdge,
+      danger: cell.result.dangerEdge,
+      closingCost: cell.result.closingCostEdge,
+      farmPressure: cell.result.farmPressureEdge,
+      outpacePressure: cell.result.outpacePressureEdge
+    }
+  };
+}
+
+function writeSplitMatchupFile({ profile, pokemon, shieldState, rows, metadata }) {
+  const profileSegment = metadata.profiles.length > 1 ? `${profile}-` : "";
+  const relativePath = path.join(
+    "data",
+    "matchups",
+    "great-league",
+    shieldStateSlug(shieldState),
+    `${profileSegment}${pokemon.id}.json`
+  );
+  return writeJson(relativePath, {
+    schemaVersion: MATCHUP_SCHEMA_VERSION,
+    league: "great",
+    generatedAt: metadata.generatedAt,
+    matrixVersion: metadata.matrixVersion,
+    profile,
+    pokemonId: pokemon.id,
+    pokemonName: pokemon.name,
+    shieldState,
+    opponentCount: rows.length,
+    matchups: rows
+  });
+}
+
+function writeSplitMatchupIndex(metadata) {
+  return writeJson(path.join("data", "matchups", "great-league", "index.json"), {
+    schemaVersion: MATCHUP_SCHEMA_VERSION,
+    league: "great",
+    generatedAt: metadata.generatedAt,
+    matrixVersion: metadata.matrixVersion,
+    totalPokemon: metadata.fullCandidateCount,
+    generatedPokemon: metadata.pokemonCount,
+    opponentPokemonCount: metadata.opponentPokemonCount,
+    profiles: metadata.profiles,
+    shieldStates: metadata.shieldScenarios.map(([a, b]) => `${a}-${b}`),
+    fileStructure: "data/matchups/great-league/<shieldState>/<pokemonId>.json",
+    notes: [
+      "Each file is from the named Pokemon's perspective as Pokemon A.",
+      "A vs B is simulated directly; reverse rows are not inferred."
+    ]
+  });
+}
+
 function createRankingAggregator(pool, profiles, scenarios) {
   const entries = new Map();
   for (const profile of profiles) {
@@ -636,7 +710,9 @@ function compactRankingEntries(rankings, moveMap, standardMovesets, allPokemon) 
   });
 }
 
-function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
+function validateOutput({ rankings, matchups, pool, opponentPool, profiles, scenarios, selfMatchupsSkipped }) {
+  const expectedMatchupsPerRow = (opponentPool.length - (selfMatchupsSkipped ? 1 : 0)) * scenarios.length;
+  const expectedPerShieldState = opponentPool.length - (selfMatchupsSkipped ? 1 : 0);
   if (!matchups) {
     const rankingKeys = new Set();
     for (const row of rankings.entries) {
@@ -644,6 +720,15 @@ function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
       if (rankingKeys.has(key)) throw new Error(`Duplicate ranking row: ${key}`);
       rankingKeys.add(key);
       if (!Number.isFinite(row.averageScore)) throw new Error(`Ranking row has invalid score: ${key}`);
+      if (row.matchups !== expectedMatchupsPerRow) {
+        throw new Error(`Ranking row has incomplete coverage: ${key} has ${row.matchups}, expected ${expectedMatchupsPerRow}.`);
+      }
+      for (const [a, b] of scenarios) {
+        const state = row.shieldStates && row.shieldStates[`${a}-${b}`];
+        if (!state || state.matchups !== expectedPerShieldState) {
+          throw new Error(`Ranking row missing shield coverage: ${key} ${a}-${b}.`);
+        }
+      }
     }
     const expectedRankings = pool.length * profiles.length;
     if (rankingKeys.size !== expectedRankings) {
@@ -651,7 +736,7 @@ function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
     }
     return;
   }
-  const expectedCells = pool.length * Math.max(0, pool.length - 1) * profiles.length * scenarios.length;
+  const expectedCells = pool.length * expectedPerShieldState * profiles.length * scenarios.length;
   if (matchups.cells.length !== expectedCells) {
     throw new Error(`Expected ${expectedCells} matchup cells, found ${matchups.cells.length}.`);
   }
@@ -667,7 +752,7 @@ function validateOutput({ rankings, matchups, pool, profiles, scenarios }) {
     throw new Error(`Expected ${expectedRankings} ranking rows, found ${rankingKeys.size}.`);
   }
   const missingScenario = rankings.entries.find(row =>
-    scenarios.some(([a, b]) => !row.shieldStates[`${a}-${b}`] || row.shieldStates[`${a}-${b}`].matchups !== pool.length - 1)
+    scenarios.some(([a, b]) => !row.shieldStates[`${a}-${b}`] || row.shieldStates[`${a}-${b}`].matchups !== expectedPerShieldState)
   );
   if (missingScenario) throw new Error(`Ranking row missing shield coverage: ${missingScenario.profile}:${missingScenario.id}`);
 }
@@ -722,6 +807,7 @@ function main() {
   ), 0);
   console.log(`Generating Great League ranking: ${pool.length} candidates, ${opponentPool.length} opponents (${opponentPoolMode}), ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} base cells plus category sims.`);
 
+  const generatedAt = new Date().toISOString();
   const cells = [];
   const rankingAggregator = createRankingAggregator(pool, profiles, scenarios);
   let done = 0;
@@ -734,6 +820,9 @@ function main() {
   for (const profile of profiles) {
     for (const a of pool) {
       const attackerMoveset = moveIdsFor(a, moveMap, standardMovesets);
+      const splitRows = splitMatchups
+        ? Object.fromEntries(scenarios.map(([aShields, bShields]) => [`${aShields}-${bShields}`, []]))
+        : null;
       for (const b of opponentPool) {
         if (selfMatchupsSkipped && a.id === b.id) continue;
         const config = createBattleConfig(a, b, profile, moveMap, standardMovesets);
@@ -763,7 +852,8 @@ function main() {
             attackerMoveset,
             result: compactResult(workerResult, a.id, b.id)
           };
-          if (!rankingOnly) cells.push(cell);
+          if (splitRows) splitRows[shieldState].push(compactMatchupSummary(cell));
+          else if (!rankingOnly) cells.push(cell);
           updateRanking(rankingAggregator, cell);
           done++;
           if (done % 1000 === 0 || done === totalWithCategories) {
@@ -809,11 +899,24 @@ function main() {
           }
         }
       }
+      if (splitRows) {
+        for (const [shieldState, rows] of Object.entries(splitRows)) {
+          writeSplitMatchupFile({ profile, pokemon: a, shieldState, rows, metadata: {
+            generatedAt,
+            matrixVersion: MATRIX_VERSION,
+            profiles,
+            fullCandidateCount,
+            pokemonCount: pool.length,
+            opponentPokemonCount: opponentPool.length,
+            shieldScenarios: scenarios
+          }});
+        }
+      }
     }
   }
 
   const metadata = {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
     matrixVersion: MATRIX_VERSION,
@@ -830,6 +933,7 @@ function main() {
     shieldScenarios: scenarios,
     allShieldStates: includeAllShieldStates,
     rankingOnly,
+    splitMatchups,
     cells: done,
     baseCells: total,
     rankingModel: {
@@ -863,21 +967,28 @@ function main() {
     metadata,
     entries: compactRankingEntries({ entries: finalizedRankingEntries }, moveMap, standardMovesets, allPokemon)
   };
-  const matchups = rankingOnly ? null : {
+  const matchups = rankingOnly || splitMatchups ? null : {
     schemaVersion: MATCHUP_SCHEMA_VERSION,
     league: "great",
     metadata,
     cells
   };
 
-  validateOutput({ rankings, matchups, pool, profiles, scenarios });
+  validateOutput({ rankings, matchups, pool, opponentPool, profiles, scenarios, selfMatchupsSkipped });
   const rankingPath = chunkOutput ? `data/ranking-chunks/great-league-rankings-${String(offset).padStart(4, "0")}.json` : "data/great-league-rankings.json";
   const rankingSize = writeJson(rankingPath, rankings);
+  let fullRankingSize = 0;
+  if (fullOutput && !chunkOutput) {
+    fullRankingSize = writeJson(path.join("data", "rankings", "great-league-full.json"), rankings);
+  }
   if (!chunkOutput) writeRankingScript(rankings);
+  const splitIndexSize = splitMatchups ? writeSplitMatchupIndex(metadata) : 0;
   const matchupSize = matchups ? writeJson("data/great-league-matchups.json", matchups) : 0;
   const elapsed = Math.round((Date.now() - started) / 1000);
   console.log(`Wrote ${rankingPath} (${rankingSize.toLocaleString()} bytes).`);
+  if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);
   if (!chunkOutput) console.log(`Wrote data/great-league-rankings.js.`);
+  if (splitIndexSize) console.log(`Wrote data/matchups/great-league/index.json (${splitIndexSize.toLocaleString()} bytes).`);
   if (matchups) console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
   savePersistentRank1Stats();
   console.log(`Done in ${elapsed}s.`);
