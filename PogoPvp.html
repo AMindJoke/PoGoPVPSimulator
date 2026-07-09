@@ -4297,6 +4297,7 @@
     const shieldMatrixComputeTimeouts = new Map();
     const metaMatchupCacheVersion = "meta-v1";
     const metaRankingDataUrl = "data/great-league-rankings.json";
+    const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
     const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
     let metaBuildQueue = [];
@@ -4871,9 +4872,22 @@
         metaRankingLoadError = "Offline ranking JSON cannot be loaded in this browser context.";
         return;
       }
+      const controller = typeof AbortController === "function" ? new AbortController() : null;
+      const timeout = setTimeout(() => {
+        if (controller) controller.abort();
+        if (!controller && metaRankingLoading) {
+          metaRankingLoadError = "Offline ranking JSON timed out.";
+          metaRankingLoading = false;
+          metaRankingLoadPromise = null;
+          renderMetaRankings();
+        }
+      }, 8000);
       metaRankingLoading = true;
       metaRankingLoadError = "";
-      metaRankingLoadPromise = fetch(metaRankingDataUrl, { cache: "no-store" })
+      metaRankingLoadPromise = fetch(metaRankingDataUrl, {
+        cache: "no-store",
+        signal: controller ? controller.signal : undefined
+      })
         .then(response => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
@@ -4883,9 +4897,12 @@
           metaRankingData = data;
         })
         .catch(error => {
-          metaRankingLoadError = error && error.message ? error.message : String(error);
+          metaRankingLoadError = error && error.name === "AbortError"
+            ? "Offline ranking JSON timed out."
+            : error && error.message ? error.message : String(error);
         })
         .finally(() => {
+          clearTimeout(timeout);
           metaRankingLoading = false;
           metaRankingLoadPromise = null;
           renderMetaRankings();
@@ -4965,7 +4982,9 @@
       const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : {};
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
-      return metaRankingData.entries
+      const preferredEntries = metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile);
+      const entries = preferredEntries.length ? preferredEntries : metaRankingData.entries;
+      return entries
         .map(entry => metaOfflineRankingEntry(entry, shieldCount, cellCount))
         .filter(Boolean)
         .filter(entry => !query ||
