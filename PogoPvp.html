@@ -1111,15 +1111,15 @@
     }
     .shield-count-toggle {
       display: inline-grid;
-      grid-template-columns: repeat(3, 42px);
+      grid-template-columns: repeat(3, 74px);
       border: 1px solid #c8d0da;
       border-radius: 999px;
       overflow: hidden;
       background: rgba(255,255,255,.75);
     }
     .shield-count-toggle button {
-      min-height: 32px;
-      padding: 3px 5px;
+      min-height: 46px;
+      padding: 5px 12px;
       border: 0;
       border-radius: 0;
       color: var(--ink);
@@ -1127,7 +1127,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 10px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -1138,17 +1138,28 @@
       box-shadow: none;
     }
     .shield-count-toggle svg {
-      width: 17px;
-      height: 17px;
-      opacity: .72;
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: block;
+      box-sizing: border-box;
+      overflow: hidden;
+      color: #b245c5;
+      opacity: .98;
     }
     .shield-count-toggle strong {
       color: var(--ink);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1;
+      min-width: 12px;
+      text-align: center;
     }
     .shield-count-toggle button.active strong {
       color: white;
+    }
+    .shield-count-toggle button.active svg {
+      color: #d45af0;
+      opacity: 1;
     }
     .energy-panel {
       width: 100%;
@@ -2739,7 +2750,7 @@
       padding: 0;
     }
     body.clarity-ui .shield-count-toggle {
-      grid-template-columns: repeat(3, 38px);
+      grid-template-columns: repeat(3, 74px);
     }
     body.clarity-ui .shield-mode-toggle {
       grid-template-columns: repeat(2, max-content);
@@ -2749,6 +2760,22 @@
       min-height: 30px;
       padding: 4px 8px;
       font-size: 12px;
+    }
+    body.clarity-ui .shield-count-toggle button {
+      min-height: 46px;
+      padding: 5px 12px;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+    body.clarity-ui .shield-count-toggle svg {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+    }
+    body.clarity-ui .shield-count-toggle strong {
+      min-width: 12px;
+      font-size: 14px;
+      text-align: center;
     }
     body.clarity-ui .compact-toggle,
     body.clarity-ui .shield-count-toggle {
@@ -3070,19 +3097,20 @@
         padding: 4px 5px;
       }
       .shield-count-toggle {
-        grid-template-columns: repeat(3, 28px);
+        grid-template-columns: repeat(3, 48px);
       }
       .shield-count-toggle button {
-        min-height: 24px;
-        padding: 2px 3px;
-        gap: 2px;
+        min-height: 33px;
+        padding: 2px 5px;
+        gap: 4px;
       }
       .shield-count-toggle svg {
-        width: 12px;
-        height: 12px;
+        width: 20px;
+        height: 20px;
+        flex-basis: 20px;
       }
       .shield-count-toggle strong {
-        font-size: 10px;
+        font-size: 11px;
       }
       .energy-panel {
         min-width: 0;
@@ -3439,18 +3467,19 @@
         padding: 3px;
       }
       .shield-count-toggle {
-        grid-template-columns: repeat(3, 23px);
+        grid-template-columns: repeat(3, 36px);
       }
       .shield-count-toggle button {
-        min-height: 22px;
-        padding: 1px;
+        min-height: 28px;
+        padding: 1px 2px;
       }
       .shield-count-toggle svg {
-        width: 10px;
-        height: 10px;
+        width: 15px;
+        height: 15px;
+        flex-basis: 15px;
       }
       .shield-count-toggle strong {
-        font-size: 9px;
+        font-size: 10px;
       }
       .energy-panel {
         padding: 0;
@@ -3963,7 +3992,7 @@
     let shieldMatrixPendingSignature = "";
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
-    const shieldMatrixCacheLimit = 360;
+    const shieldMatrixCacheLimit = 900;
     let previewState = {
       active: false,
       originalState: null,
@@ -6245,7 +6274,7 @@
     }
 
     function shieldSvg() {
-      return `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><g fill="currentColor" stroke="rgba(255,255,255,.75)" stroke-width=".55" stroke-linejoin="round"><path opacity=".76" d="M12 2.4 14.5 3.9v2.9L12 8.2 9.5 6.8V3.9L12 2.4Z"/><path opacity=".86" d="M7.4 5.1 9.9 6.5v2.9l-2.5 1.4-2.5-1.4V6.5l2.5-1.4Z"/><path opacity=".92" d="M16.6 5.1 19.1 6.5v2.9l-2.5 1.4-2.5-1.4V6.5l2.5-1.4Z"/><path d="M12 7.8 14.5 9.2v2.9L12 13.6l-2.5-1.5V9.2L12 7.8Z"/><path opacity=".96" d="M5.2 10.2 7.7 11.6v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".9" d="M18.8 10.2 21.3 11.6v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".94" d="M9.7 12.9 12.2 14.3v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".82" d="M14.3 12.9 16.8 14.3v2.9l-2.5 1.4-2.5-1.4v-2.9l2.5-1.4Z"/><path opacity=".7" d="M12 17.2 14.5 18.6v2.9L12 22.9l-2.5-1.4v-2.9l2.5-1.4Z"/></g></svg>`;
+      return `<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><g stroke-linejoin="round"><path d="M16 5.2 25.1 10.5v10.9L16 26.8 6.9 21.5v-11L16 5.2Z" fill="currentColor" stroke="rgba(255,255,255,.72)" stroke-width="1.7"/><path d="M16 10.3 20.6 13v6L16 21.7 11.4 19v-6l4.6-2.7Z" fill="var(--panel)" stroke="rgba(255,255,255,.9)" stroke-width="1.7"/></g></svg>`;
     }
 
     function render() {
@@ -6327,10 +6356,23 @@
     function cachedShieldMatrixCell(signature, aShields, bShields) {
       const key = `${signature}|${aShields}-${bShields}`;
       if (!shieldMatrixCache.has(key)) {
-        shieldMatrixCache.set(key, simulateShieldMatrixCell(aShields, bShields));
+        const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
+        result.swingReady = false;
+        shieldMatrixCache.set(key, result);
         trimShieldMatrixCache();
       }
       return shieldMatrixCache.get(key);
+    }
+
+    function enrichShieldMatrixCell(signature, aShields, bShields) {
+      const key = `${signature}|${aShields}-${bShields}`;
+      const existing = shieldMatrixCache.get(key);
+      if (!existing || existing.swingReady) return false;
+      const enriched = simulateShieldMatrixCell(aShields, bShields, { includeSwing: true });
+      enriched.swingReady = true;
+      shieldMatrixCache.set(key, enriched);
+      trimShieldMatrixCache();
+      return true;
     }
 
     function shieldMatrixReady(signature) {
@@ -6346,26 +6388,47 @@
       if (shieldMatrixPendingSignature === signature) return;
       if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
       shieldMatrixPendingSignature = signature;
-      const cells = [];
+      const currentA = Number($("p1Shields").value || 0);
+      const currentB = Number($("p2Shields").value || 0);
+      const cells = [[currentA, currentB]];
       for (let a = 0; a <= 2; a++) {
-        for (let b = 0; b <= 2; b++) cells.push([a, b]);
+        for (let b = 0; b <= 2; b++) {
+          if (a !== currentA || b !== currentB) cells.push([a, b]);
+        }
       }
+      let phase = "base";
       const step = () => {
         if (timelineReplayIsRunning()) {
           shieldMatrixPendingTimer = setTimeout(step, 160);
           return;
         }
-        const cell = cells.find(([a, b]) => !shieldMatrixCache.has(`${signature}|${a}-${b}`));
+        const cell = phase === "base"
+          ? cells.find(([a, b]) => !shieldMatrixCache.has(`${signature}|${a}-${b}`))
+          : cells.find(([a, b]) => {
+              const result = shieldMatrixCache.get(`${signature}|${a}-${b}`);
+              return result && !result.swingReady;
+            });
         if (!cell) {
+          if (phase === "base") {
+            phase = "swing";
+            if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+              renderShieldMatrix();
+            }
+            shieldMatrixPendingTimer = setTimeout(step, 90);
+            return;
+          }
           shieldMatrixPendingSignature = "";
           shieldMatrixPendingTimer = null;
-          if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
-            renderShieldMatrix();
-          }
+          if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) renderShieldMatrix();
           return;
         }
-        cachedShieldMatrixCell(signature, cell[0], cell[1]);
-        shieldMatrixPendingTimer = setTimeout(step, 0);
+        if (phase === "base") cachedShieldMatrixCell(signature, cell[0], cell[1]);
+        else enrichShieldMatrixCell(signature, cell[0], cell[1]);
+        if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+          if (phase === "base" && shieldMatrixReady(signature)) renderShieldMatrix();
+          if (phase === "swing") renderShieldMatrix();
+        }
+        shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 0 : 30);
       };
       shieldMatrixPendingTimer = setTimeout(step, 40);
     }
