@@ -11,13 +11,18 @@ const RANKING_SCHEMA_VERSION = 2;
 const MATRIX_VERSION = "live-worker-v1";
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
-const RANKING_CATEGORIES = [
+const ROLE_RANKING_CATEGORIES = [
   { key: "lead", label: "Lead", weight: 1.1 },
   { key: "closer", label: "Closer", weight: 1 },
   { key: "switch", label: "Switch", weight: .95 },
   { key: "charger", label: "Charger", weight: .9 },
   { key: "attacker", label: "Attacker", weight: .9 },
   { key: "consistency", label: "Consistency", weight: .85 }
+];
+const EQUAL_SHIELD_RANKING_CATEGORIES = [
+  { key: "closer", label: "0 Shields", weight: 1 },
+  { key: "core", label: "1 Shield", weight: 1 },
+  { key: "lead", label: "2 Shields", weight: 1 }
 ];
 const CATEGORY_WEIGHT_ITERATIONS = 4;
 const ADVANTAGE_TURNS = 6;
@@ -39,6 +44,11 @@ const chunkOutput = args.has("--chunk-output");
 const mergeChunks = args.has("--merge-chunks");
 const opponentPoolArg = process.argv.find(arg => arg.startsWith("--opponents="));
 const opponentPoolMode = opponentPoolArg ? opponentPoolArg.split("=")[1] : allPokemonRanking ? "meta" : "same";
+const rankingModelArg = process.argv.find(arg => arg.startsWith("--ranking-model="));
+const rankingModelMode = rankingModelArg ? rankingModelArg.split("=")[1] : "role";
+const activeRankingCategories = rankingModelMode === "equal-shields"
+  ? EQUAL_SHIELD_RANKING_CATEGORIES
+  : ROLE_RANKING_CATEGORIES;
 const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
 const profileFilter = profilesArg
   ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
@@ -362,7 +372,7 @@ function fastEnergyInTurns(fastMove, turns = ADVANTAGE_TURNS) {
 }
 
 function categoryTemplate() {
-  return Object.fromEntries(RANKING_CATEGORIES.map(category => [category.key, {
+  return Object.fromEntries(activeRankingCategories.map(category => [category.key, {
     label: category.label,
     weight: category.weight,
     scoreTotal: 0,
@@ -463,6 +473,13 @@ function updateCategory(entry, key, cell, moveset) {
 
 function updateBaseCategories(entry, cell, moveset) {
   const [aShields, bShields] = cell.shieldState.split("-").map(Number);
+  if (rankingModelMode === "equal-shields") {
+    if (aShields !== bShields) return;
+    if (aShields === 0) updateCategory(entry, "closer", cell, moveset);
+    if (aShields === 1) updateCategory(entry, "core", cell, moveset);
+    if (aShields === 2) updateCategory(entry, "lead", cell, moveset);
+    return;
+  }
   if (aShields === 2 && bShields === 2) updateCategory(entry, "lead", cell, moveset);
   if (aShields === 0 && bShields === 0) updateCategory(entry, "closer", cell, moveset);
   if (aShields === 0 && bShields === 2) updateCategory(entry, "attacker", cell, moveset);
@@ -558,7 +575,7 @@ function finalizeRankings(entries) {
       ties: value.ties
     }]));
     const categoryScores = {};
-    for (const categoryDef of RANKING_CATEGORIES) {
+    for (const categoryDef of activeRankingCategories) {
       const category = entry.categories[categoryDef.key];
       const weightedAverage = weightedCategoryAverage(category, opponentWeights);
       categoryScores[categoryDef.key] = {
@@ -574,7 +591,7 @@ function finalizeRankings(entries) {
         moveUsage: categoryMoveUsage(category)
       };
     }
-    const weightedCategoryValues = RANKING_CATEGORIES.flatMap(category => {
+    const weightedCategoryValues = activeRankingCategories.flatMap(category => {
       const score = categoryScores[category.key].score;
       return Number.isFinite(score) ? Array(Math.max(1, Math.round(category.weight * 4))).fill(score) : [];
     });
@@ -709,7 +726,7 @@ function main() {
   const rankingAggregator = createRankingAggregator(pool, profiles, scenarios);
   let done = 0;
   let seq = 0;
-  const extraCategoryCellsPerPair = 2;
+  const extraCategoryCellsPerPair = rankingModelMode === "equal-shields" ? 0 : 2;
   const totalWithCategories = total + (profiles.length * pool.reduce((sum, p) => (
     sum + opponentPool.filter(opponent => !selfMatchupsSkipped || opponent.id !== p.id).length
   ), 0) * extraCategoryCellsPerPair);
@@ -755,7 +772,7 @@ function main() {
           }
         }
         const categoryEntry = rankingAggregator.get(`${profile}:${a.id}`);
-        if (categoryEntry) {
+        if (categoryEntry && rankingModelMode !== "equal-shields") {
           const bonusEnergy = fastEnergyInTurns(config.left.fast, ADVANTAGE_TURNS);
           for (const extraCategory of [
             { key: "switch", aShields: 2, bShields: 2 },
@@ -817,17 +834,26 @@ function main() {
     baseCells: total,
     rankingModel: {
       version: 1,
-      categories: RANKING_CATEGORIES,
+      mode: rankingModelMode,
+      categories: activeRankingCategories,
       weighting: "iterative-opponent-strength",
       weightingIterations: CATEGORY_WEIGHT_ITERATIONS,
-      overall: "weighted geometric mean of category scores",
+      overall: rankingModelMode === "equal-shields"
+        ? "weighted geometric mean of equal-shield category scores"
+        : "weighted geometric mean of category scores",
       advantageTurns: ADVANTAGE_TURNS,
-      notes: [
-        "Lead, Closer, Attacker, and Consistency use standard shield-state simulations.",
-        "Switch uses two-shield simulations with starting energy generated by the candidate fast move over the configured advantage turns.",
-        "Charger uses one-shield simulations with the same starting-energy advantage.",
-        "Category scores are weighted by opponent strength before the overall score is calculated."
-      ]
+      notes: rankingModelMode === "equal-shields"
+        ? [
+          "The main ranking simulates every candidate against every eligible opponent.",
+          "Only equal-shield scenarios are used: 0-0, 1-1, and 2-2.",
+          "Category scores are weighted by opponent strength before the overall score is calculated."
+        ]
+        : [
+          "Lead, Closer, Attacker, and Consistency use standard shield-state simulations.",
+          "Switch uses two-shield simulations with starting energy generated by the candidate fast move over the configured advantage turns.",
+          "Charger uses one-shield simulations with the same starting-energy advantage.",
+          "Category scores are weighted by opponent strength before the overall score is calculated."
+        ]
     }
   };
   const finalizedRankingEntries = finalizeRankings(rankingAggregator);

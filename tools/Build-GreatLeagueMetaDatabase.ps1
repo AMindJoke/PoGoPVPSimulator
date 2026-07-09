@@ -4,7 +4,8 @@ param(
   [switch]$RankingOnly,
   [int]$Limit = 0,
   [string]$Profiles = "",
-  [string]$Opponents = ""
+  [string]$Opponents = "",
+  [string]$RankingModel = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,6 +34,9 @@ if ($Profiles) {
 }
 if ($Opponents) {
   $argsList += "--opponents=$Opponents"
+}
+if ($RankingModel) {
+  $argsList += "--ranking-model=$RankingModel"
 }
 
 Push-Location $root

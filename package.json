@@ -2,6 +2,6 @@
   "scripts": {
     "generate:great-league-ranking": "node tools/build-great-league-meta-database.js",
     "generate:great-league-ranking:full": "node tools/build-great-league-meta-database.js --all-shield-states",
-    "generate:great-league-ranking:complete": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --all-shield-states --opponents=meta"
+    "generate:great-league-ranking:complete": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --opponents=all --ranking-model=equal-shields"
   }
 }
