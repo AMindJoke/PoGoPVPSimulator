@@ -6,6 +6,7 @@
   <title>Pokemon GO PvP Simulator</title>
   <script src="gamemaster-data.js"></script>
   <script src="pvpoke-default-movesets.js"></script>
+  <script src="data/great-league-rankings.js"></script>
   <style>
     :root {
       --bg: #e5edf0;
@@ -198,48 +199,6 @@
       width: min(100%, 940px);
       justify-self: center;
     }
-    .meta-hero {
-      max-width: none;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-      gap: 18px;
-      padding: 14px;
-    }
-    .meta-hero h2 {
-      margin: 0 0 6px;
-      font-size: 22px;
-    }
-    .meta-hero p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.35;
-      max-width: 650px;
-    }
-    .meta-status {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(100px, 1fr));
-      gap: 8px;
-      min-width: 340px;
-    }
-    .meta-status-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--soft);
-      padding: 9px;
-      display: grid;
-      gap: 3px;
-    }
-    .meta-status-card span {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-    .meta-status-card strong {
-      font-size: 18px;
-      line-height: 1;
-    }
     .meta-panel {
       max-width: none;
       padding: 12px;
@@ -264,12 +223,6 @@
     .meta-actions input {
       width: 190px;
       min-height: 32px;
-    }
-    .meta-note {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-      margin: 0 0 10px;
     }
     .meta-ranking {
       display: grid;
@@ -3121,16 +3074,8 @@
       .meta-view {
         width: 100%;
       }
-      .meta-hero,
       .meta-panel {
         padding: 8px;
-      }
-      .meta-hero {
-        grid-template-columns: 1fr;
-      }
-      .meta-status {
-        min-width: 0;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .meta-panel-head {
         grid-template-columns: 1fr;
@@ -4205,29 +4150,14 @@
     </div>
 
     <div id="metaView" class="app-view meta-view">
-      <section class="meta-hero">
-        <div>
-          <h2>Great League Meta</h2>
-          <p>Offline Great League ranking generated from matchup simulations across default and Rank 1 IV profiles.</p>
-        </div>
-        <div class="meta-status">
-          <div class="meta-status-card"><span>Meta pool</span><strong id="metaPoolCount">-</strong></div>
-          <div class="meta-status-card"><span>Matchup cells</span><strong id="metaCachedCells">-</strong></div>
-          <div class="meta-status-card"><span>Source</span><strong id="metaEngineStatus">Loading</strong></div>
-          <div class="meta-status-card meta-build-card"><span>Coverage</span><strong id="metaBuildStatus">-</strong></div>
-        </div>
-      </section>
-
       <section class="meta-panel">
         <div class="meta-panel-head">
-          <h2>Rankings</h2>
+          <h2>Great League Meta</h2>
           <div class="meta-actions">
             <input id="metaSearch" type="search" placeholder="Filter meta Pokemon">
-            <button id="metaBuild" type="button">Build offline cache</button>
             <button id="metaRefresh" class="secondary" type="button">Refresh</button>
           </div>
         </div>
-        <p class="meta-note">This ranking loads the precomputed offline dataset first. The browser cache builder remains available as a fallback/testing tool.</p>
         <div id="metaRanking" class="meta-ranking"></div>
       </section>
     </div>
@@ -4304,7 +4234,7 @@
     let metaBuildActive = false;
     let metaBuildTotal = 0;
     let metaBuildDone = 0;
-    let metaRankingData = null;
+    let metaRankingData = window.GREAT_LEAGUE_RANKINGS || null;
     let metaRankingLoading = false;
     let metaRankingLoadError = "";
     let metaRankingLoadPromise = null;
@@ -4489,7 +4419,8 @@
       });
       $("metaSearch").oninput = renderMetaRankings;
       $("metaRefresh").onclick = reloadMetaRankingData;
-      $("metaBuild").onclick = startMetaOfflineBuild;
+      const metaBuildButton = $("metaBuild");
+      if (metaBuildButton) metaBuildButton.onclick = startMetaOfflineBuild;
       $("shieldMatrix").onclick = handleMatrixClick;
       $("matrixReset").onclick = resetMatchupPreview;
       $("logFilter").onchange = renderLog;
@@ -4867,6 +4798,9 @@
     }
 
     function ensureMetaRankingData() {
+      if (!metaRankingData && window.GREAT_LEAGUE_RANKINGS) {
+        metaRankingData = window.GREAT_LEAGUE_RANKINGS;
+      }
       if (metaRankingData || metaRankingLoading || metaRankingLoadPromise) return;
       if (typeof fetch !== "function") {
         metaRankingLoadError = "Offline ranking JSON cannot be loaded in this browser context.";
@@ -4910,7 +4844,7 @@
     }
 
     function reloadMetaRankingData() {
-      metaRankingData = null;
+      metaRankingData = window.GREAT_LEAGUE_RANKINGS || null;
       metaRankingLoadError = "";
       metaRankingLoadPromise = null;
       metaRankingLoading = false;
@@ -4925,13 +4859,7 @@
       const usingOfflineRanking = metaRankingData && Array.isArray(metaRankingData.entries);
       try {
         const query = normalizeSearchText($("metaSearch")?.value || "");
-        rows = usingOfflineRanking
-          ? metaOfflineRankingRows(query)
-          : greatLeagueMetaPool()
-              .map(metaRankingEntry)
-              .filter(Boolean)
-              .filter(entry => !query || normalizeSearchText(entry.p.name).includes(query) || normalizeSearchText(entry.p.id).includes(query))
-              .sort((a, b) => b.score - a.score || b.stats.statProduct - a.stats.statProduct || a.p.name.localeCompare(b.p.name));
+        rows = usingOfflineRanking ? metaOfflineRankingRows(query) : [];
       } catch (error) {
         box.innerHTML = `<div class="matrix-loading">Meta ranking could not be rendered: ${escapeHtml(error.message || String(error))}</div>`;
         return;
@@ -4946,9 +4874,13 @@
         box.innerHTML = `<div class="matrix-loading">Loading offline Great League ranking...</div>`;
         return;
       }
+      if (!usingOfflineRanking) {
+        const reason = metaRankingLoadError ? ` ${escapeHtml(metaRankingLoadError)}` : "";
+        box.innerHTML = `<div class="matrix-loading">Offline Great League ranking is not available yet.${reason}</div>`;
+        return;
+      }
       if (!rows.length) {
-        const fallback = metaRankingLoadError ? ` Offline JSON fallback: ${escapeHtml(metaRankingLoadError)}.` : "";
-        box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.${fallback}</div>`;
+        box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
         return;
       }
       box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span>Data</span><span></span></div>` +
@@ -4959,6 +4891,7 @@
     }
 
     function updateMetaStatus(rows, usingOfflineRanking) {
+      if (!$("metaPoolCount")) return;
       const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
       $("metaPoolCount").textContent = metadata ? metadata.pokemonCount : rows.length;
       $("metaCachedCells").textContent = metadata
