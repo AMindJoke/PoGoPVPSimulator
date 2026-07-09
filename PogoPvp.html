@@ -230,7 +230,7 @@
     }
     .meta-row {
       display: grid;
-      grid-template-columns: 38px minmax(210px, 1.5fr) minmax(160px, 1fr) 82px 92px;
+      grid-template-columns: 38px minmax(220px, 1.25fr) 110px minmax(260px, 1.2fr) 92px;
       align-items: center;
       gap: 10px;
       min-height: 54px;
@@ -300,6 +300,40 @@
     }
     .meta-score strong {
       font-size: 13px;
+    }
+    .meta-moves {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .meta-move-pill {
+      display: inline-flex;
+      align-items: center;
+      max-width: 136px;
+      min-height: 22px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--move-text, #fff);
+      background: var(--move-bg, var(--accent));
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.16);
+    }
+    .meta-move-pill span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .meta-ranking-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      padding: 2px 4px;
     }
     .meta-tags {
       display: flex;
@@ -3088,18 +3122,19 @@
       }
       .meta-row,
       .meta-row.header {
-        grid-template-columns: 30px minmax(150px, 1fr) 72px;
+        grid-template-columns: 30px minmax(120px, 1fr) 62px 72px;
       }
-      .meta-row.header span:nth-child(3),
-      .meta-row.header span:nth-child(4),
-      .meta-cache {
+      .meta-row.header span:nth-child(4) {
         display: none;
       }
       .meta-score {
-        grid-column: 2 / 4;
+        grid-column: 3;
+      }
+      .meta-moves {
+        grid-column: 2 / 5;
       }
       .meta-row button {
-        grid-column: 3;
+        grid-column: 4;
         grid-row: 1;
       }
       .toolbar .check,
@@ -4883,8 +4918,9 @@
         box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
         return;
       }
-      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span>Data</span><span></span></div>` +
-        rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("");
+      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span>Moveset</span><span></span></div>` +
+        rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("") +
+        metaRankingLegend();
       box.querySelectorAll("[data-meta-id]").forEach(button => {
         button.onclick = () => loadMetaPokemon(button.dataset.metaId);
       });
@@ -4942,13 +4978,8 @@
         stats: null,
         moves,
         matchupScore: entry.averageScore,
-        sourceLabel: `${shieldCount} shields`,
         sourceTitle: `${cellCount.toLocaleString()} precomputed matchup cells`,
-        tags: [
-          "Offline",
-          entry.profile === "rank1" ? "Rank 1 IVs" : "Default IVs",
-          `${shieldCount} shield states`
-        ]
+        tags: []
       };
     }
 
@@ -5005,6 +5036,7 @@
       const profileText = entry.profile === "rank1" ? "Rank 1 IVs" : "Default IVs";
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
+      const moveset = [entry.moves.fast, ...entry.moves.charged].filter(Boolean);
       return `<div class="meta-row">
         <span class="meta-rank">${rank}</span>
         <span class="meta-mon">
@@ -5014,11 +5046,22 @@
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
           <span class="meta-score-line" style="--score-width:${scoreWidth}"><i></i></span>
-          <span class="meta-tags">${entry.tags.map(tag => `<span class="meta-tag">${escapeHtml(tag)}</span>`).join("")}</span>
         </span>
-        <span class="meta-cache">${escapeHtml(entry.sourceLabel || metaCacheLabel(entry.p))}</span>
+        <span class="meta-moves" title="${escapeHtml(moveText)}">${moveset.map(move => metaMovePill(move)).join("")}</span>
         <button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">Use</button>
       </div>`;
+    }
+
+    function metaMovePill(move) {
+      const color = typeColors[move.type] || "#66788c";
+      return `<span class="meta-move-pill" style="--move-bg:${color};--move-text:${contrastText(color)}"><span>${escapeHtml(move.name)}</span></span>`;
+    }
+
+    function metaRankingLegend() {
+      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
+      const cells = metadata ? Number(metadata.cells || 0).toLocaleString() : "";
+      const states = metadata && metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
+      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League matchup simulations using Rank 1 IVs${cells ? `, ${cells} matchup cells` : ""}${states ? `, and ${states} shield states` : ""}.</div>`;
     }
 
     function metaStatsForPokemon(p) {
