@@ -7,10 +7,20 @@ const vm = require("vm");
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
 const MATCHUP_SCHEMA_VERSION = 2;
-const RANKING_SCHEMA_VERSION = 1;
+const RANKING_SCHEMA_VERSION = 2;
 const MATRIX_VERSION = "live-worker-v1";
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
+const RANKING_CATEGORIES = [
+  { key: "lead", label: "Lead", weight: 1.1 },
+  { key: "closer", label: "Closer", weight: 1 },
+  { key: "switch", label: "Switch", weight: .95 },
+  { key: "charger", label: "Charger", weight: .9 },
+  { key: "attacker", label: "Attacker", weight: .9 },
+  { key: "consistency", label: "Consistency", weight: .85 }
+];
+const CATEGORY_WEIGHT_ITERATIONS = 4;
+const ADVANTAGE_TURNS = 6;
 const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-cache.json");
 const statsCache = new Map();
 const movesCache = new Map();
@@ -340,6 +350,43 @@ function createBattleConfig(a, b, profile, moveMap, standardMovesets) {
   };
 }
 
+function cloneBattleConfig(config) {
+  return JSON.parse(JSON.stringify(config));
+}
+
+function fastEnergyInTurns(fastMove, turns = ADVANTAGE_TURNS) {
+  if (!fastMove) return 0;
+  const moveTurns = Math.max(1, Number(fastMove.turns || 1));
+  const uses = Math.max(1, Math.ceil(turns / moveTurns));
+  return Math.max(0, Math.min(100, uses * Number(fastMove.energyGain || 0)));
+}
+
+function categoryTemplate() {
+  return Object.fromEntries(RANKING_CATEGORIES.map(category => [category.key, {
+    label: category.label,
+    weight: category.weight,
+    scoreTotal: 0,
+    scoreSquaredTotal: 0,
+    matchups: 0,
+    wins: 0,
+    losses: 0,
+    ties: 0,
+    opponentScores: {},
+    moveUsage: {
+      fast: {},
+      charged: {}
+    }
+  }]));
+}
+
+function addMoveUsage(bucket, moveset) {
+  if (!bucket || !moveset) return;
+  if (moveset.fast) bucket.moveUsage.fast[moveset.fast] = (bucket.moveUsage.fast[moveset.fast] || 0) + 1;
+  for (const charged of moveset.charged || []) {
+    if (charged) bucket.moveUsage.charged[charged] = (bucket.moveUsage.charged[charged] || 0) + 1;
+  }
+}
+
 function compactResult(result, aId, bId) {
   const details = result.details || {};
   const winnerSide = details.winnerEdge > 0 ? "A" : details.winnerEdge < 0 ? "B" : "tie";
@@ -386,6 +433,7 @@ function createRankingAggregator(pool, profiles, scenarios) {
         losses: 0,
         ties: 0,
         scoreSquaredTotal: 0,
+        categories: categoryTemplate(),
         shieldStates: Object.fromEntries(scenarios.map(([a, b]) => [`${a}-${b}`, {
           scoreTotal: 0,
           matchups: 0,
@@ -397,6 +445,28 @@ function createRankingAggregator(pool, profiles, scenarios) {
     }
   }
   return entries;
+}
+
+function updateCategory(entry, key, cell, moveset) {
+  const category = entry && entry.categories ? entry.categories[key] : null;
+  if (!category) return;
+  const score = cell.result.score;
+  category.scoreTotal += score;
+  category.scoreSquaredTotal += score * score;
+  category.matchups++;
+  category.opponentScores[cell.defenderId] = score;
+  addMoveUsage(category, moveset);
+  if (cell.result.winnerSide === "A") category.wins++;
+  else if (cell.result.winnerSide === "B") category.losses++;
+  else category.ties++;
+}
+
+function updateBaseCategories(entry, cell, moveset) {
+  const [aShields, bShields] = cell.shieldState.split("-").map(Number);
+  if (aShields === 2 && bShields === 2) updateCategory(entry, "lead", cell, moveset);
+  if (aShields === 0 && bShields === 0) updateCategory(entry, "closer", cell, moveset);
+  if (aShields === 0 && bShields === 2) updateCategory(entry, "attacker", cell, moveset);
+  if (aShields === bShields) updateCategory(entry, "consistency", cell, moveset);
 }
 
 function updateRanking(entries, cell) {
@@ -418,9 +488,67 @@ function updateRanking(entries, cell) {
     entry.ties++;
     state.ties++;
   }
+  updateBaseCategories(entry, cell, cell.attackerMoveset);
+}
+
+function weightedCategoryAverage(category, opponentWeights) {
+  const scores = Object.entries(category.opponentScores || {});
+  if (!scores.length) return category.matchups ? category.scoreTotal / category.matchups : null;
+  let total = 0;
+  let weightTotal = 0;
+  for (const [opponentId, score] of scores) {
+    const weight = opponentWeights.get(opponentId) || 1;
+    total += Number(score || 0) * weight;
+    weightTotal += weight;
+  }
+  return weightTotal ? total / weightTotal : null;
+}
+
+function scoreToCategoryPercent(score) {
+  if (!Number.isFinite(score)) return null;
+  return Math.max(1, Math.min(100, score / 10));
+}
+
+function geometricMean(values) {
+  const clean = values.filter(value => Number.isFinite(value) && value > 0);
+  if (!clean.length) return null;
+  const logTotal = clean.reduce((sum, value) => sum + Math.log(value), 0);
+  return Math.exp(logTotal / clean.length);
+}
+
+function categoryMoveUsage(category) {
+  const sortUsage = usage => Object.entries(usage || {})
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([id, uses]) => ({ id, uses }));
+  return {
+    fast: sortUsage(category.moveUsage.fast),
+    charged: sortUsage(category.moveUsage.charged)
+  };
+}
+
+function buildOpponentWeights(entries) {
+  const weights = new Map();
+  for (const entry of entries.values()) {
+    const average = entry.matchups ? entry.scoreTotal / entry.matchups : 500;
+    weights.set(entry.id, Math.max(.6, Math.min(1.8, average / 500)));
+  }
+  for (let i = 0; i < CATEGORY_WEIGHT_ITERATIONS; i++) {
+    const next = new Map(weights);
+    for (const entry of entries.values()) {
+      const categoryAverages = Object.values(entry.categories).map(category => weightedCategoryAverage(category, weights)).filter(Number.isFinite);
+      const weightedAverage = categoryAverages.length
+        ? categoryAverages.reduce((sum, value) => sum + value, 0) / categoryAverages.length
+        : entry.matchups ? entry.scoreTotal / entry.matchups : 500;
+      next.set(entry.id, Math.max(.6, Math.min(1.8, weightedAverage / 500)));
+    }
+    weights.clear();
+    for (const [key, value] of next) weights.set(key, value);
+  }
+  return weights;
 }
 
 function finalizeRankings(entries) {
+  const opponentWeights = buildOpponentWeights(entries);
   const rows = [...entries.values()].map(entry => {
     const shieldStates = Object.fromEntries(Object.entries(entry.shieldStates).map(([key, value]) => [key, {
       averageScore: value.matchups ? Math.round(value.scoreTotal / value.matchups) : null,
@@ -429,11 +557,37 @@ function finalizeRankings(entries) {
       losses: value.losses,
       ties: value.ties
     }]));
+    const categoryScores = {};
+    for (const categoryDef of RANKING_CATEGORIES) {
+      const category = entry.categories[categoryDef.key];
+      const weightedAverage = weightedCategoryAverage(category, opponentWeights);
+      categoryScores[categoryDef.key] = {
+        label: categoryDef.label,
+        weight: categoryDef.weight,
+        averageScore: category.matchups ? Math.round(category.scoreTotal / category.matchups) : null,
+        weightedScore: Number.isFinite(weightedAverage) ? Math.round(weightedAverage) : null,
+        score: Number.isFinite(weightedAverage) ? Math.round(scoreToCategoryPercent(weightedAverage)) : null,
+        matchups: category.matchups,
+        wins: category.wins,
+        losses: category.losses,
+        ties: category.ties,
+        moveUsage: categoryMoveUsage(category)
+      };
+    }
+    const weightedCategoryValues = RANKING_CATEGORIES.flatMap(category => {
+      const score = categoryScores[category.key].score;
+      return Number.isFinite(score) ? Array(Math.max(1, Math.round(category.weight * 4))).fill(score) : [];
+    });
+    const overallPercent = geometricMean(weightedCategoryValues);
+    const overallScore = Number.isFinite(overallPercent) ? Math.round(overallPercent * 10) : null;
     return {
       id: entry.id,
       name: entry.name,
       profile: entry.profile,
       averageScore: entry.matchups ? Math.round(entry.scoreTotal / entry.matchups) : null,
+      weightedAverageScore: opponentWeights.has(entry.id) ? Math.round((opponentWeights.get(entry.id) || 1) * 500) : null,
+      overallScore,
+      categoryScores,
       scoreStdDev: entry.matchups ? Number(Math.sqrt(Math.max(0, (entry.scoreSquaredTotal / entry.matchups) - Math.pow(entry.scoreTotal / entry.matchups, 2))).toFixed(2)) : null,
       matchups: entry.matchups,
       wins: entry.wins,
@@ -443,6 +597,7 @@ function finalizeRankings(entries) {
       shieldStates
     };
   }).sort((a, b) =>
+    (b.overallScore || b.averageScore || 0) - (a.overallScore || a.averageScore || 0) ||
     (b.averageScore || 0) - (a.averageScore || 0) ||
     (b.winRate || 0) - (a.winRate || 0) ||
     a.name.localeCompare(b.name) ||
@@ -548,15 +703,20 @@ function main() {
   const total = profiles.length * scenarios.length * pool.reduce((sum, p) => (
     sum + opponentPool.filter(opponent => !selfMatchupsSkipped || opponent.id !== p.id).length
   ), 0);
-  console.log(`Generating Great League ranking: ${pool.length} candidates, ${opponentPool.length} opponents (${opponentPoolMode}), ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} cells.`);
+  console.log(`Generating Great League ranking: ${pool.length} candidates, ${opponentPool.length} opponents (${opponentPoolMode}), ${profiles.join(", ")} profiles, ${scenarios.length} shield states, ${total} base cells plus category sims.`);
 
   const cells = [];
   const rankingAggregator = createRankingAggregator(pool, profiles, scenarios);
   let done = 0;
   let seq = 0;
+  const extraCategoryCellsPerPair = 2;
+  const totalWithCategories = total + (profiles.length * pool.reduce((sum, p) => (
+    sum + opponentPool.filter(opponent => !selfMatchupsSkipped || opponent.id !== p.id).length
+  ), 0) * extraCategoryCellsPerPair);
 
   for (const profile of profiles) {
     for (const a of pool) {
+      const attackerMoveset = moveIdsFor(a, moveMap, standardMovesets);
       for (const b of opponentPool) {
         if (selfMatchupsSkipped && a.id === b.id) continue;
         const config = createBattleConfig(a, b, profile, moveMap, standardMovesets);
@@ -583,14 +743,52 @@ function main() {
             shieldState,
             aShields,
             bShields,
+            attackerMoveset,
             result: compactResult(workerResult, a.id, b.id)
           };
           if (!rankingOnly) cells.push(cell);
           updateRanking(rankingAggregator, cell);
           done++;
-          if (done % 1000 === 0 || done === total) {
-            const pct = total ? Math.round((done / total) * 1000) / 10 : 100;
-            console.log(`  ${done}/${total} cells (${pct}%)`);
+          if (done % 1000 === 0 || done === totalWithCategories) {
+            const pct = totalWithCategories ? Math.round((done / totalWithCategories) * 1000) / 10 : 100;
+            console.log(`  ${done}/${totalWithCategories} cells (${pct}%)`);
+          }
+        }
+        const categoryEntry = rankingAggregator.get(`${profile}:${a.id}`);
+        if (categoryEntry) {
+          const bonusEnergy = fastEnergyInTurns(config.left.fast, ADVANTAGE_TURNS);
+          for (const extraCategory of [
+            { key: "switch", aShields: 2, bShields: 2 },
+            { key: "charger", aShields: 1, bShields: 1 }
+          ]) {
+            const energyConfig = cloneBattleConfig(config);
+            energyConfig.startEnergyA = bonusEnergy;
+            const key = `${MATRIX_VERSION}|${profile}|${a.id}>${b.id}|${extraCategory.key}|+${bonusEnergy}e`;
+            const workerResult = adapter.simulate({
+              id: ++seq,
+              source: "offline-ranking",
+              key,
+              signature: MATRIX_VERSION,
+              aShields: extraCategory.aShields,
+              bShields: extraCategory.bShields,
+              includeSwing: false,
+              config: energyConfig
+            });
+            updateCategory(categoryEntry, extraCategory.key, {
+              profile,
+              attackerId: a.id,
+              defenderId: b.id,
+              shieldState: `${extraCategory.aShields}-${extraCategory.bShields}`,
+              aShields: extraCategory.aShields,
+              bShields: extraCategory.bShields,
+              attackerMoveset,
+              result: compactResult(workerResult, a.id, b.id)
+            }, attackerMoveset);
+            done++;
+            if (done % 1000 === 0 || done === totalWithCategories) {
+              const pct = totalWithCategories ? Math.round((done / totalWithCategories) * 1000) / 10 : 100;
+              console.log(`  ${done}/${totalWithCategories} cells (${pct}%)`);
+            }
           }
         }
       }
@@ -615,7 +813,22 @@ function main() {
     shieldScenarios: scenarios,
     allShieldStates: includeAllShieldStates,
     rankingOnly,
-    cells: done
+    cells: done,
+    baseCells: total,
+    rankingModel: {
+      version: 1,
+      categories: RANKING_CATEGORIES,
+      weighting: "iterative-opponent-strength",
+      weightingIterations: CATEGORY_WEIGHT_ITERATIONS,
+      overall: "weighted geometric mean of category scores",
+      advantageTurns: ADVANTAGE_TURNS,
+      notes: [
+        "Lead, Closer, Attacker, and Consistency use standard shield-state simulations.",
+        "Switch uses two-shield simulations with starting energy generated by the candidate fast move over the configured advantage turns.",
+        "Charger uses one-shield simulations with the same starting-energy advantage.",
+        "Category scores are weighted by opponent strength before the overall score is calculated."
+      ]
+    }
   };
   const finalizedRankingEntries = finalizeRankings(rankingAggregator);
   const rankings = {
@@ -654,6 +867,7 @@ function mergeRankingChunks() {
   const entries = chunks.flatMap(chunk => chunk.entries || []);
   const totalCells = chunks.reduce((sum, chunk) => sum + Number(chunk.metadata && chunk.metadata.cells || 0), 0);
   entries.sort((a, b) =>
+    (b.overallScore || b.averageScore || 0) - (a.overallScore || a.averageScore || 0) ||
     (b.averageScore || 0) - (a.averageScore || 0) ||
     (b.winRate || 0) - (a.winRate || 0) ||
     a.name.localeCompare(b.name)

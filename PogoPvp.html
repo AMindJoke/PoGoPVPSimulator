@@ -4749,6 +4749,9 @@
           if (options.baselineStartEnergy) {
             left.energy = 0;
             right.energy = 0;
+          } else {
+            left.energy = startEnergyA;
+            right.energy = startEnergyB;
           }
           applyMatrixSimulationPolicy(options.policy);
           log = [];
@@ -4957,10 +4960,12 @@
         name: entry.name || p.name,
         profile: entry.profile || "default",
         rank: entry.rank,
-        score: entry.averageScore,
+        score: entry.overallScore || entry.averageScore,
         stats: null,
         moves,
-        matchupScore: entry.averageScore,
+        matchupScore: entry.overallScore || entry.averageScore,
+        averageScore: entry.averageScore,
+        categoryScores: entry.categoryScores || null,
         sourceTitle: `${cellCount.toLocaleString()} precomputed matchup cells`,
         tags: []
       };
@@ -5045,10 +5050,14 @@
     function metaRankingLegend() {
       const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
       const cells = metadata ? Number(metadata.cells || 0).toLocaleString() : "";
+      const model = metadata && metadata.rankingModel ? metadata.rankingModel : null;
       const states = metadata && metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
       const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
-      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.</div>`;
+      const modelText = model
+        ? " Scores use internal role categories, opponent-strength weighting, and a geometric overall."
+        : "";
+      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${modelText}</div>`;
     }
 
     function metaStatsForPokemon(p) {
