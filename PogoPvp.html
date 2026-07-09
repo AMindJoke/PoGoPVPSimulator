@@ -117,7 +117,48 @@
       box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
     h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
+    .app-tabs {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+    }
+    .app-tabs button {
+      min-height: 30px;
+      padding: 5px 13px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255,255,255,.82);
+      box-shadow: none;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .app-tabs button.active {
+      background: #fff;
+      color: #102532;
+    }
+    body[data-theme="neo"] .app-tabs {
+      border-color: rgba(0, 228, 255, .38);
+      background: rgba(0, 228, 255, .08);
+    }
+    body[data-theme="neo"] .app-tabs button.active {
+      background: var(--accent);
+      color: #07131c;
+    }
     main { padding: 16px; display: grid; gap: 14px; }
+    .app-view {
+      display: grid;
+      gap: 14px;
+    }
+    body[data-view="simulator"] #metaView,
+    body[data-view="meta"] #simulatorView {
+      display: none;
+    }
     .toolbar, .setup { display: grid; gap: 12px; }
     .toolbar {
       grid-template-columns: auto minmax(280px, auto) minmax(0, 1fr) auto;
@@ -152,6 +193,184 @@
     .preset-select {
       min-width: 210px;
       max-width: 240px;
+    }
+    .meta-view {
+      width: min(100%, 940px);
+      justify-self: center;
+    }
+    .meta-hero {
+      max-width: none;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 18px;
+      padding: 14px;
+    }
+    .meta-hero h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .meta-hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.35;
+      max-width: 650px;
+    }
+    .meta-status {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(100px, 1fr));
+      gap: 8px;
+      min-width: 340px;
+    }
+    .meta-status-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      padding: 9px;
+      display: grid;
+      gap: 3px;
+    }
+    .meta-status-card span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .meta-status-card strong {
+      font-size: 18px;
+      line-height: 1;
+    }
+    .meta-panel {
+      max-width: none;
+      padding: 12px;
+    }
+    .meta-panel-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .meta-panel-head h2 {
+      margin: 0;
+    }
+    .meta-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .meta-actions input {
+      width: 190px;
+      min-height: 32px;
+    }
+    .meta-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 0 0 10px;
+    }
+    .meta-ranking {
+      display: grid;
+      gap: 6px;
+    }
+    .meta-row {
+      display: grid;
+      grid-template-columns: 38px minmax(210px, 1.5fr) minmax(160px, 1fr) 82px 92px;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    .meta-row.header {
+      min-height: 32px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      background: transparent;
+      border-color: transparent;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .meta-rank {
+      font-weight: 950;
+      font-size: 17px;
+      color: var(--accent-dark);
+      text-align: center;
+    }
+    .meta-mon {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+    .meta-mon img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(23,33,47,.12));
+    }
+    .meta-mon strong {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    .meta-mon small {
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .meta-score {
+      display: grid;
+      gap: 4px;
+      align-items: center;
+    }
+    .meta-score-line {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(23,33,47,.12);
+      overflow: hidden;
+    }
+    .meta-score-line i {
+      display: block;
+      height: 100%;
+      width: var(--score-width);
+      background: linear-gradient(90deg, var(--accent), var(--good));
+    }
+    .meta-score strong {
+      font-size: 13px;
+    }
+    .meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .meta-tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .meta-cache {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .meta-row button {
+      min-height: 30px;
+      padding: 5px 8px;
+      white-space: nowrap;
     }
     .setup {
       grid-template-columns: repeat(2, 296px);
@@ -2867,6 +3086,9 @@
         padding: 8px 10px;
       }
       h1 { font-size: 16px; }
+      .app-tabs {
+        margin-left: 0;
+      }
       main {
         padding: 8px;
         gap: 8px;
@@ -2895,6 +3117,45 @@
       .preset-select {
         min-width: 0;
         max-width: none;
+      }
+      .meta-view {
+        width: 100%;
+      }
+      .meta-hero,
+      .meta-panel {
+        padding: 8px;
+      }
+      .meta-hero {
+        grid-template-columns: 1fr;
+      }
+      .meta-status {
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .meta-panel-head {
+        grid-template-columns: 1fr;
+      }
+      .meta-actions {
+        justify-content: stretch;
+      }
+      .meta-actions input {
+        width: 100%;
+      }
+      .meta-row,
+      .meta-row.header {
+        grid-template-columns: 30px minmax(150px, 1fr) 72px;
+      }
+      .meta-row.header span:nth-child(3),
+      .meta-row.header span:nth-child(4),
+      .meta-cache {
+        display: none;
+      }
+      .meta-score {
+        grid-column: 2 / 4;
+      }
+      .meta-row button {
+        grid-column: 3;
+        grid-row: 1;
       }
       .toolbar .check,
       .toolbar .hint {
@@ -3639,12 +3900,17 @@
     }
   </style>
 </head>
-<body class="clarity-ui">
+<body class="clarity-ui" data-view="simulator">
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
+    <nav class="app-tabs" aria-label="App views">
+      <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Simulator</button>
+      <button id="metaTab" type="button" data-view-target="meta">Meta</button>
+    </nav>
   </header>
   <main>
     <div class="error" id="error"></div>
+    <div id="simulatorView" class="app-view">
     <div class="toolbar">
       <div class="toolbar-group toolbar-actions">
         <button id="reset" class="secondary">Reset</button>
@@ -3936,6 +4202,35 @@
         <div id="log"></div>
       </details>
     </div>
+    </div>
+
+    <div id="metaView" class="app-view meta-view">
+      <section class="meta-hero">
+        <div>
+          <h2>Great League Meta</h2>
+          <p>Initial Great League ranking for the offline engine: meta pool, standard movesets, Rank 1/default IVs, and local matchup cache as the foundation for pre-computation.</p>
+        </div>
+        <div class="meta-status">
+          <div class="meta-status-card"><span>Meta pool</span><strong id="metaPoolCount">-</strong></div>
+          <div class="meta-status-card"><span>Cached cells</span><strong id="metaCachedCells">-</strong></div>
+          <div class="meta-status-card"><span>Engine</span><strong id="metaEngineStatus">Local</strong></div>
+          <div class="meta-status-card meta-build-card"><span>Build</span><strong id="metaBuildStatus">Idle</strong></div>
+        </div>
+      </section>
+
+      <section class="meta-panel">
+        <div class="meta-panel-head">
+          <h2>Rankings</h2>
+          <div class="meta-actions">
+            <input id="metaSearch" type="search" placeholder="Filter meta Pokemon">
+            <button id="metaBuild" type="button">Build offline cache</button>
+            <button id="metaRefresh" class="secondary" type="button">Refresh</button>
+          </div>
+        </div>
+        <p class="meta-note">This ranking starts from local stat/move signals, then improves as the offline Worker calculates cached matchup cells. The final goal is a fully matchup-driven Great League ranking.</p>
+        <div id="metaRanking" class="meta-ranking"></div>
+      </section>
+    </div>
   </main>
 
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
@@ -3993,6 +4288,23 @@
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
     const shieldMatrixCacheLimit = 900;
+    const shieldMatrixCacheVersion = "matrix-v4";
+    let matrixCacheWorker = null;
+    let matrixCacheWorkerSeq = 0;
+    let matrixComputeWorker = null;
+    let matrixComputeWorkerSeq = 0;
+    const shieldMatrixComputing = new Set();
+    const shieldMatrixComputeTimeouts = new Map();
+    const metaMatchupCacheVersion = "meta-v1";
+    const metaMatchupCache = new Map();
+    const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
+    let metaBuildQueue = [];
+    let metaBuildActive = false;
+    let metaBuildTotal = 0;
+    let metaBuildDone = 0;
+    const shieldMatrixHydrating = new Set();
+    const shieldMatrixHydrated = new Set();
+    const shieldMatrixHydrateTimeouts = new Map();
     let previewState = {
       active: false,
       originalState: null,
@@ -4003,6 +4315,20 @@
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
     const chargePauseTurns = chargeWindowTurns + chargeGapTurns;
+    const greatLeagueMetaSeed = [
+      "clodsire", "clodsire_shadow", "corsola_galarian", "corsola_galarian_shadow", "dunsparce", "dunsparce_shadow",
+      "gastrodon", "gastrodon_shadow", "pangoro", "malamar", "primeape", "primeape_shadow", "annihilape",
+      "azumarill", "jumpluff", "jumpluff_shadow", "mandibuzz", "talonflame", "talonflame_shadow",
+      "feraligatr_shadow", "feraligatr", "quagsire_shadow", "quagsire", "swampert", "swampert_shadow",
+      "skarmory", "skarmory_shadow", "registeel", "carbink", "bastiodon", "bastiodon_shadow",
+      "lanturn", "lanturn_shadow", "toxapex", "toxapex_shadow", "sableye", "sableye_shadow",
+      "medicham", "dewgong", "dewgong_shadow", "froslass", "froslass_shadow", "abomasnow", "abomasnow_shadow",
+      "lickilicky", "lickitung", "serperior", "serperior_shadow", "venusaur", "venusaur_shadow",
+      "charjabug", "charjabug_shadow", "forretress", "forretress_shadow", "machoke_shadow", "machamp_shadow",
+      "diggersby", "marowak_alolan", "marowak_alolan_shadow", "mimikyu", "morpeko_full_belly",
+      "kingdra", "kingdra_shadow", "wigglytuff", "wigglytuff_shadow", "clefable", "clefable_shadow",
+      "dragonair_shadow", "dragonair", "goodra", "goodra_shadow", "altaria", "whiscash", "whiscash_shadow"
+    ];
 
     const strong = {
       bug:["dark","grass","psychic"], dark:["ghost","psychic"], dragon:["dragon"],
@@ -4077,6 +4403,8 @@
         showError("Could not find gamemaster-data.js. Keep PogoPvp.html and gamemaster-data.js in the same folder.");
         return;
       }
+      initMatrixCacheWorker();
+      initMatrixComputeWorker();
 
       moveMap = new Map(gm.moves.map(m => [m.moveId, {
         id: m.moveId,
@@ -4150,6 +4478,12 @@
       $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
+      document.querySelectorAll("[data-view-target]").forEach(button => {
+        button.onclick = () => setAppView(button.dataset.viewTarget);
+      });
+      $("metaSearch").oninput = renderMetaRankings;
+      $("metaRefresh").onclick = renderMetaRankings;
+      $("metaBuild").onclick = startMetaOfflineBuild;
       $("shieldMatrix").onclick = handleMatrixClick;
       $("matrixReset").onclick = resetMatchupPreview;
       $("logFilter").onchange = renderLog;
@@ -4222,6 +4556,7 @@
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
+      renderMetaRankings();
       updateBattleAvailability();
     }
 
@@ -4230,8 +4565,605 @@
       $("error").textContent = message;
     }
 
+    function initMatrixCacheWorker() {
+      if (!("Worker" in window) || !("indexedDB" in window)) return;
+      const workerSource = `
+        const DB_NAME = "pogo-pvp-simulator";
+        const STORE = "matrix-cache";
+        let dbPromise = null;
+        function openDb() {
+          if (dbPromise) return dbPromise;
+          dbPromise = new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, 1);
+            request.onupgradeneeded = () => {
+              request.result.createObjectStore(STORE);
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+          return dbPromise;
+        }
+        async function getMany(keys) {
+          const db = await openDb();
+          return Promise.all(keys.map(key => new Promise(resolve => {
+            const tx = db.transaction(STORE, "readonly");
+            const request = tx.objectStore(STORE).get(key);
+            request.onsuccess = () => resolve([key, request.result || null]);
+            request.onerror = () => resolve([key, null]);
+          })));
+        }
+        async function putMany(entries) {
+          const db = await openDb();
+          await Promise.all(entries.map(([key, value]) => new Promise(resolve => {
+            const tx = db.transaction(STORE, "readwrite");
+            tx.objectStore(STORE).put(value, key);
+            tx.oncomplete = resolve;
+            tx.onerror = resolve;
+          })));
+        }
+        self.onmessage = async event => {
+          const { id, type, keys, entries, signature } = event.data || {};
+          try {
+            if (type === "getMany") {
+              self.postMessage({ id, type: "getManyResult", signature, entries: await getMany(keys || []) });
+            } else if (type === "putMany") {
+              await putMany(entries || []);
+              self.postMessage({ id, type: "putManyResult" });
+            }
+          } catch (error) {
+            self.postMessage({ id, type: "error", message: error && error.message ? error.message : String(error) });
+          }
+        };
+      `;
+      try {
+        const blob = new Blob([workerSource], { type: "text/javascript" });
+        matrixCacheWorker = new Worker(URL.createObjectURL(blob));
+        matrixCacheWorker.onmessage = handleMatrixCacheWorkerMessage;
+        matrixCacheWorker.onerror = () => {
+          matrixCacheWorker?.terminate();
+          matrixCacheWorker = null;
+        };
+      } catch (_) {
+        matrixCacheWorker = null;
+      }
+    }
+
+    function initMatrixComputeWorker() {
+      if (!("Worker" in window)) return;
+      try {
+        const workerSource = buildMatrixComputeWorkerSource();
+        const blob = new Blob([workerSource], { type: "text/javascript" });
+        matrixComputeWorker = new Worker(URL.createObjectURL(blob));
+        matrixComputeWorker.onmessage = handleMatrixComputeWorkerMessage;
+        matrixComputeWorker.onerror = () => {
+          matrixComputeWorker?.terminate();
+          matrixComputeWorker = null;
+          shieldMatrixComputing.clear();
+        };
+      } catch (_) {
+        matrixComputeWorker = null;
+      }
+    }
+
+    function buildMatrixComputeWorkerSource() {
+      const functions = [
+        effectiveness,
+        estimate,
+        damageModifier,
+        effectiveAttack,
+        effectiveDefense,
+        statStageMultiplier,
+        apply,
+        applyMoveBuffs,
+        applyBuffArray,
+        clampStage,
+        stageDeltaText,
+        stageText,
+        battleEnded,
+        useFast,
+        useCharge,
+        shouldShield,
+        shieldDecisionForMove,
+        smartShieldDecision,
+        entersFarmRangeAfterDamage,
+        losesChargedThreatAfterDamage,
+        turnsToNextMeaningfulCharged,
+        finish,
+        recordTimeline,
+        recordShield,
+        battleSnapshot,
+        validChargedMoves,
+        autoAction,
+        chooseChargedMoveDecision,
+        chooseChargedMove,
+        bestNoShieldChargedPlan,
+        bestShieldPressurePlan,
+        isDominatedPlanState,
+        isDominatedShieldPlanState,
+        betterChargedWaitReason,
+        shouldWaitForBetterChargedMove,
+        chargedMoveIsShortWaitUpgrade,
+        chargedMoveChangesClosingRace,
+        turnsToNextThreateningCharged,
+        turnsToCloseAfterCharged,
+        turnsToCloseFromState,
+        urgentChargedMove,
+        safeDefaultBaitMove,
+        safeBaitMove,
+        credibleNukeBehindBait,
+        credibleShieldPressureMove,
+        opponentPressureForcesThrow,
+        shouldOverfarmForCloser,
+        shouldWaitForChargeTiming,
+        chargeTimingWaitReason,
+        optimalChargeTimingTarget,
+        opponentCanPunishTimingWait,
+        bestDamageMoveName,
+        wouldOvercapAfterFast,
+        opponentChargedThreatens,
+        applyInitialFastAdvantage,
+        applyMatrixSimulationPolicy,
+        scoreShieldMatrixResult,
+        formatEdge,
+        chargedReadiness,
+        chargedReadinessImpact,
+        detectFlippableMatchup,
+        matchupWinnerSide,
+        detectSideFlipCandidates,
+        compareFlipCandidates,
+        lineTypeRank,
+        flipPolicyVariants,
+        flipCandidateVisibility,
+        matrixPolicyForLine,
+        flipCandidateLines,
+        flipCandidateTitle,
+        flipLineLabel,
+        isVisibleFlipThreshold,
+        flipTier,
+        hasSelfDebuff,
+        selfBuffArray,
+        closingCostPressure,
+        lastUnshieldedKoCharge,
+        riskyMovePenalty,
+        farmDownPressure,
+        unshieldedChargesLanded,
+        outpacePressure,
+        unshieldedChargeEvents,
+        nearChargeDanger,
+        applyAdvantagePressureFloor,
+        matchupAdvantageContext,
+        matrixWinnerSide,
+        winnerHpRatio
+      ].map(fn => fn.toString()).join("\n\n");
+
+      return `
+        const damageBonus = ${damageBonus};
+        const shadowAtkMultiplier = ${shadowAtkMultiplier};
+        const shadowDefMultiplier = ${shadowDefMultiplier};
+        const strong = ${JSON.stringify(strong)};
+        const weak = ${JSON.stringify(weak)};
+        const immune = ${JSON.stringify(immune)};
+        const MAX_DANGER_EDGE = ${MAX_DANGER_EDGE};
+        const MAX_CLOSING_COST_EDGE = ${MAX_CLOSING_COST_EDGE};
+        const MAX_FARM_PRESSURE_EDGE = ${MAX_FARM_PRESSURE_EDGE};
+        const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
+        const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
+        let left = null;
+        let right = null;
+        let log = [];
+        let timeline = [];
+        let initialTimelineState = null;
+        let battleTurns = { A: 0, B: 0 };
+        let suppressRender = true;
+        let currentMatrixConfig = null;
+
+        function render() {}
+        function ready() { return !battleEnded(); }
+        function add(line, type = "info") { log.push({ line, type }); }
+        function clampEnergy(value) { return Math.max(0, Math.min(100, Math.round(Number(value || 0)))); }
+
+        ${functions}
+
+        function cloneCombatant(combatant) {
+          return JSON.parse(JSON.stringify(combatant));
+        }
+
+        function simulateShieldMatrixCell(aShields, bShields, options = {}) {
+          return simulateShieldMatrixCellFromConfig(currentMatrixConfig, aShields, bShields, options);
+        }
+
+        function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
+          const result = simulateShieldMatrixCell(aShields, bShields, {
+            includeSwing: false,
+            preFastAdvantage: { side, fastMoves },
+            policy
+          });
+          const isAWin = result.details && result.details.winnerEdge > 0;
+          const isBWin = result.details && result.details.winnerEdge < 0;
+          return isAWin ? "A" : isBWin ? "B" : null;
+        }
+
+        function simulateShieldMatrixCellFromConfig(config, aShields, bShields, options = {}) {
+          currentMatrixConfig = config;
+          left = cloneCombatant(config.left);
+          right = cloneCombatant(config.right);
+          left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
+          right.shields = Math.max(0, Math.min(2, Number(bShields || 0)));
+          const startEnergyA = clampEnergy(config.startEnergyA || 0);
+          const startEnergyB = clampEnergy(config.startEnergyB || 0);
+          if (options.baselineStartEnergy) {
+            left.energy = 0;
+            right.energy = 0;
+          }
+          applyMatrixSimulationPolicy(options.policy);
+          log = [];
+          timeline = [];
+          if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
+          initialTimelineState = battleSnapshot();
+          battleTurns = { A: 0, B: 0 };
+          let guard = 0;
+          while (!battleEnded() && guard < 1000) {
+            const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+            const actors = [];
+            if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+            if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+            if (!actors.length) break;
+            actors.sort(([a], [b]) => {
+              const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
+              const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
+              if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
+              return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
+            });
+            let progressed = false;
+            for (const [attacker, defender] of actors) {
+              if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+              progressed = autoAction(attacker, defender) || progressed;
+            }
+            if (!progressed) break;
+            guard++;
+          }
+          let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
+          result = applyAdvantagePressureFloor(result, {
+            aShields,
+            bShields,
+            options,
+            startEnergyA,
+            startEnergyB
+          });
+          return result;
+        }
+
+        self.onmessage = event => {
+          const { id, source, key, signature, aShields, bShields, includeSwing, config } = event.data || {};
+          try {
+            currentMatrixConfig = config;
+            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing });
+            result.swingReady = !!includeSwing;
+            self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
+          } catch (error) {
+            self.postMessage({ id, source, type: "matrixCellError", key, signature, message: error && error.message ? error.message : String(error) });
+          }
+        };
+      `;
+    }
+
     function displayName(p) {
       return p.name;
+    }
+
+    function setAppView(view) {
+      const next = view === "meta" ? "meta" : "simulator";
+      document.body.dataset.view = next;
+      document.querySelectorAll("[data-view-target]").forEach(button => {
+        button.classList.toggle("active", button.dataset.viewTarget === next);
+      });
+      if (next === "meta") renderMetaRankings();
+    }
+
+    function renderMetaRankings() {
+      const box = $("metaRanking");
+      if (!box || !allPokemon.length) return;
+      let rows = [];
+      try {
+        const query = normalizeSearchText($("metaSearch")?.value || "");
+        rows = greatLeagueMetaPool()
+          .map(metaRankingEntry)
+          .filter(Boolean)
+          .filter(entry => !query || normalizeSearchText(entry.p.name).includes(query) || normalizeSearchText(entry.p.id).includes(query))
+          .sort((a, b) => b.score - a.score || b.stats.statProduct - a.stats.statProduct || a.p.name.localeCompare(b.p.name));
+      } catch (error) {
+        box.innerHTML = `<div class="matrix-loading">Meta ranking could not be rendered: ${escapeHtml(error.message || String(error))}</div>`;
+        return;
+      }
+      $("metaPoolCount").textContent = rows.length;
+      $("metaCachedCells").textContent = metaMatchupCache.size;
+      $("metaEngineStatus").textContent = matrixComputeWorker ? "Worker" : "Local";
+      $("metaBuildStatus").textContent = metaBuildActive
+        ? `${metaBuildDone}/${metaBuildTotal}`
+        : metaMatchupCache.size ? "Ready" : "Idle";
+      const buildButton = $("metaBuild");
+      if (buildButton) {
+        buildButton.disabled = metaBuildActive;
+        buildButton.textContent = metaBuildActive ? "Building..." : "Build offline cache";
+      }
+      if (!rows.length) {
+        box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
+        return;
+      }
+      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Signal</span><span>Cache</span><span></span></div>` +
+        rows.map((entry, index) => metaRankingRow(entry, index + 1)).join("");
+      box.querySelectorAll("[data-meta-id]").forEach(button => {
+        button.onclick = () => loadMetaPokemon(button.dataset.metaId);
+      });
+    }
+
+    function greatLeagueMetaPool() {
+      const seen = new Set();
+      return greatLeagueMetaSeed
+        .map(id => findPokemon(id) || findPokemon(id.replace(/_shadow$/, "")))
+        .filter(Boolean)
+        .filter(p => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return p.released !== false && p.fast.length && p.charged.length;
+        });
+    }
+
+    function metaRankingEntry(p) {
+      const stats = metaStatsForPokemon(p);
+      const moves = metaMovesForPokemon(p);
+      if (!stats || !moves.fast || !moves.charged.length) return null;
+      const statScore = Math.min(380, stats.statProduct / 62);
+      const fastScore = Math.min(130, fastMoveScore(moves.fast, p) * 10);
+      const chargedScore = moves.charged.reduce((sum, move) => sum + Math.min(75, chargedMoveScore(move, p) * 12), 0);
+      const coverageScore = new Set([moves.fast.type, ...moves.charged.map(move => move.type)]).size * 22;
+      const shieldPressure = moves.charged.some(move => move.energyCost <= 40) ? 55 : 0;
+      const closingPressure = moves.charged.some(move => move.power >= 90 || hasSelfDebuff(move)) ? 45 : 0;
+      const signalScore = Math.max(1, Math.min(1000, Math.round(210 + statScore + fastScore + chargedScore + coverageScore + shieldPressure + closingPressure)));
+      const matchupScore = metaCachedAverageScore(p);
+      const score = matchupScore === null ? signalScore : Math.round(signalScore * .35 + matchupScore * .65);
+      const tags = [
+        matchupScore === null ? "Signal" : "Matchup data",
+        shieldPressure ? "Shield pressure" : "Bulk check",
+        closingPressure ? "Closer" : "Consistent",
+        moves.charged.length > 1 ? "Coverage" : "Single line"
+      ];
+      return { p, stats, moves, score, signalScore, matchupScore, tags };
+    }
+
+    function metaRankingRow(entry, rank) {
+      const scoreWidth = `${Math.max(8, Math.min(100, entry.score / 10))}%`;
+      const typeBadges = entry.p.types.map(type => {
+        const color = typeColors[type] || "#66788c";
+        return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
+      }).join("");
+      const sourceText = entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`;
+      const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
+      return `<div class="meta-row">
+        <span class="meta-rank">${rank}</span>
+        <span class="meta-mon">
+          <img src="${escapeHtml(imageUrl(entry.p))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
+          <span><strong>${escapeHtml(entry.p.name)}</strong><small>CP ${entry.stats.cp} ${typeBadges}</small></span>
+        </span>
+        <span class="meta-score" title="${escapeHtml(moveText)}">
+          <strong>${entry.score}</strong>
+          <span class="meta-score-line" style="--score-width:${scoreWidth}"><i></i></span>
+          <span class="meta-tags">${entry.tags.map(tag => `<span class="meta-tag">${escapeHtml(tag)}</span>`).join("")}</span>
+        </span>
+        <span class="meta-cache">${metaCacheLabel(entry.p)}</span>
+        <button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">Use</button>
+      </div>`;
+    }
+
+    function metaStatsForPokemon(p) {
+      const defaults = p.defaultIVs && p.defaultIVs.cp1500 ? p.defaultIVs.cp1500 : null;
+      const ivAtk = defaults ? defaults[1] : 0;
+      const ivDef = defaults ? defaults[2] : 15;
+      const ivHp = defaults ? defaults[3] : 15;
+      let best = null;
+      for (const [level, cpm] of cpMultipliers) {
+        const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
+        if (stats.cp <= 1500) best = stats;
+        else break;
+      }
+      return best || pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
+    }
+
+    function metaMovesForPokemon(p) {
+      const standard = standardMovesetFor(p);
+      const fast = standard && p.fast.includes(standard.fast)
+        ? moveMap.get(standard.fast)
+        : p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b, p) - fastMoveScore(a, p))[0];
+      const standardCharged = standard
+        ? (standard.charged || []).filter(id => p.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean)
+        : [];
+      const charged = standardCharged.length
+        ? standardCharged.slice(0, 2)
+        : p.charged.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p)).slice(0, 2);
+      return { fast, charged };
+    }
+
+    function metaCacheLabel(p) {
+      const cached = [...metaMatchupCache.keys()].filter(key => key.includes(`|${p.id}|`) || key.includes(`|${p.id}>`)).length;
+      return cached ? `${cached} cells` : "not cached";
+    }
+
+    function metaCachedAverageScore(p) {
+      let total = 0;
+      let count = 0;
+      for (const [key, result] of metaMatchupCache.entries()) {
+        if (!result || !result.score) continue;
+        const marker = `${metaMatchupCacheVersion}|${p.id}>`;
+        if (!key.includes(marker)) continue;
+        total += result.score;
+        count++;
+      }
+      return count ? Math.round(total / count) : null;
+    }
+
+    function startMetaOfflineBuild() {
+      if (metaBuildActive) return;
+      if (!matrixComputeWorker) initMatrixComputeWorker();
+      const pool = greatLeagueMetaPool();
+      metaBuildQueue = [];
+      for (const a of pool) {
+        for (const b of pool) {
+          if (!a || !b || a.id === b.id) continue;
+          for (const [aShields, bShields] of metaBuildScenarios) {
+            const key = metaMatchupKey(a.id, b.id, aShields, bShields);
+            if (!metaMatchupCache.has(key)) metaBuildQueue.push({ a, b, aShields, bShields, key });
+          }
+        }
+      }
+      metaBuildTotal = metaBuildQueue.length;
+      metaBuildDone = 0;
+      metaBuildActive = metaBuildQueue.length > 0;
+      renderMetaRankings();
+      if (metaBuildActive) processMetaBuildQueue();
+    }
+
+    function processMetaBuildQueue() {
+      if (!metaBuildActive) return;
+      if (!metaBuildQueue.length) {
+        metaBuildActive = false;
+        renderMetaRankings();
+        return;
+      }
+      const job = metaBuildQueue.shift();
+      if (!job) {
+        setTimeout(processMetaBuildQueue, 0);
+        return;
+      }
+      if (metaMatchupCache.has(job.key)) {
+        metaBuildDone++;
+        setTimeout(processMetaBuildQueue, 0);
+        return;
+      }
+      if (!requestMetaMatchupCompute(job)) {
+        const result = simulateMetaMatchupCell(job.a, job.b, job.aShields, job.bShields);
+        storeMetaMatchupResult(job.key, result);
+        metaBuildDone++;
+        setTimeout(processMetaBuildQueue, 0);
+      }
+      if (metaBuildDone % 12 === 0) renderMetaRankings();
+    }
+
+    function requestMetaMatchupCompute(job) {
+      if (!matrixComputeWorker) return false;
+      try {
+        matrixComputeWorker.postMessage({
+          id: ++matrixComputeWorkerSeq,
+          source: "meta",
+          key: job.key,
+          signature: "meta",
+          aShields: job.aShields,
+          bShields: job.bShields,
+          includeSwing: false,
+          config: createMetaBattleConfig(job.a, job.b)
+        });
+        return true;
+      } catch (_) {
+        matrixComputeWorker = null;
+        return false;
+      }
+    }
+
+    function simulateMetaMatchupCell(a, b, aShields, bShields) {
+      const snapshot = snapshotBattleState();
+      const config = createMetaBattleConfig(a, b);
+      left = cloneMatrixCombatant(config.left);
+      right = cloneMatrixCombatant(config.right);
+      left.shields = aShields;
+      right.shields = bShields;
+      log = [];
+      timeline = [];
+      initialTimelineState = battleSnapshot();
+      battleTurns = { A: 0, B: 0 };
+      let guard = 0;
+      suppressRender = true;
+      while (!battleEnded() && guard < 1000) {
+        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+        const actors = [];
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+        if (!actors.length) break;
+        actors.sort(([x], [y]) => {
+          const xReady = validChargedMoves(x).some(move => x.energy >= move.energyCost);
+          const yReady = validChargedMoves(y).some(move => y.energy >= move.energyCost);
+          if (xReady !== yReady) return xReady ? -1 : 1;
+          return xReady && yReady ? y.attack - x.attack : 0;
+        });
+        let progressed = false;
+        for (const [attacker, defender] of actors) {
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          progressed = autoAction(attacker, defender) || progressed;
+        }
+        if (!progressed) break;
+        guard++;
+      }
+      const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
+      restoreBattleState(snapshot);
+      suppressRender = false;
+      return result;
+    }
+
+    function createMetaBattleConfig(a, b) {
+      return {
+        left: createMetaCombatant(a, "A"),
+        right: createMetaCombatant(b, "B"),
+        startEnergyA: 0,
+        startEnergyB: 0
+      };
+    }
+
+    function createMetaCombatant(p, trainer) {
+      const stats = metaStatsForPokemon(p);
+      const moves = metaMovesForPokemon(p);
+      const rank = ivRank(p, stats.ivAtk, stats.ivDef, stats.ivHp);
+      return {
+        trainer,
+        p: cloneMatrixPokemon(p),
+        fast: cloneMatrixMove(moves.fast),
+        charged: [cloneMatrixMove(moves.charged[0]), cloneMatrixMove(moves.charged[1] || null)],
+        level: stats.level,
+        cp: stats.cp,
+        ivAtk: stats.ivAtk,
+        ivDef: stats.ivDef,
+        ivHp: stats.ivHp,
+        rank: rank.rank,
+        rankPercent: rank.percent,
+        statProduct: stats.statProduct,
+        maxHp: stats.hp,
+        hp: stats.hp,
+        energy: 0,
+        shields: 1,
+        baiting: "selective",
+        shieldMode: "smart",
+        chargedTaken: 0,
+        attack: stats.attack,
+        defense: stats.defense,
+        attackStage: 0,
+        defenseStage: 0,
+        lastFastStart: null,
+        shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
+        shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
+      };
+    }
+
+    function metaMatchupKey(aId, bId, aShields, bShields) {
+      return `${metaMatchupCacheVersion}|${aId}>${bId}|${aShields}-${bShields}`;
+    }
+
+    function storeMetaMatchupResult(key, result) {
+      metaMatchupCache.set(key, result);
+      persistShieldMatrixCells([[key, result]]);
+    }
+
+    function loadMetaPokemon(id) {
+      const target = !findPokemon($("p1Pokemon").value) ? "p1" : !findPokemon($("p2Pokemon").value) ? "p2" : "p1";
+      setPokemonSelection(target, id);
+      setAppView("simulator");
+      document.getElementById(`${target}Search`)?.focus();
     }
 
     function filteredBaseList() {
@@ -4894,6 +5826,79 @@
         lastFastStart: null,
         shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
         shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
+      };
+    }
+
+    function createMatrixBattleConfig() {
+      if (!setupReadyForBattle()) return null;
+      const a = create("p1", "A");
+      const b = create("p2", "B");
+      return {
+        left: cloneMatrixCombatant(a),
+        right: cloneMatrixCombatant(b),
+        startEnergyA: a.energy,
+        startEnergyB: b.energy
+      };
+    }
+
+    function cloneMatrixCombatant(combatant) {
+      return {
+        trainer: combatant.trainer,
+        p: cloneMatrixPokemon(combatant.p),
+        fast: cloneMatrixMove(combatant.fast),
+        charged: combatant.charged.map(cloneMatrixMove),
+        level: combatant.level,
+        cp: combatant.cp,
+        ivAtk: combatant.ivAtk,
+        ivDef: combatant.ivDef,
+        ivHp: combatant.ivHp,
+        rank: combatant.rank,
+        rankPercent: combatant.rankPercent,
+        statProduct: combatant.statProduct,
+        maxHp: combatant.maxHp,
+        hp: combatant.hp,
+        energy: combatant.energy,
+        shields: combatant.shields,
+        baiting: combatant.baiting,
+        shieldMode: combatant.shieldMode,
+        chargedTaken: combatant.chargedTaken || 0,
+        attack: combatant.attack,
+        defense: combatant.defense,
+        attackStage: combatant.attackStage || 0,
+        defenseStage: combatant.defenseStage || 0,
+        lastFastStart: null,
+        shadowAtkMult: combatant.shadowAtkMult || 1,
+        shadowDefMult: combatant.shadowDefMult || 1
+      };
+    }
+
+    function cloneMatrixPokemon(pokemon) {
+      if (!pokemon) return null;
+      return {
+        id: pokemon.id,
+        name: pokemon.name,
+        dex: pokemon.dex,
+        types: [...(pokemon.types || [])],
+        fast: [...(pokemon.fast || [])],
+        charged: [...(pokemon.charged || [])]
+      };
+    }
+
+    function cloneMatrixMove(move) {
+      if (!move) return null;
+      return {
+        id: move.id,
+        name: move.name,
+        type: move.type,
+        power: Number(move.power || 0),
+        energyGain: Number(move.energyGain || 0),
+        energyCost: Number(move.energyCost || 0),
+        turns: Number(move.turns || 1),
+        buffs: Array.isArray(move.buffs) ? [...move.buffs] : move.buffs || null,
+        buffsSelf: Array.isArray(move.buffsSelf) ? [...move.buffsSelf] : move.buffsSelf || null,
+        buffsOpponent: Array.isArray(move.buffsOpponent) ? [...move.buffsOpponent] : move.buffsOpponent || null,
+        buffTarget: move.buffTarget || null,
+        buffApplyChance: Number(move.buffApplyChance || 0)
       };
     }
 
@@ -6354,23 +7359,25 @@
     }
 
     function cachedShieldMatrixCell(signature, aShields, bShields) {
-      const key = `${signature}|${aShields}-${bShields}`;
+      const key = shieldMatrixCacheKey(signature, aShields, bShields);
       if (!shieldMatrixCache.has(key)) {
         const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
         result.swingReady = false;
         shieldMatrixCache.set(key, result);
+        persistShieldMatrixCells([[key, result]]);
         trimShieldMatrixCache();
       }
       return shieldMatrixCache.get(key);
     }
 
     function enrichShieldMatrixCell(signature, aShields, bShields) {
-      const key = `${signature}|${aShields}-${bShields}`;
+      const key = shieldMatrixCacheKey(signature, aShields, bShields);
       const existing = shieldMatrixCache.get(key);
       if (!existing || existing.swingReady) return false;
       const enriched = simulateShieldMatrixCell(aShields, bShields, { includeSwing: true });
       enriched.swingReady = true;
       shieldMatrixCache.set(key, enriched);
+      persistShieldMatrixCells([[key, enriched]]);
       trimShieldMatrixCache();
       return true;
     }
@@ -6378,10 +7385,22 @@
     function shieldMatrixReady(signature) {
       for (let a = 0; a <= 2; a++) {
         for (let b = 0; b <= 2; b++) {
-          if (!shieldMatrixCache.has(`${signature}|${a}-${b}`)) return false;
+          if (!shieldMatrixCache.has(shieldMatrixCacheKey(signature, a, b))) return false;
         }
       }
       return true;
+    }
+
+    function shieldMatrixCacheKey(signature, aShields, bShields) {
+      return `${shieldMatrixCacheVersion}|${signature}|${aShields}-${bShields}`;
+    }
+
+    function shieldMatrixKeys(signature) {
+      const keys = [];
+      for (let a = 0; a <= 2; a++) {
+        for (let b = 0; b <= 2; b++) keys.push(shieldMatrixCacheKey(signature, a, b));
+      }
+      return keys;
     }
 
     function scheduleShieldMatrixCalculation(signature) {
@@ -6402,10 +7421,14 @@
           shieldMatrixPendingTimer = setTimeout(step, 160);
           return;
         }
-        const cell = phase === "base"
-          ? cells.find(([a, b]) => !shieldMatrixCache.has(`${signature}|${a}-${b}`))
+        if (hydrateShieldMatrixCache(signature)) {
+          shieldMatrixPendingTimer = setTimeout(step, 45);
+          return;
+        }
+      const cell = phase === "base"
+          ? cells.find(([a, b]) => !shieldMatrixCache.has(shieldMatrixCacheKey(signature, a, b)))
           : cells.find(([a, b]) => {
-              const result = shieldMatrixCache.get(`${signature}|${a}-${b}`);
+              const result = shieldMatrixCache.get(shieldMatrixCacheKey(signature, a, b));
               return result && !result.swingReady;
             });
         if (!cell) {
@@ -6422,6 +7445,10 @@
           if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) renderShieldMatrix();
           return;
         }
+        if (requestShieldMatrixCellCompute(signature, cell[0], cell[1], phase === "swing")) {
+          shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 35 : 60);
+          return;
+        }
         if (phase === "base") cachedShieldMatrixCell(signature, cell[0], cell[1]);
         else enrichShieldMatrixCell(signature, cell[0], cell[1]);
         if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
@@ -6433,8 +7460,157 @@
       shieldMatrixPendingTimer = setTimeout(step, 40);
     }
 
+    function requestShieldMatrixCellCompute(signature, aShields, bShields, includeSwing) {
+      if (!matrixComputeWorker) return false;
+      const key = shieldMatrixCacheKey(signature, aShields, bShields);
+      if (shieldMatrixComputing.has(key)) return true;
+      const config = createMatrixBattleConfig();
+      if (!config) return false;
+      shieldMatrixComputing.add(key);
+      try {
+        matrixComputeWorker.postMessage({
+          id: ++matrixComputeWorkerSeq,
+          key,
+          signature,
+          aShields,
+          bShields,
+          includeSwing,
+          config
+        });
+        const timeout = setTimeout(() => {
+          shieldMatrixComputing.delete(key);
+          shieldMatrixComputeTimeouts.delete(key);
+          if (!shieldMatrixPendingTimer && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+            shieldMatrixPendingSignature = "";
+            scheduleShieldMatrixCalculation(signature);
+          }
+        }, 1600);
+        shieldMatrixComputeTimeouts.set(key, timeout);
+      } catch (_) {
+        matrixComputeWorker = null;
+        shieldMatrixComputing.delete(key);
+        return false;
+      }
+      return true;
+    }
+
     function timelineReplayIsRunning() {
       return !!(timelinePresentationPending || timelineReplayTimer || timelineReplayAnimation || $("timelineScroll")?.classList.contains("replay-active"));
+    }
+
+    function hydrateShieldMatrixCache(signature) {
+      if (!matrixCacheWorker || shieldMatrixHydrated.has(signature) || shieldMatrixHydrating.has(signature)) return false;
+      shieldMatrixHydrating.add(signature);
+      try {
+        matrixCacheWorker.postMessage({
+          id: ++matrixCacheWorkerSeq,
+          type: "getMany",
+          signature,
+          keys: shieldMatrixKeys(signature)
+        });
+        const timeout = setTimeout(() => {
+          shieldMatrixHydrating.delete(signature);
+          shieldMatrixHydrated.add(signature);
+          shieldMatrixHydrateTimeouts.delete(signature);
+          if (!shieldMatrixPendingTimer && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+            shieldMatrixPendingSignature = "";
+            scheduleShieldMatrixCalculation(signature);
+          }
+        }, 900);
+        shieldMatrixHydrateTimeouts.set(signature, timeout);
+      } catch (_) {
+        matrixCacheWorker = null;
+        shieldMatrixHydrating.delete(signature);
+        return false;
+      }
+      return true;
+    }
+
+    function persistShieldMatrixCells(entries) {
+      if (!matrixCacheWorker || !entries.length) return;
+      try {
+        matrixCacheWorker.postMessage({
+          id: ++matrixCacheWorkerSeq,
+          type: "putMany",
+          entries
+        });
+      } catch (_) {
+        matrixCacheWorker = null;
+      }
+    }
+
+    function handleMatrixCacheWorkerMessage(event) {
+      const message = event.data || {};
+      if (message.type === "getManyResult") {
+        const signature = message.signature || cacheSignatureFromKeys(message.entries || []);
+        if (signature) {
+          shieldMatrixHydrating.delete(signature);
+          shieldMatrixHydrated.add(signature);
+          const timeout = shieldMatrixHydrateTimeouts.get(signature);
+          if (timeout) clearTimeout(timeout);
+          shieldMatrixHydrateTimeouts.delete(signature);
+        }
+        (message.entries || []).forEach(([key, value]) => {
+          if (value && !shieldMatrixCache.has(key)) shieldMatrixCache.set(key, value);
+        });
+        trimShieldMatrixCache();
+        if (signature && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+          renderShieldMatrix();
+          scheduleShieldMatrixCalculation(signature);
+        }
+      }
+    }
+
+    function handleMatrixComputeWorkerMessage(event) {
+      const message = event.data || {};
+      if (message.source === "meta") {
+        handleMetaComputeWorkerMessage(message);
+        return;
+      }
+      if (message.key) {
+        shieldMatrixComputing.delete(message.key);
+        const timeout = shieldMatrixComputeTimeouts.get(message.key);
+        if (timeout) clearTimeout(timeout);
+        shieldMatrixComputeTimeouts.delete(message.key);
+      }
+      if (message.type === "matrixCellResult" && message.key && message.result) {
+        shieldMatrixCache.set(message.key, message.result);
+        persistShieldMatrixCells([[message.key, message.result]]);
+        trimShieldMatrixCache();
+        if (message.signature && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === message.signature) {
+          renderShieldMatrix();
+          if (!shieldMatrixPendingTimer) {
+            shieldMatrixPendingSignature = "";
+            scheduleShieldMatrixCalculation(message.signature);
+          }
+        }
+      } else if (message.type === "matrixCellError") {
+        matrixComputeWorker = null;
+        shieldMatrixComputing.clear();
+        shieldMatrixComputeTimeouts.forEach(timeout => clearTimeout(timeout));
+        shieldMatrixComputeTimeouts.clear();
+        if (message.signature && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === message.signature) {
+          shieldMatrixPendingSignature = "";
+          scheduleShieldMatrixCalculation(message.signature);
+        }
+      }
+    }
+
+    function handleMetaComputeWorkerMessage(message) {
+      if (message.type === "matrixCellResult" && message.key && message.result) {
+        storeMetaMatchupResult(message.key, message.result);
+      } else if (message.type === "matrixCellError") {
+        matrixComputeWorker = null;
+      }
+      metaBuildDone++;
+      if (metaBuildDone % 8 === 0 || !metaBuildQueue.length) renderMetaRankings();
+      setTimeout(processMetaBuildQueue, 0);
+    }
+
+    function cacheSignatureFromKeys(entries) {
+      const key = entries && entries[0] && entries[0][0];
+      if (!key || !key.startsWith(`${shieldMatrixCacheVersion}|`)) return "";
+      return key.slice(shieldMatrixCacheVersion.length + 1).replace(/\|[0-2]-[0-2]$/, "");
     }
 
     function cancelShieldMatrixCalculation() {
