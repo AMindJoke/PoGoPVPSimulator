@@ -1,0 +1,37 @@
+{
+  "league": "great",
+  "version": 1,
+  "notes": [
+    "Golden matchups are manually verified regression checks.",
+    "Entries can be enabled once winner, shield state, and remaining HP expectations have been confirmed."
+  ],
+  "matchups": [
+    {
+      "name": "Malamar vs Pangoro",
+      "enabled": false,
+      "a": "malamar",
+      "b": "pangoro",
+      "profile": "rank1",
+      "shieldState": "1-1",
+      "expected": null
+    },
+    {
+      "name": "Azumarill vs Medicham",
+      "enabled": false,
+      "a": "azumarill",
+      "b": "medicham",
+      "profile": "rank1",
+      "shieldState": "1-1",
+      "expected": null
+    },
+    {
+      "name": "Lickitung vs Gligar",
+      "enabled": false,
+      "a": "lickitung",
+      "b": "gligar",
+      "profile": "rank1",
+      "shieldState": "1-1",
+      "expected": null
+    }
+  ]
+}

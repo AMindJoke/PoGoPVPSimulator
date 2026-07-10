@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const { runQualityPipeline } = require("./validate-great-league-dataset");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
@@ -1017,7 +1018,9 @@ function main() {
     }
   }
 
+  const generationDurationSeconds = Math.round((Date.now() - started) / 1000);
   const metadata = {
+    datasetVersion: 1,
     generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
@@ -1038,6 +1041,13 @@ function main() {
     splitMatchups,
     weightSource: weightSourcePath || null,
     weightMode: externalOpponentWeights ? weightMode : null,
+    generationDurationSeconds,
+    theoreticalSimulations: totalWithCategories,
+    completedSimulations: done,
+    failedSimulations: 0,
+    skippedSimulations: 0,
+    retries: 0,
+    peakMemoryBytes: process.memoryUsage ? process.memoryUsage().rss : null,
     cells: done,
     baseCells: total,
     rankingModel: {
@@ -1098,6 +1108,10 @@ function main() {
   if (!chunkOutput) console.log(`Wrote data/great-league-rankings.js.`);
   if (splitIndexSize) console.log(`Wrote data/matchups/great-league/index.json (${splitIndexSize.toLocaleString()} bytes).`);
   if (matchups) console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
+  if (!chunkOutput) {
+    const qualityReport = runQualityPipeline({ datasetPath: rankingPath, writeMetadata: true, writeReport: true });
+    console.log(`Dataset quality report: ${qualityReport.status}.`);
+  }
   savePersistentRank1Stats();
   console.log(`Done in ${elapsed}s.`);
 }
@@ -1135,9 +1149,11 @@ function mergeRankingChunks() {
   const rankingSize = writeJson("data/great-league-rankings.json", merged);
   const fullRankingSize = fullOutput ? writeJson(path.join("data", "rankings", "great-league-full.json"), merged) : 0;
   writeRankingScript(merged);
+  const qualityReport = runQualityPipeline({ datasetPath: "data/great-league-rankings.json", writeMetadata: true, writeReport: true });
   console.log(`Merged ${files.length} chunks into data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
   if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);
   console.log(`Wrote data/great-league-rankings.js.`);
+  console.log(`Dataset quality report: ${qualityReport.status}.`);
 }
 
 function writeRankingScript(rankings) {
