@@ -852,7 +852,7 @@ window.PVPOKE_DEFAULT_MOVESETS = {
                     "fast":  "SUCKER_PUNCH",
                     "charged":  [
                                     "NIGHT_SLASH",
-                                    "PLAY_ROUGH"
+                                    "ICY_WIND"
                                 ]
                 },
     "hippowdon":  {
