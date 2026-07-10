@@ -1608,6 +1608,11 @@
       margin: 0;
       font-size: 13px;
     }
+    .matrix-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
     .matrix-reset {
       min-height: 24px;
       padding: 3px 9px;
@@ -1872,6 +1877,137 @@
       border-radius: 999px;
       background: var(--soft);
       white-space: nowrap;
+    }
+    .inspector-panel {
+      display: none;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    .inspector-panel.active {
+      display: block;
+    }
+    .inspector-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .inspector-title {
+      min-width: 0;
+    }
+    .inspector-title strong {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.15;
+    }
+    .inspector-title span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+    .inspector-source {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .inspector-sprites {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .inspector-sprites img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(23,33,47,.16));
+    }
+    .inspector-scenarios {
+      display: grid;
+      gap: 5px;
+    }
+    .inspector-scenario {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-2);
+    }
+    .inspector-scenario.win-a {
+      border-color: color-mix(in srgb, #00B8A9 46%, var(--line));
+    }
+    .inspector-scenario.win-b {
+      border-color: color-mix(in srgb, #E0448E 42%, var(--line));
+    }
+    .inspector-shields {
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .inspector-result strong {
+      display: block;
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.15;
+    }
+    .inspector-result span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+    .inspector-scenario button {
+      min-height: 25px;
+      padding: 4px 8px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .inspector-scenario-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .inspector-scenario-actions button {
+      min-width: 0;
+    }
+    .inspector-flags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .inspector-flag {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .inspector-flag small {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.2;
     }
     .effect-chip {
       display: inline-flex;
@@ -4137,10 +4273,14 @@
       <section class="matrix-panel">
         <div class="matrix-head">
           <h2>Matchup</h2>
-          <button id="matrixReset" class="secondary matrix-reset" type="button">Reset</button>
+          <div class="matrix-actions">
+            <button id="matchupInspectorToggle" class="secondary matrix-reset" type="button">Inspect</button>
+            <button id="matrixReset" class="secondary matrix-reset" type="button">Reset</button>
+          </div>
         </div>
         <div id="shieldMatrix" class="matrix-grid"></div>
         <div id="matrixExplanation" class="matrix-explanation"></div>
+        <div id="matchupInspector" class="inspector-panel" aria-live="polite"></div>
       </section>
 
       <section class="key-numbers" id="keyNumbers">
@@ -4265,6 +4405,7 @@
       source: null,
       suggestion: null
     };
+    let matchupInspectorOpen = false;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -4441,6 +4582,7 @@
       if (metaBuildButton) metaBuildButton.onclick = startMetaOfflineBuild;
       $("shieldMatrix").onclick = handleMatrixClick;
       $("matrixReset").onclick = resetMatchupPreview;
+      $("matchupInspectorToggle").onclick = toggleMatchupInspector;
       $("logFilter").onchange = renderLog;
       $("logFilter").onclick = event => event.stopPropagation();
       $("eventModalClose").onclick = closeEventModal;
@@ -7102,8 +7244,16 @@
       cancelShieldMatrixCalculation();
       const matrix = $("shieldMatrix");
       const explanation = $("matrixExplanation");
+      const inspector = $("matchupInspector");
       if (matrix) matrix.innerHTML = "";
       if (explanation) explanation.innerHTML = "";
+      if (inspector) {
+        matchupInspectorOpen = false;
+        inspector.classList.remove("active");
+        inspector.innerHTML = "";
+      }
+      const inspectorButton = $("matchupInspectorToggle");
+      if (inspectorButton) inspectorButton.textContent = "Inspect";
     }
 
     function updateBattleAvailability() {
@@ -7463,7 +7613,193 @@
       });
       box.innerHTML = rows.join("");
       renderMatrixExplanation(currentResult);
+      renderMatchupInspector();
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+    }
+
+    function toggleMatchupInspector() {
+      matchupInspectorOpen = !matchupInspectorOpen;
+      renderMatchupInspector();
+      if (matchupInspectorOpen) smoothScrollToElement($("matchupInspector"), "center");
+    }
+
+    function renderMatchupInspector() {
+      const panel = $("matchupInspector");
+      const button = $("matchupInspectorToggle");
+      if (!panel || !button) return;
+      button.textContent = matchupInspectorOpen ? "Hide" : "Inspect";
+      if (!matchupInspectorOpen) {
+        panel.classList.remove("active");
+        panel.innerHTML = "";
+        return;
+      }
+      panel.classList.add("active");
+      if (!left || !right) {
+        panel.innerHTML = `<div class="matrix-loading">Choose both Pokemon, then run Battle to inspect the matchup.</div>`;
+        return;
+      }
+      const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
+      if (previewRenderState) restoreFullSimulatorState(previewState.originalState);
+      const signature = shieldMatrixSignature();
+      if (!shieldMatrixReady(signature)) {
+        panel.innerHTML = `<div class="matrix-loading">Calculating inspector data...</div>`;
+        scheduleShieldMatrixCalculation(signature);
+        if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+        return;
+      }
+      const data = buildMatchupInspectorViewModel(signature);
+      panel.innerHTML = matchupInspectorHtml(data);
+      panel.querySelectorAll("[data-inspector-open]").forEach(action => {
+        action.addEventListener("click", () => runMatrixScenario(Number(action.dataset.aShields || 0), Number(action.dataset.bShields || 0)));
+      });
+      panel.querySelectorAll("[data-inspector-preview]").forEach(action => {
+        action.addEventListener("click", () => {
+          runMatrixScenario(
+            Number(action.dataset.aShields || 0),
+            Number(action.dataset.bShields || 0),
+            action.dataset.swingSide || null,
+            Number(action.dataset.swingFastMoves || 0),
+            action.dataset.swingLineType || null
+          );
+        });
+      });
+      if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+    }
+
+    function buildMatchupInspectorViewModel(signature) {
+      const evenStates = [[0, 0], [1, 1], [2, 2]];
+      const scenarios = evenStates.map(([aShields, bShields]) => {
+        const key = shieldMatrixCacheKey(signature, aShields, bShields);
+        const source = shieldMatrixCache.has(key) ? "Precomputed" : "Live Simulation";
+        const result = cachedShieldMatrixCell(signature, aShields, bShields);
+        const rating = matrixScoreRating(result.score);
+        return {
+          aShields,
+          bShields,
+          result,
+          rating,
+          source,
+          winner: inspectorWinnerName(result.score),
+          closeness: inspectorCloseness(result.score),
+          remainingHp: inspectorHpSummary(result),
+          remainingEnergy: inspectorEnergySummary(result),
+          swing: result.swing || null
+        };
+      });
+      return {
+        a: left.p,
+        b: right.p,
+        aMoves: inspectorMoves(left),
+        bMoves: inspectorMoves(right),
+        profile: inspectorProfileSummary(),
+        league: "Great League",
+        cpCap: 1500,
+        source: scenarios.every(scenario => scenario.source === "Precomputed") ? "Precomputed" : "Live Simulation",
+        scenarios,
+        flags: matchupInspectorFlags(scenarios)
+      };
+    }
+
+    function matchupInspectorHtml(data) {
+      const scenarioHtml = data.scenarios.map(scenario => {
+        const swing = scenario.swing;
+        const preview = swing
+          ? `<button type="button" class="secondary" data-inspector-preview data-a-shields="${scenario.aShields}" data-b-shields="${scenario.bShields}" data-swing-side="${escapeHtml(swing.side)}" data-swing-fast-moves="${Number(swing.fastMoves || 0)}" data-swing-line-type="${escapeHtml(swing.lineType || "mixed")}" title="${escapeHtml(swing.title || "Preview suggested flip line")}">Preview</button>`
+          : "";
+        return `<div class="inspector-scenario ${scenario.rating.side === "A" ? "win-a" : scenario.rating.side === "B" ? "win-b" : ""}">
+          <div class="inspector-shields">${scenario.aShields}-${scenario.bShields}</div>
+          <div class="inspector-result">
+            <strong>${escapeHtml(scenario.winner)} · ${scenario.result.score} · ${escapeHtml(scenario.rating.label)}</strong>
+            <span>${escapeHtml(scenario.remainingHp)} · ${escapeHtml(scenario.remainingEnergy)} · ${escapeHtml(scenario.closeness)}</span>
+          </div>
+          <div class="inspector-scenario-actions">
+            <button type="button" class="secondary" data-inspector-open data-a-shields="${scenario.aShields}" data-b-shields="${scenario.bShields}">Open</button>
+            ${preview}
+          </div>
+        </div>`;
+      }).join("");
+      const flags = data.flags.length
+        ? data.flags.map(flag => `<span class="inspector-flag">${escapeHtml(flag.label)}<small>${escapeHtml(flag.reason)}</small></span>`).join("")
+        : `<span class="inspector-flag">Stable<small>No reliable extra flags in even-shield states.</small></span>`;
+      return `<div class="inspector-head">
+        <div class="inspector-title">
+          <strong>${escapeHtml(data.a.name)} vs ${escapeHtml(data.b.name)}</strong>
+          <span>${escapeHtml(data.league)} · CP ${data.cpCap} · ${escapeHtml(data.profile)}</span>
+          <span>${escapeHtml(data.aMoves)} / ${escapeHtml(data.bMoves)}</span>
+        </div>
+        <span class="inspector-source">${escapeHtml(data.source)}</span>
+      </div>
+      <div class="inspector-sprites">
+        <img src="${imageUrl(data.a.speciesId)}" onerror="this.onerror=null;this.src='${fallbackImageUrl(data.a.speciesId)}'" alt="${escapeHtml(data.a.name)}">
+        <span>vs</span>
+        <img src="${imageUrl(data.b.speciesId)}" onerror="this.onerror=null;this.src='${fallbackImageUrl(data.b.speciesId)}'" alt="${escapeHtml(data.b.name)}">
+      </div>
+      <div class="inspector-scenarios">${scenarioHtml}</div>
+      <div class="inspector-flags">${flags}</div>`;
+    }
+
+    function inspectorMoves(side) {
+      return [side.fast, side.charged1, side.charged2].filter(Boolean).map(move => move.name).join(" + ");
+    }
+
+    function inspectorProfileSummary() {
+      const aRank = rankTextFromState(left);
+      const bRank = rankTextFromState(right);
+      if (aRank === bRank) return aRank;
+      return `${aRank} / ${bRank}`;
+    }
+
+    function rankTextFromState(side) {
+      const rank = Number(side?.rank || 0);
+      if (rank === 1) return "Rank 1 IVs";
+      return "Current IVs";
+    }
+
+    function inspectorWinnerName(score) {
+      if (score > 500) return left.p.name;
+      if (score < 500) return right.p.name;
+      return "Draw";
+    }
+
+    function inspectorCloseness(score) {
+      const gap = Math.abs(Number(score || 500) - 500);
+      if (gap <= 35) return "Close";
+      if (gap <= 150) return "Moderate";
+      return "Decisive";
+    }
+
+    function inspectorHpSummary(result) {
+      const details = result?.details || {};
+      const aHp = Number.isFinite(details.aHp) ? `${Math.round(details.aHp * 100)}%` : "-";
+      const bHp = Number.isFinite(details.bHp) ? `${Math.round(details.bHp * 100)}%` : "-";
+      return `HP ${left.p.name} ${aHp}, ${right.p.name} ${bHp}`;
+    }
+
+    function inspectorEnergySummary(result) {
+      const title = String(result?.title || "");
+      const energyMatches = [...title.matchAll(/(\d+)\s+energy/g)].map(match => Number(match[1]));
+      if (energyMatches.length >= 2) return `Energy ${energyMatches[0]} / ${energyMatches[1]}`;
+      return "Energy tracked in battle view";
+    }
+
+    function matchupInspectorFlags(scenarios) {
+      const flags = [];
+      const winners = new Set(scenarios.map(scenario => scenario.rating.side || "Draw"));
+      if (winners.size > 1) {
+        flags.push({ label: "Shield dependent", reason: "Even-shield winners or outcomes change across 0, 1, and 2 shields." });
+      }
+      if (scenarios.some(scenario => Math.abs(scenario.result.score - 500) <= 35)) {
+        flags.push({ label: "Close result", reason: "At least one even-shield state is within 35 rating points of neutral." });
+      }
+      const swing = scenarios.find(scenario => scenario.swing);
+      if (swing?.swing) {
+        const sideName = swing.swing.side === "A" ? left.p.name : right.p.name;
+        flags.push({ label: "Potential flip", reason: `${sideName} has a concrete ${swing.swing.title || "timing"} line.` });
+      }
+      if (scenarios.some(scenario => scenario.swing?.lineType === "bait")) {
+        flags.push({ label: "Bait sensitive", reason: "A detected flip line depends on bait or shield-pressure ordering." });
+      }
+      return flags;
     }
 
     function cachedShieldMatrixCell(signature, aShields, bShields) {
