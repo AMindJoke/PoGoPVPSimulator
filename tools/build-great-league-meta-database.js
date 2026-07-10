@@ -203,6 +203,14 @@ function isShadow(p) {
   return p.id.endsWith("_shadow") || p.id.includes("_shadow_");
 }
 
+function isEligibleGreatLeaguePokemon(p) {
+  if (!p || p.released === false || !p.fast.length || !p.charged.length) return false;
+  const name = p.name || "";
+  if (p.id.includes("_mega") || name.includes("(Mega)")) return false;
+  if (p.id.includes("_primal") || name.includes("(Primal)")) return false;
+  return true;
+}
+
 function pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm) {
   const attack = (p.atk + ivAtk) * cpm;
   const defense = (p.def + ivDef) * cpm;
@@ -774,7 +782,7 @@ function main() {
     .map(p => [p.id, p]));
 
   const eligiblePokemon = [...allPokemon.values()]
-    .filter(p => p.released !== false && p.fast.length && p.charged.length)
+    .filter(isEligibleGreatLeaguePokemon)
     .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
   const skippedPokemon = metaConfig.pokemon.filter(id => !allPokemon.has(id));
   const metaPool = metaConfig.pokemon.map(id => allPokemon.get(id)).filter(Boolean);
@@ -1025,8 +1033,10 @@ function mergeRankingChunks() {
     entries: entries.map((entry, index) => ({ ...entry, rank: index + 1 }))
   };
   const rankingSize = writeJson("data/great-league-rankings.json", merged);
+  const fullRankingSize = fullOutput ? writeJson(path.join("data", "rankings", "great-league-full.json"), merged) : 0;
   writeRankingScript(merged);
   console.log(`Merged ${files.length} chunks into data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
+  if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);
   console.log(`Wrote data/great-league-rankings.js.`);
 }
 
