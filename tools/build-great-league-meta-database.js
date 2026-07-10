@@ -496,21 +496,25 @@ function matchupCachePath(profile, attackerId) {
   return path.join(matchupCacheRoot, safeCacheSegment(profile), `${safeCacheSegment(attackerId)}.json`);
 }
 
-function loadMatchupCacheFile(profile, attackerId) {
+function loadMatchupCacheFile(profile, attackerId, attackerSignature) {
   const file = matchupCachePath(profile, attackerId);
   if (!useMatchupCache || !fs.existsSync(file)) {
-    return { file, dirty: false, cells: {} };
+    return { file, dirty: false, attackerSignature, cells: {} };
   }
   try {
     const cache = JSON.parse(fs.readFileSync(file, "utf8"));
     matchupCacheStats.filesRead++;
+    if (cache.matrixVersion !== MATRIX_VERSION || cache.attackerSignature !== attackerSignature) {
+      return { file, dirty: false, attackerSignature, cells: {} };
+    }
     return {
       file,
       dirty: false,
+      attackerSignature,
       cells: cache && cache.cells && typeof cache.cells === "object" ? cache.cells : {}
     };
   } catch (_) {
-    return { file, dirty: false, cells: {} };
+    return { file, dirty: false, attackerSignature, cells: {} };
   }
 }
 
@@ -522,8 +526,9 @@ function saveMatchupCacheFile(cache) {
     league: "great",
     generatedAt: new Date().toISOString(),
     matrixVersion: MATRIX_VERSION,
+    attackerSignature: cache.attackerSignature,
     cells: cache.cells
-  }, null, 2)}\n`, "utf8");
+  })}\n`, "utf8");
   matchupCacheStats.filesWritten++;
 }
 
@@ -545,11 +550,56 @@ function matchupCacheKey({ profile, attacker, defender, shieldState, moveMap, st
   ].filter(Boolean).join("|");
 }
 
+function matchupCacheCellKey({ defender, shieldState, moveMap, standardMovesets, category = "standard", extra = "" }) {
+  const defenderSig = moveSignatureForPokemon(defender, moveMap, standardMovesets);
+  return [defenderSig, shieldState, category, extra].filter(Boolean).join("|");
+}
+
+function compactCacheResult(result) {
+  return [
+    result.score,
+    result.winnerSide,
+    result.winnerId,
+    result.hpRatioA,
+    result.hpRatioB,
+    result.winnerEdge,
+    result.hpEdge,
+    result.energyEdge,
+    result.shieldEdge,
+    result.readyEdge,
+    result.dangerEdge,
+    result.closingCostEdge,
+    result.farmPressureEdge,
+    result.outpacePressureEdge
+  ];
+}
+
+function inflateCacheResult(value) {
+  if (!Array.isArray(value)) return value;
+  return {
+    score: value[0],
+    winnerSide: value[1],
+    winnerId: value[2],
+    hpRatioA: value[3],
+    hpRatioB: value[4],
+    winnerEdge: value[5],
+    hpEdge: value[6],
+    energyEdge: value[7],
+    shieldEdge: value[8],
+    readyEdge: value[9],
+    dangerEdge: value[10],
+    closingCostEdge: value[11],
+    farmPressureEdge: value[12],
+    outpacePressureEdge: value[13]
+  };
+}
+
 function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defender, shieldState, aShields, bShields, config, moveMap, standardMovesets, category = "standard", extra = "" }) {
   const key = matchupCacheKey({ profile, attacker, defender, shieldState, moveMap, standardMovesets, category, extra });
-  if (useMatchupCache && cache.cells[key]) {
+  const cacheKey = matchupCacheCellKey({ defender, shieldState, moveMap, standardMovesets, category, extra });
+  if (useMatchupCache && cache.cells[cacheKey]) {
     matchupCacheStats.hits++;
-    return { key, result: cache.cells[key] };
+    return { key, result: inflateCacheResult(cache.cells[cacheKey]) };
   }
   matchupCacheStats.misses++;
   const workerResult = adapter.simulate({
@@ -564,7 +614,7 @@ function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defende
   });
   const result = compactResult(workerResult, attacker.id, defender.id);
   if (useMatchupCache) {
-    cache.cells[key] = result;
+    cache.cells[cacheKey] = compactCacheResult(result);
     cache.dirty = true;
     matchupCacheStats.writes++;
   }
@@ -1014,7 +1064,8 @@ function main() {
   for (const profile of profiles) {
     for (const a of pool) {
       const attackerMoveset = moveIdsFor(a, moveMap, standardMovesets);
-      const matchupCache = loadMatchupCacheFile(profile, a.id);
+      const attackerSignature = moveSignatureForPokemon(a, moveMap, standardMovesets);
+      const matchupCache = loadMatchupCacheFile(profile, a.id, attackerSignature);
       const splitRows = splitMatchups
         ? Object.fromEntries(scenarios.map(([aShields, bShields]) => [`${aShields}-${bShields}`, []]))
         : null;
@@ -1240,6 +1291,17 @@ function mergeRankingChunks() {
   const chunks = files.map(name => readJson(path.join("data", "ranking-chunks", name)));
   const entries = chunks.flatMap(chunk => chunk.entries || []);
   const totalCells = chunks.reduce((sum, chunk) => sum + Number(chunk.metadata && chunk.metadata.cells || 0), 0);
+  const mergedMatchupCache = chunks.reduce((summary, chunk) => {
+    const stats = chunk.metadata && chunk.metadata.matchupCache;
+    if (!stats) return summary;
+    summary.enabled = summary.enabled || Boolean(stats.enabled);
+    summary.hits += Number(stats.hits || 0);
+    summary.misses += Number(stats.misses || 0);
+    summary.writes += Number(stats.writes || 0);
+    summary.filesRead += Number(stats.filesRead || 0);
+    summary.filesWritten += Number(stats.filesWritten || 0);
+    return summary;
+  }, { enabled: false, hits: 0, misses: 0, writes: 0, filesRead: 0, filesWritten: 0 });
   entries.sort((a, b) =>
     (b.overallScore || b.averageScore || 0) - (a.overallScore || a.averageScore || 0) ||
     (b.averageScore || 0) - (a.averageScore || 0) ||
@@ -1255,6 +1317,7 @@ function mergeRankingChunks() {
       mergedFromChunks: files.length,
       pokemonCount: entries.length,
       cells: totalCells,
+      matchupCache: mergedMatchupCache,
       offset: 0,
       limit: null,
       rankingOnly: true
