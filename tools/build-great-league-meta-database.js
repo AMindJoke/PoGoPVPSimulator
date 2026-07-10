@@ -25,6 +25,7 @@ const EQUAL_SHIELD_RANKING_CATEGORIES = [
   { key: "lead", label: "2 Shields", weight: 1 }
 ];
 const CATEGORY_WEIGHT_ITERATIONS = 4;
+const COMPETITIVE_WEIGHT_ITERATIONS = 6;
 const ADVANTAGE_TURNS = 6;
 const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-cache.json");
 const statsCache = new Map();
@@ -51,6 +52,10 @@ const rankingModelMode = rankingModelArg ? rankingModelArg.split("=")[1] : "role
 const activeRankingCategories = rankingModelMode === "equal-shields"
   ? EQUAL_SHIELD_RANKING_CATEGORIES
   : ROLE_RANKING_CATEGORIES;
+const weightSourceArg = process.argv.find(arg => arg.startsWith("--weight-source="));
+const weightSourcePath = weightSourceArg ? weightSourceArg.split("=").slice(1).join("=") : "";
+const weightModeArg = process.argv.find(arg => arg.startsWith("--weight-mode="));
+const weightMode = weightModeArg ? weightModeArg.split("=")[1] : "competitive";
 const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
 const profileFilter = profilesArg
   ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
@@ -78,6 +83,37 @@ const cpMultipliers = [
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
+}
+
+function readJsonPath(filePath) {
+  const resolved = path.isAbsolute(filePath) ? filePath : path.join(ROOT, filePath);
+  return JSON.parse(fs.readFileSync(resolved, "utf8"));
+}
+
+function scoreToOpponentWeight(score, mode = weightMode) {
+  const value = Number(score || 0);
+  if (!Number.isFinite(value) || value <= 0) return 1;
+  if (mode === "raw") return 1;
+  if (mode === "weighted") return Math.max(.35, Math.min(2.2, Math.pow(Math.max(.05, value / 500), 2)));
+  if (value < 520) return .12;
+  return Math.max(.12, Math.min(3.2, Math.pow(Math.max(.05, value / 500), 3.2)));
+}
+
+function loadExternalOpponentWeights(filePath) {
+  if (!filePath) return null;
+  const data = readJsonPath(filePath);
+  const map = new Map();
+  for (const entry of data.entries || []) {
+    const score = modeScoreForEntry(entry, weightMode);
+    map.set(entry.id, scoreToOpponentWeight(score, weightMode));
+  }
+  return map;
+}
+
+function modeScoreForEntry(entry, mode) {
+  if (mode === "raw") return entry.rawScore || entry.averageScore || entry.overallScore;
+  if (mode === "weighted") return entry.weightedScore || entry.overallScore || entry.averageScore;
+  return entry.competitiveScore || entry.overallScore || entry.weightedScore || entry.averageScore;
 }
 
 function readWindowGlobal(relativePath, globalName) {
@@ -386,6 +422,8 @@ function categoryTemplate() {
     label: category.label,
     weight: category.weight,
     scoreTotal: 0,
+    weightedScoreTotal: 0,
+    weightTotal: 0,
     scoreSquaredTotal: 0,
     matchups: 0,
     wins: 0,
@@ -520,6 +558,8 @@ function createRankingAggregator(pool, profiles, scenarios) {
         name: p.name,
         profile,
         scoreTotal: 0,
+        weightedScoreTotal: 0,
+        scoreWeightTotal: 0,
         matchups: 0,
         wins: 0,
         losses: 0,
@@ -528,6 +568,8 @@ function createRankingAggregator(pool, profiles, scenarios) {
         categories: categoryTemplate(),
         shieldStates: Object.fromEntries(scenarios.map(([a, b]) => [`${a}-${b}`, {
           scoreTotal: 0,
+          weightedScoreTotal: 0,
+          scoreWeightTotal: 0,
           matchups: 0,
           wins: 0,
           losses: 0,
@@ -539,11 +581,13 @@ function createRankingAggregator(pool, profiles, scenarios) {
   return entries;
 }
 
-function updateCategory(entry, key, cell, moveset) {
+function updateCategory(entry, key, cell, moveset, opponentWeight = 1) {
   const category = entry && entry.categories ? entry.categories[key] : null;
   if (!category) return;
   const score = cell.result.score;
   category.scoreTotal += score;
+  category.weightedScoreTotal += score * opponentWeight;
+  category.weightTotal += opponentWeight;
   category.scoreSquaredTotal += score * score;
   category.matchups++;
   category.opponentScores[cell.defenderId] = score;
@@ -553,29 +597,33 @@ function updateCategory(entry, key, cell, moveset) {
   else category.ties++;
 }
 
-function updateBaseCategories(entry, cell, moveset) {
+function updateBaseCategories(entry, cell, moveset, opponentWeight = 1) {
   const [aShields, bShields] = cell.shieldState.split("-").map(Number);
   if (rankingModelMode === "equal-shields") {
     if (aShields !== bShields) return;
-    if (aShields === 0) updateCategory(entry, "closer", cell, moveset);
-    if (aShields === 1) updateCategory(entry, "core", cell, moveset);
-    if (aShields === 2) updateCategory(entry, "lead", cell, moveset);
+    if (aShields === 0) updateCategory(entry, "closer", cell, moveset, opponentWeight);
+    if (aShields === 1) updateCategory(entry, "core", cell, moveset, opponentWeight);
+    if (aShields === 2) updateCategory(entry, "lead", cell, moveset, opponentWeight);
     return;
   }
-  if (aShields === 2 && bShields === 2) updateCategory(entry, "lead", cell, moveset);
-  if (aShields === 0 && bShields === 0) updateCategory(entry, "closer", cell, moveset);
-  if (aShields === 0 && bShields === 2) updateCategory(entry, "attacker", cell, moveset);
-  if (aShields === bShields) updateCategory(entry, "consistency", cell, moveset);
+  if (aShields === 2 && bShields === 2) updateCategory(entry, "lead", cell, moveset, opponentWeight);
+  if (aShields === 0 && bShields === 0) updateCategory(entry, "closer", cell, moveset, opponentWeight);
+  if (aShields === 0 && bShields === 2) updateCategory(entry, "attacker", cell, moveset, opponentWeight);
+  if (aShields === bShields) updateCategory(entry, "consistency", cell, moveset, opponentWeight);
 }
 
-function updateRanking(entries, cell) {
+function updateRanking(entries, cell, opponentWeight = 1) {
   const entry = entries.get(`${cell.profile}:${cell.attackerId}`);
   if (!entry) return;
   const state = entry.shieldStates[cell.shieldState];
   entry.scoreTotal += cell.result.score;
+  entry.weightedScoreTotal += cell.result.score * opponentWeight;
+  entry.scoreWeightTotal += opponentWeight;
   entry.scoreSquaredTotal += cell.result.score * cell.result.score;
   entry.matchups++;
   state.scoreTotal += cell.result.score;
+  state.weightedScoreTotal += cell.result.score * opponentWeight;
+  state.scoreWeightTotal += opponentWeight;
   state.matchups++;
   if (cell.result.winnerSide === "A") {
     entry.wins++;
@@ -587,7 +635,7 @@ function updateRanking(entries, cell) {
     entry.ties++;
     state.ties++;
   }
-  updateBaseCategories(entry, cell, cell.attackerMoveset);
+  updateBaseCategories(entry, cell, cell.attackerMoveset, opponentWeight);
 }
 
 function weightedCategoryAverage(category, opponentWeights) {
@@ -601,6 +649,10 @@ function weightedCategoryAverage(category, opponentWeights) {
     weightTotal += weight;
   }
   return weightTotal ? total / weightTotal : null;
+}
+
+function rawCategoryAverage(category) {
+  return category.matchups ? category.scoreTotal / category.matchups : null;
 }
 
 function scoreToCategoryPercent(score) {
@@ -625,20 +677,30 @@ function categoryMoveUsage(category) {
   };
 }
 
-function buildOpponentWeights(entries) {
+function buildOpponentWeights(entries, options = {}) {
+  const iterations = options.iterations ?? CATEGORY_WEIGHT_ITERATIONS;
+  const minWeight = options.minWeight ?? .6;
+  const maxWeight = options.maxWeight ?? 1.8;
+  const exponent = options.exponent ?? 1;
+  const floor = options.floor ?? 0;
+  const center = options.center ?? 500;
   const weights = new Map();
   for (const entry of entries.values()) {
     const average = entry.matchups ? entry.scoreTotal / entry.matchups : 500;
-    weights.set(entry.id, Math.max(.6, Math.min(1.8, average / 500)));
+    const normalized = Math.max(.05, average / center);
+    const rawWeight = Math.pow(normalized, exponent);
+    weights.set(entry.id, average < floor ? minWeight : Math.max(minWeight, Math.min(maxWeight, rawWeight)));
   }
-  for (let i = 0; i < CATEGORY_WEIGHT_ITERATIONS; i++) {
+  for (let i = 0; i < iterations; i++) {
     const next = new Map(weights);
     for (const entry of entries.values()) {
       const categoryAverages = Object.values(entry.categories).map(category => weightedCategoryAverage(category, weights)).filter(Number.isFinite);
       const weightedAverage = categoryAverages.length
         ? categoryAverages.reduce((sum, value) => sum + value, 0) / categoryAverages.length
         : entry.matchups ? entry.scoreTotal / entry.matchups : 500;
-      next.set(entry.id, Math.max(.6, Math.min(1.8, weightedAverage / 500)));
+      const normalized = Math.max(.05, weightedAverage / center);
+      const rawWeight = Math.pow(normalized, exponent);
+      next.set(entry.id, weightedAverage < floor ? minWeight : Math.max(minWeight, Math.min(maxWeight, rawWeight)));
     }
     weights.clear();
     for (const [key, value] of next) weights.set(key, value);
@@ -646,8 +708,24 @@ function buildOpponentWeights(entries) {
   return weights;
 }
 
-function finalizeRankings(entries) {
+function scoreFromCategoryValues(categoryScores, fieldName) {
+  const weightedCategoryValues = activeRankingCategories.flatMap(category => {
+    const score = categoryScores[category.key] && categoryScores[category.key][fieldName];
+    return Number.isFinite(score) ? Array(Math.max(1, Math.round(category.weight * 4))).fill(score) : [];
+  });
+  const overallPercent = geometricMean(weightedCategoryValues);
+  return Number.isFinite(overallPercent) ? Math.round(overallPercent * 10) : null;
+}
+
+function finalizeRankings(entries, externalOpponentWeights = null) {
   const opponentWeights = buildOpponentWeights(entries);
+  const competitiveOpponentWeights = buildOpponentWeights(entries, {
+    iterations: COMPETITIVE_WEIGHT_ITERATIONS,
+    minWeight: .12,
+    maxWeight: 3.2,
+    exponent: 3.2,
+    floor: 520
+  });
   const rows = [...entries.values()].map(entry => {
     const shieldStates = Object.fromEntries(Object.entries(entry.shieldStates).map(([key, value]) => [key, {
       averageScore: value.matchups ? Math.round(value.scoreTotal / value.matchups) : null,
@@ -659,13 +737,21 @@ function finalizeRankings(entries) {
     const categoryScores = {};
     for (const categoryDef of activeRankingCategories) {
       const category = entry.categories[categoryDef.key];
+      const rawAverage = rawCategoryAverage(category);
       const weightedAverage = weightedCategoryAverage(category, opponentWeights);
+      const competitiveAverage = externalOpponentWeights && category.weightTotal
+        ? category.weightedScoreTotal / category.weightTotal
+        : weightedCategoryAverage(category, competitiveOpponentWeights);
       categoryScores[categoryDef.key] = {
         label: categoryDef.label,
         weight: categoryDef.weight,
-        averageScore: category.matchups ? Math.round(category.scoreTotal / category.matchups) : null,
+        averageScore: Number.isFinite(rawAverage) ? Math.round(rawAverage) : null,
         weightedScore: Number.isFinite(weightedAverage) ? Math.round(weightedAverage) : null,
-        score: Number.isFinite(weightedAverage) ? Math.round(scoreToCategoryPercent(weightedAverage)) : null,
+        competitiveScore: Number.isFinite(competitiveAverage) ? Math.round(competitiveAverage) : null,
+        rawRating: Number.isFinite(rawAverage) ? Math.round(scoreToCategoryPercent(rawAverage)) : null,
+        weightedRating: Number.isFinite(weightedAverage) ? Math.round(scoreToCategoryPercent(weightedAverage)) : null,
+        competitiveRating: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage)) : null,
+        score: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage)) : null,
         matchups: category.matchups,
         wins: category.wins,
         losses: category.losses,
@@ -673,18 +759,20 @@ function finalizeRankings(entries) {
         moveUsage: categoryMoveUsage(category)
       };
     }
-    const weightedCategoryValues = activeRankingCategories.flatMap(category => {
-      const score = categoryScores[category.key].score;
-      return Number.isFinite(score) ? Array(Math.max(1, Math.round(category.weight * 4))).fill(score) : [];
-    });
-    const overallPercent = geometricMean(weightedCategoryValues);
-    const overallScore = Number.isFinite(overallPercent) ? Math.round(overallPercent * 10) : null;
+    const rawScore = scoreFromCategoryValues(categoryScores, "rawRating");
+    const weightedScore = scoreFromCategoryValues(categoryScores, "weightedRating");
+    const competitiveScore = scoreFromCategoryValues(categoryScores, "competitiveRating");
+    const overallScore = competitiveScore;
     return {
       id: entry.id,
       name: entry.name,
       profile: entry.profile,
       averageScore: entry.matchups ? Math.round(entry.scoreTotal / entry.matchups) : null,
+      externalWeightedAverageScore: entry.scoreWeightTotal ? Math.round(entry.weightedScoreTotal / entry.scoreWeightTotal) : null,
       weightedAverageScore: opponentWeights.has(entry.id) ? Math.round((opponentWeights.get(entry.id) || 1) * 500) : null,
+      rawScore,
+      weightedScore,
+      competitiveScore,
       overallScore,
       categoryScores,
       scoreStdDev: entry.matchups ? Number(Math.sqrt(Math.max(0, (entry.scoreSquaredTotal / entry.matchups) - Math.pow(entry.scoreTotal / entry.matchups, 2))).toFixed(2)) : null,
@@ -809,6 +897,10 @@ function main() {
 
   console.log(`Loading live simulator matrix worker...`);
   const adapter = createWorkerAdapter(extractLiveWorkerSource());
+  const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
+  if (externalOpponentWeights) {
+    console.log(`Loaded ${externalOpponentWeights.size.toLocaleString()} opponent weights from ${weightSourcePath} (${weightMode}).`);
+  }
   const selfMatchupsSkipped = opponentPool === pool || opponentPoolMode === "all";
   const total = profiles.length * scenarios.length * pool.reduce((sum, p) => (
     sum + opponentPool.filter(opponent => !selfMatchupsSkipped || opponent.id !== p.id).length
@@ -860,9 +952,10 @@ function main() {
             attackerMoveset,
             result: compactResult(workerResult, a.id, b.id)
           };
+          const opponentWeight = externalOpponentWeights ? (externalOpponentWeights.get(b.id) || 1) : 1;
           if (splitRows) splitRows[shieldState].push(compactMatchupSummary(cell));
           else if (!rankingOnly) cells.push(cell);
-          updateRanking(rankingAggregator, cell);
+          updateRanking(rankingAggregator, cell, opponentWeight);
           done++;
           if (done % 1000 === 0 || done === totalWithCategories) {
             const pct = totalWithCategories ? Math.round((done / totalWithCategories) * 1000) / 10 : 100;
@@ -889,6 +982,7 @@ function main() {
               includeSwing: false,
               config: energyConfig
             });
+            const opponentWeight = externalOpponentWeights ? (externalOpponentWeights.get(b.id) || 1) : 1;
             updateCategory(categoryEntry, extraCategory.key, {
               profile,
               attackerId: a.id,
@@ -898,7 +992,7 @@ function main() {
               bShields: extraCategory.bShields,
               attackerMoveset,
               result: compactResult(workerResult, a.id, b.id)
-            }, attackerMoveset);
+            }, attackerMoveset, opponentWeight);
             done++;
             if (done % 1000 === 0 || done === totalWithCategories) {
               const pct = totalWithCategories ? Math.round((done / totalWithCategories) * 1000) / 10 : 100;
@@ -942,6 +1036,8 @@ function main() {
     allShieldStates: includeAllShieldStates,
     rankingOnly,
     splitMatchups,
+    weightSource: weightSourcePath || null,
+    weightMode: externalOpponentWeights ? weightMode : null,
     cells: done,
     baseCells: total,
     rankingModel: {
@@ -950,15 +1046,19 @@ function main() {
       categories: activeRankingCategories,
       weighting: "iterative-opponent-strength",
       weightingIterations: CATEGORY_WEIGHT_ITERATIONS,
+      competitiveWeightingIterations: COMPETITIVE_WEIGHT_ITERATIONS,
       overall: rankingModelMode === "equal-shields"
-        ? "weighted geometric mean of equal-shield category scores"
+        ? "competitive weighted geometric mean of equal-shield category scores"
         : "weighted geometric mean of category scores",
+      exposedScores: ["rawScore", "weightedScore", "competitiveScore"],
       advantageTurns: ADVANTAGE_TURNS,
       notes: rankingModelMode === "equal-shields"
         ? [
           "The main ranking simulates every candidate against every eligible opponent.",
           "Only equal-shield scenarios are used: 0-0, 1-1, and 2-2.",
-          "Category scores are weighted by opponent strength before the overall score is calculated."
+          "Raw score is the full-field average.",
+          "Weighted score iteratively values stronger opponents more.",
+          "Competitive score strongly discounts low-ranked field noise and is used as the displayed overall score."
         ]
         : [
           "Lead, Closer, Attacker, and Consistency use standard shield-state simulations.",
@@ -968,7 +1068,7 @@ function main() {
         ]
     }
   };
-  const finalizedRankingEntries = finalizeRankings(rankingAggregator);
+  const finalizedRankingEntries = finalizeRankings(rankingAggregator, externalOpponentWeights);
   const rankings = {
     schemaVersion: RANKING_SCHEMA_VERSION,
     league: "great",

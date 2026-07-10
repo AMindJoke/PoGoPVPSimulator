@@ -6,6 +6,8 @@ param(
   [string]$Profiles = "",
   [string]$Opponents = "",
   [string]$RankingModel = "",
+  [string]$WeightSource = "",
+  [string]$WeightMode = "",
   [switch]$SplitMatchups,
   [switch]$FullOutput
 )
@@ -39,6 +41,12 @@ if ($Opponents) {
 }
 if ($RankingModel) {
   $argsList += "--ranking-model=$RankingModel"
+}
+if ($WeightSource) {
+  $argsList += "--weight-source=$WeightSource"
+}
+if ($WeightMode) {
+  $argsList += "--weight-mode=$WeightMode"
 }
 if ($SplitMatchups) {
   $argsList += "--split-matchups"

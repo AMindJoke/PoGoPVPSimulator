@@ -4960,11 +4960,14 @@
         name: entry.name || p.name,
         profile: entry.profile || "default",
         rank: entry.rank,
-        score: entry.overallScore || entry.averageScore,
+        score: entry.competitiveScore || entry.overallScore || entry.weightedScore || entry.averageScore,
         stats: null,
         moves,
-        matchupScore: entry.overallScore || entry.averageScore,
+        matchupScore: entry.competitiveScore || entry.overallScore || entry.weightedScore || entry.averageScore,
         averageScore: entry.averageScore,
+        rawScore: entry.rawScore || null,
+        weightedScore: entry.weightedScore || null,
+        competitiveScore: entry.competitiveScore || null,
         categoryScores: entry.categoryScores || null,
         sourceTitle: `${cellCount.toLocaleString()} precomputed matchup cells`,
         tags: []
@@ -5055,7 +5058,7 @@
       const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
       const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
       const modelText = model
-        ? " Scores use internal role categories, opponent-strength weighting, and a geometric overall."
+        ? " Scores use internal role categories, iterative opponent-strength weighting, and a competitive geometric overall."
         : "";
       return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${modelText}</div>`;
     }
