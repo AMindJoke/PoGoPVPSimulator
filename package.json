@@ -11,6 +11,7 @@
     "generate:rankings": "npm run generate:great-league-even-shields",
     "generate:great-league-ranking:complete": "npm run generate:great-league-even-shields",
     "validate:great-league": "node tools/validate-great-league-dataset.js --write-metadata",
-    "report:great-league": "node tools/validate-great-league-dataset.js"
+    "report:great-league": "node tools/validate-great-league-dataset.js",
+    "analyze:great-league": "node tools/analyze-great-league-dataset.js"
   }
 }

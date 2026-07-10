@@ -1,4 +1,5 @@
 pvpoke-rankings-*.json
 data/ranking-chunks/
 data/matchup-cache/
+data/analysis/
 data/great-league-rank1-stats-cache.json

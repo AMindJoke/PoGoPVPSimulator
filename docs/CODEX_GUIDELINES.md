@@ -11,6 +11,7 @@ For battle logic, read:
 - `PROJECT_VISION.md`
 - `BATTLE_PHILOSOPHY.md`
 - `ROADMAP.md`
+- `ANALYSIS_ARCHITECTURE.md`
 
 For workflow and change style, read this file.
 
@@ -44,6 +45,14 @@ Unless requested, do not change:
 - Vercel config.
 - Data import scripts.
 - Generated gamemaster data.
+
+## Keep Analysis Separate
+
+Do not put matchup explanation, coaching, ranking interpretation, or analysis heuristics directly into UI rendering code or the battle engine.
+
+Use `src/analysis/` for reusable analysis contracts and helpers.
+
+The battle engine determines what happened. The analysis layer explains why it matters. The UI displays the result.
 
 ## Explain What Changed
 
