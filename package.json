@@ -13,6 +13,7 @@
     "validate:great-league": "node tools/validate-great-league-dataset.js --write-metadata",
     "report:great-league": "node tools/validate-great-league-dataset.js",
     "analyze:great-league": "node tools/analyze-great-league-dataset.js",
-    "test:matchup-inspector": "node tools/test-matchup-inspector.js"
+    "test:matchup-inspector": "node tools/test-matchup-inspector.js",
+    "reweight:great-league": "node tools/reweight-great-league-ranking.js"
   }
 }
