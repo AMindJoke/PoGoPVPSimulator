@@ -32,6 +32,8 @@ The MVP is intentionally small:
 - Open in Battle per even-shield scenario;
 - Preview only for existing matrix flip suggestions.
 
+The Inspector also displays Matchup Story above the raw even-shield overview. Matchup Story provides the concise explanation, while the existing scenario rows remain the detailed and directly actionable view. See `MATCHUP_STORY.md` for its signals, confidence rules, and template architecture.
+
 ## Orientation
 
 The analysis module supports A/B orientation and can invert cached results when only the reverse matchup is available. This keeps future offline tooling reusable for both matrix and coach-style explanations.

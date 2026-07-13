@@ -7,8 +7,10 @@
   <script src="gamemaster-data.js"></script>
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
+  <script src="src/analysis/matchup-story.js"></script>
   <style>
     :root {
+      --battle-layout-width: 1040px;
       --bg: #e5edf0;
       --panel: #fff;
       --ink: #17212f;
@@ -346,9 +348,10 @@
     }
     .setup {
       grid-template-columns: repeat(2, 296px);
-      column-gap: 228px;
+      width: min(100%, var(--battle-layout-width));
       align-items: start;
-      justify-content: center;
+      justify-content: space-between;
+      justify-self: center;
     }
     section {
       background: var(--panel);
@@ -1623,7 +1626,7 @@
       font-weight: 750;
     }
     .manual-panel {
-      width: 100%;
+      width: min(100%, 820px);
       max-width: none;
       justify-self: center;
       background: var(--panel);
@@ -2023,6 +2026,227 @@
     .inspector-panel.active {
       display: block;
     }
+    .matchup-story {
+      --story-outcome: var(--accent);
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+      margin-bottom: 13px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--story-outcome) 38%, var(--line));
+      border-top: 3px solid var(--story-outcome);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--panel) 96%, var(--story-outcome) 4%);
+      box-shadow: 0 5px 16px rgba(23, 33, 47, .06);
+    }
+    .matchup-story.outcome-win { --story-outcome: #168d78; }
+    .matchup-story.outcome-loss { --story-outcome: #d04482; }
+    .matchup-story.outcome-neutral { --story-outcome: #75808d; }
+    .matchup-story-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 11px 8px;
+    }
+    .matchup-story-title {
+      min-width: 0;
+    }
+    .matchup-story-kicker,
+    .matchup-story-label {
+      display: block;
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 950;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .matchup-story-title strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+    .matchup-story-title small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 750;
+    }
+    .matchup-story-summary {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+    .matchup-story-outcome,
+    .matchup-story-closeness,
+    .matchup-story-source,
+    .matchup-story-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 19px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .matchup-story-outcome {
+      background: var(--story-outcome);
+      color: #fff;
+    }
+    .matchup-story-closeness,
+    .matchup-story-source {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+    }
+    .matchup-story-source {
+      opacity: .8;
+    }
+    .matchup-story-why {
+      padding: 8px 11px 9px;
+      border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    }
+    .matchup-story-why p,
+    .matchup-story-block p {
+      margin: 3px 0 0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+    .matchup-story-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    }
+    .matchup-story-grid.single {
+      grid-template-columns: 1fr;
+    }
+    .matchup-story-block {
+      min-width: 0;
+      padding: 8px 11px;
+    }
+    .matchup-story-block + .matchup-story-block {
+      border-left: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    }
+    .matchup-story-block strong {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+    .matchup-story-block small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .matchup-story-conditions {
+      padding: 8px 11px 9px;
+      border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    }
+    .matchup-story-list {
+      display: grid;
+      gap: 4px;
+      margin-top: 5px;
+    }
+    .matchup-story-item {
+      display: grid;
+      grid-template-columns: 15px minmax(0, 1fr);
+      align-items: start;
+      gap: 4px;
+      min-width: 0;
+      color: var(--ink);
+      font-size: 11.5px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .matchup-story-item > span:last-child {
+      min-width: 0;
+    }
+    button.matchup-story-item {
+      width: 100%;
+      min-height: 0;
+      padding: 2px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      text-align: left;
+      cursor: pointer;
+    }
+    button.matchup-story-item:hover {
+      color: var(--accent-dark);
+      transform: none;
+    }
+    .matchup-story-item-mark {
+      color: var(--story-outcome);
+      font-size: 11px;
+      font-weight: 950;
+      text-align: center;
+    }
+    .matchup-story-empty {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .matchup-story-more {
+      border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    }
+    .matchup-story-more summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 900;
+      cursor: pointer;
+      list-style: none;
+    }
+    .matchup-story-more summary::-webkit-details-marker { display: none; }
+    .matchup-story-more summary::after {
+      content: "+";
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .matchup-story-more[open] summary::after { content: "-"; }
+    .matchup-story-more-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+      padding: 0 11px 9px;
+    }
+    .matchup-story-more-body > div {
+      min-width: 0;
+    }
+    .matchup-story-tags {
+      display: flex;
+      align-content: flex-start;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+    .matchup-story-tag {
+      border: 1px solid color-mix(in srgb, var(--story-outcome) 32%, var(--line));
+      background: color-mix(in srgb, var(--panel) 90%, var(--story-outcome) 10%);
+      color: var(--ink);
+      font-size: 9.5px;
+    }
     .inspector-head {
       display: flex;
       align-items: center;
@@ -2416,9 +2640,12 @@
     .timeline {
       --timeline-grid: color-mix(in srgb, var(--grid) 48%, transparent);
       --timeline-ruler-grid: color-mix(in srgb, var(--grid) 58%, transparent);
-      --timeline-track-height: 36px;
-      --timeline-lane-height: 22px;
+      --timeline-track-height: 42px;
+      --timeline-lane-height: 26px;
       --timeline-fast-boost: 1px;
+      --timeline-side-zone-width: 96px;
+      --timeline-badge-gap: 5px;
+      --timeline-badge-font-size: 10px;
       background: var(--panel);
       border: 1px solid var(--line);
       padding: 10px;
@@ -2429,7 +2656,7 @@
       max-width: none;
     }
     .battle-cta-row {
-      width: min(100%, 820px);
+      width: min(100%, var(--battle-layout-width));
       justify-self: center;
       display: flex;
       justify-content: center;
@@ -2588,8 +2815,8 @@
     }
     .timeline-grid {
       display: grid;
-      grid-template-columns: 54px minmax(0, 1fr);
-      grid-template-rows: 18px 38px 54px;
+      grid-template-columns: var(--timeline-side-zone-width) minmax(0, 1fr);
+      grid-template-rows: 20px var(--timeline-track-height) var(--timeline-track-height);
       gap: 0 7px;
       align-items: stretch;
     }
@@ -2603,7 +2830,7 @@
       border-radius: 6px;
       background: #f8fafc;
       box-sizing: border-box;
-      height: 110px;
+      height: 120px;
       padding-bottom: 14px;
       scrollbar-gutter: stable;
     }
@@ -2701,20 +2928,40 @@
       color: var(--muted);
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: var(--timeline-badge-gap);
       box-sizing: border-box;
       height: 100%;
       line-height: 1.15;
-      padding: 3px 0;
+      padding: 3px 4px;
       min-width: 0;
       max-width: 100%;
       overflow: hidden;
     }
     .timeline-label img {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       object-fit: contain;
+      flex: 0 0 auto;
       filter: drop-shadow(0 2px 3px rgba(23,33,47,.18));
+    }
+    .timeline-start-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      min-width: 37px;
+      max-width: 50px;
+      min-height: 22px;
+      padding: 3px 6px;
+      border: 1px solid var(--badge-border, rgba(0,0,0,.24));
+      border-radius: 999px;
+      background: var(--badge-color, var(--accent));
+      color: var(--badge-text, #fff);
+      font-size: var(--timeline-badge-font-size);
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(23,33,47,.15), inset 0 1px 0 rgba(255,255,255,.28);
     }
     .timeline-label img.shadow-pokemon {
       border-radius: 50%;
@@ -2725,8 +2972,16 @@
         drop-shadow(0 0 4px rgba(143, 79, 184, .82))
         drop-shadow(0 0 9px rgba(92, 45, 145, .55));
     }
-    #p1TimelineLabel { grid-column: 1; grid-row: 2; }
-    #p2TimelineLabel { grid-column: 1; grid-row: 3; }
+    #p1TimelineLabel {
+      grid-column: 1;
+      grid-row: 2;
+      justify-content: flex-end;
+    }
+    #p2TimelineLabel {
+      grid-column: 1;
+      grid-row: 3;
+      justify-content: flex-end;
+    }
     .timeline-ruler {
       position: relative;
       height: 18px;
@@ -2845,10 +3100,11 @@
     .timeline-block.charge {
       height: 26px;
       top: -1px;
-      border-radius: 999px;
+      border-radius: 50%;
       outline: 2px solid rgba(255, 255, 255, .86);
       z-index: 6;
-      min-width: 34px;
+      min-width: 26px;
+      padding: 0;
       overflow: visible;
       box-shadow:
         0 0 0 2px rgba(0, 0, 0, .16),
@@ -3000,13 +3256,6 @@
       border-color: rgba(211, 31, 31, .7);
       font-size: 0;
     }
-    .timeline-block.charged-ready {
-      box-shadow:
-        0 0 0 2px rgba(255, 255, 255, .72),
-        0 0 0 4px rgba(215, 48, 48, .30),
-        0 0 12px rgba(215, 48, 48, .42),
-        inset 0 0 0 1px rgba(255, 255, 255, .20);
-    }
     .timeline-block.fast.sneaked {
       border-color: rgba(255, 255, 255, .96);
       box-shadow:
@@ -3051,7 +3300,7 @@
       padding: 5px 8px;
     }
     .log-panel {
-      width: 100%;
+      width: min(100%, 820px);
       max-width: none;
       justify-self: center;
       background: var(--panel);
@@ -3061,7 +3310,7 @@
       overflow: hidden;
     }
     .analysis-grid {
-      width: min(100%, 820px);
+      width: min(100%, var(--battle-layout-width));
       max-width: calc(100vw - 32px);
       justify-self: center;
       display: grid;
@@ -3960,6 +4209,9 @@
         height: 22px;
       }
       .timeline {
+        --timeline-side-zone-width: 72px;
+        --timeline-badge-gap: 3px;
+        --timeline-badge-font-size: 8px;
         padding: 8px;
       }
       .timeline-head {
@@ -3978,7 +4230,7 @@
         gap: 5px;
       }
       .timeline-grid {
-        grid-template-columns: 42px minmax(0, 1fr);
+        grid-template-columns: var(--timeline-side-zone-width) minmax(0, 1fr);
         gap: 0 5px;
       }
       .timeline-label {
@@ -3987,6 +4239,12 @@
       .timeline-label img {
         width: 28px;
         height: 28px;
+      }
+      .timeline-start-badge {
+        min-width: 32px;
+        max-width: 39px;
+        min-height: 19px;
+        padding: 2px 4px;
       }
       .log-head {
         padding: 6px 8px;
@@ -4037,6 +4295,24 @@
         min-height: 23px;
         padding: 2px 4px;
         font-size: 10px;
+      }
+      .timeline {
+        --timeline-side-zone-width: 58px;
+        --timeline-badge-gap: 2px;
+        --timeline-badge-font-size: 7px;
+      }
+      .timeline-label {
+        padding-inline: 1px;
+      }
+      .timeline-label img {
+        width: 24px;
+        height: 24px;
+      }
+      .timeline-start-badge {
+        min-width: 30px;
+        max-width: 32px;
+        min-height: 18px;
+        padding: 2px 3px;
       }
       .move-select {
         --move-icon-size: 18px;
@@ -4367,6 +4643,36 @@
       }
       .inspector-flags {
         grid-template-columns: 1fr;
+      }
+      .matchup-story-head {
+        display: grid;
+        gap: 6px;
+        padding: 8px;
+      }
+      .matchup-story-summary {
+        justify-content: flex-start;
+      }
+      .matchup-story-why,
+      .matchup-story-block,
+      .matchup-story-conditions {
+        padding: 7px 8px;
+      }
+      .matchup-story-grid {
+        grid-template-columns: 1fr;
+      }
+      .matchup-story-block + .matchup-story-block {
+        border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+        border-left: 0;
+      }
+      .matchup-story-more summary {
+        padding: 7px 8px;
+      }
+      .matchup-story-more-body {
+        grid-template-columns: 1fr;
+        padding: 0 8px 8px;
+      }
+      .matchup-story-tags {
+        justify-content: flex-start;
       }
       .timeline-stage-mark {
         right: -1px;
@@ -4764,6 +5070,8 @@
     let initialTimelineState = null;
     let battleTurns = { A: 0, B: 0 };
     let displayedResources = {};
+    // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
+    const startingFastAdvantages = { p1: null, p2: null };
     let previewingTimeline = false;
     let previewTimelineIndex = null;
     let selectedTimelineIndex = null;
@@ -4952,8 +5260,8 @@
       });
       $("p1Pokemon").onchange = () => selectPokemon("p1", $("p1Pokemon").value, true);
       $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
-      $("p1Fast").onchange = () => syncSelection("p1");
-      $("p2Fast").onchange = () => syncSelection("p2");
+      $("p1Fast").onchange = () => handleFastMoveChange("p1");
+      $("p2Fast").onchange = () => handleFastMoveChange("p2");
       ["1", "2"].forEach(slot => {
         $(`p1Charged${slot}`).onchange = () => handleChargedMoveChange("p1", slot);
         $(`p2Charged${slot}`).onchange = () => handleChargedMoveChange("p2", slot);
@@ -4970,6 +5278,10 @@
         button.onclick = () => applyIvPreset(button.dataset.prefix, button.dataset.ivPreset);
       });
       ["p1StartEnergy", "p2StartEnergy"].forEach(id => {
+        $(id).oninput = () => {
+          clearStartingFastAdvantage(id.slice(0, 2));
+          renderTimeline();
+        };
         $(id).onchange = () => setStartEnergy(id.slice(0, 2), $(id).value);
       });
       document.querySelectorAll(".energy-stepper button").forEach(button => {
@@ -5984,6 +6296,7 @@
     }
 
     function selectPokemon(prefix, pokemonId, updateInput) {
+      clearStartingFastAdvantage(prefix);
       const p = findPokemon(pokemonId);
       if (!p) {
         $(`${prefix}Pokemon`).value = "";
@@ -6248,6 +6561,11 @@
       resetBattleStateFromSetup();
     }
 
+    function handleFastMoveChange(prefix) {
+      clearStartingFastAdvantage(prefix);
+      syncSelection(prefix);
+    }
+
     function setupReadyForBattle() {
       return ["p1", "p2"].every(sideReadyForBattle);
     }
@@ -6347,15 +6665,64 @@
       $(`${prefix}EnergyPanel`).innerHTML = "";
     }
 
-    function setStartEnergy(prefix, value) {
+    function setStartEnergy(prefix, value, options = {}) {
       $(`${prefix}StartEnergy`).value = clampEnergy(value);
+      if (!options.preserveFastAdvantage) clearStartingFastAdvantage(prefix);
       syncSelection(prefix);
     }
 
     function stepStartEnergy(prefix, direction) {
       const fast = moveMap.get($(`${prefix}Fast`).value);
       const step = Math.max(1, Number(fast?.energyGain || 1));
-      setStartEnergy(prefix, Number($(`${prefix}StartEnergy`).value || 0) + direction * step);
+      const before = clampEnergy($(`${prefix}StartEnergy`).value || 0);
+      const after = clampEnergy(before + direction * step);
+      const existing = startingFastAdvantages[prefix];
+      const sameMove = existing && existing.fastMoveId === fast?.id && existing.energyGain === step;
+      let next = null;
+
+      if (direction > 0 && after - before === step) {
+        if (sameMove) {
+          next = { ...existing, count: existing.count + 1, energyEquivalent: existing.energyEquivalent + step };
+        } else if (before === 0 && fast) {
+          next = startingFastAdvantageMetadata(fast, 1);
+        }
+      } else if (direction < 0 && sameMove && before - after === step && existing.count > 1) {
+        next = { ...existing, count: existing.count - 1, energyEquivalent: existing.energyEquivalent - step };
+      }
+
+      startingFastAdvantages[prefix] = next;
+      $(`${prefix}StartEnergy`).value = after;
+      if (previewState.active || !document.body.classList.contains("battle-results-visible")) {
+        syncSelection(prefix);
+        return;
+      }
+      renderTimelinePokemonZone(prefix, prefix === "p1" ? left : right);
+    }
+
+    function startingFastAdvantageMetadata(fast, count) {
+      const safeCount = Math.max(0, Math.floor(Number(count || 0)));
+      const energyGain = Math.max(1, Number(fast?.energyGain || 1));
+      if (!fast || !safeCount) return null;
+      return {
+        count: safeCount,
+        fastMoveId: fast.id,
+        fastMoveName: fast.name,
+        abbreviation: moveShortLabel(fast),
+        type: fast.type,
+        energyGain,
+        energyEquivalent: safeCount * energyGain
+      };
+    }
+
+    function clearStartingFastAdvantage(prefix) {
+      if (prefix in startingFastAdvantages) startingFastAdvantages[prefix] = null;
+    }
+
+    function validStartingFastAdvantage(prefix) {
+      const advantage = startingFastAdvantages[prefix];
+      const selectedFast = moveMap.get($(`${prefix}Fast`)?.value);
+      if (!advantage || !selectedFast || advantage.fastMoveId !== selectedFast.id || advantage.count <= 0) return null;
+      return advantage;
     }
 
     function clampEnergy(value) {
@@ -8234,15 +8601,17 @@
       const evenStates = [[0, 0], [1, 1], [2, 2]];
       const scenarios = evenStates.map(([aShields, bShields]) => {
         const key = shieldMatrixCacheKey(signature, aShields, bShields);
-        const source = shieldMatrixCache.has(key) ? "Precomputed" : "Live Simulation";
         const result = cachedShieldMatrixCell(signature, aShields, bShields);
+        const source = result.analysisSource || "Precomputed";
         const rating = matrixScoreRating(result.score);
         return {
           aShields,
           bShields,
+          shieldState: `${aShields}-${bShields}`,
           result,
           rating,
           source,
+          winnerSide: rating.side === "A" || rating.side === "B" ? rating.side : "draw",
           winner: inspectorWinnerName(result.score),
           closeness: inspectorCloseness(result.score),
           remainingHp: inspectorHpSummary(result),
@@ -8250,7 +8619,10 @@
           swing: result.swing || null
         };
       });
-      return {
+      const currentA = Number($("p1Shields").value || 0);
+      const currentB = Number($("p2Shields").value || 0);
+      const selectedShieldState = currentA === currentB ? `${currentA}-${currentB}` : "1-1";
+      const data = {
         a: left.p,
         b: right.p,
         aMoves: inspectorMoves(left),
@@ -8260,8 +8632,11 @@
         cpCap: 1500,
         source: scenarios.every(scenario => scenario.source === "Precomputed") ? "Precomputed" : "Live Simulation",
         scenarios,
-        flags: matchupInspectorFlags(scenarios)
+        flags: matchupInspectorFlags(scenarios),
+        selectedShieldState
       };
+      data.story = buildInspectorMatchupStory(data);
+      return data;
     }
 
     function matchupInspectorHtml(data) {
@@ -8287,7 +8662,7 @@
       const flags = data.flags.length
         ? data.flags.map(flag => `<span class="inspector-flag"><strong>${escapeHtml(flag.label)}</strong><small>${escapeHtml(flag.reason)}</small></span>`).join("")
         : `<span class="inspector-flag"><strong>Stable</strong><small>No reliable extra flags in even-shield states.</small></span>`;
-      return `<div class="inspector-head">
+      return `${matchupStoryHtml(data.story, data)}<div class="inspector-head">
         <div class="inspector-title">
           <strong>Even-shield overview</strong>
           <span>${escapeHtml(data.league)} · CP ${data.cpCap} · ${escapeHtml(data.profile)}</span>
@@ -8308,6 +8683,72 @@
       <div class="inspector-scenarios">${scenarioHtml}</div>
       <div class="inspector-insights-title">Key reads</div>
       <div class="inspector-flags">${flags}</div>`;
+    }
+
+    function buildInspectorMatchupStory(data) {
+      const builder = window.PvPeakMatchupStory && window.PvPeakMatchupStory.buildMatchupStory;
+      if (typeof builder !== "function") return null;
+      return builder({
+        perspective: "A",
+        pokemon: { a: data.a, b: data.b },
+        selectedShieldState: data.selectedShieldState,
+        source: data.source,
+        flags: data.flags,
+        scenarios: data.scenarios.map(scenario => ({
+          shieldState: scenario.shieldState,
+          score: scenario.result.score,
+          winnerSide: scenario.winnerSide,
+          closeness: scenario.closeness,
+          source: scenario.source,
+          swing: scenario.swing,
+          result: scenario.result
+        }))
+      });
+    }
+
+    function matchupStoryHtml(story, data) {
+      if (!story) return `<div class="matchup-story outcome-neutral"><div class="matchup-story-head"><div class="matchup-story-title"><span class="matchup-story-kicker">Matchup Story</span><strong>Analysis unavailable</strong><small>Structured story data could not be loaded.</small></div></div></div>`;
+      const outcomeClass = story.summary.outcome === "Win" ? "win" : story.summary.outcome === "Loss" ? "loss" : "neutral";
+      const threats = story.keyThreats.map(threat => `<div class="matchup-story-item"><span class="matchup-story-item-mark">!</span><span><strong>${escapeHtml(threat.moveName || threat.label)}</strong><small>${escapeHtml(threat.reason)}</small></span></div>`).join("");
+      const difficultyReasons = story.difficulty.reasons.length
+        ? story.difficulty.reasons.map(escapeHtml).join(" &middot; ")
+        : "Limited reliable complexity signals";
+      const threatBlock = threats ? `<div class="matchup-story-block"><span class="matchup-story-label">Key threat</span><div class="matchup-story-list">${threats}</div></div>` : "";
+      const difficultyBlock = `<div class="matchup-story-block"><span class="matchup-story-label">Difficulty</span><strong>${escapeHtml(story.difficulty.level)}</strong><small>${difficultyReasons}</small></div>`;
+      const winConditions = story.winConditions.length
+        ? story.winConditions.map(condition => matchupStoryConditionHtml(condition, story.summary.shieldState)).join("")
+        : `<div class="matchup-story-empty">No reproducible alternate win condition is currently detected.</div>`;
+      const mistakes = story.commonMistakes.map(mistake => `<div class="matchup-story-item" title="${escapeHtml(mistake.reason)}"><span class="matchup-story-item-mark">!</span><span>${escapeHtml(mistake.label)}</span></div>`).join("");
+      const tags = story.tags.map(tag => `<span class="matchup-story-tag">${escapeHtml(tag)}</span>`).join("");
+      const more = mistakes || tags ? `<details class="matchup-story-more"><summary>More tactical details</summary><div class="matchup-story-more-body"><div>${mistakes ? `<span class="matchup-story-label">Common mistakes</span><div class="matchup-story-list">${mistakes}</div>` : ""}</div><div class="matchup-story-tags">${tags}</div></div></details>` : "";
+      return `<div class="matchup-story outcome-${outcomeClass}" role="region" aria-label="Matchup Story">
+        <div class="matchup-story-head">
+          <div class="matchup-story-title">
+            <span class="matchup-story-kicker">Matchup Story</span>
+            <strong>${escapeHtml(data.a.name)} vs ${escapeHtml(data.b.name)}</strong>
+            <small>${escapeHtml(story.summary.shieldState)} shields &middot; ${escapeHtml(data.profile)}</small>
+          </div>
+          <div class="matchup-story-summary">
+            <span class="matchup-story-outcome">${escapeHtml(story.summary.outcome)}</span>
+            <span class="matchup-story-closeness">${escapeHtml(story.summary.closeness)}</span>
+            <span class="matchup-story-source">${escapeHtml(story.summary.source)}</span>
+          </div>
+        </div>
+        <div class="matchup-story-why"><span class="matchup-story-label">Why?</span><p>${escapeHtml(story.why.text)}</p></div>
+        <div class="matchup-story-grid${threatBlock ? "" : " single"}">${threatBlock}${difficultyBlock}</div>
+        <div class="matchup-story-conditions"><span class="matchup-story-label">Win conditions</span><div class="matchup-story-list">${winConditions}</div></div>
+        ${more}
+      </div>`;
+    }
+
+    function matchupStoryConditionHtml(condition, shieldState) {
+      const action = condition.action;
+      const [aShields, bShields] = String(shieldState || "1-1").split("-").map(Number);
+      const content = `<span class="matchup-story-item-mark">+</span><span>${escapeHtml(condition.label)}</span>`;
+      if (!condition.reproducible || !action || action.type !== "preview" || !action.ref) {
+        return `<div class="matchup-story-item">${content}</div>`;
+      }
+      return `<button type="button" class="matchup-story-item" data-inspector-preview data-a-shields="${aShields}" data-b-shields="${bShields}" data-swing-side="${escapeHtml(action.ref.side)}" data-swing-fast-moves="${Number(action.ref.fastMoveCount || 0)}" data-swing-line-type="${escapeHtml(action.ref.lineType || "mixed")}" title="Preview this reproducible line">${content}</button>`;
     }
 
     function inspectorMoves(side) {
@@ -8358,18 +8799,18 @@
       const flags = [];
       const winners = new Set(scenarios.map(scenario => scenario.rating.side || "Draw"));
       if (winners.size > 1) {
-        flags.push({ label: "Shield dependent", reason: "Even-shield winners or outcomes change across 0, 1, and 2 shields." });
+        flags.push({ id: "shield-dependent", label: "Shield dependent", reason: "Even-shield winners or outcomes change across 0, 1, and 2 shields." });
       }
       if (scenarios.some(scenario => Math.abs(scenario.result.score - 500) <= 35)) {
-        flags.push({ label: "Close result", reason: "At least one even-shield state is within 35 rating points of neutral." });
+        flags.push({ id: "close-matchup", label: "Close result", reason: "At least one even-shield state is within 35 rating points of neutral." });
       }
       const swing = scenarios.find(scenario => scenario.swing);
       if (swing?.swing) {
         const sideName = swing.swing.side === "A" ? left.p.name : right.p.name;
-        flags.push({ label: "Potential flip", reason: `${sideName} has a concrete ${swing.swing.title || "timing"} line.` });
+        flags.push({ id: "potential-flip", label: "Potential flip", reason: `${sideName} has a concrete ${swing.swing.title || "timing"} line.` });
       }
       if (scenarios.some(scenario => scenario.swing?.lineType === "bait")) {
-        flags.push({ label: "Bait sensitive", reason: "A detected flip line depends on bait or shield-pressure ordering." });
+        flags.push({ id: "bait-sensitive", label: "Bait sensitive", reason: "A detected flip line depends on bait or shield-pressure ordering." });
       }
       return flags;
     }
@@ -8379,6 +8820,7 @@
       if (!shieldMatrixCache.has(key)) {
         const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
         result.swingReady = false;
+        result.analysisSource = "Live Simulation";
         shieldMatrixCache.set(key, result);
         persistShieldMatrixCells([[key, result]]);
         trimShieldMatrixCache();
@@ -8392,6 +8834,7 @@
       if (!existing || existing.swingReady) return false;
       const enriched = simulateShieldMatrixCell(aShields, bShields, { includeSwing: true });
       enriched.swingReady = true;
+      enriched.analysisSource = existing.analysisSource || "Live Simulation";
       shieldMatrixCache.set(key, enriched);
       persistShieldMatrixCells([[key, enriched]]);
       trimShieldMatrixCache();
@@ -8590,6 +9033,7 @@
         shieldMatrixComputeTimeouts.delete(message.key);
       }
       if (message.type === "matrixCellResult" && message.key && message.result) {
+        message.result.analysisSource = message.result.analysisSource || "Live Simulation";
         shieldMatrixCache.set(message.key, message.result);
         persistShieldMatrixCells([[message.key, message.result]]);
         trimShieldMatrixCache();
@@ -8692,6 +9136,7 @@
         const extraEnergy = Math.max(0, Number(fast?.energyGain || 0) * swingFastMoves);
         const previousEnergy = Number($(`${prefix}StartEnergy`).value || 0);
         $(`${prefix}StartEnergy`).value = clampEnergy(previousEnergy + extraEnergy);
+        startingFastAdvantages[prefix] = startingFastAdvantageMetadata(fast, swingFastMoves);
         enterPreviewMode(originalState, matrixPreviewSuggestion(swingSide, swingFastMoves, fast, swingLineType));
         startBattle({
           preFastAdvantage: { side: swingSide, fastMoves: swingFastMoves, energyAlreadyApplied: true },
@@ -9290,6 +9735,10 @@
       });
       return {
         controls,
+        startingFastAdvantages: {
+          p1: startingFastAdvantages.p1 ? { ...startingFastAdvantages.p1 } : null,
+          p2: startingFastAdvantages.p2 ? { ...startingFastAdvantages.p2 } : null
+        },
         advancedOpen: {
           p1: {
             iv: document.querySelector(".trainer-card.a .iv-panel")?.open || false,
@@ -9310,6 +9759,8 @@
       restorePokemonSetupFromState("p1", state.controls);
       restorePokemonSetupFromState("p2", state.controls);
       restoreSimpleControls(state.controls);
+      startingFastAdvantages.p1 = state.startingFastAdvantages?.p1 ? { ...state.startingFastAdvantages.p1 } : null;
+      startingFastAdvantages.p2 = state.startingFastAdvantages?.p2 ? { ...state.startingFastAdvantages.p2 } : null;
       restoreAdvancedOpenState(state.advancedOpen);
       restoreToggleVisuals("p1");
       restoreToggleVisuals("p2");
@@ -9864,16 +10315,8 @@
         hideTimelineMoveTooltip();
         return;
       }
-      if (left) {
-        $("p1TimelineLabel").innerHTML = `<img alt="">`;
-        $("p1TimelineLabel").title = left.p.name;
-        setPokemonImage($("p1TimelineLabel").querySelector("img"), left.p);
-      }
-      if (right) {
-        $("p2TimelineLabel").innerHTML = `<img alt="">`;
-        $("p2TimelineLabel").title = right.p.name;
-        setPokemonImage($("p2TimelineLabel").querySelector("img"), right.p);
-      }
+      renderTimelinePokemonZone("p1", left);
+      renderTimelinePokemonZone("p2", right);
       const chargeSlots = timelineChargeSlots();
       const chargeStarts = uniqueChargeStarts(chargeSlots);
       const isFit = timelineIsFit();
@@ -9888,6 +10331,26 @@
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       if (isFit) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+    }
+
+    function renderTimelinePokemonZone(prefix, combatant) {
+      const label = $(`${prefix}TimelineLabel`);
+      if (!label || !combatant) return;
+      const badge = timelineStartingFastBadge(prefix, combatant);
+      const sprite = `<img alt="${escapeHtml(combatant.p.name)}">`;
+      label.innerHTML = `${sprite}${badge}`;
+      label.title = combatant.p.name;
+      setPokemonImage(label.querySelector("img"), combatant.p);
+    }
+
+    function timelineStartingFastBadge(prefix, combatant) {
+      const advantage = validStartingFastAdvantage(prefix);
+      if (!advantage) return "";
+      const color = typeColors[advantage.type] || "#156f8f";
+      const textColor = contrastText(color);
+      const abbreviation = advantage.abbreviation || moveShortLabel(combatant.fast);
+      const description = `${combatant.p.name} starts with ${advantage.count} ${advantage.fastMoveName} advantage, equal to ${advantage.energyEquivalent} energy`;
+      return `<span class="timeline-start-badge" role="note" aria-label="${escapeHtml(description)}" title="${escapeHtml(description)}" style="--badge-color:${color};--badge-border:${darken(color, .18)};--badge-text:${textColor}">+${advantage.count} ${escapeHtml(abbreviation)}</span>`;
     }
 
     function timelineIsFit() {
@@ -9958,7 +10421,7 @@
             : visualTurn(event.start, chargeSlots, false);
         const center = (baseTurn + chargeWindowTurns) * turnPx;
         const left = Math.max(2, center - width / 2);
-        const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : `${moveTypeIcon(event.move)}${escapeHtml(moveShortLabel(event.move))}`;
+        const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : moveTypeIcon(event.move);
         const effectClass = isCharge ? timelineStageEffectClass(event) : "";
         const trainerClass = isCharge ? ` trainer-${trainer.toLowerCase()}` : "";
         const cls = (isShield ? "timeline-block shield" : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + (selectedTimelineIndex === index ? " selected" : "");
@@ -10012,7 +10475,7 @@
       const visualStart = timelineFastVisualTurn(event, chargeSlots);
       const size = timelineFastSize(turnPx);
       const left = visualStart * turnPx - size / 2;
-      const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${reachesChargedEnergy(event) ? " charged-ready" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+      const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
       const top = Math.max(2, (22 - size) / 2);
       return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${timelineMarkers(event, eventIndex, left + size + 8)}`;
     }
@@ -10066,9 +10529,7 @@
     }
 
     function timelineChargeWidth(turnPx) {
-      return timelineIsFit()
-        ? Math.max(20, Math.min(34, turnPx + 16))
-        : Math.max(34, Math.min(46, turnPx + 18));
+      return 26;
     }
 
     function timelineShieldWidth(turnPx) {
@@ -10139,15 +10600,6 @@
       return -1;
     }
 
-    function reachesChargedEnergy(event) {
-      const combatant = event.trainer === "A" ? left : right;
-      const state = event.state && event.state[event.trainer];
-      const charged = validChargedMoves(combatant);
-      if (!combatant || !state || !charged.length) return false;
-      const cheapest = Math.min(...charged.map(move => move.energyCost || 0).filter(Boolean));
-      return cheapest > 0 && event.energyBefore < cheapest && state.energy >= cheapest;
-    }
-
     function toggleTheme() {
       const current = document.body.dataset.theme || "light";
       const next = current === "neo" ? "light" : current === "light" ? "dark" : "neo";
@@ -10157,7 +10609,7 @@
 
     function moveShortLabel(move) {
       if (move.abbreviation) return move.abbreviation;
-      return move.name.split(/\\s+/).map(part => part.charAt(0)).join("").slice(0, 4).toUpperCase();
+      return move.name.split(/\s+/).map(part => part.charAt(0)).join("").slice(0, 4).toUpperCase();
     }
 
     function title(s) {
