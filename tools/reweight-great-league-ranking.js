@@ -9,6 +9,7 @@ const RANKING_PATH = path.join(ROOT, "data", "great-league-rankings.json");
 const RANKING_JS_PATH = path.join(ROOT, "data", "great-league-rankings.js");
 const FULL_RANKING_PATH = path.join(ROOT, "data", "rankings", "great-league-full.json");
 const META_PATH = path.join(ROOT, "data", "great-league-meta.json");
+const META_WEIGHTS_PATH = path.join(ROOT, "data", "great-league-meta-weights.json");
 const CACHE_DIR = path.join(ROOT, "data", "matchup-cache", "great-league", "rank1");
 
 const CATEGORIES = [
@@ -26,10 +27,20 @@ const MODEL = {
   metaShare: 0.7,
   fieldShare: 0.2,
   consistencyShare: 0.1,
-  metaSeedMultiplier: 2.35,
-  top100Multiplier: 1.25,
-  top250Multiplier: 1.1,
-  weightInertia: 0.65,
+  candidateSimulationShare: 0.72,
+  candidatePriorShare: 0.28,
+  candidatePriorScores: {
+    core: 570,
+    common: 535,
+    spice: 455,
+    unweighted: 495
+  },
+  stableWeightShare: 0.72,
+  dynamicWeightShare: 0.28,
+  metaSeedMultiplier: 1.6,
+  top100Multiplier: 1.06,
+  top250Multiplier: 1.02,
+  weightInertia: 0.82,
   minWeight: 0.12,
   maxWeight: 4,
   exponent: 3.2,
@@ -88,15 +99,93 @@ function strengthWeight(score) {
   return clamp(MODEL.minWeight, MODEL.maxWeight, raw);
 }
 
-function buildWeights(entries, metaIds, previousWeights = null) {
+function loadMetaWeightConfig() {
+  if (!fs.existsSync(META_WEIGHTS_PATH)) return { ids: new Set(), weights: new Map(), config: null };
+  const config = readJson(META_WEIGHTS_PATH);
+  const tierWeights = config.tierWeights || {};
+  const ids = new Set();
+  const weights = new Map();
+  const entryMeta = new Map();
+  for (const entry of config.entries || []) {
+    if (!entry || !entry.id) continue;
+    const tier = entry.tier || "spice";
+    const baseWeight = Number.isFinite(Number(entry.usageWeight))
+      ? Number(entry.usageWeight)
+      : Number(tierWeights[tier] || 1);
+    const confidence = Number.isFinite(Number(entry.confidence))
+      ? clamp(0.1, 1, Number(entry.confidence))
+      : 1;
+    const multiplier = baseWeight * confidence;
+    ids.add(entry.id);
+    weights.set(entry.id, Math.max(weights.get(entry.id) || 0, multiplier));
+    entryMeta.set(entry.id, {
+      tier,
+      usageWeight: baseWeight,
+      confidence,
+      effectiveWeight: multiplier,
+      roles: entry.roles || [],
+      notes: entry.notes || ""
+    });
+  }
+  for (const [tier, pokemonIds] of Object.entries(config.tiers || {})) {
+    const multiplier = Number(tierWeights[tier] || 1);
+    for (const id of pokemonIds || []) {
+      ids.add(id);
+      weights.set(id, Math.max(weights.get(id) || 0, multiplier));
+      if (!entryMeta.has(id)) {
+        entryMeta.set(id, {
+          tier,
+          usageWeight: multiplier,
+          confidence: 1,
+          effectiveWeight: multiplier,
+          roles: [],
+          notes: ""
+        });
+      }
+    }
+  }
+  return { ids, weights, entryMeta, config };
+}
+
+function stableBaselineWeight(entry, metaIds, metaWeights) {
+  let weight = 1;
+  if (metaWeights.has(entry.id)) weight *= metaWeights.get(entry.id);
+  else if (metaIds.has(entry.id)) weight *= MODEL.metaSeedMultiplier;
+  return clamp(MODEL.minWeight, MODEL.maxWeight, weight);
+}
+
+function candidatePriorScore(entry, entryMeta) {
+  const meta = entryMeta && entryMeta.get(entry.id);
+  const tier = meta && meta.tier ? meta.tier : "unweighted";
+  const tierScore = MODEL.candidatePriorScores[tier] || MODEL.candidatePriorScores.unweighted;
+  const confidence = meta && Number.isFinite(Number(meta.confidence))
+    ? clamp(0.1, 1, Number(meta.confidence))
+    : 1;
+  return Math.round(500 + ((tierScore - 500) * confidence));
+}
+
+function applyCandidatePrior(simulationScore, priorScore) {
+  if (!Number.isFinite(simulationScore)) return simulationScore;
+  if (!Number.isFinite(priorScore)) return simulationScore;
+  return Math.round(
+    (simulationScore * MODEL.candidateSimulationShare) +
+    (priorScore * MODEL.candidatePriorShare)
+  );
+}
+
+function buildWeights(entries, metaIds, metaWeights, previousWeights = null) {
   const topRankById = new Map(entries.map(entry => [entry.id, Number(entry.rank || 99999)]));
   return new Map(entries.map(entry => {
-    let weight = strengthWeight(baseStrengthScore(entry));
-    if (metaIds.has(entry.id)) weight *= MODEL.metaSeedMultiplier;
+    const stable = stableBaselineWeight(entry, metaIds, metaWeights);
+    let dynamic = strengthWeight(baseStrengthScore(entry));
     const rank = topRankById.get(entry.id) || 99999;
-    if (rank <= 100) weight *= MODEL.top100Multiplier;
-    else if (rank <= 250) weight *= MODEL.top250Multiplier;
-    const target = clamp(MODEL.minWeight, MODEL.maxWeight, weight);
+    if (rank <= 100) dynamic *= MODEL.top100Multiplier;
+    else if (rank <= 250) dynamic *= MODEL.top250Multiplier;
+    const target = clamp(
+      MODEL.minWeight,
+      MODEL.maxWeight,
+      (stable * MODEL.stableWeightShare) + (dynamic * MODEL.dynamicWeightShare)
+    );
     const previous = previousWeights && previousWeights.has(entry.id) ? previousWeights.get(entry.id) : target;
     const blended = (previous * MODEL.weightInertia) + (target * (1 - MODEL.weightInertia));
     return [entry.id, clamp(MODEL.minWeight, MODEL.maxWeight, blended)];
@@ -132,7 +221,7 @@ function cellScore(value) {
   return Number(value && value.score);
 }
 
-function accumulateRows(ranking, weights, metaIds) {
+function accumulateRows(ranking, weights, metaIds, entryMeta = new Map()) {
   const knownIds = new Set(ranking.entries.map(entry => entry.id));
   const rows = [];
   let filesRead = 0;
@@ -236,7 +325,9 @@ function accumulateRows(ranking, weights, metaIds) {
     const rawScore = scoreFromCategoryValues(categoryScores, "rawRating");
     const weightedScore = scoreFromCategoryValues(categoryScores, "weightedRating");
     const metaScore = scoreFromCategoryValues(categoryScores, "metaRating");
-    const competitiveScore = scoreFromCategoryValues(categoryScores, "competitiveRating");
+    const simulationCompetitiveScore = scoreFromCategoryValues(categoryScores, "competitiveRating");
+    const priorScore = candidatePriorScore(base, entryMeta);
+    const competitiveScore = applyCandidatePrior(simulationCompetitiveScore, priorScore);
     const dampenedAverage = matchups ? dampenedScoreTotal / matchups : null;
 
     rows.push({
@@ -248,6 +339,9 @@ function accumulateRows(ranking, weights, metaIds) {
       rawScore,
       weightedScore,
       metaScore,
+      simulationCompetitiveScore,
+      candidatePriorScore: priorScore,
+      candidateMetaTier: entryMeta.has(base.id) ? entryMeta.get(base.id).tier : "unweighted",
       competitiveScore,
       overallScore: competitiveScore,
       categoryScores,
@@ -288,17 +382,19 @@ function run(options = {}) {
   const passes = Math.max(1, Number(options.passes || MODEL.passes));
   const ranking = readJson(RANKING_PATH);
   const meta = fs.existsSync(META_PATH) ? readJson(META_PATH) : { pokemon: [] };
-  const metaIds = new Set(meta.pokemon || []);
+  const metaWeightConfig = loadMetaWeightConfig();
+  const metaIds = new Set([...(meta.pokemon || []), ...metaWeightConfig.ids]);
+  const metaWeights = metaWeightConfig.weights;
   let current = ranking.entries;
-  let weights = buildWeights(current, metaIds);
+  let weights = buildWeights(current, metaIds, metaWeights);
   const summaries = [];
   let last = null;
 
   for (let pass = 1; pass <= passes; pass++) {
     const workingRanking = { ...ranking, entries: current };
-    last = accumulateRows(workingRanking, weights, metaIds);
+    last = accumulateRows(workingRanking, weights, metaIds, metaWeightConfig.entryMeta);
     current = last.rows;
-    weights = buildWeights(current, metaIds, weights);
+    weights = buildWeights(current, metaIds, metaWeights, weights);
     summaries.push({
       pass,
       filesRead: last.filesRead,
@@ -317,21 +413,36 @@ function run(options = {}) {
         version: MODEL.version,
         mode: "equal-shields",
         weighting: MODEL.label,
-        overall: "70% meta-seed score, 20% weighted field score, 10% consistency-adjusted score, using dampened matchup ratings",
+        overall: "Simulation score adjusted by a light candidate meta prior. Simulation score uses 70% meta-seed score, 20% weighted field score, 10% consistency-adjusted score, using dampened matchup ratings.",
         dampening: {
           formula: "500 + tanh((score - 500) / scale) * cap",
           scale: MODEL.dampeningScale,
           cap: MODEL.dampeningCap
         },
         mix: {
-          metaShare: MODEL.metaShare,
-          fieldShare: MODEL.fieldShare,
-          consistencyShare: MODEL.consistencyShare
-        },
-        notes: [
+        metaShare: MODEL.metaShare,
+        fieldShare: MODEL.fieldShare,
+        consistencyShare: MODEL.consistencyShare
+      },
+      metaWeights: {
+        source: "data/great-league-meta-weights.json",
+        tierWeights: metaWeightConfig.config ? metaWeightConfig.config.tierWeights : null,
+        confidenceWeights: metaWeightConfig.config ? metaWeightConfig.config.confidenceWeights : null,
+        curatedPokemonCount: metaWeightConfig.ids.size,
+        stableWeightShare: MODEL.stableWeightShare,
+        dynamicWeightShare: MODEL.dynamicWeightShare
+      },
+      candidatePrior: {
+        simulationShare: MODEL.candidateSimulationShare,
+        priorShare: MODEL.candidatePriorShare,
+        tierScores: MODEL.candidatePriorScores,
+        note: "Candidate tier is a light prior, not a manual ranking override. Strong spice can still rise, but core/common candidates no longer compete on simulation output alone."
+      },
+      notes: [
           "Raw matchup simulations are preserved in the cache.",
           "Ranking v2 compresses extreme wins/losses so farming weak field entries matters less.",
           "Meta seed opponents receive extra weight.",
+          "Candidate meta tier now provides a light prior to reduce unrealistic spice over-ranking.",
           "Top-ranked opponents from each pass receive additional weight.",
           "The displayed competitive score is based on equal-shield scenarios: 0-0, 1-1, and 2-2."
         ]
@@ -341,6 +452,8 @@ function run(options = {}) {
         model: MODEL.label,
         passes,
         metaSeedCount: metaIds.size,
+        curatedMetaWeightCount: metaWeightConfig.ids.size,
+        curatedMetaSchemaVersion: metaWeightConfig.config ? metaWeightConfig.config.schemaVersion : null,
         cellsRead: last ? last.cellsRead : 0,
         filesRead: last ? last.filesRead : 0,
         parameters: MODEL
