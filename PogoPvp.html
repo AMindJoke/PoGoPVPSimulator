@@ -1773,9 +1773,18 @@
       font-weight: 750;
     }
     .battle-review {
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+      justify-self: stretch;
       margin-top: 9px;
-      padding-top: 8px;
+      padding: 8px 0 0;
+      border: 0;
       border-top: 1px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
     }
     .battle-review[hidden] {
       display: none;
@@ -1803,7 +1812,9 @@
     }
     .battle-review-list {
       display: grid;
+      grid-template-columns: minmax(0, 1fr);
       gap: 4px;
+      width: 100%;
     }
     .battle-review-item {
       display: grid;
@@ -1811,6 +1822,8 @@
       align-items: center;
       gap: 7px;
       width: 100%;
+      max-width: none;
+      box-sizing: border-box;
       min-height: 46px;
       padding: 6px 8px;
       border: 0;
@@ -2556,8 +2569,9 @@
     }
     .inspector-flags {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 5px;
+      width: 100%;
       margin-top: 5px;
     }
     .inspector-insights-title {
@@ -2568,6 +2582,8 @@
       text-transform: uppercase;
     }
     .inspector-flag {
+      width: 100%;
+      box-sizing: border-box;
       min-width: 0;
       padding: 5px 7px;
       border: 1px solid var(--line);

@@ -14,8 +14,7 @@
     const candidates = [
       ...criticalShieldItems(insights, events, combatants),
       closingItem(events, combatants),
-      stageEffectItem(events, combatants),
-      sneakItem(events, combatants)
+      stageEffectItem(events, combatants)
     ].filter(Boolean).sort((a, b) => b.priority - a.priority || a.turn - b.turn);
     const seenEvents = new Set();
     const items = [];
@@ -109,22 +108,6 @@
       turn: affected.turn,
       eventIndex: affected.index,
       priority: 60
-    };
-  }
-
-  function sneakItem(events, combatants) {
-    const sneaked = events.find(event => event.kind === "fast" && event.sneaked);
-    if (!sneaked) return null;
-    const actor = combatantName(combatants, sneaked.side);
-    return {
-      key: `sneak:${sneaked.index}`,
-      type: "timing",
-      label: "Timing",
-      title: `${actor} sneaks ${sneaked.moveName}`,
-      explanation: `${sneaked.moveName} completes during ${sneaked.sneakChargeName || "the charged move"}, adding its damage and energy at that timing point.`,
-      turn: sneaked.turn,
-      eventIndex: sneaked.index,
-      priority: 50
     };
   }
 

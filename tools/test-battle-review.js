@@ -84,7 +84,12 @@ function testLimitsAndDeduplicatesMoments() {
   assert.strictEqual(new Set(review.items.map(item => item.eventIndex)).size, review.items.length);
   assert(review.items.some(item => item.type === "closing"));
   assert(review.items.some(item => item.type === "effect"));
-  assert(review.items.some(item => item.type === "timing"));
+  assert(!review.items.some(item => item.type === "timing"));
+}
+
+function testRoutineSneakIsNotPresentedAsTacticalAdvice() {
+  const review = buildBattleReview({ combatants: combatants(), events: events() });
+  assert(!review.items.some(item => /sneak/i.test(`${item.title} ${item.explanation}`)));
 }
 
 function testDoesNotInventUnmatchedCriticalDecision() {
@@ -105,5 +110,6 @@ function testDoesNotInventUnmatchedCriticalDecision() {
 
 testPrioritizesVerifiedTurningPoint();
 testLimitsAndDeduplicatesMoments();
+testRoutineSneakIsNotPresentedAsTacticalAdvice();
 testDoesNotInventUnmatchedCriticalDecision();
 console.log("Battle Review tests passed.");
