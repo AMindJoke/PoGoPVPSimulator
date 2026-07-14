@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
 const MATCHUP_SCHEMA_VERSION = 2;
 const RANKING_SCHEMA_VERSION = 2;
-const MATRIX_VERSION = "live-worker-v1";
+const MATRIX_VERSION = "live-worker-v2";
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
 const ROLE_RANKING_CATEGORIES = [
@@ -1340,8 +1340,26 @@ function writeRankingScript(rankings) {
   fs.writeFileSync(file, `window.GREAT_LEAGUE_RANKINGS = ${JSON.stringify(rankings, null, 2)};\n`, "utf8");
 }
 
-if (mergeChunks) {
-  mergeRankingChunks();
-} else {
-  main();
+if (require.main === module) {
+  if (mergeChunks) {
+    mergeRankingChunks();
+  } else {
+    main();
+  }
 }
+
+module.exports = {
+  MATRIX_VERSION,
+  DEFAULT_PROFILE,
+  RANK1_PROFILE,
+  readWindowGlobal,
+  extractLiveWorkerSource,
+  createWorkerAdapter,
+  normalizeMove,
+  normalizePokemon,
+  defaultStats,
+  rank1Stats,
+  createCombatant,
+  createBattleConfig,
+  cloneBattleConfig
+};

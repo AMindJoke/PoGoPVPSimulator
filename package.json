@@ -14,6 +14,7 @@
     "report:great-league": "node tools/validate-great-league-dataset.js",
     "analyze:great-league": "node tools/analyze-great-league-dataset.js",
     "test:matchup-inspector": "node tools/test-matchup-inspector.js",
+    "test:charged-planner": "node tools/test-charged-move-planner.js",
     "reweight:great-league": "node tools/reweight-great-league-ranking.js"
   }
 }

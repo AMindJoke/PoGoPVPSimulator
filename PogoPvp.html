@@ -5119,6 +5119,11 @@
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
     let suppressRender = false;
+    let activeAutoTurnContext = null;
+    let chargedContinuationDepth = 0;
+    let chargedContinuationOpening = null;
+    let chargedDecisionDiagnosticsEnabled = false;
+    let lastChargedDecisionDiagnostics = [];
     let pageScrollAnimation = null;
     let timelineReplayAnimation = null;
     let timelineReplayTimer = null;
@@ -5127,14 +5132,14 @@
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
     const shieldMatrixCacheLimit = 900;
-    const shieldMatrixCacheVersion = "matrix-v10";
+    const shieldMatrixCacheVersion = "matrix-v11";
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
     let matrixComputeWorkerSeq = 0;
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
-    const metaMatchupCacheVersion = "meta-v4";
+    const metaMatchupCacheVersion = "meta-v5";
     const metaRankingDataUrl = "data/great-league-rankings.json";
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
@@ -5534,8 +5539,20 @@
         battleSnapshot,
         validChargedMoves,
         autoAction,
+        automaticBattleStep,
+        runAutomaticBattleToEnd,
         chooseChargedMoveDecision,
         chooseChargedMove,
+        continuationChargedMoveDecision,
+        chargedContinuationCandidates,
+        shouldEvaluateChargedContinuations,
+        hasGuaranteedStatEffect,
+        guaranteedStatEffectChangesState,
+        statArrayChangesState,
+        simulateChargedCandidateContinuation,
+        compareChargedContinuationResults,
+        chargedContinuationOutcome,
+        chargedMoveEffectSummary,
         bestNoShieldChargedPlan,
         bestShieldPressurePlan,
         isDominatedPlanState,
@@ -5617,6 +5634,11 @@
         let initialTimelineState = null;
         let battleTurns = { A: 0, B: 0 };
         let suppressRender = true;
+        let activeAutoTurnContext = null;
+        let chargedContinuationDepth = 0;
+        let chargedContinuationOpening = null;
+        let chargedDecisionDiagnosticsEnabled = false;
+        let lastChargedDecisionDiagnostics = [];
         let currentMatrixConfig = null;
 
         function render() {}
@@ -5666,29 +5688,9 @@
           if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
           initialTimelineState = battleSnapshot();
           battleTurns = { A: 0, B: 0 };
-          let guard = 0;
-          while (!battleEnded() && guard < 1000) {
-            const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
-            const timelineStart = timeline.length;
-            const actors = [];
-            if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
-            if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
-            if (!actors.length) break;
-            actors.sort(([a], [b]) => {
-              const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
-              const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
-              if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
-              return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
-            });
-            let progressed = false;
-            for (const [attacker, defender] of actors) {
-              if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
-              progressed = autoAction(attacker, defender) || progressed;
-            }
-            resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
-            if (!progressed) break;
-            guard++;
-          }
+          chargedDecisionDiagnosticsEnabled = !!options.debugChargedDecisions;
+          lastChargedDecisionDiagnostics = [];
+          runAutomaticBattleToEnd(1000);
           let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
           result = applyAdvantagePressureFloor(result, {
             aShields,
@@ -5697,14 +5699,16 @@
             startEnergyA,
             startEnergyB
           });
+          if (chargedDecisionDiagnosticsEnabled) result.chargedDecisionDiagnostics = lastChargedDecisionDiagnostics;
+          chargedDecisionDiagnosticsEnabled = false;
           return result;
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, config } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, config } = event.data || {};
           try {
             currentMatrixConfig = config;
-            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing });
+            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing, debugChargedDecisions });
             result.swingReady = !!includeSwing;
             self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
           } catch (error) {
@@ -6963,12 +6967,13 @@
         shields: combatant.shields,
         baiting: combatant.baiting,
         shieldMode: combatant.shieldMode,
+        linePolicy: combatant.linePolicy || null,
         chargedTaken: combatant.chargedTaken || 0,
         attack: combatant.attack,
         defense: combatant.defense,
         attackStage: combatant.attackStage || 0,
         defenseStage: combatant.defenseStage || 0,
-        lastFastStart: null,
+        lastFastStart: combatant.lastFastStart ?? null,
         shadowAtkMult: combatant.shadowAtkMult || 1,
         shadowDefMult: combatant.shadowDefMult || 1
       };
@@ -7478,6 +7483,20 @@
 
     function autoAction(attacker, defender) {
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      if (chargedContinuationOpening && !chargedContinuationOpening.completed && chargedContinuationOpening.trainer === attacker.trainer) {
+        const targetMove = validChargedMoves(attacker).find(move => move.id === chargedContinuationOpening.moveId);
+        if (!targetMove) {
+          chargedContinuationOpening.completed = true;
+        } else if (attacker.energy >= targetMove.energyCost) {
+          chargedContinuationOpening.completed = true;
+          return useCharge(attacker, defender, attacker.charged.indexOf(targetMove), {
+            aiReason: "projected charged continuation",
+            deferCooldownReset: true
+          });
+        } else {
+          return useFast(attacker, defender);
+        }
+      }
       const available = validChargedMoves(attacker).filter(m => attacker.energy >= m.energyCost);
       if (available.length) {
         const decision = chooseChargedMoveDecision(attacker, defender, available);
@@ -7494,6 +7513,51 @@
       } else {
         return useFast(attacker, defender);
       }
+    }
+
+    function automaticBattleStep() {
+      if (battleEnded()) return false;
+      const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+      const timelineStart = timeline.length;
+      const actors = [];
+      if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
+      if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
+      if (!actors.length) return false;
+      actors.sort(([a], [b]) => {
+        const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
+        const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
+        if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
+        return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
+      });
+      const previousContext = activeAutoTurnContext;
+      const context = {
+        currentTurn,
+        timelineStart,
+        actorOrder: actors.map(([actor]) => actor.trainer),
+        acted: new Set()
+      };
+      activeAutoTurnContext = context;
+      let progressed = false;
+      try {
+        for (const [attacker, defender] of actors) {
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          context.acted.add(attacker.trainer);
+          progressed = autoAction(attacker, defender) || progressed;
+        }
+        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+      } finally {
+        activeAutoTurnContext = previousContext;
+      }
+      return progressed;
+    }
+
+    function runAutomaticBattleToEnd(maxSteps = 1000) {
+      let steps = 0;
+      while (!battleEnded() && steps < maxSteps) {
+        if (!automaticBattleStep()) break;
+        steps++;
+      }
+      return steps;
     }
 
     function chooseChargedMoveDecision(attacker, defender, available) {
@@ -7522,9 +7586,6 @@
       if (cmpSetup) {
         return { move: null, reason: `one ${attacker.fast.name} sets up a winning CMP into ${cmpSetup.name}` };
       }
-      if (opponentPressureForcesThrow(attacker, defender)) {
-        return { move: urgentChargedMove(attacker, defender, available, straight, cheapest), reason: "opponent pressure forces a throw now" };
-      }
       if (attacker.linePolicy === "force-straight") {
         const preferredStraight = validChargedMoves(attacker).sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || b.energyCost - a.energyCost)[0];
         const fallback = forcedStraightFallbackMove(attacker, defender, available, preferredStraight);
@@ -7532,6 +7593,13 @@
         return available.includes(preferredStraight)
           ? { move: preferredStraight, reason: "forced straight-line pressure" }
           : { move: null, reason: `waiting for ${preferredStraight.name}` };
+      }
+      const continuationDecision = chargedContinuationDepth === 0
+        ? continuationChargedMoveDecision(attacker, defender, available)
+        : null;
+      if (continuationDecision) return continuationDecision;
+      if (opponentPressureForcesThrow(attacker, defender)) {
+        return { move: urgentChargedMove(attacker, defender, available, straight, cheapest), reason: "opponent pressure forces a throw now" };
       }
       const noShieldPlan = bestNoShieldChargedPlan(attacker, defender, available);
       if (noShieldPlan) {
@@ -7572,6 +7640,201 @@
       return hasNukeReady
         ? { move: cheapest, reason: `baiting behind ${credibleNuke.name}` }
         : { move: straight, reason: "best available charged move" };
+    }
+
+    function continuationChargedMoveDecision(attacker, defender, available) {
+      if (!shouldEvaluateChargedContinuations(attacker, defender, available)) return null;
+      const candidates = chargedContinuationCandidates(attacker, available);
+      const evaluations = candidates
+        .map(move => simulateChargedCandidateContinuation(attacker, defender, move))
+        .filter(Boolean)
+        .sort(compareChargedContinuationResults);
+      if (!evaluations.length) return null;
+      const best = evaluations[0];
+      if (chargedDecisionDiagnosticsEnabled) {
+        lastChargedDecisionDiagnostics.push({
+          turn: Number(battleTurns[attacker.trainer] || 0),
+          trainer: attacker.trainer,
+          pokemon: attacker.p.name,
+          candidates: evaluations.map(item => item.diagnostic),
+          chosenMove: best.move.name,
+          chosenMoveReady: available.some(move => move.id === best.move.id),
+          reason: "superior projected battle continuation"
+        });
+      }
+      const ready = available.some(move => move.id === best.move.id);
+      return {
+        move: ready ? best.move : null,
+        reason: `${ready ? "projected continuation favors" : "waiting one fast for"} ${best.move.name} (${best.outcomeLabel}, score ${Math.round(best.perspectiveScore)})`
+      };
+    }
+
+    function chargedContinuationCandidates(attacker, available) {
+      const candidates = [...available];
+      if (!attacker?.fast) return candidates;
+      const gain = Math.max(1, Number(attacker.fast.energyGain || 0));
+      for (const move of validChargedMoves(attacker)) {
+        if (candidates.some(candidate => candidate.id === move.id)) continue;
+        const fastsNeeded = Math.max(0, Math.ceil((Number(move.energyCost || 0) - attacker.energy) / gain));
+        if (fastsNeeded === 1 && hasGuaranteedStatEffect(move) && !wouldOvercapAfterFast(attacker)) candidates.push(move);
+      }
+      return candidates;
+    }
+
+    function shouldEvaluateChargedContinuations(attacker, defender, available) {
+      if (!attacker || !defender || !Array.isArray(available) || !available.length) return false;
+      const candidates = chargedContinuationCandidates(attacker, available);
+      if (candidates.length < 2) return false;
+      return candidates.some(move => guaranteedStatEffectChangesState(attacker, defender, move));
+    }
+
+    function hasGuaranteedStatEffect(move) {
+      if (!move || Number(move.buffApplyChance || 0) < 1) return false;
+      return [move.buffs, move.buffsSelf, move.buffsOpponent]
+        .some(buffs => Array.isArray(buffs) && buffs.some(value => Number(value || 0) !== 0));
+    }
+
+    function guaranteedStatEffectChangesState(attacker, defender, move) {
+      if (!hasGuaranteedStatEffect(move)) return false;
+      if (move.buffTarget === "both") {
+        return statArrayChangesState(attacker, move.buffsSelf) || statArrayChangesState(defender, move.buffsOpponent);
+      }
+      const target = move.buffTarget === "opponent" ? defender : attacker;
+      return statArrayChangesState(target, move.buffs);
+    }
+
+    function statArrayChangesState(combatant, buffs) {
+      if (!combatant || !Array.isArray(buffs)) return false;
+      const nextAttack = clampStage(Number(combatant.attackStage || 0) + Number(buffs[0] || 0));
+      const nextDefense = clampStage(Number(combatant.defenseStage || 0) + Number(buffs[1] || 0));
+      return nextAttack !== Number(combatant.attackStage || 0) || nextDefense !== Number(combatant.defenseStage || 0);
+    }
+
+    function simulateChargedCandidateContinuation(attacker, defender, move) {
+      const saved = {
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns,
+        suppressRender,
+        activeAutoTurnContext,
+        chargedContinuationOpening
+      };
+      const trainer = attacker.trainer;
+      const startShields = attacker.shields;
+      const immediateDamage = estimate(attacker, defender, move);
+      const originalContext = activeAutoTurnContext;
+      let evaluation = null;
+      chargedContinuationDepth++;
+      try {
+        left = JSON.parse(JSON.stringify(saved.left));
+        right = JSON.parse(JSON.stringify(saved.right));
+        log = [];
+        timeline = JSON.parse(JSON.stringify(saved.timeline || []));
+        initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
+        battleTurns = { ...saved.battleTurns };
+        suppressRender = true;
+        activeAutoTurnContext = null;
+        chargedContinuationOpening = { trainer, moveId: move.id, completed: false };
+
+        const branchAttacker = trainer === "A" ? left : right;
+        const branchDefender = trainer === "A" ? right : left;
+        const moveIndex = branchAttacker.charged.findIndex(candidate => candidate && (candidate.id === move.id || candidate.name === move.name));
+        if (moveIndex < 0) return null;
+        const currentTurn = Number(originalContext?.currentTurn ?? battleTurns[trainer] ?? 0);
+        const timelineStart = timeline.length;
+        autoAction(branchAttacker, branchDefender);
+
+        if (!battleEnded() && originalContext) {
+          for (const side of originalContext.actorOrder || []) {
+            if (side === trainer || originalContext.acted?.has(side)) continue;
+            const nextAttacker = side === "A" ? left : right;
+            const nextDefender = side === "A" ? right : left;
+            if (nextAttacker.hp <= 0 || nextDefender.hp <= 0) break;
+            autoAction(nextAttacker, nextDefender);
+          }
+        }
+        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        const steps = runAutomaticBattleToEnd(1000);
+        const result = scoreShieldMatrixResult(left, right, { includeSwing: false });
+        const finalAttacker = trainer === "A" ? left : right;
+        const finalDefender = trainer === "A" ? right : left;
+        const outcome = chargedContinuationOutcome(finalAttacker, finalDefender);
+        const perspectiveScore = trainer === "A" ? result.score : 1000 - result.score;
+        evaluation = {
+          move,
+          outcome,
+          outcomeLabel: outcome === 2 ? "win" : outcome === 1 ? "draw" : "loss",
+          perspectiveScore,
+          hpRatio: finalAttacker.maxHp ? finalAttacker.hp / finalAttacker.maxHp : 0,
+          energy: finalAttacker.energy,
+          shields: finalAttacker.shields,
+          shieldsSpent: Math.max(0, startShields - finalAttacker.shields),
+          steps,
+          diagnostic: {
+            move: move.name,
+            immediateDamage,
+            energyCost: Number(move.energyCost || 0),
+            effects: chargedMoveEffectSummary(move),
+            projectedResult: outcome === 2 ? "win" : outcome === 1 ? "draw" : "loss",
+            projectedScore: Math.round(perspectiveScore),
+            remainingHp: finalAttacker.hp,
+            remainingEnergy: finalAttacker.energy,
+            remainingShields: finalAttacker.shields,
+            opponentRemainingHp: finalDefender.hp,
+            continuationSteps: steps
+          }
+        };
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        chargedContinuationDepth--;
+      }
+      return evaluation;
+    }
+
+    function compareChargedContinuationResults(a, b) {
+      return b.outcome - a.outcome ||
+        b.perspectiveScore - a.perspectiveScore ||
+        b.hpRatio - a.hpRatio ||
+        b.energy - a.energy ||
+        b.shields - a.shields ||
+        a.shieldsSpent - b.shieldsSpent ||
+        a.steps - b.steps ||
+        a.move.energyCost - b.move.energyCost ||
+        a.move.name.localeCompare(b.move.name);
+    }
+
+    function chargedContinuationOutcome(attacker, defender) {
+      if (attacker.hp > 0 && defender.hp <= 0) return 2;
+      if (attacker.hp <= 0 && defender.hp <= 0) return 1;
+      return 0;
+    }
+
+    function chargedMoveEffectSummary(move) {
+      if (!hasGuaranteedStatEffect(move)) return "none";
+      const parts = [];
+      const append = (target, buffs) => {
+        if (!Array.isArray(buffs)) return;
+        if (Number(buffs[0] || 0)) parts.push(`${target} ATK ${stageDeltaText(Number(buffs[0]))}`);
+        if (Number(buffs[1] || 0)) parts.push(`${target} DEF ${stageDeltaText(Number(buffs[1]))}`);
+      };
+      if (move.buffTarget === "both") {
+        append("self", move.buffsSelf);
+        append("opponent", move.buffsOpponent);
+      } else {
+        append(move.buffTarget === "opponent" ? "opponent" : "self", move.buffs);
+      }
+      return parts.join(", ") || "none";
     }
 
     function bestNoShieldChargedPlan(attacker, defender, available) {
@@ -8044,23 +8307,7 @@
       const targetTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0) + 20;
       suppressRender = true;
       while (!battleEnded() && Math.min(battleTurns.A || 0, battleTurns.B || 0) < targetTurn) {
-        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
-        const timelineStart = timeline.length;
-        const actors = [];
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
-        if (!actors.length) break;
-        actors.sort(([a], [b]) => {
-          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
-          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
-          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
-          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
-        });
-        for (const [attacker, defender] of actors) {
-          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
-          if (!autoAction(attacker, defender) && !battleEnded()) break;
-        }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        if (!automaticBattleStep()) break;
       }
       suppressRender = false;
       render();
@@ -8086,30 +8333,8 @@
     }
 
     function runBattleToEndNow(options = {}) {
-      let guard = 0;
       suppressRender = true;
-      while (!battleEnded() && guard < 1000) {
-        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
-        const timelineStart = timeline.length;
-        const actors = [];
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
-        if (!actors.length) break;
-        actors.sort(([a], [b]) => {
-          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
-          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
-          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
-          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
-        });
-        let progressed = false;
-        for (const [attacker, defender] of actors) {
-          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
-          progressed = autoAction(attacker, defender) || progressed;
-        }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
-        if (!progressed) break;
-        guard++;
-      }
+      runAutomaticBattleToEnd(1000);
       suppressRender = false;
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
@@ -9314,29 +9539,7 @@
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
-      let guard = 0;
-      while (!battleEnded() && guard < 1000) {
-        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
-        const timelineStart = timeline.length;
-        const actors = [];
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
-        if (!actors.length) break;
-        actors.sort(([a], [b]) => {
-          const aChargeReady = validChargedMoves(a).some(move => a.energy >= move.energyCost);
-          const bChargeReady = validChargedMoves(b).some(move => b.energy >= move.energyCost);
-          if (aChargeReady !== bChargeReady) return aChargeReady ? -1 : 1;
-          return aChargeReady && bChargeReady ? b.attack - a.attack : 0;
-        });
-        let progressed = false;
-        for (const [attacker, defender] of actors) {
-          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
-          progressed = autoAction(attacker, defender) || progressed;
-        }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
-        if (!progressed) break;
-        guard++;
-      }
+      runAutomaticBattleToEnd(1000);
       let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
       result = applyAdvantagePressureFloor(result, {
         aShields,
