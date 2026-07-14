@@ -38,14 +38,14 @@ function battleConfig(aId, bId, options = {}) {
   return config;
 }
 
-function simulate(config, shields = 1) {
+function simulate(config, shields = 1, options = {}) {
   sequence++;
   return adapter.simulate({
     id: sequence,
     key: `charged-planner-${sequence}`,
     aShields: shields,
     bShields: shields,
-    includeSwing: false,
+    includeSwing: !!options.includeSwing,
     debugChargedDecisions: true,
     config
   });
@@ -103,6 +103,10 @@ assert.strictEqual(candidate(seakingDecision, "Icy Wind").effects, "opponent ATK
 assert.strictEqual(candidate(seakingDecision, "Icy Wind").projectedResult, "win");
 assert.strictEqual(candidate(seakingDecision, "Drill Run").projectedResult, "loss");
 
+const dewgongSwing = simulate(battleConfig("dewgong", "azumarill"), 1, { includeSwing: true });
+assert.strictEqual(dewgongSwing.swingReady, true);
+assert(dewgongSwing.details && dewgongSwing.details.flipPotential, "Dewgong vs Azumarill should complete worker-side swing analysis.");
+
 const noEffectConfig = battleConfig("quagsire", "corsola_galarian", {
   aCharged: ["AQUA_TAIL", "MUD_BOMB"]
 });
@@ -132,7 +136,7 @@ assert(lateSableyeDecision, "Expected a later Sableye decision after the defensi
 assert.strictEqual(lateSableyeDecision.chosenMove, "Foul Play");
 assert(candidate(lateSableyeDecision, "Foul Play").projectedScore >= candidate(lateSableyeDecision, "Drain Punch").projectedScore);
 
-[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, seaking, noEffectFirst, selfDebuff, sableyeZero, sableyeTwo].forEach(assertBounded);
+[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, seaking, dewgongSwing, noEffectFirst, selfDebuff, sableyeZero, sableyeTwo].forEach(assertBounded);
 
 console.log(`Charged continuation planner regressions passed in ${Date.now() - startedAt}ms.`);
 console.log(`Sableye 1-1: ${sableyeDecision.chosenMove}; Seaking 1-1: ${seakingDecision.chosenMove}; Raikou 1-1: ${selfDebuffDecision.chosenMove}.`);
