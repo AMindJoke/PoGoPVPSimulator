@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const childProcess = require("child_process");
+const { BATTLE_ENGINE_VERSION, createMatchupProvenance } = require("../src/reliability/battle-reliability");
 
 const ROOT = path.resolve(__dirname, "..");
 const DEFAULT_DATASET = "data/great-league-rankings.json";
@@ -105,6 +106,13 @@ function validateDataset(dataset, options = {}) {
   if (!metadata.generatedAt) issues.push("metadata.generatedAt is missing.");
   if (!metadata.datasetVersion) warnings.push("metadata.datasetVersion is missing.");
   if (!metadata.gameMasterHash) warnings.push("metadata.gameMasterHash is missing.");
+  const provenance = createMatchupProvenance({
+    source: "offline-generated",
+    datasetEngineVersion: metadata.engineVersion || metadata.matrixVersion,
+    datasetVersion: metadata.datasetVersion,
+    generatedAt: metadata.generatedAt
+  });
+  if (provenance.stale) warnings.push(`Dataset planner version is stale: ${provenance.datasetEngineVersion || "missing"}; current ${BATTLE_ENGINE_VERSION}.`);
   if (!shieldStates.length) issues.push("metadata.shieldScenarios is missing or empty.");
   if (expectedEntries && entries.length !== expectedEntries) {
     issues.push(`Entry count mismatch: found ${entries.length}, metadata says ${expectedEntries}.`);
@@ -264,6 +272,12 @@ function buildReport({ datasetPath = DEFAULT_DATASET, validation, dataset, gener
   const cells = Number(metadata.cells || 0);
   const sanity = sanityReport(dataset);
   const golden = evaluateGoldenMatchups();
+  const provenance = createMatchupProvenance({
+    source: "offline-generated",
+    datasetEngineVersion: metadata.engineVersion || metadata.matrixVersion,
+    datasetVersion: metadata.datasetVersion || DATASET_VERSION,
+    generatedAt: metadata.generatedAt
+  });
 
   return {
     generatedAt,
@@ -271,6 +285,8 @@ function buildReport({ datasetPath = DEFAULT_DATASET, validation, dataset, gener
     generation: {
       datasetVersion: metadata.datasetVersion || DATASET_VERSION,
       simulatorVersion: metadata.matrixVersion || null,
+      currentEngineVersion: BATTLE_ENGINE_VERSION,
+      provenance,
       simulatorSource: metadata.simulatorSource || null,
       gameMasterHash: metadata.gameMasterHash || hashFile("gamemaster-data.js"),
       gitCommitSha: metadata.gitCommitSha || gitSha(),

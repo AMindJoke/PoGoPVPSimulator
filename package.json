@@ -15,6 +15,10 @@
     "analyze:great-league": "node tools/analyze-great-league-dataset.js",
     "test:matchup-inspector": "node tools/test-matchup-inspector.js",
     "test:charged-planner": "node tools/test-charged-move-planner.js",
+    "test:battle-regressions": "node tools/run-battle-regressions.js",
+    "test:battle-reliability": "node tools/test-battle-reliability.js",
+    "test:battle-review": "node tools/test-battle-review.js",
+    "scan:battle-contradictions": "node tools/scan-battle-contradictions.js",
     "reweight:great-league": "node tools/reweight-great-league-ranking.js"
   }
 }

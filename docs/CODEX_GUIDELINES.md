@@ -12,6 +12,7 @@ For battle logic, read:
 - `BATTLE_PHILOSOPHY.md`
 - `ROADMAP.md`
 - `ANALYSIS_ARCHITECTURE.md`
+- `BATTLE_ENGINE_RELIABILITY.md`
 
 For workflow and change style, read this file.
 

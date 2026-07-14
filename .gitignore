@@ -3,3 +3,5 @@ data/ranking-chunks/
 data/matchup-cache/
 data/analysis/
 data/great-league-rank1-stats-cache.json
+reports/battle-regressions/
+reports/battle-contradictions/

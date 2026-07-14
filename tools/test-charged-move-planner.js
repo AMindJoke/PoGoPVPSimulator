@@ -91,6 +91,11 @@ const shadowSableyeTwo = simulate(battleConfig("sableye_shadow", "empoleon", {
 }), 2);
 assert.strictEqual(decisionsFor(shadowSableyeZero, "Sableye (Shadow)")[0].chosenMove, "Foul Play");
 assert.strictEqual(decisionsFor(shadowSableyeTwo, "Sableye (Shadow)")[0].chosenMove, "Drain Punch");
+const equalCostSwing = simulate(battleConfig("sableye_shadow", "empoleon", {
+  aCharged: ["FOUL_PLAY", "DRAIN_PUNCH"]
+}), 1, { includeSwing: true });
+const equalCostCandidates = equalCostSwing.details?.flipPotential?.candidates || [];
+assert(!equalCostCandidates.some(item => item.lineType === "bait" || item.lineType === "opponent-bait"), "Equal-cost charged moves must not be classified as bait lines.");
 
 const seaking = simulate(battleConfig("seaking", "hawlucha", {
   aCharged: ["DRILL_RUN", "ICY_WIND"]
@@ -136,7 +141,7 @@ assert(lateSableyeDecision, "Expected a later Sableye decision after the defensi
 assert.strictEqual(lateSableyeDecision.chosenMove, "Foul Play");
 assert(candidate(lateSableyeDecision, "Foul Play").projectedScore >= candidate(lateSableyeDecision, "Drain Punch").projectedScore);
 
-[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, seaking, dewgongSwing, noEffectFirst, selfDebuff, sableyeZero, sableyeTwo].forEach(assertBounded);
+[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, seaking, dewgongSwing, noEffectFirst, selfDebuff, sableyeZero, sableyeTwo].forEach(assertBounded);
 
 console.log(`Charged continuation planner regressions passed in ${Date.now() - startedAt}ms.`);
 console.log(`Sableye 1-1: ${sableyeDecision.chosenMove}; Seaking 1-1: ${seakingDecision.chosenMove}; Raikou 1-1: ${selfDebuffDecision.chosenMove}.`);

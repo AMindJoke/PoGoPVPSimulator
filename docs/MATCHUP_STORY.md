@@ -48,6 +48,12 @@ New templates should:
 4. avoid Pokemon-specific checks;
 5. respect the item limits exported as `MATCHUP_STORY_LIMITS`.
 
+Copy should read like concise competitive advice. Prefer complete, actionable sentences such as "One extra fast move is enough" or "Baiting isn't required." Avoid exposing implementation language such as detected branches, projections, continuations, or timing-cost labels.
+
+A line is bait-dependent only when the Pokemon can spend less energy on one charged move before threatening a more expensive one. Choosing between equal-cost charged moves is move sequencing, not baiting.
+
+Flip checks add starting energy without applying fast-move damage. Describe this as stored energy or an energy lead; never imply that the opponent was given a free fast move or sneak unless the analysis model explicitly supplies that evidence.
+
 ## Confidence
 
 - `high`: precomputed result with a valid score;

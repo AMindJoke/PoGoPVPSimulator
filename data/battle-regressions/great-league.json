@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "league": "great",
+  "description": "Small, reviewed battle-planner regression corpus.",
+  "cases": [
+    {
+      "id": "sableye-empoleon-1s",
+      "description": "Sableye should value the guaranteed defense boost before its closing Foul Play.",
+      "category": ["charged-move-choice", "buff-debuff-valuation", "shielding"],
+      "league": "great",
+      "pokemonA": { "id": "sableye", "moves": { "charged": ["FOUL_PLAY", "DRAIN_PUNCH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "empoleon", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "DRAIN_PUNCH" },
+        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"]
+      },
+      "notes": "Regression for guaranteed defensive buff valuation and shield-aware continuation."
+    },
+    {
+      "id": "shadow-sableye-empoleon-1s",
+      "description": "Shadow Sableye should still value Drain Punch despite its altered bulk and damage.",
+      "category": ["charged-move-choice", "buff-debuff-valuation"],
+      "league": "great",
+      "pokemonA": { "id": "sableye_shadow", "moves": { "charged": ["FOUL_PLAY", "DRAIN_PUNCH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "empoleon", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "DRAIN_PUNCH" },
+        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"]
+      },
+      "notes": "Covers shadow modifiers without a Pokemon-specific engine exception."
+    },
+    {
+      "id": "seaking-hawlucha-1s",
+      "description": "Seaking should wait for Icy Wind when its guaranteed attack debuff wins the continuation.",
+      "category": ["charged-move-choice", "buff-debuff-valuation", "energy-management"],
+      "league": "great",
+      "pokemonA": { "id": "seaking", "moves": { "charged": ["DRILL_RUN", "ICY_WIND"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "hawlucha", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "ICY_WIND" },
+        "requiredReasonCodes": ["GUARANTEED_ATTACK_DEBUFF_VALUE"]
+      },
+      "notes": "Protects full-continuation comparison from immediate energy-efficiency bias."
+    },
+    {
+      "id": "raikou-pachirisu-self-debuff-1s",
+      "description": "Raikou should avoid committing to Wild Charge before the safer Aura Sphere sequence.",
+      "category": ["self-debuff-sequencing", "charged-move-choice"],
+      "league": "great",
+      "pokemonA": { "id": "raikou", "moves": { "fast": "THUNDER_SHOCK", "charged": ["WILD_CHARGE", "AURA_SPHERE"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "pachirisu", "moves": { "fast": "VOLT_SWITCH", "charged": ["HYPER_FANG", "THUNDER_PUNCH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "AURA_SPHERE" },
+        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "WILD_CHARGE" },
+        "requiredReasonCodes": ["AVOID_EARLY_SELF_DEBUFF"]
+      },
+      "notes": "The fixture checks sequencing, not a hardcoded winner."
+    },
+    {
+      "id": "bastiodon-altaria-0s-control",
+      "description": "A straightforward hard-counter control without meaningful stat-effect complexity.",
+      "category": ["charged-move-choice"],
+      "league": "great",
+      "pokemonA": { "id": "bastiodon", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "pokemonB": { "id": "altaria", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "forbiddenReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE", "GUARANTEED_ATTACK_DEBUFF_VALUE", "AVOID_EARLY_SELF_DEBUFF"]
+      },
+      "notes": "Control case for broad regressions in otherwise simple battle flow."
+    },
+    {
+      "id": "dedenne-shadow-sableye-smart-shields-2s",
+      "description": "Smart Dedenne should shield before its first Parabolic Charge defense boost when the alternative loses.",
+      "category": ["shielding", "buff-debuff-valuation"],
+      "league": "great",
+      "pokemonA": { "id": "dedenne", "moves": { "charged": ["PARABOLIC_CHARGE", "PLAY_ROUGH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 2 },
+      "pokemonB": { "id": "sableye_shadow", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 2 },
+      "policy": { "baiting": "selective", "shieldMode": "smart" },
+      "expectations": {
+        "winner": "A",
+        "selectedShieldAtDecision": { "side": "A", "occurrence": 0, "action": "SHIELD" },
+        "requiredReasonCodes": ["SHIELD_PRESERVES_WIN_CONDITION"]
+      },
+      "notes": "Protects sequence-aware shielding before a guaranteed defensive boost without hardcoding either Pokemon in the planner."
+    }
+  ]
+}

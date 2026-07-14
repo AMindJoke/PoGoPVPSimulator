@@ -105,6 +105,29 @@ function testAlternateLineActionReference() {
   assert.equal(condition.action.ref.fastMoveCount, 1);
   assert.equal(condition.action.ref.fastMoveName, "Pulse");
   assert.equal(condition.action.ref.lineType, "bait");
+  assert.equal(condition.label, "Gain one extra Pulse.");
+  assert.equal(story.commonMistakes[0].label, "Throwing before gaining one extra Pulse.");
+}
+
+function testNaturalCompetitiveCopy() {
+  const story = buildMatchupStory(baseInput({
+    flags: [],
+    scenarios: [scenario({
+      result: { score: 470, details: {} },
+      swing: { ...scenario().swing, lineType: "straight" }
+    })]
+  }));
+  const visibleCopy = [
+    story.why.text,
+    story.difficulty.text,
+    ...story.keyThreats.flatMap(item => [item.label, item.reason]),
+    ...story.winConditions.map(item => item.label),
+    ...story.commonMistakes.flatMap(item => [item.label, item.reason])
+  ].join(" ");
+  assert.match(story.why.text, /one extra Pulse/i);
+  assert.match(story.why.text, /baiting isn't required/i);
+  assert.match(story.difficulty.text, /\.$/);
+  assert(!/concrete flippable|detected|projected|continuation|timing cost|identified tactical branch|evaluation indicates|simulation determined/i.test(visibleCopy));
 }
 
 function testShieldStateSelection() {
@@ -126,7 +149,17 @@ function testOrientation() {
   const story = buildMatchupStory(input);
   assert.equal(story.summary.outcome, "Win");
   assert(!story.winConditions.some(item => item.side === "A" && item.reproducible));
-  assert(story.commonMistakes.some(item => item.label.includes("Alpha")));
+  assert(story.commonMistakes.some(item => item.label === "Ignoring Alpha's stored-energy lead."));
+  assert(story.commonMistakes.some(item => /energy lead worth one Pulse/i.test(item.reason)));
+  assert(!story.commonMistakes.some(item => /for free/i.test(item.label)));
+}
+
+function testStoredEnergyAmountInOpponentSwing() {
+  const story = buildMatchupStory(baseInput({
+    perspective: "B",
+    scenarios: [scenario({ swing: { ...scenario().swing, energy: 11 } })]
+  }));
+  assert(story.commonMistakes.some(item => /11-energy lead \(one Pulse\)/i.test(item.reason)));
 }
 
 function testStraightforwardAndNoHardcoding() {
@@ -170,8 +203,10 @@ function run() {
   testMissingAnalysisFields();
   testLowConfidenceOmission();
   testAlternateLineActionReference();
+  testNaturalCompetitiveCopy();
   testShieldStateSelection();
   testOrientation();
+  testStoredEnergyAmountInOpponentSwing();
   testStraightforwardAndNoHardcoding();
   testRealComplexMatchupIfAvailable();
   console.log("Matchup Story tests passed.");

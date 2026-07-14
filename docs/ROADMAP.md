@@ -21,6 +21,19 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 - [ ] Add clearer explanations for AI decisions.
 - [ ] Add validation cases against known PvPoke matchups.
 
+## Battle Engine Reliability
+
+- [x] Add optional structured decision tracing.
+- [x] Formalize planner versioning and stale-result provenance.
+- [x] Add the first external battle regression corpus and runner.
+- [x] Add a conservative contradiction scanner.
+- [x] Add shield/no-shield counterfactual traces and terminal move-access snapshots.
+- [x] Use decisive shield counterfactuals in Smart logic and expose critical decisions in Matchup Inspector.
+- [ ] Add shield counterfactual traces.
+- [ ] Add terminal charged-move access snapshots.
+- [ ] Expand reviewed golden matchups without Pokemon-specific engine patches.
+- [ ] Build a deeper oracle for selected difficult cases.
+
 ## 3v3 Battle AI
 
 - [ ] Represent full teams of three Pokemon.
@@ -69,7 +82,7 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 
 ## Testing
 
-- [ ] Add baseline matchup regression cases.
+- [x] Add baseline matchup regression cases.
 - [ ] Compare simulator output with PvPoke for selected scenarios.
 - [ ] Add replay validation for known battle lines.
 - [ ] Compare AI decisions against expert decisions.

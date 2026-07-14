@@ -4,12 +4,13 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 const { runQualityPipeline } = require("./validate-great-league-dataset");
+const battleReliability = require("../src/reliability/battle-reliability");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
 const MATCHUP_SCHEMA_VERSION = 2;
 const RANKING_SCHEMA_VERSION = 2;
-const MATRIX_VERSION = "live-worker-v2";
+const MATRIX_VERSION = battleReliability.BATTLE_ENGINE_VERSION;
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
 const ROLE_RANKING_CATEGORIES = [
@@ -158,11 +159,12 @@ function extractLiveWorkerSource() {
   const simulatorScript = match[1].replace(/\binit\(\);\s*$/, "");
   const context = {
     console,
-    window: {},
+    window: { PvPeakBattleReliability: battleReliability, location: { search: "" } },
     document: {},
     indexedDB: null,
     Blob: function Blob() {},
     URL: { createObjectURL: () => "" },
+    URLSearchParams,
     Worker: function Worker() {},
     setTimeout,
     clearTimeout,
@@ -665,6 +667,7 @@ function writeSplitMatchupFile({ profile, pokemon, shieldState, rows, metadata }
     league: "great",
     generatedAt: metadata.generatedAt,
     matrixVersion: metadata.matrixVersion,
+    engineVersion: metadata.engineVersion || metadata.matrixVersion,
     profile,
     pokemonId: pokemon.id,
     pokemonName: pokemon.name,
@@ -680,6 +683,7 @@ function writeSplitMatchupIndex(metadata) {
     league: "great",
     generatedAt: metadata.generatedAt,
     matrixVersion: metadata.matrixVersion,
+    engineVersion: metadata.engineVersion || metadata.matrixVersion,
     totalPokemon: metadata.fullCandidateCount,
     generatedPokemon: metadata.pokemonCount,
     opponentPokemonCount: metadata.opponentPokemonCount,
@@ -1162,6 +1166,7 @@ function main() {
           writeSplitMatchupFile({ profile, pokemon: a, shieldState, rows, metadata: {
             generatedAt,
             matrixVersion: MATRIX_VERSION,
+            engineVersion: MATRIX_VERSION,
             profiles,
             fullCandidateCount,
             pokemonCount: pool.length,
@@ -1180,6 +1185,7 @@ function main() {
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
     matrixVersion: MATRIX_VERSION,
+    engineVersion: MATRIX_VERSION,
     cpCap: CP_CAP,
     configuredPokemonCount: allPokemonRanking ? eligiblePokemon.length : metaConfig.pokemon.length,
     fullCandidateCount,

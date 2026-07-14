@@ -16,27 +16,27 @@
   const EDGE_TEMPLATES = Object.freeze({
     hpEdge: {
       label: "HP position",
-      text: name => `${name} exits the standard line with the stronger remaining HP position.`
+      text: name => `${name} comes out with more HP.`
     },
     energyEdge: {
       label: "Energy race",
-      text: name => `${name} builds the more useful energy position in the standard line.`
+      text: name => `${name} leaves with the better energy position.`
     },
     readyEdge: {
       label: "Charged-move race",
-      text: name => `${name} reaches the next meaningful charged-move window sooner.`
+      text: name => `${name} reaches the next charged move first.`
     },
     closingCostEdge: {
       label: "Closing sequence",
-      text: name => `The closing sequence costs less or carries less risk for ${name}.`
+      text: name => `${name} has the safer closing sequence.`
     },
     farmPressureEdge: {
       label: "Farm pressure",
-      text: name => `${name} creates the stronger farm-down pressure after charged damage lands.`
+      text: name => `${name} creates more fast-move pressure after landing charged damage.`
     },
     outpacePressureEdge: {
       label: "Outpace pressure",
-      text: name => `${name} reaches meaningful charged pressure earlier in the race.`
+      text: name => `${name} wins the charged-move race.`
     }
   });
 
@@ -209,7 +209,7 @@
     if (shieldDependent) {
       return {
         title: "Why?",
-        text: "Shield allocation significantly changes the shape of this matchup.",
+        text: "The winner changes depending on how the shields are used.",
         evidenceKeys: ["shield-state-winners"]
       };
     }
@@ -217,7 +217,7 @@
       const name = swing.side === "A" ? pokemon.a.name : pokemon.b.name;
       return {
         title: "Why?",
-        text: `${name} has a reproducible alternate line from a small timing advantage.`,
+        text: swingWhyText(name, swing),
         evidenceKeys: ["alternate-line"]
       };
     }
@@ -226,9 +226,17 @@
       : (perspective === "A" ? pokemon.b.name : pokemon.a.name);
     return {
       title: "Why?",
-      text: `${subject} controls the standard result without a reliable alternate branch currently detected.`,
+      text: `${subject} wins the standard play.`,
       evidenceKeys: ["standard-result"]
     };
+  }
+
+  function swingWhyText(name, swing) {
+    const lead = extraFastMovePhrase(swing, false);
+    if (swing.lineType === "bait") return `${name} can turn this around with ${lead} and a successful bait.`;
+    if (swing.lineType === "debuff-sensitive") return `${name} can turn this around with ${lead} by managing the self-debuff carefully.`;
+    if (swing.lineType === "straight") return `${lead[0].toUpperCase()}${lead.slice(1)} is enough for ${name}; baiting isn't required.`;
+    return `${lead[0].toUpperCase()}${lead.slice(1)} gives ${name} a way to turn this around.`;
   }
 
   function buildKeyThreats({ input, scenario, outcome, perspective, pokemon, evidence, confidence }) {
@@ -242,7 +250,7 @@
         moveId: threat.moveId || null,
         moveName: threat.moveName || null,
         side: threat.side || null,
-        reason: threat.reason || "Supported by the selected battle line.",
+        reason: threat.reason || "This is the main threat in the selected shield scenario.",
         priority: Number(threat.priority || 100 - index)
       }));
     if (!supplied.length && outcome === "Loss" && evidence && evidence.key === "readyEdge") {
@@ -253,7 +261,7 @@
         moveId: null,
         moveName: null,
         side: opponentSide,
-        reason: `${opponent.name} reaches the next meaningful charged-move window first.`,
+        reason: `${opponent.name} reaches the next charged move first.`,
         priority: 80
       });
     }
@@ -274,7 +282,7 @@
         }
       };
       items.push({
-        label: `Start with +${swing.fastMoveCount} ${swing.fastMoveName}`,
+        label: `Gain ${extraFastMovePhrase(swing, false)}.`,
         type: "timing",
         side: swing.side,
         reproducible: true,
@@ -284,7 +292,7 @@
       });
       if (baitDependent) {
         items.push({
-          label: "Use the detected bait line before the stronger move",
+          label: "Land the bait before committing to the stronger move.",
           type: "bait",
           side: swing.side,
           reproducible: true,
@@ -295,7 +303,7 @@
       }
       if (debuffSensitive) {
         items.push({
-          label: "Delay the self-debuff until the safer line is established",
+          label: "Hold the self-debuffing move until the safer sequence is set.",
           type: "debuff",
           side: swing.side,
           reproducible: true,
@@ -307,7 +315,7 @@
     }
     if (shieldDependent && confidence !== "low") {
       items.push({
-        label: "Respect the shield-state-specific battle line",
+        label: "Adjust the plan to the shield count.",
         type: "shield",
         side: perspective,
         reproducible: false,
@@ -324,8 +332,8 @@
     const items = [];
     if (swing && swing.side === perspective) {
       items.push({
-        label: `Throwing before building +${swing.fastMoveCount} ${swing.fastMoveName}`,
-        reason: "The detected winning line needs that timing advantage.",
+        label: `Throwing before gaining ${extraFastMovePhrase(swing, false)}.`,
+        reason: "That extra fast-move lead is required to flip the result.",
         confidence: "high",
         evidenceKeys: ["alternate-line", "timing-cost"],
         priority: 100
@@ -333,8 +341,8 @@
     } else if (swing) {
       const opponent = swing.side === "A" ? pokemon.a.name : pokemon.b.name;
       items.push({
-        label: `Giving ${opponent} uncontested timing advantage`,
-        reason: `The detected flip begins at +${swing.fastMoveCount} ${swing.fastMoveName}.`,
+        label: `Ignoring ${opponent}'s stored-energy lead.`,
+        reason: `${swingEnergyLeadText(swing, true)} is enough for ${opponent} to flip the result.`,
         confidence: "high",
         evidenceKeys: ["alternate-line", "timing-cost"],
         priority: 100
@@ -342,8 +350,8 @@
     }
     if (baitDependent) {
       items.push({
-        label: "Committing before creating shield pressure",
-        reason: "The detected alternate line is bait-dependent.",
+        label: "Committing before creating shield pressure.",
+        reason: "This route only works if the bait draws a shield.",
         confidence: "medium",
         evidenceKeys: ["bait-line"],
         priority: 85
@@ -351,8 +359,8 @@
     }
     if (debuffSensitive) {
       items.push({
-        label: "Using the self-debuffing move too early",
-        reason: "The detected safer line delays the self-debuff.",
+        label: "Using the self-debuffing move too early.",
+        reason: "Throwing it early leaves you too exposed later.",
         confidence: "medium",
         evidenceKeys: ["debuff-sensitive-line"],
         priority: 82
@@ -360,8 +368,8 @@
     }
     if (shieldDependent) {
       items.push({
-        label: "Repeating one plan at every shield count",
-        reason: "Even-shield results change enough to require a different line.",
+        label: "Using the same plan at every shield count.",
+        reason: "The winner changes as the shield count changes.",
         confidence: "high",
         evidenceKeys: ["shield-state-winners"],
         priority: 60
@@ -382,7 +390,12 @@
   }
 
   function buildDifficulty({ closeness, swing, shieldDependent, baitDependent, debuffSensitive, confidence }) {
-    if (confidence === "low") return { level: "Unknown", score: null, reasons: ["Insufficient reliable tactical data."] };
+    if (confidence === "low") return {
+      level: "Unknown",
+      score: null,
+      reasons: ["Insufficient reliable tactical data."],
+      text: "There isn't enough reliable data to judge this matchup."
+    };
     let score = 15;
     const reasons = [];
     if (closeness === "Close") {
@@ -409,8 +422,48 @@
     return {
       level: score >= 60 ? "High" : score >= 30 ? "Medium" : "Low",
       score,
-      reasons: reasons.length ? reasons : ["Limited alternate lines"]
+      reasons: reasons.length ? reasons : ["Limited alternate lines"],
+      text: difficultyText(score, { closeness, swing, shieldDependent, baitDependent, debuffSensitive })
     };
+  }
+
+  function difficultyText(score, context) {
+    const factors = [];
+    if (context.swing) factors.push("timing");
+    if (context.shieldDependent) factors.push("shield use");
+    if (context.baitDependent) factors.push("bait calls");
+    if (context.debuffSensitive) factors.push("self-debuff management");
+    if (context.closeness === "Close") factors.push("small margins");
+    const uniqueFactors = [...new Set(factors)];
+    if (score < 30 || !uniqueFactors.length) return "The plan is straightforward and leaves little room for variation.";
+    const focus = naturalList(uniqueFactors.slice(0, 3));
+    return score >= 60
+      ? `This matchup is unforgiving and depends heavily on ${focus}.`
+      : `This matchup is manageable, but ${focus} still matter${uniqueFactors.length === 1 ? "s" : ""}.`;
+  }
+
+  function extraFastMovePhrase(swing, capitalize = false) {
+    const count = Math.max(1, Number(swing && swing.fastMoveCount || 1));
+    const move = swing && swing.fastMoveName || "fast move";
+    const phrase = count === 1 ? `one extra ${move}` : `${count} extra uses of ${move}`;
+    return capitalize ? `${phrase[0].toUpperCase()}${phrase.slice(1)}` : phrase;
+  }
+
+  function swingEnergyLeadText(swing, capitalize = false) {
+    const count = Math.max(1, Number(swing && swing.fastMoveCount || 1));
+    const move = swing && swing.fastMoveName || "fast move";
+    const energy = finiteNumber(swing && swing.energy);
+    const equivalent = count === 1 ? `one ${move}` : `${count} uses of ${move}`;
+    const phrase = energy === null
+      ? `an energy lead worth ${equivalent}`
+      : `an ${energy}-energy lead (${equivalent})`;
+    return capitalize ? `${phrase[0].toUpperCase()}${phrase.slice(1)}` : phrase;
+  }
+
+  function naturalList(items) {
+    if (items.length <= 1) return items[0] || "clean execution";
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+    return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
   }
 
   function uniqueByLabel(items) {

@@ -7,7 +7,9 @@
   <script src="gamemaster-data.js"></script>
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
+  <script src="src/reliability/battle-reliability.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
+  <script src="src/analysis/battle-review.js"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -1758,11 +1760,107 @@
       border-radius: 999px;
       font-size: 10px;
       font-weight: 850;
+      touch-action: manipulation;
+    }
+    #matchupInspectorToggle[aria-expanded="true"] {
+      border-color: color-mix(in srgb, var(--accent) 62%, var(--line));
+      background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+      color: var(--accent-strong);
     }
     .matrix-head span {
       color: var(--muted);
       font-size: 10px;
       font-weight: 750;
+    }
+    .battle-review {
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    .battle-review[hidden] {
+      display: none;
+    }
+    .battle-review-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .battle-review-head h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 12px;
+    }
+    .battle-review-head span {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .battle-review-list {
+      display: grid;
+      gap: 4px;
+    }
+    .battle-review-item {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      min-height: 46px;
+      padding: 6px 8px;
+      border: 0;
+      border-left: 3px solid var(--review-color, var(--accent));
+      border-radius: 3px;
+      background: color-mix(in srgb, var(--review-color, var(--accent)) 7%, var(--panel));
+      color: var(--ink);
+      text-align: left;
+      box-shadow: none;
+    }
+    .battle-review-item:hover,
+    .battle-review-item:focus-visible {
+      background: color-mix(in srgb, var(--review-color, var(--accent)) 12%, var(--panel));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--review-color, var(--accent)) 35%, transparent);
+      transform: none;
+    }
+    .battle-review-item[data-review-type="critical"] { --review-color: #c43b68; }
+    .battle-review-item[data-review-type="closing"] { --review-color: #16877b; }
+    .battle-review-item[data-review-type="effect"] { --review-color: #8256c7; }
+    .battle-review-item[data-review-type="timing"] { --review-color: #267faf; }
+    .battle-review-label {
+      color: var(--review-color, var(--accent-strong));
+      font-size: 9px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .battle-review-copy {
+      min-width: 0;
+    }
+    .battle-review-copy strong,
+    .battle-review-copy small {
+      display: block;
+    }
+    .battle-review-copy strong {
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+    .battle-review-copy small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .battle-review-turn {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
+      white-space: nowrap;
     }
     .matrix-grid {
       display: grid;
@@ -2493,6 +2591,58 @@
       font-size: 9px;
       font-weight: 700;
       line-height: 1.2;
+    }
+    .inspector-critical {
+      margin: 8px 0 10px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .inspector-critical-title {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .inspector-critical-item {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-left: 3px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 7%, var(--panel));
+    }
+    .inspector-critical-item + .inspector-critical-item {
+      margin-top: 4px;
+    }
+    .inspector-critical-action {
+      color: var(--accent-strong);
+      font-size: 9px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .inspector-critical-copy strong,
+    .inspector-critical-copy small {
+      display: block;
+    }
+    .inspector-critical-copy strong {
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .inspector-critical-copy small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .inspector-critical-turn {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
     }
     .effect-chip {
       display: inline-flex;
@@ -3263,6 +3413,12 @@
         0 0 0 4px rgba(0, 142, 173, .5),
         0 0 10px rgba(0, 142, 173, .48);
       z-index: 5;
+    }
+    .timeline-block.fast.sneaked.shield-paired {
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, .94),
+        0 0 0 3px rgba(0, 142, 173, .54),
+        0 0 6px rgba(0, 142, 173, .38);
     }
     .timeline-block.ghosted {
       opacity: 1;
@@ -4684,6 +4840,20 @@
       .inspector-flags {
         grid-template-columns: 1fr;
       }
+      .inspector-critical-item {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 6px;
+      }
+      .inspector-critical-turn {
+        grid-column: 2;
+      }
+      .battle-review-item {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 6px;
+      }
+      .battle-review-turn {
+        grid-column: 2;
+      }
       .matchup-story-head {
         display: grid;
         gap: 6px;
@@ -5023,12 +5193,13 @@
         <div class="matrix-head">
           <h2>Matchup</h2>
           <div class="matrix-actions">
-            <button id="matchupInspectorToggle" class="secondary matrix-reset" type="button">Inspect</button>
+            <button id="matchupInspectorToggle" class="secondary matrix-reset" type="button" aria-expanded="false" aria-controls="matchupInspector">Inspect</button>
             <button id="matrixReset" class="secondary matrix-reset" type="button">Reset</button>
           </div>
         </div>
         <div id="shieldMatrix" class="matrix-grid"></div>
         <div id="matrixExplanation" class="matrix-explanation"></div>
+        <section id="battleReview" class="battle-review" aria-live="polite" hidden></section>
         <div id="matchupInspector" class="inspector-panel" aria-live="polite"></div>
       </section>
 
@@ -5100,6 +5271,9 @@
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
+    const battleReliability = window.PvPeakBattleReliability || {};
+    const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v2";
+    const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     let moveMap = new Map();
     let allPokemon = [];
     let visiblePokemon = [];
@@ -5124,6 +5298,9 @@
     let chargedContinuationOpening = null;
     let chargedDecisionDiagnosticsEnabled = false;
     let lastChargedDecisionDiagnostics = [];
+    let battleDecisionTraceEnabled = false;
+    let currentBattleDecisionTrace = null;
+    let battleInsights = [];
     let pageScrollAnimation = null;
     let timelineReplayAnimation = null;
     let timelineReplayTimer = null;
@@ -5132,7 +5309,7 @@
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
     const shieldMatrixCacheLimit = 900;
-    const shieldMatrixCacheVersion = "matrix-v11";
+    const shieldMatrixCacheVersion = `matrix-v12:${battleEngineVersion}`;
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
@@ -5162,6 +5339,7 @@
       suggestion: null
     };
     let matchupInspectorOpen = false;
+    let matchupInspectorScrollPending = false;
     const rankCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -5527,6 +5705,7 @@
         shouldShield,
         shieldDecisionForMove,
         smartShieldDecision,
+        smartShieldDecisionFromCounterfactual,
         entersFarmRangeAfterDamage,
         losesChargedThreatAfterDamage,
         turnsToNextMeaningfulCharged,
@@ -5537,6 +5716,19 @@
         recordTimeline,
         recordShield,
         battleSnapshot,
+        traceCombatantState,
+        traceStateSnapshot,
+        traceMoveCandidate,
+        traceOutcomeForSide,
+        traceAffordableChargedMoves,
+        simulateShieldDecisionContinuation,
+        buildShieldCounterfactual,
+        recordBattleInsight,
+        recordTerminalTraceIfNeeded,
+        battleReasonCode,
+        recordBattleDecision,
+        beginBattleDecisionTrace,
+        completeBattleDecisionTrace,
         validChargedMoves,
         autoAction,
         automaticBattleStep,
@@ -5593,6 +5785,7 @@
         compareFlipCandidates,
         lineTypeRank,
         flipPolicyVariants,
+        hasTrueBaitOption,
         flipCandidateVisibility,
         matrixPolicyForLine,
         flipCandidateLines,
@@ -5640,6 +5833,10 @@
         let chargedContinuationOpening = null;
         let chargedDecisionDiagnosticsEnabled = false;
         let lastChargedDecisionDiagnostics = [];
+        let battleDecisionTraceEnabled = false;
+        let currentBattleDecisionTrace = null;
+        let battleInsights = [];
+        const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
         let currentMatrixConfig = null;
 
         function render() {}
@@ -5670,6 +5867,17 @@
 
         function simulateShieldMatrixCellFromConfig(config, aShields, bShields, options = {}) {
           currentMatrixConfig = config;
+          const previousTraceEnabled = battleDecisionTraceEnabled;
+          const previousTrace = currentBattleDecisionTrace;
+          const previousBattleInsights = battleInsights;
+          battleDecisionTraceEnabled = options.trace === true;
+          currentBattleDecisionTrace = battleDecisionTraceEnabled
+            ? beginBattleDecisionTrace({
+                battleId: options.battleId,
+                datasetVersion: options.datasetVersion,
+                source: options.source
+              })
+            : null;
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -5686,12 +5894,14 @@
           applyMatrixSimulationPolicy(options.policy);
           log = [];
           timeline = [];
+          battleInsights = [];
           if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
           initialTimelineState = battleSnapshot();
           battleTurns = { A: 0, B: 0 };
           chargedDecisionDiagnosticsEnabled = !!options.debugChargedDecisions;
           lastChargedDecisionDiagnostics = [];
           runAutomaticBattleToEnd(1000);
+          const completedBattleInsights = JSON.parse(JSON.stringify(battleInsights));
           let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
           result = applyAdvantagePressureFloor(result, {
             aShields,
@@ -5700,16 +5910,37 @@
             startEnergyA,
             startEnergyB
           });
+          result.provenance = {
+            source: options.source || "live",
+            currentEngineVersion: battleEngineVersion,
+            datasetEngineVersion: battleEngineVersion,
+            datasetVersion: options.datasetVersion || null,
+            generatedAt: null,
+            stale: false,
+            staleReason: null
+          };
           if (chargedDecisionDiagnosticsEnabled) result.chargedDecisionDiagnostics = lastChargedDecisionDiagnostics;
+          result.battleInsights = completedBattleInsights;
+          if (battleDecisionTraceEnabled) result.decisionTrace = completeBattleDecisionTrace();
           chargedDecisionDiagnosticsEnabled = false;
+          battleDecisionTraceEnabled = previousTraceEnabled;
+          currentBattleDecisionTrace = previousTrace;
+          battleInsights = previousBattleInsights;
           return result;
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, config } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, trace, datasetVersion, config } = event.data || {};
           try {
             currentMatrixConfig = config;
-            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing, debugChargedDecisions });
+            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
+              includeSwing,
+              debugChargedDecisions,
+              trace,
+              battleId: key,
+              datasetVersion,
+              source: source || "live"
+            });
             result.swingReady = !!includeSwing;
             self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
           } catch (error) {
@@ -6639,6 +6870,7 @@
         right = sideReadyForBattle("p2") ? create("p2", "B") : null;
         log = [];
         timeline = [];
+        battleInsights = [];
         initialTimelineState = null;
         battleTurns = { A: 0, B: 0 };
         selectedTimelineIndex = null;
@@ -6651,6 +6883,7 @@
       right = create("p2", "B");
       log = [];
       timeline = [];
+      battleInsights = [];
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       selectedTimelineIndex = null;
@@ -7258,10 +7491,84 @@
         return false;
       }
       const unshieldedDamage = estimate(attacker, defender, move);
-      const shieldDecision = options.shielded !== undefined
+      let shieldDecision = options.shielded !== undefined
         ? { shield: !!options.shielded && defender.shields > 0, reason: "" }
         : shieldDecisionForMove(defender, move, unshieldedDamage, attacker);
+      let shieldCounterfactual = null;
+      if (
+        options.shielded === undefined &&
+        defender.shields > 0 &&
+        chargedContinuationDepth === 0 &&
+        (battleDecisionTraceEnabled || defender.shieldMode === "smart")
+      ) {
+        shieldCounterfactual = buildShieldCounterfactual(attacker, defender, move, shieldDecision.shield);
+        if (defender.shieldMode === "smart") {
+          const counterfactualDecision = smartShieldDecisionFromCounterfactual(shieldCounterfactual);
+          if (counterfactualDecision) {
+            const heuristicShielded = shieldDecision.shield;
+            shieldDecision = counterfactualDecision;
+            if (heuristicShielded !== shieldDecision.shield) {
+              recordBattleInsight({
+                turn: Number(battleTurns[attacker.trainer] || 0),
+                side: defender.trainer,
+                pokemonId: defender.p?.id || null,
+                pokemonName: defender.p?.name || defender.p?.id || "Pokemon",
+                decisionType: "critical-shield-call",
+                action: shieldDecision.shield ? "SHIELD" : "NO_SHIELD",
+                moveId: move.id || null,
+                moveName: move.name || move.id || "charged move",
+                reasonCode: "SHIELD_PRESERVES_WIN_CONDITION",
+                explanation: shieldDecision.reason,
+                outcomeWithShield: shieldCounterfactual?.outcomeWithShield || null,
+                outcomeWithoutShield: shieldCounterfactual?.outcomeWithoutShield || null,
+                sequenceFactors: [
+                  chargedMoveEffectSummary(move) !== "none"
+                    ? `${move.name}: ${chargedMoveEffectSummary(move)}`
+                    : null,
+                  ...validChargedMoves(defender)
+                    .filter(candidate => hasGuaranteedStatEffect(candidate))
+                    .filter(candidate => Number(defender.energy || 0) + Number(defender.fast?.energyGain || 0) >= Number(candidate.energyCost || 0))
+                    .map(candidate => `${candidate.name}: ${chargedMoveEffectSummary(candidate)}`)
+                ].filter(Boolean)
+              });
+            }
+          }
+        }
+        if (shieldCounterfactual) shieldCounterfactual.shielded = !!shieldDecision.shield;
+      }
       const shielded = shieldDecision.shield;
+      if (options.shielded === undefined && defender.shields > 0) {
+        const shieldCandidates = [
+          {
+            action: "SHIELD",
+            projectedRemainingHp: Math.max(0, defender.hp - 1),
+            projectedRemainingShields: Math.max(0, defender.shields - 1),
+            damageTaken: 1
+          },
+          {
+            action: "NO_SHIELD",
+            projectedRemainingHp: Math.max(0, defender.hp - unshieldedDamage),
+            projectedRemainingShields: defender.shields,
+            damageTaken: unshieldedDamage
+          }
+        ];
+        const chosenShieldCandidate = shieldCandidates[shielded ? 0 : 1];
+        recordBattleDecision({
+          turn: Number(battleTurns[attacker.trainer] || 0),
+          side: defender.trainer,
+          pokemonId: defender.p?.id || null,
+          decisionType: "shield-decision",
+          stateBefore: traceStateSnapshot(defender, attacker),
+          candidates: shieldCandidates,
+          chosenCandidate: chosenShieldCandidate,
+          counterfactual: shieldCounterfactual,
+          explanation: shieldDecision.reason || (shielded ? "Always shield logic uses a shield" : "Shield logic lets the move through"),
+          confidence: shieldDecision.reason ? .8 : .65
+        });
+        if (battleDecisionTraceEnabled && shieldCounterfactual && currentBattleDecisionTrace) {
+          currentBattleDecisionTrace.shieldCounterfactuals.push(shieldCounterfactual);
+        }
+      }
       const damage = apply(attacker, defender, move, shielded);
       const stagesBeforeBuff = buffStageSnapshot(attacker, defender);
       const buffMessages = applyMoveBuffs(attacker, defender, move, options.forceBuffs ?? null);
@@ -7370,6 +7677,24 @@
       return { shield: false, reason: "Smart shield saves shield for higher threat" };
     }
 
+    function smartShieldDecisionFromCounterfactual(counterfactual) {
+      if (!counterfactual) return null;
+      const outcomeRank = { loss: 0, draw: 1, win: 2 };
+      const withShield = outcomeRank[counterfactual.outcomeWithShield] ?? -1;
+      const withoutShield = outcomeRank[counterfactual.outcomeWithoutShield] ?? -1;
+      if (withShield === withoutShield) return null;
+      if (withShield > withoutShield) {
+        return {
+          shield: true,
+          reason: "Smart shield preserves a winning continuation"
+        };
+      }
+      return {
+        shield: false,
+        reason: "Smart shield preserves a winning continuation by saving the shield"
+      };
+    }
+
     function entersFarmRangeAfterDamage(defender, attacker, damage) {
       if (!attacker || !attacker.fast) return false;
       const remainingHp = Math.max(0, defender.hp - damage);
@@ -7404,6 +7729,7 @@
 
     function finish() {
       const ended = battleEnded();
+      if (ended) recordTerminalTraceIfNeeded();
       if (left.hp <= 0 && right.hp <= 0) add("Tie.", "ko");
       else if (left.hp <= 0) add("Trainer B wins.", "ko");
       else if (right.hp <= 0) add("Trainer A wins.", "ko");
@@ -7476,6 +7802,289 @@
         A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy, attackStage: left.attackStage || 0, defenseStage: left.defenseStage || 0 } : null,
         B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy, attackStage: right.attackStage || 0, defenseStage: right.defenseStage || 0 } : null
       };
+    }
+
+    function traceCombatantState(combatant) {
+      if (!combatant) return null;
+      return {
+        pokemonId: combatant.p?.id || null,
+        hp: Number(combatant.hp || 0),
+        maxHp: Number(combatant.maxHp || 0),
+        energy: Number(combatant.energy || 0),
+        shields: Number(combatant.shields || 0),
+        attackStage: Number(combatant.attackStage || 0),
+        defenseStage: Number(combatant.defenseStage || 0)
+      };
+    }
+
+    function traceStateSnapshot(actor, opponent) {
+      return {
+        actor: traceCombatantState(actor),
+        opponent: traceCombatantState(opponent)
+      };
+    }
+
+    function traceMoveCandidate(attacker, defender, move, overrides = {}) {
+      if (!move) return null;
+      return {
+        moveId: move.id || null,
+        moveName: move.name || move.id || "Unknown move",
+        energyCost: Number(move.energyCost || 0),
+        immediateDamage: Number(overrides.immediateDamage ?? estimate(attacker, defender, move)),
+        statEffects: overrides.statEffects ?? chargedMoveEffectSummary(move),
+        projectedOutcome: overrides.projectedOutcome || null,
+        projectedRating: Number.isFinite(Number(overrides.projectedRating)) ? Number(overrides.projectedRating) : null,
+        projectedRemainingHp: Number.isFinite(Number(overrides.projectedRemainingHp)) ? Number(overrides.projectedRemainingHp) : null,
+        projectedRemainingEnergy: Number.isFinite(Number(overrides.projectedRemainingEnergy)) ? Number(overrides.projectedRemainingEnergy) : null,
+        shieldsUsed: Number.isFinite(Number(overrides.shieldsUsed)) ? Number(overrides.shieldsUsed) : null,
+        branchDepth: Number(overrides.branchDepth || 0),
+        pruned: !!overrides.pruned,
+        pruneReason: overrides.pruneReason || null
+      };
+    }
+
+    function traceOutcomeForSide(side, a = left, b = right) {
+      const actor = side === "A" ? a : b;
+      const opponent = side === "A" ? b : a;
+      if (actor?.hp > 0 && opponent?.hp <= 0) return "win";
+      if (actor?.hp <= 0 && opponent?.hp <= 0) return "draw";
+      return "loss";
+    }
+
+    function traceAffordableChargedMoves(combatant, opponent) {
+      return validChargedMoves(combatant)
+        .filter(move => Number(combatant.energy || 0) >= Number(move.energyCost || 0))
+        .map(move => ({
+          moveId: move.id || null,
+          moveName: move.name || move.id || "Unknown move",
+          energyCost: Number(move.energyCost || 0),
+          damage: Number(opponent ? estimate(combatant, opponent, move) : 0),
+          lethal: !!opponent && estimate(combatant, opponent, move) >= opponent.hp
+        }));
+    }
+
+    function simulateShieldDecisionContinuation(attacker, defender, move, shielded) {
+      const saved = {
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns,
+        suppressRender,
+        activeAutoTurnContext,
+        chargedContinuationOpening
+      };
+      const attackerSide = attacker.trainer;
+      const defenderSide = defender.trainer;
+      const originalContext = activeAutoTurnContext;
+      let evaluation = null;
+      chargedContinuationDepth++;
+      try {
+        left = JSON.parse(JSON.stringify(saved.left));
+        right = JSON.parse(JSON.stringify(saved.right));
+        log = [];
+        timeline = JSON.parse(JSON.stringify(saved.timeline || []));
+        initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
+        battleTurns = { ...saved.battleTurns };
+        suppressRender = true;
+        activeAutoTurnContext = null;
+        chargedContinuationOpening = null;
+
+        const branchAttacker = attackerSide === "A" ? left : right;
+        const branchDefender = defenderSide === "A" ? left : right;
+        const moveIndex = branchAttacker.charged.findIndex(candidate => candidate && (candidate.id === move.id || candidate.name === move.name));
+        if (moveIndex < 0) return null;
+        const currentTurn = Number(originalContext?.currentTurn ?? battleTurns[attackerSide] ?? 0);
+        const timelineStart = timeline.length;
+        useCharge(branchAttacker, branchDefender, moveIndex, {
+          shielded,
+          deferCooldownReset: true
+        });
+
+        if (!battleEnded() && originalContext) {
+          for (const side of originalContext.actorOrder || []) {
+            if (side === attackerSide || originalContext.acted?.has(side)) continue;
+            const nextAttacker = side === "A" ? left : right;
+            const nextDefender = side === "A" ? right : left;
+            if (nextAttacker.hp <= 0 || nextDefender.hp <= 0) break;
+            autoAction(nextAttacker, nextDefender);
+          }
+        }
+        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        const steps = runAutomaticBattleToEnd(1000);
+        const finalDefender = defenderSide === "A" ? left : right;
+        const finalAttacker = attackerSide === "A" ? left : right;
+        evaluation = {
+          shielded: !!shielded,
+          outcome: traceOutcomeForSide(defenderSide),
+          remainingHp: Number(finalDefender.hp || 0),
+          remainingHpRatio: finalDefender.maxHp ? Number(finalDefender.hp || 0) / finalDefender.maxHp : 0,
+          remainingEnergy: Number(finalDefender.energy || 0),
+          remainingShields: Number(finalDefender.shields || 0),
+          moveAccess: traceAffordableChargedMoves(finalDefender, finalAttacker).length,
+          steps
+        };
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        chargedContinuationDepth--;
+      }
+      return evaluation;
+    }
+
+    function buildShieldCounterfactual(attacker, defender, move, chosenShielded) {
+      const withShield = simulateShieldDecisionContinuation(attacker, defender, move, true);
+      const withoutShield = simulateShieldDecisionContinuation(attacker, defender, move, false);
+      if (!withShield || !withoutShield) return null;
+      return {
+        turn: Number(battleTurns[attacker.trainer] || 0),
+        side: defender.trainer,
+        pokemonId: defender.p?.id || null,
+        shieldMode: defender.shieldMode || "always",
+        attackerSide: attacker.trainer,
+        moveId: move.id || null,
+        moveName: move.name || move.id || "Unknown move",
+        shielded: !!chosenShielded,
+        outcomeWithShield: withShield.outcome,
+        outcomeWithoutShield: withoutShield.outcome,
+        hpGain: Number((withShield.remainingHpRatio - withoutShield.remainingHpRatio).toFixed(4)),
+        energyGain: Number(withShield.remainingEnergy - withoutShield.remainingEnergy),
+        moveAccessGain: Number(withShield.moveAccess - withoutShield.moveAccess),
+        withShield,
+        withoutShield
+      };
+    }
+
+    function recordBattleInsight(insight) {
+      if (!insight || chargedContinuationDepth > 0) return;
+      const key = `${insight.turn}:${insight.side}:${insight.decisionType}:${insight.moveId}:${insight.action}`;
+      if (battleInsights.some(item => item.key === key)) return;
+      battleInsights.push({ key, ...JSON.parse(JSON.stringify(insight)) });
+    }
+
+    function recordTerminalTraceIfNeeded() {
+      if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0) return;
+      if (currentBattleDecisionTrace.terminalSnapshots.length) return;
+      const lastEvent = timeline[timeline.length - 1] || null;
+      for (const side of ["A", "B"]) {
+        const combatant = side === "A" ? left : right;
+        const opponent = side === "A" ? right : left;
+        if (!combatant || combatant.hp > 0) continue;
+        const affordableMoves = traceAffordableChargedMoves(combatant, opponent);
+        const lastDecision = [...currentBattleDecisionTrace.decisions].reverse().find(decision =>
+          decision.side === side && ["charged-move-selection", "farm-vs-throw"].includes(decision.decisionType)
+        );
+        const demonstratedMove = (lastDecision?.candidates || []).find(candidate =>
+          candidate?.moveId && candidate.projectedOutcome === "win" && Number(candidate.energyCost || 0) <= Number(combatant.energy || 0)
+        );
+        currentBattleDecisionTrace.terminalSnapshots.push({
+          turn: Number(lastEvent?.start ?? Math.max(battleTurns.A || 0, battleTurns.B || 0)),
+          side,
+          pokemonId: combatant.p?.id || null,
+          fainted: true,
+          stateAtFaint: traceCombatantState(combatant),
+          opponentState: traceCombatantState(opponent),
+          cause: lastEvent ? {
+            kind: lastEvent.kind || null,
+            moveId: lastEvent.move?.id || null,
+            moveName: lastEvent.move?.name || null,
+            attackerSide: lastEvent.trainer || null
+          } : null,
+          affordableMoves,
+          lethalMoves: affordableMoves.filter(move => move.lethal),
+          pendingSameTurnAction: !!activeAutoTurnContext && activeAutoTurnContext.actorOrder.includes(side) && !activeAutoTurnContext.acted.has(side),
+          legalMoveCouldChangeOutcome: !!demonstratedMove && Number(lastDecision.turn) === Number(lastEvent?.start),
+          demonstratedMove: demonstratedMove || null,
+          evidenceReason: demonstratedMove && Number(lastDecision.turn) === Number(lastEvent?.start)
+            ? "A same-turn planner candidate projected a win before the faint."
+            : "Move access recorded without enough evidence to claim a missed legal action."
+        });
+      }
+    }
+
+    function battleReasonCode(decisionType, explanation, chosenCandidate, candidates = []) {
+      const reason = String(explanation || "").toLowerCase();
+      const effects = String(chosenCandidate?.statEffects || "").toLowerCase();
+      const alternatives = candidates.filter(candidate => {
+        if (!candidate) return false;
+        if (chosenCandidate?.moveId) return candidate.moveId !== chosenCandidate.moveId;
+        if (chosenCandidate?.action) return candidate.action !== chosenCandidate.action;
+        return candidate !== chosenCandidate;
+      });
+      if (decisionType === "shield-decision") {
+        if (reason.includes("always shield logic")) return "SHIELD_POLICY_ALWAYS";
+        if (reason.includes("blocks a ko")) return "SHIELD_PREVENTS_KO";
+        if (reason.includes("farm range")) return "SHIELD_AVOIDS_FARM_RANGE";
+        if (reason.includes("winning continuation")) return "SHIELD_PRESERVES_WIN_CONDITION";
+        if (reason.includes("preserves charged-move threat")) return "SHIELD_PRESERVES_WIN_CONDITION";
+        if (reason.includes("heavy pressure") || reason.includes("major damage")) return "SHIELD_HEAVY_PRESSURE";
+        return "SHIELD_SAVED_LOW_THREAT";
+      }
+      if (reason.includes("lowest-cost ko")) return "LETHAL_MOVE_AVAILABLE";
+      if (reason.includes("winning cmp")) return "CMP_WIN_SETUP";
+      if (reason.includes("overfarming")) return "FARM_FOR_CLOSER";
+      if (reason.includes("waiting") || reason.includes("building to")) return "SAVE_ENERGY_FOR_NEXT_MOVE";
+      if (reason.includes("opponent pressure")) return "FORCED_BY_OPPONENT_PRESSURE";
+      if (reason.includes("bait")) return "BAIT_REQUIRED";
+      if (reason.includes("straight")) return "STRAIGHT_PLAY_SUFFICIENT";
+      if (effects.includes("self def +")) return "GUARANTEED_DEFENSE_BUFF_VALUE";
+      if (effects.includes("opponent atk -")) return "GUARANTEED_ATTACK_DEBUFF_VALUE";
+      if (alternatives.some(candidate => String(candidate?.statEffects || "").toLowerCase().includes("self def -"))) return "AVOID_EARLY_SELF_DEBUFF";
+      if (reason.includes("projected") || candidates.some(candidate => candidate?.projectedOutcome)) return "BETTER_PROJECTED_OUTCOME";
+      if (reason.includes("highest damage") || reason.includes("best direct") || reason.includes("best available")) return "BEST_IMMEDIATE_DAMAGE";
+      if (reason.includes("fastest") || reason.includes("shield-pressure sequence")) return "FASTEST_KO_SEQUENCE";
+      return "HEURISTIC_FALLBACK";
+    }
+
+    function recordBattleDecision(input) {
+      if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0) return;
+      const candidates = (input.candidates || []).filter(Boolean).map(candidate => JSON.parse(JSON.stringify(candidate)));
+      const chosenCandidate = input.chosenCandidate ? JSON.parse(JSON.stringify(input.chosenCandidate)) : null;
+      currentBattleDecisionTrace.decisions.push({
+        turn: Number(input.turn || 0),
+        side: input.side || null,
+        pokemonId: input.pokemonId || null,
+        decisionType: input.decisionType,
+        stateBefore: input.stateBefore || null,
+        candidates,
+        chosenCandidate,
+        counterfactual: input.counterfactual || null,
+        reasonCode: input.reasonCode || battleReasonCode(input.decisionType, input.explanation, chosenCandidate, candidates),
+        explanation: input.explanation || "",
+        confidence: input.confidence || null
+      });
+    }
+
+    function beginBattleDecisionTrace(options = {}) {
+      currentBattleDecisionTrace = {
+        schemaVersion: 1,
+        battleId: options.battleId || null,
+        engineVersion: battleEngineVersion,
+        datasetVersion: options.datasetVersion || null,
+        source: options.source || "live",
+        decisions: [],
+        shieldCounterfactuals: [],
+        terminalSnapshots: [],
+        finalState: null
+      };
+      return currentBattleDecisionTrace;
+    }
+
+    function completeBattleDecisionTrace() {
+      if (!currentBattleDecisionTrace) return null;
+      currentBattleDecisionTrace.finalState = {
+        A: traceCombatantState(left),
+        B: traceCombatantState(right)
+      };
+      return JSON.parse(JSON.stringify(currentBattleDecisionTrace));
     }
 
     function validChargedMoves(combatant) {
@@ -7562,10 +8171,31 @@
     }
 
     function chooseChargedMoveDecision(attacker, defender, available) {
-      const decision = chooseChargedMove(attacker, defender, available);
-      return typeof decision === "object" && decision && Object.prototype.hasOwnProperty.call(decision, "move")
-        ? decision
-        : { move: decision, reason: decision ? "best available charged move" : "" };
+      const rawDecision = chooseChargedMove(attacker, defender, available);
+      const decision = typeof rawDecision === "object" && rawDecision && Object.prototype.hasOwnProperty.call(rawDecision, "move")
+        ? rawDecision
+        : { move: rawDecision, reason: rawDecision ? "best available charged move" : "" };
+      if (battleDecisionTraceEnabled && chargedContinuationDepth === 0) {
+        const candidates = Array.isArray(decision.traceCandidates) && decision.traceCandidates.length
+          ? decision.traceCandidates
+          : available.map(move => traceMoveCandidate(attacker, defender, move));
+        const chosenMoveId = decision.chosenMoveId || decision.move?.id || null;
+        const chosenCandidate = candidates.find(candidate => candidate.moveId === chosenMoveId)
+          || (decision.move ? traceMoveCandidate(attacker, defender, decision.move) : null);
+        recordBattleDecision({
+          turn: Number(battleTurns[attacker.trainer] || 0),
+          side: attacker.trainer,
+          pokemonId: attacker.p?.id || null,
+          decisionType: decision.move ? "charged-move-selection" : "farm-vs-throw",
+          stateBefore: traceStateSnapshot(attacker, defender),
+          candidates,
+          chosenCandidate,
+          reasonCode: decision.reasonCode || null,
+          explanation: decision.reason || "",
+          confidence: decision.confidence || null
+        });
+      }
+      return decision;
     }
 
     function chooseChargedMove(attacker, defender, available) {
@@ -7664,8 +8294,23 @@
         });
       }
       const ready = available.some(move => move.id === best.move.id);
+      const traceCandidates = evaluations.map(item => traceMoveCandidate(attacker, defender, item.move, {
+        immediateDamage: item.diagnostic.immediateDamage,
+        statEffects: item.diagnostic.effects,
+        projectedOutcome: item.diagnostic.projectedResult,
+        projectedRating: item.diagnostic.projectedScore,
+        projectedRemainingHp: item.diagnostic.remainingHp,
+        projectedRemainingEnergy: item.diagnostic.remainingEnergy,
+        shieldsUsed: item.shieldsSpent,
+        branchDepth: 1
+      }));
+      const chosenCandidate = traceCandidates.find(candidate => candidate.moveId === best.move.id);
       return {
         move: ready ? best.move : null,
+        chosenMoveId: best.move.id,
+        traceCandidates,
+        reasonCode: battleReasonCode("charged-move-selection", "projected continuation", chosenCandidate, traceCandidates),
+        confidence: .9,
         reason: `${ready ? "projected continuation favors" : "waiting one fast for"} ${best.move.name} (${best.outcomeLabel}, score ${Math.round(best.perspectiveScore)})`
       };
     }
@@ -7775,6 +8420,7 @@
           shieldsSpent: Math.max(0, startShields - finalAttacker.shields),
           steps,
           diagnostic: {
+            moveId: move.id,
             move: move.name,
             immediateDamage,
             energyCost: Number(move.energyCost || 0),
@@ -8429,6 +9075,7 @@
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
+      battleInsights = [];
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
@@ -8446,11 +9093,16 @@
       if (explanation) explanation.innerHTML = "";
       if (inspector) {
         matchupInspectorOpen = false;
+        matchupInspectorScrollPending = false;
         inspector.classList.remove("active");
+        inspector.setAttribute("aria-hidden", "true");
         inspector.innerHTML = "";
       }
       const inspectorButton = $("matchupInspectorToggle");
-      if (inspectorButton) inspectorButton.textContent = "Inspect";
+      if (inspectorButton) {
+        inspectorButton.textContent = "Inspect";
+        inspectorButton.setAttribute("aria-expanded", "false");
+      }
     }
 
     function updateBattleAvailability() {
@@ -8743,7 +9395,81 @@
       renderKeyNumbers();
       renderTimeline();
       renderShieldMatrix();
+      renderBattleReview();
       renderMatrixPreview();
+    }
+
+    function renderBattleReview() {
+      const box = $("battleReview");
+      const builder = window.PvPeakBattleReview && window.PvPeakBattleReview.buildBattleReview;
+      if (!box || typeof builder !== "function" || !left || !right || !battleEnded() || !timeline.length) {
+        if (box) {
+          box.hidden = true;
+          box.innerHTML = "";
+        }
+        return;
+      }
+      const review = builder({
+        combatants: {
+          A: { name: left.p.name, hp: left.hp, maxHp: left.maxHp, energy: left.energy },
+          B: { name: right.p.name, hp: right.hp, maxHp: right.maxHp, energy: right.energy }
+        },
+        insights: battleInsights,
+        events: timeline.map((event, index) => ({
+          index,
+          side: event.trainer,
+          kind: event.kind,
+          turn: Number(event.start || 0),
+          moveId: event.move?.id || null,
+          moveName: event.move?.name || "move",
+          damage: Number(event.damage || 0),
+          shielded: !!event.shielded,
+          sneaked: !!event.sneaked,
+          sneakChargeName: event.sneakChargeName || null,
+          buffEffects: Array.isArray(event.buffEffects) ? event.buffEffects : [],
+          state: event.state || null
+        }))
+      });
+      if (!review.items.length) {
+        box.hidden = true;
+        box.innerHTML = "";
+        return;
+      }
+      box.hidden = false;
+      box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div><div class="battle-review-list">` +
+        review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
+          <span class="battle-review-label">${escapeHtml(item.label)}</span>
+          <span class="battle-review-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.explanation)}</small></span>
+          <span class="battle-review-turn">T${Number(item.turn)}</span>
+        </button>`).join("") + `</div>`;
+      box.querySelectorAll("[data-review-event]").forEach(button => {
+        button.addEventListener("click", () => focusBattleReviewEvent(Number(button.dataset.reviewEvent)));
+      });
+    }
+
+    function focusBattleReviewEvent(index) {
+      const event = timeline[index];
+      const scroll = $("timelineScroll");
+      if (!event || !scroll) return;
+      selectedTimelineIndex = index;
+      previewTimelineState(index);
+      highlightTimelineIndex(index);
+      const turnPx = Number.parseFloat($("timelineRuler").style.getPropertyValue("--turn-px")) || 18;
+      const chargeSlots = timelineChargeSlots();
+      const eventX = timelineReplayEventX(event, index, chargeSlots, turnPx);
+      const targetLeft = Math.max(0, Math.min(scroll.scrollWidth - scroll.clientWidth, eventX - scroll.clientWidth / 2));
+      scroll.scrollTo({ left: targetLeft, behavior: "smooth" });
+      const line = $("timelineHoverLine");
+      const label = $("timelineHoverLabel");
+      if (line && label) {
+        const visualTurn = eventX / Math.max(1, turnPx);
+        const labelX = Math.max(targetLeft + 34, Math.min(targetLeft + scroll.clientWidth - 34, eventX));
+        line.style.transform = `translate3d(${eventX}px, 0, 0)`;
+        label.style.transform = `translate3d(${labelX}px, 0, 0) translateX(-50%)`;
+        label.textContent = `T${visualTurn.toFixed(1)} / ${(visualTurn * .5).toFixed(1)}s`;
+        scroll.classList.add("hovering");
+      }
+      smoothScrollToElement($("battleTimeline"), "center");
     }
 
     function renderMatrixPreview() {
@@ -8816,8 +9542,8 @@
 
     function toggleMatchupInspector() {
       matchupInspectorOpen = !matchupInspectorOpen;
+      matchupInspectorScrollPending = matchupInspectorOpen;
       renderMatchupInspector();
-      if (matchupInspectorOpen) smoothScrollToElement($("matchupInspector"), "center");
     }
 
     function renderMatchupInspector() {
@@ -8825,7 +9551,10 @@
       const button = $("matchupInspectorToggle");
       if (!panel || !button) return;
       button.textContent = matchupInspectorOpen ? "Hide" : "Inspect";
+      button.setAttribute("aria-expanded", String(matchupInspectorOpen));
+      panel.setAttribute("aria-hidden", String(!matchupInspectorOpen));
       if (!matchupInspectorOpen) {
+        matchupInspectorScrollPending = false;
         panel.classList.remove("active");
         panel.innerHTML = "";
         return;
@@ -8833,6 +9562,7 @@
       panel.classList.add("active");
       if (!left || !right) {
         panel.innerHTML = `<div class="matrix-loading">Choose both Pokemon, then run Battle to inspect the matchup.</div>`;
+        queueMatchupInspectorScroll(false);
         return;
       }
       const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
@@ -8842,6 +9572,7 @@
         panel.innerHTML = `<div class="matrix-loading">Calculating inspector data...</div>`;
         scheduleShieldMatrixCalculation(signature);
         if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+        queueMatchupInspectorScroll(false);
         return;
       }
       const data = buildMatchupInspectorViewModel(signature);
@@ -8861,6 +9592,20 @@
         });
       });
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+      queueMatchupInspectorScroll(true);
+    }
+
+    function queueMatchupInspectorScroll(contentReady) {
+      if (!matchupInspectorOpen || !matchupInspectorScrollPending) return;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const panel = $("matchupInspector");
+          if (!matchupInspectorOpen || !panel?.classList.contains("active")) return;
+          const mobile = window.matchMedia("(max-width: 900px)").matches;
+          smoothScrollToElement(panel, mobile ? "start" : "center", mobile ? 10 : 0);
+          if (contentReady) matchupInspectorScrollPending = false;
+        });
+      });
     }
 
     function buildMatchupInspectorViewModel(signature) {
@@ -8888,6 +9633,7 @@
       const currentA = Number($("p1Shields").value || 0);
       const currentB = Number($("p2Shields").value || 0);
       const selectedShieldState = currentA === currentB ? `${currentA}-${currentB}` : "1-1";
+      const selectedScenario = scenarios.find(scenario => scenario.shieldState === selectedShieldState) || null;
       const data = {
         a: left.p,
         b: right.p,
@@ -8897,12 +9643,40 @@
         league: "Great League",
         cpCap: 1500,
         source: scenarios.every(scenario => scenario.source === "Precomputed") ? "Precomputed" : "Live Simulation",
+        provenance: scenarios.find(scenario => scenario.shieldState === selectedShieldState)?.result?.provenance || null,
         scenarios,
         flags: matchupInspectorFlags(scenarios),
-        selectedShieldState
+        selectedShieldState,
+        battleInsights: Array.isArray(selectedScenario?.result?.battleInsights)
+          ? selectedScenario.result.battleInsights
+          : []
       };
       data.story = buildInspectorMatchupStory(data);
       return data;
+    }
+
+    function inspectorBattleInsightsHtml(insights) {
+      const critical = (insights || []).filter(insight => insight?.decisionType === "critical-shield-call");
+      if (!critical.length) return "";
+      const items = critical.map(insight => {
+        const shield = insight.action === "SHIELD";
+        const action = shield ? "Shield" : "Save shield";
+        const headline = shield
+          ? `${insight.pokemonName} should shield ${insight.moveName}`
+          : `${insight.pokemonName} should let ${insight.moveName} through`;
+        const outcome = shield
+          ? "Shielding preserves a winning continuation; letting the move through loses."
+          : "Saving the shield preserves a winning continuation; shielding here loses.";
+        const factors = Array.isArray(insight.sequenceFactors) && insight.sequenceFactors.length
+          ? ` Sequence factor: ${insight.sequenceFactors.join("; ")}.`
+          : " The comparison includes subsequent damage, energy, shields, and guaranteed stat changes.";
+        return `<div class="inspector-critical-item">
+          <span class="inspector-critical-action">${escapeHtml(action)}</span>
+          <span class="inspector-critical-copy"><strong>${escapeHtml(headline)}</strong><small>${escapeHtml(outcome + factors)}</small></span>
+          <span class="inspector-critical-turn">Turn ${Number(insight.turn || 0)}</span>
+        </div>`;
+      }).join("");
+      return `<div class="inspector-critical"><div class="inspector-critical-title">Critical decisions</div>${items}</div>`;
     }
 
     function matchupInspectorHtml(data) {
@@ -8928,12 +9702,12 @@
       const flags = data.flags.length
         ? data.flags.map(flag => `<span class="inspector-flag"><strong>${escapeHtml(flag.label)}</strong><small>${escapeHtml(flag.reason)}</small></span>`).join("")
         : `<span class="inspector-flag"><strong>Stable</strong><small>No reliable extra flags in even-shield states.</small></span>`;
-      return `${matchupStoryHtml(data.story, data)}<div class="inspector-head">
+      return `${matchupStoryHtml(data.story, data)}${inspectorBattleInsightsHtml(data.battleInsights)}<div class="inspector-head">
         <div class="inspector-title">
           <strong>Even-shield overview</strong>
           <span>${escapeHtml(data.league)} · CP ${data.cpCap} · ${escapeHtml(data.profile)}</span>
         </div>
-        <span class="inspector-source">${escapeHtml(data.source)}</span>
+        <span class="inspector-source" title="${escapeHtml(data.provenance ? `Engine ${data.provenance.currentEngineVersion}${data.provenance.stale ? " · stale result" : " · current"}` : `Engine ${battleEngineVersion}`)}">${escapeHtml(data.source)}</span>
       </div>
       <div class="inspector-versus">
         <div class="inspector-pokemon">
@@ -8973,17 +9747,19 @@
     }
 
     function matchupStoryHtml(story, data) {
-      if (!story) return `<div class="matchup-story outcome-neutral"><div class="matchup-story-head"><div class="matchup-story-title"><span class="matchup-story-kicker">Matchup Story</span><strong>Analysis unavailable</strong><small>Structured story data could not be loaded.</small></div></div></div>`;
+      if (!story) return `<div class="matchup-story outcome-neutral"><div class="matchup-story-head"><div class="matchup-story-title"><span class="matchup-story-kicker">Matchup Story</span><strong>Analysis unavailable</strong><small>There isn't enough data to explain this matchup yet.</small></div></div></div>`;
       const outcomeClass = story.summary.outcome === "Win" ? "win" : story.summary.outcome === "Loss" ? "loss" : "neutral";
       const threats = story.keyThreats.map(threat => `<div class="matchup-story-item"><span class="matchup-story-item-mark">!</span><span><strong>${escapeHtml(threat.moveName || threat.label)}</strong><small>${escapeHtml(threat.reason)}</small></span></div>`).join("");
-      const difficultyReasons = story.difficulty.reasons.length
-        ? story.difficulty.reasons.map(escapeHtml).join(" &middot; ")
-        : "Limited reliable complexity signals";
+      const difficultyReasons = story.difficulty.text
+        ? escapeHtml(story.difficulty.text)
+        : story.difficulty.reasons.length
+          ? story.difficulty.reasons.map(escapeHtml).join(" &middot; ")
+          : "The plan is straightforward.";
       const threatBlock = threats ? `<div class="matchup-story-block"><span class="matchup-story-label">Key threat</span><div class="matchup-story-list">${threats}</div></div>` : "";
       const difficultyBlock = `<div class="matchup-story-block"><span class="matchup-story-label">Difficulty</span><strong>${escapeHtml(story.difficulty.level)}</strong><small>${difficultyReasons}</small></div>`;
       const winConditions = story.winConditions.length
         ? story.winConditions.map(condition => matchupStoryConditionHtml(condition, story.summary.shieldState)).join("")
-        : `<div class="matchup-story-empty">No reproducible alternate win condition is currently detected.</div>`;
+        : `<div class="matchup-story-empty">${story.summary.outcome === "Loss" ? "There is no reliable way to turn this around." : "The standard play is already enough."}</div>`;
       const mistakes = story.commonMistakes.map(mistake => `<div class="matchup-story-item" title="${escapeHtml(mistake.reason)}"><span class="matchup-story-item-mark">!</span><span>${escapeHtml(mistake.label)}</span></div>`).join("");
       const tags = story.tags.map(tag => `<span class="matchup-story-tag">${escapeHtml(tag)}</span>`).join("");
       const more = mistakes || tags ? `<details class="matchup-story-more"><summary>More tactical details</summary><div class="matchup-story-more-body"><div>${mistakes ? `<span class="matchup-story-label">Common mistakes</span><div class="matchup-story-list">${mistakes}</div>` : ""}</div><div class="matchup-story-tags">${tags}</div></div></details>` : "";
@@ -9073,10 +9849,14 @@
       const swing = scenarios.find(scenario => scenario.swing);
       if (swing?.swing) {
         const sideName = swing.swing.side === "A" ? left.p.name : right.p.name;
-        flags.push({ id: "potential-flip", label: "Potential flip", reason: `${sideName} has a concrete ${swing.swing.title || "timing"} line.` });
+        const count = Number(swing.swing.fastMoveCount || swing.swing.fastMoves || 1);
+        const move = swing.swing.fastMoveName || swing.swing.fastMove || "fast move";
+        const lead = count === 1 ? `one extra ${move}` : `${count} extra uses of ${move}`;
+        const suffix = swing.swing.lineType === "straight" ? " Baiting isn't required." : "";
+        flags.push({ id: "potential-flip", label: "Potential flip", reason: `${lead[0].toUpperCase()}${lead.slice(1)} is enough for ${sideName}.${suffix}` });
       }
       if (scenarios.some(scenario => scenario.swing?.lineType === "bait")) {
-        flags.push({ id: "bait-sensitive", label: "Bait sensitive", reason: "A detected flip line depends on bait or shield-pressure ordering." });
+        flags.push({ id: "bait-sensitive", label: "Bait sensitive", reason: "The flip only works if the bait draws a shield." });
       }
       return flags;
     }
@@ -9200,6 +9980,8 @@
           aShields,
           bShields,
           includeSwing,
+          trace: debugBattleTracing,
+          source: "live",
           config
         });
         const timeout = setTimeout(() => {
@@ -9299,6 +10081,12 @@
         shieldMatrixComputeTimeouts.delete(message.key);
       }
       if (message.type === "matrixCellResult" && message.key && message.result) {
+        if (debugBattleTracing && message.result.decisionTrace) {
+          console.groupCollapsed(`[Battle trace] ${message.key}`);
+          console.log(message.result.decisionTrace);
+          console.groupEnd();
+          delete message.result.decisionTrace;
+        }
         message.result.analysisSource = message.result.analysisSource || "Live Simulation";
         shieldMatrixCache.set(message.key, message.result);
         persistShieldMatrixCells([[message.key, message.result]]);
@@ -9537,10 +10325,12 @@
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
+      battleInsights = [];
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       runAutomaticBattleToEnd(1000);
+      const completedBattleInsights = JSON.parse(JSON.stringify(battleInsights));
       let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
       result = applyAdvantagePressureFloor(result, {
         aShields,
@@ -9549,6 +10339,10 @@
         startEnergyA,
         startEnergyB
       });
+      result.provenance = battleReliability.createMatchupProvenance
+        ? battleReliability.createMatchupProvenance({ source: "live", datasetEngineVersion: battleEngineVersion })
+        : { source: "live", currentEngineVersion: battleEngineVersion, datasetEngineVersion: battleEngineVersion, stale: false };
+      result.battleInsights = completedBattleInsights;
       restoreBattleState(snapshot);
       suppressRender = false;
       return result;
@@ -9790,13 +10584,18 @@
     function flipPolicyVariants(combatant, baseWinner) {
       const side = combatant.trainer;
       const opponent = side === "A" ? "B" : "A";
+      const opponentCombatant = side === "A" ? right : left;
       const variants = [
         { lineType: "mixed", confidence: .6, reason: "Current automatic battle policy.", policy: null },
         { lineType: "straight", confidence: .85, visibleInMatrix: true, reason: "Both sides prefer direct charged-move pressure.", policy: matrixPolicyForLine(side, "straight") },
-        { lineType: "bait", confidence: .68, visibleInMatrix: true, reason: `${combatant.p.name} can use a plausible bait before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") },
-        { lineType: "opponent-bait", confidence: .55, visibleInMatrix: false, excludedReason: "unstable-bait-guess", reason: "The opponent may spend energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") },
         { lineType: "shield-dependent", confidence: .58, visibleInMatrix: false, excludedReason: "bad-no-shield", requiresOpponentBlunder: true, requiresBadNoShield: true, reason: "The flip depends on the opponent not shielding a major charged-move threat.", policy: matrixPolicyForLine(side, "shield-dependent") }
       ];
+      if (hasTrueBaitOption(combatant)) {
+        variants.push({ lineType: "bait", confidence: .68, visibleInMatrix: true, reason: `${combatant.p.name} can use a cheaper move before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") });
+      }
+      if (hasTrueBaitOption(opponentCombatant)) {
+        variants.push({ lineType: "opponent-bait", confidence: .55, visibleInMatrix: false, excludedReason: "unstable-bait-guess", reason: "The opponent may spend less energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") });
+      }
       if (validChargedMoves(combatant).some(hasSelfDebuff)) {
         variants.push({
           lineType: "debuff-sensitive",
@@ -9807,6 +10606,13 @@
         });
       }
       return variants;
+    }
+
+    function hasTrueBaitOption(combatant) {
+      const costs = validChargedMoves(combatant)
+        .map(move => Number(move.energyCost || 0))
+        .filter(cost => cost > 0);
+      return costs.length >= 2 && Math.min(...costs) < Math.max(...costs);
     }
 
     function flipCandidateVisibility(policy, fastMoves, turnCost) {
@@ -10074,7 +10880,8 @@
         p1Shields: $("p1Shields").value,
         p2Shields: $("p2Shields").value,
         p1StartEnergy: $("p1StartEnergy").value,
-        p2StartEnergy: $("p2StartEnergy").value
+        p2StartEnergy: $("p2StartEnergy").value,
+        battleInsights: JSON.parse(JSON.stringify(battleInsights))
       };
     }
 
@@ -10092,6 +10899,7 @@
       $("p2Shields").value = snapshot.p2Shields;
       $("p1StartEnergy").value = snapshot.p1StartEnergy;
       $("p2StartEnergy").value = snapshot.p2StartEnergy;
+      battleInsights = snapshot.battleInsights || [];
     }
 
     function renderKeyNumbers() {
@@ -10718,8 +11526,12 @@
       const borderColor = darken(color, .18);
       const visualStart = timelineFastVisualTurn(event, chargeSlots);
       const size = timelineFastSize(turnPx);
-      const left = visualStart * turnPx - size / 2;
-      const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
+      const pairedShield = event.sneaked && Number.isInteger(event.sneakChargeIndex)
+        ? timeline.find(candidate => candidate.kind === "shield" && candidate.trainer === event.trainer && candidate.chargeIndex === event.sneakChargeIndex)
+        : null;
+      const pairedOffset = pairedShield ? timelineShieldWidth(turnPx) / 2 + size / 2 + 3 : 0;
+      const left = visualStart * turnPx - size / 2 - pairedOffset;
+      const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${pairedShield ? " shield-paired" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
       const top = Math.max(2, (22 - size) / 2);
       return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${timelineMarkers(event, eventIndex, left + size + 8)}`;
     }
