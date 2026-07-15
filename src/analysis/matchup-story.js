@@ -1,10 +1,13 @@
 "use strict";
 
 (function exposeMatchupStory(root, factory) {
-  const api = factory();
+  const winConditionEngine = typeof module === "object" && module.exports
+    ? require("./win-condition-engine")
+    : root?.PvPeakWinConditionEngine;
+  const api = factory(winConditionEngine);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakMatchupStory = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function createMatchupStoryApi() {
+})(typeof globalThis !== "undefined" ? globalThis : this, function createMatchupStoryApi(winConditionEngineApi) {
   const LIMITS = Object.freeze({
     keyThreats: 2,
     winConditions: 3,
@@ -58,7 +61,13 @@
     const baitDependent = !!(swing && swing.lineType === "bait");
     const debuffSensitive = !!(swing && swing.lineType === "debuff-sensitive");
 
-    const why = buildWhy({
+    const structuredWinConditions = eligibleStructuredWinConditions(input);
+    const primaryWinCondition = structuredWinConditions[0] || null;
+    const why = primaryWinCondition ? {
+      title: "Why?",
+      text: primaryWinCondition.explanation || primaryWinCondition.summary,
+      evidenceKeys: [primaryWinCondition.id, ...primaryWinCondition.supportingPatterns.map(item => item.patternId)].filter(Boolean)
+    } : buildWhy({
       confidence,
       outcome,
       perspective,
@@ -93,8 +102,19 @@
         reasons: difficulty.reasons.slice(0, LIMITS.difficultyReasons)
       },
       tags: tags.slice(0, LIMITS.tags),
+      structuredWinConditions,
       confidence
     };
+  }
+
+  function eligibleStructuredWinConditions(input) {
+    const build = winConditionEngineApi?.buildWinConditionSummary;
+    const select = winConditionEngineApi?.eligibleWinConditions;
+    if (typeof select !== "function") return [];
+    const summary = input.winConditionSummary || (typeof build === "function"
+      ? build({ tacticalSummary: input.tacticalSummary, provenance: input.provenance, engineVersion: input.engineVersion })
+      : null);
+    return select(summary, { minimumConfidence: "high", minimumImportance: "major" });
   }
 
   function normalizePokemon(pokemon) {
@@ -158,20 +178,20 @@
   function dominantEvidence(scenario, perspective, pokemon) {
     const details = scenario && scenario.result && (scenario.result.details || scenario.result);
     if (!details) return null;
+    const winnerSide = scenarioWinnerSide(scenario);
     const direction = perspective === "A" ? 1 : -1;
     const candidates = Object.keys(EDGE_TEMPLATES).map(key => {
       const raw = finiteNumber(details[key]);
       if (raw === null) return null;
-      return { key, raw, perspectiveValue: raw * direction, magnitude: Math.abs(raw) };
-    }).filter(item => item && item.magnitude >= 8);
+      const favoredSide = raw > 0 ? "A" : raw < 0 ? "B" : null;
+      return { key, raw, favoredSide, perspectiveValue: raw * direction, magnitude: Math.abs(raw) };
+    }).filter(item => item && item.magnitude >= 8 && (!winnerSide || winnerSide === "draw" || item.favoredSide === winnerSide));
     if (!candidates.length) return null;
     candidates.sort((a, b) => b.magnitude - a.magnitude || a.key.localeCompare(b.key));
     const best = candidates[0];
-    const favoredSide = best.raw > 0 ? "A" : "B";
-    const favoredPokemon = favoredSide === "A" ? pokemon.a : pokemon.b;
+    const favoredPokemon = best.favoredSide === "A" ? pokemon.a : pokemon.b;
     return {
       ...best,
-      favoredSide,
       favoredName: favoredPokemon.name,
       label: EDGE_TEMPLATES[best.key].label,
       text: EDGE_TEMPLATES[best.key].text(favoredPokemon.name),

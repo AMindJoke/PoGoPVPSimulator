@@ -8,6 +8,9 @@ const {
   validateTrace
 } = require("../src/reliability/battle-reliability");
 const {
+  buildTacticalPatternSummary
+} = require("../src/tactical/tactical-patterns");
+const {
   DEFAULT_PROFILE,
   RANK1_PROFILE,
   readWindowGlobal,
@@ -100,7 +103,19 @@ function runRegressionCase(testCase, runtime, sequence = 1, options = {}) {
     config
   });
   const durationMs = performance.now() - startedAt;
-  const failures = evaluateExpectations(testCase, result);
+  const tacticalSummary = buildTacticalPatternSummary({
+    league: testCase.league,
+    analysisMode: "reliability",
+    battleResult: result,
+    decisionTrace: result.decisionTrace,
+    provenance: result.provenance,
+    shieldState: `${testCase.pokemonA.shields || 0}-${testCase.pokemonB.shields || 0}`,
+    combatants: {
+      A: { id: testCase.pokemonA.id, name: config.left.p.name },
+      B: { id: testCase.pokemonB.id, name: config.right.p.name }
+    }
+  }, { profile: "reliability", measurePerformance: true });
+  const failures = evaluateExpectations(testCase, result, tacticalSummary);
   return {
     id: testCase.id,
     description: testCase.description,
@@ -108,13 +123,14 @@ function runRegressionCase(testCase, runtime, sequence = 1, options = {}) {
     passed: failures.length === 0,
     durationMs: Number(durationMs.toFixed(3)),
     failures,
-    actual: summarizeActual(result),
+    actual: summarizeActual(result, tacticalSummary),
+    tacticalSummary,
     trace: result.decisionTrace || null,
     result
   };
 }
 
-function evaluateExpectations(testCase, result) {
+function evaluateExpectations(testCase, result, tacticalSummary = null) {
   const expectations = testCase.expectations || {};
   const failures = [];
   const winner = winnerSide(result);
@@ -153,7 +169,24 @@ function evaluateExpectations(testCase, result) {
   for (const code of expectations.forbiddenReasonCodes || []) {
     if (reasonCodes.has(code)) failures.push(`Forbidden reason code ${code} was emitted.`);
   }
+  const patterns = new Map((tacticalSummary?.findings || []).map(finding => [finding.patternId, finding]));
+  for (const patternId of expectations.requiredPatternIds || []) {
+    if (!patterns.has(patternId)) failures.push(`Missing required tactical pattern ${patternId}.`);
+  }
+  for (const patternId of expectations.forbiddenPatternIds || []) {
+    if (patterns.has(patternId)) failures.push(`Forbidden tactical pattern ${patternId} was emitted.`);
+  }
+  for (const [patternId, minimum] of Object.entries(expectations.minimumPatternConfidence || {})) {
+    const finding = patterns.get(patternId);
+    if (finding && confidenceRank(finding.confidence?.level) < confidenceRank(minimum)) {
+      failures.push(`Tactical pattern ${patternId} confidence ${finding.confidence?.level || "none"} is below ${minimum}.`);
+    }
+  }
   return failures;
+}
+
+function confidenceRank(level) {
+  return { low: 1, medium: 2, high: 3 }[level] || 0;
 }
 
 function selectedMoveAtDecision(trace, expected) {
@@ -187,13 +220,14 @@ function winnerSide(result) {
   return edge > 0 ? "A" : edge < 0 ? "B" : "draw";
 }
 
-function summarizeActual(result) {
+function summarizeActual(result, tacticalSummary = null) {
   return {
     winner: winnerSide(result),
     score: result.score,
     engineVersion: result.decisionTrace?.engineVersion || BATTLE_ENGINE_VERSION,
     decisionCount: result.decisionTrace?.decisions?.length || 0,
-    reasonCodes: [...new Set((result.decisionTrace?.decisions || []).map(decision => decision.reasonCode))]
+    reasonCodes: [...new Set((result.decisionTrace?.decisions || []).map(decision => decision.reasonCode))],
+    tacticalPatternIds: (tacticalSummary?.findings || []).map(finding => finding.patternId)
   };
 }
 
@@ -211,7 +245,7 @@ function runRegressionSuite(options = {}) {
     passed: cases.filter(item => item.passed).length,
     failed: cases.filter(item => !item.passed).length,
     durationMs: Number((performance.now() - startedAt).toFixed(3)),
-    cases: cases.map(({ trace, result, ...item }) => item)
+    cases: cases.map(({ trace, result, tacticalSummary, ...item }) => item)
   };
   if (options.writeReports !== false) writeRegressionReports(summary, cases, options.reportRoot || DEFAULT_REPORT_ROOT);
   return { summary, cases };

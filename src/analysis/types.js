@@ -84,6 +84,8 @@ function createMatchupAnalysis(input = {}) {
       hints: input.hints || [],
       recommendations: input.recommendations || []
     },
+    tacticalSummary: input.tacticalSummary || null,
+    winConditionSummary: input.winConditionSummary || null,
     notes: input.notes || []
   };
 }

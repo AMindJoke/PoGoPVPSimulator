@@ -162,6 +162,31 @@ function testStoredEnergyAmountInOpponentSwing() {
   assert(story.commonMistakes.some(item => /11-energy lead \(one Pulse\)/i.test(item.reason)));
 }
 
+function testWhyUsesWinnerAlignedEvidence() {
+  const story = buildMatchupStory(baseInput({
+    flags: [],
+    scenarios: [scenario({
+      score: 421,
+      winnerSide: "B",
+      swing: null,
+      result: {
+        score: 421,
+        details: {
+          hpEdge: -17,
+          energyEdge: 29,
+          readyEdge: 62,
+          closingCostEdge: 0,
+          farmPressureEdge: 64,
+          outpacePressureEdge: 0
+        }
+      }
+    })]
+  }));
+  assert.match(story.why.text, /Beta comes out with more HP/i);
+  assert(!/Alpha creates more fast-move pressure/i.test(story.why.text));
+  assert.deepStrictEqual(story.why.evidenceKeys, ["hpEdge"]);
+}
+
 function testStraightforwardAndNoHardcoding() {
   const story = buildMatchupStory(baseInput({
     flags: [],
@@ -171,6 +196,58 @@ function testStraightforwardAndNoHardcoding() {
   assert(story.tags.includes("straightforward"));
   const source = fs.readFileSync(path.join(ROOT, "src", "analysis", "matchup-story.js"), "utf8");
   assert(!/Malamar|Pangoro/i.test(source));
+}
+
+function testConsumesNaturalTacticalInsight() {
+  const finding = {
+    patternId: "guaranteed-attack-debuff-value",
+    side: "A",
+    moveId: "ICY_WIND",
+    turn: 12,
+    decisionId: "A:12:icy-wind",
+    visibility: "user-facing",
+    confidence: { level: "high" },
+    relevance: 0.9,
+    impact: "outcome-changing",
+    changesOutcome: true,
+    actionable: true,
+    evidence: {
+      pokemonName: "Alpha",
+      moveName: "Icy Wind",
+      extraHpRetained: 16,
+      baselineOutcome: "loss",
+      alternateOutcome: "win"
+    },
+    relatedLineIds: []
+  };
+  const story = buildMatchupStory(baseInput({
+    tacticalSummary: { findings: [finding], userFacingFindings: [finding] }
+  }));
+  assert.match(story.why.text, /Attack drop changes the projected result from loss to win/i);
+  assert.strictEqual(story.structuredWinConditions.length, 1);
+  assert(!/detector|relevance|confidence score/i.test(story.why.text));
+}
+
+function testDoesNotExposeMediumWinCondition() {
+  const finding = {
+    patternId: "guaranteed-defense-buff-value",
+    side: "A",
+    moveId: "FORTIFY",
+    turn: 12,
+    decisionId: "A:12:fortify",
+    visibility: "user-facing",
+    confidence: { level: "medium" },
+    relevance: 0.9,
+    impact: "meaningful",
+    changesOutcome: false,
+    evidence: { moveName: "Fortify", baselineOutcome: "win", alternateOutcome: "win", projectedRatingDelta: 30 },
+    relatedLineIds: []
+  };
+  const story = buildMatchupStory(baseInput({
+    tacticalSummary: { findings: [finding], userFacingFindings: [finding] }
+  }));
+  assert.deepStrictEqual(story.structuredWinConditions, []);
+  assert(!/Defense boost/i.test(story.why.text));
 }
 
 function testRealComplexMatchupIfAvailable() {
@@ -207,7 +284,10 @@ function run() {
   testShieldStateSelection();
   testOrientation();
   testStoredEnergyAmountInOpponentSwing();
+  testWhyUsesWinnerAlignedEvidence();
   testStraightforwardAndNoHardcoding();
+  testConsumesNaturalTacticalInsight();
+  testDoesNotExposeMediumWinCondition();
   testRealComplexMatchupIfAvailable();
   console.log("Matchup Story tests passed.");
 }

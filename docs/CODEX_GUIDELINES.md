@@ -13,6 +13,8 @@ For battle logic, read:
 - `ROADMAP.md`
 - `ANALYSIS_ARCHITECTURE.md`
 - `BATTLE_ENGINE_RELIABILITY.md`
+- `TACTICAL_PATTERN_LIBRARY.md`
+- `WIN_CONDITION_ENGINE.md`
 
 For workflow and change style, read this file.
 
@@ -55,6 +57,12 @@ Use `src/analysis/` for reusable analysis contracts and helpers.
 
 The battle engine determines what happened. The analysis layer explains why it matters. The UI displays the result.
 
+For tactical explanation changes, preserve this flow:
+
+`Tactical Pattern Library -> Win Condition Engine -> Battle Review / Matchup Story`.
+
+Read `docs/WIN_CONDITION_ENGINE.md` before adding a new conclusion. Do not let narrative consumers infer supported win conditions directly from raw tactical findings.
+
 ## Explain What Changed
 
 Always summarize what changed in plain language.
@@ -65,6 +73,10 @@ For battle logic changes, explain:
 - Why it changed.
 - What scenario it affects.
 - Any remaining uncertainty.
+
+Before changing planner behavior, reproduce the issue as a Golden Corpus case
+when possible and run `npm run planner:benchmark` before and after the fix. Review
+the affected tactical category, not only the reported Pokemon matchup.
 
 For UI changes, explain:
 

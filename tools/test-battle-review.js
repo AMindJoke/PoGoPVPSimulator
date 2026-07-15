@@ -41,6 +41,7 @@ function events() {
       side: "A",
       kind: "charge",
       turn: 36,
+      moveId: "FORTIFY",
       moveName: "Fortify",
       damage: 20,
       buffEffects: [{ target: "self", stat: "defense", delta: 1 }],
@@ -108,8 +109,44 @@ function testDoesNotInventUnmatchedCriticalDecision() {
   assert(!review.items.some(item => item.type === "critical"));
 }
 
+function testExposesStructuredTacticalEvidence() {
+  const finding = {
+    patternId: "guaranteed-defense-buff-value",
+    patternVersion: 1,
+    category: "stat-buff",
+    side: "A",
+    moveId: "FORTIFY",
+    turn: 36,
+    decisionId: "A:36:fortify",
+    relevance: 0.92,
+    confidence: { level: "high", reasons: ["complete comparison"] },
+    impact: "outcome-changing",
+    changesOutcome: true,
+    actionable: true,
+    visibility: "user-facing",
+    evidence: {
+      pokemonName: "Alpha",
+      moveName: "Fortify",
+      extraHpRetained: 18
+    },
+    relatedLineIds: ["buff-line", "plain-line"]
+  };
+  const review = buildBattleReview({
+    combatants: combatants(),
+    events: events(),
+    developerMode: true,
+    tacticalSummary: { findings: [finding], userFacingFindings: [finding] }
+  });
+  assert(review.items.some(item => item.type === "tactical" && item.eventIndex === 2));
+  assert.strictEqual(review.developerPatterns[0].patternId, "guaranteed-defense-buff-value");
+  assert.strictEqual(review.developerPatterns[0].evidence.extraHpRetained, 18);
+  assert.strictEqual(review.developerWinConditions[0].category, "guaranteed-defense-buff");
+  assert.strictEqual(review.winConditionSummary.conditions.length, 1);
+}
+
 testPrioritizesVerifiedTurningPoint();
 testLimitsAndDeduplicatesMoments();
 testRoutineSneakIsNotPresentedAsTacticalAdvice();
 testDoesNotInventUnmatchedCriticalDecision();
+testExposesStructuredTacticalEvidence();
 console.log("Battle Review tests passed.");

@@ -8,6 +8,9 @@
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
   <script src="src/reliability/battle-reliability.js"></script>
+  <script src="src/tactical/tactical-patterns.js"></script>
+  <script src="src/analysis/tactical-insights.js"></script>
+  <script src="src/analysis/win-condition-engine.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
   <style>
@@ -1844,6 +1847,7 @@
     .battle-review-item[data-review-type="closing"] { --review-color: #16877b; }
     .battle-review-item[data-review-type="effect"] { --review-color: #8256c7; }
     .battle-review-item[data-review-type="timing"] { --review-color: #267faf; }
+    .battle-review-item[data-review-type="tactical"] { --review-color: #16877b; }
     .battle-review-label {
       color: var(--review-color, var(--accent-strong));
       font-size: 9px;
@@ -1874,6 +1878,21 @@
       font-size: 9px;
       font-weight: 850;
       white-space: nowrap;
+    }
+    .battle-review-debug {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .battle-review-debug pre {
+      max-height: 320px;
+      margin: 8px 0 0;
+      padding: 10px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      white-space: pre-wrap;
     }
     .matrix-grid {
       display: grid;
@@ -5288,7 +5307,7 @@
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
     const battleReliability = window.PvPeakBattleReliability || {};
-    const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v2";
+    const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v4";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     let moveMap = new Map();
     let allPokemon = [];
@@ -5312,10 +5331,15 @@
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
     let chargedContinuationOpening = null;
+    let chargedContinuationMode = "presentation";
     let chargedDecisionDiagnosticsEnabled = false;
     let lastChargedDecisionDiagnostics = [];
     let battleDecisionTraceEnabled = false;
+    let battleDecisionCounterfactualsEnabled = false;
     let currentBattleDecisionTrace = null;
+    let lastBattleDecisionTrace = null;
+    let lastTacticalPatternSummary = null;
+    let lastWinConditionSummary = null;
     let battleInsights = [];
     let pageScrollAnimation = null;
     let timelineReplayAnimation = null;
@@ -5847,9 +5871,11 @@
         let activeAutoTurnContext = null;
         let chargedContinuationDepth = 0;
         let chargedContinuationOpening = null;
+        let chargedContinuationMode = "presentation";
         let chargedDecisionDiagnosticsEnabled = false;
         let lastChargedDecisionDiagnostics = [];
         let battleDecisionTraceEnabled = false;
+        let battleDecisionCounterfactualsEnabled = false;
         let currentBattleDecisionTrace = null;
         let battleInsights = [];
         const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
@@ -5874,7 +5900,8 @@
           const result = simulateShieldMatrixCell(aShields, bShields, {
             includeSwing: false,
             preFastAdvantage: { side, fastMoves },
-            policy
+            policy,
+            continuationMode: "flip-analysis"
           });
           const isAWin = result.details && result.details.winnerEdge > 0;
           const isBWin = result.details && result.details.winnerEdge < 0;
@@ -5884,9 +5911,12 @@
         function simulateShieldMatrixCellFromConfig(config, aShields, bShields, options = {}) {
           currentMatrixConfig = config;
           const previousTraceEnabled = battleDecisionTraceEnabled;
+          const previousCounterfactualsEnabled = battleDecisionCounterfactualsEnabled;
           const previousTrace = currentBattleDecisionTrace;
           const previousBattleInsights = battleInsights;
+          const previousContinuationMode = chargedContinuationMode;
           battleDecisionTraceEnabled = options.trace === true;
+          battleDecisionCounterfactualsEnabled = options.trace === true;
           currentBattleDecisionTrace = battleDecisionTraceEnabled
             ? beginBattleDecisionTrace({
                 battleId: options.battleId,
@@ -5894,6 +5924,7 @@
                 source: options.source
               })
             : null;
+          chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -5940,19 +5971,24 @@
           if (battleDecisionTraceEnabled) result.decisionTrace = completeBattleDecisionTrace();
           chargedDecisionDiagnosticsEnabled = false;
           battleDecisionTraceEnabled = previousTraceEnabled;
+          battleDecisionCounterfactualsEnabled = previousCounterfactualsEnabled;
           currentBattleDecisionTrace = previousTrace;
           battleInsights = previousBattleInsights;
+          chargedContinuationMode = previousContinuationMode;
           return result;
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, trace, datasetVersion, config } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode } = event.data || {};
           try {
             currentMatrixConfig = config;
             const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
               trace,
+              preFastAdvantage,
+              policy,
+              continuationMode,
               battleId: key,
               datasetVersion,
               source: source || "live"
@@ -6887,6 +6923,9 @@
         log = [];
         timeline = [];
         battleInsights = [];
+        lastBattleDecisionTrace = null;
+        lastTacticalPatternSummary = null;
+        lastWinConditionSummary = null;
         initialTimelineState = null;
         battleTurns = { A: 0, B: 0 };
         selectedTimelineIndex = null;
@@ -6900,6 +6939,9 @@
       log = [];
       timeline = [];
       battleInsights = [];
+      lastBattleDecisionTrace = null;
+      lastTacticalPatternSummary = null;
+      lastWinConditionSummary = null;
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       selectedTimelineIndex = null;
@@ -7515,7 +7557,7 @@
         options.shielded === undefined &&
         defender.shields > 0 &&
         chargedContinuationDepth === 0 &&
-        (battleDecisionTraceEnabled || defender.shieldMode === "smart")
+        (battleDecisionCounterfactualsEnabled || defender.shieldMode === "smart")
       ) {
         shieldCounterfactual = buildShieldCounterfactual(attacker, defender, move, shieldDecision.shield);
         if (defender.shieldMode === "smart") {
@@ -8338,7 +8380,8 @@
       for (const move of validChargedMoves(attacker)) {
         if (candidates.some(candidate => candidate.id === move.id)) continue;
         const fastsNeeded = Math.max(0, Math.ceil((Number(move.energyCost || 0) - attacker.energy) / gain));
-        if (fastsNeeded === 1 && hasGuaranteedStatEffect(move) && !wouldOvercapAfterFast(attacker)) candidates.push(move);
+        const analysisCandidate = chargedContinuationMode === "flip-analysis";
+        if (fastsNeeded === 1 && (analysisCandidate || hasGuaranteedStatEffect(move)) && !wouldOvercapAfterFast(attacker)) candidates.push(move);
       }
       return candidates;
     }
@@ -8347,6 +8390,7 @@
       if (!attacker || !defender || !Array.isArray(available) || !available.length) return false;
       const candidates = chargedContinuationCandidates(attacker, available);
       if (candidates.length < 2) return false;
+      if (chargedContinuationMode === "flip-analysis") return true;
       return candidates.some(move => guaranteedStatEffectChangesState(attacker, defender, move));
     }
 
@@ -8996,12 +9040,46 @@
     }
 
     function runBattleToEndNow(options = {}) {
+      battleDecisionTraceEnabled = true;
+      battleDecisionCounterfactualsEnabled = false;
+      beginBattleDecisionTrace({ source: "live-interactive" });
       suppressRender = true;
       runAutomaticBattleToEnd(1000);
       suppressRender = false;
+      lastBattleDecisionTrace = completeBattleDecisionTrace();
+      battleDecisionTraceEnabled = false;
+      battleDecisionCounterfactualsEnabled = false;
+      currentBattleDecisionTrace = null;
+      lastTacticalPatternSummary = buildLiveTacticalPatternSummary();
+      lastWinConditionSummary = buildLiveWinConditionSummary();
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
       queueTimelineReplay();
+    }
+
+    function buildLiveTacticalPatternSummary() {
+      const build = window.PvPeakTacticalPatterns?.buildTacticalPatternSummary;
+      if (typeof build !== "function" || !lastBattleDecisionTrace || !left || !right) return null;
+      return build({
+        league: "great",
+        analysisMode: "interactive-analysis",
+        decisionTrace: lastBattleDecisionTrace,
+        provenance: { source: "live", currentEngineVersion: battleEngineVersion, stale: false },
+        combatants: {
+          A: { id: left.p.id, name: left.p.name },
+          B: { id: right.p.id, name: right.p.name }
+        }
+      }, { profile: "interactive-analysis" });
+    }
+
+    function buildLiveWinConditionSummary() {
+      const build = window.PvPeakWinConditionEngine?.buildWinConditionSummary;
+      if (typeof build !== "function" || !lastTacticalPatternSummary) return null;
+      return build({
+        tacticalSummary: lastTacticalPatternSummary,
+        engineVersion: battleEngineVersion,
+        provenance: { source: "live", currentEngineVersion: battleEngineVersion, stale: false }
+      });
     }
 
     function scrollTimelineIntoView() {
@@ -9092,6 +9170,9 @@
       log = [];
       timeline = [];
       battleInsights = [];
+      lastBattleDecisionTrace = null;
+      lastTacticalPatternSummary = null;
+      lastWinConditionSummary = null;
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
@@ -9431,6 +9512,10 @@
           B: { name: right.p.name, hp: right.hp, maxHp: right.maxHp, energy: right.energy }
         },
         insights: battleInsights,
+        tacticalSummary: lastTacticalPatternSummary,
+        winConditionSummary: lastWinConditionSummary,
+        developerMode: debugBattleTracing,
+        engineVersion: battleEngineVersion,
         events: timeline.map((event, index) => ({
           index,
           side: event.trainer,
@@ -9446,18 +9531,21 @@
           state: event.state || null
         }))
       });
-      if (!review.items.length) {
+      if (!review.items.length && !(debugBattleTracing && review.developerWinConditions.length)) {
         box.hidden = true;
         box.innerHTML = "";
         return;
       }
       box.hidden = false;
+      const developerConditions = debugBattleTracing && review.developerWinConditions.length
+        ? `<details class="battle-review-debug"><summary>Win Condition Engine</summary><pre>${escapeHtml(JSON.stringify(review.winConditionSummary, null, 2))}</pre></details>`
+        : "";
       box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div><div class="battle-review-list">` +
         review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
           <span class="battle-review-label">${escapeHtml(item.label)}</span>
           <span class="battle-review-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.explanation)}</small></span>
           <span class="battle-review-turn">T${Number(item.turn)}</span>
-        </button>`).join("") + `</div>`;
+        </button>`).join("") + `</div>${developerConditions}`;
       box.querySelectorAll("[data-review-event]").forEach(button => {
         button.addEventListener("click", () => focusBattleReviewEvent(Number(button.dataset.reviewEvent)));
       });
@@ -9663,6 +9751,8 @@
         scenarios,
         flags: matchupInspectorFlags(scenarios),
         selectedShieldState,
+        tacticalSummary: selectedShieldState === `${currentA}-${currentB}` ? lastTacticalPatternSummary : null,
+        winConditionSummary: selectedShieldState === `${currentA}-${currentB}` ? lastWinConditionSummary : null,
         battleInsights: Array.isArray(selectedScenario?.result?.battleInsights)
           ? selectedScenario.result.battleInsights
           : []
@@ -9749,6 +9839,8 @@
         pokemon: { a: data.a, b: data.b },
         selectedShieldState: data.selectedShieldState,
         source: data.source,
+        tacticalSummary: data.tacticalSummary,
+        winConditionSummary: data.winConditionSummary,
         flags: data.flags,
         scenarios: data.scenarios.map(scenario => ({
           shieldState: scenario.shieldState,
@@ -10327,7 +10419,9 @@
 
     function simulateShieldMatrixCell(aShields, bShields, options = {}) {
       const snapshot = snapshotBattleState();
+      const previousContinuationMode = chargedContinuationMode;
       suppressRender = true;
+      chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
       $("p1Shields").value = aShields;
       $("p2Shields").value = bShields;
       const startEnergyA = clampEnergy($("p1StartEnergy")?.value || 0);
@@ -10360,6 +10454,7 @@
         : { source: "live", currentEngineVersion: battleEngineVersion, datasetEngineVersion: battleEngineVersion, stale: false };
       result.battleInsights = completedBattleInsights;
       restoreBattleState(snapshot);
+      chargedContinuationMode = previousContinuationMode;
       suppressRender = false;
       return result;
     }
@@ -10712,7 +10807,8 @@
       const result = simulateShieldMatrixCell(aShields, bShields, {
         includeSwing: false,
         preFastAdvantage: { side, fastMoves },
-        policy
+        policy,
+        continuationMode: "flip-analysis"
       });
       restoreBattleState(snapshot);
       const isAWin = result.details && result.details.winnerEdge > 0;
@@ -10750,7 +10846,7 @@
     }
 
     function farmDownPressure(attacker, defender) {
-      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return 0;
+      if (!attacker || !defender || !attacker.fast || attacker.hp <= 0 || defender.hp <= 0) return 0;
       const fastDamage = estimate(attacker, defender, attacker.fast);
       const fastsToKo = fastDamage ? Math.ceil(defender.hp / fastDamage) : 99;
       const fastWindow = Math.max(0, 7 - fastsToKo) * 6;
@@ -10782,7 +10878,7 @@
     }
 
     function nearChargeDanger(attacker, defender) {
-      if (!attacker || !defender || !attacker.fast) return 0;
+      if (!attacker || !defender || !attacker.fast || attacker.hp <= 0 || defender.hp <= 0) return 0;
       const nextEnergy = Math.min(100, attacker.energy + Number(attacker.fast.energyGain || 0));
       return validChargedMoves(attacker).some(move => nextEnergy >= move.energyCost && estimate(attacker, defender, move) >= defender.hp) ? 1 : 0;
     }
@@ -10897,6 +10993,9 @@
         p2Shields: $("p2Shields").value,
         p1StartEnergy: $("p1StartEnergy").value,
         p2StartEnergy: $("p2StartEnergy").value,
+        lastBattleDecisionTrace: lastBattleDecisionTrace ? JSON.parse(JSON.stringify(lastBattleDecisionTrace)) : null,
+        lastTacticalPatternSummary: lastTacticalPatternSummary ? JSON.parse(JSON.stringify(lastTacticalPatternSummary)) : null,
+        lastWinConditionSummary: lastWinConditionSummary ? JSON.parse(JSON.stringify(lastWinConditionSummary)) : null,
         battleInsights: JSON.parse(JSON.stringify(battleInsights))
       };
     }
@@ -10915,6 +11014,9 @@
       $("p2Shields").value = snapshot.p2Shields;
       $("p1StartEnergy").value = snapshot.p1StartEnergy;
       $("p2StartEnergy").value = snapshot.p2StartEnergy;
+      lastBattleDecisionTrace = snapshot.lastBattleDecisionTrace || null;
+      lastTacticalPatternSummary = snapshot.lastTacticalPatternSummary || null;
+      lastWinConditionSummary = snapshot.lastWinConditionSummary || null;
       battleInsights = snapshot.battleInsights || [];
     }
 

@@ -33,6 +33,10 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 - [ ] Add terminal charged-move access snapshots.
 - [ ] Expand reviewed golden matchups without Pokemon-specific engine patches.
 - [ ] Build a deeper oracle for selected difficult cases.
+- [x] Add the first concept-centered Golden Matchup Corpus.
+- [x] Add planner benchmark and tactical coverage reports.
+- [x] Add previous-run comparison and regression/fix reporting.
+- [ ] Promote mature Planner QA metrics into CI quality gates.
 
 ## 3v3 Battle AI
 
@@ -58,7 +62,10 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 
 ## Battle Review Engine
 
-- [ ] Explain the player's win condition.
+- [x] Add a shared Tactical Pattern Library and structured pattern evidence.
+- [x] Connect high-confidence tactical findings to Battle Review and Matchup Story.
+- [x] Add the first structured Win Condition Engine categories.
+- [x] Explain supported player win conditions from deterministic tactical evidence.
 - [ ] Explain the opponent's likely win condition.
 - [ ] Identify turning points.
 - [ ] Rate shield quality.
@@ -78,6 +85,7 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 - [ ] Add team archetype reference.
 - [ ] Add resource management reference.
 - [ ] Add win condition reference.
+- [x] Add Win Condition Engine architecture and consumer rules.
 - [ ] Add opponent prediction reference.
 
 ## Testing

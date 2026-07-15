@@ -1,18 +1,26 @@
 "use strict";
 
 (function exposeBattleReview(root, factory) {
-  const api = factory();
+  const tacticalInsights = typeof module === "object" && module.exports
+    ? require("./tactical-insights")
+    : root?.PvPeakTacticalInsights;
+  const winConditionEngine = typeof module === "object" && module.exports
+    ? require("./win-condition-engine")
+    : root?.PvPeakWinConditionEngine;
+  const api = factory(tacticalInsights, winConditionEngine);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReview = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReviewApi() {
+})(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReviewApi(tacticalInsightsApi, winConditionEngineApi) {
   const MAX_ITEMS = 3;
 
   function buildBattleReview(input = {}) {
     const events = Array.isArray(input.events) ? input.events.filter(Boolean) : [];
     const insights = Array.isArray(input.insights) ? input.insights.filter(Boolean) : [];
     const combatants = input.combatants || {};
+    const winConditionSummary = resolveWinConditionSummary(input);
     const candidates = [
       ...criticalShieldItems(insights, events, combatants),
+      ...tacticalPatternItems(input.tacticalSummary, events),
       closingItem(events, combatants),
       stageEffectItem(events, combatants)
     ].filter(Boolean).sort((a, b) => b.priority - a.priority || a.turn - b.turn);
@@ -28,8 +36,68 @@
     return {
       schemaVersion: 1,
       outcome: outcomeSummary(combatants),
-      items
+      items,
+      winConditionSummary,
+      developerPatterns: developerPatternDetails(input.tacticalSummary),
+      developerWinConditions: input.developerMode ? clone(winConditionSummary?.conditions || []) : []
     };
+  }
+
+  function resolveWinConditionSummary(input) {
+    if (input.winConditionSummary) return input.winConditionSummary;
+    const build = winConditionEngineApi?.buildWinConditionSummary;
+    return typeof build === "function"
+      ? build({ tacticalSummary: input.tacticalSummary, provenance: input.provenance, engineVersion: input.engineVersion })
+      : null;
+  }
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function tacticalPatternItems(summary, events) {
+    const translate = tacticalInsightsApi?.translateTacticalFinding;
+    if (typeof translate !== "function") return [];
+    return (summary?.userFacingFindings || []).map(finding => {
+      const insight = translate(finding);
+      if (!insight) return null;
+      const event = events.find(candidate =>
+        candidate.side === finding.side &&
+        candidate.kind === "charge" &&
+        Number(candidate.turn) === Number(finding.turn) &&
+        (!finding.moveId || candidate.moveId === finding.moveId)
+      );
+      if (!event) return null;
+      return {
+        key: `pattern:${finding.patternId}:${finding.decisionId || event.index}`,
+        type: "tactical",
+        label: finding.changesOutcome ? "Tactical edge" : "Tactical pattern",
+        title: insight.title,
+        explanation: insight.text,
+        turn: Number(event.turn || finding.turn || 0),
+        eventIndex: event.index,
+        priority: finding.changesOutcome ? 95 : 75,
+        patternId: finding.patternId,
+        confidence: finding.confidence?.level || "low"
+      };
+    }).filter(Boolean);
+  }
+
+  function developerPatternDetails(summary) {
+    return (summary?.findings || []).map(finding => ({
+      patternId: finding.patternId,
+      patternVersion: finding.patternVersion,
+      side: finding.side,
+      turn: finding.turn,
+      moveId: finding.moveId,
+      decisionId: finding.decisionId,
+      confidence: finding.confidence,
+      relevance: finding.relevance,
+      impact: finding.impact,
+      changesOutcome: finding.changesOutcome,
+      evidence: finding.evidence,
+      relatedLineIds: finding.relatedLineIds
+    }));
   }
 
   function criticalShieldItems(insights, events, combatants) {

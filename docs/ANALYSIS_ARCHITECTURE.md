@@ -8,6 +8,8 @@ PvPeak is moving from a battle simulator toward a battle analysis platform. This
 Battle Engine
   -> Offline Generator
   -> Offline Dataset / Matchup Cache
+  -> Tactical Pattern Library
+  -> Win Condition Engine
   -> Analysis Layer
   -> UI / Matchup Inspector / Battle Coach
 ```
@@ -73,6 +75,9 @@ Initial modules live in `src/analysis/`:
 - `matchup-analysis.js` converts battle/ranking data into matchup analysis objects.
 - `battle-coach.js` defines the coach plug-in architecture.
 - `offline-analysis.js` summarizes offline datasets for future tools.
+- `win-condition-engine.js` turns supported tactical findings into deterministic, evidence-backed conclusions.
+
+The Win Condition Engine sits after pattern detection and before narrative consumers. Matchup Story must consume eligible conclusions rather than independently interpreting raw detector output. See `docs/WIN_CONDITION_ENGINE.md`.
 
 The analysis layer is allowed to compute:
 - matchup complexity

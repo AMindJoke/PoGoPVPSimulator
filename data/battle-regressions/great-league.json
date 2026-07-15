@@ -14,7 +14,9 @@
       "expectations": {
         "winner": "A",
         "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "DRAIN_PUNCH" },
-        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"]
+        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"],
+        "requiredPatternIds": ["guaranteed-defense-buff-value"],
+        "minimumPatternConfidence": { "guaranteed-defense-buff-value": "high" }
       },
       "notes": "Regression for guaranteed defensive buff valuation and shield-aware continuation."
     },
@@ -29,7 +31,9 @@
       "expectations": {
         "winner": "A",
         "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "DRAIN_PUNCH" },
-        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"]
+        "requiredReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE"],
+        "requiredPatternIds": ["guaranteed-defense-buff-value"],
+        "minimumPatternConfidence": { "guaranteed-defense-buff-value": "high" }
       },
       "notes": "Covers shadow modifiers without a Pokemon-specific engine exception."
     },
@@ -44,7 +48,9 @@
       "expectations": {
         "winner": "A",
         "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "ICY_WIND" },
-        "requiredReasonCodes": ["GUARANTEED_ATTACK_DEBUFF_VALUE"]
+        "requiredReasonCodes": ["GUARANTEED_ATTACK_DEBUFF_VALUE"],
+        "requiredPatternIds": ["guaranteed-attack-debuff-value"],
+        "minimumPatternConfidence": { "guaranteed-attack-debuff-value": "high" }
       },
       "notes": "Protects full-continuation comparison from immediate energy-efficiency bias."
     },
@@ -59,7 +65,9 @@
       "expectations": {
         "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "AURA_SPHERE" },
         "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "WILD_CHARGE" },
-        "requiredReasonCodes": ["AVOID_EARLY_SELF_DEBUFF"]
+        "requiredReasonCodes": ["AVOID_EARLY_SELF_DEBUFF"],
+        "requiredPatternIds": ["delay-self-debuff"],
+        "minimumPatternConfidence": { "delay-self-debuff": "high" }
       },
       "notes": "The fixture checks sequencing, not a hardcoded winner."
     },
@@ -73,7 +81,8 @@
       "policy": { "baiting": "selective", "shieldMode": "always" },
       "expectations": {
         "winner": "A",
-        "forbiddenReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE", "GUARANTEED_ATTACK_DEBUFF_VALUE", "AVOID_EARLY_SELF_DEBUFF"]
+        "forbiddenReasonCodes": ["GUARANTEED_DEFENSE_BUFF_VALUE", "GUARANTEED_ATTACK_DEBUFF_VALUE", "AVOID_EARLY_SELF_DEBUFF"],
+        "forbiddenPatternIds": ["guaranteed-defense-buff-value", "guaranteed-attack-debuff-value", "delay-self-debuff"]
       },
       "notes": "Control case for broad regressions in otherwise simple battle flow."
     },
