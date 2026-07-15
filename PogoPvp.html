@@ -7,6 +7,7 @@
   <script src="gamemaster-data.js"></script>
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
+  <script src="src/iv-optimization.js"></script>
   <script src="src/reliability/battle-reliability.js"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
@@ -893,8 +894,8 @@
       margin-bottom: 5px;
     }
     .iv-preset-actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      display: flex;
+      justify-content: center;
       gap: 6px;
       width: 100%;
       max-width: 188px;
@@ -911,6 +912,81 @@
     .iv-preset-actions button:hover {
       border-color: var(--accent);
       background: color-mix(in srgb, var(--panel) 80%, var(--accent) 20%);
+    }
+    .iv-optimization {
+      display: grid;
+      gap: 5px;
+      width: 100%;
+      max-width: 240px;
+    }
+    .iv-optimization-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .iv-profile-toggle {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+      border-radius: 6px;
+      background: var(--panel);
+    }
+    .iv-profile-toggle button {
+      min-width: 0;
+      min-height: 27px;
+      padding: 4px 6px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .iv-profile-toggle button:last-child {
+      border-right: 0;
+    }
+    .iv-profile-toggle button.active,
+    .iv-profile-toggle button[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--accent) 88%, var(--panel));
+      color: #fff;
+      font-weight: 950;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-dark) 70%, transparent);
+    }
+    .iv-profile-toggle button:focus-visible {
+      position: relative;
+      z-index: 1;
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+    .iv-profile-feedback {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-height: 18px;
+    }
+    .iv-profile-helper {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 650;
+      line-height: 1.2;
+    }
+    .iv-profile-badge {
+      flex: 0 0 auto;
+      padding: 2px 5px;
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--panel) 90%, var(--accent) 10%);
+      color: var(--accent-dark);
+      font-size: 8px;
+      font-weight: 900;
+      white-space: nowrap;
     }
     .options-panel {
       width: 100%;
@@ -3483,24 +3559,44 @@
     .timeline-block.shield {
       height: 24px;
       top: 0;
-      border-radius: 999px;
-      background: #f8effb;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent !important;
       color: #b245c5;
-      border-color: rgba(178, 69, 197, .65);
-      box-shadow: 0 0 0 2px rgba(178, 69, 197, .13), 0 0 8px rgba(178, 69, 197, .28);
+      box-shadow: none;
       text-shadow: none;
+      overflow: visible;
       z-index: 2;
     }
     .timeline-shield-icon {
-      width: 17px;
-      height: 17px;
+      width: 42px;
+      height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      color: #b245c5;
+      filter: drop-shadow(0 0 3px rgba(178, 69, 197, .42));
     }
     .timeline-shield-icon svg {
-      width: 17px;
-      height: 17px;
+      width: 42px;
+      height: 42px;
+      max-width: none;
+      flex: 0 0 42px;
+    }
+    .timeline-shield-icon svg path:nth-child(2) {
+      fill: currentColor;
+    }
+    .timeline-block.shield:hover,
+    .timeline-block.shield.previewed,
+    .timeline-block.shield.selected {
+      outline: 0;
+      box-shadow: none;
+    }
+    .timeline-block.shield:hover .timeline-shield-icon,
+    .timeline-block.shield.previewed .timeline-shield-icon,
+    .timeline-block.shield.selected .timeline-shield-icon {
+      filter: drop-shadow(0 0 5px rgba(178, 69, 197, .72));
     }
     .charge-trail {
       position: absolute;
@@ -4275,6 +4371,18 @@
         font-size: 10px;
         text-align: center;
       }
+      .iv-optimization {
+        max-width: none;
+        gap: 4px;
+      }
+      .iv-profile-toggle button {
+        min-height: 25px;
+        padding: 3px 4px;
+        font-size: 9px;
+      }
+      .iv-profile-helper {
+        font-size: 8px;
+      }
       .bait-control,
       .shield-mode-row {
         justify-content: space-between;
@@ -4764,6 +4872,25 @@
         padding: 3px 4px;
         font-size: 9px;
       }
+      .iv-optimization-label {
+        font-size: 8px;
+      }
+      .iv-profile-toggle button {
+        min-height: 23px;
+        padding: 2px;
+        font-size: 8px;
+      }
+      .iv-profile-feedback {
+        align-items: flex-start;
+        gap: 3px;
+      }
+      .iv-profile-helper {
+        font-size: 7px;
+      }
+      .iv-profile-badge {
+        padding: 1px 3px;
+        font-size: 7px;
+      }
       .bait-control > span,
       .shield-mode-row > span {
         display: none;
@@ -5170,10 +5297,19 @@
                   <span class="iv-field"><input id="p1IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
                   <span class="iv-field cp-iv-field"><input id="p1Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
                 </span>
+                <div class="iv-optimization">
+                  <span class="iv-optimization-label">IV Optimization</span>
+                  <input id="p1IvProfile" type="hidden" value="custom">
+                  <div class="iv-profile-toggle" data-prefix="p1" role="group" aria-label="Pokemon A IV optimization profile">
+                    <button type="button" data-iv-profile="balanced" aria-pressed="false" title="Highest overall stat product.">Balanced</button>
+                    <button type="button" data-iv-profile="attack" aria-pressed="false" title="Prioritizes Attack for CMP and breakpoints.">Attack</button>
+                    <button type="button" data-iv-profile="defense" aria-pressed="false" title="Prioritizes Defense and bulk.">Defense</button>
+                  </div>
+                  <div class="iv-profile-feedback"><span id="p1IvProfileHelper" class="iv-profile-helper">Custom IV spread.</span><span id="p1IvProfileBadge" class="iv-profile-badge">Custom</span></div>
+                </div>
                 <div id="p1RankMeter" class="rank-meter"><strong>Rank -</strong><span>/4096</span></div>
                 <div class="iv-preset-actions">
-                  <button type="button" data-prefix="p1" data-iv-preset="rank1">Rank 1</button>
-                  <button type="button" data-prefix="p1" data-iv-preset="default">Default</button>
+                  <button type="button" data-prefix="p1" data-iv-preset="default">Default IVs</button>
                 </div>
               </div>
             </div>
@@ -5271,10 +5407,19 @@
                   <span class="iv-field"><input id="p2IvHp" class="short-input" type="number" min="0" max="15" title="IV HP" placeholder="HP"><span>HP</span></span>
                   <span class="iv-field cp-iv-field"><input id="p2Cp" class="short-input" type="text" readonly title="Calculated CP" placeholder="CP"><span>CP</span></span>
                 </span>
+                <div class="iv-optimization">
+                  <span class="iv-optimization-label">IV Optimization</span>
+                  <input id="p2IvProfile" type="hidden" value="custom">
+                  <div class="iv-profile-toggle" data-prefix="p2" role="group" aria-label="Pokemon B IV optimization profile">
+                    <button type="button" data-iv-profile="balanced" aria-pressed="false" title="Highest overall stat product.">Balanced</button>
+                    <button type="button" data-iv-profile="attack" aria-pressed="false" title="Prioritizes Attack for CMP and breakpoints.">Attack</button>
+                    <button type="button" data-iv-profile="defense" aria-pressed="false" title="Prioritizes Defense and bulk.">Defense</button>
+                  </div>
+                  <div class="iv-profile-feedback"><span id="p2IvProfileHelper" class="iv-profile-helper">Custom IV spread.</span><span id="p2IvProfileBadge" class="iv-profile-badge">Custom</span></div>
+                </div>
                 <div id="p2RankMeter" class="rank-meter"><strong>Rank -</strong><span>/4096</span></div>
                 <div class="iv-preset-actions">
-                  <button type="button" data-prefix="p2" data-iv-preset="rank1">Rank 1</button>
-                  <button type="button" data-prefix="p2" data-iv-preset="default">Default</button>
+                  <button type="button" data-prefix="p2" data-iv-preset="default">Default IVs</button>
                 </div>
               </div>
             </div>
@@ -5480,6 +5625,7 @@
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
+    const ivOptimization = window.PvPeakIvOptimization;
     const battleReliability = window.PvPeakBattleReliability || {};
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
@@ -5711,8 +5857,17 @@
       document.querySelectorAll(".shield-mode-toggle button").forEach(button => {
         button.onclick = () => setShieldMode(button.closest(".shield-mode-toggle").dataset.prefix, button.dataset.shieldMode);
       });
-      ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => $(id).onchange = () => syncSelection("p1"));
-      ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => $(id).onchange = () => syncSelection("p2"));
+      ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => {
+        $(id).oninput = () => setIvProfileState("p1", "custom");
+        $(id).onchange = () => syncSelection("p1");
+      });
+      ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => {
+        $(id).oninput = () => setIvProfileState("p2", "custom");
+        $(id).onchange = () => syncSelection("p2");
+      });
+      document.querySelectorAll("[data-iv-profile]").forEach(button => {
+        button.onclick = () => applyIvOptimizationProfile(button.closest(".iv-profile-toggle").dataset.prefix, button.dataset.ivProfile);
+      });
       document.querySelectorAll("[data-iv-preset]").forEach(button => {
         button.onclick = () => applyIvPreset(button.dataset.prefix, button.dataset.ivPreset);
       });
@@ -7053,6 +7208,7 @@
     }
 
     function syncSelection(prefix) {
+      renderIvProfileState(prefix);
       colorMoveSelect(`${prefix}Fast`);
       colorMoveSelect(`${prefix}Charged1`);
       colorMoveSelect(`${prefix}Charged2`);
@@ -7273,21 +7429,56 @@
       $(`${prefix}IvAtk`).value = ivAtk;
       $(`${prefix}IvDef`).value = ivDef;
       $(`${prefix}IvHp`).value = ivHp;
+      setIvProfileState(prefix, "custom");
     }
 
     function applyIvPreset(prefix, preset) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
       if (!p) return;
       if (preset === "rank1") {
-        const rankOneKey = rankingsForPokemon(p).rankOneKey;
-        const [ivAtk, ivDef, ivHp] = String(rankOneKey || "0/15/15").split("/");
-        $(`${prefix}IvAtk`).value = ivAtk;
-        $(`${prefix}IvDef`).value = ivDef;
-        $(`${prefix}IvHp`).value = ivHp;
+        applyIvOptimizationProfile(prefix, "balanced");
+        return;
       } else {
         applyDefaultIvs(prefix);
       }
       syncSelection(prefix);
+    }
+
+    function applyIvOptimizationProfile(prefix, profile) {
+      const p = findPokemon($(`${prefix}Pokemon`).value);
+      const result = p ? rankingsForPokemon(p).profiles?.[profile] : null;
+      if (!result) return;
+      $(`${prefix}IvAtk`).value = result.attackIv;
+      $(`${prefix}IvDef`).value = result.defenseIv;
+      $(`${prefix}IvHp`).value = result.staminaIv;
+      setIvProfileState(prefix, profile);
+      syncSelection(prefix);
+    }
+
+    function setIvProfileState(prefix, profile) {
+      const current = $(`${prefix}IvProfile`)?.value || "custom";
+      const action = profile === "custom" ? { type: "manual-edit" } : { type: "select", profile };
+      const normalized = ivOptimization.resolveIvOptimizationProfile(current, action);
+      const input = $(`${prefix}IvProfile`);
+      if (input) input.value = normalized;
+      renderIvProfileState(prefix);
+    }
+
+    function renderIvProfileState(prefix) {
+      const profile = $(`${prefix}IvProfile`)?.value || "custom";
+      const copy = {
+        balanced: { helper: "Highest overall stat product.", badge: "Balanced" },
+        attack: { helper: "Prioritizes Attack for CMP and breakpoints.", badge: "Attack Focus" },
+        defense: { helper: "Prioritizes Defense and bulk.", badge: "Defense Focus" },
+        custom: { helper: "Custom IV spread.", badge: "Custom" }
+      }[profile] || { helper: "Custom IV spread.", badge: "Custom" };
+      document.querySelectorAll(`.iv-profile-toggle[data-prefix="${prefix}"] button`).forEach(button => {
+        const active = button.dataset.ivProfile === profile;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+      if ($(`${prefix}IvProfileHelper`)) $(`${prefix}IvProfileHelper`).textContent = copy.helper;
+      if ($(`${prefix}IvProfileBadge`)) $(`${prefix}IvProfileBadge`).textContent = copy.badge;
     }
 
     function selectedStats(prefix, p) {
@@ -7324,35 +7515,35 @@
 
     function rankingsForPokemon(p) {
       if (rankCache.has(p.id)) return rankCache.get(p.id);
-      const rows = [];
       const maxStats = { attack: 0, defense: 0, hp: 0 };
-      for (let atk = 0; atk <= 15; atk++) {
-        for (let def = 0; def <= 15; def++) {
-          for (let hp = 0; hp <= 15; hp++) {
-            let best = null;
-            for (const [level, cpm] of cpMultipliers) {
-              const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
-              if (stats.cp <= 1500) best = stats;
-              else break;
-            }
-            if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
-            rows.push({ key: `${atk}/${def}/${hp}`, statProduct: best.statProduct });
-            maxStats.attack = Math.max(maxStats.attack, best.attack);
-            maxStats.defense = Math.max(maxStats.defense, best.defense);
-            maxStats.hp = Math.max(maxStats.hp, best.hp);
-          }
+      const rows = ivOptimization.buildEligibleIvCandidates((atk, def, hp) => {
+        let best = null;
+        for (const [level, cpm] of cpMultipliers) {
+          const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
+          if (stats.cp <= 1500) best = stats;
+          else break;
         }
-      }
-      rows.sort((a, b) => b.statProduct - a.statProduct);
+        if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
+        maxStats.attack = Math.max(maxStats.attack, best.attack);
+        maxStats.defense = Math.max(maxStats.defense, best.defense);
+        maxStats.hp = Math.max(maxStats.hp, best.hp);
+        return best;
+      });
+      const optimization = ivOptimization.buildIvOptimizationProfiles(rows);
       const byIv = new Map();
-      rows.forEach((row, index) => {
+      optimization.rankedCandidates.forEach(row => {
         byIv.set(row.key, {
-          rank: index + 1,
-          percent: 1 - index / (rows.length - 1),
+          rank: row.statProductRank,
+          percent: row.rankPercent,
           statProduct: row.statProduct
         });
       });
-      const result = { byIv, maxStats, rankOneKey: rows[0]?.key || "0/15/15" };
+      const result = {
+        byIv,
+        maxStats,
+        profiles: optimization.profiles,
+        rankOneKey: optimization.profiles.balanced?.key || "0/15/15"
+      };
       rankCache.set(p.id, result);
       return result;
     }
@@ -11314,8 +11505,8 @@
 
     function snapshotFullSimulatorState() {
       const controlIds = [
-        "p1Pokemon", "p1Search", "p1Fast", "p1Charged1", "p1Charged2", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
-        "p2Pokemon", "p2Search", "p2Fast", "p2Charged1", "p2Charged2", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
+        "p1Pokemon", "p1Search", "p1Fast", "p1Charged1", "p1Charged2", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1IvProfile", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
+        "p2Pokemon", "p2Search", "p2Fast", "p2Charged1", "p2Charged2", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2IvProfile", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
         "releasedOnly", "showForms", "timelineZoom", "presetMatchup", "logFilter"
       ];
       const controls = {};
@@ -11399,6 +11590,7 @@
     }
 
     function restoreToggleVisuals(prefix) {
+      renderIvProfileState(prefix);
       document.querySelectorAll(`.bait-toggle[data-prefix="${prefix}"] button`).forEach(button => {
         button.classList.toggle("active", button.dataset.bait === $(`${prefix}Baiting`).value);
       });
