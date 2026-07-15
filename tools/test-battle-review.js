@@ -86,6 +86,12 @@ function testLimitsAndDeduplicatesMoments() {
   assert(review.items.some(item => item.type === "closing"));
   assert(review.items.some(item => item.type === "effect"));
   assert(!review.items.some(item => item.type === "timing"));
+  assert.strictEqual(review.metrics.length, 3);
+  assert.strictEqual(review.metrics[0].label, "HP Swing");
+  assert.strictEqual(review.metrics[0].display, "No HP flip");
+  assert.strictEqual(review.metrics[1].label, "Energy Swing");
+  assert.strictEqual(review.metrics[2].label, "Shield Swing");
+  assert.strictEqual(review.swingPoint, null);
 }
 
 function testRoutineSneakIsNotPresentedAsTacticalAdvice() {
@@ -107,6 +113,41 @@ function testDoesNotInventUnmatchedCriticalDecision() {
     }]
   });
   assert(!review.items.some(item => item.type === "critical"));
+}
+
+function testSwingPointUsesMatrixFlipInsteadOfClosingFallback() {
+  const review = buildBattleReview({
+    combatants: combatants(),
+    events: events(),
+    pokemon: { a: { name: "Abomasnow" }, b: { name: "Charjabug" } },
+    swing: {
+      visible: true,
+      side: "A",
+      fastMoves: 1,
+      fastMove: "Powder Snow",
+      energy: 8,
+      lineType: "straight"
+    },
+    hpSwing: {
+      visible: true,
+      side: "A",
+      pokemon: "Abomasnow",
+      opponentSide: "B",
+      opponentPokemon: "Charjabug",
+      hpReduction: 9,
+      opponentStartingHp: 134
+    },
+    shieldSwing: { side: "A", shields: 1, fromShields: 1, toShields: 2 }
+  });
+  assert.strictEqual(review.swingPoint.title, "Extra Fast Move");
+  assert.match(review.swingPoint.text, /one extra powder snow/i);
+  assert.match(review.swingPoint.text, /\+8 starting energy/i);
+  assert.strictEqual(review.metrics[0].display, "134 starting HP");
+  assert.strictEqual(review.metrics[0].actionReference.type, "preview-hp");
+  assert.strictEqual(review.metrics[1].display, "+8 energy");
+  assert.strictEqual(review.metrics[2].display, "+1 shield");
+  assert.strictEqual(review.swingPoint.eventIndex, null);
+  assert(!/closer|closing/i.test(`${review.swingPoint.title} ${review.swingPoint.text}`));
 }
 
 function testExposesStructuredTacticalEvidence() {
@@ -142,11 +183,14 @@ function testExposesStructuredTacticalEvidence() {
   assert.strictEqual(review.developerPatterns[0].evidence.extraHpRetained, 18);
   assert.strictEqual(review.developerWinConditions[0].category, "guaranteed-defense-buff");
   assert.strictEqual(review.winConditionSummary.conditions.length, 1);
+  assert.strictEqual(review.winConditions[0].title, "Defense Boost");
+  assert.strictEqual(review.swingPoint.eventIndex, 2);
 }
 
 testPrioritizesVerifiedTurningPoint();
 testLimitsAndDeduplicatesMoments();
 testRoutineSneakIsNotPresentedAsTacticalAdvice();
 testDoesNotInventUnmatchedCriticalDecision();
+testSwingPointUsesMatrixFlipInsteadOfClosingFallback();
 testExposesStructuredTacticalEvidence();
 console.log("Battle Review tests passed.");

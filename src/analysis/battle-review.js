@@ -7,10 +7,13 @@
   const winConditionEngine = typeof module === "object" && module.exports
     ? require("./win-condition-engine")
     : root?.PvPeakWinConditionEngine;
-  const api = factory(tacticalInsights, winConditionEngine);
+  const winConditionViewModel = typeof module === "object" && module.exports
+    ? require("./win-condition-view-model")
+    : root?.PvPeakWinConditionViewModel;
+  const api = factory(tacticalInsights, winConditionEngine, winConditionViewModel);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReview = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReviewApi(tacticalInsightsApi, winConditionEngineApi) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReviewApi(tacticalInsightsApi, winConditionEngineApi, viewModelApi) {
   const MAX_ITEMS = 3;
 
   function buildBattleReview(input = {}) {
@@ -33,13 +36,60 @@
       items.push(candidate);
       if (items.length >= MAX_ITEMS) break;
     }
+    const winConditions = typeof viewModelApi?.buildWinConditionViewModels === "function"
+      ? viewModelApi.buildWinConditionViewModels({
+        winConditionSummary,
+        swing: input.swing,
+        hpSwing: input.hpSwing,
+        combatants,
+        pokemon: input.pokemon,
+        events
+      })
+      : [];
+    const swingPoint = typeof viewModelApi?.selectSwingPoint === "function"
+      ? viewModelApi.selectSwingPoint({ conditions: winConditions })
+      : null;
     return {
-      schemaVersion: 1,
+      schemaVersion: 2,
       outcome: outcomeSummary(combatants),
+      metrics: summaryMetrics(input, combatants),
+      winConditions,
       items,
+      swingPoint,
       winConditionSummary,
       developerPatterns: developerPatternDetails(input.tacticalSummary),
       developerWinConditions: input.developerMode ? clone(winConditionSummary?.conditions || []) : []
+    };
+  }
+
+  function summaryMetrics(input, combatants) {
+    const hpSwing = input.hpSwing || null;
+    const energySwing = input.swing || null;
+    const shieldSwing = input.shieldSwing || null;
+    return [
+      conditionMetric("HP Swing", hpSwing?.opponentSide, hpSwing
+        ? `${hpSwing.opponentStartingHp} starting HP`
+        : input.hpSwingPending ? "Calculating..." : "No HP flip", hpSwing ? `-${hpSwing.hpReduction} HP` : "", combatants, hpSwing ? {
+          type: "preview-hp",
+          ref: { side: hpSwing.opponentSide, startingHp: hpSwing.opponentStartingHp, hpReduction: hpSwing.hpReduction }
+        } : null),
+      conditionMetric("Energy Swing", energySwing?.side, energySwing
+        ? `+${Number(energySwing.energy || 0)} energy`
+        : "No small flip", energySwing ? `${Number(energySwing.fastMoveCount || energySwing.fastMoves || 0)} ${energySwing.fastMoveName || energySwing.fastMove || "fast move"}` : "", combatants),
+      conditionMetric("Shield Swing", shieldSwing?.side, shieldSwing
+        ? `+${shieldSwing.shields} shield${shieldSwing.shields === 1 ? "" : "s"}`
+        : input.shieldSwingPending ? "Calculating..." : "No shield flip", shieldSwing ? `${shieldSwing.fromShields} to ${shieldSwing.toShields}` : "", combatants)
+    ];
+  }
+
+  function conditionMetric(label, side, display, note, combatants, actionReference = null) {
+    return {
+      label,
+      display,
+      note,
+      side: side === "A" || side === "B" ? side : null,
+      pokemonName: side === "A" || side === "B" ? combatants[side]?.name || `Pokemon ${side}` : null,
+      actionReference
     };
   }
 

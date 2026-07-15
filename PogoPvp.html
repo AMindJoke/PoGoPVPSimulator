@@ -11,6 +11,7 @@
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
+  <script src="src/analysis/win-condition-view-model.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
   <style>
@@ -1819,6 +1820,124 @@
       gap: 4px;
       width: 100%;
     }
+    .battle-review-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .battle-review-metric {
+      min-width: 0;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--soft);
+    }
+    .battle-review-metric-value {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      margin-top: 2px;
+    }
+    .battle-review-metric-sprite {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      object-fit: contain;
+    }
+    .battle-review-metric span,
+    .battle-review-section-title {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .battle-review-metric strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .battle-review-metric small {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+    }
+    button.battle-review-metric {
+      width: 100%;
+      min-height: 0;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+    button.battle-review-metric:hover,
+    button.battle-review-metric:focus-visible {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      background: color-mix(in srgb, var(--accent) 8%, var(--soft));
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+      transform: none;
+    }
+    .battle-review-section + .battle-review-section { margin-top: 9px; }
+    .win-condition-list {
+      display: grid;
+      gap: 4px;
+      margin-top: 5px;
+    }
+    .win-condition-row {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      padding: 6px 7px;
+      border: 1px solid color-mix(in srgb, var(--condition-color, var(--accent)) 28%, var(--line));
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--condition-color, var(--accent)) 7%, var(--panel));
+    }
+    .win-condition-row[data-tone="timing"] { --condition-color: #267faf; }
+    .win-condition-row[data-tone="positive"] { --condition-color: #16877b; }
+    .win-condition-row[data-tone="tactical"] { --condition-color: #8256c7; }
+    .win-condition-icon {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--condition-color, var(--accent)) 15%, var(--panel));
+      color: var(--condition-color, var(--accent));
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .win-condition-copy { min-width: 0; }
+    .win-condition-copy strong,
+    .win-condition-copy small { display: block; }
+    .win-condition-copy strong { color: var(--ink); font-size: 11px; font-weight: 950; }
+    .win-condition-copy small { margin-top: 1px; color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.25; }
+    .win-condition-action {
+      min-height: 27px;
+      padding: 4px 8px;
+      font-size: 9px;
+      white-space: nowrap;
+    }
+    .battle-review-swing {
+      width: 100%;
+      min-height: 0;
+      margin-top: 5px;
+      padding: 7px 9px;
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--accent) 7%, var(--panel));
+      color: var(--ink);
+      text-align: left;
+    }
+    .battle-review-swing strong,
+    .battle-review-swing small { display: block; }
+    .battle-review-swing small { margin-top: 2px; color: var(--muted); font-size: 10px; }
     .battle-review-item {
       display: grid;
       grid-template-columns: 82px minmax(0, 1fr) auto;
@@ -4886,6 +5005,10 @@
         grid-template-columns: 68px minmax(0, 1fr);
         gap: 6px;
       }
+      .battle-review-metrics { gap: 4px; }
+      .battle-review-metric { padding: 5px; }
+      .win-condition-row { grid-template-columns: 22px minmax(0, 1fr); }
+      .win-condition-action { grid-column: 2; justify-self: start; }
       .battle-review-turn {
         grid-column: 2;
       }
@@ -5348,6 +5471,8 @@
     let shieldMatrixPendingSignature = "";
     let shieldMatrixPendingTimer = null;
     const shieldMatrixCache = new Map();
+    const hpSwingAnalysisCache = new Map();
+    const hpSwingAnalysisPending = new Set();
     const shieldMatrixCacheLimit = 900;
     const shieldMatrixCacheVersion = `matrix-v12:${battleEngineVersion}`;
     let matrixCacheWorker = null;
@@ -9166,6 +9291,10 @@
       if (!setupReadyForBattle()) return;
       left = create("p1", "A");
       right = create("p2", "B");
+      if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
+        const reduced = options.startingHpReduction.side === "A" ? left : right;
+        reduced.hp = Math.max(1, reduced.maxHp - Math.round(Number(options.startingHpReduction.amount)));
+      }
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
@@ -9506,14 +9635,30 @@
         }
         return;
       }
+      const matrixSignature = shieldMatrixSignature();
+      const selectedAShields = Number($("p1Shields").value || 0);
+      const selectedBShields = Number($("p2Shields").value || 0);
+      const matrixKey = shieldMatrixCacheKey(matrixSignature, selectedAShields, selectedBShields);
+      const matrixResult = shieldMatrixCache.get(matrixKey);
+      const hpSwingRecord = hpSwingAnalysisCache.get(matrixKey) || null;
+      if (matrixResult && !hpSwingRecord && !hpSwingAnalysisPending.has(matrixKey) && !previewState.active) {
+        scheduleHpSwingAnalysis(matrixSignature, matrixKey, selectedAShields, selectedBShields, matrixResult);
+      }
+      const shieldSwingResult = detectShieldSwing(matrixSignature, selectedAShields, selectedBShields, matrixResult);
       const review = builder({
         combatants: {
-          A: { name: left.p.name, hp: left.hp, maxHp: left.maxHp, energy: left.energy },
-          B: { name: right.p.name, hp: right.hp, maxHp: right.maxHp, energy: right.energy }
+          A: { name: left.p.name, hp: left.hp, maxHp: left.maxHp, energy: left.energy, shields: left.shields },
+          B: { name: right.p.name, hp: right.hp, maxHp: right.maxHp, energy: right.energy, shields: right.shields }
         },
+        pokemon: { a: { id: left.p.id, name: left.p.name }, b: { id: right.p.id, name: right.p.name } },
         insights: battleInsights,
         tacticalSummary: lastTacticalPatternSummary,
         winConditionSummary: lastWinConditionSummary,
+        swing: matrixResult?.swing || null,
+        hpSwing: hpSwingRecord?.value || null,
+        hpSwingPending: !!matrixResult && !hpSwingRecord,
+        shieldSwing: shieldSwingResult.value,
+        shieldSwingPending: !shieldSwingResult.ready,
         developerMode: debugBattleTracing,
         engineVersion: battleEngineVersion,
         events: timeline.map((event, index) => ({
@@ -9531,23 +9676,177 @@
           state: event.state || null
         }))
       });
-      if (!review.items.length && !(debugBattleTracing && review.developerWinConditions.length)) {
+      if (!review.items.length && !review.winConditions.length && !(debugBattleTracing && review.developerWinConditions.length)) {
         box.hidden = true;
         box.innerHTML = "";
         return;
       }
       box.hidden = false;
-      const developerConditions = debugBattleTracing && review.developerWinConditions.length
-        ? `<details class="battle-review-debug"><summary>Win Condition Engine</summary><pre>${escapeHtml(JSON.stringify(review.winConditionSummary, null, 2))}</pre></details>`
-        : "";
-      box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div><div class="battle-review-list">` +
-        review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
+      const metrics = review.metrics.map(metric => {
+        const action = metric.actionReference;
+        const tag = action?.type === "preview-hp" ? "button" : "div";
+        const attributes = action?.type === "preview-hp"
+          ? ` type="button" data-hp-preview data-hp-side="${escapeHtml(action.ref.side)}" data-starting-hp="${Number(action.ref.startingHp)}"`
+          : "";
+        return `<${tag} class="battle-review-metric"${attributes}><span>${escapeHtml(metric.label)}</span><div class="battle-review-metric-value">${metric.side ? `<img class="battle-review-metric-sprite" data-review-metric-side="${metric.side}" alt="${escapeHtml(metric.pokemonName)}">` : ""}<strong>${escapeHtml(metric.display)}</strong></div>${metric.note ? `<small>${escapeHtml(metric.note)}</small>` : ""}</${tag}>`;
+      }).join("");
+      const winConditions = winConditionListHtml(review.winConditions, `${$("p1Shields").value}-${$("p2Shields").value}`);
+      const keyMoments = review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
           <span class="battle-review-label">${escapeHtml(item.label)}</span>
           <span class="battle-review-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.explanation)}</small></span>
           <span class="battle-review-turn">T${Number(item.turn)}</span>
-        </button>`).join("") + `</div>${developerConditions}`;
+        </button>`).join("");
+      const swingPoint = review.swingPoint
+        ? `<div class="battle-review-section"><span class="battle-review-section-title">Swing Point</span><div class="battle-review-swing"><strong>${escapeHtml(review.swingPoint.title)}</strong><small>${escapeHtml(review.swingPoint.text)}${Number.isFinite(review.swingPoint.turn) ? ` &middot; T${Number(review.swingPoint.turn)}` : ""}</small></div></div>`
+        : "";
+      const developerConditions = debugBattleTracing && review.developerWinConditions.length
+        ? `<details class="battle-review-debug"><summary>Win Condition Engine</summary><pre>${escapeHtml(JSON.stringify(review.winConditionSummary, null, 2))}</pre></details>`
+        : "";
+      box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div>
+        <div class="battle-review-metrics">${metrics}</div>
+        <div class="battle-review-section"><span class="battle-review-section-title">Win Conditions</span>${winConditions}</div>
+        ${keyMoments ? `<div class="battle-review-section"><span class="battle-review-section-title">Key Moments</span><div class="battle-review-list">${keyMoments}</div></div>` : ""}
+        ${swingPoint}${developerConditions}`;
       box.querySelectorAll("[data-review-event]").forEach(button => {
         button.addEventListener("click", () => focusBattleReviewEvent(Number(button.dataset.reviewEvent)));
+      });
+      box.querySelectorAll("[data-review-metric-side]").forEach(image => {
+        const combatant = image.dataset.reviewMetricSide === "A" ? left : right;
+        if (combatant) setPokemonImage(image, combatant.p);
+      });
+      box.querySelector("[data-hp-preview]")?.addEventListener("click", event => {
+        const action = event.currentTarget;
+        runHpSwingScenario(selectedAShields, selectedBShields, action.dataset.hpSide, Number(action.dataset.startingHp));
+      });
+      bindWinConditionActions(box);
+    }
+
+    function scheduleHpSwingAnalysis(signature, key, aShields, bShields, baselineResult) {
+      const baseWinner = matrixWinnerSide(baselineResult);
+      if (!baseWinner) {
+        hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        return;
+      }
+      const losingSide = baseWinner === "A" ? "B" : "A";
+      const winner = baseWinner === "A" ? left : right;
+      const loser = losingSide === "A" ? left : right;
+      if (!winner || !loser || winner.maxHp <= 1) {
+        hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        return;
+      }
+      hpSwingAnalysisPending.add(key);
+      let reduction = 1;
+      const maxReduction = winner.maxHp - 1;
+      const finish = value => {
+        hpSwingAnalysisPending.delete(key);
+        hpSwingAnalysisCache.set(key, { ready: true, value });
+        if (!previewState.active && shieldMatrixSignature() === signature && document.body.classList.contains("battle-results-visible")) renderBattleReview();
+      };
+      const step = () => {
+        if (previewState.active || shieldMatrixSignature() !== signature) {
+          hpSwingAnalysisPending.delete(key);
+          return;
+        }
+        if (reduction > maxReduction) {
+          finish(null);
+          return;
+        }
+        const testResult = simulateShieldMatrixCell(aShields, bShields, {
+          includeSwing: false,
+          includeHpSwing: false,
+          startingHpReduction: { side: baseWinner, amount: reduction },
+          continuationMode: "flip-analysis",
+          skipAdvantagePressureFloor: true
+        });
+        if (matrixWinnerSide(testResult) === losingSide) {
+          finish({
+            visible: true,
+            side: losingSide,
+            pokemon: loser.p.name,
+            pokemonId: loser.p.id,
+            opponentSide: baseWinner,
+            opponentPokemon: winner.p.name,
+            opponentPokemonId: winner.p.id,
+            hpReduction: reduction,
+            opponentStartingHp: winner.maxHp - reduction,
+            opponentMaxHp: winner.maxHp,
+            aShields,
+            bShields
+          });
+          return;
+        }
+        reduction++;
+        window.setTimeout(step, 0);
+      };
+      window.setTimeout(step, 0);
+    }
+
+    function detectShieldSwing(signature, aShields, bShields, baselineResult) {
+      const baseWinner = matrixWinnerSide(baselineResult);
+      if (!baseWinner) return { ready: !!baselineResult, value: null };
+      const losingSide = baseWinner === "A" ? "B" : "A";
+      const fromShields = losingSide === "A" ? aShields : bShields;
+      for (let toShields = fromShields + 1; toShields <= 2; toShields++) {
+        const nextA = losingSide === "A" ? toShields : aShields;
+        const nextB = losingSide === "B" ? toShields : bShields;
+        const result = shieldMatrixCache.get(shieldMatrixCacheKey(signature, nextA, nextB));
+        if (!result) return { ready: false, value: null };
+        if (matrixWinnerSide(result) === losingSide) {
+          const pokemon = losingSide === "A" ? left : right;
+          return {
+            ready: true,
+            value: {
+              side: losingSide,
+              pokemon: pokemon?.p.name || `Pokemon ${losingSide}`,
+              shields: toShields - fromShields,
+              fromShields,
+              toShields
+            }
+          };
+        }
+      }
+      return { ready: true, value: null };
+    }
+
+    function winConditionListHtml(conditions, shieldState) {
+      if (!Array.isArray(conditions) || !conditions.length) return `<div class="matchup-story-empty">No reliable alternate win condition is currently detected.</div>`;
+      return `<div class="win-condition-list">${conditions.map(condition => winConditionRowHtml(condition, shieldState)).join("")}</div>`;
+    }
+
+    function winConditionRowHtml(condition, shieldState) {
+      const action = condition.actionReference;
+      const [aShields, bShields] = String(shieldState || "1-1").split("-").map(Number);
+      const icons = { timing: "&#8594;", shield: "&#9670;", debuff: "&#8595;", hp: "+", plan: "*" };
+      let actionButton = "";
+      if (action?.type === "preview" && action.ref) {
+        actionButton = `<button type="button" class="secondary win-condition-action" data-condition-preview data-a-shields="${aShields}" data-b-shields="${bShields}" data-swing-side="${escapeHtml(action.ref.side)}" data-swing-fast-moves="${Number(action.ref.fastMoveCount || 0)}" data-swing-line-type="${escapeHtml(action.ref.lineType || "mixed")}">Preview</button>`;
+      } else if (action?.type === "preview-hp" && action.ref) {
+        actionButton = `<button type="button" class="secondary win-condition-action" data-condition-hp-preview data-a-shields="${aShields}" data-b-shields="${bShields}" data-hp-side="${escapeHtml(action.ref.side)}" data-starting-hp="${Number(action.ref.startingHp)}">Preview</button>`;
+      }
+      return `<div class="win-condition-row" data-condition-id="${escapeHtml(condition.id)}" data-tone="${escapeHtml(condition.tone || "neutral")}">
+        <span class="win-condition-icon" aria-hidden="true">${icons[condition.iconKey] || "*"}</span>
+        <span class="win-condition-copy"><strong>${escapeHtml(condition.title)}</strong><small>${escapeHtml(condition.text)}</small></span>
+        ${actionButton}
+      </div>`;
+    }
+
+    function bindWinConditionActions(container) {
+      container.querySelectorAll("[data-condition-preview]").forEach(action => {
+        action.addEventListener("click", () => runMatrixScenario(
+          Number(action.dataset.aShields || 0),
+          Number(action.dataset.bShields || 0),
+          action.dataset.swingSide || null,
+          Number(action.dataset.swingFastMoves || 0),
+          action.dataset.swingLineType || null
+        ));
+      });
+      container.querySelectorAll("[data-condition-hp-preview]").forEach(action => {
+        action.addEventListener("click", () => runHpSwingScenario(
+          Number(action.dataset.aShields || 0),
+          Number(action.dataset.bShields || 0),
+          action.dataset.hpSide,
+          Number(action.dataset.startingHp)
+        ));
       });
     }
 
@@ -9589,8 +9888,11 @@
       document.body.classList.add("matrix-preview-active");
       box.classList.add("active");
       const suggestion = previewState.suggestion;
+      const previewCopy = suggestion.type === "hp-threshold"
+        ? `Showing exact HP flip line: ${escapeHtml(suggestion.pokemonName)} starts at ${Number(suggestion.startingHp)} HP (-${Number(suggestion.hpReduction)} HP).`
+        : `Showing suggested flip line: ${escapeHtml(suggestion.pokemonName)} +${suggestion.fastMoveCount} ${escapeHtml(suggestion.fastMoveName)}${suggestion.lineType ? `<br>Line: ${escapeHtml(suggestion.lineType)}` : ""}`;
       box.innerHTML =
-        `<span><strong>&#128065; Preview Mode</strong><small>Showing suggested flip line: ${escapeHtml(suggestion.pokemonName)} +${suggestion.fastMoveCount} ${escapeHtml(suggestion.fastMoveName)}${suggestion.lineType ? `<br>Line: ${escapeHtml(suggestion.lineType)}` : ""}<br>Matrix remains anchored to the original matchup.</small></span>` +
+        `<span><strong>&#128065; Preview Mode</strong><small>${previewCopy}<br>Matrix remains anchored to the original matchup.</small></span>` +
         `<button type="button" class="secondary">&larr; Back to Original Matchup</button>`;
       box.querySelector("button")?.addEventListener("click", backToOriginalMatchup);
     }
@@ -9695,6 +9997,7 @@
           );
         });
       });
+      bindWinConditionActions(panel);
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
       queueMatchupInspectorScroll(true);
     }
@@ -9865,9 +10168,11 @@
           : "The plan is straightforward.";
       const threatBlock = threats ? `<div class="matchup-story-block"><span class="matchup-story-label">Key threat</span><div class="matchup-story-list">${threats}</div></div>` : "";
       const difficultyBlock = `<div class="matchup-story-block"><span class="matchup-story-label">Difficulty</span><strong>${escapeHtml(story.difficulty.level)}</strong><small>${difficultyReasons}</small></div>`;
-      const winConditions = story.winConditions.length
-        ? story.winConditions.map(condition => matchupStoryConditionHtml(condition, story.summary.shieldState)).join("")
-        : `<div class="matchup-story-empty">${story.summary.outcome === "Loss" ? "There is no reliable way to turn this around." : "The standard play is already enough."}</div>`;
+      const winConditions = Array.isArray(story.winConditionViews) && story.winConditionViews.length
+        ? winConditionListHtml(story.winConditionViews, story.summary.shieldState)
+        : story.winConditions.length
+          ? `<div class="win-condition-list">${story.winConditions.map(condition => matchupStoryConditionHtml(condition, story.summary.shieldState)).join("")}</div>`
+          : `<div class="matchup-story-empty">${story.summary.outcome === "Loss" ? "There is no reliable way to turn this around." : "The standard play is already enough."}</div>`;
       const mistakes = story.commonMistakes.map(mistake => `<div class="matchup-story-item" title="${escapeHtml(mistake.reason)}"><span class="matchup-story-item-mark">!</span><span>${escapeHtml(mistake.label)}</span></div>`).join("");
       const tags = story.tags.map(tag => `<span class="matchup-story-tag">${escapeHtml(tag)}</span>`).join("");
       const more = mistakes || tags ? `<details class="matchup-story-more"><summary>More tactical details</summary><div class="matchup-story-more-body"><div>${mistakes ? `<span class="matchup-story-label">Common mistakes</span><div class="matchup-story-list">${mistakes}</div>` : ""}</div><div class="matchup-story-tags">${tags}</div></div></details>` : "";
@@ -9886,7 +10191,7 @@
         </div>
         <div class="matchup-story-why"><span class="matchup-story-label">Why?</span><p>${escapeHtml(story.why.text)}</p></div>
         <div class="matchup-story-grid${threatBlock ? "" : " single"}">${threatBlock}${difficultyBlock}</div>
-        <div class="matchup-story-conditions"><span class="matchup-story-label">Win conditions</span><div class="matchup-story-list">${winConditions}</div></div>
+        <div class="matchup-story-conditions"><span class="matchup-story-label">Win Conditions</span>${winConditions}</div>
         ${more}
       </div>`;
     }
@@ -10055,7 +10360,10 @@
           }
           shieldMatrixPendingSignature = "";
           shieldMatrixPendingTimer = null;
-          if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) renderShieldMatrix();
+          if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
+            renderShieldMatrix();
+            renderBattleReview();
+          }
           return;
         }
         if (requestShieldMatrixCellCompute(signature, cell[0], cell[1], phase === "swing")) {
@@ -10066,7 +10374,10 @@
         else enrichShieldMatrixCell(signature, cell[0], cell[1]);
         if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
           if (phase === "base" && shieldMatrixReady(signature)) renderShieldMatrix();
-          if (phase === "swing") renderShieldMatrix();
+          if (phase === "swing") {
+            renderShieldMatrix();
+            if (cell[0] === Number($("p1Shields").value || 0) && cell[1] === Number($("p2Shields").value || 0)) renderBattleReview();
+          }
         }
         shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 0 : 30);
       };
@@ -10171,6 +10482,7 @@
         trimShieldMatrixCache();
         if (signature && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
           renderShieldMatrix();
+          renderBattleReview();
           scheduleShieldMatrixCalculation(signature);
         }
       }
@@ -10201,6 +10513,12 @@
         trimShieldMatrixCache();
         if (message.signature && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === message.signature) {
           renderShieldMatrix();
+          const selectedKey = shieldMatrixCacheKey(
+            message.signature,
+            Number($("p1Shields").value || 0),
+            Number($("p2Shields").value || 0)
+          );
+          if (message.key === selectedKey) renderBattleReview();
           if (!shieldMatrixPendingTimer) {
             shieldMatrixPendingSignature = "";
             scheduleShieldMatrixCalculation(message.signature);
@@ -10246,6 +10564,8 @@
         const oldestKey = shieldMatrixCache.keys().next().value;
         if (!oldestKey) break;
         shieldMatrixCache.delete(oldestKey);
+        hpSwingAnalysisCache.delete(oldestKey);
+        hpSwingAnalysisPending.delete(oldestKey);
       }
     }
 
@@ -10309,6 +10629,27 @@
         startBattle();
       }
       runBattleToEnd({ scrollTarget: swingSide && swingFastMoves > 0 ? "preview" : "timeline" });
+    }
+
+    function runHpSwingScenario(aShields, bShields, hpSide, startingHp) {
+      if (!["A", "B"].includes(hpSide) || !Number.isFinite(startingHp)) return;
+      const originalState = previewState.active && previewState.originalState
+        ? previewState.originalState
+        : snapshotFullSimulatorState();
+      if (previewState.active && previewState.originalState) restoreFullSimulatorState(previewState.originalState);
+      $("p1Shields").value = aShields;
+      $("p2Shields").value = bShields;
+      const target = hpSide === "A" ? left : right;
+      const reduction = Math.max(0, Number(target?.maxHp || startingHp) - startingHp);
+      enterPreviewMode(originalState, {
+        type: "hp-threshold",
+        pokemonName: target?.p.name || `Pokemon ${hpSide}`,
+        startingHp,
+        hpReduction: reduction,
+        lineType: "exact HP threshold"
+      });
+      startBattle({ startingHpReduction: { side: hpSide, amount: reduction } });
+      runBattleToEnd({ scrollTarget: "preview" });
     }
 
     function enterPreviewMode(originalState, suggestion) {
@@ -10432,6 +10773,10 @@
       }
       left = create("p1", "A");
       right = create("p2", "B");
+      if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
+        const reduced = options.startingHpReduction.side === "A" ? left : right;
+        reduced.hp = Math.max(1, reduced.maxHp - Math.round(Number(options.startingHpReduction.amount)));
+      }
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];

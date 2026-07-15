@@ -4,10 +4,13 @@
   const winConditionEngine = typeof module === "object" && module.exports
     ? require("./win-condition-engine")
     : root?.PvPeakWinConditionEngine;
-  const api = factory(winConditionEngine);
+  const winConditionViewModel = typeof module === "object" && module.exports
+    ? require("./win-condition-view-model")
+    : root?.PvPeakWinConditionViewModel;
+  const api = factory(winConditionEngine, winConditionViewModel);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakMatchupStory = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function createMatchupStoryApi(winConditionEngineApi) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function createMatchupStoryApi(winConditionEngineApi, viewModelApi) {
   const LIMITS = Object.freeze({
     keyThreats: 2,
     winConditions: 3,
@@ -61,7 +64,8 @@
     const baitDependent = !!(swing && swing.lineType === "bait");
     const debuffSensitive = !!(swing && swing.lineType === "debuff-sensitive");
 
-    const structuredWinConditions = eligibleStructuredWinConditions(input);
+    const resolvedWinConditionSummary = resolveWinConditionSummary(input);
+    const structuredWinConditions = eligibleStructuredWinConditions(resolvedWinConditionSummary);
     const primaryWinCondition = structuredWinConditions[0] || null;
     const why = primaryWinCondition ? {
       title: "Why?",
@@ -78,6 +82,9 @@
     });
     const keyThreats = buildKeyThreats({ input, scenario, outcome, perspective, pokemon, evidence, confidence });
     const winConditions = buildWinConditions({ swing, perspective, shieldDependent, baitDependent, debuffSensitive, confidence });
+    const winConditionViews = typeof viewModelApi?.buildWinConditionViewModels === "function"
+      ? viewModelApi.buildWinConditionViewModels({ winConditionSummary: resolvedWinConditionSummary, swing, pokemon })
+      : [];
     const commonMistakes = buildCommonMistakes({ swing, perspective, shieldDependent, baitDependent, debuffSensitive, confidence, pokemon });
     const tags = buildTags({ swing, shieldDependent, baitDependent, debuffSensitive, evidence });
     const difficulty = buildDifficulty({ closeness, swing, shieldDependent, baitDependent, debuffSensitive, confidence });
@@ -96,6 +103,7 @@
       why,
       keyThreats: keyThreats.slice(0, LIMITS.keyThreats),
       winConditions: winConditions.slice(0, LIMITS.winConditions),
+      winConditionViews: winConditionViews.slice(0, LIMITS.winConditions),
       commonMistakes: commonMistakes.slice(0, LIMITS.commonMistakes),
       difficulty: {
         ...difficulty,
@@ -107,13 +115,16 @@
     };
   }
 
-  function eligibleStructuredWinConditions(input) {
+  function resolveWinConditionSummary(input) {
     const build = winConditionEngineApi?.buildWinConditionSummary;
-    const select = winConditionEngineApi?.eligibleWinConditions;
-    if (typeof select !== "function") return [];
-    const summary = input.winConditionSummary || (typeof build === "function"
+    return input.winConditionSummary || (typeof build === "function"
       ? build({ tacticalSummary: input.tacticalSummary, provenance: input.provenance, engineVersion: input.engineVersion })
       : null);
+  }
+
+  function eligibleStructuredWinConditions(summary) {
+    const select = winConditionEngineApi?.eligibleWinConditions;
+    if (typeof select !== "function") return [];
     return select(summary, { minimumConfidence: "high", minimumImportance: "major" });
   }
 

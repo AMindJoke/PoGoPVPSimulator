@@ -107,6 +107,8 @@ function testAlternateLineActionReference() {
   assert.equal(condition.action.ref.lineType, "bait");
   assert.equal(condition.label, "Gain one extra Pulse.");
   assert.equal(story.commonMistakes[0].label, "Throwing before gaining one extra Pulse.");
+  assert.equal(story.winConditionViews[0].title, "Extra Fast Move");
+  assert.equal(story.winConditionViews[0].actionReference.type, "preview");
 }
 
 function testNaturalCompetitiveCopy() {
