@@ -10020,7 +10020,9 @@
           includeSwing: false,
           includeHpSwing: false,
           startingHpReduction: { side: baseWinner, amount: reduction },
-          continuationMode: "flip-analysis",
+          // HP Swing is an exact, clickable threshold, so it must use the
+          // same presentation planner that the preview battle will run.
+          continuationMode: "presentation",
           skipAdvantagePressureFloor: true
         });
         if (matrixWinnerSide(testResult) === losingSide) {
