@@ -47,6 +47,8 @@ function simulate(config, shields = 1, options = {}) {
     bShields: shields,
     includeSwing: !!options.includeSwing,
     debugChargedDecisions: true,
+    trace: !!options.trace,
+    source: options.trace ? "battle-regression" : undefined,
     config
   });
 }
@@ -57,6 +59,12 @@ function decisionsFor(result, pokemonName) {
 
 function candidate(decision, moveName) {
   return decision && decision.candidates.find(item => item.move === moveName);
+}
+
+function firstChargedChoice(result, side) {
+  return (result.decisionTrace?.decisions || []).find(decision =>
+    decision.side === side && decision.decisionType === "charged-move-selection" && decision.chosenCandidate?.moveId
+  )?.chosenCandidate?.moveId || null;
 }
 
 function assertBounded(result) {
@@ -132,6 +140,28 @@ assert(selfDebuffDecision, "Raikou should evaluate the guaranteed Wild Charge se
 assert(candidate(selfDebuffDecision, "Wild Charge").effects.includes("self DEF -2"));
 assert.strictEqual(selfDebuffDecision.chosenMove, "Aura Sphere");
 
+const swampertSingleMoveOpponent = simulate(battleConfig("swampert", "abomasnow", {
+  aFast: "MUD_SHOT",
+  aCharged: ["HYDRO_CANNON", "SLUDGE"],
+  bFast: "POWDER_SNOW",
+  bCharged: ["ICY_WIND"]
+}), 1, { trace: true });
+const swampertTwoMoveOpponent = simulate(battleConfig("swampert", "abomasnow", {
+  aFast: "MUD_SHOT",
+  aCharged: ["HYDRO_CANNON", "SLUDGE"],
+  bFast: "POWDER_SNOW",
+  bCharged: ["ICY_WIND", "OUTRAGE"]
+}), 1, { trace: true });
+const swampertCheaperBait = simulate(battleConfig("swampert", "abomasnow", {
+  aFast: "MUD_SHOT",
+  aCharged: ["HYDRO_CANNON", "SLUDGE_WAVE"],
+  bFast: "POWDER_SNOW",
+  bCharged: ["ICY_WIND"]
+}), 1, { trace: true });
+assert.strictEqual(firstChargedChoice(swampertSingleMoveOpponent, "A"), "SLUDGE");
+assert.strictEqual(firstChargedChoice(swampertTwoMoveOpponent, "A"), "SLUDGE");
+assert.strictEqual(firstChargedChoice(swampertCheaperBait, "A"), "HYDRO_CANNON");
+
 const sableyeZero = simulate(sableyeConfig, 0);
 const sableyeTwo = simulate(sableyeConfig, 2);
 assert.strictEqual(decisionsFor(sableyeZero, "Sableye")[0].chosenMove, "Foul Play");
@@ -141,7 +171,7 @@ assert(lateSableyeDecision, "Expected a later Sableye decision after the defensi
 assert.strictEqual(lateSableyeDecision.chosenMove, "Foul Play");
 assert(candidate(lateSableyeDecision, "Foul Play").projectedScore >= candidate(lateSableyeDecision, "Drain Punch").projectedScore);
 
-[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, seaking, dewgongSwing, noEffectFirst, selfDebuff, sableyeZero, sableyeTwo].forEach(assertBounded);
+[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, seaking, dewgongSwing, noEffectFirst, selfDebuff, swampertSingleMoveOpponent, swampertTwoMoveOpponent, swampertCheaperBait, sableyeZero, sableyeTwo].forEach(assertBounded);
 
 console.log(`Charged continuation planner regressions passed in ${Date.now() - startedAt}ms.`);
 console.log(`Sableye 1-1: ${sableyeDecision.chosenMove}; Seaking 1-1: ${seakingDecision.chosenMove}; Raikou 1-1: ${selfDebuffDecision.chosenMove}.`);

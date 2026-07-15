@@ -72,6 +72,21 @@
       "notes": "The fixture checks sequencing, not a hardcoded winner."
     },
     {
+      "id": "swampert-abomasnow-equal-cost-dominance-1s",
+      "description": "Swampert should not use Hydro Cannon as an equal-cost bait when Sludge deals more damage.",
+      "category": ["charged-move-choice", "baiting", "dominated-branch"],
+      "league": "great",
+      "pokemonA": { "id": "swampert", "moves": { "fast": "MUD_SHOT", "charged": ["HYDRO_CANNON", "SLUDGE"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "abomasnow", "moves": { "fast": "POWDER_SNOW", "charged": ["ICY_WIND"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "SLUDGE" },
+        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "HYDRO_CANNON" },
+        "requiredReasonCodes": ["BEST_IMMEDIATE_DAMAGE"]
+      },
+      "notes": "Equal-cost moves provide no bait-energy advantage; the strictly stronger no-effect move must be selected regardless of the opponent's charged-slot count."
+    },
+    {
       "id": "bastiodon-altaria-0s-control",
       "description": "A straightforward hard-counter control without meaningful stat-effect complexity.",
       "category": ["charged-move-choice"],

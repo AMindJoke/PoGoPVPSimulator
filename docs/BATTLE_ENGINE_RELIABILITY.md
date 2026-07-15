@@ -13,6 +13,11 @@ fainted combatants from contributing terminal farm or charged-move pressure. A f
 probe now starts from its modified initial state and searches the legal charged
 continuations there without changing the normal presentation policy.
 
+`battle-planner-v5` removes strictly dominated equal-cost moves from shield-pressure
+planning when they have no stat effect. A lower-damage move can no longer be treated
+as a bait when a stronger move costs the same energy, while effect-based alternatives
+and genuinely cheaper baits remain available.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.

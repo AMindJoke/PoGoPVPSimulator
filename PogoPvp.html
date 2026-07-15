@@ -5481,7 +5481,7 @@
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
     const battleReliability = window.PvPeakBattleReliability || {};
-    const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v4";
+    const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     let moveMap = new Map();
     let allPokemon = [];
@@ -5962,6 +5962,8 @@
         chargedContinuationOutcome,
         chargedMoveEffectSummary,
         bestNoShieldChargedPlan,
+        equalCostNonDominatedChargedMoves,
+        hasChargedStatEffect,
         bestShieldPressurePlan,
         isDominatedPlanState,
         isDominatedShieldPlanState,
@@ -8787,7 +8789,7 @@
 
     function bestShieldPressurePlan(attacker, defender, available) {
       if (!attacker || !defender || defender.shields <= 0 || !attacker.fast || attacker.baiting === "off") return null;
-      const moves = validChargedMoves(attacker);
+      const moves = equalCostNonDominatedChargedMoves(attacker, defender);
       if (moves.length < 2) return null;
       const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
       const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
@@ -8868,6 +8870,26 @@
         turns: best.turns,
         reason: `${lineType} (${best.turns} turns): ${best.path.slice(0, 3).join(" -> ")}`
       };
+    }
+
+    function equalCostNonDominatedChargedMoves(attacker, defender) {
+      const moves = validChargedMoves(attacker);
+      return moves.filter(move => {
+        if (hasChargedStatEffect(move)) return true;
+        const damage = estimate(attacker, defender, move);
+        return !moves.some(other =>
+          other !== move &&
+          Number(other.energyCost || 0) === Number(move.energyCost || 0) &&
+          !hasSelfDebuff(other) &&
+          estimate(attacker, defender, other) > damage
+        );
+      });
+    }
+
+    function hasChargedStatEffect(move) {
+      if (!move || Number(move.buffApplyChance || 0) <= 0) return false;
+      return [move.buffs, move.buffsSelf, move.buffsOpponent]
+        .some(buffs => Array.isArray(buffs) && buffs.some(value => Number(value || 0) !== 0));
     }
 
     function isDominatedPlanState(state, seen) {
