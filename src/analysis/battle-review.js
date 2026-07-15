@@ -65,7 +65,6 @@
   function summaryMetrics(input, combatants) {
     const hpSwing = input.hpSwing || null;
     const energySwing = input.swing || null;
-    const shieldSwing = input.shieldSwing || null;
     return [
       conditionMetric("HP Swing", hpSwing?.opponentSide, hpSwing
         ? `${hpSwing.opponentStartingHp} starting HP`
@@ -75,10 +74,7 @@
         } : null),
       conditionMetric("Energy Swing", energySwing?.side, energySwing
         ? `+${Number(energySwing.energy || 0)} energy`
-        : "No small flip", energySwing ? `${Number(energySwing.fastMoveCount || energySwing.fastMoves || 0)} ${energySwing.fastMoveName || energySwing.fastMove || "fast move"}` : "", combatants),
-      conditionMetric("Shield Swing", shieldSwing?.side, shieldSwing
-        ? `+${shieldSwing.shields} shield${shieldSwing.shields === 1 ? "" : "s"}`
-        : input.shieldSwingPending ? "Calculating..." : "No shield flip", shieldSwing ? `${shieldSwing.fromShields} to ${shieldSwing.toShields}` : "", combatants)
+        : "No small flip", energySwing ? `${Number(energySwing.fastMoveCount || energySwing.fastMoves || 0)} ${energySwing.fastMoveName || energySwing.fastMove || "fast move"}` : "", combatants)
     ];
   }
 

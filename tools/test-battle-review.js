@@ -86,11 +86,10 @@ function testLimitsAndDeduplicatesMoments() {
   assert(review.items.some(item => item.type === "closing"));
   assert(review.items.some(item => item.type === "effect"));
   assert(!review.items.some(item => item.type === "timing"));
-  assert.strictEqual(review.metrics.length, 3);
+  assert.strictEqual(review.metrics.length, 2);
   assert.strictEqual(review.metrics[0].label, "HP Swing");
   assert.strictEqual(review.metrics[0].display, "No HP flip");
   assert.strictEqual(review.metrics[1].label, "Energy Swing");
-  assert.strictEqual(review.metrics[2].label, "Shield Swing");
   assert.strictEqual(review.swingPoint, null);
 }
 
@@ -145,7 +144,6 @@ function testSwingPointUsesMatrixFlipInsteadOfClosingFallback() {
   assert.strictEqual(review.metrics[0].display, "134 starting HP");
   assert.strictEqual(review.metrics[0].actionReference.type, "preview-hp");
   assert.strictEqual(review.metrics[1].display, "+8 energy");
-  assert.strictEqual(review.metrics[2].display, "+1 shield");
   assert.strictEqual(review.swingPoint.eventIndex, null);
   assert(!/closer|closing/i.test(`${review.swingPoint.title} ${review.swingPoint.text}`));
 }
