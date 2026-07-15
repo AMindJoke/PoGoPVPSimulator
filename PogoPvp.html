@@ -4195,6 +4195,17 @@
         padding-right: 48px;
         background-position: right 28px center, 0 0, 0 0;
       }
+      body.clarity-ui .moves-stack label select.move-select {
+        -webkit-appearance: none;
+        appearance: none;
+        padding-right: 50px;
+        background:
+          linear-gradient(45deg, transparent 48%, #fff 50%) right 10px center / 5px 5px no-repeat,
+          linear-gradient(135deg, #fff 50%, transparent 52%) right 6px center / 5px 5px no-repeat,
+          var(--move-icon) right 27px center / var(--move-icon-size) var(--move-icon-size) no-repeat,
+          linear-gradient(180deg, color-mix(in srgb, var(--move-color, var(--accent)) 90%, white 8%), color-mix(in srgb, var(--move-color, var(--accent)) 82%, black 15%)),
+          var(--panel);
+      }
       .pokemon-picker-control {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -4356,36 +4367,36 @@
         padding: 4px 5px;
       }
       .shield-count-toggle {
-        grid-template-columns: repeat(3, 48px);
+        grid-template-columns: repeat(3, 49px);
       }
       .shield-count-toggle button {
-        min-height: 33px;
+        min-height: 34px;
         padding: 2px 5px;
         gap: 4px;
       }
       .shield-count-toggle svg {
-        width: 20px;
-        height: 20px;
-        flex-basis: 20px;
+        width: 21px;
+        height: 21px;
+        flex-basis: 21px;
       }
       .shield-count-toggle strong {
         font-size: 11px;
       }
       body.clarity-ui .shield-count-toggle {
-        grid-template-columns: repeat(3, 48px);
+        grid-template-columns: repeat(3, 49px);
         max-width: 100%;
       }
       body.clarity-ui .shield-count-toggle button {
         min-width: 0;
-        min-height: 33px;
+        min-height: 34px;
         padding: 2px 5px;
         gap: 4px;
         overflow: hidden;
       }
       body.clarity-ui .shield-count-toggle svg {
-        width: 20px;
-        height: 20px;
-        flex: 0 0 20px;
+        width: 21px;
+        height: 21px;
+        flex: 0 0 21px;
       }
       body.clarity-ui .shield-count-toggle strong {
         min-width: 0;
@@ -4489,6 +4500,25 @@
       .battle-cta-row {
         width: 100%;
         margin-top: -2px;
+      }
+      body.battle-setup-ready:not(.battle-results-visible) main {
+        padding-bottom: calc(54px + env(safe-area-inset-bottom, 0px));
+      }
+      body.battle-setup-ready:not(.battle-results-visible) .battle-cta-row {
+        position: fixed;
+        left: 50%;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        z-index: 40;
+        width: auto;
+        margin: 0;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      body.battle-setup-ready:not(.battle-results-visible) .battle-cta {
+        pointer-events: auto;
+      }
+      .matrix-cell:has(.matrix-swing) .matrix-value {
+        transform: translateX(-5px);
       }
       .battle-cta {
         min-width: 138px;
@@ -4787,35 +4817,35 @@
         padding: 3px;
       }
       .shield-count-toggle {
-        grid-template-columns: repeat(3, 36px);
+        grid-template-columns: repeat(3, 37px);
       }
       .shield-count-toggle button {
-        min-height: 28px;
+        min-height: 29px;
         padding: 1px 2px;
       }
       .shield-count-toggle svg {
-        width: 15px;
-        height: 15px;
-        flex-basis: 15px;
+        width: 16px;
+        height: 16px;
+        flex-basis: 16px;
       }
       .shield-count-toggle strong {
         font-size: 10px;
       }
       body.clarity-ui .shield-count-toggle {
-        grid-template-columns: repeat(3, 36px);
+        grid-template-columns: repeat(3, 37px);
         max-width: 100%;
       }
       body.clarity-ui .shield-count-toggle button {
         min-width: 0;
-        min-height: 28px;
+        min-height: 29px;
         padding: 1px 2px;
         gap: 2px;
         overflow: hidden;
       }
       body.clarity-ui .shield-count-toggle svg {
-        width: 15px;
-        height: 15px;
-        flex: 0 0 15px;
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
       }
       body.clarity-ui .shield-count-toggle strong {
         min-width: 0;
@@ -9356,6 +9386,7 @@
       const ready = setupReadyForBattle();
       $("battleCta").disabled = !ready;
       $("battleCta").title = ready ? "Start battle" : "Choose both Pokemon first";
+      document.body.classList.toggle("battle-setup-ready", ready);
     }
 
     function applyInitialFastAdvantage(side, fastMoves, options = {}) {
