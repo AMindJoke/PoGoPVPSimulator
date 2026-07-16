@@ -363,7 +363,7 @@
       background: var(--soft);
     }
     .meta-row.header {
-      grid-template-columns: 70px minmax(430px, 48%) 100px minmax(76px, 1fr) 82px;
+      grid-template-columns: 70px minmax(430px, 55%) 100px minmax(76px, 1fr);
       min-height: 32px;
       color: var(--muted);
       font-size: 11px;
@@ -500,11 +500,6 @@
       line-height: 1.35;
       padding: 2px 4px;
     }
-    .meta-row button {
-      min-height: 30px;
-      padding: 5px 8px;
-      white-space: nowrap;
-    }
     .meta-entry {
       overflow: hidden;
       border: 1px solid color-mix(in srgb, var(--meta-type-a) 30%, var(--line));
@@ -515,7 +510,7 @@
     }
     .meta-entry .meta-row {
       position: relative;
-      grid-template-columns: 70px minmax(430px, 48%) 100px minmax(76px, 1fr) 82px;
+      grid-template-columns: 70px minmax(430px, 55%) 100px minmax(76px, 1fr);
       --meta-type-strength: 90%;
       --meta-split-glow: rgba(255,255,255,.16);
       border: 0;
@@ -616,8 +611,6 @@
           color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 57% 100%);
     }
     .meta-entry .meta-row > * { position: relative; z-index: 1; }
-    .meta-entry .meta-row > .meta-row-action { position: static; }
-    .meta-row-action button { position: relative; z-index: 1; }
     .meta-type-emblem {
       width: 40px;
       height: 40px;
@@ -646,7 +639,7 @@
       min-width: 0;
       min-height: 56px;
       padding: 3px 4px;
-      transform: translateX(-127px);
+      transform: translateX(-150%);
     }
     .meta-type-emblem.primary {
       grid-column: 1;
@@ -673,7 +666,6 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.36), 0 3px 9px rgba(23,33,47,.20);
     }
     .meta-entry .meta-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-    .meta-row-action { display: flex; align-items: center; justify-content: flex-end; padding-top: 8px; }
     .meta-row-details {
       display: grid;
       grid-template-rows: 0fr;
@@ -4810,45 +4802,162 @@
       .meta-compare-slot small { font-size: 8px; }
       .meta-compare-actions { grid-column: 1 / -1; justify-content: center; }
       .meta-view.compare-mode .meta-back-to-top { bottom: 128px; }
-      .meta-row,
-      .meta-row.header {
-        grid-template-columns: 30px minmax(0, 1fr) 58px 64px;
-        gap: 7px;
+      .meta-row.header { display: none; }
+      .meta-entry .meta-row {
+        grid-template-columns: 42px 48px minmax(0, 1fr) 58px;
+        grid-template-rows: auto auto auto;
+        column-gap: 7px;
+        row-gap: 5px;
+        align-items: start;
+        min-height: 0;
+        height: auto;
+        padding: 10px 8px 10px 6px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.11) 0%, transparent 44%, rgba(23,33,47,.09) 100%),
+          linear-gradient(115deg,
+            transparent 0% 66%,
+            rgba(255,255,255,.04) 68.5%,
+            var(--meta-split-glow) 71%,
+            rgba(255,255,255,.04) 73.5%,
+            transparent 76% 100%),
+          linear-gradient(115deg,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 64%,
+            color-mix(in srgb, var(--meta-type-a) 92%, var(--meta-type-b)) 67%,
+            color-mix(in srgb, var(--meta-type-a) 58%, var(--meta-type-b)) 70.5%,
+            color-mix(in srgb, var(--meta-type-b) 58%, var(--meta-type-a)) 71.5%,
+            color-mix(in srgb, var(--meta-type-b) 92%, var(--meta-type-a)) 75%,
+            color-mix(in srgb, var(--meta-type-b) var(--meta-type-strength), var(--panel)) 78% 100%);
       }
-      .meta-score {
+      .meta-entry.single-type .meta-row {
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.11) 0%, transparent 44%, rgba(23,33,47,.09) 100%),
+          linear-gradient(115deg,
+            transparent 0% 66%,
+            rgba(255,255,255,.025) 68.5%,
+            var(--meta-split-glow) 71%,
+            rgba(255,255,255,.025) 73.5%,
+            transparent 76% 100%),
+          linear-gradient(115deg,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 64%,
+            color-mix(in srgb, var(--meta-type-a) 94%, #fff) 71%,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 78% 100%);
+      }
+      .meta-entry .meta-row::after { width: 20px; font-size: 18px; }
+      .meta-entry .meta-rank {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: start;
+        min-width: 0;
+        padding: 3px 0 0 18px;
+        font-size: 15px;
+      }
+      .meta-entry .meta-mon,
+      .meta-entry .meta-mon > span { display: contents; }
+      .meta-entry .meta-mon img,
+      .meta-entry .meta-mon strong,
+      .meta-entry .meta-mon small,
+      .meta-entry .meta-moves {
+        position: relative;
+        z-index: 1;
+      }
+      .meta-entry .meta-mon img {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        align-self: center;
+        width: 44px;
+        height: 44px;
+      }
+      .meta-entry .meta-mon strong {
         grid-column: 3;
+        grid-row: 1;
+        align-self: start;
+        min-width: 0;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.15;
+        font-size: 14px;
       }
-      .meta-entry .meta-score { grid-column: auto; }
-      .meta-moves {
-        gap: 4px;
+      .meta-entry .meta-mon small {
+        grid-column: 3 / 5;
+        grid-row: 2;
+        min-width: 0;
+        margin-top: 0;
         flex-wrap: wrap;
       }
-      .meta-move-divider { display: none; }
-      .meta-move-pill { max-width: 100%; }
-      .meta-row button {
+      .meta-entry .meta-moves {
+        grid-column: 3 / 5;
+        grid-row: 3;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-width: 0;
+        margin-top: 0;
+      }
+      .meta-entry .meta-move-divider { display: none; }
+      .meta-entry .meta-move-pill {
+        width: auto;
+        max-width: 100%;
+        flex: 0 0 auto;
+      }
+      .meta-entry .meta-move-pill span {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: nowrap;
+      }
+      .meta-entry .meta-score {
         grid-column: 4;
         grid-row: 1;
+        align-self: start;
+        justify-self: end;
+        min-width: 0;
       }
-      .meta-entry .meta-row {
-        grid-template-columns: 46px minmax(0, 44%) 54px minmax(54px, 1fr) 58px;
-        gap: 5px;
+      .meta-entry .meta-score strong {
+        min-width: 50px;
+        min-height: 31px;
+        padding: 4px 6px;
+        font-size: 13px;
       }
-      .meta-row.header {
-        grid-template-columns: 46px minmax(0, 44%) 54px minmax(54px, 1fr) 58px;
-        gap: 5px;
+      .meta-entry .meta-row > .meta-type-stage {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        display: block;
+        width: auto;
+        min-height: 0;
+        padding: 0;
+        transform: none;
+        pointer-events: none;
       }
-      .meta-header-pokemon { padding-left: 28px; }
-      .meta-header-score { width: 50px; }
-      .meta-entry .meta-row::after { width: 20px; font-size: 18px; }
-      .meta-entry .meta-rank { padding-left: 18px; font-size: 15px; }
-      .meta-type-emblem { width: 22px; height: 22px; }
-      .meta-type-stage {
-        width: 35px;
-        min-height: 42px;
-        padding: 1px;
-        transform: translateX(0);
+      .meta-entry .meta-type-emblem {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        opacity: .16;
+        background-color: rgba(255,255,255,.10);
+        box-shadow: none;
+        pointer-events: none;
       }
-      .meta-score strong { min-width: 50px; min-height: 31px; padding: 4px 6px; font-size: 13px; }
+      .meta-entry .meta-type-emblem.primary {
+        left: calc(71% - 44px);
+        top: 8px;
+      }
+      .meta-entry .meta-type-emblem.secondary {
+        right: 10px;
+        bottom: 8px;
+      }
+      .meta-entry.single-type .meta-type-emblem.primary {
+        left: calc(71% - 16px);
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .meta-entry .meta-row:hover .meta-type-emblem {
+        opacity: .20;
+        background-color: rgba(255,255,255,.12);
+        box-shadow: none;
+      }
       .toolbar .check,
       .toolbar .hint {
         font-size: 11px;
@@ -7331,11 +7440,6 @@
         visibleRows.map((entry, index) => metaRankingRow(entry, entry.rank || index + 1)).join("") +
         metaLoadMoreHtml(visibleRows.length, rows.length) +
         metaRankingLegend();
-      box.querySelectorAll("button[data-meta-id]").forEach(button => {
-        button.onclick = () => metaCompareMode
-          ? selectMetaComparePokemon(button.dataset.metaId)
-          : loadMetaPokemon(button.dataset.metaId);
-      });
       box.querySelectorAll("[data-meta-expand]").forEach(row => {
         row.onclick = event => {
           if (event.target.closest("button")) return;
@@ -7511,7 +7615,6 @@
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
         </span>
-        <span class="meta-row-action"><button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">${metaCompareMode ? "Select" : "Use"}</button></span>
       </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner">${metaRankingDetailsHtml(entry)}</div></div></div>`;
     }
 
@@ -7777,13 +7880,6 @@
     function storeMetaMatchupResult(key, result) {
       metaMatchupCache.set(key, result);
       persistShieldMatrixCells([[key, result]]);
-    }
-
-    function loadMetaPokemon(id) {
-      const target = !findPokemon($("p1Pokemon").value) ? "p1" : !findPokemon($("p2Pokemon").value) ? "p2" : "p1";
-      setPokemonSelection(target, id);
-      setAppView("simulator");
-      document.getElementById(`${target}Search`)?.focus();
     }
 
     function loadMetaMatchup(sourceId, opponentId) {
