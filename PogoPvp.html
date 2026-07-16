@@ -517,15 +517,24 @@
       position: relative;
       grid-template-columns: 70px minmax(430px, 48%) 100px minmax(76px, 1fr) 82px;
       --meta-type-strength: 90%;
+      --meta-split-glow: rgba(255,255,255,.16);
       border: 0;
       border-radius: 0;
       background:
-        linear-gradient(180deg, rgba(255,255,255,.10) 0%, transparent 46%, rgba(23,33,47,.08) 100%),
+        linear-gradient(180deg, rgba(255,255,255,.11) 0%, transparent 44%, rgba(23,33,47,.09) 100%),
         linear-gradient(115deg,
-          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 46%,
-          color-mix(in srgb, var(--meta-type-a) 68%, var(--meta-type-b)) 50%,
-          color-mix(in srgb, var(--meta-type-b) 68%, var(--meta-type-a)) 52%,
-          color-mix(in srgb, var(--meta-type-b) var(--meta-type-strength), var(--panel)) 56% 100%);
+          transparent 0% 46.5%,
+          rgba(255,255,255,.04) 48.5%,
+          var(--meta-split-glow) 50%,
+          rgba(255,255,255,.04) 51.5%,
+          transparent 53.5% 100%),
+        linear-gradient(115deg,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 43%,
+          color-mix(in srgb, var(--meta-type-a) 92%, var(--meta-type-b)) 46.5%,
+          color-mix(in srgb, var(--meta-type-a) 58%, var(--meta-type-b)) 49.5%,
+          color-mix(in srgb, var(--meta-type-b) 58%, var(--meta-type-a)) 50.5%,
+          color-mix(in srgb, var(--meta-type-b) 92%, var(--meta-type-a)) 53.5%,
+          color-mix(in srgb, var(--meta-type-b) var(--meta-type-strength), var(--panel)) 57% 100%);
       cursor: pointer;
       isolation: isolate;
       transition: background .18s ease;
@@ -590,14 +599,21 @@
     .meta-entry .meta-rank { padding-left: 26px; }
     .meta-entry .meta-row:hover {
       --meta-type-strength: 94%;
+      --meta-split-glow: rgba(255,255,255,.22);
     }
     .meta-entry.single-type .meta-row {
       background:
-        linear-gradient(180deg, rgba(255,255,255,.10) 0%, transparent 46%, rgba(23,33,47,.08) 100%),
-        linear-gradient(
-          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)),
-          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel))
-        );
+        linear-gradient(180deg, rgba(255,255,255,.11) 0%, transparent 44%, rgba(23,33,47,.09) 100%),
+        linear-gradient(115deg,
+          transparent 0% 46.5%,
+          rgba(255,255,255,.025) 48.5%,
+          var(--meta-split-glow) 50%,
+          rgba(255,255,255,.025) 51.5%,
+          transparent 53.5% 100%),
+        linear-gradient(115deg,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 43%,
+          color-mix(in srgb, var(--meta-type-a) 94%, #fff) 50%,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 57% 100%);
     }
     .meta-entry .meta-row > * { position: relative; z-index: 1; }
     .meta-entry .meta-row > .meta-row-action { position: static; }
@@ -608,15 +624,15 @@
       align-self: center;
       justify-self: center;
       box-sizing: border-box;
-      border: 1px solid rgba(255,255,255,.38);
+      border: 1px solid rgba(255,255,255,.46);
       border-radius: 50%;
-      background-color: rgba(255,255,255,.12);
+      background-color: rgba(255,255,255,.15);
       background-image: var(--meta-emblem);
       background-repeat: no-repeat;
       background-position: center;
       background-size: 62%;
       opacity: .94;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 2px 7px rgba(23,33,47,.14);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 2px 8px rgba(23,33,47,.18);
     }
     .meta-type-emblem.primary { --meta-emblem: var(--meta-icon-a); }
     .meta-type-emblem.secondary { --meta-emblem: var(--meta-icon-b); }
@@ -653,7 +669,8 @@
     }
     .meta-entry .meta-row:hover .meta-type-emblem {
       opacity: 1;
-      background-color: rgba(255,255,255,.17);
+      background-color: rgba(255,255,255,.20);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.36), 0 3px 9px rgba(23,33,47,.20);
     }
     .meta-entry .meta-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
     .meta-row-action { display: flex; align-items: center; justify-content: flex-end; padding-top: 8px; }
@@ -4824,12 +4841,12 @@
       .meta-header-score { width: 50px; }
       .meta-entry .meta-row::after { width: 20px; font-size: 18px; }
       .meta-entry .meta-rank { padding-left: 18px; font-size: 15px; }
-      .meta-type-emblem { width: 26px; height: 26px; }
+      .meta-type-emblem { width: 22px; height: 22px; }
       .meta-type-stage {
-        width: 72px;
+        width: 35px;
         min-height: 42px;
-        padding: 2px;
-        transform: translateX(-65px);
+        padding: 1px;
+        transform: translateX(0);
       }
       .meta-score strong { min-width: 50px; min-height: 31px; padding: 4px 6px; font-size: 13px; }
       .toolbar .check,
