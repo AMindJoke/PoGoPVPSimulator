@@ -793,19 +793,27 @@
     .meta-compare-actions .meta-compare-swap { width: 32px; padding: 0; font-size: 18px; }
     .meta-view.compare-mode .meta-back-to-top { bottom: 92px; }
     .meta-detail-content {
+      width: 100%;
+      box-sizing: border-box;
       padding: 12px 14px 14px 40px;
     }
     .meta-matchups {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
       gap: 10px;
+      width: 100%;
+      min-width: 0;
     }
     .meta-matchup-group {
       display: grid;
       align-content: start;
       gap: 7px;
+      width: 100%;
+      max-width: none;
       min-width: 0;
       padding: 9px;
+      box-sizing: border-box;
       border: 1px solid rgba(255,255,255,.22);
       border-radius: 6px;
       background: rgba(17,25,38,.48);
@@ -839,7 +847,7 @@
       position: relative;
       display: grid;
       grid-template-columns: 42px minmax(0, 1fr) auto;
-      grid-template-rows: auto auto auto;
+      grid-template-rows: auto auto;
       align-items: center;
       gap: 3px 8px;
       width: 100%;
@@ -869,7 +877,7 @@
     .meta-matchup-card > * { position: relative; z-index: 1; }
     .meta-matchup-card > img {
       grid-column: 1;
-      grid-row: 1 / 4;
+      grid-row: 1 / 3;
       width: 42px;
       height: 42px;
       object-fit: contain;
@@ -894,22 +902,6 @@
       min-width: 0;
     }
     .meta-matchup-types .type-badge { min-height: 15px; padding: 1px 5px; font-size: 8px; }
-    .meta-matchup-moves {
-      grid-column: 2 / 4;
-      grid-row: 3;
-      display: flex;
-      gap: 4px;
-      min-width: 0;
-      overflow: hidden;
-    }
-    .meta-matchup-moves .meta-move-pill {
-      min-width: 0;
-      max-width: 34%;
-      min-height: 18px;
-      padding: 2px 5px;
-      font-size: 8px;
-    }
-    .meta-matchup-moves .meta-move-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .meta-matchup-result {
       grid-column: 3;
       grid-row: 1 / 3;
@@ -929,6 +921,63 @@
       font-weight: 950;
       text-shadow: 0 1px 1px rgba(10,16,27,.55);
       white-space: nowrap;
+    }
+    @media (min-width: 901px) {
+      .meta-matchup-group {
+        gap: 8px;
+        padding: 10px;
+      }
+      .meta-matchup-group > strong {
+        min-height: 23px;
+        font-size: 11px;
+      }
+      .meta-matchup-list {
+        gap: 0;
+      }
+      .meta-matchup-card {
+        grid-template-columns: 62px minmax(0, 1fr) auto;
+        gap: 5px 12px;
+        min-height: 90px !important;
+        padding: 10px !important;
+        border-radius: 0;
+      }
+      .meta-matchup-card:first-child {
+        border-radius: 6px 6px 0 0;
+      }
+      .meta-matchup-card:last-child {
+        border-radius: 0 0 6px 6px;
+      }
+      .meta-matchup-card:only-child {
+        border-radius: 6px;
+      }
+      .meta-matchup-card + .meta-matchup-card {
+        margin-top: -1px;
+      }
+      .meta-matchup-card:hover,
+      .meta-matchup-card:focus-visible {
+        z-index: 2;
+      }
+      .meta-matchup-card > img {
+        width: 62px;
+        height: 62px;
+      }
+      .meta-matchup-name {
+        font-size: 16px;
+      }
+      .meta-matchup-types {
+        gap: 4px;
+      }
+      .meta-matchup-types .type-badge {
+        min-height: 21px;
+        padding: 2px 8px;
+        font-size: 11px;
+      }
+      .meta-matchup-result {
+        min-width: 68px;
+        min-height: 38px;
+        padding: 5px 9px;
+        font-size: 13px;
+      }
     }
     .setup {
       grid-template-columns: repeat(2, 296px);
@@ -5515,73 +5564,77 @@
         width: 22px;
         height: 22px;
       }
-      .meta-detail-content { padding: 10px; }
+      .meta-detail-content { padding: 8px; }
       .meta-matchups {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
       }
       .meta-matchup-group {
-        gap: 6px;
-        padding: 7px;
+        gap: 5px;
+        padding: 5px;
+      }
+      .meta-matchup-group > strong {
+        min-height: 19px;
+        font-size: 9px;
       }
       .meta-matchup-group.wins { border-top-color: rgba(126,224,200,.62); }
       .meta-matchup-group.losses { border-top-color: rgba(255,154,189,.62); }
       .meta-matchup-list {
-        display: flex;
-        gap: 7px;
+        display: grid;
+        gap: 0;
         min-width: 0;
-        padding: 1px 2px 5px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x proximity;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255,255,255,.34) transparent;
-        -webkit-overflow-scrolling: touch;
+        padding: 0;
+        overflow: visible;
       }
       .meta-matchup-card {
-        flex: 0 0 min(300px, calc(100vw - 64px));
-        grid-template-columns: 40px minmax(0, 1fr) auto;
+        grid-template-columns: 40px minmax(0, 1fr);
         grid-template-rows: auto auto auto;
+        gap: 3px 6px;
+        width: 100%;
         min-width: 0;
-        min-height: 88px !important;
-        padding: 7px !important;
-        scroll-snap-align: start;
+        min-height: 90px !important;
+        padding: 6px !important;
+        border-radius: 0;
+      }
+      .meta-matchup-card:first-child {
+        border-radius: 5px 5px 0 0;
+      }
+      .meta-matchup-card:last-child {
+        border-radius: 0 0 5px 5px;
+      }
+      .meta-matchup-card:only-child {
+        border-radius: 5px;
+      }
+      .meta-matchup-card + .meta-matchup-card {
+        margin-top: -1px;
       }
       .meta-matchup-card > img {
+        grid-column: 1;
+        grid-row: 1 / 4;
         width: 40px;
         height: 40px;
       }
       .meta-matchup-name {
+        grid-column: 2;
+        grid-row: 1;
         overflow: visible;
         text-overflow: clip;
         white-space: normal;
         line-height: 1.1;
       }
-      .meta-matchup-moves {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 3px;
-        overflow: visible;
+      .meta-matchup-types {
+        grid-column: 2;
+        grid-row: 2;
+        flex-wrap: wrap;
       }
-      .meta-entry .meta-matchup-card .meta-move-pill {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        min-height: 28px;
-        height: auto;
-        padding: 3px 4px;
-        font-size: 8px;
-        line-height: 1.05;
-        text-align: center;
-      }
-      .meta-entry .meta-matchup-card .meta-move-pill span {
-        display: block;
-        overflow: visible;
-        text-overflow: clip;
-        white-space: normal;
-        overflow-wrap: normal;
+      .meta-matchup-result {
+        grid-column: 2;
+        grid-row: 3;
+        justify-self: start;
+        min-width: 50px;
+        min-height: 25px;
+        padding: 3px 6px;
+        font-size: 10px;
       }
       .meta-row-details {
         background:
@@ -5805,17 +5858,45 @@
       }
       .iv-impact-toggle { min-height: 18px; padding: 1px 4px; font-size: 7px; }
       .iv-impact-item { grid-template-columns: 12px 36px minmax(0, 1fr); font-size: 7px; }
-      .meta-matchups { grid-template-columns: 1fr; }
-      .meta-matchup-group { padding: 7px; }
-      .meta-matchup-card {
-        grid-template-columns: 38px minmax(0, 1fr) auto;
-        min-height: 72px !important;
-        padding: 7px !important;
+      .meta-detail-content { padding: 6px; }
+      .meta-matchups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
       }
-      .meta-matchup-card > img { width: 38px; height: 38px; }
-      .meta-matchup-name { white-space: normal; line-height: 1.1; }
-      .meta-matchup-moves { flex-wrap: wrap; overflow: visible; }
-      .meta-matchup-moves .meta-move-pill { max-width: 100%; }
+      .meta-matchup-group {
+        gap: 4px;
+        padding: 4px;
+      }
+      .meta-matchup-group > strong {
+        gap: 3px;
+        min-height: 17px;
+        padding-bottom: 3px;
+        font-size: 8px;
+      }
+      .meta-matchup-card {
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 2px 5px;
+        min-height: 82px !important;
+        padding: 5px !important;
+      }
+      .meta-matchup-card > img { width: 32px; height: 32px; }
+      .meta-matchup-name {
+        white-space: normal;
+        line-height: 1.08;
+        font-size: 11px;
+      }
+      .meta-matchup-types { gap: 2px; }
+      .meta-matchup-types .type-badge {
+        min-height: 15px;
+        padding: 1px 4px;
+        font-size: 8px;
+      }
+      .meta-matchup-result {
+        min-width: 46px;
+        min-height: 23px;
+        padding: 2px 5px;
+        font-size: 9px;
+      }
       .bait-control > span,
       .shield-mode-row > span {
         display: none;
@@ -7843,7 +7924,9 @@
     }
 
     function metaMatchupGroup(label, className, rows, sourceEntry) {
-      const items = Array.isArray(rows) ? rows.slice(0, 5) : [];
+      const items = Array.isArray(rows)
+        ? [...rows].sort((a, b) => metaKeyMatchupScore(b) - metaKeyMatchupScore(a)).slice(0, 5)
+        : [];
       const cards = items.length
         ? items.map(item => metaKeyMatchupCard(item, sourceEntry)).join("")
         : `<span class="meta-matchup-empty">No key ${className} available for the current dataset.</span>`;
@@ -7854,9 +7937,7 @@
       const opponentId = item.id || item.opponentId;
       const opponent = findPokemon(opponentId);
       if (!opponent) return "";
-      const rankingEntry = metaRankingDatasetEntry(opponentId);
-      const moves = metaRankingMoves(rankingEntry, opponent);
-      const score = Math.round(rankingDetailsPresenter.orientMatchupScore?.(Number(item.score), Boolean(item.reversed)) ?? Number(item.score));
+      const score = metaKeyMatchupScore(item);
       if (!Number.isFinite(score)) return "";
       const rating = matrixScoreRating(score);
       const heat = matrixHeat(score);
@@ -7868,10 +7949,6 @@
         const color = typeColors[type] || "#66788c";
         return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
       }).join("");
-      const moveChips = [
-        moves.fast ? metaMovePill(moves.fast, "fast") : "",
-        ...moves.charged.map(move => metaMovePill(move, "charged"))
-      ].filter(Boolean).join("");
       const outcome = score > 500 ? `${sourceEntry.p.name} wins` : score < 500 ? `${sourceEntry.p.name} loses` : "draw";
       const aria = `Open ${sourceEntry.p.name} versus ${opponent.name}, one shield each. ${outcome} with score ${score}.`;
       return `<button type="button" class="meta-matchup-card ${opponent.types.length > 1 ? "dual-type" : "single-type"}" data-meta-source="${escapeHtml(sourceEntry.p.id)}" data-meta-matchup="${escapeHtml(opponentId)}" style="--key-type-a:${primaryColor};--key-type-b:${secondaryColor}" aria-label="${escapeHtml(aria)}">
@@ -7879,8 +7956,12 @@
         <span class="meta-matchup-name">${escapeHtml(opponent.name)}</span>
         <span class="meta-matchup-types">${typeBadges}</span>
         <span class="meta-matchup-result ${rating.className}" style="--edge-color:${heat.color}" title="${escapeHtml(rating.label)}: ${score}"><span class="matrix-symbol direction-${heat.direction} intensity-${heat.intensity}">${heat.symbol}</span>${score}</span>
-        <span class="meta-matchup-moves">${moveChips}</span>
       </button>`;
+    }
+
+    function metaKeyMatchupScore(item) {
+      const score = rankingDetailsPresenter.orientMatchupScore?.(Number(item?.score), Boolean(item?.reversed)) ?? Number(item?.score);
+      return Number.isFinite(score) ? Math.round(score) : 500;
     }
 
     function metaRankingDatasetEntry(pokemonId) {
