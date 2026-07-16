@@ -32,6 +32,12 @@
     };
   }
 
+  function orientMatchupScore(score, reversed = false) {
+    const value = Number(score);
+    if (!Number.isFinite(value)) return NaN;
+    return reversed ? 1000 - value : value;
+  }
+
   function ratingFromScore(value, maximum) {
     const normalized = Math.max(0, Math.min(1, Number(value || 0) / maximum));
     return Math.max(0, Math.min(5, Math.round(normalized * 5)));
@@ -47,5 +53,5 @@
     return Math.min(100, Math.max(...values) - Math.min(...values));
   }
 
-  return { buildRankingRatings, selectRelevantMatchups, ratingFromScore };
+  return { buildRankingRatings, selectRelevantMatchups, orientMatchupScore, ratingFromScore };
 });

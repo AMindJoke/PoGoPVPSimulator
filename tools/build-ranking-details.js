@@ -31,7 +31,7 @@ entries.forEach((entry, index) => {
       if (opponentId !== entry.id && Number.isFinite(score)) cells.push({ opponentId, score });
     });
   }
-  const relevant = selectRelevantMatchups(cells, rankById, 3);
+  const relevant = selectRelevantMatchups(cells, rankById, 5);
   const mapRow = row => ({
     id: row.opponentId,
     name: entryById.get(row.opponentId)?.name || row.opponentId,

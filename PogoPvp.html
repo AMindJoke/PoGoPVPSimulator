@@ -501,6 +501,8 @@
       padding: 2px 4px;
     }
     .meta-entry {
+      --meta-type-strength: 90%;
+      --meta-split-glow: rgba(255,255,255,.16);
       overflow: hidden;
       border: 1px solid color-mix(in srgb, var(--meta-type-a) 30%, var(--line));
       border-radius: 8px;
@@ -511,8 +513,6 @@
     .meta-entry .meta-row {
       position: relative;
       grid-template-columns: 70px minmax(430px, 55%) 100px minmax(76px, 1fr);
-      --meta-type-strength: 90%;
-      --meta-split-glow: rgba(255,255,255,.16);
       border: 0;
       border-radius: 0;
       background:
@@ -556,9 +556,7 @@
       border-color: color-mix(in srgb, var(--meta-type-a) 68%, var(--line));
       box-shadow: 0 6px 16px rgba(23,33,47,.20), inset 0 1px 0 rgba(255,255,255,.22);
     }
-    .meta-entry.expanded .meta-row {
-      box-shadow: inset 0 -2px 0 rgba(255,255,255,.20);
-    }
+    .meta-entry.expanded .meta-row { box-shadow: none; }
     .meta-entry.expanded .meta-row::after {
       background: rgba(23,33,47,.42);
       box-shadow: inset -1px 0 0 rgba(255,255,255,.18);
@@ -589,10 +587,11 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .meta-entry,
-      .meta-back-to-top { transition: none; }
+      .meta-back-to-top,
+      .meta-row-details { transition: none; }
     }
     .meta-entry .meta-rank { padding-left: 26px; }
-    .meta-entry .meta-row:hover {
+    .meta-entry:hover {
       --meta-type-strength: 94%;
       --meta-split-glow: rgba(255,255,255,.22);
     }
@@ -670,10 +669,32 @@
       display: grid;
       grid-template-rows: 0fr;
       opacity: 0;
-      border-top: 0 solid var(--line);
-      transition: grid-template-rows .2s ease, opacity .2s ease, border-top-width .2s ease;
+      background:
+        linear-gradient(180deg, rgba(23,33,47,.08) 0%, rgba(23,33,47,.18) 100%),
+        linear-gradient(115deg,
+          transparent 0% 46.5%,
+          rgba(255,255,255,.03) 48.5%,
+          var(--meta-split-glow) 50%,
+          rgba(255,255,255,.03) 51.5%,
+          transparent 53.5% 100%),
+        linear-gradient(115deg,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 43%,
+          color-mix(in srgb, var(--meta-type-a) 92%, var(--meta-type-b)) 46.5%,
+          color-mix(in srgb, var(--meta-type-a) 58%, var(--meta-type-b)) 49.5%,
+          color-mix(in srgb, var(--meta-type-b) 58%, var(--meta-type-a)) 50.5%,
+          color-mix(in srgb, var(--meta-type-b) 92%, var(--meta-type-a)) 53.5%,
+          color-mix(in srgb, var(--meta-type-b) var(--meta-type-strength), var(--panel)) 57% 100%);
+      transition: grid-template-rows .22s ease-out, opacity .18s ease-out;
     }
-    .meta-entry.expanded .meta-row-details { grid-template-rows: 1fr; opacity: 1; border-top-width: 1px; }
+    .meta-entry.single-type .meta-row-details {
+      background:
+        linear-gradient(180deg, rgba(23,33,47,.08) 0%, rgba(23,33,47,.18) 100%),
+        linear-gradient(115deg,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 43%,
+          color-mix(in srgb, var(--meta-type-a) 94%, #fff) 50%,
+          color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 57% 100%);
+    }
+    .meta-entry.expanded .meta-row-details { grid-template-rows: 1fr; opacity: 1; }
     .meta-row-details-inner { min-height: 0; overflow: hidden; }
     .meta-load-more {
       display: flex;
@@ -772,41 +793,143 @@
     .meta-compare-actions .meta-compare-swap { width: 32px; padding: 0; font-size: 18px; }
     .meta-view.compare-mode .meta-back-to-top { bottom: 92px; }
     .meta-detail-content {
+      padding: 12px 14px 14px 40px;
+    }
+    .meta-matchups {
       display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      padding: 11px 14px 13px 68px;
-      background: color-mix(in srgb, var(--panel) 72%, var(--soft));
     }
-    .meta-ratings { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-    .meta-rating { display: grid; gap: 3px; min-width: 0; }
-    .meta-rating > span:first-child {
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 900;
+    .meta-matchup-group {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      min-width: 0;
+      padding: 9px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 6px;
+      background: rgba(17,25,38,.48);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(5px);
+    }
+    .meta-matchup-group > strong {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 20px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
       text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(23,33,47,.65);
     }
-    .rating-stars {
-      color: color-mix(in srgb, var(--accent) 84%, #f4bd24);
+    .meta-matchup-group > strong::before { font-size: 12px; }
+    .meta-matchup-group.wins > strong::before { content: "\2191"; color: #7ee0c8; }
+    .meta-matchup-group.losses > strong::before { content: "\2193"; color: #ff9abd; }
+    .meta-matchup-list { display: grid; gap: 7px; min-width: 0; }
+    .meta-matchup-empty {
+      padding: 12px 8px;
+      color: rgba(255,255,255,.76);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .meta-matchup-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      grid-template-rows: auto auto auto;
+      align-items: center;
+      gap: 3px 8px;
+      width: 100%;
+      min-width: 0;
+      min-height: 76px !important;
+      padding: 7px 8px !important;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(23,33,47,.18)),
+        linear-gradient(115deg,
+          color-mix(in srgb, var(--key-type-a) 86%, #17212f) 0% 43%,
+          color-mix(in srgb, var(--key-type-a) 64%, var(--key-type-b)) 49%,
+          color-mix(in srgb, var(--key-type-b) 64%, var(--key-type-a)) 51%,
+          color-mix(in srgb, var(--key-type-b) 86%, #17212f) 57% 100%);
+      color: #fff;
+      text-align: left;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 2px 6px rgba(10,16,27,.18);
+      cursor: pointer;
+    }
+    .meta-matchup-card:hover {
+      border-color: rgba(255,255,255,.48);
+      filter: brightness(1.05);
+    }
+    .meta-matchup-card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .meta-matchup-card > * { position: relative; z-index: 1; }
+    .meta-matchup-card > img {
+      grid-column: 1;
+      grid-row: 1 / 4;
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 5px rgba(10,16,27,.30));
+    }
+    .meta-matchup-name {
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       font-size: 12px;
-      letter-spacing: 1px;
+      font-weight: 950;
+      text-shadow: 0 1px 2px rgba(10,16,27,.65);
+    }
+    .meta-matchup-types {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      gap: 3px;
+      min-width: 0;
+    }
+    .meta-matchup-types .type-badge { min-height: 15px; padding: 1px 5px; font-size: 8px; }
+    .meta-matchup-moves {
+      grid-column: 2 / 4;
+      grid-row: 3;
+      display: flex;
+      gap: 4px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .meta-matchup-moves .meta-move-pill {
+      min-width: 0;
+      max-width: 34%;
+      min-height: 18px;
+      padding: 2px 5px;
+      font-size: 8px;
+    }
+    .meta-matchup-moves .meta-move-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .meta-matchup-result {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-width: 54px;
+      min-height: 28px;
+      padding: 3px 6px;
+      border: 1px solid color-mix(in srgb, var(--edge-color) 74%, #fff);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--edge-color) 88%, #17212f);
+      color: #fff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 2px 5px rgba(10,16,27,.25);
+      font-size: 10px;
+      font-weight: 950;
+      text-shadow: 0 1px 1px rgba(10,16,27,.55);
       white-space: nowrap;
     }
-    .rating-stars .empty { color: color-mix(in srgb, var(--muted) 28%, transparent); }
-    .meta-matchups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .meta-matchup-group { display: grid; gap: 4px; }
-    .meta-matchup-group > strong { color: var(--muted); font-size: 9px; text-transform: uppercase; }
-    .meta-matchup-list { display: flex; gap: 5px; flex-wrap: wrap; }
-    .meta-matchup-button {
-      min-height: 25px !important;
-      padding: 3px 7px !important;
-      border-color: color-mix(in srgb, var(--matchup-color) 42%, var(--line));
-      background: color-mix(in srgb, var(--matchup-color) 10%, var(--panel));
-      color: var(--ink);
-      font-size: 10px;
-      font-weight: 800;
-    }
-    .meta-matchup-group.wins { --matchup-color: var(--good); }
-    .meta-matchup-group.losses { --matchup-color: var(--danger); }
     .setup {
       grid-template-columns: repeat(2, 296px);
       width: min(100%, var(--battle-layout-width));
@@ -5393,7 +5516,39 @@
         height: 22px;
       }
       .meta-detail-content { padding: 10px; }
-      .meta-ratings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .meta-matchups { grid-template-columns: 1fr; }
+      .meta-row-details {
+        background:
+          linear-gradient(180deg, rgba(23,33,47,.08) 0%, rgba(23,33,47,.18) 100%),
+          linear-gradient(115deg,
+            transparent 0% 66%,
+            rgba(255,255,255,.03) 68.5%,
+            var(--meta-split-glow) 71%,
+            rgba(255,255,255,.03) 73.5%,
+            transparent 76% 100%),
+          linear-gradient(115deg,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 64%,
+            color-mix(in srgb, var(--meta-type-a) 92%, var(--meta-type-b)) 67%,
+            color-mix(in srgb, var(--meta-type-a) 58%, var(--meta-type-b)) 70.5%,
+            color-mix(in srgb, var(--meta-type-b) 58%, var(--meta-type-a)) 71.5%,
+            color-mix(in srgb, var(--meta-type-b) 92%, var(--meta-type-a)) 75%,
+            color-mix(in srgb, var(--meta-type-b) var(--meta-type-strength), var(--panel)) 78% 100%);
+      }
+      .meta-entry.single-type .meta-row-details {
+        background:
+          linear-gradient(180deg, rgba(23,33,47,.08) 0%, rgba(23,33,47,.18) 100%),
+          linear-gradient(115deg,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 0% 64%,
+            color-mix(in srgb, var(--meta-type-a) 94%, #fff) 71%,
+            color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 78% 100%);
+      }
+      .meta-matchup-moves { flex-wrap: wrap; overflow: visible; }
+      .meta-matchup-moves .meta-move-pill { max-width: 100%; }
+      .meta-matchup-moves .meta-move-pill span {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
       .timeline-zoom-control { margin-top: 5px; }
       .timeline {
         --timeline-side-zone-width: 72px;
@@ -5591,8 +5746,17 @@
       }
       .iv-impact-toggle { min-height: 18px; padding: 1px 4px; font-size: 7px; }
       .iv-impact-item { grid-template-columns: 12px 36px minmax(0, 1fr); font-size: 7px; }
-      .meta-ratings,
       .meta-matchups { grid-template-columns: 1fr; }
+      .meta-matchup-group { padding: 7px; }
+      .meta-matchup-card {
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        min-height: 72px !important;
+        padding: 7px !important;
+      }
+      .meta-matchup-card > img { width: 38px; height: 38px; }
+      .meta-matchup-name { white-space: normal; line-height: 1.1; }
+      .meta-matchup-moves { flex-wrap: wrap; overflow: visible; }
+      .meta-matchup-moves .meta-move-pill { max-width: 100%; }
       .bait-control > span,
       .shield-mode-row > span {
         display: none;
@@ -7616,28 +7780,64 @@
 
     function metaRankingDetailsHtml(entry) {
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
-      const ratings = detail.ratings || rankingDetailsPresenter.buildRankingRatings?.(entry.rankingData || entry, {}) || {};
-      const labels = [
-        ["Overall", ratings.overall],
-        ["Consistency", ratings.consistency],
-        ["Shield dependence", ratings.shieldDependence],
-        ["Technical difficulty", ratings.technicalDifficulty],
-        ["Closing potential", ratings.closingPotential]
-      ];
-      return `<div class="meta-detail-content"><div class="meta-ratings">${labels.map(([label, value]) => `<div class="meta-rating"><span>${escapeHtml(label)}</span>${metaRatingStars(value)}</div>`).join("")}</div><div class="meta-matchups">${metaMatchupGroup("Top wins", "wins", detail.wins, entry.p.id)}${metaMatchupGroup("Top losses", "losses", detail.losses, entry.p.id)}</div></div>`;
+      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins", "wins", detail.wins, entry)}${metaMatchupGroup("Key Losses", "losses", detail.losses, entry)}</div></div>`;
     }
 
-    function metaRatingStars(value) {
-      const filled = Math.max(0, Math.min(5, Math.round(Number(value || 0))));
-      return `<span class="rating-stars" aria-label="${filled} out of 5">${"&#9733;".repeat(filled)}<span class="empty">${"&#9733;".repeat(5 - filled)}</span></span>`;
+    function metaMatchupGroup(label, className, rows, sourceEntry) {
+      const items = Array.isArray(rows) ? rows.slice(0, 5) : [];
+      const cards = items.length
+        ? items.map(item => metaKeyMatchupCard(item, sourceEntry)).join("")
+        : `<span class="meta-matchup-empty">No key ${className} available for the current dataset.</span>`;
+      return `<section class="meta-matchup-group ${className}" aria-label="${label}"><strong>${label}</strong><div class="meta-matchup-list">${cards}</div></section>`;
     }
 
-    function metaMatchupGroup(label, className, rows, sourceId) {
-      const items = Array.isArray(rows) ? rows.slice(0, 3) : [];
-      const buttons = items.length
-        ? items.map(item => `<button type="button" class="meta-matchup-button" data-meta-source="${escapeHtml(sourceId)}" data-meta-matchup="${escapeHtml(item.id || item.opponentId)}" title="Open ${escapeHtml(item.name)} matchup">${escapeHtml(item.name)}</button>`).join("")
-        : `<span class="iv-profile-helper">No reliable data</span>`;
-      return `<div class="meta-matchup-group ${className}"><strong>${label}</strong><div class="meta-matchup-list">${buttons}</div></div>`;
+    function metaKeyMatchupCard(item, sourceEntry) {
+      const opponentId = item.id || item.opponentId;
+      const opponent = findPokemon(opponentId);
+      if (!opponent) return "";
+      const rankingEntry = metaRankingDatasetEntry(opponentId);
+      const moves = metaRankingMoves(rankingEntry, opponent);
+      const score = Math.round(rankingDetailsPresenter.orientMatchupScore?.(Number(item.score), Boolean(item.reversed)) ?? Number(item.score));
+      if (!Number.isFinite(score)) return "";
+      const rating = matrixScoreRating(score);
+      const heat = matrixHeat(score);
+      const primaryType = opponent.types[0] || "normal";
+      const secondaryType = opponent.types[1] || primaryType;
+      const primaryColor = typeColors[primaryType] || "#66788c";
+      const secondaryColor = typeColors[secondaryType] || primaryColor;
+      const typeBadges = opponent.types.map(type => {
+        const color = typeColors[type] || "#66788c";
+        return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
+      }).join("");
+      const moveChips = [
+        moves.fast ? metaMovePill(moves.fast, "fast") : "",
+        ...moves.charged.map(move => metaMovePill(move, "charged"))
+      ].filter(Boolean).join("");
+      const outcome = score > 500 ? `${sourceEntry.p.name} wins` : score < 500 ? `${sourceEntry.p.name} loses` : "draw";
+      const aria = `Open ${sourceEntry.p.name} versus ${opponent.name}, one shield each. ${outcome} with score ${score}.`;
+      return `<button type="button" class="meta-matchup-card ${opponent.types.length > 1 ? "dual-type" : "single-type"}" data-meta-source="${escapeHtml(sourceEntry.p.id)}" data-meta-matchup="${escapeHtml(opponentId)}" style="--key-type-a:${primaryColor};--key-type-b:${secondaryColor}" aria-label="${escapeHtml(aria)}">
+        <img src="${escapeHtml(imageUrl(opponent))}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(opponent))}'">
+        <span class="meta-matchup-name">${escapeHtml(opponent.name)}</span>
+        <span class="meta-matchup-types">${typeBadges}</span>
+        <span class="meta-matchup-result ${rating.className}" style="--edge-color:${heat.color}" title="${escapeHtml(rating.label)}: ${score}"><span class="matrix-symbol direction-${heat.direction} intensity-${heat.intensity}">${heat.symbol}</span>${score}</span>
+        <span class="meta-matchup-moves">${moveChips}</span>
+      </button>`;
+    }
+
+    function metaRankingDatasetEntry(pokemonId) {
+      const entries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
+      return entries.find(entry => entry.id === pokemonId && entry.profile === metaRankingPreferredProfile)
+        || entries.find(entry => entry.id === pokemonId)
+        || null;
+    }
+
+    function metaRankingMoves(rankingEntry, pokemon) {
+      const fastId = rankingEntry?.moveset?.fast;
+      const chargedIds = Array.isArray(rankingEntry?.moveset?.charged) ? rankingEntry.moveset.charged : [];
+      const fast = fastId && pokemon.fast.includes(fastId) ? moveMap.get(fastId) : null;
+      const charged = chargedIds.filter(id => pokemon.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean).slice(0, 2);
+      if (fast && charged.length) return { fast, charged };
+      return metaMovesForPokemon(pokemon);
     }
 
     function metaMovePill(move, kind = "charged") {
@@ -7877,11 +8077,26 @@
       setPokemonSelection("p2", opponentId);
       applyIvOptimizationProfile("p1", "balanced");
       applyIvOptimizationProfile("p2", "balanced");
+      applyMetaRankingMoves("p1", sourceId);
+      applyMetaRankingMoves("p2", opponentId);
       $("p1Shields").value = "1";
       $("p2Shields").value = "1";
       renderShields("p1");
       renderShields("p2");
       runBattleToEnd();
+    }
+
+    function applyMetaRankingMoves(prefix, pokemonId) {
+      const pokemon = findPokemon(pokemonId);
+      if (!pokemon) return;
+      const moves = metaRankingMoves(metaRankingDatasetEntry(pokemonId), pokemon);
+      if (moves.fast) $(`${prefix}Fast`).value = moves.fast.id;
+      $(`${prefix}Charged1`).value = moves.charged[0]?.id || "";
+      $(`${prefix}Charged2`).value = moves.charged[1]?.id || "";
+      colorMoveSelect(`${prefix}Fast`);
+      colorMoveSelect(`${prefix}Charged1`);
+      colorMoveSelect(`${prefix}Charged2`);
+      syncSelection(prefix);
     }
 
     function filteredBaseList() {

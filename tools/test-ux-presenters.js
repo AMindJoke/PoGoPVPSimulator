@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const { buildIvImpact } = require("../src/analysis/iv-impact");
-const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis/ranking-details");
+const { buildRankingRatings, selectRelevantMatchups, orientMatchupScore } = require("../src/analysis/ranking-details");
 
 const impact = buildIvImpact({
   damage: { moveName: "Fast Move", opponentName: "Target", currentDamage: 5, referenceDamage: 4 },
@@ -22,4 +22,7 @@ const matchups = selectRelevantMatchups([
 ], new Map([["top", 1], ["lower", 10], ["loss", 2]]), 3);
 assert.strictEqual(matchups.wins[0].opponentId, "top");
 assert.strictEqual(matchups.losses[0].opponentId, "loss");
+assert.strictEqual(orientMatchupScore(612), 612);
+assert.strictEqual(orientMatchupScore(388, true), 612);
+assert.ok(Number.isNaN(orientMatchupScore("missing")));
 console.log("UX presenter tests passed.");
