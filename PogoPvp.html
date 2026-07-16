@@ -5587,12 +5587,12 @@
         overflow: visible;
       }
       .meta-matchup-card {
-        grid-template-columns: 40px minmax(0, 1fr);
-        grid-template-rows: auto auto auto;
-        gap: 3px 6px;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        gap: 3px 5px;
         width: 100%;
         min-width: 0;
-        min-height: 90px !important;
+        min-height: 72px !important;
         padding: 6px !important;
         border-radius: 0;
       }
@@ -5610,9 +5610,9 @@
       }
       .meta-matchup-card > img {
         grid-column: 1;
-        grid-row: 1 / 4;
-        width: 40px;
-        height: 40px;
+        grid-row: 1 / 3;
+        width: 36px;
+        height: 36px;
       }
       .meta-matchup-name {
         grid-column: 2;
@@ -5623,18 +5623,19 @@
         line-height: 1.1;
       }
       .meta-matchup-types {
-        grid-column: 2;
+        grid-column: 2 / 4;
         grid-row: 2;
         flex-wrap: wrap;
       }
       .meta-matchup-result {
-        grid-column: 2;
-        grid-row: 3;
-        justify-self: start;
-        min-width: 50px;
-        min-height: 25px;
-        padding: 3px 6px;
-        font-size: 10px;
+        grid-column: 3;
+        grid-row: 1;
+        align-self: start;
+        justify-self: end;
+        min-width: 46px;
+        min-height: 24px;
+        padding: 2px 5px;
+        font-size: 9px;
       }
       .meta-row-details {
         background:
@@ -5874,16 +5875,16 @@
         font-size: 8px;
       }
       .meta-matchup-card {
-        grid-template-columns: 32px minmax(0, 1fr);
-        gap: 2px 5px;
-        min-height: 82px !important;
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        gap: 2px 4px;
+        min-height: 64px !important;
         padding: 5px !important;
       }
-      .meta-matchup-card > img { width: 32px; height: 32px; }
+      .meta-matchup-card > img { width: 30px; height: 30px; }
       .meta-matchup-name {
         white-space: normal;
         line-height: 1.08;
-        font-size: 11px;
+        font-size: 10px;
       }
       .meta-matchup-types { gap: 2px; }
       .meta-matchup-types .type-badge {
@@ -5892,10 +5893,10 @@
         font-size: 8px;
       }
       .meta-matchup-result {
-        min-width: 46px;
-        min-height: 23px;
-        padding: 2px 5px;
-        font-size: 9px;
+        min-width: 42px;
+        min-height: 21px;
+        padding: 2px 4px;
+        font-size: 8px;
       }
       .bait-control > span,
       .shield-mode-row > span {
