@@ -46,6 +46,8 @@
       --battle-ink: #141A2E;
       --battle-border: #202638;
       --battle-shadow-edge: #202638;
+      --meta-brand-bg: linear-gradient(125deg, #102532 0%, #123747 62%, #174b59 100%);
+      --meta-brand-accent: #d6ad39;
     }
     body[data-theme="dark"] {
       --bg: #111822;
@@ -73,6 +75,8 @@
       --battle-ink: #102532;
       --battle-border: #0b1720;
       --battle-shadow-edge: #0b1720;
+      --meta-brand-bg: linear-gradient(125deg, #0d1b25 0%, #12303e 62%, #174452 100%);
+      --meta-brand-accent: #e0a83a;
     }
     body[data-theme="neo"] {
       --bg: #0B0F1C;
@@ -100,6 +104,8 @@
       --battle-ink: #141A2E;
       --battle-border: #FFE07A;
       --battle-shadow-edge: #6f3f00;
+      --meta-brand-bg: linear-gradient(125deg, #0B0F1C 0%, #102331 62%, #103947 100%);
+      --meta-brand-accent: #00E4FF;
     }
     * { box-sizing: border-box; }
     body {
@@ -216,14 +222,42 @@
       padding: 12px;
     }
     .meta-panel-head {
+      position: sticky;
+      top: 8px;
+      z-index: 20;
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-bottom: 3px solid var(--meta-brand-accent);
+      border-radius: 7px;
+      background: var(--meta-brand-bg);
+      box-shadow: 0 7px 16px rgba(23,33,47,.18), inset 0 1px 0 rgba(255,255,255,.12);
     }
     .meta-panel-head h2 {
       margin: 0;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 850;
+      line-height: 1.05;
+      text-shadow: 0 1px 2px rgba(0,0,0,.28);
+    }
+    .meta-title-lockup { min-width: 0; }
+    .meta-title-copy {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .meta-title-kicker {
+      color: color-mix(in srgb, var(--meta-brand-accent) 82%, #fff);
+      font-size: 9px;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
     .meta-actions {
       display: flex;
@@ -231,11 +265,88 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 6px;
+      background: rgba(255,255,255,.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
     .meta-actions input {
       width: 190px;
       min-height: 32px;
+      border-color: rgba(255,255,255,.34);
+      background: rgba(255,255,255,.96);
+      color: #17212f;
     }
+    .meta-actions select {
+      width: 126px;
+      min-height: 32px;
+      border-color: rgba(255,255,255,.34);
+      background-color: rgba(255,255,255,.96);
+      color: #17212f;
+    }
+    .meta-actions input::placeholder { color: #687587; }
+    .meta-actions #metaRefresh {
+      border-color: rgba(255,255,255,.42);
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+    }
+    .meta-actions #metaRefresh:hover { background: rgba(255,255,255,.22); }
+    .meta-actions #metaCompareToggle.active {
+      border-color: var(--meta-brand-accent);
+      background: var(--meta-brand-accent);
+      color: #102532;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.34);
+    }
+    .meta-active-filters {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-height: 24px;
+      padding-top: 2px;
+    }
+    .meta-active-filters[hidden] { display: none; }
+    .meta-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 23px;
+      padding: 2px 4px 2px 8px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      background: rgba(255,255,255,.13);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .meta-filter-chip button {
+      width: 18px;
+      height: 18px;
+      min-height: 18px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      box-shadow: none;
+      font-size: 13px;
+      line-height: 1;
+    }
+    .meta-filter-chip button:hover { background: rgba(255,255,255,.28); }
+    .meta-clear-filters {
+      min-height: 23px;
+      padding: 2px 8px;
+      border-color: rgba(255,255,255,.28);
+      background: transparent;
+      color: #fff;
+      box-shadow: none;
+      font-size: 10px;
+    }
+    #metaSearch { width: 168px; }
+    #metaMoveFilter { width: 148px; }
     .meta-ranking {
       display: grid;
       gap: 6px;
@@ -252,6 +363,7 @@
       background: var(--soft);
     }
     .meta-row.header {
+      grid-template-columns: 70px minmax(430px, 48%) 100px minmax(76px, 1fr) 82px;
       min-height: 32px;
       color: var(--muted);
       font-size: 11px;
@@ -261,6 +373,16 @@
       border-color: transparent;
       padding-top: 0;
       padding-bottom: 0;
+    }
+    .meta-header-pokemon {
+      grid-column: 1 / 3;
+      padding-left: 43px;
+    }
+    .meta-header-score {
+      grid-column: 4;
+      justify-self: center;
+      width: 58px;
+      text-align: left;
     }
     .meta-rank {
       font-weight: 950;
@@ -332,13 +454,38 @@
       flex: 0 0 auto;
       min-height: 22px;
       padding: 3px 7px;
-      border-radius: 999px;
+      border: 1px solid transparent;
+      border-radius: 4px;
       font-size: 11px;
       font-weight: 900;
       line-height: 1;
+      letter-spacing: 0;
+    }
+    .meta-move-pill.fast {
+      padding-left: 8px;
+      border-color: color-mix(in srgb, var(--move-type) 74%, rgba(23,33,47,.40));
+      border-left: 4px solid var(--move-type);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--move-type) 92%, #fff) 0%,
+        color-mix(in srgb, var(--move-type) 84%, #17212f) 100%);
       color: var(--move-text, #fff);
-      background: var(--move-bg, var(--accent));
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(23,33,47,.16);
+    }
+    .meta-move-pill.charged {
+      border-color: color-mix(in srgb, var(--move-type) 74%, rgba(23,33,47,.40));
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--move-type) 92%, #fff) 0%,
+        color-mix(in srgb, var(--move-type) 84%, #17212f) 100%);
+      color: var(--move-text, #fff);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(23,33,47,.16);
+    }
+    .meta-move-divider {
+      flex: 0 0 1px;
+      width: 1px;
+      height: 18px;
+      margin: 0 1px;
+      background: rgba(255,255,255,.48);
+      box-shadow: 1px 0 0 rgba(23,33,47,.14);
     }
     .meta-move-pill span {
       min-width: 0;
@@ -364,6 +511,7 @@
       border-radius: 8px;
       background: var(--panel);
       box-shadow: 0 3px 10px rgba(23,33,47,.12), inset 0 1px 0 rgba(255,255,255,.16);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
     }
     .meta-entry .meta-row {
       position: relative;
@@ -400,6 +548,45 @@
       text-shadow: 0 1px 2px rgba(23,33,47,.55);
     }
     .meta-entry.expanded .meta-row::after { content: "\2212"; }
+    .meta-entry.expanded {
+      border-color: color-mix(in srgb, var(--meta-type-a) 68%, var(--line));
+      box-shadow: 0 6px 16px rgba(23,33,47,.20), inset 0 1px 0 rgba(255,255,255,.22);
+    }
+    .meta-entry.expanded .meta-row {
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,.20);
+    }
+    .meta-entry.expanded .meta-row::after {
+      background: rgba(23,33,47,.42);
+      box-shadow: inset -1px 0 0 rgba(255,255,255,.18);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .meta-entry:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--meta-type-a) 58%, var(--line));
+        box-shadow: 0 7px 16px rgba(23,33,47,.18), inset 0 1px 0 rgba(255,255,255,.20);
+      }
+    .meta-entry.expanded:hover {
+        border-color: color-mix(in srgb, var(--meta-type-a) 76%, var(--line));
+        box-shadow: 0 8px 19px rgba(23,33,47,.23), inset 0 1px 0 rgba(255,255,255,.24);
+      }
+    }
+    .meta-view.compare-mode .meta-entry.compare-a,
+    .meta-view.compare-mode .meta-entry.compare-b {
+      border-color: var(--meta-brand-accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--meta-brand-accent) 52%, transparent), 0 7px 16px rgba(23,33,47,.18);
+    }
+    .meta-view.compare-mode .meta-entry.compare-a .meta-row::after {
+      content: "A";
+      background: #156f8f;
+    }
+    .meta-view.compare-mode .meta-entry.compare-b .meta-row::after {
+      content: "B";
+      background: #9a4b87;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .meta-entry,
+      .meta-back-to-top { transition: none; }
+    }
     .meta-entry .meta-rank { padding-left: 26px; }
     .meta-entry .meta-row:hover {
       --meta-type-strength: 94%;
@@ -479,6 +666,102 @@
     }
     .meta-entry.expanded .meta-row-details { grid-template-rows: 1fr; opacity: 1; border-top-width: 1px; }
     .meta-row-details-inner { min-height: 0; overflow: hidden; }
+    .meta-load-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .meta-load-more button {
+      min-width: 190px;
+      min-height: 32px;
+    }
+    .meta-back-to-top {
+      position: fixed;
+      right: 18px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 30;
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 0;
+      border: 2px solid var(--meta-brand-accent);
+      border-radius: 50%;
+      background: #102532;
+      color: #fff;
+      box-shadow: 0 5px 14px rgba(23,33,47,.28);
+      font-size: 22px;
+      line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .meta-back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .meta-back-to-top:hover { box-shadow: 0 7px 18px rgba(23,33,47,.34); }
+    .meta-compare-tray {
+      position: fixed;
+      left: 50%;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 40;
+      width: min(720px, calc(100vw - 32px));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      border: 2px solid var(--meta-brand-accent);
+      border-radius: 8px;
+      background: #102532;
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(23,33,47,.34), inset 0 1px 0 rgba(255,255,255,.14);
+      transform: translateX(-50%);
+    }
+    .meta-compare-tray[hidden] { display: none; }
+    .meta-compare-slot {
+      display: grid;
+      grid-template-columns: 24px 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+    .meta-compare-slot-letter {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: rgba(255,255,255,.14);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .meta-compare-slot img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+    .meta-compare-slot-copy { min-width: 0; }
+    .meta-compare-slot strong,
+    .meta-compare-slot small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .meta-compare-slot strong { font-size: 12px; }
+    .meta-compare-slot small { margin-top: 2px; color: rgba(255,255,255,.70); font-size: 9px; }
+    .meta-compare-vs { color: var(--meta-brand-accent); font-size: 10px; font-weight: 950; }
+    .meta-compare-actions { display: flex; align-items: center; gap: 5px; }
+    .meta-compare-actions button { min-height: 30px; padding: 4px 8px; }
+    .meta-compare-actions .meta-compare-swap { width: 32px; padding: 0; font-size: 18px; }
+    .meta-view.compare-mode .meta-back-to-top { bottom: 92px; }
     .meta-detail-content {
       display: grid;
       gap: 10px;
@@ -4470,13 +4753,46 @@
       }
       .meta-panel-head {
         grid-template-columns: 1fr;
+        top: 4px;
+        padding: 10px;
       }
+      .meta-panel-head h2 { font-size: 18px; }
       .meta-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         justify-content: stretch;
+        padding: 5px;
       }
-      .meta-actions input {
+      .meta-actions input,
+      .meta-actions select {
         width: 100%;
       }
+      #metaSearch { grid-column: 1 / -1; }
+      #metaCompareToggle,
+      #metaRefresh { width: 100%; }
+      .meta-active-filters { gap: 4px; }
+      .meta-back-to-top {
+        right: 10px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: 38px;
+        height: 38px;
+        min-height: 38px;
+        font-size: 19px;
+      }
+      .meta-compare-tray {
+        bottom: max(10px, env(safe-area-inset-bottom));
+        width: calc(100vw - 16px);
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 6px;
+        padding: 7px;
+      }
+      .meta-compare-slot { grid-template-columns: 18px 30px minmax(0, 1fr); gap: 4px; }
+      .meta-compare-slot-letter { width: 18px; height: 18px; font-size: 9px; }
+      .meta-compare-slot img { width: 30px; height: 30px; }
+      .meta-compare-slot strong { font-size: 10px; }
+      .meta-compare-slot small { font-size: 8px; }
+      .meta-compare-actions { grid-column: 1 / -1; justify-content: center; }
+      .meta-view.compare-mode .meta-back-to-top { bottom: 128px; }
       .meta-row,
       .meta-row.header {
         grid-template-columns: 30px minmax(0, 1fr) 58px 64px;
@@ -4490,6 +4806,7 @@
         gap: 4px;
         flex-wrap: wrap;
       }
+      .meta-move-divider { display: none; }
       .meta-move-pill { max-width: 100%; }
       .meta-row button {
         grid-column: 4;
@@ -4499,6 +4816,12 @@
         grid-template-columns: 46px minmax(0, 44%) 54px minmax(54px, 1fr) 58px;
         gap: 5px;
       }
+      .meta-row.header {
+        grid-template-columns: 46px minmax(0, 44%) 54px minmax(54px, 1fr) 58px;
+        gap: 5px;
+      }
+      .meta-header-pokemon { padding-left: 28px; }
+      .meta-header-score { width: 50px; }
       .meta-entry .meta-row::after { width: 20px; font-size: 18px; }
       .meta-entry .meta-rank { padding-left: 18px; font-size: 15px; }
       .meta-type-emblem { width: 26px; height: 26px; }
@@ -5851,14 +6174,54 @@
     <div id="metaView" class="app-view meta-view">
       <section class="meta-panel">
         <div class="meta-panel-head">
-          <h2>Great League Meta</h2>
+          <div class="meta-title-lockup">
+            <span class="meta-title-copy">
+              <span class="meta-title-kicker">Rankings</span>
+              <h2>Great League Meta</h2>
+            </span>
+          </div>
           <div class="meta-actions">
-            <input id="metaSearch" type="search" placeholder="Filter meta Pokemon">
+            <input id="metaSearch" type="search" placeholder="Pokemon name" aria-label="Filter by Pokemon name">
+            <select id="metaTypeFilter" aria-label="Filter by Pokemon type">
+              <option value="">All types</option>
+              <option value="bug">Bug</option>
+              <option value="dark">Dark</option>
+              <option value="dragon">Dragon</option>
+              <option value="electric">Electric</option>
+              <option value="fairy">Fairy</option>
+              <option value="fighting">Fighting</option>
+              <option value="fire">Fire</option>
+              <option value="flying">Flying</option>
+              <option value="ghost">Ghost</option>
+              <option value="grass">Grass</option>
+              <option value="ground">Ground</option>
+              <option value="ice">Ice</option>
+              <option value="normal">Normal</option>
+              <option value="poison">Poison</option>
+              <option value="psychic">Psychic</option>
+              <option value="rock">Rock</option>
+              <option value="steel">Steel</option>
+              <option value="water">Water</option>
+            </select>
+            <input id="metaMoveFilter" type="search" placeholder="Move name" aria-label="Filter by move name">
+            <button id="metaCompareToggle" class="secondary" type="button" aria-pressed="false">Compare</button>
             <button id="metaRefresh" class="secondary" type="button">Refresh</button>
           </div>
+          <div id="metaActiveFilters" class="meta-active-filters" aria-live="polite" hidden></div>
         </div>
         <div id="metaRanking" class="meta-ranking"></div>
       </section>
+      <div id="metaCompareTray" class="meta-compare-tray" aria-live="polite" hidden>
+        <div id="metaCompareSlotA" class="meta-compare-slot"></div>
+        <span class="meta-compare-vs">VS</span>
+        <div id="metaCompareSlotB" class="meta-compare-slot"></div>
+        <div class="meta-compare-actions">
+          <button id="metaCompareSwap" class="secondary meta-compare-swap" type="button" title="Swap Pokemon" aria-label="Swap Pokemon">&#8644;</button>
+          <button id="metaCompareClear" class="secondary" type="button">Clear</button>
+          <button id="metaCompareLoad" type="button" disabled>Load setup</button>
+        </div>
+      </div>
+      <button id="metaBackToTop" class="meta-back-to-top" type="button" title="Back to top" aria-label="Back to top" aria-hidden="true">&#8593;</button>
     </div>
   </main>
 
@@ -5961,6 +6324,14 @@
     let metaRankingLoading = false;
     let metaRankingLoadError = "";
     let metaRankingLoadPromise = null;
+    const metaRenderBatchSize = 100;
+    let metaVisibleCount = metaRenderBatchSize;
+    let metaFilterSignature = "";
+    let metaFilterRenderTimer = null;
+    let metaRenderObserver = null;
+    let metaOfflineRowsCache = null;
+    let metaCompareMode = false;
+    let metaCompareSelection = [];
     const shieldMatrixHydrating = new Set();
     const shieldMatrixHydrated = new Set();
     const shieldMatrixHydrateTimeouts = new Map();
@@ -6158,8 +6529,28 @@
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
-      $("metaSearch").oninput = renderMetaRankings;
+      $("metaSearch").oninput = scheduleMetaFilterRender;
+      $("metaMoveFilter").oninput = scheduleMetaFilterRender;
+      $("metaTypeFilter").onchange = () => {
+        resetMetaProgressiveRender();
+        renderMetaRankings();
+      };
+      $("metaActiveFilters").onclick = event => {
+        const button = event.target.closest("[data-clear-meta-filter]");
+        if (!button) return;
+        clearMetaFilter(button.dataset.clearMetaFilter);
+      };
       $("metaRefresh").onclick = reloadMetaRankingData;
+      $("metaCompareToggle").onclick = () => setMetaCompareMode(!metaCompareMode);
+      $("metaCompareSwap").onclick = swapMetaComparison;
+      $("metaCompareClear").onclick = clearMetaComparison;
+      $("metaCompareLoad").onclick = loadMetaComparison;
+      $("metaBackToTop").onclick = () => {
+        const reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+      };
+      window.addEventListener("scroll", updateMetaBackToTop, { passive: true });
+      updateMetaBackToTop();
       const metaBuildButton = $("metaBuild");
       if (metaBuildButton) metaBuildButton.onclick = startMetaOfflineBuild;
       $("shieldMatrix").onclick = handleMatrixClick;
@@ -6621,11 +7012,13 @@
         button.classList.toggle("active", button.dataset.viewTarget === next);
       });
       if (next === "meta") renderMetaRankings();
+      updateMetaBackToTop();
     }
 
     function ensureMetaRankingData() {
       if (!metaRankingData && window.GREAT_LEAGUE_RANKINGS) {
         metaRankingData = window.GREAT_LEAGUE_RANKINGS;
+        metaOfflineRowsCache = null;
       }
       if (metaRankingData || metaRankingLoading || metaRankingLoadPromise) return;
       if (typeof fetch !== "function") {
@@ -6655,6 +7048,7 @@
         .then(data => {
           if (!data || !Array.isArray(data.entries)) throw new Error("Invalid ranking file");
           metaRankingData = data;
+          metaOfflineRowsCache = null;
         })
         .catch(error => {
           metaRankingLoadError = error && error.name === "AbortError"
@@ -6671,21 +7065,227 @@
 
     function reloadMetaRankingData() {
       metaRankingData = window.GREAT_LEAGUE_RANKINGS || null;
+      metaOfflineRowsCache = null;
       metaRankingLoadError = "";
       metaRankingLoadPromise = null;
       metaRankingLoading = false;
+      resetMetaProgressiveRender();
       renderMetaRankings();
+    }
+
+    function resetMetaProgressiveRender() {
+      metaVisibleCount = metaRenderBatchSize;
+      if (metaRenderObserver) {
+        metaRenderObserver.disconnect();
+        metaRenderObserver = null;
+      }
+    }
+
+    function clearMetaFilter(target) {
+      const filterIds = ["metaSearch", "metaTypeFilter", "metaMoveFilter"];
+      if (target === "all") {
+        filterIds.forEach(id => { if ($(id)) $(id).value = ""; });
+      } else if (filterIds.includes(target) && $(target)) {
+        $(target).value = "";
+      }
+      metaFilterSignature = "";
+      resetMetaProgressiveRender();
+      renderMetaRankings();
+    }
+
+    function renderMetaActiveFilters() {
+      const container = $("metaActiveFilters");
+      if (!container) return;
+      const pokemonValue = $("metaSearch")?.value.trim() || "";
+      const moveValue = $("metaMoveFilter")?.value.trim() || "";
+      const typeSelect = $("metaTypeFilter");
+      const typeValue = typeSelect?.value || "";
+      const typeLabel = typeValue && typeSelect
+        ? typeSelect.options[typeSelect.selectedIndex]?.text || title(typeValue)
+        : "";
+      const filters = [
+        pokemonValue ? { id: "metaSearch", label: `Pokemon: ${pokemonValue}` } : null,
+        typeValue ? { id: "metaTypeFilter", label: `Type: ${typeLabel}` } : null,
+        moveValue ? { id: "metaMoveFilter", label: `Move: ${moveValue}` } : null
+      ].filter(Boolean);
+      container.hidden = !filters.length;
+      container.innerHTML = filters.length
+        ? filters.map(filter => `<span class="meta-filter-chip">${escapeHtml(filter.label)}<button type="button" data-clear-meta-filter="${filter.id}" title="Remove filter" aria-label="Remove ${escapeHtml(filter.label)} filter">&times;</button></span>`).join("") +
+          `<button type="button" class="meta-clear-filters" data-clear-meta-filter="all">Clear all</button>`
+        : "";
+    }
+
+    function updateMetaBackToTop() {
+      const button = $("metaBackToTop");
+      if (!button) return;
+      const visible = document.body.dataset.view === "meta" && window.scrollY > 600;
+      button.classList.toggle("visible", visible);
+      button.setAttribute("aria-hidden", visible ? "false" : "true");
+    }
+
+    function metaCompareEntry(id) {
+      const cached = metaOfflineRowsCache?.find(entry => entry.id === id);
+      if (cached) return cached;
+      const p = findPokemon(id);
+      return p ? { id: p.id, name: p.name, p, moves: metaMovesForPokemon(p) } : null;
+    }
+
+    function metaCompareSlotHtml(id, slot) {
+      const entry = id ? metaCompareEntry(id) : null;
+      if (!entry) {
+        return `<span class="meta-compare-slot-letter">${slot}</span><span></span><span class="meta-compare-slot-copy"><strong>Select Pokemon ${slot}</strong><small>Choose from the ranking</small></span>`;
+      }
+      const moveNames = [entry.moves.fast?.name, ...entry.moves.charged.map(move => move.name)].filter(Boolean).join(" / ");
+      return `<span class="meta-compare-slot-letter">${slot}</span><img src="${escapeHtml(imageUrl(entry.p))}" alt="" decoding="async" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'"><span class="meta-compare-slot-copy"><strong>${escapeHtml(entry.p.name)}</strong><small>${escapeHtml(moveNames)}</small></span>`;
+    }
+
+    function renderMetaCompareTray() {
+      const view = $("metaView");
+      const tray = $("metaCompareTray");
+      const toggle = $("metaCompareToggle");
+      if (!view || !tray || !toggle) return;
+      view.classList.toggle("compare-mode", metaCompareMode);
+      toggle.classList.toggle("active", metaCompareMode);
+      toggle.setAttribute("aria-pressed", metaCompareMode ? "true" : "false");
+      toggle.textContent = metaCompareMode ? "Comparing" : "Compare";
+      tray.hidden = !metaCompareMode;
+      $("metaCompareSlotA").innerHTML = metaCompareSlotHtml(metaCompareSelection[0], "A");
+      $("metaCompareSlotB").innerHTML = metaCompareSlotHtml(metaCompareSelection[1], "B");
+      $("metaCompareSwap").disabled = metaCompareSelection.length < 2;
+      $("metaCompareClear").disabled = !metaCompareSelection.length;
+      $("metaCompareLoad").disabled = metaCompareSelection.length < 2;
+      updateMetaBackToTop();
+    }
+
+    function syncMetaCompareRows() {
+      document.querySelectorAll("#metaRanking [data-meta-entry]").forEach(entry => {
+        const index = metaCompareSelection.indexOf(entry.dataset.metaEntry);
+        entry.classList.toggle("compare-a", index === 0);
+        entry.classList.toggle("compare-b", index === 1);
+        entry.querySelector("[data-meta-expand]")?.setAttribute("aria-pressed", index >= 0 ? "true" : "false");
+      });
+    }
+
+    function setMetaCompareMode(active, rerender = true) {
+      metaCompareMode = !!active;
+      if (!metaCompareMode) metaCompareSelection = [];
+      renderMetaCompareTray();
+      if (rerender) renderMetaRankings();
+    }
+
+    function selectMetaComparePokemon(id) {
+      if (!metaCompareMode || !findPokemon(id)) return;
+      const existingIndex = metaCompareSelection.indexOf(id);
+      if (existingIndex >= 0) {
+        metaCompareSelection.splice(existingIndex, 1);
+      } else if (metaCompareSelection.length < 2) {
+        metaCompareSelection.push(id);
+      } else {
+        metaCompareSelection[1] = id;
+      }
+      renderMetaCompareTray();
+      syncMetaCompareRows();
+    }
+
+    function clearMetaComparison() {
+      metaCompareSelection = [];
+      renderMetaCompareTray();
+      syncMetaCompareRows();
+    }
+
+    function swapMetaComparison() {
+      if (metaCompareSelection.length < 2) return;
+      metaCompareSelection.reverse();
+      renderMetaCompareTray();
+      syncMetaCompareRows();
+    }
+
+    function applyMetaComparisonSide(prefix, id) {
+      const entry = metaCompareEntry(id);
+      if (!entry) return;
+      setPokemonSelection(prefix, id);
+      const selections = [
+        [`${prefix}Fast`, entry.moves.fast?.id],
+        [`${prefix}Charged1`, entry.moves.charged[0]?.id],
+        [`${prefix}Charged2`, entry.moves.charged[1]?.id || ""]
+      ];
+      selections.forEach(([selectId, moveId]) => {
+        const select = $(selectId);
+        if (select && [...select.options].some(option => option.value === moveId)) select.value = moveId;
+      });
+      applyIvOptimizationProfile(prefix, "balanced");
+      syncSelection(prefix);
+    }
+
+    function loadMetaComparison() {
+      if (metaCompareSelection.length < 2) return;
+      const [firstId, secondId] = metaCompareSelection;
+      applyMetaComparisonSide("p1", firstId);
+      applyMetaComparisonSide("p2", secondId);
+      $("p1Shields").value = "1";
+      $("p2Shields").value = "1";
+      renderShields("p1");
+      renderShields("p2");
+      resetBattleStateFromSetup();
+      setMetaCompareMode(false, false);
+      setAppView("simulator");
+      const reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    }
+
+    function scheduleMetaFilterRender() {
+      clearTimeout(metaFilterRenderTimer);
+      metaFilterRenderTimer = setTimeout(() => {
+        metaFilterRenderTimer = null;
+        resetMetaProgressiveRender();
+        renderMetaRankings();
+      }, 100);
+    }
+
+    function metaLoadMoreHtml(visible, total) {
+      if (visible >= total) return "";
+      const nextCount = Math.min(metaRenderBatchSize, total - visible);
+      return `<div class="meta-load-more" data-meta-load-more><button type="button" class="secondary">Show ${nextCount} more (${visible}/${total})</button></div>`;
+    }
+
+    function setupMetaProgressiveLoading(box, total) {
+      if (metaRenderObserver) {
+        metaRenderObserver.disconnect();
+        metaRenderObserver = null;
+      }
+      const sentinel = box.querySelector("[data-meta-load-more]");
+      if (!sentinel) return;
+      const loadNextBatch = () => {
+        if (metaRenderObserver) metaRenderObserver.disconnect();
+        metaVisibleCount = Math.min(total, metaVisibleCount + metaRenderBatchSize);
+        renderMetaRankings();
+      };
+      const button = sentinel.querySelector("button");
+      if (button) button.onclick = loadNextBatch;
+      if (typeof IntersectionObserver !== "function") return;
+      metaRenderObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) loadNextBatch();
+      }, { rootMargin: "500px 0px" });
+      metaRenderObserver.observe(sentinel);
     }
 
     function renderMetaRankings() {
       const box = $("metaRanking");
       if (!box || !allPokemon.length) return;
+      renderMetaActiveFilters();
       ensureMetaRankingData();
       let rows = [];
       const usingOfflineRanking = metaRankingData && Array.isArray(metaRankingData.entries);
       try {
         const query = normalizeSearchText($("metaSearch")?.value || "");
-        rows = usingOfflineRanking ? metaOfflineRankingRows(query) : [];
+        const typeFilter = normalizeSearchText($("metaTypeFilter")?.value || "");
+        const moveQuery = normalizeSearchText($("metaMoveFilter")?.value || "");
+        const nextFilterSignature = `${query}|${typeFilter}|${moveQuery}`;
+        if (nextFilterSignature !== metaFilterSignature) {
+          metaFilterSignature = nextFilterSignature;
+          resetMetaProgressiveRender();
+        }
+        rows = usingOfflineRanking ? metaOfflineRankingRows(query, typeFilter, moveQuery) : [];
       } catch (error) {
         box.innerHTML = `<div class="matrix-loading">Meta ranking could not be rendered: ${escapeHtml(error.message || String(error))}</div>`;
         return;
@@ -6709,21 +7309,27 @@
         box.innerHTML = `<div class="matrix-loading">No Great League meta entries found.</div>`;
         return;
       }
-      box.innerHTML = `<div class="meta-row header"><span>#</span><span>Pokemon</span><span>Score</span><span></span></div>` +
-        rows.map((entry, index) => metaRankingRow(entry, entry.rank || index + 1)).join("") +
+      const visibleRows = rows.slice(0, metaVisibleCount);
+      box.innerHTML = `<div class="meta-row header"><span class="meta-header-pokemon">Pokemon</span><span class="meta-header-score">Score</span></div>` +
+        visibleRows.map((entry, index) => metaRankingRow(entry, entry.rank || index + 1)).join("") +
+        metaLoadMoreHtml(visibleRows.length, rows.length) +
         metaRankingLegend();
       box.querySelectorAll("button[data-meta-id]").forEach(button => {
-        button.onclick = () => loadMetaPokemon(button.dataset.metaId);
+        button.onclick = () => metaCompareMode
+          ? selectMetaComparePokemon(button.dataset.metaId)
+          : loadMetaPokemon(button.dataset.metaId);
       });
       box.querySelectorAll("[data-meta-expand]").forEach(row => {
         row.onclick = event => {
           if (event.target.closest("button")) return;
-          toggleMetaRankingRow(row);
+          if (metaCompareMode) selectMetaComparePokemon(row.dataset.metaExpand);
+          else toggleMetaRankingRow(row);
         };
         row.onkeydown = event => {
           if (event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
-          toggleMetaRankingRow(row);
+          if (metaCompareMode) selectMetaComparePokemon(row.dataset.metaExpand);
+          else toggleMetaRankingRow(row);
         };
       });
       box.querySelectorAll("[data-meta-matchup]").forEach(button => {
@@ -6732,6 +7338,8 @@
           loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
         };
       });
+      renderMetaCompareTray();
+      setupMetaProgressiveLoading(box, rows.length);
     }
 
     function updateMetaStatus(rows, usingOfflineRanking) {
@@ -6755,20 +7363,30 @@
           : metaMatchupCache.size ? "Ready" : "Idle";
     }
 
-    function metaOfflineRankingRows(query) {
+    function metaOfflineRankingRows(query, typeFilter = "", moveQuery = "") {
       const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : {};
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
-      const preferredEntries = metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile);
-      const entries = preferredEntries.length ? preferredEntries : metaRankingData.entries;
-      return entries
-        .map(entry => metaOfflineRankingEntry(entry, shieldCount, cellCount))
-        .filter(Boolean)
-        .filter(entry => !query ||
-          normalizeSearchText(entry.name).includes(query) ||
-          normalizeSearchText(entry.id).includes(query) ||
-          normalizeSearchText(entry.profile).includes(query)
-        );
+      if (!metaOfflineRowsCache) {
+        const preferredEntries = metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile);
+        const entries = preferredEntries.length ? preferredEntries : metaRankingData.entries;
+        metaOfflineRowsCache = entries
+          .map(entry => metaOfflineRankingEntry(entry, shieldCount, cellCount))
+          .filter(Boolean)
+          .map(entry => ({
+            ...entry,
+            metaSearchText: normalizeSearchText(`${entry.name} ${entry.id} ${entry.profile}`),
+            metaMoveSearchText: normalizeSearchText([
+              entry.moves.fast?.name,
+              ...entry.moves.charged.map(move => move.name)
+            ].filter(Boolean).join(" "))
+          }));
+      }
+      return metaOfflineRowsCache.filter(entry =>
+        (!query || entry.metaSearchText.includes(query)) &&
+        (!typeFilter || entry.p.types.includes(typeFilter)) &&
+        (!moveQuery || entry.metaMoveSearchText.includes(moveQuery))
+      );
     }
 
     function metaOfflineRankingEntry(entry, shieldCount, cellCount) {
@@ -6848,7 +7466,11 @@
       }).join("");
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
-      const moveset = [entry.moves.fast, ...entry.moves.charged].filter(Boolean);
+      const movesetHtml = [
+        metaMovePill(entry.moves.fast, "fast"),
+        entry.moves.charged.length ? `<i class="meta-move-divider" aria-hidden="true"></i>` : "",
+        ...entry.moves.charged.map(move => metaMovePill(move, "charged"))
+      ].join("");
       const detailId = `meta-details-${entry.p.id.replace(/[^a-z0-9_-]/gi, "-")}`;
       const primaryType = entry.p.types[0] || "normal";
       const secondaryType = entry.p.types[1] || primaryType;
@@ -6856,21 +7478,23 @@
       const secondaryColor = typeColors[secondaryType] || primaryColor;
       const typeStyle = `--meta-type-a:${primaryColor};--meta-type-b:${secondaryColor};--meta-icon-a:url('${metaTypeIconDataUri(primaryType, primaryColor)}');--meta-icon-b:url('${metaTypeIconDataUri(secondaryType, secondaryColor)}')`;
       const typeClass = entry.p.types.length > 1 ? "dual-type" : "single-type";
-      return `<div class="meta-entry ${typeClass}" data-meta-entry="${escapeHtml(entry.p.id)}" style="${typeStyle}"><div class="meta-row" data-meta-expand="${escapeHtml(entry.p.id)}" role="button" tabindex="0" aria-expanded="false" aria-controls="${detailId}">
+      const compareIndex = metaCompareSelection.indexOf(entry.p.id);
+      const compareClass = compareIndex === 0 ? "compare-a" : compareIndex === 1 ? "compare-b" : "";
+      return `<div class="meta-entry ${typeClass} ${compareClass}" data-meta-entry="${escapeHtml(entry.p.id)}" style="${typeStyle}"><div class="meta-row" data-meta-expand="${escapeHtml(entry.p.id)}" role="button" tabindex="0" aria-expanded="false" aria-pressed="${compareIndex >= 0 ? "true" : "false"}" aria-controls="${detailId}">
         <span class="meta-rank">${rank}</span>
         <span class="meta-mon">
-          <img src="${escapeHtml(imageUrl(entry.p))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
+          <img src="${escapeHtml(imageUrl(entry.p))}" alt="" loading="lazy" decoding="async" fetchpriority="low" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
           <span>
             <strong>${escapeHtml(entry.p.name)}</strong>
             <small>${typeBadges}</small>
-            <span class="meta-moves" title="${escapeHtml(moveText)}">${moveset.map(move => metaMovePill(move)).join("")}</span>
+            <span class="meta-moves" title="${escapeHtml(moveText)}">${movesetHtml}</span>
           </span>
         </span>
         <span class="meta-type-stage" aria-hidden="true"><i class="meta-type-emblem primary"></i><i class="meta-type-emblem secondary"></i></span>
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
         </span>
-        <span class="meta-row-action"><button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">Use</button></span>
+        <span class="meta-row-action"><button type="button" class="secondary" data-meta-id="${escapeHtml(entry.p.id)}">${metaCompareMode ? "Select" : "Use"}</button></span>
       </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner">${metaRankingDetailsHtml(entry)}</div></div></div>`;
     }
 
@@ -6908,9 +7532,10 @@
       return `<div class="meta-matchup-group ${className}"><strong>${label}</strong><div class="meta-matchup-list">${buttons}</div></div>`;
     }
 
-    function metaMovePill(move) {
+    function metaMovePill(move, kind = "charged") {
       const color = typeColors[move.type] || "#66788c";
-      return `<span class="meta-move-pill" style="--move-bg:${color};--move-text:${contrastText(color)}"><span>${escapeHtml(move.name)}</span></span>`;
+      const moveKind = kind === "fast" ? "fast" : "charged";
+      return `<span class="meta-move-pill ${moveKind}" style="--move-type:${color};--move-text:${contrastText(color)}"><span>${escapeHtml(move.name)}</span></span>`;
     }
 
     function metaTypeIconDataUri(type, color) {
