@@ -694,8 +694,23 @@
           color-mix(in srgb, var(--meta-type-a) 94%, #fff) 50%,
           color-mix(in srgb, var(--meta-type-a) var(--meta-type-strength), var(--panel)) 57% 100%);
     }
-    .meta-entry.expanded .meta-row-details { grid-template-rows: 1fr; opacity: 1; }
-    .meta-row-details-inner { min-height: 0; overflow: hidden; }
+    .meta-entry.expanded .meta-row-details {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      will-change: grid-template-rows, opacity;
+    }
+    .meta-row-details-inner {
+      min-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-4px);
+      contain: paint;
+      transition: opacity .16s ease-out, transform .2s ease-out;
+    }
+    .meta-entry.expanded .meta-row-details-inner {
+      opacity: 1;
+      transform: translateY(0);
+    }
     .meta-load-more {
       display: flex;
       align-items: center;
@@ -818,7 +833,6 @@
       border-radius: 6px;
       background: rgba(17,25,38,.48);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-      backdrop-filter: blur(5px);
     }
     .meta-matchup-group > strong {
       display: flex;
@@ -5571,7 +5585,7 @@
       }
       .meta-matchup-group {
         gap: 5px;
-        padding: 5px;
+        padding: 4px;
       }
       .meta-matchup-group > strong {
         min-height: 19px;
@@ -5592,8 +5606,8 @@
         gap: 3px 5px;
         width: 100%;
         min-width: 0;
-        min-height: 72px !important;
-        padding: 6px !important;
+        min-height: 60px !important;
+        padding: 4px 5px !important;
         border-radius: 0;
       }
       .meta-matchup-card:first-child {
@@ -5866,7 +5880,7 @@
       }
       .meta-matchup-group {
         gap: 4px;
-        padding: 4px;
+        padding: 3px;
       }
       .meta-matchup-group > strong {
         gap: 3px;
@@ -5877,8 +5891,8 @@
       .meta-matchup-card {
         grid-template-columns: 30px minmax(0, 1fr) auto;
         gap: 2px 4px;
-        min-height: 64px !important;
-        padding: 5px !important;
+        min-height: 56px !important;
+        padding: 3px 4px !important;
       }
       .meta-matchup-card > img { width: 30px; height: 30px; }
       .meta-matchup-name {
@@ -7746,12 +7760,7 @@
           else toggleMetaRankingRow(row);
         };
       });
-      box.querySelectorAll("[data-meta-matchup]").forEach(button => {
-        button.onclick = event => {
-          event.stopPropagation();
-          loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
-        };
-      });
+      bindMetaMatchupButtons(box);
       renderMetaCompareTray();
       setupMetaProgressiveLoading(box, rows.length);
     }
@@ -7908,15 +7917,41 @@
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
         </span>
-      </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner">${metaRankingDetailsHtml(entry)}</div></div></div>`;
+      </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entry.p.id)}"></div></div></div>`;
     }
 
     function toggleMetaRankingRow(row) {
       const entry = row.closest(".meta-entry");
       if (!entry) return;
-      const open = !entry.classList.contains("expanded");
-      entry.classList.toggle("expanded", open);
+      const open = row.getAttribute("aria-expanded") !== "true";
       row.setAttribute("aria-expanded", open ? "true" : "false");
+      if (!open) {
+        entry.classList.remove("expanded");
+        return;
+      }
+      hydrateMetaRankingDetails(entry);
+      requestAnimationFrame(() => {
+        if (row.getAttribute("aria-expanded") === "true") entry.classList.add("expanded");
+      });
+    }
+
+    function hydrateMetaRankingDetails(entry) {
+      const inner = entry.querySelector(".meta-row-details-inner");
+      if (!inner || inner.dataset.hydrated === "true") return;
+      const sourceEntry = metaCompareEntry(entry.dataset.metaEntry);
+      if (!sourceEntry) return;
+      inner.innerHTML = metaRankingDetailsHtml(sourceEntry);
+      inner.dataset.hydrated = "true";
+      bindMetaMatchupButtons(inner);
+    }
+
+    function bindMetaMatchupButtons(container) {
+      container.querySelectorAll("[data-meta-matchup]").forEach(button => {
+        button.onclick = event => {
+          event.stopPropagation();
+          loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
+        };
+      });
     }
 
     function metaRankingDetailsHtml(entry) {
