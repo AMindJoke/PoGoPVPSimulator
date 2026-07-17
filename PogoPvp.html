@@ -574,6 +574,10 @@
       background: var(--analysis-surface);
       box-shadow: 0 10px 28px rgba(18,37,51,.08);
     }
+    .analysis-dossier-hero > :where(.analysis-hero-sprite-wrap, .analysis-hero-main, .analysis-rating-panel) {
+      grid-area: auto;
+      min-width: 0;
+    }
     .analysis-dossier-hero::before {
       content: "";
       position: absolute;
@@ -594,7 +598,7 @@
     .analysis-hero-main { min-width: 0; }
     .analysis-hero-title { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
     .analysis-hero-title h2 { min-width: 0; margin: 0; font-size: clamp(29px, 4vw, 40px); line-height: 1.08; overflow-wrap: anywhere; }
-    .analysis-rank-badge { flex: none; padding: 4px 8px; border-radius: 5px; background: var(--ink); color: var(--panel); font-size: 13px; font-weight: 900; }
+    .analysis-dossier-hero .analysis-rank-badge { flex: none; padding: 4px 8px; border-radius: 5px; background: var(--ink); color: var(--panel); font-size: 13px; font-weight: 900; }
     .analysis-hero-types { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
     .analysis-type-chip { display: inline-flex; align-items: center; padding: 4px 9px; border: 0; border-radius: 999px; background: var(--type-color); color: var(--type-text); font-size: 11px; font-style: normal; font-weight: 900; line-height: 1.2; box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
     .analysis-hero-role { display: block; margin-top: 13px; font-size: 15px; }
