@@ -8517,19 +8517,28 @@
       });
       $("timelineScroll").addEventListener("pointerdown", updateTimelineHover);
       $("timelineScroll").addEventListener("pointerleave", event => {
+        if (event.pointerType === "touch") {
+          clearTimelineLaneHover();
+          hideTimelineMoveTooltip();
+          return;
+        }
         handleTimelinePointerLeave(event);
         clearTimelineLaneHover();
         hideTimelineMoveTooltip();
       });
-      $("timelineScroll").addEventListener("pointerup", () => {
+      $("timelineScroll").addEventListener("pointerup", event => {
+        if (event.pointerType === "touch") {
+          finishTimelineTouchSelection();
+          return;
+        }
         hideTimelineHover();
         clearTimelineLaneHover();
         hideTimelineMoveTooltip();
       });
       $("timelineScroll").addEventListener("touchstart", updateTimelineHoverFromTouch, { passive: true });
       $("timelineScroll").addEventListener("touchmove", updateTimelineHoverFromTouch, { passive: true });
-      $("timelineScroll").addEventListener("touchend", hideTimelineHover);
-      $("timelineScroll").addEventListener("touchcancel", hideTimelineHover);
+      $("timelineScroll").addEventListener("touchend", finishTimelineTouchSelection);
+      $("timelineScroll").addEventListener("touchcancel", finishTimelineTouchSelection);
       $("timelineScroll").addEventListener("scroll", () => {
         if ($("timelineScroll").classList.contains("hovering") && lastTimelineHoverClientX !== null) {
           updateTimelineHover({ clientX: lastTimelineHoverClientX });
@@ -15180,7 +15189,15 @@
 
     function updateTimelineHoverFromTouch(event) {
       if (!event.touches || !event.touches.length) return;
-      updateTimelineHover(event.touches[0]);
+      const touch = event.touches[0];
+      updateTimelineHover(touch);
+      updateTimelineLaneHover(touch);
+      updateTimelineActionPreview(touch);
+    }
+
+    function finishTimelineTouchSelection() {
+      clearTimelineLaneHover();
+      hideTimelineMoveTooltip();
     }
 
     function updateTimelineHover(event) {
