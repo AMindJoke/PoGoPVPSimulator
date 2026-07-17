@@ -139,6 +139,7 @@
       box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
     h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: 0; white-space: nowrap; }
+    .mobile-header-actions { display: none; }
     .app-tabs {
       margin-left: auto;
       display: inline-flex;
@@ -7334,28 +7335,50 @@
 
     /* Mobile battle layout: clearer hierarchy with fewer nested surfaces. */
     @media (max-width: 900px) {
-      .toolbar {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: min(100%, 300px);
-        margin-inline: auto;
-        gap: 6px;
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        background: transparent;
-        box-shadow: none;
+      header {
+        position: relative;
       }
-      .toolbar-preset,
-      .toolbar-filters,
-      .toolbar > #counts {
+      header h1 {
+        padding-right: 82px;
+      }
+      .mobile-header-actions {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+      }
+      .mobile-header-actions button {
+        width: 34px;
+        min-width: 34px;
+        height: 34px;
+        min-height: 34px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, .24);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, .09);
+        color: #fff;
+        box-shadow: none;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .mobile-header-actions button:hover,
+      .mobile-header-actions button:focus-visible {
+        border-color: rgba(255, 255, 255, .48);
+        background: rgba(255, 255, 255, .16);
+        transform: none;
+      }
+      body:not([data-view="simulator"]) #mobileReset {
         display: none;
       }
-      .toolbar-actions {
-        display: contents;
+      body[data-theme="neo"] .mobile-header-actions button {
+        border-color: rgba(0, 228, 255, .38);
+        background: rgba(0, 228, 255, .08);
+        color: var(--ink);
       }
-      .toolbar-actions button {
-        min-height: 31px;
-        font-size: 11px;
+      .toolbar {
+        display: none;
       }
       .setup > .trainer-card {
         border-radius: 6px;
@@ -7523,6 +7546,20 @@
     }
 
     @media (max-width: 430px) {
+      header h1 {
+        padding-right: 76px;
+      }
+      .mobile-header-actions {
+        top: 7px;
+        right: 8px;
+      }
+      .mobile-header-actions button {
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        min-height: 32px;
+        font-size: 18px;
+      }
       .setup > .trainer-card {
         padding: 5px;
       }
@@ -7661,6 +7698,10 @@
 <body class="clarity-ui" data-view="simulator">
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
+    <div class="mobile-header-actions" aria-label="Simulator controls">
+      <button id="mobileReset" type="button" title="Reset simulator" aria-label="Reset simulator"><span aria-hidden="true">&#8635;</span></button>
+      <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
+    </div>
     <nav class="app-tabs" aria-label="App views">
       <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Battle</button>
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
@@ -8397,6 +8438,9 @@
       $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
+      $("mobileReset").onclick = () => $("reset").click();
+      $("mobileThemeToggle").onclick = toggleTheme;
+      syncMobileThemeControl();
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
@@ -15770,6 +15814,18 @@
       const next = current === "neo" ? "light" : current === "light" ? "dark" : "neo";
       document.body.dataset.theme = next;
       $("themeToggle").textContent = next === "neo" ? "Light" : next === "light" ? "Dark" : "Neo";
+      syncMobileThemeControl();
+    }
+
+    function syncMobileThemeControl() {
+      const button = $("mobileThemeToggle");
+      const icon = $("mobileThemeIcon");
+      if (!button || !icon) return;
+      const current = document.body.dataset.theme || "light";
+      const nextLabel = current === "neo" ? "light" : current === "light" ? "dark" : "Neo";
+      icon.textContent = current === "light" ? "\u263E" : current === "dark" ? "\u2726" : "\u2600";
+      button.title = `Switch to ${nextLabel} theme`;
+      button.setAttribute("aria-label", `Switch to ${nextLabel} theme`);
     }
 
     function moveShortLabel(move) {
