@@ -74,7 +74,15 @@
         } : null),
       conditionMetric("Energy Swing", energySwing?.side, energySwing
         ? `+${Number(energySwing.energy || 0)} energy`
-        : "No small flip", energySwing ? `${Number(energySwing.fastMoveCount || energySwing.fastMoves || 0)} ${energySwing.fastMoveName || energySwing.fastMove || "fast move"}` : "", combatants)
+        : "No small flip", energySwing ? `${Number(energySwing.fastMoveCount || energySwing.fastMoves || 0)} ${energySwing.fastMoveName || energySwing.fastMove || "fast move"}` : "", combatants, energySwing ? {
+          type: "preview",
+          ref: {
+            side: energySwing.side,
+            fastMoveCount: Number(energySwing.fastMoveCount || energySwing.fastMoves || 0),
+            fastMoveName: energySwing.fastMoveName || energySwing.fastMove || "fast move",
+            lineType: energySwing.lineType || "mixed"
+          }
+        } : null)
     ];
   }
 

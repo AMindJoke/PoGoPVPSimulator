@@ -5476,6 +5476,386 @@
       font-size: 11px;
     }
 
+    @media (min-width: 901px) {
+      body.clarity-ui .trainer-card {
+        padding: 12px;
+      }
+      body.clarity-ui .section-kicker {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.2;
+        text-transform: none;
+        opacity: 1;
+      }
+      body.clarity-ui .section-kicker::after {
+        display: none;
+      }
+      body.clarity-ui .battle-kicker,
+      body.clarity-ui .moves-stack > .setup-kicker {
+        display: none;
+      }
+      body.clarity-ui .control-stack {
+        gap: 7px;
+        padding: 10px 6px 8px;
+      }
+      body.clarity-ui .field-box {
+        margin-top: 9px;
+        padding: 8px 7px 6px;
+      }
+      body.clarity-ui .pokemon-picker {
+        gap: 6px;
+      }
+      body.clarity-ui .pokemon-picker > span {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      body.clarity-ui .pokemon-picker-input {
+        min-height: 36px;
+        padding: 6px 9px;
+        font-size: 14px;
+      }
+      body.clarity-ui .battle-identity {
+        grid-template-columns: 62px minmax(0, 1fr);
+        gap: 11px;
+        margin-bottom: 5px;
+      }
+      body.clarity-ui .battle-identity img {
+        width: 62px;
+        height: 62px;
+      }
+      body.clarity-ui .battle-identity > div {
+        min-height: 62px;
+        gap: 4px;
+      }
+      body.clarity-ui .battle-identity > div > strong {
+        font-size: 18px;
+        font-weight: 750;
+        line-height: 1.15;
+      }
+      body.clarity-ui .battle-identity span,
+      body.clarity-ui .battle-identity span strong {
+        font-size: 13px;
+        line-height: 1.2;
+      }
+      body.clarity-ui .type-badge {
+        min-height: 20px;
+        padding: 2px 8px;
+        font-size: 12px;
+      }
+      body.clarity-ui .stat-bars {
+        gap: 5px;
+        margin-top: 7px;
+      }
+      body.clarity-ui .stat-row {
+        grid-template-columns: 48px 38px minmax(28px, 1fr) 50px;
+        gap: 4px;
+        color: var(--ink);
+        font-size: 12.5px;
+        line-height: 1.25;
+      }
+      body.clarity-ui .stat-row strong {
+        font-size: 13.5px;
+        font-weight: 700;
+      }
+      body.clarity-ui .stat-row.no-alert-column {
+        grid-template-columns: 48px 38px minmax(28px, 1fr);
+      }
+      body.clarity-ui .stat-row.no-alert-column .stat-alert {
+        display: none;
+      }
+      body.clarity-ui .overall {
+        grid-template-columns: 48px 38px minmax(28px, 1fr) 50px;
+        gap: 4px;
+        margin-top: 4px;
+        font-size: 12.5px;
+        line-height: 1.25;
+      }
+      body.clarity-ui .overall strong {
+        font-size: 13.5px;
+      }
+      body.clarity-ui .advanced-panel summary {
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+      body.clarity-ui .shield-only-row {
+        margin-top: 9px;
+        padding-top: 9px;
+        border-top-color: color-mix(in srgb, var(--line) 58%, transparent);
+      }
+      body.clarity-ui .shields-kicker {
+        margin-bottom: 6px;
+      }
+      body.clarity-ui .moves-stack {
+        gap: 9px;
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top-color: color-mix(in srgb, var(--line) 58%, transparent);
+      }
+      body.clarity-ui .move-group {
+        gap: 6px;
+      }
+      body.clarity-ui .move-group + .move-group {
+        margin-top: 9px;
+      }
+      body.clarity-ui .move-group-title {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      body.clarity-ui .moves-stack label select.move-select {
+        min-height: 36px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 750;
+      }
+      body.clarity-ui .moves-stack .hp {
+        margin-top: 14px;
+      }
+      body.clarity-ui .matrix-panel {
+        max-width: var(--battle-layout-width);
+        padding: 16px 18px 18px;
+      }
+      body.clarity-ui .matrix-head {
+        margin-bottom: 12px;
+      }
+      body.clarity-ui .matrix-head h2 {
+        font-size: 18px;
+      }
+      body.clarity-ui .matrix-actions {
+        gap: 8px;
+      }
+      body.clarity-ui .matrix-reset {
+        min-height: 30px;
+        padding: 4px 11px;
+        font-size: 11.5px;
+      }
+      body.clarity-ui .matrix-overview {
+        display: grid;
+        grid-template-columns: minmax(410px, .9fr) minmax(0, 1.1fr);
+        align-items: center;
+        gap: 26px;
+        min-height: 216px;
+        padding: 6px 8px 14px;
+      }
+      body.clarity-ui .matrix-grid {
+        grid-template-columns: 48px 62px repeat(3, 84px);
+        grid-template-rows: 30px 30px repeat(3, 38px);
+        gap: 5px;
+        transform: translateX(-26px);
+      }
+      body.clarity-ui .matrix-axis,
+      body.clarity-ui .matrix-cell {
+        min-height: 38px;
+      }
+      body.clarity-ui .matrix-axis {
+        font-size: 13px;
+      }
+      body.clarity-ui .matrix-cell {
+        font-size: 13px;
+      }
+      body.clarity-ui .matrix-symbol {
+        width: 12px;
+        font-size: 11px;
+      }
+      body.clarity-ui .matrix-swing {
+        right: 4px;
+        width: 18px;
+        height: 18px;
+        min-height: 18px;
+        font-size: 11px;
+      }
+      body.clarity-ui .matrix-explanation {
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 68ch;
+        margin: 0;
+        padding: 14px 4px 14px 24px;
+        border-top: 0;
+        border-left: 1px solid color-mix(in srgb, var(--line) 68%, transparent);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      body.clarity-ui .matrix-breakdown {
+        gap: 6px;
+        margin-top: 10px;
+      }
+      body.clarity-ui .matrix-breakdown span {
+        padding: 4px 7px;
+        font-size: 11.5px;
+      }
+      body.clarity-ui .battle-review {
+        margin-top: 4px;
+        padding: 18px 4px 0;
+        border-top-color: color-mix(in srgb, var(--line) 72%, transparent);
+      }
+      body.clarity-ui .battle-review-head {
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      body.clarity-ui .battle-review-head h3 {
+        font-size: 17px;
+      }
+      body.clarity-ui .battle-review-head span {
+        font-size: 12px;
+      }
+      body.clarity-ui .battle-review-metrics {
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      body.clarity-ui .battle-review-metric {
+        min-height: 78px;
+        padding: 11px 13px;
+      }
+      body.clarity-ui .battle-review-metric-value {
+        gap: 8px;
+        margin-top: 5px;
+      }
+      body.clarity-ui .battle-review-metric-sprite {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+      body.clarity-ui .battle-review-metric span,
+      body.clarity-ui .battle-review-section-title {
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      body.clarity-ui .battle-review-metric strong {
+        font-size: 17px;
+        font-weight: 800;
+      }
+      body.clarity-ui .battle-review-metric small {
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.clarity-ui .battle-review-section + .battle-review-section {
+        margin-top: 16px;
+      }
+      body.clarity-ui .win-condition-list,
+      body.clarity-ui .battle-review-list {
+        gap: 7px;
+        margin-top: 8px;
+      }
+      body.clarity-ui .win-condition-row {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        gap: 10px;
+        min-height: 58px;
+        padding: 9px 11px;
+      }
+      body.clarity-ui .win-condition-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+      }
+      body.clarity-ui .win-condition-copy strong {
+        font-size: 13.5px;
+        font-weight: 800;
+      }
+      body.clarity-ui .win-condition-copy small {
+        max-width: 72ch;
+        margin-top: 3px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      body.clarity-ui .win-condition-action {
+        min-height: 32px;
+        padding: 5px 10px;
+        font-size: 11px;
+      }
+      body.clarity-ui .battle-review-swing {
+        margin-top: 8px;
+        padding: 10px 12px;
+      }
+      body.clarity-ui .battle-review-swing strong {
+        font-size: 13.5px;
+      }
+      body.clarity-ui .battle-review-swing small {
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      body.clarity-ui .battle-review-item {
+        grid-template-columns: 112px minmax(0, 1fr) auto;
+        gap: 12px;
+        min-height: 62px;
+        padding: 10px 12px;
+        border-left-width: 4px;
+      }
+      body.clarity-ui .battle-review-label {
+        font-size: 11px;
+        font-weight: 800;
+      }
+      body.clarity-ui .battle-review-copy strong {
+        font-size: 13.5px;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      body.clarity-ui .battle-review-copy small {
+        max-width: 72ch;
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      body.clarity-ui .battle-review-turn {
+        font-size: 11px;
+      }
+      body.clarity-ui .inspector-panel {
+        margin-top: 16px;
+        padding: 18px 4px 0;
+      }
+      body.clarity-ui .inspector-title strong {
+        font-size: 15px;
+      }
+      body.clarity-ui .inspector-title span {
+        margin-top: 3px;
+        font-size: 12px;
+      }
+      body.clarity-ui .inspector-pokemon,
+      body.clarity-ui .inspector-pokemon:last-child {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 10px;
+      }
+      body.clarity-ui .inspector-pokemon:last-child {
+        grid-template-columns: minmax(0, 1fr) 56px;
+      }
+      body.clarity-ui .inspector-pokemon img {
+        width: 56px;
+        height: 56px;
+      }
+      body.clarity-ui .inspector-pokemon strong {
+        font-size: 14px;
+      }
+      body.clarity-ui .inspector-pokemon small {
+        font-size: 11px;
+      }
+      body.clarity-ui .inspector-scenarios {
+        gap: 8px;
+      }
+      body.clarity-ui .inspector-scenario {
+        grid-template-columns: 60px minmax(0, 1fr) auto;
+        gap: 11px;
+        padding: 10px 12px;
+      }
+      body.clarity-ui .inspector-result strong {
+        font-size: 13.5px;
+      }
+      body.clarity-ui .inspector-metrics span {
+        font-size: 11.5px;
+      }
+      body.clarity-ui .inspector-scenario button {
+        min-height: 31px;
+        font-size: 11px;
+      }
+    }
+
     @media (max-width: 900px) {
       header {
         align-items: stretch;
@@ -6999,7 +7379,6 @@
     <div class="setup">
       <section class="trainer-card a">
         <div class="control-stack">
-          <div class="section-kicker setup-kicker">Setup</div>
           <div class="pokemon-picker" data-prefix="p1">
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
@@ -7110,7 +7489,6 @@
       </section>
       <section class="trainer-card b">
         <div class="control-stack">
-          <div class="section-kicker setup-kicker">Setup</div>
           <div class="pokemon-picker" data-prefix="p2">
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
@@ -7284,8 +7662,10 @@
             <button id="matrixReset" class="secondary matrix-reset" type="button">Reset</button>
           </div>
         </div>
-        <div id="shieldMatrix" class="matrix-grid"></div>
-        <div id="matrixExplanation" class="matrix-explanation"></div>
+        <div class="matrix-overview">
+          <div id="shieldMatrix" class="matrix-grid"></div>
+          <div id="matrixExplanation" class="matrix-explanation"></div>
+        </div>
         <section id="battleReview" class="battle-review" aria-live="polite" hidden></section>
         <div id="matchupInspector" class="inspector-panel" aria-live="polite"></div>
       </section>
@@ -12467,11 +12847,13 @@
         ["defense", c.defense, maxDefense, "var(--stat-defense)", bulk],
         ["stamina", c.maxHp, maxHp, "var(--stat-stamina)", null]
       ];
+      const hasUsefulStatAlert = rows.some(([, , , , alert]) => alert && !/^No\s/.test(alert.label || ""));
       $(`${prefix}StatBars`).innerHTML = rows.map(([name, value, max, color, alert]) => {
         const pct = Math.max(4, Math.min(100, Math.round(value / max * 100)));
         const display = name === "stamina" ? Math.round(value) : value.toFixed(1);
-        const badge = alert ? `<span class="stat-alert" title="${escapeHtml(alert.title)}">${escapeHtml(alert.label)}</span>` : `<span class="stat-alert empty">-</span>`;
-        return `<div class="stat-row"><span>${name}</span><strong>${display}</strong><div class="stat-track"><div class="stat-fill" style="width:${pct}%;background:${color}"></div></div>${badge}</div>`;
+        const usefulAlert = alert && !/^No\s/.test(alert.label || "") ? alert : null;
+        const badge = usefulAlert ? `<span class="stat-alert" title="${escapeHtml(usefulAlert.title)}">${escapeHtml(usefulAlert.label)}</span>` : `<span class="stat-alert empty">-</span>`;
+        return `<div class="stat-row${hasUsefulStatAlert ? "" : " no-alert-column"}"><span>${name}</span><strong>${display}</strong><div class="stat-track"><div class="stat-fill" style="width:${pct}%;background:${color}"></div></div>${badge}</div>`;
       }).join("");
       const product = Math.round(c.attack * c.defense * c.maxHp / 1000);
       $(`${prefix}Overall`).innerHTML = `overall <strong>${product}</strong>`;
@@ -12576,13 +12958,16 @@
       box.hidden = false;
       const metrics = review.metrics.map(metric => {
         const action = metric.actionReference;
-        const tag = action?.type === "preview-hp" ? "button" : "div";
-        const attributes = action?.type === "preview-hp"
-          ? ` type="button" data-hp-preview data-hp-side="${escapeHtml(action.ref.side)}" data-starting-hp="${Number(action.ref.startingHp)}"`
-          : "";
+        const isHpPreview = action?.type === "preview-hp" && action.ref;
+        const isEnergyPreview = action?.type === "preview" && action.ref;
+        const tag = isHpPreview || isEnergyPreview ? "button" : "div";
+        const attributes = isHpPreview
+          ? ` type="button" data-hp-preview data-hp-side="${escapeHtml(action.ref.side)}" data-starting-hp="${Number(action.ref.startingHp)}" title="Preview this HP swing"`
+          : isEnergyPreview
+            ? ` type="button" data-energy-preview data-energy-side="${escapeHtml(action.ref.side)}" data-fast-moves="${Number(action.ref.fastMoveCount || 0)}" data-line-type="${escapeHtml(action.ref.lineType || "mixed")}" title="Preview this energy swing"`
+            : "";
         return `<${tag} class="battle-review-metric"${attributes}><span>${escapeHtml(metric.label)}</span><div class="battle-review-metric-value">${metric.side ? `<img class="battle-review-metric-sprite" data-review-metric-side="${metric.side}" alt="${escapeHtml(metric.pokemonName)}">` : ""}<strong>${escapeHtml(metric.display)}</strong></div>${metric.note ? `<small>${escapeHtml(metric.note)}</small>` : ""}</${tag}>`;
       }).join("");
-      const winConditions = winConditionListHtml(review.winConditions, `${$("p1Shields").value}-${$("p2Shields").value}`);
       const keyMoments = review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
           <span class="battle-review-label">${escapeHtml(item.label)}</span>
           <span class="battle-review-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.explanation)}</small></span>
@@ -12596,7 +12981,6 @@
         : "";
       box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div>
         <div class="battle-review-metrics">${metrics}</div>
-        <div class="battle-review-section"><span class="battle-review-section-title">Win Conditions</span>${winConditions}</div>
         ${keyMoments ? `<div class="battle-review-section"><span class="battle-review-section-title">Key Moments</span><div class="battle-review-list">${keyMoments}</div></div>` : ""}
         ${swingPoint}${developerConditions}`;
       box.querySelectorAll("[data-review-event]").forEach(button => {
@@ -12610,7 +12994,16 @@
         const action = event.currentTarget;
         runHpSwingScenario(selectedAShields, selectedBShields, action.dataset.hpSide, Number(action.dataset.startingHp));
       });
-      bindWinConditionActions(box);
+      box.querySelector("[data-energy-preview]")?.addEventListener("click", event => {
+        const action = event.currentTarget;
+        runMatrixScenario(
+          selectedAShields,
+          selectedBShields,
+          action.dataset.energySide,
+          Number(action.dataset.fastMoves || 0),
+          action.dataset.lineType || "mixed"
+        );
+      });
     }
 
     function scheduleHpSwingAnalysis(signature, key, aShields, bShields, baselineResult) {
