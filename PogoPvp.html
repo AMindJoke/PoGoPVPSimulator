@@ -18,6 +18,8 @@
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js"></script>
+  <script src="src/analysis/pokemon-analysis-view-model.js"></script>
+  <script src="src/ui/pokemon-analysis.js"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -123,11 +125,12 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      gap: 16px;
-      padding: 14px 18px;
+      gap: 24px;
+      padding: 17px 22px;
       background: #102532;
       color: white;
       border-bottom: 2px solid #d6ad39;
+      box-shadow: 0 5px 18px rgba(16, 37, 50, .12);
     }
     body[data-theme="neo"] header {
       background: rgba(11, 15, 28, .94);
@@ -135,27 +138,33 @@
       border-bottom-color: var(--accent);
       box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
-    h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: 0; }
+    h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: 0; white-space: nowrap; }
     .app-tabs {
       margin-left: auto;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px;
-      border: 1px solid rgba(255,255,255,.28);
-      border-radius: 999px;
-      background: rgba(255,255,255,.10);
+      gap: 3px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,.20);
+      border-radius: 8px;
+      background: rgba(255,255,255,.07);
     }
     .app-tabs button {
-      min-height: 30px;
-      padding: 5px 13px;
+      min-height: 38px;
+      padding: 8px 15px;
       border: 0;
-      border-radius: 999px;
+      border-radius: 5px;
       background: transparent;
       color: rgba(255,255,255,.82);
       box-shadow: none;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 800;
+      transition: background-color .18s ease, color .18s ease, transform .18s ease;
+    }
+    .app-tabs button:hover {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      transform: translateY(-1px);
     }
     .app-tabs button.active {
       background: #fff;
@@ -174,10 +183,573 @@
       display: grid;
       gap: 14px;
     }
-    body[data-view="simulator"] #metaView,
-    body[data-view="meta"] #simulatorView {
-      display: none;
+    #simulatorView, #metaView, #analysisView, #teamBuilderView { display: none; }
+    body[data-view="simulator"] #simulatorView,
+    body[data-view="meta"] #metaView,
+    body[data-view="analysis"] #analysisView,
+    body[data-view="team-builder"] #teamBuilderView { display: grid; }
+
+    .analysis-view {
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      gap: 12px;
     }
+    #analysisView section {
+      width: 100%;
+      max-width: none;
+    }
+    #analysisView .analysis-section-head {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 0 11px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      box-shadow: none;
+    }
+    .analysis-page-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(100%, 1060px);
+      margin: 0 auto;
+      padding: 8px 2px 2px;
+    }
+    .analysis-page-head-copy span {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .analysis-page-head h2 { margin: 3px 0 0; font-size: 25px; }
+    .analysis-picker { display: grid; grid-template-columns: 1fr; align-items: stretch; gap: 4px; min-width: 250px; }
+    .analysis-picker span { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .analysis-picker select { min-height: 39px; font-weight: 750; }
+    .analysis-content { display: grid; gap: 12px; width: min(100%, 1060px); margin: 0 auto; }
+    .analysis-hero {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      grid-template-columns: 190px minmax(260px, 1fr) minmax(270px, 310px);
+      grid-template-areas: "sprite identity rating";
+      gap: 28px;
+      min-height: 292px;
+      padding: 26px 32px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: var(--panel-shadow);
+    }
+    .analysis-hero.single-type {
+      background: var(--panel);
+    }
+    .analysis-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 6px;
+      z-index: 2;
+      background: linear-gradient(90deg, var(--hero-type-a) 0 50%, var(--hero-type-b) 50% 100%);
+    }
+    .analysis-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(110deg, color-mix(in srgb, var(--hero-type-a) 4%, transparent) 0 49.8%, color-mix(in srgb, var(--hero-type-b) 4%, transparent) 50.2% 100%);
+      pointer-events: none;
+    }
+    .analysis-hero-sprite-wrap { grid-area: sprite; display: grid; place-items: center; }
+    .analysis-hero-sprite { width: 180px; height: 180px; object-fit: contain; filter: drop-shadow(0 13px 10px rgba(0,0,0,.3)); }
+    .analysis-hero-identity { grid-area: identity; align-self: center; min-width: 0; }
+    .analysis-hero-kicker { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+    .analysis-hero-title { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+    .analysis-hero-title > span { color: var(--muted); font-size: 14px; font-weight: 850; }
+    .analysis-hero h2 { margin: 7px 0 10px; font-size: clamp(32px, 4vw, 44px); line-height: 1; }
+    .analysis-hero-types { display: flex; gap: 6px; flex-wrap: wrap; }
+    .analysis-type-chip { padding: 5px 11px; border: 1px solid color-mix(in srgb, var(--type-color) 78%, #fff); border-radius: 999px; background: var(--type-color); color: var(--type-text); font-size: 13px; font-weight: 900; box-shadow: inset 0 1px 0 rgba(255,255,255,.24); }
+    .analysis-role { display: inline-block; margin-top: 16px; padding-left: 10px; border-left: 3px solid var(--hero-type-a); font-size: 14px; font-weight: 800; }
+    .analysis-hero-shield-profiles { display: flex; gap: 7px; margin-top: 17px; }
+    .analysis-hero-shield-profiles div { min-width: 82px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--subtle); }
+    .analysis-hero-shield-profiles small, .analysis-hero-shield-profiles strong { display: block; }
+    .analysis-hero-shield-profiles small { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .analysis-hero-shield-profiles strong { margin-top: 2px; font-size: 14px; }
+    .analysis-hero-metrics { grid-area: metrics; align-self: center; display: flex; gap: 8px; }
+    .analysis-hero-metrics div { flex: 1; min-width: 0; padding: 14px 16px; border: 1px solid rgba(255,255,255,.24); border-radius: 6px; background: rgba(8,16,29,.35); backdrop-filter: blur(5px); }
+    .analysis-hero-metrics small, .analysis-hero-moves > small { display: block; margin-bottom: 3px; color: rgba(255,255,255,.72); font-size: 10px; font-weight: 850; text-transform: uppercase; }
+    .analysis-hero-metrics strong { font-size: 27px; }
+    .analysis-hero-moves { grid-area: moves; align-self: end; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.24); }
+    .analysis-hero-moves > div { display: flex; gap: 7px; flex-wrap: wrap; }
+    .analysis-hero-move { display: grid; min-width: 150px; padding: 9px 12px; border-left: 4px solid var(--move-color); border-radius: 4px; background: rgba(8,16,29,.48); font-size: 13px; font-weight: 850; }
+    .analysis-hero-move small { color: rgba(255,255,255,.65); font-size: 8px; text-transform: uppercase; }
+    .analysis-rating-panel {
+      grid-area: rating;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--subtle);
+      color: var(--ink);
+      box-shadow: 0 12px 24px rgba(8,16,29,.18);
+    }
+    .analysis-rating-panel > small { color: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; }
+    .analysis-rating-panel > div { display: flex; align-items: baseline; gap: 8px; margin-top: 7px; }
+    .analysis-rating-panel strong { font-size: 38px; line-height: 1; }
+    .analysis-rating-panel div span { color: var(--muted); font-size: 10px; font-weight: 800; }
+    .analysis-rating-panel .analysis-rating-track { display: block; height: 6px; margin: 18px 0 13px; overflow: hidden; border-radius: 4px; background: var(--line); }
+    .analysis-rating-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #8b5cf6)); }
+    .analysis-rating-panel p { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    .analysis-rating-panel p b { color: var(--ink); }
+    .analysis-document {
+      width: min(100%, 1060px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+    .analysis-chapter {
+      grid-column: span 6;
+      min-width: 0;
+      padding: 21px 22px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      box-shadow: 0 5px 14px rgba(18, 37, 51, .055);
+    }
+    .analysis-chapter.analysis-span-full { grid-column: 1 / -1; }
+    .analysis-quick-facts {
+      grid-column: 1 / -1;
+      padding: 17px 20px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      box-shadow: 0 5px 14px rgba(18,37,51,.05);
+    }
+    .analysis-quick-title { display: flex; align-items: center; gap: 7px; margin-bottom: 13px; color: var(--ink); font-size: 11px; text-transform: uppercase; }
+    .analysis-quick-title > span { color: var(--accent); font-size: 16px; }
+    .analysis-quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .analysis-quick-grid > div { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: center; gap: 10px; min-width: 0; padding: 5px 16px; border-left: 1px solid var(--line); }
+    .analysis-quick-grid > div:first-child { padding-left: 0; border-left: 0; }
+    .analysis-fact-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 16%, var(--subtle)); color: var(--accent); font-size: 10px; font-weight: 900; }
+    .analysis-quick-grid small, .analysis-quick-grid strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-quick-grid small { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .analysis-quick-grid strong { margin-top: 2px; font-size: 12px; }
+    .analysis-chapter .analysis-section-head { position: relative; }
+    .analysis-chapter .analysis-section-head::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 42px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .analysis-section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .analysis-section {
+      min-width: 0;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-top: 3px solid color-mix(in srgb, var(--accent) 68%, var(--line));
+      border-radius: 7px;
+      background: var(--panel);
+      box-shadow: 0 7px 18px rgba(18, 37, 51, .07);
+    }
+    .analysis-section-wide { grid-column: 1 / -1; }
+    .analysis-section-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
+    .analysis-section-kicker { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .analysis-section h3, .analysis-chapter h3 { margin: 3px 0 0; font-size: 19px; }
+    .analysis-status { flex: none; padding: 3px 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 9px; font-weight: 850; }
+    .analysis-section-body { padding-top: 13px; }
+    .analysis-section-body p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .analysis-section-body p strong { color: var(--ink); }
+    .analysis-inline-facts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 13px; }
+    .analysis-inline-facts span { padding: 4px 7px; border-radius: 4px; background: var(--subtle); color: var(--ink); font-size: 10px; font-weight: 800; }
+    .analysis-move-list { display: grid; gap: 7px; margin: 0 0 11px; padding: 0; list-style: none; }
+    .analysis-move-list li { display: grid; grid-template-columns: 9px minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 9px 11px; background: var(--subtle); border-radius: 4px; }
+    .analysis-move-dot { width: 8px; height: 28px; border-radius: 3px; background: var(--move-color); }
+    .analysis-move-list small, .analysis-move-list strong { display: block; }
+    .analysis-move-list small { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .analysis-move-list strong { font-size: 13px; }
+    .analysis-move-list.featured li { min-height: 56px; border: 1px solid var(--line); background: var(--panel); box-shadow: 0 2px 6px rgba(18,37,51,.04); }
+    .analysis-move-list.featured li > b { padding: 4px 7px; border-radius: 999px; background: #dff4e7; color: #177346; font-size: 9px; }
+    .analysis-future-note { font-size: 11px !important; }
+    .analysis-movepool { margin-top: 12px; border-top: 1px solid var(--line); }
+    .analysis-movepool-items { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 5px; }
+    .analysis-movepool-pill { display: grid; padding: 6px 9px; border: 1px solid var(--line); border-left: 4px solid var(--move-color); border-radius: 4px; background: var(--subtle); color: var(--ink); font-size: 11px; font-weight: 850; }
+    .analysis-movepool-pill small { color: var(--muted); font-size: 8px; font-weight: 700; text-transform: uppercase; }
+    .analysis-movepool-empty { display: block; padding: 10px; color: var(--muted); font-size: 10px; }
+    .analysis-data-slot { display: inline-block; margin-top: 11px; padding: 3px 6px; border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 4px; color: var(--muted); font-size: 8px; font-weight: 800; text-transform: uppercase; }
+    .analysis-placeholder-icon { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-weight: 900; }
+    .analysis-placeholder-icon.win { background: #168f82; }.analysis-placeholder-icon.close { background: #66788c; }.analysis-placeholder-icon.loss { background: #c04b73; }
+    .analysis-key-matchups { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .analysis-matchup-group { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--subtle); }
+    .analysis-matchup-group-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: 11px; text-transform: uppercase; }
+    .analysis-matchup-group-head .analysis-placeholder-icon { width: 22px; height: 22px; font-size: 11px; }
+    .analysis-matchup-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 60px; padding: 7px 5px; border-bottom: 1px solid color-mix(in srgb, var(--line) 68%, transparent); }
+    .analysis-matchup-row:last-child { border-bottom: 0; }
+    .analysis-matchup-row img { width: 44px; height: 44px; object-fit: contain; }
+    .analysis-matchup-copy { min-width: 0; }
+    .analysis-matchup-copy strong, .analysis-matchup-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-matchup-copy strong { font-size: 12px; }.analysis-matchup-copy small { margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .analysis-matchup-copy > span { display: flex; gap: 4px; margin-top: 4px; }
+    .analysis-matchup-copy i { padding: 2px 5px; border-radius: 999px; background: var(--type-color); color: var(--type-text); font-size: 8px; font-style: normal; font-weight: 850; }
+    .analysis-matchup-copy em { display: block; overflow: hidden; margin-top: 5px; color: var(--muted); font-size: 9px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-matchup-result-copy { display: grid; justify-items: end; gap: 3px; }
+    .analysis-matchup-result-copy > small { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+    .analysis-matchup-score { min-width: 54px; padding: 6px 8px; border-radius: 999px; color: #fff; text-align: center; font-size: 11px; font-weight: 900; }
+    .analysis-matchup-score.win { background: #168f82; }.analysis-matchup-score.loss { background: #c04b73; }
+    .analysis-matchup-empty { display: block; padding: 14px 4px; color: var(--muted); font-size: 10px; }
+    .analysis-iv-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 12px; }
+    .analysis-iv-profiles { display: grid; gap: 5px; }
+    .analysis-iv-profiles button { display: grid; gap: 3px; min-height: 56px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--subtle); color: var(--ink); text-align: left; box-shadow: none; opacity: 1; }
+    .analysis-iv-profiles button.active { border-color: color-mix(in srgb, var(--accent) 58%, var(--line)); background: color-mix(in srgb, var(--accent) 10%, var(--subtle)); }
+    .analysis-iv-profiles strong { font-size: 12px; }.analysis-iv-profiles span { color: var(--muted); font-size: 10px; }
+    .analysis-iv-canvas { min-height: 205px; padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--subtle); }
+    .analysis-iv-canvas > strong { display: block; margin: 17px 0 5px; font-size: 17px; }
+    .analysis-iv-purpose { margin-top: 2px !important; color: var(--muted); font-size: 11px !important; }
+    .analysis-iv-impact-summary { margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--panel); }
+    .analysis-iv-impact-summary > small { color: var(--muted); font-size: 8px; font-weight: 850; text-transform: uppercase; }
+    .analysis-iv-impact-summary ul { display: grid; gap: 4px; margin: 6px 0 0; padding-left: 16px; color: var(--ink); font-size: 10px; }
+    .analysis-threshold-list { display: grid; gap: 5px; margin-top: 12px; }
+    .analysis-threshold-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 45px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--subtle); }
+    .analysis-threshold-row span, .analysis-threshold-row strong, .analysis-threshold-row small { display: block; min-width: 0; }
+    .analysis-threshold-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }.analysis-threshold-row small { margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .analysis-threshold-row > b { padding: 4px 7px; border-radius: 4px; background: var(--panel); color: var(--accent); font-size: 10px; }
+    .analysis-hero-scout-copy { display: grid !important; gap: 5px !important; margin-top: 15px !important; padding: 12px 0 0; border-top: 1px solid var(--line); }
+    .analysis-hero-scout-copy small { color: var(--muted); font-size: 8px; font-weight: 850; text-transform: uppercase; }
+    .analysis-hero-scout-copy strong { font-size: 11px; line-height: 1.45; }
+    .analysis-quick-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .analysis-quick-grid > div:nth-child(n) { min-height: 46px; }
+    .analysis-identity-summary { padding-left: 13px; border-left: 4px solid var(--accent); }
+    .analysis-identity-summary strong { display: block; font-size: 17px; }
+    .analysis-identity-summary p { margin-top: 5px; }
+    .analysis-identity-traits { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+    .analysis-identity-traits span { padding: 6px 9px; border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--accent) 8%, var(--subtle)); color: var(--ink); font-size: 10px; font-weight: 850; }
+    details.analysis-movepool { overflow: hidden; }
+    .analysis-movepool summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 2px 3px; color: var(--ink); cursor: pointer; font-size: 11px; }
+    .analysis-movepool summary span { color: var(--accent); font-size: 13px; transition: transform .18s ease; }
+    .analysis-movepool[open] summary span { transform: rotate(180deg); }
+    .analysis-matchup-row { min-height: 82px; }
+    .analysis-matchup-copy q { display: block; overflow: hidden; margin-top: 5px; color: var(--ink); font-size: 9px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-matchup-copy q::before, .analysis-matchup-copy q::after { content: none; }
+    .analysis-iv-build-meta { display: flex; gap: 6px; margin: 8px 0 4px; }
+    .analysis-iv-build-meta span { padding: 4px 7px; border-radius: 4px; background: var(--panel); color: var(--muted); font-size: 9px; font-weight: 800; }
+    .analysis-iv-canvas { min-height: 180px; }
+    .analysis-build-thresholds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    .analysis-build-thresholds > div { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--subtle); }
+    .analysis-build-thresholds header { display: block; padding: 0 0 9px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--ink); box-shadow: none; }
+    .analysis-build-thresholds header strong, .analysis-build-thresholds header small { display: block; }
+    .analysis-build-thresholds header strong { font-size: 11px; }.analysis-build-thresholds header small { margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .analysis-threshold-row.breakpoint > b { color: #b06012; }.analysis-threshold-row.bulkpoint > b { color: #2478b8; }
+    .analysis-play-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .analysis-play-item { min-width: 0; padding: 14px 15px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; background: var(--subtle); }
+    .analysis-play-item.warning { border-left-color: #c04b5e; }
+    .analysis-play-item small, .analysis-play-item strong { display: block; }
+    .analysis-play-item small { color: var(--muted); font-size: 9px; font-weight: 850; text-transform: uppercase; }
+    .analysis-play-item strong { margin-top: 6px; font-size: 12px; line-height: 1.45; }
+
+    /* Analysis readability: compact, but never miniature. */
+    .analysis-view { font-size: 13px; }
+    body:not([data-theme="dark"]):not([data-theme="neo"]) .analysis-view { --muted: #465465; }
+    body[data-theme="dark"] .analysis-view { --muted: #bdc7d4; }
+    body[data-theme="neo"] .analysis-view { --muted: #b8c3de; }
+    .analysis-page-head-copy span,
+    .analysis-hero-kicker { font-size: 12px; letter-spacing: .05em; }
+    .analysis-picker span { font-size: 12px; }
+    .analysis-hero-shield-profiles small { font-size: 10.5px; font-weight: 750; letter-spacing: .02em; }
+    .analysis-hero-shield-profiles strong { font-size: 15px; }
+    .analysis-rating-panel > small { font-size: 11px; letter-spacing: .02em; }
+    .analysis-rating-panel div span { font-size: 11px; }
+    .analysis-rating-panel p { font-size: 12px; line-height: 1.45; }
+    .analysis-hero-scout-copy small { font-size: 10px; letter-spacing: .02em; }
+    .analysis-hero-scout-copy strong { font-size: 13px; }
+    .analysis-quick-title { font-size: 12px; }
+    .analysis-quick-grid small { font-size: 10.5px; letter-spacing: .02em; }
+    .analysis-quick-grid strong { font-size: 13px; }
+    .analysis-section-kicker { font-size: 11px; letter-spacing: .05em; }
+    .analysis-status { font-size: 10px; }
+    .analysis-inline-facts span { font-size: 11px; }
+    .analysis-move-list small { font-size: 10.5px; letter-spacing: .02em; }
+    .analysis-move-list strong { font-size: 14px; }
+    .analysis-move-list.featured li > b { font-size: 10px; }
+    .analysis-future-note { font-size: 12px !important; }
+    .analysis-movepool summary { font-size: 12px; }
+    .analysis-movepool-pill { font-size: 12px; }
+    .analysis-movepool-pill small { font-size: 9.5px; }
+    .analysis-data-slot { font-size: 10px; }
+    .analysis-identity-traits span { font-size: 11px; }
+    .analysis-matchup-group-head { font-size: 12px; }
+    .analysis-matchup-row {
+      grid-template-columns: 50px minmax(0, 1fr) auto;
+      min-height: 96px;
+    }
+    .analysis-matchup-row img { width: 50px; height: 50px; }
+    .analysis-matchup-copy strong { font-size: 14px; }
+    .analysis-matchup-copy small { font-size: 10.5px; }
+    .analysis-matchup-copy i { font-size: 10px; }
+    .analysis-matchup-copy em { font-size: 10.5px; }
+    .analysis-matchup-copy q {
+      display: -webkit-box;
+      font-size: 11.5px;
+      line-height: 1.4;
+      white-space: normal;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .analysis-matchup-result-copy > small { font-size: 9.5px; }
+    .analysis-matchup-score { font-size: 13px; }
+    .analysis-iv-profiles strong { font-size: 13px; }
+    .analysis-iv-profiles span { font-size: 11px; }
+    .analysis-iv-purpose { font-size: 12px !important; }
+    .analysis-iv-impact-summary > small { font-size: 10px; letter-spacing: .02em; }
+    .analysis-iv-impact-summary ul { font-size: 12px; line-height: 1.4; }
+    .analysis-iv-build-meta span { font-size: 10.5px; }
+    .analysis-build-thresholds header strong { font-size: 12.5px; }
+    .analysis-build-thresholds header small { font-size: 10.5px; }
+    .analysis-threshold-row strong { font-size: 12px; }
+    .analysis-threshold-row small { font-size: 10.5px; }
+    .analysis-threshold-row > b { font-size: 11px; }
+    .analysis-play-item small { font-size: 10.5px; letter-spacing: .02em; }
+    .analysis-play-item strong { font-size: 13px; }
+    /* Pokemon Analysis dossier */
+    .analysis-view {
+      --analysis-xs: 4px;
+      --analysis-sm: 8px;
+      --analysis-md: 12px;
+      --analysis-lg: 18px;
+      --analysis-section: 28px;
+      --analysis-radius: 7px;
+      --analysis-surface: var(--panel);
+      --analysis-subtle: color-mix(in srgb, var(--subtle) 76%, var(--panel));
+      width: min(100%, 1120px);
+      gap: var(--analysis-md);
+      font-size: 14px;
+    }
+    .analysis-page-head,
+    .analysis-content { width: min(100%, 1080px); }
+    .analysis-page-head { align-items: center; min-height: 58px; padding: var(--analysis-sm) 0; }
+    .analysis-page-head-copy span,
+    .analysis-eyebrow,
+    .analysis-card-head span,
+    .analysis-technical summary small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .analysis-page-head h2 { margin-top: 2px; font-size: 24px; letter-spacing: 0; }
+    .analysis-page-actions { display: flex; align-items: end; justify-content: flex-end; gap: var(--analysis-sm); }
+    .analysis-page-actions > button { min-height: 40px; }
+    .analysis-picker { min-width: 260px; gap: var(--analysis-xs); }
+    .analysis-picker span { font-size: 11px; }
+    .analysis-picker select { min-height: 40px; border-radius: 6px; font-size: 13px; }
+    .analysis-league-badge { display: grid; place-items: center; min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--analysis-subtle); color: var(--ink); font-size: 12px; font-weight: 850; }
+    .analysis-content { gap: var(--analysis-lg); }
+    .analysis-dossier-hero {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr) 250px;
+      gap: var(--analysis-section);
+      align-items: center;
+      min-height: 252px;
+      padding: 24px 28px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--analysis-radius);
+      background: var(--analysis-surface);
+      box-shadow: 0 10px 28px rgba(18,37,51,.08);
+    }
+    .analysis-dossier-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      background: linear-gradient(180deg, var(--hero-type-a) 0 50%, var(--hero-type-b) 50% 100%);
+    }
+    .analysis-dossier-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(112deg, color-mix(in srgb, var(--hero-type-a) 9%, transparent) 0 37%, transparent 48% 55%, color-mix(in srgb, var(--hero-type-b) 7%, transparent) 70% 100%);
+    }
+    .analysis-dossier-hero.single-type::after { background: linear-gradient(112deg, color-mix(in srgb, var(--hero-type-a) 10%, transparent), transparent 62%); }
+    .analysis-hero-sprite-wrap { display: grid; place-items: center; }
+    .analysis-hero-sprite { width: 164px; height: 164px; object-fit: contain; filter: drop-shadow(0 12px 10px rgba(0,0,0,.22)); }
+    .analysis-hero-main { min-width: 0; }
+    .analysis-hero-title { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+    .analysis-hero-title h2 { min-width: 0; margin: 0; font-size: clamp(29px, 4vw, 40px); line-height: 1.08; overflow-wrap: anywhere; }
+    .analysis-rank-badge { flex: none; padding: 4px 8px; border-radius: 5px; background: var(--ink); color: var(--panel); font-size: 13px; font-weight: 900; }
+    .analysis-hero-types { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+    .analysis-type-chip { display: inline-flex; align-items: center; padding: 4px 9px; border: 0; border-radius: 999px; background: var(--type-color); color: var(--type-text); font-size: 11px; font-style: normal; font-weight: 900; line-height: 1.2; box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
+    .analysis-hero-role { display: block; margin-top: 13px; font-size: 15px; }
+    .analysis-hero-main > p { max-width: 560px; margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .analysis-hero-loadout { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .analysis-move-chip { position: relative; display: grid; min-width: 0; padding: 8px 11px 8px 14px; overflow: hidden; border: 1px solid var(--line); border-radius: 5px; background: var(--analysis-subtle); color: var(--ink); }
+    .analysis-move-chip::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--move-color); }
+    .analysis-move-chip small { color: var(--muted); font-size: 10px; text-transform: none; }
+    .analysis-move-chip strong { margin-top: 1px; font-size: 14px; }
+    .analysis-move-chip > span { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .analysis-move-chip.compact { padding: 6px 9px 6px 12px; }
+    .analysis-move-chip.compact small { display: none; }
+    .analysis-move-chip.compact strong { font-size: 12px; }
+    .analysis-move-chip.compact > span { display: none; }
+    .analysis-rating-panel {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--panel) 88%, var(--subtle));
+      color: var(--ink);
+      box-shadow: none;
+    }
+    .analysis-rating-value { display: flex; align-items: baseline; gap: 5px; margin-top: 5px; }
+    .analysis-rating-value strong { font-size: 36px; line-height: 1; }
+    .analysis-rating-value span { color: var(--muted); font-size: 12px; font-weight: 750; }
+    .analysis-rating-panel .analysis-rating-track { height: 6px; margin: 13px 0; }
+    .analysis-rating-panel dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+    .analysis-rating-panel dl div { padding: 7px 0; border-top: 1px solid var(--line); }
+    .analysis-rating-panel dt { color: var(--muted); font-size: 10px; }
+    .analysis-rating-panel dd { margin: 2px 0 0; font-size: 13px; font-weight: 850; }
+    .analysis-primary-action { min-height: 38px; margin-top: 12px; border-radius: 6px; font-weight: 850; }
+    .analysis-dossier-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--analysis-md); }
+    .analysis-snapshot,
+    .analysis-card,
+    .analysis-technical { grid-column: 1 / -1; min-width: 0; border: 1px solid var(--line); border-radius: var(--analysis-radius); background: var(--analysis-surface); box-shadow: 0 5px 15px rgba(18,37,51,.05); }
+    .analysis-snapshot { padding: 14px 18px; }
+    .analysis-snapshot > header { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+    .analysis-snapshot > header span { color: var(--accent); }
+    .analysis-snapshot h3 { margin: 0; font-size: 13px; }
+    .analysis-snapshot > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .analysis-snapshot article { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; gap: 9px; min-width: 0; padding: 3px 14px; border-left: 1px solid var(--line); }
+    .analysis-snapshot article:first-child { padding-left: 0; border-left: 0; }
+    .analysis-snapshot article > b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 14%, var(--analysis-subtle)); color: var(--accent); font-size: 10px; }
+    .analysis-snapshot small,
+    .analysis-snapshot strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-snapshot small { color: var(--muted); font-size: 10px; }
+    .analysis-snapshot strong { margin-top: 2px; font-size: 13px; }
+    .analysis-card { grid-column: span 6; padding: var(--analysis-lg); }
+    .analysis-card.analysis-wide-card { grid-column: 1 / -1; }
+    #analysisView .analysis-card-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; padding: 0 0 11px; border: 0; border-bottom: 1px solid var(--line); background: transparent; box-shadow: none; }
+    .analysis-card-head h3 { margin: 2px 0 0; font-size: 18px; }
+    .analysis-card-body { padding-top: 14px; }
+    .analysis-card-body > p { margin: 5px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .analysis-lead-copy { display: block; font-size: 18px; }
+    .analysis-role-scores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 15px; }
+    .analysis-role-scores div { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 9px; border-top: 2px solid color-mix(in srgb, var(--accent) 58%, var(--line)); background: var(--analysis-subtle); }
+    .analysis-role-scores span { color: var(--muted); font-size: 11px; }
+    .analysis-role-scores strong { font-size: 13px; }
+    .analysis-trait-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+    .analysis-trait-list span { padding: 5px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 9%, var(--analysis-subtle)); color: var(--ink); font-size: 11px; font-weight: 800; }
+    .analysis-loadout-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .analysis-loadout-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+    .analysis-loadout-list li > b { padding: 4px 7px; border-radius: 999px; background: #dff4e7; color: #177346; font-size: 10px; }
+    .analysis-disclosure { margin-top: 12px; border-top: 1px solid var(--line); }
+    .analysis-disclosure summary,
+    .analysis-technical summary { cursor: pointer; }
+    .analysis-disclosure summary { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding-top: 8px; font-size: 12px; font-weight: 800; }
+    .analysis-disclosure summary b { display: grid; place-items: center; min-width: 24px; height: 24px; border-radius: 50%; background: var(--analysis-subtle); }
+    .analysis-alternative-moves { display: flex; flex-wrap: wrap; gap: 6px; padding: 5px 0 2px; }
+    .analysis-matchup-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--analysis-lg); }
+    .analysis-matchup-columns > section { min-width: 0; padding: 0 12px; border-left: 3px solid var(--line); }
+    .analysis-matchup-columns > section:first-child { border-left-color: #168f82; }
+    .analysis-matchup-columns > section:last-child { border-left-color: #c04b73; }
+    .analysis-matchup-columns > section > header { display: flex; align-items: center; gap: 8px; min-height: 31px; padding: 0 0 8px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); box-shadow: none; }
+    .analysis-matchup-columns > section > header span { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; color: #fff; font-weight: 900; }
+    .analysis-matchup-columns > section > header .win { background: #168f82; }
+    .analysis-matchup-columns > section > header .loss { background: #c04b73; }
+    .analysis-matchup-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 82px; padding: 9px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent); }
+    .analysis-matchup-row:last-child { border-bottom: 0; }
+    .analysis-matchup-row img { width: 48px; height: 48px; object-fit: contain; }
+    .analysis-matchup-copy { min-width: 0; }
+    .analysis-matchup-copy > div { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+    .analysis-matchup-copy strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-matchup-copy small { flex: none; color: var(--muted); font-size: 9px; }
+    .analysis-matchup-copy > span { display: flex; gap: 3px; margin-top: 4px; }
+    .analysis-matchup-copy .analysis-type-chip { padding: 2px 5px; font-size: 9px; }
+    .analysis-matchup-copy em { display: block; overflow: hidden; margin-top: 5px; color: var(--muted); font-size: 10px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+    .analysis-matchup-result { display: grid; justify-items: end; gap: 3px; }
+    .analysis-matchup-result small { color: var(--muted); font-size: 9px; }
+    .analysis-matchup-result > b { min-width: 55px; padding: 5px 7px; border-radius: 999px; color: #fff; text-align: center; font-size: 12px; }
+    .analysis-matchup-result > b.win { background: #168f82; }
+    .analysis-matchup-result > b.loss { background: #c04b73; }
+    .analysis-matchup-result button { min-height: 25px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); color: var(--accent); font-size: 10px; box-shadow: none; }
+    .analysis-source-note { margin: 12px 0 0 !important; padding-top: 9px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px !important; }
+    .analysis-empty-state { margin: 0; padding: 18px 8px; color: var(--muted); font-size: 12px; }
+    .analysis-iv-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 14px; }
+    .analysis-iv-profiles { display: grid; align-content: start; gap: 6px; }
+    .analysis-iv-profiles button { display: grid; gap: 2px; min-height: 58px; padding: 9px 11px; border: 1px solid var(--line); border-left: 4px solid transparent; border-radius: 5px; background: var(--analysis-subtle); color: var(--ink); text-align: left; box-shadow: none; }
+    .analysis-iv-profiles button.active { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--analysis-subtle)); }
+    .analysis-iv-profiles button strong { font-size: 13px; }
+    .analysis-iv-profiles button span { color: var(--muted); font-size: 11px; }
+    .analysis-iv-profiles button small { color: var(--accent); font-size: 9px; }
+    .analysis-iv-canvas { min-height: 0; padding: 16px; border: 0; border-radius: 6px; background: var(--analysis-subtle); }
+    .analysis-iv-detail-head { display: flex; align-items: center; gap: 12px; }
+    .analysis-iv-detail-head > span { padding: 5px 7px; border-radius: 4px; background: var(--accent); color: #fff; font-size: 10px; font-weight: 850; }
+    .analysis-iv-detail-head strong,
+    .analysis-iv-detail-head small { display: block; }
+    .analysis-iv-detail-head strong { font-size: 17px; }
+    .analysis-iv-detail-head small { margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .analysis-iv-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 14px 0; border-block: 1px solid var(--line); }
+    .analysis-iv-stats div { padding: 9px; border-left: 1px solid var(--line); }
+    .analysis-iv-stats div:first-child { border-left: 0; }
+    .analysis-iv-stats dt { color: var(--muted); font-size: 10px; }
+    .analysis-iv-stats dd { margin: 2px 0 0; font-size: 13px; font-weight: 850; }
+    .analysis-iv-canvas > p { margin: 0; color: var(--muted); font-size: 12px; }
+    .analysis-iv-insights { display: grid; gap: 5px; margin: 12px 0 0; padding-left: 18px; font-size: 12px; line-height: 1.4; }
+    .analysis-play-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .analysis-play-item { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; min-width: 0; padding: 12px; border: 0; border-radius: 5px; background: var(--analysis-subtle); }
+    .analysis-play-item.warning { box-shadow: inset 3px 0 0 #c04b5e; }
+    .analysis-play-item > span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--panel); color: var(--accent); font-size: 11px; font-weight: 900; }
+    .analysis-play-item small { color: var(--muted); font-size: 10px; font-weight: 800; text-transform: none; }
+    .analysis-play-item strong { display: block; margin-top: 3px; font-size: 13px; line-height: 1.4; }
+    .analysis-technical { overflow: hidden; }
+    .analysis-technical > summary { display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 13px 18px; }
+    .analysis-technical summary span small,
+    .analysis-technical summary span strong { display: block; }
+    .analysis-technical summary span strong { margin-top: 2px; font-size: 16px; }
+    .analysis-technical summary > b { font-size: 20px; transition: transform .2s ease-out; }
+    .analysis-technical[open] summary > b { transform: rotate(45deg); }
+    .analysis-technical-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 18px 18px; }
+    .analysis-technical-body section { padding: 13px; border-top: 2px solid var(--accent); background: var(--analysis-subtle); }
+    .analysis-technical-body h4 { margin: 0; font-size: 14px; }
+    .analysis-technical-body p { margin: 3px 0 10px; color: var(--muted); font-size: 11px; }
+    .analysis-threshold-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 42px; padding: 7px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; }
+    .analysis-threshold-row:last-child { border-bottom: 0; }
+    .analysis-threshold-row strong,
+    .analysis-threshold-row small { display: block; }
+    .analysis-threshold-row strong { font-size: 12px; }
+    .analysis-threshold-row small { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .analysis-threshold-row > b { padding: 4px 7px; border-radius: 4px; background: var(--panel); color: var(--accent); font-size: 11px; }
+    .analysis-view button:focus-visible,
+    .analysis-view select:focus-visible,
+    .analysis-view summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
+    .analysis-view button,
+    .analysis-view summary { transition: border-color .2s ease-out, background .2s ease-out, transform .2s ease-out, box-shadow .2s ease-out; }
+    .analysis-matchup-result button:hover,
+    .analysis-iv-profiles button:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    .team-builder-placeholder { width: min(100%, 800px); margin: 38px auto; padding: 32px; text-align: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .team-builder-placeholder h2 { margin: 0 0 7px; }.team-builder-placeholder p { margin: 0; color: var(--muted); }
     .toolbar, .setup { display: grid; gap: 12px; }
     .toolbar {
       grid-template-columns: auto minmax(280px, auto) minmax(0, 1fr) auto;
@@ -4902,19 +5474,48 @@
 
     @media (max-width: 900px) {
       header {
-        align-items: flex-start;
+        align-items: stretch;
         flex-direction: column;
-        gap: 5px;
-        padding: 8px 10px;
+        gap: 9px;
+        padding: 10px;
       }
       h1 { font-size: 16px; }
       .app-tabs {
         margin-left: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        overflow: hidden;
+      }
+      .app-tabs button {
+        min-width: 0;
+        min-height: 36px;
+        padding: 6px 4px;
+        font-size: 11px;
+        white-space: nowrap;
       }
       main {
         padding: 8px;
         gap: 8px;
       }
+      .analysis-view, .analysis-content { gap: 10px; }
+      .analysis-page-head { align-items: stretch; padding: 3px 0 0; }
+      .analysis-page-head h2 { font-size: 21px; }
+      .analysis-picker { min-width: 210px; }
+      .analysis-hero {
+        grid-template-columns: 140px minmax(0, 1fr);
+        grid-template-areas: "sprite identity" "rating rating";
+        gap: 12px 20px;
+        min-height: 0;
+        padding: 20px;
+      }
+      .analysis-hero-sprite { width: 136px; height: 136px; }
+      .analysis-hero h2 { font-size: 34px; }
+      .analysis-hero-metrics { justify-content: stretch; }
+      .analysis-hero-metrics div { flex: 1; min-width: 0; }
+      .analysis-rating-panel { min-height: 150px; }
+      .analysis-document { gap: 10px; }
+      .analysis-chapter { padding: 16px 18px; }
       .toolbar {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
@@ -5727,10 +6328,46 @@
       }
     }
     @media (max-width: 430px) {
+      header { position: relative; }
+      .app-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .app-tabs button { min-height: 32px; font-size: 10px; }
       main {
         padding: 5px;
         gap: 6px;
       }
+      .analysis-page-head { display: grid; gap: 9px; }
+      .analysis-picker { min-width: 0; width: 100%; }
+      .analysis-hero {
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 9px 12px;
+        padding: 14px;
+      }
+      .analysis-hero-sprite { width: 78px; height: 78px; }
+      .analysis-hero h2 { margin-top: 3px; font-size: 25px; }
+      .analysis-hero-kicker { font-size: 10px; }
+      .analysis-role { margin-top: 8px; font-size: 12px; }
+      .analysis-hero-shield-profiles { gap: 4px; margin-top: 10px; }
+      .analysis-hero-shield-profiles div { min-width: 0; flex: 1; padding: 5px 6px; }
+      .analysis-hero-metrics div { padding: 8px 10px; }
+      .analysis-hero-metrics strong { font-size: 19px; }
+      .analysis-hero-move { flex: 1 1 30%; min-width: 0; padding: 6px 7px; font-size: 10px; }
+      .analysis-rating-panel { min-height: 0; padding: 14px; }
+      .analysis-rating-panel strong { font-size: 29px; }
+      .analysis-document { grid-template-columns: 1fr; gap: 8px; }
+      .analysis-chapter,
+      .analysis-chapter.analysis-span-full { grid-column: 1; padding: 14px; }
+      .analysis-quick-grid { grid-template-columns: 1fr 1fr; gap: 8px 0; }
+      .analysis-quick-grid > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+      .analysis-iv-layout { grid-template-columns: 1fr; }
+      .analysis-iv-profiles { grid-template-columns: 1fr 1fr; }
+      .analysis-key-matchups { grid-template-columns: 1fr; }
+      .analysis-build-thresholds, .analysis-play-grid { grid-template-columns: 1fr; }
+      .analysis-matchup-row { grid-template-columns: 46px minmax(0, 1fr) auto; min-height: 92px; }
+      .analysis-matchup-row img { width: 46px; height: 46px; }
+      .analysis-matchup-copy strong { font-size: 13px; }
+      .analysis-matchup-copy q { font-size: 11px; white-space: normal; }
+      .analysis-matchup-score { font-size: 12px; }
+      .analysis-matchup-preview > div:last-child { grid-column: 1 / -1; }
       .toolbar {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 4px;
@@ -6250,14 +6887,82 @@
         font-size: 10px;
       }
     }
+
+    @media (max-width: 900px) {
+      .analysis-page-head { align-items: end; }
+      .analysis-page-actions { display: grid; grid-template-columns: auto minmax(210px, 1fr) auto; align-items: end; }
+      .analysis-dossier-hero { grid-template-columns: 140px minmax(0, 1fr); gap: 18px; min-height: 0; padding: 20px; }
+      .analysis-hero-sprite { width: 132px; height: 132px; }
+      .analysis-rating-panel { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 16px; padding: 16px; }
+      .analysis-rating-panel > .analysis-eyebrow,
+      .analysis-rating-value,
+      .analysis-rating-track { grid-column: 1; }
+      .analysis-rating-panel dl { grid-column: 2; grid-row: 1 / span 3; min-width: 210px; }
+      .analysis-rating-panel .analysis-primary-action { grid-column: 2; min-width: 210px; margin: 0; }
+      .analysis-card { grid-column: 1 / -1; }
+      .analysis-snapshot > div { grid-template-columns: 1fr 1fr; gap: 9px 0; }
+      .analysis-snapshot article:nth-child(odd) { padding-left: 0; border-left: 0; }
+      .analysis-matchup-columns { gap: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      .analysis-view { --analysis-section: 20px; }
+      .analysis-page-head { display: grid; gap: 10px; }
+      .analysis-page-actions { grid-template-columns: 1fr auto; }
+      .analysis-page-actions > button { grid-column: 1; grid-row: 2; }
+      .analysis-picker { grid-column: 1 / -1; grid-row: 1; min-width: 0; }
+      .analysis-league-badge { grid-column: 2; grid-row: 2; }
+      .analysis-dossier-hero { grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 16px; }
+      .analysis-dossier-hero::before { width: 4px; }
+      .analysis-hero-sprite { width: 88px; height: 88px; }
+      .analysis-hero-title { align-items: flex-start; gap: 6px; }
+      .analysis-hero-title h2 { font-size: 25px; }
+      .analysis-rank-badge { padding: 3px 6px; font-size: 11px; }
+      .analysis-hero-role { margin-top: 9px; font-size: 13px; }
+      .analysis-hero-main > p { font-size: 12px; }
+      .analysis-hero-loadout { grid-column: 1 / -1; }
+      .analysis-rating-panel { display: flex; grid-column: 1 / -1; padding: 14px; }
+      .analysis-rating-value strong { font-size: 30px; }
+      .analysis-rating-panel dl { width: 100%; min-width: 0; }
+      .analysis-rating-panel .analysis-primary-action { width: 100%; min-width: 0; margin-top: 9px; }
+      .analysis-snapshot { padding: 13px; }
+      .analysis-snapshot > div { grid-template-columns: 1fr; gap: 0; }
+      .analysis-snapshot article,
+      .analysis-snapshot article:nth-child(odd) { min-height: 44px; padding: 6px 0; border-top: 1px solid var(--line); border-left: 0; }
+      .analysis-snapshot article:first-child { border-top: 0; }
+      .analysis-card { padding: 15px; }
+      .analysis-role-scores { grid-template-columns: 1fr; }
+      .analysis-loadout-list li { grid-template-columns: minmax(0, 1fr); }
+      .analysis-loadout-list li > b { justify-self: start; margin-top: -4px; }
+      .analysis-matchup-columns { grid-template-columns: 1fr; gap: 18px; }
+      .analysis-matchup-row { grid-template-columns: 44px minmax(0, 1fr) auto; }
+      .analysis-matchup-row img { width: 44px; height: 44px; }
+      .analysis-matchup-copy > div { display: grid; gap: 0; }
+      .analysis-matchup-result button { min-height: 32px; }
+      .analysis-iv-layout { grid-template-columns: 1fr; }
+      .analysis-iv-profiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .analysis-iv-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .analysis-iv-stats div:nth-child(4) { border-left: 0; }
+      .analysis-play-grid,
+      .analysis-technical-body { grid-template-columns: 1fr; }
+      .analysis-play-item { padding: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .analysis-view *,
+      .analysis-view *::before,
+      .analysis-view *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
     <nav class="app-tabs" aria-label="App views">
-      <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Simulator</button>
+      <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Battle</button>
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
+      <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
+      <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
     </nav>
   </header>
   <main>
@@ -6657,6 +7362,31 @@
       </div>
       <button id="metaBackToTop" class="meta-back-to-top" type="button" title="Back to top" aria-label="Back to top" aria-hidden="true">&#8593;</button>
     </div>
+
+    <div id="analysisView" class="app-view analysis-view">
+      <div class="analysis-page-head">
+        <div class="analysis-page-head-copy">
+          <span>Pokemon intelligence</span>
+          <h2>Pokemon Analysis</h2>
+        </div>
+        <div class="analysis-page-actions">
+          <button id="analysisBackToMeta" class="secondary" type="button">Back to Meta</button>
+          <label class="analysis-picker">
+            <span>Analyze Pokemon</span>
+            <select id="analysisPokemon" aria-label="Choose a Pokemon to analyze"></select>
+          </label>
+          <span class="analysis-league-badge">Great League</span>
+        </div>
+      </div>
+      <div id="analysisContent" class="analysis-content"></div>
+    </div>
+
+    <div id="teamBuilderView" class="app-view">
+      <section class="team-builder-placeholder">
+        <h2>Team Builder</h2>
+        <p>This workspace is reserved for the future 3v3 team construction and decision engine.</p>
+      </section>
+    </div>
   </main>
 
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
@@ -6963,6 +7693,8 @@
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
+      $("analysisPokemon").onchange = () => renderPokemonAnalysis($("analysisPokemon").value);
+      $("analysisBackToMeta").onclick = () => setAppView("meta");
       $("metaSearch").oninput = scheduleMetaFilterRender;
       $("metaMoveFilter").oninput = scheduleMetaFilterRender;
       $("metaTypeFilter").onchange = () => {
@@ -7440,13 +8172,352 @@
     }
 
     function setAppView(view) {
-      const next = view === "meta" ? "meta" : "simulator";
+      const supportedViews = new Set(["simulator", "meta", "analysis", "team-builder"]);
+      const next = supportedViews.has(view) ? view : "simulator";
       document.body.dataset.view = next;
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.classList.toggle("active", button.dataset.viewTarget === next);
       });
-      if (next === "meta") renderMetaRankings();
+      if (next === "meta") {
+        renderMetaRankings();
+      }
+      if (next === "analysis") renderPokemonAnalysis();
       updateMetaBackToTop();
+    }
+
+    function analysisRankingEntries() {
+      ensureMetaRankingData();
+      const entries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
+      return entries
+        .filter(entry => entry.profile === metaRankingPreferredProfile && findPokemon(entry.id))
+        .sort((a, b) => Number(a.rank || 9999) - Number(b.rank || 9999));
+    }
+
+    function analysisRole(entry) {
+      const categoryLabels = { lead: "Lead specialist", core: "Core battler", closer: "Closer" };
+      const categories = Object.entries(entry?.categoryScores || {});
+      const strongest = categories.sort((a, b) => Number(b[1]?.competitiveScore || b[1]?.score || 0) - Number(a[1]?.competitiveScore || a[1]?.score || 0))[0]?.[0];
+      if (strongest && categoryLabels[strongest]) return categoryLabels[strongest];
+      if (entry?.candidateMetaTier === "core") return "Core battler";
+      if (entry?.candidateMetaTier === "common") return "Meta specialist";
+      return "Flexible pick";
+    }
+
+    function analysisModel(entry) {
+      const pokemon = findPokemon(entry.id);
+      const recommended = metaRankingMoves(entry, pokemon);
+      const detailEntry = window.GREAT_LEAGUE_RANKING_DETAILS?.entries?.[entry.id] || null;
+      const recommendedIds = new Set([recommended.fast, ...recommended.charged].filter(Boolean).map(move => move.id));
+      const moveModel = (move, kind) => ({
+        id: move.id,
+        name: move.name,
+        kind,
+        type: title(move.type),
+        color: typeColors[move.type] || "#66788c",
+        energyCost: Number(move.energyCost || 0),
+        recommended: recommendedIds.has(move.id)
+      });
+      const moves = [recommended.fast, ...recommended.charged].filter(Boolean).map((move, index) => moveModel(move, index === 0 ? "Fast move" : "Charged move"));
+      const availableMoves = {
+        fast: pokemon.fast.map(id => moveMap.get(id)).filter(Boolean).map(move => moveModel(move, "Fast move")),
+        charged: pokemon.charged.map(id => moveMap.get(id)).filter(Boolean).map(move => moveModel(move, "Charged move"))
+      };
+      const matchupModel = item => {
+        const opponent = findPokemon(item.id);
+        const opponentMoves = opponent ? metaRankingMoves(metaRankingDatasetEntry(opponent.id), opponent) : null;
+        const ownPressure = opponent ? Math.max(...[recommended.fast, ...recommended.charged].filter(Boolean).map(move => effectiveness(move.type, opponent.types))) : 1;
+        const opposingPressure = opponentMoves ? Math.max(...[opponentMoves.fast, ...opponentMoves.charged].filter(Boolean).map(move => effectiveness(move.type, pokemon.types))) : 1;
+        const score = Math.round(Number(item.score || 500));
+        const why = score > 500
+          ? ownPressure > 1 ? "Recommended coverage creates super-effective pressure." : opposingPressure < 1 ? "Typing reduces pressure from the opponent's recommended set." : "Wins the modeled neutral resource race."
+          : opposingPressure > 1 ? "The opponent's recommended set creates super-effective pressure." : ownPressure < 1 ? "Its typing limits the recommended attacking coverage." : "Loses the modeled neutral resource race.";
+        return {
+          id: item.id,
+          name: item.name || opponent?.name || item.id,
+          rank: item.rank || "-",
+          score,
+          why,
+          image: opponent ? imageUrl(opponent) : "",
+          fallbackImage: opponent ? fallbackImageUrl(opponent) : "",
+          moves: opponentMoves ? [opponentMoves.fast, ...opponentMoves.charged].filter(Boolean).map(move => move.name) : [],
+          types: opponent?.types?.map(type => {
+            const color = typeColors[type] || "#66788c";
+            return { label: title(type), color, textColor: contrastText(color) };
+          }) || []
+        };
+      };
+      const categoryEntries = Object.entries(entry.categoryScores || {}).map(([id, category]) => ({
+        id,
+        label: category.label || title(id),
+        score: Math.round(Number(category.competitiveScore || category.score || 0)),
+        wins: Number(category.wins || 0),
+        matchups: Number(category.matchups || 0)
+      }));
+      const optimization = rankingsForPokemon(pokemon);
+      const profileModel = (profile, label) => profile ? {
+        id: profile.profile || label.toLowerCase(),
+        label,
+        ivs: `${profile.attackIv} / ${profile.defenseIv} / ${profile.staminaIv}`,
+        level: formatLevel(profile.level),
+        cp: profile.cp,
+        attack: profile.attack.toFixed(1),
+        defense: profile.defense.toFixed(1),
+        hp: profile.stamina,
+        attackValue: profile.attack,
+        defenseValue: profile.defense,
+        hpValue: profile.stamina,
+        statProduct: Math.round(profile.statProduct),
+        rank: profile.statProductRank
+      } : null;
+      const ivProfiles = [
+        profileModel(optimization.profiles.balanced, "Balanced"),
+        profileModel(optimization.profiles.attack, "Attack"),
+        profileModel(optimization.profiles.defense, "Defense")
+      ].filter(Boolean);
+      const selectedProfile = optimization.profiles.balanced;
+      const selectedCombatant = selectedProfile ? {
+        p: pokemon,
+        fast: recommended.fast,
+        charged: recommended.charged,
+        attack: selectedProfile.attack,
+        defense: selectedProfile.defense,
+        maxHp: selectedProfile.stamina,
+        hp: selectedProfile.stamina,
+        attackStage: 0,
+        defenseStage: 0,
+        shadowAtkMult: isShadow(pokemon) ? shadowAtkMultiplier : 1,
+        shadowDefMult: isShadow(pokemon) ? shadowDefMultiplier : 1
+      } : null;
+      const defaultCombatant = opponent => {
+        const defaults = opponent.defaultIVs?.cp1500;
+        const ivAtk = defaults ? defaults[1] : 0;
+        const ivDef = defaults ? defaults[2] : 15;
+        const ivHp = defaults ? defaults[3] : 15;
+        let stats = null;
+        for (const [level, cpm] of cpMultipliers) {
+          const candidate = pokemonStatsAtLevel(opponent, ivAtk, ivDef, ivHp, level, cpm);
+          if (candidate.cp <= 1500) stats = candidate;
+          else break;
+        }
+        if (!stats) return null;
+        const opponentMoves = metaRankingMoves(metaRankingDatasetEntry(opponent.id), opponent);
+        return {
+          p: opponent,
+          fast: opponentMoves.fast,
+          charged: opponentMoves.charged,
+          attack: stats.attack,
+          defense: stats.defense,
+          maxHp: stats.hp,
+          hp: stats.hp,
+          attackStage: 0,
+          defenseStage: 0,
+          shadowAtkMult: isShadow(opponent) ? shadowAtkMultiplier : 1,
+          shadowDefMult: isShadow(opponent) ? shadowDefMultiplier : 1
+        };
+      };
+      const thresholdOpponents = [
+        ...(detailEntry?.wins || []).slice(0, 3),
+        ...(detailEntry?.losses || []).slice(0, 3)
+      ];
+      const thresholdCombatants = thresholdOpponents.map(item => {
+        const opponent = findPokemon(item.id);
+        const combatant = opponent ? defaultCombatant(opponent) : null;
+        return opponent && combatant?.fast ? { opponent, combatant } : null;
+      }).filter(Boolean);
+      const breakpoints = [];
+      const bulkpoints = [];
+      if (selectedCombatant?.fast) thresholdCombatants.forEach(({ opponent, combatant: opponentCombatant }) => {
+        const breakpoint = breakpointInfo(selectedCombatant, opponentCombatant);
+        const bulkpoint = bulkpointInfo(selectedCombatant, opponentCombatant);
+        if (breakpoint?.label.startsWith("BP +")) breakpoints.push({ opponent: opponent.name, move: selectedCombatant.fast.name, label: breakpoint.label, detail: breakpoint.title });
+        if (bulkpoint?.label.startsWith("Bulk +")) bulkpoints.push({ opponent: opponent.name, move: opponentCombatant.fast.name, label: bulkpoint.label, detail: bulkpoint.title });
+      });
+      const baselineIvProfile = ivProfiles.find(profile => profile.id === "balanced") || ivProfiles[0];
+      const signedIvDelta = value => `${value > 0 ? "+" : ""}${value.toFixed(1)}`;
+      ivProfiles.forEach(profile => {
+        profile.purpose = profile.id === "balanced"
+          ? "Maximum overall stat product: the reference build for general consistency."
+          : profile.id === "attack"
+            ? "Trades bulk for Attack, targeting CMP wins and fast-move breakpoints."
+            : "Trades Attack for Defense and HP, targeting survival thresholds.";
+        if (!baselineIvProfile || profile === baselineIvProfile || !selectedCombatant) {
+          profile.insights = ["Highest overall stat product among eligible Great League spreads."];
+          profile.deltas = [];
+          profile.hasPracticalImpact = profile === baselineIvProfile;
+          return;
+        }
+        const attackDelta = profile.attackValue - baselineIvProfile.attackValue;
+        const defenseDelta = profile.defenseValue - baselineIvProfile.defenseValue;
+        const hpDelta = profile.hpValue - baselineIvProfile.hpValue;
+        profile.deltas = [
+          { label: "Attack vs Balanced", value: signedIvDelta(attackDelta), tone: attackDelta >= 0 ? "positive" : "negative" },
+          { label: "Defense vs Balanced", value: signedIvDelta(defenseDelta), tone: defenseDelta >= 0 ? "positive" : "negative" },
+          { label: "HP vs Balanced", value: `${hpDelta > 0 ? "+" : ""}${hpDelta}`, tone: hpDelta >= 0 ? "positive" : "negative" }
+        ];
+        const candidate = { ...selectedCombatant, attack: profile.attackValue, defense: profile.defenseValue, maxHp: profile.hpValue, hp: profile.hpValue };
+        const insights = [];
+        thresholdCombatants.forEach(({ opponent, combatant }) => {
+          if (insights.length >= 3) return;
+          const candidateFastDamage = estimate(candidate, combatant, candidate.fast);
+          const baselineFastDamage = estimate(selectedCombatant, combatant, selectedCombatant.fast);
+          if (candidateFastDamage > baselineFastDamage) insights.push(`Fast move gains ${candidateFastDamage - baselineFastDamage} damage vs ${opponent.name}.`);
+          if (candidate.attack > combatant.attack && selectedCombatant.attack <= combatant.attack) insights.push(`Wins CMP against ${opponent.name}.`);
+          const candidateTaken = estimate(combatant, candidate, combatant.fast);
+          const baselineTaken = estimate(combatant, selectedCombatant, combatant.fast);
+          if (candidateTaken < baselineTaken) insights.push(`Takes ${baselineTaken - candidateTaken} less fast-move damage from ${opponent.name}.`);
+          if (insights.length >= 3) return;
+          const chargedThreat = combatant.charged.filter(Boolean).sort((a, b) => estimate(combatant, selectedCombatant, b) - estimate(combatant, selectedCombatant, a))[0];
+          if (chargedThreat) {
+            const baselineSurvives = selectedCombatant.maxHp > estimate(combatant, selectedCombatant, chargedThreat);
+            const candidateSurvives = candidate.maxHp > estimate(combatant, candidate, chargedThreat);
+            if (candidateSurvives && !baselineSurvives) insights.push(`Survives ${chargedThreat.name} from ${opponent.name}.`);
+          }
+        });
+        profile.insights = [...new Set(insights)].slice(0, 3);
+        profile.hasPracticalImpact = profile.insights.length > 0;
+        if (!profile.insights.length) profile.insights = ["No important matchup threshold change was detected in the sampled key matchups."];
+      });
+      const ratings = detailEntry?.ratings || {};
+      const bestCategory = [...categoryEntries].sort((a, b) => b.score - a.score)[0] || null;
+      const winRate = Number(entry.winRate || 0);
+      const identityTraits = [...new Set([
+        analysisRole(entry),
+        Number(ratings.shieldDependence) <= 1 ? "Shield efficient" : Number(ratings.shieldDependence) >= 4 ? "Shield dependent" : "Flexible shields",
+        Number(ratings.closingPotential) >= 4 ? "High closing power" : Number(ratings.closingPotential) <= 1 ? "Limited closing power" : "Balanced pressure",
+        Number(ratings.technicalDifficulty) >= 4 ? "Technical" : Number(ratings.technicalDifficulty) <= 1 ? "Direct game plan" : "Sequencing matters"
+      ])];
+      const quickFacts = [
+        { label: "Best role", value: bestCategory ? `${bestCategory.label} (${bestCategory.score})` : analysisRole(entry) },
+        { label: "Shield plan", value: identityTraits[1] },
+        { label: "Closing", value: identityTraits[2] },
+        { label: "Execution", value: identityTraits[3] }
+      ];
+      if (winRate > 0) quickFacts.push({ label: "Modeled record", value: `${(winRate * 100).toFixed(1)}% wins` });
+      const chargedByCost = recommended.charged.filter(Boolean).slice().sort((a, b) => Number(a.energyCost || 0) - Number(b.energyCost || 0));
+      const chargedCostGap = chargedByCost.length > 1 ? Math.abs(Number(chargedByCost[1].energyCost || 0) - Number(chargedByCost[0].energyCost || 0)) : 0;
+      const energyPlan = chargedByCost.length < 2
+        ? `Its available charged pressure centers on ${chargedByCost[0]?.name || "the selected charged move"}.`
+        : chargedCostGap <= 5
+          ? `${chargedByCost[0].name} and ${chargedByCost[1].name} have similar costs; choose by damage and coverage, not by bait value alone.`
+          : `${chargedByCost[0].name} provides the cheaper pressure line; preserve energy for ${chargedByCost[1].name} when its coverage matters.`;
+      const shieldPlan = Number(ratings.shieldDependence) <= 1
+        ? "Can usually function without demanding shield advantage."
+        : Number(ratings.shieldDependence) >= 4
+          ? "Protect it when it is central to the win condition; its results vary heavily with shield access."
+          : "Treat shields as matchup resources rather than committing them automatically.";
+      const winCondition = bestCategory
+        ? `Its strongest modeled role is ${bestCategory.label.toLowerCase()}; build the battle plan around reaching that state with useful HP or energy.`
+        : "Preserve the resource advantage shown by its strongest simulated matchups.";
+      const commonMistake = chargedCostGap <= 5 && chargedByCost.length > 1
+        ? "Do not force a bait narrative when both charged moves cost nearly the same energy."
+        : Number(ratings.shieldDependence) >= 4
+          ? "Do not spend its required shields elsewhere before confirming the endgame plan."
+          : "Do not judge the pick only by its dominant wins; review its close meta losses before assigning its role.";
+      const playPlan = [
+        { label: "Energy management", text: energyPlan },
+        { label: "Shield plan", text: shieldPlan },
+        { label: "Win condition", text: winCondition },
+        { label: "Common mistake", text: commonMistake, tone: "warning" }
+      ];
+      return {
+        id: pokemon.id,
+        name: pokemon.name,
+        image: imageUrl(pokemon),
+        fallbackImage: fallbackImageUrl(pokemon),
+        shadow: isShadow(pokemon),
+        rank: entry.rank || "-",
+        rating: Math.round(Number(entry.competitiveScore ?? entry.overallScore ?? 500)),
+        role: analysisRole(entry),
+        winRate: Number(entry.winRate || 0),
+        wins: Number(entry.wins || 0),
+        losses: Number(entry.losses || 0),
+        matchups: Number(entry.matchups || 0),
+        categories: categoryEntries,
+        keyWins: (detailEntry?.wins || []).map(matchupModel),
+        keyLosses: (detailEntry?.losses || []).map(matchupModel),
+        ratings,
+        quickFacts,
+        identityTraits,
+        identitySummary: `${analysisRole(entry)} with its strongest modeled performance in ${bestCategory?.label || "Great League"}.`,
+        playPlan,
+        ivProfiles,
+        breakpoints,
+        bulkpoints,
+        types: pokemon.types.map(type => {
+          const color = typeColors[type] || "#66788c";
+          return { label: title(type), color, textColor: contrastText(color) };
+        }),
+        moves,
+        availableMoves
+      };
+    }
+
+    function renderPokemonAnalysis(requestedId) {
+      const root = $("analysisContent");
+      const select = $("analysisPokemon");
+      const renderer = window.PvPeakPokemonAnalysis;
+      if (!root || !select || !renderer) return;
+      const entries = analysisRankingEntries();
+      if (!entries.length) {
+        root.innerHTML = `<section class="analysis-card analysis-wide-card"><header class="analysis-card-head"><div><span>Unavailable</span><h3>Analysis data unavailable</h3></div></header><div class="analysis-card-body"><p>The Great League ranking dataset could not be loaded.</p></div></section>`;
+        return;
+      }
+      const currentId = requestedId || select.value || entries[0].id;
+      const entry = entries.find(item => item.id === currentId) || entries[0];
+      if (select.options.length !== entries.length) {
+        select.innerHTML = entries.map(item => `<option value="${escapeHtml(item.id)}">#${escapeHtml(item.rank)} ${escapeHtml(item.name)}</option>`).join("");
+      }
+      select.value = entry.id;
+      const rawModel = analysisModel(entry);
+      const normalize = window.PvPeakPokemonAnalysisViewModel?.normalizePokemonAnalysisViewModel;
+      const model = typeof normalize === "function" ? normalize(rawModel) : rawModel;
+      root.innerHTML = renderer.PokemonAnalysisPage(model);
+      root.querySelectorAll("img[data-fallback]").forEach(sprite => {
+        sprite.onerror = () => {
+          sprite.onerror = null;
+          sprite.src = sprite.dataset.fallback || "";
+        };
+      });
+      root.querySelectorAll("[data-analysis-iv-profile]").forEach(button => {
+        button.onclick = () => renderAnalysisIvProfile(root, model, button.dataset.analysisIvProfile);
+      });
+      root.querySelectorAll("[data-analysis-use-pokemon]").forEach(button => {
+        button.onclick = () => loadAnalysisPokemon(button.dataset.analysisUsePokemon);
+      });
+      root.querySelectorAll("[data-analysis-matchup]").forEach(button => {
+        button.onclick = () => loadMetaMatchup(button.dataset.analysisSource, button.dataset.analysisMatchup);
+      });
+      root.querySelectorAll("details").forEach(details => {
+        const summary = details.querySelector(":scope > summary");
+        if (!summary) return;
+        const syncExpanded = () => summary.setAttribute("aria-expanded", String(details.open));
+        details.addEventListener("toggle", syncExpanded);
+        syncExpanded();
+      });
+    }
+
+    function renderAnalysisIvProfile(root, model, profileId) {
+      const profiles = Array.isArray(model.ivAnalysis?.profiles) ? model.ivAnalysis.profiles : [];
+      const profile = profiles.find(item => item.id === profileId);
+      const output = root.querySelector("[data-analysis-iv-output]");
+      if (!profile || !output) return;
+      root.querySelectorAll("[data-analysis-iv-profile]").forEach(button => {
+        const active = button.dataset.analysisIvProfile === profileId;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+      output.innerHTML = window.PvPeakPokemonAnalysis.PokemonIVProfileDetail(profile);
+    }
+
+    function loadAnalysisPokemon(pokemonId) {
+      if (!findPokemon(pokemonId)) return;
+      setPokemonSelection("p1", pokemonId);
+      applyIvOptimizationProfile("p1", "balanced");
+      applyMetaRankingMoves("p1", pokemonId);
+      resetBattleStateFromSetup();
+      setAppView("simulator");
+      const reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
     }
 
     function ensureMetaRankingData() {
