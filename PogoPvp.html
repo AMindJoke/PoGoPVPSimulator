@@ -7332,6 +7332,274 @@
       .analysis-play-item { padding: 10px; }
     }
 
+    /* Mobile battle layout: clearer hierarchy with fewer nested surfaces. */
+    @media (max-width: 900px) {
+      .setup > .trainer-card {
+        border-radius: 6px;
+        box-shadow: 0 2px 7px rgba(23, 33, 47, .08);
+      }
+      .setup > .trainer-card .control-stack,
+      .setup > .trainer-card .field-box {
+        border-color: color-mix(in srgb, var(--line) 78%, transparent);
+        border-radius: 6px;
+        box-shadow: none;
+      }
+      .pokemon-picker > span,
+      .battle-kicker,
+      .moves-stack > .setup-kicker {
+        display: none;
+      }
+      .pokemon-picker-input {
+        min-height: 32px;
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .battle-identity {
+        margin-bottom: 5px;
+      }
+      .battle-identity strong {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .battle-identity span {
+        font-size: 10.5px;
+        font-weight: 700;
+      }
+      .stat-bars {
+        padding: 2px 0;
+        background: transparent;
+      }
+      .stat-row {
+        color: var(--ink);
+        font-size: 10px;
+      }
+      .stat-row strong {
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .stat-track {
+        height: 5px;
+        background: color-mix(in srgb, var(--muted) 22%, transparent);
+      }
+      .overall,
+      .overall strong {
+        color: var(--ink);
+      }
+      .overall {
+        font-size: 11px;
+      }
+      .overall strong {
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .section-kicker {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0;
+        line-height: 1.2;
+        text-transform: none;
+      }
+      .section-kicker::after {
+        display: none;
+      }
+      .shield-only-row {
+        gap: 5px;
+        margin-top: 6px;
+      }
+      .shields-kicker {
+        margin: 0;
+      }
+      .shield-count-toggle,
+      body.clarity-ui .shield-count-toggle {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: min(90%, 180px);
+        max-width: 180px;
+      }
+      .shield-count-toggle button,
+      body.clarity-ui .shield-count-toggle button {
+        min-height: 38px;
+        padding: 3px 6px;
+        gap: 5px;
+      }
+      .shield-count-toggle svg,
+      body.clarity-ui .shield-count-toggle svg {
+        width: 23px;
+        height: 23px;
+        flex: 0 0 23px;
+      }
+      .shield-count-toggle strong,
+      body.clarity-ui .shield-count-toggle strong {
+        font-size: 12px;
+      }
+      .moves-stack {
+        gap: 5px;
+      }
+      .move-group {
+        gap: 5px;
+      }
+      .move-group + .move-group {
+        margin-top: 5px;
+      }
+      .move-group-title {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      body.clarity-ui .moves-stack label select.move-select {
+        --move-icon-size: 21px;
+        min-height: 38px;
+        padding-block: 4px;
+        padding-left: 8px;
+        padding-right: 49px;
+        border-width: 1px;
+        border-radius: 6px;
+        background-position: right 10px center, right 6px center, right 27px center, 0 0, 0 0;
+        box-shadow: inset 3px 0 0 color-mix(in srgb, var(--move-color, var(--accent)) 76%, black 10%);
+        font-size: 13px;
+        font-weight: 750;
+      }
+      .moves-stack .hp {
+        height: 27px;
+        margin-top: 8px;
+        border: 2px solid #536172;
+        border-radius: 2px;
+        box-shadow: none;
+      }
+      .hp-text {
+        font-size: 12.5px;
+        font-weight: 850;
+      }
+      .energy-panel {
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
+        gap: 4px;
+      }
+      .energy-orb {
+        width: 36px;
+        height: 36px;
+      }
+      .energy-orb-label {
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .energy-core strong {
+        font-size: 16px;
+      }
+      .energy-core span {
+        color: var(--ink);
+        font-size: 9.5px;
+        font-weight: 750;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .setup > .trainer-card {
+        padding: 5px;
+      }
+      .setup > .trainer-card .control-stack {
+        padding: 6px 5px;
+      }
+      .setup > .trainer-card .field-box {
+        margin-top: 5px;
+        padding: 6px;
+      }
+      .pokemon-picker-input {
+        min-height: 30px;
+        font-size: 11.5px;
+      }
+      .battle-identity {
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 5px;
+      }
+      .battle-identity img {
+        width: 36px;
+        height: 36px;
+      }
+      .battle-identity strong {
+        font-size: 12px;
+      }
+      .battle-identity span {
+        font-size: 9.5px;
+      }
+      .stat-row {
+        grid-template-columns: 40px 31px minmax(0, 1fr);
+        gap: 2px;
+        font-size: 9.5px;
+      }
+      .stat-row strong {
+        font-size: 10.5px;
+      }
+      .stat-track {
+        height: 4px;
+      }
+      .overall {
+        margin-left: 2px;
+        font-size: 10.5px;
+      }
+      .overall strong {
+        font-size: 11.5px;
+      }
+      .section-kicker {
+        font-size: 12px;
+      }
+      .shield-count-toggle,
+      body.clarity-ui .shield-count-toggle {
+        width: min(100%, 164px);
+        max-width: 164px;
+      }
+      .shield-count-toggle button,
+      body.clarity-ui .shield-count-toggle button {
+        min-height: 34px;
+        padding: 2px 4px;
+        gap: 3px;
+      }
+      .shield-count-toggle svg,
+      body.clarity-ui .shield-count-toggle svg {
+        width: 20px;
+        height: 20px;
+        flex-basis: 20px;
+      }
+      .shield-count-toggle strong,
+      body.clarity-ui .shield-count-toggle strong {
+        font-size: 11px;
+      }
+      .move-group-title {
+        font-size: 12.5px;
+      }
+      body.clarity-ui .moves-stack label select.move-select {
+        --move-icon-size: 20px;
+        min-height: 36px;
+        padding-left: 7px;
+        padding-right: 46px;
+        background-position: right 9px center, right 5px center, right 25px center, 0 0, 0 0;
+        font-size: 12px;
+      }
+      .moves-stack .hp {
+        height: 25px;
+      }
+      .hp-text {
+        font-size: 11.5px;
+      }
+      .energy-panel {
+        grid-template-columns: 34px minmax(0, 1fr) 34px;
+      }
+      .energy-orb {
+        width: 31px;
+        height: 31px;
+      }
+      .energy-orb-label {
+        font-size: 9px;
+      }
+      .energy-core strong {
+        font-size: 14px;
+      }
+      .energy-core span {
+        font-size: 8.5px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .analysis-view *,
       .analysis-view *::before,
