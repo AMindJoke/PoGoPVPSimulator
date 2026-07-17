@@ -7334,6 +7334,25 @@
 
     /* Mobile battle layout: clearer hierarchy with fewer nested surfaces. */
     @media (max-width: 900px) {
+      .toolbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: min(100%, 300px);
+        margin-inline: auto;
+        gap: 6px;
+        padding: 5px;
+      }
+      .toolbar-preset,
+      .toolbar-filters,
+      .toolbar > #counts {
+        display: none;
+      }
+      .toolbar-actions {
+        display: contents;
+      }
+      .toolbar-actions button {
+        min-height: 31px;
+        font-size: 11px;
+      }
       .setup > .trainer-card {
         border-radius: 6px;
         box-shadow: 0 2px 7px rgba(23, 33, 47, .08);
@@ -8317,6 +8336,10 @@
         }))
         .filter(p => p.fast.length && p.charged.length)
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+
+      if (typeof matchMedia === "function" && matchMedia("(max-width: 900px)").matches) {
+        $("releasedOnly").checked = false;
+      }
 
       $("releasedOnly").onchange = refreshPokemonLists;
       $("showForms").onchange = refreshPokemonLists;
