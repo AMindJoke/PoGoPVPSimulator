@@ -185,8 +185,42 @@
       display: grid;
       gap: 14px;
     }
+    .scenario-toolbar-copy {
+      display: none;
+    }
+    body[data-view="scenario-review"] .toolbar {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    body[data-view="scenario-review"] .scenario-toolbar-copy {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      min-width: 0;
+    }
+    .scenario-toolbar-copy strong {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .scenario-toolbar-copy span {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body[data-view="scenario-review"] .toolbar-actions {
+      padding-right: 0;
+      border-right: 0;
+    }
+    body[data-view="scenario-review"] .toolbar-preset,
+    body[data-view="scenario-review"] .toolbar-filters,
+    body[data-view="scenario-review"] #counts {
+      display: none;
+    }
     #simulatorView, #metaView, #analysisView, #teamBuilderView { display: none; }
     body[data-view="simulator"] #simulatorView,
+    body[data-view="scenario-review"] #simulatorView,
     body[data-view="meta"] #metaView,
     body[data-view="analysis"] #analysisView,
     body[data-view="team-builder"] #teamBuilderView { display: grid; }
@@ -3556,7 +3590,7 @@
       border-color: color-mix(in srgb, #156f8f 42%, var(--line));
       background: color-mix(in srgb, var(--panel) 94%, #00b8a9 6%);
     }
-    .scenario-review.active {
+    body[data-view="scenario-review"] .scenario-review.active {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
@@ -3599,24 +3633,39 @@
       background: #156f8f;
       color: #fff;
     }
-    body.scenario-review-active .setup {
+    body[data-view="scenario-review"].scenario-review-active .setup {
       isolation: isolate;
     }
-    body.scenario-review-active .matrix-panel {
+    body[data-view="scenario-review"].scenario-review-active .matrix-panel {
       display: none;
     }
-    body.scenario-review-active .trainer-card {
+    body[data-view="scenario-review"] #matrixPreview,
+    body[data-view="scenario-review"] .matrix-panel,
+    body[data-view="scenario-review"] .key-numbers {
+      display: none !important;
+    }
+    body[data-view="scenario-review"] .analysis-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body[data-view="scenario-review"] .timeline,
+    body[data-view="scenario-review"] .scenario-review,
+    body[data-view="scenario-review"] .manual-panel,
+    body[data-view="scenario-review"] .log-panel {
+      width: 100%;
+      max-width: none;
+    }
+    body[data-view="scenario-review"].scenario-review-active .trainer-card {
       transition: transform 200ms ease-out, box-shadow 200ms ease-out, opacity 200ms ease-out, filter 200ms ease-out;
       transform-style: preserve-3d;
     }
-    body.scenario-review-active .trainer-card.has-scenario-history {
+    body[data-view="scenario-review"].scenario-review-active .trainer-card.has-scenario-history {
       box-shadow: 0 10px 24px rgba(23, 33, 47, .18), 0 2px 6px rgba(23, 33, 47, .1);
     }
-    .trainer-card.scenario-awaiting-incoming {
+    body[data-view="scenario-review"] .trainer-card.scenario-awaiting-incoming {
       opacity: .74;
       filter: saturate(.42);
     }
-    .trainer-card.scenario-awaiting-incoming::after {
+    body[data-view="scenario-review"] .trainer-card.scenario-awaiting-incoming::after {
       content: "Fainted · choose next Pokemon";
       position: absolute;
       top: 8px;
@@ -3651,7 +3700,7 @@
       inset: 10px 12px -12px -30px;
       transform: translateZ(-18px) scale(.982);
     }
-    .scenario-history-stack.active {
+    body[data-view="scenario-review"] .scenario-history-stack.active {
       display: block;
     }
     .scenario-history-identity {
@@ -3707,26 +3756,26 @@
       right: auto;
       left: 6px;
     }
-    .trainer-card.scenario-card-staging,
-    .trainer-card.scenario-card-entering {
+    body[data-view="scenario-review"] .trainer-card.scenario-card-staging,
+    body[data-view="scenario-review"] .trainer-card.scenario-card-entering {
       --scenario-card-entry-x: 48px;
       --scenario-card-overshoot-x: -3px;
       z-index: 3;
       transform-origin: 18% 50%;
       will-change: transform, opacity, box-shadow;
     }
-    .trainer-card.b.scenario-card-staging,
-    .trainer-card.b.scenario-card-entering {
+    body[data-view="scenario-review"] .trainer-card.b.scenario-card-staging,
+    body[data-view="scenario-review"] .trainer-card.b.scenario-card-entering {
       --scenario-card-entry-x: -48px;
       --scenario-card-overshoot-x: 3px;
     }
-    .trainer-card.scenario-card-staging {
+    body[data-view="scenario-review"] .trainer-card.scenario-card-staging {
       opacity: .12;
       transform: perspective(820px) translateX(var(--scenario-card-entry-x)) translateY(5px) translateZ(-24px) scale(.95);
       box-shadow: 0 2px 6px rgba(23, 33, 47, .04);
       transition: none !important;
     }
-    .trainer-card.scenario-card-entering {
+    body[data-view="scenario-review"] .trainer-card.scenario-card-entering {
       animation: scenario-card-enter 340ms cubic-bezier(.18, .8, .22, 1) both;
     }
     @keyframes scenario-card-enter {
@@ -3735,8 +3784,8 @@
       100% { opacity: 1; transform: perspective(820px) translateX(0) translateY(0) translateZ(0) scale(1); box-shadow: var(--panel-shadow); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .trainer-card.scenario-card-staging,
-      .trainer-card.scenario-card-entering {
+      body[data-view="scenario-review"] .trainer-card.scenario-card-staging,
+      body[data-view="scenario-review"] .trainer-card.scenario-card-entering {
         animation: none;
         opacity: 1;
         transform: none;
@@ -4840,7 +4889,7 @@
       flex: 0 0 auto;
       filter: drop-shadow(0 2px 3px rgba(23,33,47,.18));
     }
-    body.scenario-review-active .timeline {
+    body[data-view="scenario-review"].scenario-review-active .timeline {
       --timeline-side-zone-width: 132px;
     }
     .timeline-pokemon-flow {
@@ -6144,7 +6193,7 @@
       .app-tabs {
         margin-left: 0;
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         width: 100%;
         overflow: hidden;
       }
@@ -6155,6 +6204,23 @@
         font-size: 11px;
         white-space: nowrap;
       }
+      body[data-view="scenario-review"] .toolbar {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+      body[data-view="scenario-review"] .scenario-toolbar-copy {
+        display: grid;
+        gap: 1px;
+      }
+      body[data-view="scenario-review"] .toolbar-actions {
+        display: flex;
+        gap: 5px;
+      }
+      body[data-view="scenario-review"] .toolbar-actions button {
+        width: auto;
+        min-width: 68px;
+      }
+      .scenario-toolbar-copy strong { font-size: 12px; }
+      .scenario-toolbar-copy span { font-size: 9px; }
       main {
         padding: 8px;
         gap: 8px;
@@ -6438,7 +6504,7 @@
       .scenario-history-name {
         display: none;
       }
-      body.scenario-review-active .timeline {
+      body[data-view="scenario-review"].scenario-review-active .timeline {
         --timeline-side-zone-width: 88px;
       }
       .timeline-pokemon-flow img {
@@ -6454,15 +6520,15 @@
         height: 10px;
         font-size: 8px;
       }
-      .trainer-card.scenario-card-staging,
-      .trainer-card.scenario-card-entering {
+      body[data-view="scenario-review"] .trainer-card.scenario-card-staging,
+      body[data-view="scenario-review"] .trainer-card.scenario-card-entering {
         --scenario-card-entry-x: 26px;
       }
-      .trainer-card.b.scenario-card-staging,
-      .trainer-card.b.scenario-card-entering {
+      body[data-view="scenario-review"] .trainer-card.b.scenario-card-staging,
+      body[data-view="scenario-review"] .trainer-card.b.scenario-card-entering {
         --scenario-card-entry-x: -26px;
       }
-      .trainer-card.scenario-awaiting-incoming::after {
+      body[data-view="scenario-review"] .trainer-card.scenario-awaiting-incoming::after {
         top: 5px;
         right: 5px;
         max-width: calc(100% - 10px);
@@ -7634,6 +7700,7 @@
     }
 
     @media (max-width: 600px) {
+      .app-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .analysis-view { --analysis-section: 20px; }
       .analysis-page-head { display: grid; gap: 10px; }
       .analysis-page-actions { grid-template-columns: 1fr auto; }
@@ -8047,6 +8114,7 @@
     </div>
     <nav class="app-tabs" aria-label="App views">
       <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Battle</button>
+      <button id="scenarioReviewTab" type="button" data-view-target="scenario-review">Scenario Review</button>
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
       <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
       <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
@@ -8056,6 +8124,10 @@
     <div class="error" id="error"></div>
     <div id="simulatorView" class="app-view">
     <div class="toolbar">
+      <div class="scenario-toolbar-copy">
+        <strong>Scenario Review</strong>
+        <span>Judge workspace · continuous battle state</span>
+      </div>
       <div class="toolbar-group toolbar-actions">
         <button id="reset" class="secondary">Reset</button>
         <button id="themeToggle" class="secondary">Dark</button>
@@ -9306,8 +9378,9 @@
     }
 
     function setAppView(view) {
-      const supportedViews = new Set(["simulator", "meta", "analysis", "team-builder"]);
+      const supportedViews = new Set(["simulator", "scenario-review", "meta", "analysis", "team-builder"]);
       const next = supportedViews.has(view) ? view : "simulator";
+      const previous = document.body.dataset.view;
       document.body.dataset.view = next;
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.classList.toggle("active", button.dataset.viewTarget === next);
@@ -9316,6 +9389,10 @@
         renderMetaRankings();
       }
       if (next === "analysis") renderPokemonAnalysis();
+      if (next === "simulator" || next === "scenario-review") {
+        if (previous !== next) refreshPokemonLists();
+        render();
+      }
       updateMetaBackToTop();
     }
 
@@ -10483,7 +10560,9 @@
 
     function filteredBaseList() {
       let list = allPokemon;
-      if ($("releasedOnly").checked) list = list.filter(p => p.released);
+      if (document.body.dataset.view !== "scenario-review" && $("releasedOnly").checked) {
+        list = list.filter(p => p.released);
+      }
       if (!$("showForms").checked) {
         const seen = new Set();
         list = list.filter(p => {
@@ -13417,6 +13496,10 @@
 
     function scrollBattleResultsIntoView() {
       requestAnimationFrame(() => {
+        if (document.body.dataset.view === "scenario-review") {
+          smoothScrollToElement($("battleTimeline"), "center");
+          return;
+        }
         smoothScrollToElement(battleResourceScrollAnchor(), "start", 8);
       });
     }
@@ -13828,7 +13911,23 @@
 
     function setShieldCount(prefix, count) {
       $(`${prefix}Shields`).value = count;
+      if (scenarioCanAdjustNextSegmentShields()) {
+        const side = prefix === "p1" ? "A" : "B";
+        scenarioApi()?.setNextSegmentShields(scenarioState, side, count);
+        const combatant = side === "A" ? left : right;
+        if (combatant && combatant.hp > 0) combatant.shields = count;
+        renderShields(prefix);
+        if (scenarioState.status === "active") scenarioSegmentInitialState = battleSnapshot();
+        renderScenarioReview();
+        return;
+      }
       syncSelection(prefix);
+    }
+
+    function scenarioCanAdjustNextSegmentShields() {
+      if (!scenarioState || scenarioApplyingTransition) return false;
+      if (scenarioState.status === "awaiting-incoming") return true;
+      return scenarioState.status === "active" && timeline.length === scenarioTimelineStart && !battleEnded();
     }
 
     function shieldSvg() {
@@ -13840,11 +13939,12 @@
     }
 
     function render() {
+      const scenarioWorkspace = document.body.dataset.view === "scenario-review";
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
-      renderKeyNumbers();
+      if (!scenarioWorkspace) renderKeyNumbers();
       renderTimeline();
-      if (scenarioState) {
+      if (scenarioState || scenarioWorkspace) {
         clearScenarioResultPanels();
       } else {
         renderShieldMatrix();
@@ -13931,14 +14031,24 @@
         const survivor = JSON.parse(JSON.stringify(scenarioState.lockedState.combatant));
         const incoming = create(prefix, incomingSide);
         const previousSegment = scenarioState.segments[scenarioState.segments.length - 1];
-        const remainingShields = Number(previousSegment?.finalState?.[incomingSide]?.shields || 0);
+        const remainingShields = Number(
+          scenarioState.nextSegmentOverrides?.shields?.[incomingSide]
+          ?? previousSegment?.finalState?.[incomingSide]?.shields
+          ?? 0
+        );
+        const survivorShields = Number(
+          scenarioState.nextSegmentOverrides?.shields?.[survivorSide]
+          ?? survivor.shields
+          ?? 0
+        );
         incoming.shields = remainingShields;
+        survivor.shields = survivorShields;
         incoming.energy = 0;
         incoming.attackStage = 0;
         incoming.defenseStage = 0;
         $(`${prefix}Shields`).value = String(remainingShields);
         $(`${prefix}StartEnergy`).value = "0";
-        $(`${survivorPrefix}Shields`).value = String(Math.max(0, survivor.shields));
+        $(`${survivorPrefix}Shields`).value = String(Math.max(0, survivorShields));
         $(`${survivorPrefix}StartEnergy`).value = String(Math.max(0, survivor.energy));
         clearStartingFastAdvantage(prefix);
 
@@ -16343,7 +16453,7 @@
       if (!label || !combatant) return;
       const badge = timelineStartingFastBadge(prefix, combatant);
       const side = prefix === "p1" ? "A" : "B";
-      const history = scenarioHistory[side];
+      const history = document.body.dataset.view === "scenario-review" ? scenarioHistory[side] : [];
       const fainted = history[history.length - 1];
       const flow = fainted
         ? `<span class="timeline-pokemon-flow"><span class="timeline-fainted-wrap"><img class="timeline-fainted-sprite" data-scenario-sprite="fainted" alt="${escapeHtml(fainted.pokemonName)}"></span><span class="timeline-pokemon-arrow" aria-hidden="true">→</span><img data-scenario-sprite="active" alt="${escapeHtml(combatant.p.name)}"></span>`
@@ -16361,6 +16471,7 @@
       const scroll = $("timelineScroll");
       if (!scroll) return;
       scroll.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
+      if (document.body.dataset.view !== "scenario-review") return;
       if (!scenarioState?.segments?.length) return;
       scenarioState.segments.forEach((segment, index) => {
         if (!segment.transition) return;

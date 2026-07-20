@@ -2,6 +2,9 @@
 
 Scenario Review continues one battle through multiple connected matchup segments. It is intended for judge review, casting, competitive analysis, and educational battle reconstruction.
 
+It is exposed as a dedicated application view. The view reuses the Battle setup, engine, timeline, manual controls, and battle log while omitting matchup scoring, Battle Review, and Key Elements.
+Pokemon selection in this workspace intentionally includes unreleased entries so future or tournament-specific scenarios can be reconstructed without changing the standard Battle filters.
+
 ## Architecture
 
 `Battle` remains responsible for simulating one active matchup. `Scenario` is an orchestration layer that records completed segments and carries the surviving Pokemon state into the next matchup.
@@ -43,8 +46,9 @@ Battle does not depend on Scenario and should remain usable independently.
 1. Simulate a battle to a knockout.
 2. Select **Lock State**.
 3. Keep the survivor and its resources unchanged.
-4. Select the next Pokemon on the fainted side.
-5. Continue the same battle and timeline.
+4. Optionally adjust either side's shields for the next segment.
+5. Select the next Pokemon on the fainted side.
+6. Continue the same battle and timeline.
 
 The replaced Pokemon remains visible as a subdued card layer behind the incoming Pokemon. This stack communicates history; it is not decorative.
 

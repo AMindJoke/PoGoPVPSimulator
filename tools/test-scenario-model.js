@@ -39,6 +39,14 @@ assert.equal(scenario.lockedState.hp, 18);
 assert.equal(scenario.lockedState.energy, 27);
 assert.equal(scenario.lockedState.defenseStage, -1);
 assert.equal(scenario.segments.length, 1);
+assert.equal(scenario.nextSegmentOverrides.shields.A, 1);
+
+Scenario.setNextSegmentShields(scenario, "A", 2);
+Scenario.setNextSegmentShields(scenario, "B", 1);
+assert.equal(scenario.nextSegmentOverrides.shields.A, 2);
+assert.equal(scenario.nextSegmentOverrides.shields.B, 1);
+assert.equal(scenario.lockedState.shields, 2);
+assert.equal(scenario.lockedState.combatant.shields, 2);
 
 Scenario.setIncomingTransition(scenario, {
   turn: 24,

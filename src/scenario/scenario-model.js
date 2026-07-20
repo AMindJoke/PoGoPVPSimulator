@@ -20,6 +20,7 @@
       activeSide: null,
       awaitingSide: null,
       lockedState: null,
+      nextSegmentOverrides: { shields: {} },
       originalState: clone(options.originalState || null),
       createdAt: options.createdAt || new Date().toISOString()
     };
@@ -76,7 +77,29 @@
     scenario.activeSide = survivorState.side;
     scenario.awaitingSide = survivorState.side === "A" ? "B" : "A";
     scenario.lockedState = clone(survivorState);
+    scenario.nextSegmentOverrides = {
+      shields: {
+        A: Number(segment.finalState?.A?.shields || 0),
+        B: Number(segment.finalState?.B?.shields || 0)
+      }
+    };
     scenario.status = "awaiting-incoming";
+    return scenario;
+  }
+
+  function setNextSegmentShields(scenario, side, shields) {
+    if (!scenario || !["awaiting-incoming", "active"].includes(scenario.status)) {
+      throw new Error("An active Scenario is required.");
+    }
+    if (!["A", "B"].includes(side)) throw new Error("A valid Scenario side is required.");
+    const value = Math.max(0, Math.min(2, Number(shields || 0)));
+    if (!scenario.nextSegmentOverrides) scenario.nextSegmentOverrides = { shields: {} };
+    if (!scenario.nextSegmentOverrides.shields) scenario.nextSegmentOverrides.shields = {};
+    scenario.nextSegmentOverrides.shields[side] = value;
+    if (scenario.lockedState?.side === side) {
+      scenario.lockedState.shields = value;
+      if (scenario.lockedState.combatant) scenario.lockedState.combatant.shields = value;
+    }
     return scenario;
   }
 
@@ -109,6 +132,7 @@
     createPokemonState,
     createSegment,
     lockSegment,
+    setNextSegmentShields,
     setIncomingTransition,
     continueWithIncoming,
     endScenario
