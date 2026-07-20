@@ -7,6 +7,7 @@
     "generate:great-league-even-shields:cached": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --opponents=all --ranking-model=equal-shields --full-output --matchup-cache",
     "generate:great-league-competitive-pass": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --opponents=all --ranking-model=equal-shields --full-output --weight-source=data/great-league-rankings.json --weight-mode=competitive",
     "generate:great-league-competitive-pass:cached": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --opponents=all --ranking-model=equal-shields --full-output --weight-source=data/great-league-rankings.json --weight-mode=competitive --matchup-cache",
+    "refresh:great-league-special-forms": "node tools/refresh-great-league-matchup-cache.js --pokemon=morpeko_full_belly,aegislash_shield,mimikyu --from-version=live-worker-v1 --apply",
     "generate:great-league-full": "node tools/build-great-league-meta-database.js --all-pokemon --profiles=rank1 --opponents=all --ranking-model=equal-shields --split-matchups --full-output",
     "generate:rankings": "npm run generate:great-league-even-shields",
     "generate:great-league-ranking:complete": "npm run generate:great-league-even-shields",
