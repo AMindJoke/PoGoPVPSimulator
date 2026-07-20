@@ -21,6 +21,7 @@
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
+  <script src="src/scenario/technical-review-model.js"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -3633,6 +3634,113 @@
       background: #156f8f;
       color: #fff;
     }
+    .technical-review {
+      display: none;
+      max-width: none;
+      padding: 11px 13px;
+      border-color: color-mix(in srgb, #7b4bc4 38%, var(--line));
+      background: color-mix(in srgb, var(--panel) 95%, #7b4bc4 5%);
+    }
+    body[data-view="scenario-review"].battle-results-visible .technical-review.active {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+    }
+    .technical-review-copy {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .technical-review-kicker {
+      color: #7042ad;
+      font-size: 9px;
+      font-weight: 950;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .technical-review-copy strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .technical-review-copy small {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.3;
+    }
+    .technical-review-actions,
+    .technical-review-modes,
+    .technical-review-branches {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .technical-review-actions {
+      flex-wrap: wrap;
+    }
+    .technical-review button {
+      min-height: 30px;
+      padding: 5px 10px;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+    .technical-review-modes button,
+    .technical-review-branches button {
+      border-color: var(--line);
+      background: var(--panel);
+      color: var(--ink);
+    }
+    .technical-review button.active {
+      border-color: #7042ad;
+      background: #7042ad;
+      color: #fff;
+    }
+    .technical-review-result {
+      grid-column: 1 / -1;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    .technical-review.has-result .technical-review-result { display: flex; }
+    .technical-review-impact {
+      min-width: 0;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .technical-review-impact.material { color: #a22d55; }
+    .timeline-block.technical-eligible {
+      outline: 2px solid rgba(112, 66, 173, .5);
+      outline-offset: 2px;
+      cursor: crosshair;
+    }
+    .timeline-block.technical-selected {
+      outline-color: #7b4bc4;
+      box-shadow: 0 0 0 4px rgba(123, 75, 196, .16);
+    }
+    .timeline-block.technical-event {
+      display: grid;
+      place-items: center;
+      min-width: 24px;
+      height: 20px;
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 950;
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(23,33,47,.18);
+    }
+    .timeline-block.technical-lag { background: #d17818; }
+    .timeline-block.technical-dre { background: #b13978; }
+    body.technical-review-branch .timeline {
+      box-shadow: 0 0 0 2px rgba(123,75,196,.3), 0 0 18px rgba(123,75,196,.12), var(--shadow);
+    }
     body[data-view="scenario-review"].scenario-review-active .setup {
       isolation: isolate;
     }
@@ -6481,6 +6589,18 @@
         padding: 5px 9px;
         font-size: 10px;
       }
+      body[data-view="scenario-review"].battle-results-visible .technical-review.active {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .technical-review-actions,
+      .technical-review-modes { justify-content: flex-start; }
+      .technical-review-result {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .technical-review-branches { width: 100%; }
+      .technical-review-branches button { flex: 1; }
       .scenario-history-stack {
         inset: 7px -12px -7px 6px;
       }
@@ -8422,6 +8542,28 @@
         </div>
       </section>
 
+      <section id="technicalReview" class="technical-review" aria-live="polite" hidden>
+        <div class="technical-review-copy">
+          <span class="technical-review-kicker">Technical Review</span>
+          <strong id="technicalReviewTitle">Reconstruct a tournament incident</strong>
+          <small id="technicalReviewSummary">Choose an issue, then select an eligible action on the timeline.</small>
+        </div>
+        <div class="technical-review-actions">
+          <div class="technical-review-modes" role="group" aria-label="Technical issue">
+            <button id="technicalLagMode" type="button">1-turn lag</button>
+            <button id="technicalDreMode" type="button">DRE</button>
+          </div>
+          <button id="technicalReviewClear" class="secondary" type="button" hidden>Clear</button>
+        </div>
+        <div id="technicalReviewResult" class="technical-review-result">
+          <span id="technicalReviewImpact" class="technical-review-impact"></span>
+          <div class="technical-review-branches" role="group" aria-label="Technical review branch">
+            <button id="technicalOriginalBranch" type="button">Original</button>
+            <button id="technicalIssueBranch" type="button">With issue</button>
+          </div>
+        </div>
+      </section>
+
       <section class="manual-panel">
         <div class="manual-head">
           <h2>Manual controls</h2>
@@ -8682,6 +8824,18 @@
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
     const scenarioHistory = { A: [], B: [] };
+    let technicalReviewState = window.PvPeakTechnicalReview?.createReview?.() || {
+      mode: null,
+      selectedEventIndex: null,
+      activeBranch: "original",
+      sourceState: null,
+      originalState: null,
+      issueState: null,
+      issue: null
+    };
+    let technicalSegmentStartState = null;
+    let technicalIssueInjection = null;
+    let technicalSimulationRunning = false;
     let matchupInspectorOpen = false;
     let matchupInspectorScrollPending = false;
     const rankCache = new Map();
@@ -8872,6 +9026,11 @@
       $("battleCta").onclick = runBattleToEnd;
       $("scenarioLockState").onclick = lockScenarioState;
       $("scenarioEnd").onclick = endScenarioReview;
+      $("technicalLagMode").onclick = () => setTechnicalReviewMode("one-turn-lag");
+      $("technicalDreMode").onclick = () => setTechnicalReviewMode("dre");
+      $("technicalReviewClear").onclick = clearTechnicalReview;
+      $("technicalOriginalBranch").onclick = () => showTechnicalReviewBranch("original");
+      $("technicalIssueBranch").onclick = () => showTechnicalReviewBranch("issue");
       $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
@@ -8942,7 +9101,9 @@
       $("timelineScroll").addEventListener("click", event => {
         const block = event.target.closest("[data-event-index]");
         if (!block) return;
-        selectedTimelineIndex = Number(block.dataset.eventIndex);
+        const index = Number(block.dataset.eventIndex);
+        if (handleTechnicalTimelineSelection(index)) return;
+        selectedTimelineIndex = index;
         highlightTimelineIndex(selectedTimelineIndex);
       });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
@@ -11006,6 +11167,8 @@
 
     function resetBattleStateFromSetup() {
       exitPreviewMode();
+      clearTechnicalReview({ restore: false, renderNow: false });
+      technicalSegmentStartState = null;
       if (scenarioState && !scenarioApplyingTransition) endScenarioReview({ renderNow: false });
       cancelShieldMatrixCalculation();
       if (!setupReadyForBattle()) {
@@ -11843,6 +12006,7 @@
 
     function useFast(attacker, defender) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      if (applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       const energyBefore = attacker.energy;
       const damage = apply(attacker, defender, attacker.fast, false);
       const energyGained = attacker.energy - energyBefore;
@@ -11879,6 +12043,7 @@
         render();
         return false;
       }
+      if (applyTechnicalIssueIfNeeded("dre", attacker, defender, move)) return false;
       const formChanges = [];
       const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
       if (chargedActivationChange) formChanges.push(chargedActivationChange);
@@ -13322,6 +13487,7 @@
     function opponentPressureForcesThrow(attacker, defender) {
       if (!attacker || !defender) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return true;
+      if (fastsToSafeChargeTiming(attacker, defender) > 0) return false;
       return opponentChargedThreatens(attacker, defender);
     }
 
@@ -13362,9 +13528,40 @@
       const damage = estimate(attacker, defender, move);
       if (damage >= defender.hp && !shouldShield(defender, move, damage)) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return false;
-      if (opponentChargedThreatens(attacker, defender)) return false;
+      const safeTimingFasts = fastsToSafeChargeTiming(attacker, defender);
+      if (opponentChargedThreatens(attacker, defender) && safeTimingFasts <= 0) return false;
       if (opponentCanPunishTimingWait(attacker, defender, attackerFastTurns, opponentCooldown)) return false;
-      return `optimizing charged timing; opponent cooldown ${opponentCooldown}, target ${targetCooldown}`;
+      return safeTimingFasts > 0
+        ? `optimizing charged timing; ${safeTimingFasts} fast${safeTimingFasts === 1 ? "" : "s"} fit before the opponent is free`
+        : `optimizing charged timing; opponent cooldown ${opponentCooldown}, target ${targetCooldown}`;
+    }
+
+    function fastsToSafeChargeTiming(attacker, defender) {
+      if (!attacker?.fast || !defender?.fast) return 0;
+      const attackerTurn = Number(battleTurns[attacker.trainer] || 0);
+      const defenderTurn = Number(battleTurns[defender.trainer] || 0);
+      const attackerFastTurns = Math.max(1, Number(attacker.fast.turns || 1));
+      const defenderFastTurns = Math.max(1, Number(defender.fast.turns || 1));
+      const targetCooldown = optimalChargeTimingTarget(attackerFastTurns, defenderFastTurns);
+      if (targetCooldown <= 0) return 0;
+
+      let defenderReadyTurn = defenderTurn;
+      if (defenderReadyTurn <= attackerTurn) {
+        const defenderChargeReady = validChargedMoves(defender).some(move => defender.energy >= move.energyCost);
+        if (defenderChargeReady) return 0;
+        defenderReadyTurn = attackerTurn + defenderFastTurns;
+        if (estimate(defender, attacker, defender.fast) >= attacker.hp) return 0;
+      }
+
+      const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
+      for (let fasts = 1; fasts <= 4; fasts++) {
+        const throwTurn = attackerTurn + fasts * attackerFastTurns;
+        if (throwTurn >= defenderReadyTurn) break;
+        if (attacker.energy + fasts * gain > 100) break;
+        const cooldownAtThrow = defenderReadyTurn - throwTurn;
+        if (cooldownAtThrow > 0 && cooldownAtThrow <= targetCooldown) return fasts;
+      }
+      return 0;
     }
 
     function optimalChargeTimingTarget(attackerFastTurns, defenderFastTurns) {
@@ -13432,6 +13629,7 @@
       timelinePresentationPending = true;
       document.body.classList.add("battle-results-visible");
       if (!left || !right || battleEnded()) startBattle({ skipRender: true });
+      prepareTechnicalSegmentStart();
       render();
       if (options.scrollTarget === "preview") scrollPreviewIntoView();
       else if (options.scrollTarget === "timeline") scrollTimelineIntoView();
@@ -13952,6 +14150,7 @@
       }
       renderMatrixPreview();
       renderScenarioReview();
+      renderTechnicalReview();
       renderScenarioStacks();
     }
 
@@ -14113,6 +14312,280 @@
       if ($("matchupInspector")) $("matchupInspector").innerHTML = "";
     }
 
+    function cloneTechnicalValue(value) {
+      if (value == null) return value;
+      if (typeof structuredClone === "function") return structuredClone(value);
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function captureTechnicalRuntimeState() {
+      return cloneTechnicalValue({
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns,
+        selectedTimelineIndex,
+        previewTimelineIndex,
+        previewingTimeline,
+        p1Shields: $("p1Shields")?.value,
+        p2Shields: $("p2Shields")?.value,
+        p1StartEnergy: $("p1StartEnergy")?.value,
+        p2StartEnergy: $("p2StartEnergy")?.value,
+        lastBattleDecisionTrace,
+        lastTacticalPatternSummary,
+        lastWinConditionSummary,
+        battleInsights
+      });
+    }
+
+    function restoreTechnicalRuntimeState(state) {
+      if (!state) return false;
+      const restored = cloneTechnicalValue(state);
+      left = restored.left;
+      right = restored.right;
+      log = restored.log || [];
+      timeline = restored.timeline || [];
+      initialTimelineState = restored.initialTimelineState || null;
+      battleTurns = restored.battleTurns || { A: 0, B: 0 };
+      selectedTimelineIndex = restored.selectedTimelineIndex ?? null;
+      previewTimelineIndex = restored.previewTimelineIndex ?? null;
+      previewingTimeline = !!restored.previewingTimeline;
+      if ($("p1Shields")) $("p1Shields").value = restored.p1Shields ?? 0;
+      if ($("p2Shields")) $("p2Shields").value = restored.p2Shields ?? 0;
+      if ($("p1StartEnergy")) $("p1StartEnergy").value = restored.p1StartEnergy ?? 0;
+      if ($("p2StartEnergy")) $("p2StartEnergy").value = restored.p2StartEnergy ?? 0;
+      lastBattleDecisionTrace = restored.lastBattleDecisionTrace || null;
+      lastTacticalPatternSummary = restored.lastTacticalPatternSummary || null;
+      lastWinConditionSummary = restored.lastWinConditionSummary || null;
+      battleInsights = restored.battleInsights || [];
+      return true;
+    }
+
+    function technicalSegmentStartIndex() {
+      return Number(technicalSegmentStartState?.timeline?.length || 0);
+    }
+
+    function prepareTechnicalSegmentStart() {
+      if (document.body.dataset.view !== "scenario-review" || technicalSimulationRunning) return;
+      if (technicalReviewState.issue) clearTechnicalReview({ restore: true, renderNow: false });
+      technicalSegmentStartState = captureTechnicalRuntimeState();
+      window.PvPeakTechnicalReview?.clearReview?.(technicalReviewState);
+    }
+
+    function setTechnicalReviewMode(mode) {
+      if (document.body.dataset.view !== "scenario-review" || !timeline.length) return;
+      if (technicalReviewState.issue) clearTechnicalReview({ restore: true, renderNow: false });
+      technicalReviewState.mode = technicalReviewState.mode === mode ? null : mode;
+      technicalReviewState.selectedEventIndex = null;
+      renderTechnicalReview();
+      renderTimeline();
+    }
+
+    function technicalIssueForEvent(eventIndex) {
+      const api = window.PvPeakTechnicalReview;
+      if (!api || !technicalReviewState.mode) return null;
+      const segmentStart = technicalSegmentStartIndex();
+      return technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG
+        ? api.createOneTurnLagIssue(timeline, eventIndex, segmentStart)
+        : api.createDreIssue(timeline, eventIndex, segmentStart);
+    }
+
+    function handleTechnicalTimelineSelection(eventIndex) {
+      if (document.body.dataset.view !== "scenario-review" || !technicalReviewState.mode) return false;
+      const issue = technicalIssueForEvent(eventIndex);
+      if (!issue || !technicalSegmentStartState) return true;
+      simulateTechnicalIssue(issue);
+      return true;
+    }
+
+    function simulateTechnicalIssue(issue) {
+      const observedState = captureTechnicalRuntimeState();
+      restoreTechnicalRuntimeState(technicalSegmentStartState);
+      technicalSimulationRunning = true;
+      technicalIssueInjection = {
+        type: issue.type,
+        trainer: issue.trainer,
+        targetOrdinal: issue.actionOrdinal,
+        counts: { A: 0, B: 0 },
+        issue,
+        applied: false
+      };
+      const previousSuppress = suppressRender;
+      const previousTrace = battleDecisionTraceEnabled;
+      const previousCounterfactuals = battleDecisionCounterfactualsEnabled;
+      suppressRender = true;
+      battleDecisionTraceEnabled = false;
+      battleDecisionCounterfactualsEnabled = false;
+      runAutomaticBattleToEnd(1000);
+      const reconstructedState = captureTechnicalRuntimeState();
+      suppressRender = previousSuppress;
+      battleDecisionTraceEnabled = previousTrace;
+      battleDecisionCounterfactualsEnabled = previousCounterfactuals;
+      technicalIssueInjection = null;
+      technicalSimulationRunning = false;
+
+      technicalReviewState.issue = cloneTechnicalValue(issue);
+      technicalReviewState.selectedEventIndex = issue.eventIndex;
+      technicalReviewState.mode = null;
+      technicalReviewState.sourceState = observedState;
+      if (issue.type === "dre") {
+        technicalReviewState.originalState = reconstructedState;
+        technicalReviewState.issueState = observedState;
+        technicalReviewState.activeBranch = "issue";
+        restoreTechnicalRuntimeState(observedState);
+      } else {
+        technicalReviewState.originalState = observedState;
+        technicalReviewState.issueState = reconstructedState;
+        technicalReviewState.activeBranch = "issue";
+        restoreTechnicalRuntimeState(reconstructedState);
+      }
+      selectedTimelineIndex = null;
+      document.body.classList.add("technical-review-branch");
+      render();
+    }
+
+    function applyTechnicalIssueIfNeeded(kind, attacker, defender, move) {
+      const injection = technicalIssueInjection;
+      if (!injection || injection.type !== kind || attacker.trainer !== injection.trainer || chargedContinuationDepth > 0) return false;
+      injection.counts[attacker.trainer] = Number(injection.counts[attacker.trainer] || 0) + 1;
+      if (injection.applied || injection.counts[attacker.trainer] !== injection.targetOrdinal) return false;
+      injection.applied = true;
+      const start = Number(battleTurns[attacker.trainer] || 0);
+      if (kind === "one-turn-lag") {
+        timeline.push({
+          trainer: attacker.trainer,
+          move,
+          kind: "technical-lag",
+          issueType: kind,
+          start,
+          duration: 1,
+          damage: 0,
+          state: battleSnapshot()
+        });
+        battleTurns[attacker.trainer] = start + 1;
+        add(`T${start}-${start + 1} - Technical review: ${attacker.p.name} loses one turn before ${move.name}.`, "info");
+        return true;
+      }
+      attacker.hp = 0;
+      timeline.push({
+        trainer: attacker.trainer,
+        move,
+        kind: "technical-dre",
+        issueType: kind,
+        start,
+        duration: 1,
+        damage: Number(injection.issue?.pendingDamage || 0),
+        pendingFastMoveName: injection.issue?.fastMoveName || "Fast Move",
+        state: battleSnapshot()
+      });
+      add(`T${start} - No DRE branch: ${injection.issue?.fastMoveName || "Fast Move"} registers first; ${move.name} is denied.`, "ko");
+      finish();
+      return true;
+    }
+
+    function technicalOutcome(state) {
+      const a = state?.left;
+      const b = state?.right;
+      if (!a || !b) return { winner: "-", hpA: 0, hpB: 0, energyA: 0, energyB: 0 };
+      return {
+        winner: a.hp <= 0 && b.hp <= 0 ? "Tie" : a.hp > 0 ? "A" : "B",
+        hpA: Math.max(0, Number(a.hp || 0)),
+        hpB: Math.max(0, Number(b.hp || 0)),
+        energyA: Math.max(0, Number(a.energy || 0)),
+        energyB: Math.max(0, Number(b.energy || 0))
+      };
+    }
+
+    function technicalImpactSummary() {
+      const original = technicalOutcome(technicalReviewState.originalState);
+      const issue = technicalOutcome(technicalReviewState.issueState);
+      if (original.winner !== issue.winner) return { material: true, text: `Winner changes: ${original.winner} → ${issue.winner}.` };
+      const hpDeltaA = issue.hpA - original.hpA;
+      const hpDeltaB = issue.hpB - original.hpB;
+      const energyDeltaA = issue.energyA - original.energyA;
+      const energyDeltaB = issue.energyB - original.energyB;
+      return {
+        material: false,
+        text: `Winner unchanged (${issue.winner}). Resource change: A ${hpDeltaA >= 0 ? "+" : ""}${hpDeltaA} HP / ${energyDeltaA >= 0 ? "+" : ""}${energyDeltaA} energy; B ${hpDeltaB >= 0 ? "+" : ""}${hpDeltaB} HP / ${energyDeltaB >= 0 ? "+" : ""}${energyDeltaB} energy.`
+      };
+    }
+
+    function showTechnicalReviewBranch(branch) {
+      if (!technicalReviewState.issue) return;
+      const state = branch === "issue" ? technicalReviewState.issueState : technicalReviewState.originalState;
+      if (!restoreTechnicalRuntimeState(state)) return;
+      technicalReviewState.activeBranch = branch;
+      document.body.classList.toggle("technical-review-branch", branch === "issue");
+      render();
+    }
+
+    function clearTechnicalReview(options = {}) {
+      if (options.restore !== false && (technicalReviewState.sourceState || technicalReviewState.originalState)) {
+        restoreTechnicalRuntimeState(technicalReviewState.sourceState || technicalReviewState.originalState);
+      }
+      window.PvPeakTechnicalReview?.clearReview?.(technicalReviewState);
+      technicalIssueInjection = null;
+      technicalSimulationRunning = false;
+      document.body.classList.remove("technical-review-branch");
+      if (options.renderNow !== false) render();
+    }
+
+    function renderTechnicalTimelineState() {
+      const api = window.PvPeakTechnicalReview;
+      if (!api || document.body.dataset.view !== "scenario-review") return;
+      document.querySelectorAll("#timelineScroll [data-event-index]").forEach(block => {
+        const index = Number(block.dataset.eventIndex);
+        const event = timeline[index];
+        let eligible = false;
+        if (technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG) {
+          eligible = index >= technicalSegmentStartIndex() && event?.kind === "fast";
+        } else if (technicalReviewState.mode === api.ISSUE_TYPES.DRE) {
+          eligible = !!api.createDreIssue(timeline, index, technicalSegmentStartIndex());
+        }
+        block.classList.toggle("technical-eligible", eligible);
+        block.classList.toggle("technical-selected", technicalReviewState.activeBranch === "original" && technicalReviewState.selectedEventIndex === index);
+      });
+    }
+
+    function renderTechnicalReview() {
+      const box = $("technicalReview");
+      if (!box) return;
+      const active = document.body.dataset.view === "scenario-review" && !!timeline.length;
+      box.hidden = !active;
+      box.classList.toggle("active", active);
+      if (!active) return;
+      const issue = technicalReviewState.issue;
+      const mode = technicalReviewState.mode;
+      box.classList.toggle("has-result", !!issue);
+      $("technicalLagMode").classList.toggle("active", mode === "one-turn-lag");
+      $("technicalDreMode").classList.toggle("active", mode === "dre");
+      $("technicalReviewClear").hidden = !issue && !mode;
+      if (issue) {
+        const pokemon = issue.trainer === "A" ? technicalReviewState.issueState?.left?.p?.name : technicalReviewState.issueState?.right?.p?.name;
+        const description = issue.type === "one-turn-lag"
+          ? `${pokemon || `Pokemon ${issue.trainer}`} · ${issue.moveName} delayed by 1 turn at T${issue.turn}`
+          : `${pokemon || `Pokemon ${issue.trainer}`} · ${issue.chargedMoveName} fires at T${issue.turn}`;
+        $("technicalReviewTitle").textContent = issue.type === "one-turn-lag" ? "One-turn lag reconstruction" : "DRE reconstruction";
+        $("technicalReviewSummary").textContent = description;
+        const impact = technicalImpactSummary();
+        $("technicalReviewImpact").textContent = impact.text;
+        $("technicalReviewImpact").classList.toggle("material", impact.material);
+        $("technicalOriginalBranch").textContent = issue.type === "dre" ? "No DRE" : "Original";
+        $("technicalIssueBranch").textContent = issue.type === "dre" ? "DRE occurred" : "With lag";
+        $("technicalOriginalBranch").classList.toggle("active", technicalReviewState.activeBranch === "original");
+        $("technicalIssueBranch").classList.toggle("active", technicalReviewState.activeBranch === "issue");
+      } else {
+        $("technicalReviewTitle").textContent = mode ? "Select an eligible timeline action" : "Reconstruct a tournament incident";
+        $("technicalReviewSummary").textContent = mode === "one-turn-lag"
+          ? "Select the Fast Move that was delayed. The battle will be recalculated from that point."
+          : mode === "dre"
+            ? "Select a Charged Move that fired on a lethal Fast damage turn."
+            : "Choose an issue, then select an eligible action on the timeline.";
+      }
+    }
+
     function renderScenarioReview() {
       const box = $("scenarioReview");
       const lockButton = $("scenarioLockState");
@@ -14123,6 +14596,8 @@
       box.hidden = !active;
       box.classList.toggle("active", active);
       if (!active) return;
+      lockButton.disabled = !!technicalReviewState.issue;
+      lockButton.title = technicalReviewState.issue ? "Clear Technical Review before locking this state" : "";
 
       if (scenarioState?.status === "awaiting-incoming") {
         const sideName = scenarioState.awaitingSide === "A" ? "Pokemon A" : "Pokemon B";
@@ -14175,6 +14650,8 @@
     }
 
     function endScenarioReview(options = {}) {
+      clearTechnicalReview({ restore: false, renderNow: false });
+      technicalSegmentStartState = null;
       if (scenarioState) scenarioApi()?.endScenario(scenarioState);
       scenarioState = null;
       scenarioSegmentInitialState = null;
@@ -16444,6 +16921,7 @@
       renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderScenarioTimelineTransitions(chargeSlots, turnPx);
+      renderTechnicalTimelineState();
       if (isFit) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
     }
@@ -16574,6 +17052,14 @@
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
         if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
+        if (event.kind === "technical-lag" || event.kind === "technical-dre") {
+          const baseTurn = visualTurn(event.start, chargeSlots, false);
+          const label = event.kind === "technical-lag" ? "+1T" : "DRE";
+          const title = event.kind === "technical-lag"
+            ? `One-turn lag before ${event.move?.name || "Fast Move"}`
+            : `${event.pendingFastMoveName || "Fast Move"} registers before ${event.move?.name || "Charged Move"}`;
+          return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}" data-event-index="${index}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
+        }
         const isShield = event.kind === "shield" || event.kind === "form-protect";
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);

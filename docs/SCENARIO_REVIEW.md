@@ -52,6 +52,17 @@ Battle does not depend on Scenario and should remain usable independently.
 
 The replaced Pokemon remains visible as a subdued card layer behind the incoming Pokemon. This stack communicates history; it is not decorative.
 
+## Technical Review
+
+Technical Review reconstructs tournament incidents from a selected action in the active timeline segment. It keeps an immutable snapshot of the observed segment and recalculates a temporary comparison branch through the normal battle engine.
+
+- **One-turn lag:** select a Fast Move. The selected action starts one turn later and every following decision is recalculated.
+- **DRE:** select a compatible Charged Move at a lethal Fast-damage boundary. The comparison shows the normal damage-first resolution against the observed branch where the Charged Move fired.
+- **Branch comparison:** the judge can switch between the original/no-issue state and the issue state without changing the saved scenario.
+- **Clear:** restores the exact state that existed before the reconstruction.
+
+Technical Review reports outcome and resource differences but does not make an automatic tournament ruling. DRE availability is evidence-based: incompatible Charged events are not selectable.
+
 ## Deferred Scope
 
-This first iteration does not implement teams, switch timers, branching timelines, judge comparisons, reports, replay export, or Team Builder integration.
+This iteration does not implement teams, switch timers, unrestricted hypothetical branches, reports, replay export, or Team Builder integration.
