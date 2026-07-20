@@ -5,7 +5,7 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v7";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v8";
   const TRACE_SCHEMA_VERSION = 1;
   const REGRESSION_SCHEMA_VERSION = 1;
 
@@ -38,6 +38,7 @@
 
   const BUG_CATEGORIES = Object.freeze([
     "charged-move-choice",
+    "dominated-branch",
     "buff-debuff-valuation",
     "shielding",
     "baiting",

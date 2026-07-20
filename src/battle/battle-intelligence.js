@@ -1,0 +1,691 @@
+"use strict";
+
+function createPvPeakBattleIntelligenceApi() {
+  const ACTION_TYPES = Object.freeze({
+    FAST_MOVE: "fast_move",
+    CHARGED_MOVE: "charged_move",
+    SHIELD: "shield",
+    NO_SHIELD: "no_shield",
+    WAIT: "wait",
+    SWITCH: "switch"
+  });
+
+  const PRIORITY_CLASSES = Object.freeze({
+    LEGALITY: 0,
+    SURVIVAL_LETHAL: 10,
+    OUTCOME_EFFECT: 20,
+    CONTINUATION: 30,
+    RESOURCE: 40,
+    FALLBACK: 50
+  });
+
+  const POLICIES = Object.freeze({
+    FAST: Object.freeze({ id: "FAST", maxDepth: 1, maxCandidates: 2, maxStates: 96, timeBudgetMs: 4, tracing: false }),
+    STANDARD: Object.freeze({ id: "STANDARD", maxDepth: 2, maxCandidates: 4, maxStates: 384, timeBudgetMs: 15, tracing: true }),
+    DEEP_REVIEW: Object.freeze({ id: "DEEP_REVIEW", maxDepth: 4, maxCandidates: 6, maxStates: 2000, timeBudgetMs: 75, tracing: true })
+  });
+
+  const RULES = Object.freeze([
+    rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK"),
+    rule("BI_THROW_BEFORE_FAINT", "Throw before fainting", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT"),
+    rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT"),
+    rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE"),
+    rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE"),
+    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.OUTCOME_EFFECT, "BETTER_PROJECTED_OUTCOME", true),
+    rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
+    rule("BI_SHIELD_POLICY", "Respect explicit shield policy", PRIORITY_CLASSES.LEGALITY, "SHIELD_POLICY_ALWAYS"),
+    rule("BI_SHIELD_PREVENTS_KO", "Shield to prevent knockout", PRIORITY_CLASSES.SURVIVAL_LETHAL, "SHIELD_PREVENTS_KO"),
+    rule("BI_SHIELD_PRESERVES_WIN", "Shield preserves winning continuation", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_PRESERVES_WIN_CONDITION", true),
+    rule("BI_SHIELD_AVOIDS_FARM", "Shield avoids farm range", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_AVOIDS_FARM_RANGE"),
+    rule("BI_SHIELD_HEAVY_PRESSURE", "Shield heavy pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_HEAVY_PRESSURE"),
+    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT"),
+    rule("BI_TACTICAL_PLAN", "Resolve tactical plan", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
+    rule("BI_LEGACY_ADAPTER", "Compatibility planner", PRIORITY_CLASSES.FALLBACK, "HEURISTIC_FALLBACK")
+  ]);
+
+  const ruleMap = new Map(RULES.map(item => [item.id, item]));
+  const fastPathCache = new Map();
+  const MAX_CACHE_ENTRIES = 2048;
+  const statistics = createStatistics();
+
+  function rule(id, name, priorityClass, reasonCode, requiresContinuationSearch = false) {
+    return Object.freeze({ id, name, description: name, priorityClass, reasonCode, requiresContinuationSearch });
+  }
+
+  function createStatistics() {
+    return {
+      selections: 0,
+      fastPathSelections: 0,
+      continuationSearches: 0,
+      evaluatedCandidates: 0,
+      cacheHits: 0,
+      cacheMisses: 0,
+      maxDecisionMs: 0,
+      totalDecisionMs: 0
+    };
+  }
+
+  function resetStatistics() {
+    Object.assign(statistics, createStatistics());
+  }
+
+  function getStatistics() {
+    return {
+      ...statistics,
+      averageDecisionMs: statistics.selections ? statistics.totalDecisionMs / statistics.selections : 0,
+      cacheHitRate: statistics.cacheHits + statistics.cacheMisses
+        ? statistics.cacheHits / (statistics.cacheHits + statistics.cacheMisses)
+        : 0,
+      cacheSize: fastPathCache.size
+    };
+  }
+
+  function clearCache() {
+    fastPathCache.clear();
+  }
+
+  function resolvePolicy(input) {
+    if (input && typeof input === "object" && input.id && POLICIES[input.id]) return POLICIES[input.id];
+    const id = String(input || "FAST").toUpperCase();
+    return POLICIES[id] || POLICIES.FAST;
+  }
+
+  function normalizeAction(action = {}, side = null) {
+    const type = action.type === "fast" ? ACTION_TYPES.FAST_MOVE
+      : action.type === "charged" ? ACTION_TYPES.CHARGED_MOVE
+        : action.type;
+    return {
+      type,
+      side: action.side || side || null,
+      moveId: action.moveId || action.move?.id || null,
+      target: action.target || null,
+      timing: action.startTurn == null ? action.timing || null : { startTurn: Number(action.startTurn) },
+      metadata: action.metadata || null,
+      move: action.move || null,
+      moveIndex: Number.isInteger(action.moveIndex) ? action.moveIndex : null,
+      originalAction: action
+    };
+  }
+
+  function createCandidate(action, input = {}) {
+    return {
+      action,
+      legal: input.legal !== false,
+      priorityClass: input.priorityClass ?? PRIORITY_CLASSES.FALLBACK,
+      sourceRuleIds: [...(input.sourceRuleIds || [])],
+      tacticalScore: Number(input.tacticalScore || 0),
+      continuationScore: input.continuationScore == null ? null : Number(input.continuationScore),
+      confidence: Number(input.confidence ?? .5),
+      reasonCodes: [...(input.reasonCodes || [])],
+      requiresContinuationSearch: !!input.requiresContinuationSearch,
+      evidence: input.evidence || null
+    };
+  }
+
+  function normalizeState(input = {}) {
+    const sides = {};
+    for (const sideId of ["A", "B"]) {
+      const side = input.sides?.[sideId] || {};
+      sides[sideId] = {
+        id: side.id || side.pokemonId || null,
+        formId: side.formId || side.currentFormId || null,
+        hp: numeric(side.hp),
+        maxHp: numeric(side.maxHp),
+        energy: clamp(numeric(side.energy), 0, 100),
+        shields: clamp(numeric(side.shields), 0, 2),
+        attack: numeric(side.attack),
+        defense: numeric(side.defense),
+        attackStage: numeric(side.attackStage),
+        defenseStage: numeric(side.defenseStage),
+        readyTurn: Math.max(0, numeric(side.readyTurn)),
+        fastMove: side.fastMove || null,
+        chargedMoves: (side.chargedMoves || []).filter(Boolean),
+        baiting: side.baiting || null,
+        shieldMode: side.shieldMode || null,
+        linePolicy: side.linePolicy || null,
+        mechanicState: stableObject(side.mechanicState || side.formState || null)
+      };
+    }
+    return {
+      currentTurn: Math.max(0, numeric(input.currentTurn)),
+      sides,
+      pendingEvents: [...(input.pendingEvents || [])]
+        .filter(Boolean)
+        .map(event => ({
+          id: event.id || null,
+          type: event.type || null,
+          sourceSide: event.sourceSide || null,
+          targetSide: event.targetSide || null,
+          moveId: event.moveId || null,
+          damage: numeric(event.damage),
+          resolveTurn: numeric(event.resolveTurn),
+          status: event.status || "pending",
+          source: event.source || null
+        }))
+        .sort(compareEvents),
+      cmpState: stableObject(input.cmpState || null),
+      delayState: stableObject(input.delayState || null)
+    };
+  }
+
+  function strategicStateKey(input, policy = "FAST") {
+    const state = normalizeState(input);
+    return strategicStateKeyFromNormalized(state, policy);
+  }
+
+  function strategicStateKeyFromNormalized(state, policy = "FAST") {
+    const compact = {
+      policy: resolvePolicy(policy).id,
+      turn: state.currentTurn,
+      sides: Object.fromEntries(["A", "B"].map(sideId => {
+        const side = state.sides[sideId];
+        return [sideId, {
+          id: side.id,
+          form: side.formId,
+          hp: side.hp,
+          maxHp: side.maxHp,
+          energy: side.energy,
+          shields: side.shields,
+          stages: [side.attackStage, side.defenseStage],
+          ready: side.readyTurn,
+          fast: moveKey(side.fastMove),
+          charged: side.chargedMoves.map(moveKey),
+          baiting: side.baiting,
+          shieldMode: side.shieldMode,
+          linePolicy: side.linePolicy,
+          mechanicState: side.mechanicState
+        }];
+      })),
+      pending: state.pendingEvents,
+      cmp: state.cmpState,
+      delay: state.delayState
+    };
+    return JSON.stringify(compact);
+  }
+
+  function selectAction(input = {}) {
+    const startedAt = now();
+    const policy = resolvePolicy(input.policy);
+    const side = input.side;
+    const context = input.context || {};
+    const legalActions = (input.legalActions || []).map(action => normalizeAction(action, side));
+    const candidates = legalActions.map(action => createCandidate(action));
+    statistics.selections++;
+    statistics.evaluatedCandidates += candidates.length;
+
+    if (!candidates.length) {
+      const result = selectionResult(null, candidates, policy, false, ["NO_LEGAL_ACTION"], "No legal action is available.");
+      finishTiming(startedAt);
+      return result;
+    }
+
+    if (candidates.length === 1) {
+      const chosen = applyRule(candidates[0], "BI_ONLY_LEGAL_ACTION", 100, .99);
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Only one legal action is available.");
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const charged = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
+    const fast = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.FAST_MOVE);
+    if (!charged.length && fast.length) {
+      const chosen = applyRule(fast[0], "BI_ONLY_LEGAL_ACTION", 100, .99);
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Fast Move is the only legal progression.");
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const state = normalizeState(input.state);
+    const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|${legalActions.map(actionKey).join(",")}`;
+    const cached = fastPathCache.get(cacheKey);
+    if (cached) {
+      const action = legalActions.find(item => actionKey(item) === cached.actionKey);
+      if (action) {
+        statistics.cacheHits++;
+        const result = resultFromCached(action, candidates, cached, policy);
+        finishTiming(startedAt);
+        return result;
+      }
+    }
+    statistics.cacheMisses++;
+
+    const lethal = charged
+      .filter(candidate => isGuaranteedLethal(candidate, state, side, context))
+      .sort((a, b) => actionEnergyCost(a.action) - actionEnergyCost(b.action) || damageFor(b, context) - damageFor(a, context) || stableCandidateOrder(a, b))[0];
+    if (lethal) {
+      const chosen = applyRule(lethal, "BI_GUARANTEED_LETHAL", 1000, .99, {
+        damage: damageFor(lethal, context),
+        targetHp: state.sides[opponentOf(side)]?.hp || 0
+      });
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Lowest-cost legal Charged Move guarantees the knockout.");
+      cacheFastPath(cacheKey, result);
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const pendingLethal = nextPendingLethal(state, side);
+    if (pendingLethal && charged.length) {
+      const chosen = selectChargedThroughAdapter(charged, context)
+        || [...charged].sort((a, b) => damageFor(b, context) - damageFor(a, context) || actionEnergyCost(a.action) - actionEnergyCost(b.action) || stableCandidateOrder(a, b))[0];
+      applyRule(chosen, "BI_THROW_BEFORE_FAINT", 900, .98, { pendingEventId: pendingLethal.id, resolveTurn: pendingLethal.resolveTurn });
+      applyRule(chosen, "BI_REACHABLE_CHARGED", 100, .98);
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, `Pending ${pendingLethal.moveId || "Fast Move"} damage creates a final Charged Move window.`);
+      cacheFastPath(cacheKey, result);
+      finishTiming(startedAt);
+      return result;
+    }
+
+    if (charged.length && context.opponentLethalBeforeNextWindow === true) {
+      const chosen = selectChargedThroughAdapter(charged, context) || charged.sort(stableCandidateOrder)[0];
+      applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Another Fast Move gives the opponent a lethal action window.");
+      cacheFastPath(cacheKey, result);
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const meaningful = pruneDominatedCandidates(candidates, context);
+    for (const candidate of meaningful) {
+      if (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || !hasGuaranteedEffect(candidate, context)) continue;
+      applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
+    }
+
+    if (typeof context.evaluateContinuation === "function") {
+      const searchCandidates = meaningful
+        .filter(candidate => candidate.requiresContinuationSearch)
+        .slice(0, policy.maxCandidates);
+      if (searchCandidates.length > 1) {
+        statistics.continuationSearches++;
+        const searched = boundedContinuation(searchCandidates, state, policy, context, startedAt);
+        if (searched) {
+          const result = selectionResult(searched, candidates, policy, false, searched.reasonCodes, "Bounded continuation found the strongest line.");
+          finishTiming(startedAt);
+          return result;
+        }
+      }
+    }
+
+    const tacticalAdvice = context.tacticalAdvice || (typeof context.getTacticalAdvice === "function"
+      ? context.getTacticalAdvice(meaningful.map(candidate => candidate.action))
+      : null);
+    const tactical = selectFromTacticalAdvice(meaningful, tacticalAdvice);
+    if (tactical) {
+      applyRule(tactical.candidate, "BI_TACTICAL_PLAN", 0, tactical.confidence, tactical.advice);
+      if (tactical.advice.reasonCode && !tactical.candidate.reasonCodes.includes(tactical.advice.reasonCode)) {
+        tactical.candidate.reasonCodes.push(tactical.advice.reasonCode);
+      }
+      const result = selectionResult(
+        tactical.candidate,
+        candidates,
+        policy,
+        false,
+        tactical.candidate.reasonCodes,
+        tactical.advice.reason || "Structured tactical evidence selected the action."
+      );
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const delegated = selectThroughCompatibilityAdapter(meaningful, context);
+    if (delegated) {
+      applyRule(delegated, "BI_LEGACY_ADAPTER", 0, .8);
+      const result = selectionResult(
+        delegated,
+        candidates,
+        policy,
+        false,
+        delegated.reasonCodes,
+        delegated.evidence?.legacyReason || "Compatibility planner selected the ambiguous action."
+      );
+      finishTiming(startedAt);
+      return result;
+    }
+
+    const fallback = [...meaningful].sort(compareCandidates)[0] || candidates[0];
+    applyRule(fallback, "BI_LEGACY_ADAPTER", 0, .5);
+    const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, "Deterministic fallback selected the action.");
+    finishTiming(startedAt);
+    return result;
+  }
+
+  function selectShieldAction(input = {}) {
+    const policy = String(input.policy || "always").toLowerCase();
+    const state = input.state || {};
+    const threat = input.threat || {};
+    const counterfactual = input.counterfactual || null;
+    const shields = Math.max(0, numeric(state.shields));
+    const chargedTaken = Math.max(0, numeric(state.chargedTaken));
+    const hp = Math.max(0, numeric(state.hp));
+    const maxHp = Math.max(1, numeric(state.maxHp, hp || 1));
+    const damage = Math.max(0, numeric(threat.damage));
+    const energyCost = Math.max(0, numeric(threat.energyCost));
+
+    if (!shields) return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "No shield is available.", .99);
+    if (policy === "no-first" && chargedTaken === 0) {
+      return shieldResult(false, "BI_SHIELD_POLICY", "No First shield logic lets the first charged move through.", .99);
+    }
+    if (policy === "always") {
+      return shieldResult(true, "BI_SHIELD_POLICY", "Always shield logic uses a shield.", .99);
+    }
+    if (policy === "nuke") {
+      const shield = damage >= hp || damage >= maxHp * .35 || energyCost >= 55;
+      return shieldResult(
+        shield,
+        shield ? "BI_SHIELD_HEAVY_PRESSURE" : "BI_SAVE_SHIELD_LOW_THREAT",
+        shield ? "Nuke shield logic blocks high-threat damage." : "Nuke shield logic lets low-threat damage through.",
+        .9
+      );
+    }
+
+    if (counterfactual) {
+      const withShield = outcomeRank(counterfactual.outcomeWithShield);
+      const withoutShield = outcomeRank(counterfactual.outcomeWithoutShield);
+      if (withShield !== withoutShield) {
+        const shield = withShield > withoutShield;
+        return shieldResult(
+          shield,
+          "BI_SHIELD_PRESERVES_WIN",
+          shield
+            ? "Smart shield preserves a winning continuation."
+            : "Smart shield preserves a winning continuation by saving the shield.",
+          .98,
+          { counterfactual }
+        );
+      }
+    }
+
+    if (damage >= hp) return shieldResult(true, "BI_SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98);
+    if (threat.entersFarmRange) return shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield avoids farm range.", .9);
+    if (threat.losesChargedThreat) {
+      return shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield preserves charged-move threat.", .88);
+    }
+    const damageRatio = damage / maxHp;
+    if (shields >= 2 && (damageRatio >= .42 || energyCost >= 55)) {
+      return shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield spends from 2 shields against heavy pressure.", .82);
+    }
+    if (damageRatio >= .55) return shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield blocks major damage.", .82);
+    if (damageRatio <= .25 && energyCost < 55) {
+      return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield calls low-impact bait.", .78);
+    }
+    return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield saves shield for higher threat.", .72);
+  }
+
+  function shieldResult(shield, ruleId, explanation, confidence, evidence = null) {
+    const definition = ruleMap.get(ruleId);
+    return {
+      action: {
+        type: shield ? ACTION_TYPES.SHIELD : ACTION_TYPES.NO_SHIELD,
+        side: null,
+        moveId: null,
+        target: null,
+        timing: null,
+        metadata: null
+      },
+      shield: !!shield,
+      sourceRuleIds: definition ? [definition.id] : [],
+      reasonCodes: definition?.reasonCode ? [definition.reasonCode] : [],
+      explanation,
+      confidence,
+      evidence
+    };
+  }
+
+  function outcomeRank(value) {
+    return ({ loss: 0, draw: 1, win: 2 })[value] ?? -1;
+  }
+
+  function pruneDominatedCandidates(candidates, context = {}) {
+    return candidates.filter(candidate => {
+      if (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || hasGuaranteedEffect(candidate, context)) return true;
+      const cost = actionEnergyCost(candidate.action);
+      const damage = damageFor(candidate, context);
+      return !candidates.some(other =>
+        other !== candidate
+        && other.action.type === ACTION_TYPES.CHARGED_MOVE
+        && actionEnergyCost(other.action) === cost
+        && !hasGuaranteedEffect(other, context)
+        && damageFor(other, context) > damage
+      );
+    });
+  }
+
+  function boundedContinuation(candidates, state, policy, context, startedAt) {
+    let best = null;
+    let explored = 0;
+    for (const candidate of candidates) {
+      if (explored >= policy.maxStates || now() - startedAt >= policy.timeBudgetMs) break;
+      const evaluation = context.evaluateContinuation(candidate.action, {
+        state,
+        maxDepth: policy.maxDepth,
+        maxStates: policy.maxStates - explored,
+        timeBudgetMs: Math.max(0, policy.timeBudgetMs - (now() - startedAt))
+      });
+      explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
+      if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
+      candidate.continuationScore = Number(evaluation.score);
+      candidate.evidence = { ...(candidate.evidence || {}), continuation: evaluation };
+      if (!best || compareCandidates(candidate, best) < 0) best = candidate;
+    }
+    return best;
+  }
+
+  function selectThroughCompatibilityAdapter(candidates, context) {
+    if (typeof context.legacySelect !== "function") return null;
+    const decision = context.legacySelect(candidates.map(candidate => candidate.action));
+    const selected = matchDecision(candidates, decision);
+    if (!selected) return null;
+    selected.evidence = {
+      ...(selected.evidence || {}),
+      legacyReason: decision?.reason || null,
+      legacyDecision: decision || null
+    };
+    if (decision?.reasonCode) selected.reasonCodes.push(decision.reasonCode);
+    return selected;
+  }
+
+  function selectFromTacticalAdvice(candidates, advice) {
+    if (!advice || typeof advice !== "object") return null;
+    const advisedType = advice.type === "fast" ? ACTION_TYPES.FAST_MOVE
+      : advice.type === "charged" ? ACTION_TYPES.CHARGED_MOVE
+        : advice.type;
+    const candidate = candidates.find(item => {
+      if (advice.moveId) return item.action.moveId === advice.moveId;
+      return advisedType && item.action.type === advisedType;
+    });
+    if (!candidate) return null;
+    candidate.evidence = { ...(candidate.evidence || {}), tacticalAdvice: advice };
+    return {
+      candidate,
+      advice,
+      confidence: Math.max(0, Math.min(1, numeric(advice.confidence, .8)))
+    };
+  }
+
+  function selectChargedThroughAdapter(candidates, context) {
+    if (typeof context.legacySelectCharged !== "function") return null;
+    const decision = context.legacySelectCharged(candidates.map(candidate => candidate.action));
+    const selected = matchDecision(candidates, decision);
+    if (!selected) return null;
+    selected.evidence = {
+      ...(selected.evidence || {}),
+      legacyReason: decision?.reason || null,
+      legacyDecision: decision || null
+    };
+    return selected;
+  }
+
+  function matchDecision(candidates, decision) {
+    const moveId = decision?.moveId || decision?.move?.id || decision?.action?.moveId || null;
+    const type = decision?.type || decision?.action?.type || null;
+    return candidates.find(candidate => moveId && candidate.action.moveId === moveId)
+      || candidates.find(candidate => type && candidate.action.type === type)
+      || null;
+  }
+
+  function isGuaranteedLethal(candidate, state, side, context) {
+    const target = state.sides[opponentOf(side)];
+    if (!target || target.hp <= 0) return false;
+    const damage = damageFor(candidate, context);
+    if (damage < target.hp) return false;
+    return typeof context.willOpponentShield === "function" ? !context.willOpponentShield(candidate.action) : target.shields <= 0;
+  }
+
+  function nextPendingLethal(state, side) {
+    const hp = state.sides[side]?.hp || 0;
+    return state.pendingEvents.find(event =>
+      event.status === "pending"
+      && event.targetSide === side
+      && event.damage >= hp
+      && event.resolveTurn >= state.currentTurn
+    ) || null;
+  }
+
+  function hasGuaranteedEffect(candidate, context) {
+    if (typeof context.hasGuaranteedEffect === "function") return !!context.hasGuaranteedEffect(candidate.action);
+    const move = candidate.action.move || {};
+    if (Number(move.buffApplyChance || 0) < 1) return false;
+    return [move.buffs, move.buffsSelf, move.buffsOpponent]
+      .some(values => Array.isArray(values) && values.some(value => Number(value || 0) !== 0));
+  }
+
+  function damageFor(candidate, context) {
+    if (typeof context.estimateDamage !== "function") return numeric(candidate.action.metadata?.damage);
+    return Math.max(0, numeric(context.estimateDamage(candidate.action)));
+  }
+
+  function applyRule(candidate, ruleId, score, confidence, evidence = null) {
+    const definition = ruleMap.get(ruleId);
+    if (!candidate || !definition) return candidate;
+    if (!candidate.sourceRuleIds.includes(ruleId)) candidate.sourceRuleIds.push(ruleId);
+    if (definition.reasonCode && !candidate.reasonCodes.includes(definition.reasonCode)) candidate.reasonCodes.push(definition.reasonCode);
+    candidate.priorityClass = Math.min(candidate.priorityClass, definition.priorityClass);
+    candidate.tacticalScore += Number(score || 0);
+    candidate.confidence = Math.max(candidate.confidence, Number(confidence || 0));
+    candidate.requiresContinuationSearch ||= definition.requiresContinuationSearch;
+    if (evidence) candidate.evidence = { ...(candidate.evidence || {}), [ruleId]: evidence };
+    return candidate;
+  }
+
+  function selectionResult(candidate, candidates, policy, fastPath, reasonCodes, explanation) {
+    if (fastPath) statistics.fastPathSelections++;
+    return {
+      action: candidate?.action || null,
+      chosenCandidate: candidate || null,
+      candidates,
+      policy: policy.id,
+      fastPath: !!fastPath,
+      sourceRuleIds: [...(candidate?.sourceRuleIds || [])],
+      reasonCodes: [...new Set(reasonCodes || [])],
+      explanation: explanation || "",
+      evidence: candidate?.evidence || null
+    };
+  }
+
+  function cacheFastPath(key, result) {
+    if (!result?.action || !result.fastPath) return;
+    if (fastPathCache.size >= MAX_CACHE_ENTRIES) fastPathCache.delete(fastPathCache.keys().next().value);
+    fastPathCache.set(key, {
+      actionKey: actionKey(result.action),
+      sourceRuleIds: result.sourceRuleIds,
+      reasonCodes: result.reasonCodes,
+      explanation: result.explanation,
+      evidence: result.evidence
+    });
+  }
+
+  function resultFromCached(action, candidates, cached, policy) {
+    const candidate = candidates.find(item => actionKey(item.action) === cached.actionKey) || createCandidate(action);
+    candidate.sourceRuleIds = [...cached.sourceRuleIds];
+    candidate.reasonCodes = [...cached.reasonCodes, "MEMOIZED_RESULT"];
+    candidate.evidence = cached.evidence;
+    return selectionResult(candidate, candidates, policy, true, candidate.reasonCodes, cached.explanation);
+  }
+
+  function compareCandidates(a, b) {
+    const continuationA = a.continuationScore == null ? -Infinity : a.continuationScore;
+    const continuationB = b.continuationScore == null ? -Infinity : b.continuationScore;
+    return a.priorityClass - b.priorityClass
+      || continuationB - continuationA
+      || b.tacticalScore - a.tacticalScore
+      || stableCandidateOrder(a, b);
+  }
+
+  function stableCandidateOrder(a, b) {
+    return actionEnergyCost(a.action) - actionEnergyCost(b.action)
+      || actionKey(a.action).localeCompare(actionKey(b.action));
+  }
+
+  function actionEnergyCost(action) {
+    return Math.max(0, numeric(action?.move?.energyCost ?? action?.metadata?.energyCost));
+  }
+
+  function moveKey(move) {
+    if (!move) return null;
+    return [move.id || move.moveId || null, numeric(move.energyCost), numeric(move.energyGain), numeric(move.turns), stableObject(move.buffs), stableObject(move.buffsSelf), stableObject(move.buffsOpponent), numeric(move.buffApplyChance)].join(":");
+  }
+
+  function actionKey(action) {
+    return [action?.type || "none", action?.side || "?", action?.moveId || "none", action?.timing?.startTurn ?? ""].join(":");
+  }
+
+  function opponentOf(side) {
+    return side === "A" ? "B" : "A";
+  }
+
+  function compareEvents(a, b) {
+    return a.resolveTurn - b.resolveTurn || String(a.id || "").localeCompare(String(b.id || ""));
+  }
+
+  function stableObject(value) {
+    if (value == null || typeof value !== "object") return value;
+    if (Array.isArray(value)) return value.map(stableObject);
+    return Object.fromEntries(Object.keys(value).sort().map(key => [key, stableObject(value[key])]));
+  }
+
+  function numeric(value, fallback = 0) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function now() {
+    return typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
+  }
+
+  function finishTiming(startedAt) {
+    const duration = Math.max(0, now() - startedAt);
+    statistics.totalDecisionMs += duration;
+    statistics.maxDecisionMs = Math.max(statistics.maxDecisionMs, duration);
+  }
+
+  return Object.freeze({
+    createApi: createPvPeakBattleIntelligenceApi,
+    ACTION_TYPES,
+    PRIORITY_CLASSES,
+    POLICIES,
+    RULES,
+    normalizeAction,
+    createCandidate,
+    normalizeState,
+    strategicStateKey,
+    resolvePolicy,
+    selectAction,
+    selectShieldAction,
+    pruneDominatedCandidates,
+    clearCache,
+    resetStatistics,
+    getStatistics
+  });
+}
+
+(function exposePvPeakBattleIntelligence(root) {
+  const api = createPvPeakBattleIntelligenceApi();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  if (root) {
+    root.createPvPeakBattleIntelligenceApi = createPvPeakBattleIntelligenceApi;
+    root.PvPeakBattleIntelligence = api;
+  }
+})(typeof globalThis !== "undefined" ? globalThis : this);

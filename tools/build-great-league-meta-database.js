@@ -6,6 +6,7 @@ const vm = require("vm");
 const { runQualityPipeline } = require("./validate-great-league-dataset");
 const battleReliability = require("../src/reliability/battle-reliability");
 const turnEngine = require("../src/battle/turn-resolution-engine");
+const battleIntelligence = require("../src/battle/battle-intelligence");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
@@ -165,6 +166,8 @@ function extractLiveWorkerSource() {
       PvPeakBattleReliability: battleReliability,
       PvPeakTurnEngine: turnEngine,
       createPvPeakTurnEngineApi: turnEngine.createApi,
+      PvPeakBattleIntelligence: battleIntelligence,
+      createPvPeakBattleIntelligenceApi: battleIntelligence.createApi,
       location: { search: "" }
     },
     document: {},

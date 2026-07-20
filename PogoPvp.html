@@ -23,6 +23,7 @@
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
+  <script src="src/battle/battle-intelligence.js"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -8738,6 +8739,7 @@
     const rankingDetailsPresenter = window.PvPeakRankingDetails || {};
     const metaRankingDetails = window.GREAT_LEAGUE_RANKING_DETAILS || { entries: {} };
     const battleReliability = window.PvPeakBattleReliability || {};
+    const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     let moveMap = new Map();
@@ -9278,8 +9280,7 @@
         formChangeLogText,
         shouldShield,
         shieldDecisionForMove,
-        smartShieldDecision,
-        smartShieldDecisionFromCounterfactual,
+        battleIntelligenceShieldDecision,
         entersFarmRangeAfterDamage,
         losesChargedThreatAfterDamage,
         turnsToNextMeaningfulCharged,
@@ -9305,6 +9306,10 @@
         beginBattleDecisionTrace,
         completeBattleDecisionTrace,
         validChargedMoves,
+        battleIntelligenceState,
+        battleIntelligencePolicy,
+        selectBattleIntelligenceAction,
+        recordBattleIntelligenceDecision,
         autoAction,
         automaticBattleStep,
         runAutomaticBattleToEnd,
@@ -9400,6 +9405,7 @@
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
         const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
+        const PvPeakBattleIntelligence = (${window.createPvPeakBattleIntelligenceApi.toString()})();
         let left = null;
         let right = null;
         let log = [];
@@ -10615,30 +10621,8 @@
       timeline = [];
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
-      let guard = 0;
       suppressRender = true;
-      while (!battleEnded() && guard < 1000) {
-        const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
-        const timelineStart = timeline.length;
-        const actors = [];
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.A || 0) <= currentTurn) actors.push([left, right]);
-        if (left.hp > 0 && right.hp > 0 && (battleTurns.B || 0) <= currentTurn) actors.push([right, left]);
-        if (!actors.length) break;
-        actors.sort(([x], [y]) => {
-          const xReady = validChargedMoves(x).some(move => x.energy >= move.energyCost);
-          const yReady = validChargedMoves(y).some(move => y.energy >= move.energyCost);
-          if (xReady !== yReady) return xReady ? -1 : 1;
-          return xReady && yReady ? y.attack - x.attack : 0;
-        });
-        let progressed = false;
-        for (const [attacker, defender] of actors) {
-          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
-          progressed = autoAction(attacker, defender) || progressed;
-        }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
-        if (!progressed) break;
-        guard++;
-      }
+      runAutomaticBattleToEnd(1000);
       const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
       restoreBattleState(snapshot);
       suppressRender = false;
@@ -12132,7 +12116,7 @@
       const attackerNameAtThrow = attacker.p.name;
       const unshieldedDamage = estimate(attacker, defender, move);
       let shieldDecision = options.shielded !== undefined
-        ? { shield: !!options.shielded && defender.shields > 0, reason: "" }
+        ? { shield: !!options.shielded && defender.shields > 0, reason: "", reasonCode: null, sourceRuleIds: [] }
         : shieldDecisionForMove(defender, move, unshieldedDamage, attacker);
       let shieldCounterfactual = null;
       if (
@@ -12143,7 +12127,7 @@
       ) {
         shieldCounterfactual = buildShieldCounterfactual(attacker, defender, move, shieldDecision.shield);
         if (defender.shieldMode === "smart") {
-          const counterfactualDecision = smartShieldDecisionFromCounterfactual(shieldCounterfactual);
+          const counterfactualDecision = battleIntelligenceShieldDecision(defender, move, unshieldedDamage, attacker, shieldCounterfactual);
           if (counterfactualDecision) {
             const heuristicShielded = shieldDecision.shield;
             shieldDecision = counterfactualDecision;
@@ -12203,6 +12187,7 @@
           chosenCandidate: chosenShieldCandidate,
           counterfactual: shieldCounterfactual,
           explanation: shieldDecision.reason || (shielded ? "Always shield logic uses a shield" : "Shield logic lets the move through"),
+          reasonCode: shieldDecision.reasonCode || (shielded ? "SHIELD_POLICY_ALWAYS" : "SHIELD_SAVED_LOW_THREAT"),
           confidence: shieldDecision.reason ? .8 : .65
         });
         if (battleDecisionTraceEnabled && shieldCounterfactual && currentBattleDecisionTrace) {
@@ -12322,52 +12307,44 @@
     }
 
     function shieldDecisionForMove(defender, move, unshieldedDamage, attacker = null) {
-      if (!defender || defender.shields <= 0) return { shield: false, reason: "" };
-      if (defender.shieldMode === "no-first" && defender.chargedTaken === 0) {
-        return { shield: false, reason: "No First shield logic lets the first charged move through" };
-      }
-      if (defender.shieldMode === "nuke") {
-        const shield = unshieldedDamage >= defender.hp || unshieldedDamage >= defender.maxHp * .35 || move.energyCost >= 55;
-        return { shield, reason: shield ? "nuke shield logic blocks high threat damage" : "nuke shield logic lets low threat damage through" };
-      }
-      if (defender.shieldMode === "smart") return smartShieldDecision(defender, move, unshieldedDamage, attacker);
-      return { shield: true, reason: "" };
+      return battleIntelligenceShieldDecision(defender, move, unshieldedDamage, attacker);
     }
 
-    function smartShieldDecision(defender, move, unshieldedDamage, attacker = null) {
-      if (unshieldedDamage >= defender.hp) return { shield: true, reason: "Smart shield blocks a KO" };
-      const damageRatio = unshieldedDamage / Math.max(1, defender.maxHp);
-      if (attacker && entersFarmRangeAfterDamage(defender, attacker, unshieldedDamage)) {
-        return { shield: true, reason: "Smart shield avoids farm range" };
-      }
-      if (attacker && losesChargedThreatAfterDamage(defender, attacker, unshieldedDamage)) {
-        return { shield: true, reason: "Smart shield preserves charged-move threat" };
-      }
-      if (defender.shields >= 2 && (damageRatio >= .42 || Number(move.energyCost || 0) >= 55)) {
-        return { shield: true, reason: "Smart shield spends from 2 shields against heavy pressure" };
-      }
-      if (damageRatio >= .55) return { shield: true, reason: "Smart shield blocks major damage" };
-      if (damageRatio <= .25 && Number(move.energyCost || 0) < 55) {
-        return { shield: false, reason: "Smart shield calls low-impact bait" };
-      }
-      return { shield: false, reason: "Smart shield saves shield for higher threat" };
-    }
-
-    function smartShieldDecisionFromCounterfactual(counterfactual) {
-      if (!counterfactual) return null;
-      const outcomeRank = { loss: 0, draw: 1, win: 2 };
-      const withShield = outcomeRank[counterfactual.outcomeWithShield] ?? -1;
-      const withoutShield = outcomeRank[counterfactual.outcomeWithoutShield] ?? -1;
-      if (withShield === withoutShield) return null;
-      if (withShield > withoutShield) {
-        return {
-          shield: true,
-          reason: "Smart shield preserves a winning continuation"
-        };
-      }
+    function battleIntelligenceShieldDecision(defender, move, unshieldedDamage, attacker = null, counterfactual = null, policyOverride = null) {
+      const api = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      if (!api?.selectShieldAction || !defender) return { shield: false, reason: "", reasonCode: null, sourceRuleIds: [] };
+      const policy = policyOverride || defender.shieldMode || "always";
+      const needsSmartThreat = policy === "smart";
+      const entersFarmRange = needsSmartThreat && !!attacker
+        ? entersFarmRangeAfterDamage(defender, attacker, unshieldedDamage)
+        : false;
+      const losesChargedThreat = needsSmartThreat && !!attacker && !entersFarmRange
+        ? losesChargedThreatAfterDamage(defender, attacker, unshieldedDamage)
+        : false;
+      const result = api.selectShieldAction({
+        policy,
+        state: {
+          shields: defender.shields,
+          chargedTaken: defender.chargedTaken,
+          hp: defender.hp,
+          maxHp: defender.maxHp
+        },
+        threat: {
+          damage: unshieldedDamage,
+          energyCost: move?.energyCost || 0,
+          entersFarmRange,
+          losesChargedThreat
+        },
+        counterfactual
+      });
       return {
-        shield: false,
-        reason: "Smart shield preserves a winning continuation by saving the shield"
+        shield: !!result.shield,
+        reason: String(result.explanation || "").replace(/\.$/, ""),
+        reasonCode: result.reasonCodes?.[0] || null,
+        sourceRuleIds: result.sourceRuleIds || [],
+        confidence: result.confidence
       };
     }
 
@@ -12761,6 +12738,10 @@
     }
 
     function beginBattleDecisionTrace(options = {}) {
+      const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      intelligenceApi?.resetStatistics?.();
       currentBattleDecisionTrace = {
         schemaVersion: 1,
         battleId: options.battleId || null,
@@ -12777,15 +12758,126 @@
 
     function completeBattleDecisionTrace() {
       if (!currentBattleDecisionTrace) return null;
+      const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
       currentBattleDecisionTrace.finalState = {
         A: traceCombatantState(left),
         B: traceCombatantState(right)
       };
+      currentBattleDecisionTrace.intelligenceStats = intelligenceApi?.getStatistics?.() || null;
       return JSON.parse(JSON.stringify(currentBattleDecisionTrace));
     }
 
     function validChargedMoves(combatant) {
       return (combatant && Array.isArray(combatant.charged) ? combatant.charged : []).filter(Boolean);
+    }
+
+    function battleIntelligenceState(currentTurn = null) {
+      if (!left || !right) return null;
+      const turnState = turnEngineState(currentTurn);
+      const sideState = combatant => ({
+        id: combatant.p?.id || combatant.trainer,
+        formId: combatant.currentFormId || combatant.p?.id || null,
+        hp: combatant.hp,
+        maxHp: combatant.maxHp,
+        energy: combatant.energy,
+        shields: combatant.shields,
+        attack: combatant.attack,
+        defense: combatant.defense,
+        attackStage: combatant.attackStage,
+        defenseStage: combatant.defenseStage,
+        readyTurn: battleTurns[combatant.trainer],
+        fastMove: combatant.fast,
+        chargedMoves: validChargedMoves(combatant),
+        baiting: combatant.baiting,
+        shieldMode: combatant.shieldMode,
+        linePolicy: combatant.linePolicy,
+        mechanicState: {
+          chargedTaken: combatant.chargedTaken,
+          formBaseId: combatant.formBaseId || null
+        }
+      });
+      return {
+        currentTurn: turnState?.currentTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)),
+        sides: { A: sideState(left), B: sideState(right) },
+        pendingEvents: turnState?.pendingEvents || [],
+        cmpState: {
+          readySides: turnState
+            ? (typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine).orderReadySides(turnState)
+            : []
+        },
+        delayState: {
+          technicalIssue: typeof technicalIssueInjection !== "undefined" ? technicalIssueInjection?.issue?.type || null : null
+        }
+      };
+    }
+
+    function battleIntelligencePolicy() {
+      if (chargedContinuationMode === "flip-analysis") return "STANDARD";
+      if (typeof document !== "undefined" && document.body?.dataset?.view === "scenario-review" && technicalSimulationRunning) {
+        return "DEEP_REVIEW";
+      }
+      return "FAST";
+    }
+
+    function selectBattleIntelligenceAction(attacker, defender, legalActions) {
+      const api = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      if (!api || !attacker || !defender) return null;
+      return api.selectAction({
+        state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
+        side: attacker.trainer,
+        legalActions,
+        policy: battleIntelligencePolicy(),
+        context: {
+          estimateDamage(action) {
+            const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
+            return move ? estimate(attacker, defender, move) : 0;
+          },
+          willOpponentShield(action) {
+            const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
+            return move ? shouldShield(defender, move, estimate(attacker, defender, move), attacker) : false;
+          },
+          hasGuaranteedEffect(action) {
+            const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
+            return hasGuaranteedStatEffect(move);
+          },
+          getTacticalAdvice(actions) {
+            const chargedMoves = actions
+              .filter(action => action.type === api.ACTION_TYPES.CHARGED_MOVE)
+              .map(action => validChargedMoves(attacker).find(move => move.id === action.moveId))
+              .filter(Boolean);
+            if (!chargedMoves.length) return null;
+            const decision = chooseChargedMoveDecision(attacker, defender, chargedMoves);
+            return decision.move
+              ? { ...decision, moveId: decision.move.id, type: api.ACTION_TYPES.CHARGED_MOVE }
+              : { ...decision, type: api.ACTION_TYPES.FAST_MOVE };
+          }
+        }
+      });
+    }
+
+    function recordBattleIntelligenceDecision(attacker, defender, selection) {
+      if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action || selection.evidence?.legacyDecision || selection.evidence?.tacticalAdvice) return;
+      const move = validChargedMoves(attacker).find(candidate => candidate.id === selection.action.moveId);
+      if (!move) return;
+      const candidates = validChargedMoves(attacker)
+        .filter(candidate => attacker.energy >= candidate.energyCost)
+        .map(candidate => traceMoveCandidate(attacker, defender, candidate));
+      recordBattleDecision({
+        turn: Number(battleTurns[attacker.trainer] || 0),
+        side: attacker.trainer,
+        pokemonId: attacker.p?.id || null,
+        decisionType: "charged-move-selection",
+        stateBefore: traceStateSnapshot(attacker, defender),
+        candidates,
+        chosenCandidate: candidates.find(candidate => candidate.moveId === move.id) || traceMoveCandidate(attacker, defender, move),
+        reasonCode: selection.reasonCodes?.[0] || "HEURISTIC_FALLBACK",
+        explanation: selection.explanation,
+        confidence: selection.chosenCandidate?.confidence || .9
+      });
     }
 
     function autoAction(attacker, defender) {
@@ -12808,34 +12900,41 @@
       }
       const legalChargedIds = new Set(legalActions.filter(action => action.type === "charged").map(action => action.moveId));
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
-      if (available.length) {
-        const pendingLethalImpact = pendingLethalFastWindow(attacker, Number(battleTurns[attacker.trainer] || 0));
-        const plannedMove = available.find(move => move.id === attacker.timingPlanMoveId);
-        if (attacker.timingPlanMoveId && !plannedMove) attacker.timingPlanMoveId = null;
-        let decision = plannedMove
-          ? { move: plannedMove, reason: `completing the planned ${plannedMove.name} timing` }
-          : chooseChargedMoveDecision(attacker, defender, available);
-        if (pendingLethalImpact && !decision.move) {
-          const forcedMove = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || a.energyCost - b.energyCost)[0];
-          decision = { move: forcedMove, reason: `pending ${pendingLethalImpact.moveName} impact creates a final charged-move window` };
-        } else if (pendingLethalImpact && decision.move) {
-          decision.reason = [decision.reason, `pending ${pendingLethalImpact.moveName} impact creates a final charged-move window`].filter(Boolean).join("; ");
+      const plannedMove = available.find(move => move.id === attacker.timingPlanMoveId);
+      if (attacker.timingPlanMoveId && !plannedMove) attacker.timingPlanMoveId = null;
+      const intelligenceSelection = plannedMove
+        ? {
+            action: { type: "charged_move", moveId: plannedMove.id },
+            sourceRuleIds: [],
+            reasonCodes: [],
+            explanation: `completing the planned ${plannedMove.name} timing`,
+            evidence: null
+          }
+        : selectBattleIntelligenceAction(attacker, defender, legalActions);
+      if (!intelligenceSelection?.action) return false;
+      if (intelligenceSelection.action.type === "fast_move") {
+        const waitReason = intelligenceSelection.evidence?.legacyReason || intelligenceSelection.explanation;
+        if (available.length && waitReason) {
+          add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
         }
-        if (!decision.move) {
-          if (decision.reason) add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${decision.reason}.`, "info");
-          return useFast(attacker, defender);
-        }
-        const timingReason = pendingLethalImpact ? "" : chargeTimingWaitReason(attacker, defender, decision.move);
-        if (timingReason) {
-          attacker.timingPlanMoveId = decision.move.id;
-          add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits before ${decision.move.name}. Reasoning: ${timingReason}.`, "info");
-          return useFast(attacker, defender);
-        }
-        return useCharge(attacker, defender, attacker.charged.indexOf(decision.move), { aiReason: decision.reason, deferCooldownReset: true });
-      } else if (legalActions.some(action => action.type === "fast")) {
         return useFast(attacker, defender);
       }
-      return false;
+      if (intelligenceSelection.action.type !== "charged_move") return false;
+
+      const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
+      if (!move) return legalActions.some(action => action.type === "fast") ? useFast(attacker, defender) : false;
+      recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
+      const urgent = intelligenceSelection.sourceRuleIds?.some(ruleId =>
+        ruleId === "BI_THROW_BEFORE_FAINT" || ruleId === "BI_AVOID_LETHAL_OVERFARM"
+      );
+      const timingReason = urgent ? "" : chargeTimingWaitReason(attacker, defender, move);
+      if (timingReason) {
+        attacker.timingPlanMoveId = move.id;
+        add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits before ${move.name}. Reasoning: ${timingReason}.`, "info");
+        return useFast(attacker, defender);
+      }
+      const aiReason = intelligenceSelection.evidence?.legacyReason || intelligenceSelection.explanation;
+      return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });
     }
 
     function automaticBattleStep() {

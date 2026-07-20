@@ -20,7 +20,7 @@ Move selection remains in the Decision Engine. Damage calculation remains in the
 Combatant state and ready turns
   -> Turn Resolution Engine
   -> legal actions and pending threats
-  -> Decision Engine
+  -> Battle Intelligence
   -> selected action
   -> battle mechanics
   -> scheduled event resolution

@@ -29,6 +29,14 @@ timing-sensitive pending Fast impacts now use one reusable contract. DRE and
 one-turn lag alter the event schedule; they no longer own separate move-choice
 rules.
 
+`battle-planner-v8` introduces the Battle Intelligence boundary. Normal Battle,
+Scenario Review, Preview, matrix workers, and offline callers now route the shared
+Fast-versus-Charged decision through canonical actions, named policies, strategic
+state hashing, generic urgent rules, and deterministic fast paths. Charged planning
+supplies structured tactical evidence to that shared resolver, while shield policy
+and Smart shield counterfactuals are resolved there directly. The Meta fallback also
+uses the same automatic turn loop instead of maintaining a separate actor order.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.
