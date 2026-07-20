@@ -40,6 +40,8 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 
 ## 3v3 Battle AI
 
+- [x] Add the reusable Scenario and connected Battle Segment foundation.
+- [x] Add the first Lock State continuation flow.
 - [ ] Represent full teams of three Pokemon.
 - [ ] Track active Pokemon, bench Pokemon, and fainted Pokemon.
 - [ ] Implement switch timer.

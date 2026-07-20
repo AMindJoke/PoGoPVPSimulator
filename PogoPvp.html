@@ -20,6 +20,7 @@
   <script src="src/analysis/ranking-details.js"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
+  <script src="src/scenario/scenario-model.js"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -3547,6 +3548,200 @@
       font-size: 10.5px;
       white-space: nowrap;
     }
+    .scenario-review {
+      display: none;
+      max-width: none;
+      padding: 11px 13px;
+      overflow: visible;
+      border-color: color-mix(in srgb, #156f8f 42%, var(--line));
+      background: color-mix(in srgb, var(--panel) 94%, #00b8a9 6%);
+    }
+    .scenario-review.active {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+    }
+    .scenario-review-copy {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+    .scenario-review-kicker {
+      color: #156f8f;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .scenario-review-copy strong {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .scenario-review-copy span:last-child {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .scenario-review-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .scenario-review-actions button {
+      min-height: 32px;
+      padding: 6px 12px;
+      white-space: nowrap;
+    }
+    .scenario-review-actions .scenario-lock {
+      border-color: #156f8f;
+      background: #156f8f;
+      color: #fff;
+    }
+    body.scenario-review-active .setup {
+      isolation: isolate;
+    }
+    body.scenario-review-active .matrix-panel {
+      display: none;
+    }
+    body.scenario-review-active .trainer-card {
+      transition: transform 200ms ease-out, box-shadow 200ms ease-out, opacity 200ms ease-out, filter 200ms ease-out;
+      transform-style: preserve-3d;
+    }
+    body.scenario-review-active .trainer-card.has-scenario-history {
+      box-shadow: 0 10px 24px rgba(23, 33, 47, .18), 0 2px 6px rgba(23, 33, 47, .1);
+    }
+    .trainer-card.scenario-awaiting-incoming {
+      opacity: .74;
+      filter: saturate(.42);
+    }
+    .trainer-card.scenario-awaiting-incoming::after {
+      content: "Fainted · choose next Pokemon";
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 4;
+      padding: 3px 6px;
+      border: 1px solid color-mix(in srgb, var(--danger) 42%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--panel) 88%, var(--danger) 12%);
+      color: var(--danger);
+      font-size: 8px;
+      font-weight: 900;
+      pointer-events: none;
+    }
+    .scenario-history-stack {
+      position: absolute;
+      inset: 10px -30px -12px 12px;
+      z-index: -1;
+      display: none;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, #6e7580 28%);
+      border-radius: inherit;
+      background:
+        linear-gradient(145deg, color-mix(in srgb, var(--scenario-history-color, #737985) 28%, var(--panel)) 0 48%, color-mix(in srgb, var(--scenario-history-color, #737985) 46%, var(--panel)) 100%);
+      box-shadow: 0 9px 18px rgba(23, 33, 47, .18);
+      filter: saturate(.38);
+      opacity: .78;
+      transform: translateZ(-18px) scale(.982);
+      transform-origin: 50% 50%;
+      pointer-events: none;
+    }
+    .trainer-card.b .scenario-history-stack {
+      inset: 10px 12px -12px -30px;
+      transform: translateZ(-18px) scale(.982);
+    }
+    .scenario-history-stack.active {
+      display: block;
+    }
+    .scenario-history-identity {
+      position: absolute;
+      top: 46%;
+      right: 2px;
+      display: grid;
+      place-items: center;
+      width: 27px;
+      transform: translateY(-50%);
+    }
+    .trainer-card.b .scenario-history-identity {
+      right: auto;
+      left: 2px;
+    }
+    .scenario-history-identity img {
+      width: 25px;
+      height: 25px;
+      object-fit: contain;
+      opacity: .68;
+      filter: grayscale(.72) saturate(.35) drop-shadow(0 1px 2px rgba(23, 33, 47, .2));
+    }
+    .scenario-history-identity::after {
+      content: "×";
+      position: absolute;
+      right: -1px;
+      bottom: -2px;
+      display: grid;
+      place-items: center;
+      width: 11px;
+      height: 11px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 950;
+      line-height: 1;
+    }
+    .scenario-history-name {
+      position: absolute;
+      right: 6px;
+      bottom: 2px;
+      max-width: 68%;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 850;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .trainer-card.b .scenario-history-name {
+      right: auto;
+      left: 6px;
+    }
+    .trainer-card.scenario-card-staging,
+    .trainer-card.scenario-card-entering {
+      --scenario-card-entry-x: 48px;
+      --scenario-card-overshoot-x: -3px;
+      z-index: 3;
+      transform-origin: 18% 50%;
+      will-change: transform, opacity, box-shadow;
+    }
+    .trainer-card.b.scenario-card-staging,
+    .trainer-card.b.scenario-card-entering {
+      --scenario-card-entry-x: -48px;
+      --scenario-card-overshoot-x: 3px;
+    }
+    .trainer-card.scenario-card-staging {
+      opacity: .12;
+      transform: perspective(820px) translateX(var(--scenario-card-entry-x)) translateY(5px) translateZ(-24px) scale(.95);
+      box-shadow: 0 2px 6px rgba(23, 33, 47, .04);
+      transition: none !important;
+    }
+    .trainer-card.scenario-card-entering {
+      animation: scenario-card-enter 340ms cubic-bezier(.18, .8, .22, 1) both;
+    }
+    @keyframes scenario-card-enter {
+      0% { opacity: .12; transform: perspective(820px) translateX(var(--scenario-card-entry-x)) translateY(5px) translateZ(-24px) scale(.95); box-shadow: 0 2px 6px rgba(23, 33, 47, .04); }
+      72% { opacity: 1; transform: perspective(820px) translateX(var(--scenario-card-overshoot-x)) translateY(0) translateZ(5px) scale(1.006); box-shadow: 0 14px 28px rgba(23, 33, 47, .2); }
+      100% { opacity: 1; transform: perspective(820px) translateX(0) translateY(0) translateZ(0) scale(1); box-shadow: var(--panel-shadow); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .trainer-card.scenario-card-staging,
+      .trainer-card.scenario-card-entering {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
     .matrix-axis-top {
       grid-column: 3 / 6;
       grid-row: 1;
@@ -4621,6 +4816,10 @@
       border-color: rgba(109, 196, 224, .34);
       color: #bce8f5;
     }
+    body[data-theme="dark"] .scenario-segment-divider span {
+      background: color-mix(in srgb, var(--panel) 84%, #156f8f 16%);
+      color: #bce8f5;
+    }
     .timeline-label {
       color: var(--muted);
       display: flex;
@@ -4640,6 +4839,76 @@
       object-fit: contain;
       flex: 0 0 auto;
       filter: drop-shadow(0 2px 3px rgba(23,33,47,.18));
+    }
+    body.scenario-review-active .timeline {
+      --timeline-side-zone-width: 132px;
+    }
+    .timeline-pokemon-flow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+    .timeline-pokemon-flow img {
+      width: 32px;
+      height: 32px;
+    }
+    .timeline-pokemon-flow .timeline-fainted-sprite {
+      opacity: .38;
+      filter: grayscale(.8) saturate(.2);
+    }
+    .timeline-fainted-wrap {
+      position: relative;
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+    .timeline-fainted-wrap::after {
+      content: "×";
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      display: grid;
+      place-items: center;
+      width: 13px;
+      height: 13px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+    }
+    .timeline-pokemon-arrow {
+      margin: 0 2px;
+      color: #778596;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .scenario-segment-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 12;
+      width: 0;
+      border-left: 2px solid color-mix(in srgb, #156f8f 72%, transparent);
+      pointer-events: none;
+    }
+    .scenario-segment-divider span {
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      padding: 2px 5px;
+      border: 1px solid color-mix(in srgb, #156f8f 36%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--panel) 88%, #00b8a9 12%);
+      color: #125f78;
+      font-size: 8px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(23, 33, 47, .12);
     }
     .timeline-start-badge {
       display: inline-flex;
@@ -6133,6 +6402,73 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
         justify-content: stretch;
+      }
+      .scenario-review.active {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+      .scenario-review-actions {
+        justify-content: flex-start;
+      }
+      .scenario-review-actions button {
+        min-height: 29px;
+        padding: 5px 9px;
+        font-size: 10px;
+      }
+      .scenario-history-stack {
+        inset: 7px -12px -7px 6px;
+      }
+      .trainer-card.b .scenario-history-stack {
+        inset: 7px 6px -7px -12px;
+      }
+      .scenario-history-identity {
+        width: 11px;
+        right: 0;
+      }
+      .trainer-card.b .scenario-history-identity {
+        left: 0;
+      }
+      .scenario-history-identity img {
+        width: 14px;
+        height: 14px;
+      }
+      .scenario-history-identity::after {
+        display: none;
+      }
+      .scenario-history-name {
+        display: none;
+      }
+      body.scenario-review-active .timeline {
+        --timeline-side-zone-width: 88px;
+      }
+      .timeline-pokemon-flow img {
+        width: 23px;
+        height: 23px;
+      }
+      .timeline-pokemon-arrow {
+        margin-inline: 0;
+        font-size: 11px;
+      }
+      .timeline-fainted-wrap::after {
+        width: 10px;
+        height: 10px;
+        font-size: 8px;
+      }
+      .trainer-card.scenario-card-staging,
+      .trainer-card.scenario-card-entering {
+        --scenario-card-entry-x: 26px;
+      }
+      .trainer-card.b.scenario-card-staging,
+      .trainer-card.b.scenario-card-entering {
+        --scenario-card-entry-x: -26px;
+      }
+      .trainer-card.scenario-awaiting-incoming::after {
+        top: 5px;
+        right: 5px;
+        max-width: calc(100% - 10px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       section {
         max-width: none;
@@ -8002,6 +8338,18 @@
         </div>
       </section>
 
+      <section id="scenarioReview" class="scenario-review" aria-live="polite" hidden>
+        <div class="scenario-review-copy">
+          <span class="scenario-review-kicker">Scenario Review</span>
+          <strong id="scenarioReviewTitle">Continue this battle</strong>
+          <span id="scenarioReviewSummary"></span>
+        </div>
+        <div class="scenario-review-actions">
+          <button id="scenarioLockState" class="scenario-lock" type="button">Lock State</button>
+          <button id="scenarioEnd" class="secondary" type="button" hidden>End Scenario</button>
+        </div>
+      </section>
+
       <section class="manual-panel">
         <div class="manual-head">
           <h2>Manual controls</h2>
@@ -8209,6 +8557,7 @@
     let lastTacticalPatternSummary = null;
     let lastWinConditionSummary = null;
     let battleInsights = [];
+    let lastBattleInitialSimulatorState = null;
     let pageScrollAnimation = null;
     let timelineReplayAnimation = null;
     let timelineReplayTimer = null;
@@ -8256,6 +8605,11 @@
       source: null,
       suggestion: null
     };
+    let scenarioState = null;
+    let scenarioSegmentInitialState = null;
+    let scenarioTimelineStart = 0;
+    let scenarioApplyingTransition = false;
+    const scenarioHistory = { A: [], B: [] };
     let matchupInspectorOpen = false;
     let matchupInspectorScrollPending = false;
     const rankCache = new Map();
@@ -8444,6 +8798,8 @@
         button.onclick = () => stepStartEnergy(button.dataset.prefix, button.dataset.energyStep === "up" ? 1 : -1);
       });
       $("battleCta").onclick = runBattleToEnd;
+      $("scenarioLockState").onclick = lockScenarioState;
+      $("scenarioEnd").onclick = endScenarioReview;
       $("reset").onclick = resetForManualBattle;
       $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
@@ -10534,6 +10890,8 @@
       updateStartEnergyStepper(prefix);
       rememberMoveSelections(prefix);
       updateBattleAvailability();
+      if (continueScenarioWithSelectedPokemon(prefix)) return;
+      if (scenarioState && !scenarioApplyingTransition) endScenarioReview({ renderNow: false });
       hideBattleResultsForSetupChange();
       if (!setupReadyForBattle()) {
         resetBattleStateFromSetup();
@@ -10569,6 +10927,7 @@
 
     function resetBattleStateFromSetup() {
       exitPreviewMode();
+      if (scenarioState && !scenarioApplyingTransition) endScenarioReview({ renderNow: false });
       cancelShieldMatrixCalculation();
       if (!setupReadyForBattle()) {
         left = sideReadyForBattle("p1") ? create("p1", "A") : null;
@@ -13109,6 +13468,7 @@
       if (!setupReadyForBattle()) return;
       document.body.classList.add("battle-results-visible");
       exitPreviewMode();
+      endScenarioReview({ renderNow: false });
       startBattle();
       scrollTimelineIntoView();
     }
@@ -13149,6 +13509,7 @@
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
+      lastBattleInitialSimulatorState = snapshotFullSimulatorState();
       if (!options.skipRender) render();
     }
 
@@ -13483,9 +13844,240 @@
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
       renderKeyNumbers();
       renderTimeline();
-      renderShieldMatrix();
-      renderBattleReview();
+      if (scenarioState) {
+        clearScenarioResultPanels();
+      } else {
+        renderShieldMatrix();
+        renderBattleReview();
+      }
       renderMatrixPreview();
+      renderScenarioReview();
+      renderScenarioStacks();
+    }
+
+    function scenarioApi() {
+      return window.PvPeakScenario || null;
+    }
+
+    function scenarioWinnerAndLoser() {
+      if (!left || !right) return null;
+      if (left.hp > 0 && right.hp <= 0) return { survivor: left, fainted: right, survivorSide: "A", faintedSide: "B" };
+      if (right.hp > 0 && left.hp <= 0) return { survivor: right, fainted: left, survivorSide: "B", faintedSide: "A" };
+      return null;
+    }
+
+    function scenarioSidePrefix(side) {
+      return side === "A" ? "p1" : "p2";
+    }
+
+    function lockScenarioState() {
+      const api = scenarioApi();
+      const outcome = scenarioWinnerAndLoser();
+      if (!api || !outcome || !battleEnded()) return;
+
+      if (!scenarioState) {
+        scenarioState = api.createScenario({ originalState: lastBattleInitialSimulatorState || snapshotFullSimulatorState() });
+        scenarioSegmentInitialState = lastBattleInitialSimulatorState?.battle || (initialTimelineState ? JSON.parse(JSON.stringify(initialTimelineState)) : null);
+        scenarioTimelineStart = 0;
+      }
+
+      const finalState = {
+        A: api.createPokemonState(left),
+        B: api.createPokemonState(right)
+      };
+      const segment = api.createSegment({
+        index: scenarioState.segments.length,
+        initialState: scenarioSegmentInitialState,
+        finalState,
+        winnerSide: outcome.survivorSide,
+        faintedSide: outcome.faintedSide,
+        timelineStart: scenarioTimelineStart,
+        timelineEnd: timeline.length
+      });
+      api.lockSegment(scenarioState, segment, finalState[outcome.survivorSide]);
+      scenarioHistory[outcome.faintedSide].push(finalState[outcome.faintedSide]);
+      scenarioTimelineStart = timeline.length;
+
+      $("p1Shields").value = String(Math.max(0, left.shields));
+      $("p2Shields").value = String(Math.max(0, right.shields));
+      $(`${scenarioSidePrefix(outcome.survivorSide)}StartEnergy`).value = String(Math.max(0, outcome.survivor.energy));
+      $(`${scenarioSidePrefix(outcome.faintedSide)}StartEnergy`).value = "0";
+
+      const prefix = scenarioSidePrefix(outcome.faintedSide);
+      const card = document.querySelector(`.trainer-card.${outcome.faintedSide === "A" ? "a" : "b"}`);
+      card?.classList.add("scenario-awaiting-incoming");
+      $(`${prefix}Search`).value = "";
+      $(`${prefix}Search`).placeholder = "Choose next Pokemon";
+      document.body.classList.add("scenario-review-active");
+      renderScenarioReview();
+      renderScenarioStacks();
+      requestAnimationFrame(() => {
+        smoothScrollToElement($("scenarioReview"), "center");
+        $(`${prefix}Search`)?.focus({ preventScroll: true });
+        openPokemonSuggestions(prefix, false);
+      });
+    }
+
+    function continueScenarioWithSelectedPokemon(prefix) {
+      const api = scenarioApi();
+      if (!api || !scenarioState || scenarioApplyingTransition || scenarioState.status !== "awaiting-incoming") return false;
+      const incomingSide = prefix === "p1" ? "A" : "B";
+      if (scenarioState.awaitingSide !== incomingSide || !sideReadyForBattle(prefix)) return false;
+
+      scenarioApplyingTransition = true;
+      try {
+        const survivorSide = scenarioState.activeSide;
+        const survivorPrefix = scenarioSidePrefix(survivorSide);
+        const survivor = JSON.parse(JSON.stringify(scenarioState.lockedState.combatant));
+        const incoming = create(prefix, incomingSide);
+        const previousSegment = scenarioState.segments[scenarioState.segments.length - 1];
+        const remainingShields = Number(previousSegment?.finalState?.[incomingSide]?.shields || 0);
+        incoming.shields = remainingShields;
+        incoming.energy = 0;
+        incoming.attackStage = 0;
+        incoming.defenseStage = 0;
+        $(`${prefix}Shields`).value = String(remainingShields);
+        $(`${prefix}StartEnergy`).value = "0";
+        $(`${survivorPrefix}Shields`).value = String(Math.max(0, survivor.shields));
+        $(`${survivorPrefix}StartEnergy`).value = String(Math.max(0, survivor.energy));
+        clearStartingFastAdvantage(prefix);
+
+        if (survivorSide === "A") {
+          left = survivor;
+          right = incoming;
+        } else {
+          left = incoming;
+          right = survivor;
+        }
+
+        const continuationTurn = Math.max(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+        battleTurns = { A: continuationTurn, B: continuationTurn };
+        selectedTimelineIndex = null;
+        previewTimelineIndex = null;
+        previewingTimeline = false;
+        scenarioSegmentInitialState = battleSnapshot();
+        api.setIncomingTransition?.(scenarioState, {
+          turn: continuationTurn,
+          incomingSide,
+          faintedPokemonName: previousSegment?.finalState?.[incomingSide]?.pokemonName || "Fainted Pokemon",
+          incomingPokemonName: incoming.p.name
+        });
+        api.continueWithIncoming(scenarioState);
+        add(`Scenario continues: ${survivor.p.name} vs ${incoming.p.name}`, "info");
+
+        const card = document.querySelector(`.trainer-card.${incomingSide === "A" ? "a" : "b"}`);
+        card?.classList.remove("scenario-awaiting-incoming", "scenario-card-entering");
+        card?.classList.add("scenario-card-staging");
+        $(`${prefix}Search`).placeholder = "Search Pokemon";
+        document.body.classList.add("battle-results-visible", "scenario-review-active");
+        cancelShieldMatrixCalculation();
+        clearScenarioResultPanels();
+        render();
+        updateBattleAvailability();
+        animateScenarioIncomingCard(incomingSide);
+      } finally {
+        scenarioApplyingTransition = false;
+      }
+      return true;
+    }
+
+    function animateScenarioIncomingCard(side) {
+      const card = document.querySelector(`.trainer-card.${side === "A" ? "a" : "b"}`);
+      if (!card) return;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          card.classList.remove("scenario-card-staging");
+          card.classList.add("scenario-card-entering");
+          window.setTimeout(() => card.classList.remove("scenario-card-entering"), 380);
+        });
+      });
+    }
+
+    function clearScenarioResultPanels() {
+      if ($("shieldMatrix")) $("shieldMatrix").innerHTML = "";
+      if ($("matrixExplanation")) $("matrixExplanation").innerHTML = "";
+      if ($("battleReview")) {
+        $("battleReview").hidden = true;
+        $("battleReview").innerHTML = "";
+      }
+      if ($("matchupInspector")) $("matchupInspector").innerHTML = "";
+    }
+
+    function renderScenarioReview() {
+      const box = $("scenarioReview");
+      const lockButton = $("scenarioLockState");
+      const endButton = $("scenarioEnd");
+      const outcome = scenarioWinnerAndLoser();
+      const canLock = !!outcome && battleEnded();
+      const active = canLock || !!scenarioState;
+      box.hidden = !active;
+      box.classList.toggle("active", active);
+      if (!active) return;
+
+      if (scenarioState?.status === "awaiting-incoming") {
+        const sideName = scenarioState.awaitingSide === "A" ? "Pokemon A" : "Pokemon B";
+        $("scenarioReviewTitle").textContent = "State locked";
+        $("scenarioReviewSummary").textContent = `${scenarioState.lockedState.pokemonName} stays active with ${scenarioState.lockedState.hp} HP and ${scenarioState.lockedState.energy} energy. Choose the next ${sideName}.`;
+        lockButton.hidden = true;
+        endButton.hidden = false;
+        return;
+      }
+
+      if (scenarioState && !canLock) {
+        $("scenarioReviewTitle").textContent = `Segment ${scenarioState.segments.length + 1} ready`;
+        $("scenarioReviewSummary").textContent = "The same battle will continue from the locked resources when you press Battle.";
+        lockButton.hidden = true;
+        endButton.hidden = false;
+        return;
+      }
+
+      $("scenarioReviewTitle").textContent = scenarioState ? `Segment ${scenarioState.segments.length + 1} complete` : "Continue this battle";
+      $("scenarioReviewSummary").textContent = `${outcome.survivor.p.name} survived with ${Math.max(0, outcome.survivor.hp)} HP, ${Math.max(0, outcome.survivor.energy)} energy, and ${Math.max(0, outcome.survivor.shields)} shield${outcome.survivor.shields === 1 ? "" : "s"}.`;
+      lockButton.hidden = false;
+      endButton.hidden = !scenarioState;
+    }
+
+    function renderScenarioStacks() {
+      for (const side of ["A", "B"]) {
+        const card = document.querySelector(`.trainer-card.${side === "A" ? "a" : "b"}`);
+        if (!card) continue;
+        let stack = card.querySelector(".scenario-history-stack");
+        if (!stack) {
+          stack = document.createElement("div");
+          stack.className = "scenario-history-stack";
+          card.prepend(stack);
+        }
+        const history = scenarioHistory[side];
+        const last = history[history.length - 1];
+        stack.classList.toggle("active", !!last);
+        card.classList.toggle("has-scenario-history", !!last);
+        if (!last) {
+          stack.innerHTML = "";
+          continue;
+        }
+        const historyColor = typeColors[last.types?.[0]] || "#737985";
+        stack.style.setProperty("--scenario-history-color", historyColor);
+        stack.innerHTML = `<span class="scenario-history-identity"><img alt="${escapeHtml(last.pokemonName)}"></span><span class="scenario-history-name">${escapeHtml(last.pokemonName)} · Fainted</span>`;
+        const historySprite = stack.querySelector("img");
+        const historyPokemon = last.combatant?.p;
+        if (historySprite && historyPokemon) setPokemonImage(historySprite, historyPokemon);
+      }
+    }
+
+    function endScenarioReview(options = {}) {
+      if (scenarioState) scenarioApi()?.endScenario(scenarioState);
+      scenarioState = null;
+      scenarioSegmentInitialState = null;
+      scenarioTimelineStart = 0;
+      scenarioHistory.A.length = 0;
+      scenarioHistory.B.length = 0;
+      document.body.classList.remove("scenario-review-active");
+      document.querySelectorAll(".trainer-card").forEach(card => card.classList.remove("scenario-awaiting-incoming", "scenario-card-staging", "scenario-card-entering", "has-scenario-history"));
+      ["p1", "p2"].forEach(prefix => {
+        if ($(`${prefix}Search`)) $(`${prefix}Search`).placeholder = "Search Pokemon";
+      });
+      renderScenarioStacks();
+      if (options.renderNow !== false) render();
     }
 
     function renderBattleReview() {
@@ -15717,6 +16309,7 @@
     function renderTimeline() {
       renderTimelineZoomControl();
       if (!left || !right) {
+        $("timelineScroll")?.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
         $("p1TimelineLabel").textContent = "A";
         $("p2TimelineLabel").textContent = "B";
         $("timelineRuler").innerHTML = "";
@@ -15740,6 +16333,7 @@
       renderTimelineRuler(maxTurn, turnPx);
       renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
+      renderScenarioTimelineTransitions(chargeSlots, turnPx);
       if (isFit) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
     }
@@ -15748,10 +16342,35 @@
       const label = $(`${prefix}TimelineLabel`);
       if (!label || !combatant) return;
       const badge = timelineStartingFastBadge(prefix, combatant);
-      const sprite = `<img alt="${escapeHtml(combatant.p.name)}">`;
-      label.innerHTML = `${sprite}${badge}`;
+      const side = prefix === "p1" ? "A" : "B";
+      const history = scenarioHistory[side];
+      const fainted = history[history.length - 1];
+      const flow = fainted
+        ? `<span class="timeline-pokemon-flow"><span class="timeline-fainted-wrap"><img class="timeline-fainted-sprite" data-scenario-sprite="fainted" alt="${escapeHtml(fainted.pokemonName)}"></span><span class="timeline-pokemon-arrow" aria-hidden="true">→</span><img data-scenario-sprite="active" alt="${escapeHtml(combatant.p.name)}"></span>`
+        : `<span class="timeline-pokemon-flow"><img data-scenario-sprite="active" alt="${escapeHtml(combatant.p.name)}"></span>`;
+      label.innerHTML = `${flow}${badge}`;
       label.title = combatant.p.name;
-      setPokemonImage(label.querySelector("img"), combatant.p);
+      const activeSprite = label.querySelector('[data-scenario-sprite="active"]');
+      setPokemonImage(activeSprite, combatant.p);
+      const faintedSprite = label.querySelector('[data-scenario-sprite="fainted"]');
+      const faintedPokemon = fainted?.combatant?.p;
+      if (faintedSprite && faintedPokemon) setPokemonImage(faintedSprite, faintedPokemon);
+    }
+
+    function renderScenarioTimelineTransitions(chargeSlots, turnPx) {
+      const scroll = $("timelineScroll");
+      if (!scroll) return;
+      scroll.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
+      if (!scenarioState?.segments?.length) return;
+      scenarioState.segments.forEach((segment, index) => {
+        if (!segment.transition) return;
+        const marker = document.createElement("div");
+        marker.className = "scenario-segment-divider";
+        marker.style.left = `${visualTurn(Number(segment.transition.turn || 0), chargeSlots, false) * turnPx}px`;
+        marker.innerHTML = `<span>Segment ${index + 2}</span>`;
+        marker.title = `${segment.transition.faintedPokemonName} fainted; ${segment.transition.incomingPokemonName} entered`;
+        scroll.appendChild(marker);
+      });
     }
 
     function timelineStartingFastBadge(prefix, combatant) {
@@ -16008,11 +16627,11 @@
 
     function timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) {
       const targetKey = trainer;
-      const koIndex = firstKoTimelineIndex(targetKey);
-      if (koIndex < 0) return "";
-      const event = timeline[koIndex];
-      const left = timelineKoMarkerLeft(event, koIndex, chargeSlots, turnPx);
-      return `<span class="timeline-marker ko" data-event-index="${koIndex}" title="KO" style="left:${left}px"></span>`;
+      return koTimelineIndexes(targetKey).map(koIndex => {
+        const event = timeline[koIndex];
+        const left = timelineKoMarkerLeft(event, koIndex, chargeSlots, turnPx);
+        return `<span class="timeline-marker ko" data-event-index="${koIndex}" title="KO" style="left:${left}px"></span>`;
+      }).join("");
     }
 
     function timelineKoMarkerLeft(event, eventIndex, chargeSlots, turnPx) {
@@ -16029,21 +16648,26 @@
     function timelineEventCausesKo(event, eventIndex) {
       if (!event || event.kind === "shield" || event.kind === "form-protect") return false;
       const targetKey = event.trainer === "A" ? "B" : "A";
-      return eventIndex === firstKoTimelineIndex(targetKey);
+      return koTimelineIndexes(targetKey).includes(eventIndex);
     }
 
     function firstKoTimelineIndex(targetKey) {
+      return koTimelineIndexes(targetKey)[0] ?? -1;
+    }
+
+    function koTimelineIndexes(targetKey) {
       let previousHp = initialTimelineState && initialTimelineState[targetKey]
         ? initialTimelineState[targetKey].hp
         : Infinity;
+      const indexes = [];
       for (let i = 0; i < timeline.length; i++) {
         const event = timeline[i];
         const state = event.state && event.state[targetKey];
         if (!state) continue;
-        if (event.kind !== "shield" && event.kind !== "form-protect" && previousHp > 0 && state.hp <= 0) return i;
+        if (event.kind !== "shield" && event.kind !== "form-protect" && previousHp > 0 && state.hp <= 0) indexes.push(i);
         previousHp = state.hp;
       }
-      return -1;
+      return indexes;
     }
 
     function toggleTheme() {
