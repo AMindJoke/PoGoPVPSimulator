@@ -30,7 +30,7 @@ function battleConfig(aId, bId, options = {}) {
   const b = pokemonMap.get(bId);
   assert(a, `Missing canonical Pokemon: ${aId}`);
   assert(b, `Missing canonical Pokemon: ${bId}`);
-  const config = createBattleConfig(a, b, DEFAULT_PROFILE, moveMap, standardMovesets);
+  const config = createBattleConfig(a, b, DEFAULT_PROFILE, moveMap, standardMovesets, pokemonMap);
   if (options.aFast) config.left.fast = clone(moveMap.get(options.aFast));
   if (options.bFast) config.right.fast = clone(moveMap.get(options.bFast));
   if (options.aCharged) config.left.charged = options.aCharged.map(id => clone(moveMap.get(id)));

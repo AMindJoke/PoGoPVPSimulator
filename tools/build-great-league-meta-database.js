@@ -32,6 +32,7 @@ const ADVANTAGE_TURNS = 6;
 const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-cache.json");
 const statsCache = new Map();
 const movesCache = new Map();
+const formCatalogCache = new Map();
 const persistentRank1Stats = loadPersistentRank1Stats();
 let persistentRank1StatsDirty = false;
 
@@ -244,7 +245,8 @@ function normalizePokemon(p, moveMap) {
     fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
     charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
     eliteMoves: p.eliteMoves || [],
-    tags: p.tags || []
+    tags: p.tags || [],
+    formChange: p.formChange ? JSON.parse(JSON.stringify(p.formChange)) : null
   };
 }
 
@@ -369,7 +371,7 @@ function cloneForMatrix(value) {
   return value ? JSON.parse(JSON.stringify(value)) : null;
 }
 
-function createCombatant(p, trainer, profile, moveMap, standardMovesets) {
+function createCombatant(p, trainer, profile, moveMap, standardMovesets, pokemonMap = null) {
   const statsKey = `${profile}:${p.id}`;
   let stats = statsCache.get(statsKey);
   if (!stats) {
@@ -380,7 +382,7 @@ function createCombatant(p, trainer, profile, moveMap, standardMovesets) {
   if (!moves.fast || !moves.charged.length) {
     throw new Error(`${p.id} has no usable default moves.`);
   }
-  return {
+  const combatant = {
     trainer,
     p: cloneForMatrix(p),
     fast: cloneForMatrix(moves.fast),
@@ -406,14 +408,52 @@ function createCombatant(p, trainer, profile, moveMap, standardMovesets) {
     defenseStage: 0,
     lastFastStart: null,
     shadowAtkMult: isShadow(p) ? 1.2 : 1,
-    shadowDefMult: isShadow(p) ? 0.83333331 : 1
+    shadowDefMult: isShadow(p) ? 0.83333331 : 1,
+    cpm: stats.cpm || stats.attack / Math.max(1, p.atk + stats.ivAtk),
+    initialFormId: p.id,
+    formCatalog: buildCombatantFormCatalog(p, pokemonMap, moveMap)
   };
+  return combatant;
 }
 
-function createBattleConfig(a, b, profile, moveMap, standardMovesets) {
+function buildCombatantFormCatalog(pokemon, pokemonMap, moveMap) {
+  if (!pokemonMap) return {};
+  if (formCatalogCache.has(pokemon.id)) return formCatalogCache.get(pokemon.id);
+  const ids = new Set([pokemon.id]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    pokemonMap.forEach(candidate => {
+      const rule = candidate.formChange;
+      if (!rule) return;
+      const related = [candidate.id, rule.defaultFormId, rule.alternativeFormId].filter(Boolean);
+      if (!related.some(id => ids.has(id))) return;
+      related.forEach(id => {
+        if (!ids.has(id)) {
+          ids.add(id);
+          changed = true;
+        }
+      });
+    });
+  }
+  const catalog = {};
+  ids.forEach(id => {
+    const form = pokemonMap.get(id);
+    if (!form) return;
+    catalog[id] = {
+      p: cloneForMatrix(form),
+      fastMoves: form.fast.map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean),
+      chargedMoves: form.charged.map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean)
+    };
+  });
+  formCatalogCache.set(pokemon.id, catalog);
+  return catalog;
+}
+
+function createBattleConfig(a, b, profile, moveMap, standardMovesets, pokemonMap = null) {
   return {
-    left: createCombatant(a, "A", profile, moveMap, standardMovesets),
-    right: createCombatant(b, "B", profile, moveMap, standardMovesets),
+    left: createCombatant(a, "A", profile, moveMap, standardMovesets, pokemonMap),
+    right: createCombatant(b, "B", profile, moveMap, standardMovesets, pokemonMap),
     startEnergyA: 0,
     startEnergyB: 0
   };
@@ -1075,7 +1115,7 @@ function main() {
         : null;
       for (const b of opponentPool) {
         if (selfMatchupsSkipped && a.id === b.id) continue;
-        const config = createBattleConfig(a, b, profile, moveMap, standardMovesets);
+        const config = createBattleConfig(a, b, profile, moveMap, standardMovesets, allPokemon);
         for (const [aShields, bShields] of scenarios) {
           const shieldState = `${aShields}-${bShields}`;
           const cached = simulateCachedCell({

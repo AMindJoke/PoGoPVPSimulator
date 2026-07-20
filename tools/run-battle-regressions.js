@@ -56,7 +56,7 @@ function buildCaseConfig(testCase, runtime) {
   const profile = testCase.pokemonA.ivPreset === "rank1" && testCase.pokemonB.ivPreset === "rank1"
     ? RANK1_PROFILE
     : DEFAULT_PROFILE;
-  const config = createBattleConfig(pokemonA, pokemonB, profile, runtime.moveMap, runtime.standardMovesets);
+  const config = createBattleConfig(pokemonA, pokemonB, profile, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap);
   applyPokemonFixture(config.left, testCase.pokemonA, runtime.moveMap);
   applyPokemonFixture(config.right, testCase.pokemonB, runtime.moveMap);
   applyPolicy(config.left, testCase.policy);

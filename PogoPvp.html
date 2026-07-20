@@ -4883,6 +4883,13 @@
     .timeline-shield-icon svg path:nth-child(2) {
       fill: currentColor;
     }
+    .timeline-disguise-icon {
+      color: #8d3bab;
+      filter: drop-shadow(0 0 3px rgba(105, 55, 119, .38));
+    }
+    .timeline-disguise-icon svg path:nth-child(2) {
+      fill: none;
+    }
     .timeline-block.shield:hover,
     .timeline-block.shield.previewed,
     .timeline-block.shield.selected {
@@ -8252,6 +8259,7 @@
     let matchupInspectorOpen = false;
     let matchupInspectorScrollPending = false;
     const rankCache = new Map();
+    const formCatalogCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
     const chargePauseTurns = chargeWindowTurns + chargeGapTurns;
@@ -8377,7 +8385,8 @@
           fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
           charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
           eliteMoves: p.eliteMoves || [],
-          tags: p.tags || []
+          tags: p.tags || [],
+          formChange: p.formChange ? JSON.parse(JSON.stringify(p.formChange)) : null
         }))
         .filter(p => p.fast.length && p.charged.length)
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
@@ -8650,10 +8659,17 @@
       const functions = [
         effectiveness,
         estimate,
+        combatantForChargedEstimate,
         damageModifier,
         effectiveAttack,
         effectiveDefense,
         statStageMultiplier,
+        formChangeRule,
+        formChangeMatches,
+        formChangeTargetId,
+        equivalentFormMove,
+        transitionCombatantForm,
+        applyFormChange,
         apply,
         applyMoveBuffs,
         applyBuffArray,
@@ -8665,6 +8681,7 @@
         battleEnded,
         useFast,
         useCharge,
+        formChangeLogText,
         shouldShield,
         shieldDecisionForMove,
         smartShieldDecision,
@@ -8678,6 +8695,7 @@
         timelineFastImpactTurn,
         recordTimeline,
         recordShield,
+        recordFormProtection,
         battleSnapshot,
         traceCombatantState,
         traceStateSnapshot,
@@ -10039,7 +10057,7 @@
       const stats = metaStatsForPokemon(p);
       const moves = metaMovesForPokemon(p);
       const rank = ivRank(p, stats.ivAtk, stats.ivDef, stats.ivHp);
-      return {
+      return initializeCombatantForms({
         trainer,
         p: cloneMatrixPokemon(p),
         fast: cloneMatrixMove(moves.fast),
@@ -10066,7 +10084,7 @@
         lastFastStart: null,
         shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
         shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
-      };
+      }, p);
     }
 
     function metaMatchupKey(aId, bId, aShields, bShields) {
@@ -10948,7 +10966,7 @@
       $(`${prefix}Level`).value = formatLevel(stats.level);
       $(`${prefix}Cp`).value = stats.cp;
       updateRankMeter(prefix, stats);
-      return {
+      return initializeCombatantForms({
         trainer,
         p,
         fast: moveMap.get($(`${prefix}Fast`).value),
@@ -10975,7 +10993,47 @@
         lastFastStart: null,
         shadowAtkMult: isShadow(p) ? shadowAtkMultiplier : 1,
         shadowDefMult: isShadow(p) ? shadowDefMultiplier : 1
-      };
+      }, p);
+    }
+
+    function initializeCombatantForms(combatant, pokemon) {
+      combatant.initialFormId = pokemon.id;
+      combatant.cpm = Number(combatant.cpm || combatant.attack / Math.max(1, pokemon.atk + combatant.ivAtk));
+      combatant.formCatalog = buildCombatantFormCatalog(pokemon);
+      return combatant;
+    }
+
+    function buildCombatantFormCatalog(pokemon) {
+      if (formCatalogCache.has(pokemon.id)) return formCatalogCache.get(pokemon.id);
+      const ids = new Set([pokemon.id]);
+      let changed = true;
+      while (changed) {
+        changed = false;
+        allPokemon.forEach(candidate => {
+          const rule = candidate.formChange;
+          if (!rule) return;
+          const related = [candidate.id, rule.defaultFormId, rule.alternativeFormId].filter(Boolean);
+          if (!related.some(id => ids.has(id))) return;
+          related.forEach(id => {
+            if (!ids.has(id)) {
+              ids.add(id);
+              changed = true;
+            }
+          });
+        });
+      }
+      const catalog = {};
+      ids.forEach(id => {
+        const form = findPokemon(id);
+        if (!form) return;
+        catalog[id] = {
+          p: cloneMatrixPokemon(form),
+          fastMoves: form.fast.map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean),
+          chargedMoves: form.charged.map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean)
+        };
+      });
+      formCatalogCache.set(pokemon.id, catalog);
+      return catalog;
     }
 
     function createMatrixBattleConfig() {
@@ -11018,7 +11076,10 @@
         defenseStage: combatant.defenseStage || 0,
         lastFastStart: combatant.lastFastStart ?? null,
         shadowAtkMult: combatant.shadowAtkMult || 1,
-        shadowDefMult: combatant.shadowDefMult || 1
+        shadowDefMult: combatant.shadowDefMult || 1,
+        cpm: combatant.cpm,
+        initialFormId: combatant.initialFormId || combatant.p?.id || null,
+        formCatalog: combatant.formCatalog ? JSON.parse(JSON.stringify(combatant.formCatalog)) : {}
       };
     }
 
@@ -11030,7 +11091,11 @@
         dex: pokemon.dex,
         types: [...(pokemon.types || [])],
         fast: [...(pokemon.fast || [])],
-        charged: [...(pokemon.charged || [])]
+        charged: [...(pokemon.charged || [])],
+        atk: Number(pokemon.atk || 0),
+        def: Number(pokemon.def || 0),
+        hp: Number(pokemon.hp || 0),
+        formChange: pokemon.formChange ? JSON.parse(JSON.stringify(pokemon.formChange)) : null
       };
     }
 
@@ -11087,8 +11152,22 @@
     }
 
     function estimate(attacker, defender, move) {
-      const rawDamage = move.power * effectiveAttack(attacker) * damageBonus * .5 / effectiveDefense(defender) * damageModifier(attacker, defender, move);
+      const source = combatantForChargedEstimate(attacker, move);
+      const rawDamage = move.power * effectiveAttack(source) * damageBonus * .5 / effectiveDefense(defender) * damageModifier(source, defender, move);
       return Math.max(1, Math.floor(rawDamage) + 1);
+    }
+
+    function combatantForChargedEstimate(combatant, move) {
+      if (!combatant || !move || Number(move.energyCost || 0) <= 0) return combatant;
+      const rule = formChangeRule(combatant, "activate_charged", move);
+      const target = combatant.formCatalog?.[formChangeTargetId(combatant, rule)];
+      if (!target?.p) return combatant;
+      const cpm = Number(combatant.cpm || combatant.attack / Math.max(1, combatant.p.atk + combatant.ivAtk));
+      return {
+        ...combatant,
+        p: target.p,
+        attack: (target.p.atk + combatant.ivAtk) * cpm
+      };
     }
 
     function damageModifier(attacker, defender, move) {
@@ -11102,6 +11181,69 @@
 
     function effectiveDefense(combatant) {
       return combatant.defense * statStageMultiplier(combatant.defenseStage || 0) * (combatant.shadowDefMult || 1);
+    }
+
+    function formChangeRule(combatant, trigger, move = null) {
+      if (!combatant || !combatant.p || !combatant.formCatalog) return null;
+      const direct = combatant.p.formChange;
+      if (formChangeMatches(direct, trigger, move)) return direct;
+      return Object.values(combatant.formCatalog)
+        .map(entry => entry?.p?.formChange)
+        .find(rule => rule?.type === "toggle" &&
+          [rule.defaultFormId, rule.alternativeFormId].includes(combatant.p.id) &&
+          formChangeMatches(rule, trigger, move)) || null;
+    }
+
+    function formChangeMatches(rule, trigger, move = null) {
+      if (!rule || rule.trigger !== trigger) return false;
+      return !rule.moveId || rule.moveId === "ANY" || rule.moveId === move?.id;
+    }
+
+    function formChangeTargetId(combatant, rule) {
+      if (!combatant || !rule) return null;
+      if (rule.type === "toggle") {
+        return combatant.p.id === rule.defaultFormId ? rule.alternativeFormId : rule.defaultFormId;
+      }
+      return rule.alternativeFormId || null;
+    }
+
+    function equivalentFormMove(currentMove, availableMoves) {
+      if (!currentMove || !Array.isArray(availableMoves)) return null;
+      return availableMoves.find(move => move.id === currentMove.id)
+        || availableMoves.find(move => move.name === currentMove.name)
+        || null;
+    }
+
+    function transitionCombatantForm(combatant, targetId, trigger, rule = null) {
+      const target = combatant?.formCatalog?.[targetId];
+      if (!combatant || !target || combatant.p.id === targetId) return null;
+      const previous = combatant.p;
+      const damageTaken = Math.max(0, combatant.maxHp - combatant.hp);
+      const cpm = Number(combatant.cpm || combatant.attack / Math.max(1, previous.atk + combatant.ivAtk));
+      combatant.p = JSON.parse(JSON.stringify(target.p));
+      combatant.fast = equivalentFormMove(combatant.fast, target.fastMoves) || target.fastMoves[0] || combatant.fast;
+      combatant.charged = combatant.charged.map(move => equivalentFormMove(move, target.chargedMoves));
+      combatant.attack = (combatant.p.atk + combatant.ivAtk) * cpm;
+      combatant.defense = (combatant.p.def + combatant.ivDef) * cpm;
+      combatant.maxHp = Math.max(10, Math.floor((combatant.p.hp + combatant.ivHp) * cpm));
+      combatant.hp = Math.max(0, combatant.maxHp - damageTaken);
+      combatant.shadowAtkMult = combatant.p.id.includes("_shadow") ? shadowAtkMultiplier : 1;
+      combatant.shadowDefMult = combatant.p.id.includes("_shadow") ? shadowDefMultiplier : 1;
+      return {
+        trainer: combatant.trainer,
+        trigger,
+        effect: rule?.effect || null,
+        fromId: previous.id,
+        fromName: previous.name,
+        toId: combatant.p.id,
+        toName: combatant.p.name
+      };
+    }
+
+    function applyFormChange(combatant, trigger, move = null) {
+      const rule = formChangeRule(combatant, trigger, move);
+      const targetId = formChangeTargetId(combatant, rule);
+      return targetId ? transitionCombatantForm(combatant, targetId, trigger, rule) : null;
     }
 
     function statStageMultiplier(stage) {
@@ -11299,6 +11441,10 @@
         render();
         return false;
       }
+      const formChanges = [];
+      const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
+      if (chargedActivationChange) formChanges.push(chargedActivationChange);
+      const attackerNameAtThrow = attacker.p.name;
       const unshieldedDamage = estimate(attacker, defender, move);
       let shieldDecision = options.shielded !== undefined
         ? { shield: !!options.shielded && defender.shields > 0, reason: "" }
@@ -11378,13 +11524,38 @@
           currentBattleDecisionTrace.shieldCounterfactuals.push(shieldCounterfactual);
         }
       }
-      const damage = apply(attacker, defender, move, shielded);
+      if (shielded) {
+        const shieldFormChange = applyFormChange(defender, "activate_shield", move);
+        if (shieldFormChange) formChanges.push(shieldFormChange);
+      }
+      const protectionRule = !shielded ? formChangeRule(defender, "charged_move_damage", move) : null;
+      const protectedByForm = protectionRule?.effect === "protect";
+      const damage = apply(attacker, defender, move, shielded || protectedByForm);
       const stagesBeforeBuff = buffStageSnapshot(attacker, defender);
       const buffMessages = applyMoveBuffs(attacker, defender, move, options.forceBuffs ?? null);
+      let protectionChange = null;
+      if (protectedByForm) {
+        protectionChange = transitionCombatantForm(
+          defender,
+          formChangeTargetId(defender, protectionRule),
+          "charged_move_damage",
+          protectionRule
+        );
+        if (protectionChange) {
+          const defenseBefore = defender.defenseStage || 0;
+          defender.defenseStage = clampStage(defenseBefore - 1);
+          protectionChange.defenseStageDelta = defender.defenseStage - defenseBefore;
+          formChanges.push(protectionChange);
+        }
+      }
+      const chargedCompletionChange = applyFormChange(attacker, "charged_move", move);
+      if (chargedCompletionChange) formChanges.push(chargedCompletionChange);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
       chargeEvent.buffs = buffMessages;
       chargeEvent.buffEffects = appliedBuffEffects(attacker, defender, stagesBeforeBuff);
       chargeEvent.unshieldedDamage = unshieldedDamage;
+      chargeEvent.protectedByForm = protectedByForm;
+      chargeEvent.formChanges = formChanges;
       if (options.aiReason) chargeEvent.aiReason = options.aiReason;
       if (shieldDecision.reason) chargeEvent.shieldReason = shieldDecision.reason;
       defender.chargedTaken++;
@@ -11394,12 +11565,20 @@
       if (shielded) {
         defender.shields--;
         recordShield(defender, move, chargeEvent);
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}${reasonText}`, "shield");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attackerNameAtThrow} uses ${move.name}; ${defender.trainer} uses a shield. Damage reduced to ${damage}.${buffText}${reasonText}${formChangeLogText(formChanges)}`, "shield");
+      } else if (protectedByForm) {
+        recordFormProtection(defender, move, chargeEvent, protectionChange);
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attackerNameAtThrow} uses ${move.name}; ${defender.p.name}'s Disguise absorbs ${Math.max(0, unshieldedDamage - damage)} damage.${buffText}${reasonText}${formChangeLogText(formChanges)}`, "shield");
       } else {
-        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attacker.p.name} uses ${move.name}: ${damage} damage.${buffText}${reasonText}`, "charge");
+        add(`T${chargeEvent.start} - ${attacker.trainer}: ${attackerNameAtThrow} uses ${move.name}: ${damage} damage.${buffText}${reasonText}${formChangeLogText(formChanges)}`, "charge");
       }
       if (!options.deferCooldownReset) resetCooldownsAfterChargedTurn(chargeEvent.start, chargeEvent.timelineIndex);
       return finish();
+    }
+
+    function formChangeLogText(changes) {
+      if (!Array.isArray(changes) || !changes.length) return "";
+      return ` Form change: ${changes.map(change => `${change.fromName} -> ${change.toName}`).join(", ")}.`;
     }
 
     function askManualShieldDecision(attacker, defender, move, unshieldedDamage) {
@@ -11606,10 +11785,28 @@
       });
     }
 
+    function recordFormProtection(defender, move, chargeEvent, formChange) {
+      timeline.push({
+        trainer: defender.trainer,
+        move,
+        kind: "form-protect",
+        damage: 1,
+        absorbedDamage: Math.max(0, Number(chargeEvent.unshieldedDamage || 0) - 1),
+        shielded: false,
+        specialProtection: "Disguise",
+        formChange,
+        start: chargeEvent.start,
+        chargeEvent,
+        chargeIndex: chargeEvent.timelineIndex,
+        duration: 1,
+        state: battleSnapshot()
+      });
+    }
+
     function battleSnapshot() {
       return {
-        A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy, attackStage: left.attackStage || 0, defenseStage: left.defenseStage || 0 } : null,
-        B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy, attackStage: right.attackStage || 0, defenseStage: right.defenseStage || 0 } : null
+        A: left ? { hp: left.hp, maxHp: left.maxHp, energy: left.energy, attackStage: left.attackStage || 0, defenseStage: left.defenseStage || 0, pokemonId: left.p?.id || null, chargedMoveIds: left.charged.map(move => move?.id || null) } : null,
+        B: right ? { hp: right.hp, maxHp: right.maxHp, energy: right.energy, attackStage: right.attackStage || 0, defenseStage: right.defenseStage || 0, pokemonId: right.p?.id || null, chargedMoveIds: right.charged.map(move => move?.id || null) } : null
       };
     }
 
@@ -13033,24 +13230,36 @@
       const pct = Math.max(0, Math.min(100, Math.round(100 * hp / maxHp)));
       const combatant = prefix === "p1" ? left : right;
       const side = prefix === "p1" ? "A" : "B";
+      const displayedForm = state?.pokemonId && combatant?.formCatalog?.[state.pokemonId]
+        ? combatant.formCatalog[state.pokemonId]
+        : null;
+      const displayedCharged = Array.isArray(state?.chargedMoveIds)
+        ? state.chargedMoveIds.map(moveId => moveId ? (displayedForm?.chargedMoves || []).find(move => move.id === moveId) || moveMap.get(moveId) : null)
+        : null;
       displayedResources[prefix] = {
         hp,
         maxHp,
         energy,
         attackStage: state?.attackStage ?? combatant?.attackStage ?? 0,
         defenseStage: state?.defenseStage ?? combatant?.defenseStage ?? 0,
+        pokemonId: state?.pokemonId || combatant?.p?.id || null,
         side
       };
+      if (displayedForm?.p) {
+        setPokemonImage($(`${prefix}BattleImg`), displayedForm.p);
+        $(`${prefix}BattleName`).textContent = displayedForm.p.name;
+        renderTypeBadges(prefix, displayedForm.p.types);
+      }
       $(`${prefix}Hp`).style.width = `${pct}%`;
       $(`${prefix}Hp`).style.background = pct > 45 ? "var(--good)" : pct > 20 ? "var(--warn)" : "var(--danger)";
       $(`${prefix}HpText`).textContent = `${Math.max(0, hp)} / ${maxHp}`;
-      renderEnergy(`${prefix}EnergyPanel`, energy);
+      renderEnergy(`${prefix}EnergyPanel`, energy, displayedCharged);
     }
 
-    function renderEnergy(id, energy) {
+    function renderEnergy(id, energy, chargedOverride = null) {
       const prefix = id.slice(0, 2);
       const combatant = prefix === "p1" ? left : right;
-      const charged = combatant && combatant.charged ? combatant.charged : [];
+      const charged = chargedOverride || (combatant && combatant.charged ? combatant.charged : []);
       $(id).innerHTML =
         `${energyMoveOrb(charged[0], energy, prefix, 0)}` +
         `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>` +
@@ -13263,6 +13472,10 @@
 
     function shieldSvg() {
       return `<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><g stroke-linejoin="round"><path d="M16 5.2 25.1 10.5v10.9L16 26.8 6.9 21.5v-11L16 5.2Z" fill="currentColor" stroke="rgba(255,255,255,.72)" stroke-width="1.7"/><path d="M16 10.3 20.6 13v6L16 21.7 11.4 19v-6l4.6-2.7Z" fill="var(--panel)" stroke="rgba(255,255,255,.9)" stroke-width="1.7"/></g></svg>`;
+    }
+
+    function disguiseSvg() {
+      return `<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><g stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 9.3 11 5.1l3.1 3.1c1.3-.2 2.6-.2 3.9 0l3-3.1 2.8 4.2c1.4 2.7 1.5 8.7.2 12.4-1.1 3.2-4.2 5.2-8 5.2s-6.9-2-8-5.2C6.7 18 6.8 12 8.2 9.3Z" fill="#f4dfa0" stroke="currentColor" stroke-width="1.8"/><path d="m17.2 8.1-2.5 5 3.1 2.2-3.4 3.3 2.2 2.2-1.4 5.6" fill="none" stroke="#402746" stroke-width="2"/><path d="m10.9 14.1 2.5 1.6m7.6-1.6-2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.8"/></g></svg>`;
     }
 
     function render() {
@@ -15300,7 +15513,7 @@
     function timelineReplayEventX(event, index, chargeSlots, turnPx) {
       if (!event) return 0;
       if (event.kind === "charge") return (chargeVisualTurn(event, index, chargeSlots) + chargeWindowTurns) * turnPx;
-      if (event.kind === "shield") {
+      if (event.kind === "shield" || event.kind === "form-protect") {
         const chargeIndex = event.chargeIndex ?? index;
         const source = event.chargeEvent || event;
         return (chargeVisualTurn(source, chargeIndex, chargeSlots) + chargeWindowTurns) * turnPx;
@@ -15478,12 +15691,12 @@
         return;
       }
       const timelineEvent = timeline[Number(block.dataset.eventIndex)];
-      if (!timelineEvent || (timelineEvent.kind !== "fast" && timelineEvent.kind !== "charge" && timelineEvent.kind !== "shield")) {
+      if (!timelineEvent || !["fast", "charge", "shield", "form-protect"].includes(timelineEvent.kind)) {
         hideTimelineMoveTooltip();
         return;
       }
       const isSwipe = block.classList.contains("charge-trail") || block.classList.contains("charge-dot");
-      const color = timelineEvent.kind === "shield" ? "#d7a6e7" : typeColors[timelineEvent.move.type] || "#156f8f";
+      const color = (timelineEvent.kind === "shield" || timelineEvent.kind === "form-protect") ? "#d7a6e7" : typeColors[timelineEvent.move.type] || "#156f8f";
       const rect = scroll.getBoundingClientRect();
       const visibleX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
       const visibleY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
@@ -15631,7 +15844,7 @@
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
         if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
-        const isShield = event.kind === "shield";
+        const isShield = event.kind === "shield" || event.kind === "form-protect";
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
@@ -15643,12 +15856,18 @@
             : visualTurn(event.start, chargeSlots, false);
         const center = (baseTurn + chargeWindowTurns) * turnPx;
         const left = Math.max(2, center - width / 2);
-        const label = isShield ? `<span class="timeline-shield-icon">${shieldSvg()}</span>` : moveTypeIcon(event.move);
+        const label = isShield
+          ? event.kind === "form-protect"
+            ? `<span class="timeline-shield-icon timeline-disguise-icon">${disguiseSvg()}</span>`
+            : `<span class="timeline-shield-icon">${shieldSvg()}</span>`
+          : moveTypeIcon(event.move);
         const effectClass = isCharge ? timelineStageEffectClass(event) : "";
         const trainerClass = isCharge ? ` trainer-${trainer.toLowerCase()}` : "";
-        const cls = (isShield ? "timeline-block shield" : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + (selectedTimelineIndex === index ? " selected" : "");
+        const cls = (isShield ? `timeline-block shield${event.kind === "form-protect" ? " form-protect" : ""}` : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + (selectedTimelineIndex === index ? " selected" : "");
         const labelText = isShield
-          ? `Shield used against ${event.move.name} - turn ${event.start}`
+          ? event.kind === "form-protect"
+            ? `${event.specialProtection || "Protection"} used against ${event.move.name} - turn ${event.start}`
+            : `Shield used against ${event.move.name} - turn ${event.start}`
           : timelineMoveTitle(event);
         const borderColor = isShield ? "rgba(178, 69, 197, .65)" : darken(color, .18);
         const trail = isCharge ? chargeTrail(baseTurn * turnPx, center, width, color, index, turnPx) : "";
@@ -15697,7 +15916,7 @@
       const visualStart = timelineFastVisualTurn(event, chargeSlots);
       const size = timelineFastSize(turnPx);
       const pairedShield = event.sneaked && Number.isInteger(event.sneakChargeIndex)
-        ? timeline.find(candidate => candidate.kind === "shield" && candidate.trainer === event.trainer && candidate.chargeIndex === event.sneakChargeIndex)
+        ? timeline.find(candidate => (candidate.kind === "shield" || candidate.kind === "form-protect") && candidate.trainer === event.trainer && candidate.chargeIndex === event.sneakChargeIndex)
         : null;
       const pairedOffset = pairedShield ? timelineShieldWidth(turnPx) / 2 + size / 2 + 3 : 0;
       const left = visualStart * turnPx - size / 2 - pairedOffset;
@@ -15734,6 +15953,7 @@
     function timelineMoveTitle(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
       if (event.kind === "shield") return `Shielded\n${event.absorbedDamage || 0} Absorbed`;
+      if (event.kind === "form-protect") return `Disguise broken\n${event.absorbedDamage || 0} Absorbed${event.formChange?.defenseStageDelta ? `\nDefense ${event.formChange.defenseStageDelta} stage` : ""}`;
       const state = event.state || {};
       const targetState = event.trainer === "A" ? state.B : state.A;
       const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
@@ -15807,7 +16027,7 @@
     }
 
     function timelineEventCausesKo(event, eventIndex) {
-      if (!event || event.kind === "shield") return false;
+      if (!event || event.kind === "shield" || event.kind === "form-protect") return false;
       const targetKey = event.trainer === "A" ? "B" : "A";
       return eventIndex === firstKoTimelineIndex(targetKey);
     }
@@ -15820,7 +16040,7 @@
         const event = timeline[i];
         const state = event.state && event.state[targetKey];
         if (!state) continue;
-        if (event.kind !== "shield" && previousHp > 0 && state.hp <= 0) return i;
+        if (event.kind !== "shield" && event.kind !== "form-protect" && previousHp > 0 && state.hp <= 0) return i;
         previousHp = state.hp;
       }
       return -1;

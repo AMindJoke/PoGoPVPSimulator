@@ -30,7 +30,7 @@ function canonicalConfig(aId, bId) {
   const b = pokemonMap.get(bId);
   assert(a, `Missing canonical Pokemon: ${aId}`);
   assert(b, `Missing canonical Pokemon: ${bId}`);
-  return createBattleConfig(a, b, DEFAULT_PROFILE, moveMap, standardMovesets);
+  return createBattleConfig(a, b, DEFAULT_PROFILE, moveMap, standardMovesets, pokemonMap);
 }
 
 function controlledContinuationConfig({ strongCost = 45, strongPower = 100, startEnergy = 35 } = {}) {
