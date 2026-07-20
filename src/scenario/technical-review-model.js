@@ -41,34 +41,45 @@
     return Number(event?.start || 0) + Math.max(1, Number(event?.duration || 1)) - 1;
   }
 
-  function findDreCollision(timeline, chargeIndex, segmentStart = 0) {
+  function findDreOpportunity(timeline, energyFastIndex, segmentStart = 0, combatants = {}) {
     if (!Array.isArray(timeline)) return null;
-    const charge = timeline[chargeIndex];
-    if (!charge || charge.kind !== "charge" || chargeIndex < segmentStart) return null;
-    const defenderSide = charge.trainer;
-    const hpAtThrow = Number(charge.state?.[defenderSide]?.hp || 0);
-    const candidates = timeline
+    const energyFast = timeline[energyFastIndex];
+    if (!energyFast || energyFast.kind !== "fast" || energyFastIndex < segmentStart) return null;
+    const chargedSide = energyFast.trainer;
+    const combatant = combatants[chargedSide];
+    const energyBefore = Number(energyFast.energyBefore || 0);
+    const energyAfter = Number(energyFast.state?.[chargedSide]?.energy ?? (energyBefore + Number(energyFast.move?.energyGain || 0)));
+    const newlyReadyMoves = (combatant?.charged || [])
+      .filter(Boolean)
+      .filter(move => Number(move.energyCost || 0) > energyBefore && Number(move.energyCost || 0) <= energyAfter);
+    if (!newlyReadyMoves.length) return null;
+
+    const energyTurn = fastImpactTurn(energyFast);
+    const lethal = timeline
       .map((event, index) => ({ event, index }))
       .filter(({ event, index }) => (
         index >= segmentStart &&
-        index < chargeIndex &&
         event?.kind === "fast" &&
-        event.trainer !== defenderSide &&
-        fastImpactTurn(event) === Number(charge.start || 0) &&
-        Number(event.damage || 0) >= hpAtThrow
-      ));
-    if (!candidates.length) return null;
-    const match = candidates[candidates.length - 1];
+        event.trainer !== chargedSide &&
+        Number(event.state?.[chargedSide]?.hp ?? 1) <= 0 &&
+        fastImpactTurn(event) === energyTurn + 1
+      ))
+      .sort((a, b) => a.index - b.index)[0];
+    if (!lethal) return null;
+    if (Number(energyFast.state?.[lethal.event.trainer]?.hp ?? 1) <= 0) return null;
     return {
-      chargeIndex,
-      fastIndex: match.index,
-      turn: Number(charge.start || 0),
-      chargedSide: defenderSide,
-      fastSide: match.event.trainer,
-      chargedMoveName: charge.move?.name || "Charged Move",
-      fastMoveName: match.event.move?.name || "Fast Move",
-      pendingDamage: Number(match.event.damage || 0),
-      hpAtThrow
+      energyFastIndex,
+      lethalFastIndex: lethal.index,
+      turn: energyTurn,
+      chargedSide,
+      fastSide: lethal.event.trainer,
+      energyFastName: energyFast.move?.name || "Fast Move",
+      lethalFastMoveName: lethal.event.move?.name || "Fast Move",
+      pendingDamage: Number(lethal.event.damage || 0),
+      energyBefore,
+      energyAfter,
+      chargedMoveIds: newlyReadyMoves.map(move => move.id),
+      chargedMoveNames: newlyReadyMoves.map(move => move.name || move.id)
     };
   }
 
@@ -86,15 +97,16 @@
     };
   }
 
-  function createDreIssue(timeline, eventIndex, segmentStart = 0) {
-    const collision = findDreCollision(timeline, eventIndex, segmentStart);
-    if (!collision) return null;
+  function createDreIssue(timeline, eventIndex, segmentStart = 0, combatants = {}) {
+    const opportunity = findDreOpportunity(timeline, eventIndex, segmentStart, combatants);
+    if (!opportunity) return null;
     return {
       type: ISSUE_TYPES.DRE,
-      trainer: collision.chargedSide,
+      trainer: opportunity.chargedSide,
       eventIndex,
-      actionOrdinal: eventOrdinal(timeline, eventIndex, segmentStart, "charge", collision.chargedSide),
-      ...collision
+      actionOrdinal: eventOrdinal(timeline, eventIndex, segmentStart, "fast", opportunity.chargedSide),
+      lethalFastOrdinal: eventOrdinal(timeline, opportunity.lethalFastIndex, segmentStart, "fast", opportunity.fastSide),
+      ...opportunity
     };
   }
 
@@ -119,7 +131,7 @@
     createReview,
     eventOrdinal,
     fastImpactTurn,
-    findDreCollision,
+    findDreOpportunity,
     createOneTurnLagIssue,
     createDreIssue,
     setResult,

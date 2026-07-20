@@ -57,7 +57,7 @@ The replaced Pokemon remains visible as a subdued card layer behind the incoming
 Technical Review reconstructs tournament incidents from a selected action in the active timeline segment. It keeps an immutable snapshot of the observed segment and recalculates a temporary comparison branch through the normal battle engine.
 
 - **One-turn lag:** select a Fast Move. The selected action starts one turn later and every following decision is recalculated.
-- **DRE:** select a compatible Charged Move at a lethal Fast-damage boundary. The comparison shows the normal damage-first resolution against the observed branch where the Charged Move fired.
+- **DRE:** select the Fast Move that unlocks charged energy one turn before lethal opposing Fast damage. The comparison reconstructs the anomalous branch where the newly available Charged Move fires before that pending damage registers.
 - **Branch comparison:** the judge can switch between the original/no-issue state and the issue state without changing the saved scenario.
 - **Clear:** restores the exact state that existed before the reconstruction.
 

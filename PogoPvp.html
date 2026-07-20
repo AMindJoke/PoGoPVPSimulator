@@ -11676,6 +11676,7 @@
         attackStage: combatant.attackStage || 0,
         defenseStage: combatant.defenseStage || 0,
         lastFastStart: combatant.lastFastStart ?? null,
+        timingPlanMoveId: combatant.timingPlanMoveId || null,
         shadowAtkMult: combatant.shadowAtkMult || 1,
         shadowDefMult: combatant.shadowDefMult || 1,
         cpm: combatant.cpm,
@@ -12007,15 +12008,34 @@
     function useFast(attacker, defender) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       if (applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
+      const dreFastOrdinal = nextTechnicalDreFastOrdinal(attacker);
       const energyBefore = attacker.energy;
+      const hpBefore = defender.hp;
       const damage = apply(attacker, defender, attacker.fast, false);
+      const deferDreDamage = shouldDeferTechnicalDreFast(attacker, dreFastOrdinal);
+      if (deferDreDamage) defender.hp = hpBefore;
       const energyGained = attacker.energy - energyBefore;
       const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore);
+      if (deferDreDamage) {
+        event.drePending = true;
+        event.state = battleSnapshot();
+        technicalIssueInjection.pendingFast = {
+          eventIndex: timeline.indexOf(event),
+          attackerSide: attacker.trainer,
+          defenderSide: defender.trainer,
+          damage,
+          moveName: attacker.fast.name
+        };
+      }
       attacker.lastFastStart = event.start;
       const energyText = energyGained === attacker.fast.energyGain
         ? `+${energyGained} energy`
         : `+${energyGained} energy (${attacker.energy}/100)`;
       add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, ${energyText}.`, "fast");
+      if (deferDreDamage) add(`Technical review: ${attacker.fast.name} damage is pending at the DRE window.`, "info");
+      markTechnicalDreEnergyReady(attacker, defender, dreFastOrdinal);
+      const dreResult = resolveTechnicalDreIfNeeded();
+      if (dreResult !== null) return dreResult;
       return finish();
     }
 
@@ -12043,7 +12063,7 @@
         render();
         return false;
       }
-      if (applyTechnicalIssueIfNeeded("dre", attacker, defender, move)) return false;
+      attacker.timingPlanMoveId = null;
       const formChanges = [];
       const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
       if (chargedActivationChange) formChanges.push(chargedActivationChange);
@@ -12331,6 +12351,8 @@
     function resetCooldownsAfterChargedTurn(currentTurn, timelineStart = 0) {
       const chargedEvents = timeline.slice(timelineStart).filter(event => event.kind === "charge");
       if (!chargedEvents.length) return false;
+      if (left) left.timingPlanMoveId = null;
+      if (right) right.timingPlanMoveId = null;
       timeline.forEach(event => {
         if (event.kind !== "fast" || event.start > currentTurn || timelineFastImpactTurn(event) < currentTurn) return;
         const interruptingCharge = chargedEvents.find(charge => charge.trainer !== event.trainer);
@@ -12718,13 +12740,18 @@
       }
       const available = validChargedMoves(attacker).filter(m => attacker.energy >= m.energyCost);
       if (available.length) {
-        const decision = chooseChargedMoveDecision(attacker, defender, available);
+        const plannedMove = available.find(move => move.id === attacker.timingPlanMoveId);
+        if (attacker.timingPlanMoveId && !plannedMove) attacker.timingPlanMoveId = null;
+        const decision = plannedMove
+          ? { move: plannedMove, reason: `completing the planned ${plannedMove.name} timing` }
+          : chooseChargedMoveDecision(attacker, defender, available);
         if (!decision.move) {
           if (decision.reason) add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${decision.reason}.`, "info");
           return useFast(attacker, defender);
         }
         const timingReason = chargeTimingWaitReason(attacker, defender, decision.move);
         if (timingReason) {
+          attacker.timingPlanMoveId = decision.move.id;
           add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits before ${decision.move.name}. Reasoning: ${timingReason}.`, "info");
           return useFast(attacker, defender);
         }
@@ -14389,7 +14416,7 @@
       const segmentStart = technicalSegmentStartIndex();
       return technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG
         ? api.createOneTurnLagIssue(timeline, eventIndex, segmentStart)
-        : api.createDreIssue(timeline, eventIndex, segmentStart);
+        : api.createDreIssue(timeline, eventIndex, segmentStart, { A: left, B: right });
     }
 
     function handleTechnicalTimelineSelection(eventIndex) {
@@ -14430,17 +14457,10 @@
       technicalReviewState.selectedEventIndex = issue.eventIndex;
       technicalReviewState.mode = null;
       technicalReviewState.sourceState = observedState;
-      if (issue.type === "dre") {
-        technicalReviewState.originalState = reconstructedState;
-        technicalReviewState.issueState = observedState;
-        technicalReviewState.activeBranch = "issue";
-        restoreTechnicalRuntimeState(observedState);
-      } else {
-        technicalReviewState.originalState = observedState;
-        technicalReviewState.issueState = reconstructedState;
-        technicalReviewState.activeBranch = "issue";
-        restoreTechnicalRuntimeState(reconstructedState);
-      }
+      technicalReviewState.originalState = observedState;
+      technicalReviewState.issueState = reconstructedState;
+      technicalReviewState.activeBranch = "issue";
+      restoreTechnicalRuntimeState(reconstructedState);
       selectedTimelineIndex = null;
       document.body.classList.add("technical-review-branch");
       render();
@@ -14448,41 +14468,96 @@
 
     function applyTechnicalIssueIfNeeded(kind, attacker, defender, move) {
       const injection = technicalIssueInjection;
-      if (!injection || injection.type !== kind || attacker.trainer !== injection.trainer || chargedContinuationDepth > 0) return false;
+      if (!injection || injection.type !== "one-turn-lag" || kind !== "one-turn-lag" || attacker.trainer !== injection.trainer || chargedContinuationDepth > 0) return false;
       injection.counts[attacker.trainer] = Number(injection.counts[attacker.trainer] || 0) + 1;
       if (injection.applied || injection.counts[attacker.trainer] !== injection.targetOrdinal) return false;
       injection.applied = true;
       const start = Number(battleTurns[attacker.trainer] || 0);
-      if (kind === "one-turn-lag") {
-        timeline.push({
-          trainer: attacker.trainer,
-          move,
-          kind: "technical-lag",
-          issueType: kind,
-          start,
-          duration: 1,
-          damage: 0,
-          state: battleSnapshot()
-        });
-        battleTurns[attacker.trainer] = start + 1;
-        add(`T${start}-${start + 1} - Technical review: ${attacker.p.name} loses one turn before ${move.name}.`, "info");
-        return true;
-      }
-      attacker.hp = 0;
+      timeline.push({
+        trainer: attacker.trainer,
+        move,
+        kind: "technical-lag",
+        issueType: kind,
+        start,
+        duration: 1,
+        damage: 0,
+        state: battleSnapshot()
+      });
+      battleTurns[attacker.trainer] = start + 1;
+      add(`T${start}-${start + 1} - Technical review: ${attacker.p.name} loses one turn before ${move.name}.`, "info");
+      return true;
+    }
+
+    function nextTechnicalDreFastOrdinal(attacker) {
+      const injection = technicalIssueInjection;
+      if (!injection || injection.type !== "dre" || chargedContinuationDepth > 0) return 0;
+      injection.counts[attacker.trainer] = Number(injection.counts[attacker.trainer] || 0) + 1;
+      return injection.counts[attacker.trainer];
+    }
+
+    function shouldDeferTechnicalDreFast(attacker, ordinal) {
+      const injection = technicalIssueInjection;
+      return !!(
+        injection &&
+        injection.type === "dre" &&
+        !injection.applied &&
+        attacker.trainer === injection.issue.fastSide &&
+        ordinal === injection.issue.lethalFastOrdinal
+      );
+    }
+
+    function markTechnicalDreEnergyReady(attacker, defender, ordinal) {
+      const injection = technicalIssueInjection;
+      if (!injection || injection.type !== "dre" || injection.applied || attacker.trainer !== injection.trainer || ordinal !== injection.targetOrdinal) return;
+      injection.energyReady = { attackerSide: attacker.trainer, defenderSide: defender.trainer };
+    }
+
+    function resolveTechnicalDreIfNeeded() {
+      const injection = technicalIssueInjection;
+      if (!injection || injection.type !== "dre" || injection.applied || !injection.energyReady) return null;
+      const pending = injection.pendingFast;
+      if (!pending) return null;
+      const attacker = injection.energyReady.attackerSide === "A" ? left : right;
+      const defender = injection.energyReady.defenderSide === "A" ? left : right;
+      if (!attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return null;
+      const allowedIds = new Set(injection.issue.chargedMoveIds || []);
+      const available = validChargedMoves(attacker)
+        .filter(move => attacker.energy >= move.energyCost)
+        .filter(move => !allowedIds.size || allowedIds.has(move.id));
+      if (!available.length) return null;
+      const decision = chooseChargedMoveDecision(attacker, defender, available);
+      const move = decision.move || [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || a.energyCost - b.energyCost)[0];
+      const moveIndex = attacker.charged.findIndex(candidate => candidate?.id === move.id);
+      if (moveIndex < 0) return null;
+
+      injection.applied = true;
       timeline.push({
         trainer: attacker.trainer,
         move,
         kind: "technical-dre",
-        issueType: kind,
-        start,
+        issueType: "dre",
+        start: Number(battleTurns[attacker.trainer] || 0),
         duration: 1,
-        damage: Number(injection.issue?.pendingDamage || 0),
-        pendingFastMoveName: injection.issue?.fastMoveName || "Fast Move",
+        damage: 0,
+        pendingFastMoveName: pending.moveName,
         state: battleSnapshot()
       });
-      add(`T${start} - No DRE branch: ${injection.issue?.fastMoveName || "Fast Move"} registers first; ${move.name} is denied.`, "ko");
-      finish();
-      return true;
+      add(`DRE: ${attacker.p.name} is allowed to fire ${move.name} before ${pending.moveName} damage registers.`, "charge");
+      const chargeContinues = useCharge(attacker, defender, moveIndex, { aiReason: "DRE reconstruction", deferCooldownReset: true });
+      const pendingEvent = timeline[pending.eventIndex];
+      if (defender.hp <= 0) {
+        if (pendingEvent) pendingEvent.dreDenied = true;
+        add(`DRE: ${pending.moveName} damage is denied because ${defender.p.name} faints.`, "info");
+        return chargeContinues;
+      }
+      attacker.hp = Math.max(0, attacker.hp - pending.damage);
+      if (pendingEvent) {
+        pendingEvent.drePending = false;
+        pendingEvent.dreResolved = true;
+        pendingEvent.state = battleSnapshot();
+      }
+      add(`DRE: pending ${pending.moveName} damage registers after ${move.name}: ${pending.damage} damage.`, "fast");
+      return finish();
     }
 
     function technicalOutcome(state) {
@@ -14542,7 +14617,7 @@
         if (technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG) {
           eligible = index >= technicalSegmentStartIndex() && event?.kind === "fast";
         } else if (technicalReviewState.mode === api.ISSUE_TYPES.DRE) {
-          eligible = !!api.createDreIssue(timeline, index, technicalSegmentStartIndex());
+          eligible = !!api.createDreIssue(timeline, index, technicalSegmentStartIndex(), { A: left, B: right });
         }
         block.classList.toggle("technical-eligible", eligible);
         block.classList.toggle("technical-selected", technicalReviewState.activeBranch === "original" && technicalReviewState.selectedEventIndex === index);
@@ -14566,7 +14641,7 @@
         const pokemon = issue.trainer === "A" ? technicalReviewState.issueState?.left?.p?.name : technicalReviewState.issueState?.right?.p?.name;
         const description = issue.type === "one-turn-lag"
           ? `${pokemon || `Pokemon ${issue.trainer}`} · ${issue.moveName} delayed by 1 turn at T${issue.turn}`
-          : `${pokemon || `Pokemon ${issue.trainer}`} · ${issue.chargedMoveName} fires at T${issue.turn}`;
+          : `${pokemon || `Pokemon ${issue.trainer}`} · charged access after ${issue.energyFastName} at T${issue.turn}`;
         $("technicalReviewTitle").textContent = issue.type === "one-turn-lag" ? "One-turn lag reconstruction" : "DRE reconstruction";
         $("technicalReviewSummary").textContent = description;
         const impact = technicalImpactSummary();
@@ -14581,7 +14656,7 @@
         $("technicalReviewSummary").textContent = mode === "one-turn-lag"
           ? "Select the Fast Move that was delayed. The battle will be recalculated from that point."
           : mode === "dre"
-            ? "Select a Charged Move that fired on a lethal Fast damage turn."
+            ? "Select the Fast Move that unlocks charged energy one turn before lethal opposing Fast damage."
             : "Choose an issue, then select an eligible action on the timeline.";
       }
     }
@@ -17057,7 +17132,7 @@
           const label = event.kind === "technical-lag" ? "+1T" : "DRE";
           const title = event.kind === "technical-lag"
             ? `One-turn lag before ${event.move?.name || "Fast Move"}`
-            : `${event.pendingFastMoveName || "Fast Move"} registers before ${event.move?.name || "Charged Move"}`;
+            : `${event.move?.name || "Charged Move"} fires before pending ${event.pendingFastMoveName || "Fast Move"} damage`;
           return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}" data-event-index="${index}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
         }
         const isShield = event.kind === "shield" || event.kind === "form-protect";
