@@ -22,6 +22,28 @@
   },
   "entries": [
     {
+      "id": "aegislash_shield",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "altaria",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "lead",
+        "generalist"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
       "id": "clodsire",
       "tier": "core",
       "usageWeight": 3.4,
@@ -44,14 +66,14 @@
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
     {
-      "id": "dunsparce",
+      "id": "cradily",
       "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
       "roles": [
         "safe-swap",
         "generalist"
       ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
     {
@@ -73,28 +95,6 @@
       "roles": [
         "shield-pressure",
         "closer"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "gastrodon",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "lead",
-        "closer"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "pangoro",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "closer",
-        "shield-pressure"
       ],
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
@@ -253,50 +253,6 @@
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
     {
-      "id": "swampert",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "shield-pressure",
-        "closer"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "swampert_shadow",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "shield-pressure",
-        "closer"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "skarmory",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "lead",
-        "generalist"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "registeel",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "closer",
-        "generalist"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
       "id": "carbink",
       "tier": "core",
       "usageWeight": 3.4,
@@ -326,17 +282,6 @@
       "roles": [
         "safe-swap",
         "generalist"
-      ],
-      "notes": "Expected to shape team building or appear frequently in serious Great League play."
-    },
-    {
-      "id": "toxapex",
-      "tier": "core",
-      "usageWeight": 3.4,
-      "confidence": 0.9,
-      "roles": [
-        "safe-swap",
-        "closer"
       ],
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
@@ -405,7 +350,50 @@
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
     {
-      "id": "marowak_alolan",
+      "id": "mimikyu",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "shield-pressure"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "ninetales_shadow",
+      "tier": "core",
+      "roles": [
+        "lead",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "ninetales",
+      "tier": "core",
+      "roles": [
+        "lead",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "stunfisk",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "generalist"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "tinkaton",
       "tier": "core",
       "usageWeight": 3.4,
       "confidence": 0.9,
@@ -416,6 +404,257 @@
       "notes": "Expected to shape team building or appear frequently in serious Great League play."
     },
     {
+      "id": "lickilicky",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "guzzlord",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "closer"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "jellicent",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "furret",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "forretress",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "lead",
+        "safe-swap"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "forretress_shadow",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "generalist"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "fearow",
+      "tier": "core",
+      "roles": [
+        "lead",
+        "closer"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "corviknight",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "charjabug",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "lead",
+        "safe-swap"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "florges",
+      "tier": "core",
+      "roles": [
+        "closer",
+        "generalist"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "swampert",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "shield-pressure",
+        "closer"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "swampert_shadow",
+      "tier": "core",
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "roles": [
+        "shield-pressure",
+        "closer"
+      ],
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "politoed_shadow",
+      "tier": "core",
+      "roles": [
+        "lead",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "politoed",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "togekiss",
+      "tier": "core",
+      "roles": [
+        "closer",
+        "shield-pressure"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "moltres_galarian",
+      "tier": "core",
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "usageWeight": 3.4,
+      "confidence": 0.9,
+      "notes": "Expected to shape team building or appear frequently in serious Great League play."
+    },
+    {
+      "id": "dunsparce",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "safe-swap",
+        "generalist"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "gastrodon",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "lead",
+        "closer"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "pangoro",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "closer",
+        "shield-pressure"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "skarmory",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "lead",
+        "generalist"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "registeel",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "closer",
+        "generalist"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "toxapex",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "safe-swap",
+        "closer"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
+      "id": "marowak_alolan",
+      "tier": "common",
+      "usageWeight": 2.25,
+      "confidence": 0.72,
+      "roles": [
+        "lead",
+        "closer"
+      ],
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
+    },
+    {
       "id": "skarmory_shadow",
       "tier": "common",
       "usageWeight": 2.25,
@@ -423,7 +662,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "bastiodon_shadow",
@@ -433,7 +672,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "dewgong",
@@ -443,7 +682,7 @@
       "roles": [
         "safe-swap"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "dewgong_shadow",
@@ -453,7 +692,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "froslass",
@@ -464,7 +703,7 @@
         "lead",
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "froslass_shadow",
@@ -474,7 +713,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "abomasnow",
@@ -485,7 +724,7 @@
         "lead",
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "abomasnow_shadow",
@@ -495,18 +734,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "lickilicky",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "safe-swap",
-        "closer"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "lickitung",
@@ -516,7 +744,7 @@
       "roles": [
         "safe-swap"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "serperior",
@@ -526,7 +754,7 @@
       "roles": [
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "serperior_shadow",
@@ -536,7 +764,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "venusaur",
@@ -547,7 +775,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "venusaur_shadow",
@@ -557,18 +785,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "charjabug",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "lead",
-        "safe-swap"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "charjabug_shadow",
@@ -578,28 +795,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "forretress",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "lead",
-        "safe-swap"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "forretress_shadow",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "generalist"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "machoke_shadow",
@@ -609,7 +805,7 @@
       "roles": [
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "machamp_shadow",
@@ -619,7 +815,7 @@
       "roles": [
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "marowak_alolan_shadow",
@@ -629,17 +825,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "mimikyu",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "shield-pressure"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "kingdra",
@@ -650,7 +836,7 @@
         "safe-swap",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "kingdra_shadow",
@@ -660,7 +846,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "wigglytuff",
@@ -671,7 +857,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "clefable",
@@ -682,7 +868,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "dragonair",
@@ -692,7 +878,7 @@
       "roles": [
         "safe-swap"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "dragonair_shadow",
@@ -702,7 +888,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "goodra",
@@ -712,18 +898,7 @@
       "roles": [
         "safe-swap"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
-    },
-    {
-      "id": "altaria",
-      "tier": "common",
-      "usageWeight": 2.25,
-      "confidence": 0.72,
-      "roles": [
-        "lead",
-        "generalist"
-      ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "whiscash",
@@ -734,7 +909,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "whiscash_shadow",
@@ -744,7 +919,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "pelipper",
@@ -755,7 +930,7 @@
         "lead",
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "mantine",
@@ -766,7 +941,7 @@
         "safe-swap",
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "ninetales_alolan",
@@ -777,7 +952,7 @@
         "lead",
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "ninetales_alolan_shadow",
@@ -787,7 +962,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "gliscor",
@@ -798,7 +973,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "gliscor_shadow",
@@ -808,7 +983,7 @@
       "roles": [
         "generalist"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "stunfisk_galarian",
@@ -819,7 +994,7 @@
         "lead",
         "closer"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "zweilous",
@@ -830,7 +1005,7 @@
         "lead",
         "shield-pressure"
       ],
-      "notes": "Realistic and relevant pick, but less central than core meta anchors."
+      "notes": "Regularly relevant to the Great League field without defining the central meta."
     },
     {
       "id": "articuno",
@@ -892,16 +1067,6 @@
       "confidence": 0.52,
       "roles": [
         "generalist"
-      ],
-      "notes": "Playable or matchup-relevant tech pick; included so the model sees counter-meta pressure without letting it define the format."
-    },
-    {
-      "id": "guzzlord",
-      "tier": "spice",
-      "usageWeight": 1.35,
-      "confidence": 0.52,
-      "roles": [
-        "closer"
       ],
       "notes": "Playable or matchup-relevant tech pick; included so the model sees counter-meta pressure without letting it define the format."
     },
@@ -1068,17 +1233,6 @@
       "confidence": 0.52,
       "roles": [
         "generalist"
-      ],
-      "notes": "Playable or matchup-relevant tech pick; included so the model sees counter-meta pressure without letting it define the format."
-    },
-    {
-      "id": "tinkaton",
-      "tier": "spice",
-      "usageWeight": 1.35,
-      "confidence": 0.52,
-      "roles": [
-        "lead",
-        "closer"
       ],
       "notes": "Playable or matchup-relevant tech pick; included so the model sees counter-meta pressure without letting it define the format."
     },
