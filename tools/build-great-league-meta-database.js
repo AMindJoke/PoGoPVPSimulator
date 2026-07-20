@@ -5,6 +5,7 @@ const path = require("path");
 const vm = require("vm");
 const { runQualityPipeline } = require("./validate-great-league-dataset");
 const battleReliability = require("../src/reliability/battle-reliability");
+const turnEngine = require("../src/battle/turn-resolution-engine");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
@@ -160,7 +161,12 @@ function extractLiveWorkerSource() {
   const simulatorScript = match[1].replace(/\binit\(\);\s*$/, "");
   const context = {
     console,
-    window: { PvPeakBattleReliability: battleReliability, location: { search: "" } },
+    window: {
+      PvPeakBattleReliability: battleReliability,
+      PvPeakTurnEngine: turnEngine,
+      createPvPeakTurnEngineApi: turnEngine.createApi,
+      location: { search: "" }
+    },
     document: {},
     indexedDB: null,
     Blob: function Blob() {},
@@ -206,7 +212,7 @@ function createWorkerAdapter(source) {
       context.self.onmessage({ data: payload });
       const response = posted.shift();
       if (!response) throw new Error(`No worker response for ${payload.key}.`);
-      if (response.error) throw new Error(`${payload.key}: ${response.error}`);
+      if (response.error || response.message) throw new Error(`${payload.key}: ${response.error || response.message}`);
       if (response.type !== "matrixCellResult") throw new Error(`${payload.key}: unexpected worker response.`);
       return response.result;
     }

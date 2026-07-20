@@ -23,6 +23,12 @@ Morpeko toggles form after Charged Attacks, Aegislash changes stance when activa
 a Charged Attack or shield, and Mimikyu's first unshielded Charged Attack is handled
 by Disguise before it enters Busted Form and loses one Defense stage.
 
+`battle-planner-v7` introduces the shared Turn Resolution Engine. Legal actions,
+simultaneous actor ordering, CMP priority, sneak detection, terminal outcomes, and
+timing-sensitive pending Fast impacts now use one reusable contract. DRE and
+one-turn lag alter the event schedule; they no longer own separate move-choice
+rules.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.

@@ -23,6 +23,10 @@ This roadmap tracks the long-term path from 1v1 simulator to Pokemon GO PvP trai
 
 ## Battle Engine Reliability
 
+- [x] Add a shared turn-resolution and legal-action kernel.
+- [x] Represent timing-sensitive Fast damage as scheduled pending events.
+- [x] Route CMP, sneak, KO, DRE, and one-turn lag through shared timing contracts.
+- [x] Add focused timing invariants and regression tests.
 - [x] Add optional structured decision tracing.
 - [x] Formalize planner versioning and stale-result provenance.
 - [x] Add the first external battle regression corpus and runner.

@@ -23,6 +23,7 @@
     "test:battle-reliability": "node tools/test-battle-reliability.js",
     "test:special-forms": "node tools/test-special-form-mechanics.js",
     "test:scenario-model": "node tools/test-scenario-model.js",
+    "test:turn-engine": "node tools/test-turn-resolution-engine.js",
     "test:battle-review": "node tools/test-battle-review.js",
     "test:win-conditions": "node tools/test-win-condition-engine.js",
     "test:terminal-pressure": "node tools/test-terminal-pressure.js",

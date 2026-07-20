@@ -5,7 +5,7 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v6";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v7";
   const TRACE_SCHEMA_VERSION = 1;
   const REGRESSION_SCHEMA_VERSION = 1;
 
@@ -27,6 +27,7 @@
     "FARM_FOR_CLOSER",
     "CMP_WIN_SETUP",
     "FORCED_BY_OPPONENT_PRESSURE",
+    "PENDING_FAST_IMPACT",
     "BEST_IMMEDIATE_DAMAGE",
     "FASTEST_KO_SEQUENCE",
     "DOMINATED_BRANCH",
