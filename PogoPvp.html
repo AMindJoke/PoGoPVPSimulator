@@ -9328,6 +9328,7 @@
         shouldCompareShieldedChargedLines,
         shouldEvaluateProjectedChargedSequence,
         shouldEvaluateChargedTimingContinuation,
+        perfectChargeTimingWindow,
         chargeTimingWaitWindow,
         buildChargeTimingWaitAction,
         shieldedChargedComparisonNeedsWait,
@@ -13112,6 +13113,11 @@
       const isFast = action.type === "fast_move" || action.type === "fast";
       const isTimingWait = action.type === "wait";
       const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
+      const perfectTimingWindow = perfectChargeTimingWindow(attacker, defender);
+      // A visual timing preference is only safe once the bounded continuation
+      // search has verified the comparable outcomes. Otherwise it must not
+      // override an ordinary strategic choice just because a Fast is in flight.
+      const verifiedPerfectTiming = !!(perfectTimingWindow && timingContinuationEligible);
       if (isTimingWait) {
         const timingWindow = action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
         if (!timingWindow) return null;
@@ -13229,6 +13235,14 @@
           ruleIds.push("BI_TIMING_CONTINUATION");
           reasonCodes.push("SAFE_EXTRA_FAST");
         }
+        if (verifiedPerfectTiming && available.length) {
+          // The current turn is already the last active turn of the opposing
+          // Fast Move. Do not farm into a later, equally clean window unless
+          // its full continuation is genuinely stronger.
+          components.timing = Math.min(Number(components.timing || 0), -1200);
+          reasons.push(`preserves the first perfect ${defender.fast.name} timing window`);
+          ruleIds.push("BI_TIMING_VALUE");
+        }
         if (forcedByPressure) components.risk = -1000;
       } else {
         const energyCost = Math.max(1, Number(move.energyCost || 1));
@@ -13300,6 +13314,12 @@
         if (timingContinuationEligible) {
           reasons.push(`compares throwing ${move.name} now against one safe Fast Move first`);
           ruleIds.push("BI_TIMING_CONTINUATION");
+        }
+        if (verifiedPerfectTiming) {
+          components.timingAlignment = 1200;
+          reasons.push(`throws ${move.name} on the final ${defender.fast.name} turn`);
+          ruleIds.push("BI_TIMING_VALUE");
+          reasonCodes.push("OPTIMAL_CHARGE_TIMING");
         }
         if (attacker.timingPlanMoveId === move.id && !forcedByPressure) {
           components.timingPlanFollowThrough = 40;
@@ -13379,6 +13399,25 @@
       return true;
     }
 
+    function perfectChargeTimingWindow(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast || !defender.fast || !Array.isArray(timeline)) return null;
+      const currentTurn = Number(battleTurns[attacker.trainer] || 0);
+      const opponentFast = [...timeline].reverse().find(event =>
+        event?.kind === "fast"
+        && event.trainer === defender.trainer
+        && Number(event.start || 0) < currentTurn
+        && currentTurn === Number(event.start || 0) + Math.max(1, Number(event.duration || defender.fast.turns || 1)) - 1
+      );
+      if (!opponentFast) return null;
+      if (Number(battleTurns[defender.trainer] || 0) <= currentTurn) return null;
+      return {
+        targetTurn: currentTurn,
+        opponentFastStart: Number(opponentFast.start || 0),
+        opponentFastEnd: Number(opponentFast.start || 0) + Math.max(1, Number(opponentFast.duration || defender.fast.turns || 1)),
+        opponentFastName: opponentFast.move?.name || defender.fast.name
+      };
+    }
+
     function chargeTimingWaitWindow(attacker, defender) {
       if (!attacker || !defender || !attacker.fast || !defender.fast || !Array.isArray(timeline)) return null;
       const currentTurn = Number(battleTurns[attacker.trainer] || 0);
@@ -13455,7 +13494,8 @@
 
     function recordBattleIntelligenceTimingDecision(attacker, defender, selection) {
       if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action) return;
-      if (!selection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")) return;
+      if (!selection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")
+        && !selection.sourceRuleIds?.includes("BI_TIMING_VALUE")) return;
       const candidates = (selection.candidates || []).map(candidate => {
         const continuation = candidate?.evidence?.continuation || null;
         const action = candidate?.action || {};
@@ -13473,6 +13513,9 @@
         };
       });
       const selectedAction = selection.action;
+      const selectedActionLabel = selectedAction.type === "wait"
+        ? "WAIT_THEN_THROW"
+        : selectedAction.type === "fast_move" ? "FAST_THEN_REEVALUATE" : "THROW_NOW";
       recordBattleDecision({
         turn: Number(battleTurns[attacker.trainer] || 0),
         side: attacker.trainer,
@@ -13480,9 +13523,7 @@
         decisionType: "charged-timing-selection",
         stateBefore: traceStateSnapshot(attacker, defender),
         candidates,
-        chosenCandidate: candidates.find(candidate => candidate.action === "WAIT_THEN_THROW")
-          || candidates.find(candidate => candidate.action === "FAST_THEN_REEVALUATE")
-          || null,
+        chosenCandidate: candidates.find(candidate => candidate.action === selectedActionLabel) || null,
         reasonCode: selection.reasonCodes?.[0] || "OPTIMAL_CHARGE_TIMING",
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
@@ -13548,6 +13589,7 @@
 
       const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
       if (!move) return legalActions.some(action => action.type === "fast") ? useFast(attacker, defender) : false;
+      recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
       recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
       const aiReason = intelligenceSelection.explanation;
       return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });

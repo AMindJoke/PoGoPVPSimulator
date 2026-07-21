@@ -188,25 +188,22 @@ const timingQuagsire = simulate(battleConfig("quagsire_shadow", "corsola_galaria
   aCharged: ["AQUA_TAIL", "MUD_BOMB"]
 }), 2);
 const timingDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
-  item.side === "A" && item.decisionType === "charged-timing-selection"
-);
-assert(timingDecision, "Shadow Quagsire should expose a charged timing comparison after Corsola throws.");
-assert.strictEqual(timingDecision.chosenCandidate?.action, "FAST_THEN_REEVALUATE");
-assert(timingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
-assert(timingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
-const alignmentDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   item.side === "A"
   && item.decisionType === "charged-timing-selection"
-  && item.chosenCandidate?.action === "WAIT_THEN_THROW"
+  && item.turn === 17
 );
-assert(alignmentDecision, "Shadow Quagsire should use the one-turn alignment wait inside Corsola's Astonish.");
+assert(timingDecision, "Shadow Quagsire should expose a charged timing comparison after Corsola throws.");
+assert.strictEqual(timingDecision.chosenCandidate?.action, "THROW_NOW");
+assert.strictEqual(timingDecision.turn, 17);
+assert(timingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
+assert(timingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
 const followUp = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   item.side === "A"
   && item.decisionType === "charged-move-selection"
-  && item.turn === alignmentDecision.turn + 1
+  && item.turn === timingDecision.turn
   && item.chosenCandidate?.moveId === "AQUA_TAIL"
 );
-assert(followUp, "The alignment line must throw Aqua Tail one turn before Astonish completes.");
+assert(followUp, "The first perfect timing window must throw Aqua Tail on Astonish's final active turn.");
 
 const selfDebuff = simulate(battleConfig("raikou", "pachirisu", {
   aFast: "VOLT_SWITCH",
