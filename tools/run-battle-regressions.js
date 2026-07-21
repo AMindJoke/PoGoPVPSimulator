@@ -25,7 +25,7 @@ const ROOT = path.resolve(__dirname, "..");
 const DEFAULT_FIXTURES = path.join(ROOT, "data", "battle-regressions", "great-league.json");
 const DEFAULT_REPORT_ROOT = path.join(ROOT, "reports", "battle-regressions");
 
-function createRuntime() {
+function createRuntime(options = {}) {
   const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
   const standardMovesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
   const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
@@ -37,7 +37,7 @@ function createRuntime() {
     moveMap,
     pokemonMap,
     standardMovesets,
-    adapter: createWorkerAdapter(extractLiveWorkerSource())
+    adapter: createWorkerAdapter(extractLiveWorkerSource(), { strict: options.strict === true })
   };
 }
 

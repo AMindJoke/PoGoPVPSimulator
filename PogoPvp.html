@@ -8770,6 +8770,7 @@
     let battleDecisionTraceEnabled = false;
     let battleDecisionCounterfactualsEnabled = false;
     let currentBattleDecisionTrace = null;
+    let battleIntelligenceRuntimeContext = null;
     let lastBattleDecisionTrace = null;
     let lastTacticalPatternSummary = null;
     let lastWinConditionSummary = null;
@@ -9149,12 +9150,12 @@
       document.addEventListener("pointerover", handleChargeInfoPointerOver);
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
-      $("p1UseFast").onclick = () => useFast(left, right);
-      $("p1UseCharge1").onclick = () => useManualCharge(left, right, 0);
-      $("p1UseCharge2").onclick = () => useManualCharge(left, right, 1);
-      $("p2UseFast").onclick = () => useFast(right, left);
-      $("p2UseCharge1").onclick = () => useManualCharge(right, left, 0);
-      $("p2UseCharge2").onclick = () => useManualCharge(right, left, 1);
+      $("p1UseFast").onclick = () => { recordManualIntelligenceDecision(left, "fast_move"); useFast(left, right); };
+      $("p1UseCharge1").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[0]); useManualCharge(left, right, 0); };
+      $("p1UseCharge2").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[1]); useManualCharge(left, right, 1); };
+      $("p2UseFast").onclick = () => { recordManualIntelligenceDecision(right, "fast_move"); useFast(right, left); };
+      $("p2UseCharge1").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[0]); useManualCharge(right, left, 0); };
+      $("p2UseCharge2").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[1]); useManualCharge(right, left, 1); };
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -9308,6 +9309,8 @@
         validChargedMoves,
         battleIntelligenceState,
         battleIntelligencePolicy,
+        battleIntelligenceCallerContext,
+        recordExternalIntelligenceDecision,
         selectBattleIntelligenceAction,
         recordBattleIntelligenceDecision,
         autoAction,
@@ -9422,6 +9425,7 @@
         let battleDecisionTraceEnabled = false;
         let battleDecisionCounterfactualsEnabled = false;
         let currentBattleDecisionTrace = null;
+        let battleIntelligenceRuntimeContext = null;
         let battleInsights = [];
         const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
         let currentMatrixConfig = null;
@@ -9526,6 +9530,12 @@
         self.onmessage = event => {
           const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode } = event.data || {};
           try {
+            const normalizedSource = String(source || "").toLowerCase();
+            battleIntelligenceRuntimeContext = normalizedSource.includes("offline")
+              ? "offline"
+              : normalizedSource.includes("scenario") ? "scenario-review"
+                : normalizedSource.includes("preview") ? "preview"
+                  : normalizedSource.includes("matrix") || normalizedSource.includes("meta") ? "matrix" : "battle";
             currentMatrixConfig = config;
             const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
               includeSwing,
@@ -9541,7 +9551,15 @@
             result.swingReady = !!includeSwing;
             self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
           } catch (error) {
-            self.postMessage({ id, source, type: "matrixCellError", key, signature, message: error && error.message ? error.message : String(error) });
+            self.postMessage({
+              id,
+              source,
+              type: "matrixCellError",
+              key,
+              signature,
+              code: error?.code || null,
+              message: error && error.message ? error.message : String(error)
+            });
           }
         };
       `;
@@ -10621,10 +10639,13 @@
       timeline = [];
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
+      const previousIntelligenceContext = battleIntelligenceRuntimeContext;
+      battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
       runAutomaticBattleToEnd(1000);
       const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
       restoreBattleState(snapshot);
+      battleIntelligenceRuntimeContext = previousIntelligenceContext;
       suppressRender = false;
       return result;
     }
@@ -12314,7 +12335,16 @@
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
-      if (!api?.selectShieldAction || !defender) return { shield: false, reason: "", reasonCode: null, sourceRuleIds: [] };
+      if (!api?.selectShieldAction || !defender) {
+        const strict = typeof globalThis !== "undefined"
+          && (globalThis.BATTLE_INTELLIGENCE_STRICT === true || String(globalThis.BATTLE_INTELLIGENCE_STRICT || "").toLowerCase() === "true");
+        if (strict) {
+          const error = new Error("Battle Intelligence strict mode rejected strategic fallback: LEGACY_NO_INTELLIGENCE_API");
+          error.code = "LEGACY_NO_INTELLIGENCE_API";
+          throw error;
+        }
+        return { shield: false, reason: "", reasonCode: "LEGACY_NO_INTELLIGENCE_API", sourceRuleIds: [] };
+      }
       const policy = policyOverride || defender.shieldMode || "always";
       const needsSmartThreat = policy === "smart";
       const entersFarmRange = needsSmartThreat && !!attacker
@@ -12325,6 +12355,8 @@
         : false;
       const result = api.selectShieldAction({
         policy,
+        intelligencePolicy: battleIntelligencePolicy(),
+        callerContext: battleIntelligenceCallerContext(),
         state: {
           shields: defender.shields,
           chargedTaken: defender.chargedTaken,
@@ -12742,6 +12774,11 @@
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
       intelligenceApi?.resetStatistics?.();
+      intelligenceApi?.resetAudit?.();
+      intelligenceApi?.configureAudit?.({
+        enabled: true,
+        retainEvents: typeof debugBattleTracing !== "undefined" && debugBattleTracing
+      });
       currentBattleDecisionTrace = {
         schemaVersion: 1,
         battleId: options.battleId || null,
@@ -12766,6 +12803,10 @@
         B: traceCombatantState(right)
       };
       currentBattleDecisionTrace.intelligenceStats = intelligenceApi?.getStatistics?.() || null;
+      currentBattleDecisionTrace.intelligenceAudit = intelligenceApi?.getAuditReport?.() || null;
+      if (!currentBattleDecisionTrace.intelligenceAudit?.configuration?.strict) {
+        intelligenceApi?.configureAudit?.({ enabled: false, retainEvents: false });
+      }
       return JSON.parse(JSON.stringify(currentBattleDecisionTrace));
     }
 
@@ -12821,17 +12862,62 @@
       return "FAST";
     }
 
+    function battleIntelligenceCallerContext() {
+      if (battleIntelligenceRuntimeContext) return battleIntelligenceRuntimeContext;
+      const source = String(currentBattleDecisionTrace?.source || "").toLowerCase();
+      if (source.includes("offline")) return "offline";
+      if (source.includes("matrix") || source.includes("meta")) return "matrix";
+      if (source.includes("preview")) return "preview";
+      if (source.includes("scenario")) return "scenario-review";
+      if (typeof document !== "undefined" && document.body?.dataset?.view === "scenario-review") return "scenario-review";
+      if (typeof previewState !== "undefined" && previewState?.active) return "preview";
+      return "battle";
+    }
+
+    function recordManualIntelligenceDecision(combatant, type, move = null) {
+      recordExternalIntelligenceDecision({
+        source: "manual",
+        action: { type, side: combatant?.trainer || null, moveId: move?.id || null },
+        categories: [type === "charged_move" ? "charged-selection" : "fast-vs-charged", "manual"]
+      });
+    }
+
+    function recordExternalIntelligenceDecision(input = {}) {
+      const api = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      api?.recordExternalDecision?.({
+        source: input.source || "forced-policy",
+        action: input.action || null,
+        ruleIds: input.ruleIds || [],
+        policy: battleIntelligencePolicy(),
+        callerContext: battleIntelligenceCallerContext(),
+        categories: input.categories || [],
+        fallbackReasonCode: input.fallbackReasonCode || null
+      });
+    }
+
     function selectBattleIntelligenceAction(attacker, defender, legalActions) {
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
-      if (!api || !attacker || !defender) return null;
+      if (!api || !attacker || !defender) {
+        const strict = typeof globalThis !== "undefined"
+          && (globalThis.BATTLE_INTELLIGENCE_STRICT === true || String(globalThis.BATTLE_INTELLIGENCE_STRICT || "").toLowerCase() === "true");
+        if (strict) {
+          const error = new Error("Battle Intelligence strict mode rejected strategic fallback: LEGACY_NO_INTELLIGENCE_API");
+          error.code = "LEGACY_NO_INTELLIGENCE_API";
+          throw error;
+        }
+        return null;
+      }
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
         side: attacker.trainer,
         legalActions,
         policy: battleIntelligencePolicy(),
         context: {
+          callerContext: battleIntelligenceCallerContext(),
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return move ? estimate(attacker, defender, move) : 0;
@@ -12890,11 +12976,23 @@
           chargedContinuationOpening.completed = true;
         } else if (attacker.energy >= targetMove.energyCost) {
           chargedContinuationOpening.completed = true;
+          recordExternalIntelligenceDecision({
+            source: "legacy-fallback",
+            action: { type: "charged_move", side: attacker.trainer, moveId: targetMove.id },
+            categories: ["charged-selection", "continuation-search"],
+            fallbackReasonCode: "LEGACY_CONTINUATION_NOT_MIGRATED"
+          });
           return useCharge(attacker, defender, attacker.charged.indexOf(targetMove), {
             aiReason: "projected charged continuation",
             deferCooldownReset: true
           });
         } else {
+          recordExternalIntelligenceDecision({
+            source: "legacy-fallback",
+            action: { type: "fast_move", side: attacker.trainer, moveId: attacker.fast?.id || null },
+            categories: ["fast-vs-charged", "continuation-search"],
+            fallbackReasonCode: "LEGACY_CONTINUATION_NOT_MIGRATED"
+          });
           return useFast(attacker, defender);
         }
       }
@@ -12911,6 +13009,13 @@
             evidence: null
           }
         : selectBattleIntelligenceAction(attacker, defender, legalActions);
+      if (plannedMove) {
+        recordExternalIntelligenceDecision({
+          source: "forced-policy",
+          action: { type: "charged_move", side: attacker.trainer, moveId: plannedMove.id },
+          categories: ["charged-selection", "timing-plan"]
+        });
+      }
       if (!intelligenceSelection?.action) return false;
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.evidence?.legacyReason || intelligenceSelection.explanation;
@@ -16129,6 +16234,8 @@
     function simulateShieldMatrixCell(aShields, bShields, options = {}) {
       const snapshot = snapshotBattleState();
       const previousContinuationMode = chargedContinuationMode;
+      const previousIntelligenceContext = battleIntelligenceRuntimeContext;
+      battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
       chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
       $("p1Shields").value = aShields;
@@ -16168,6 +16275,7 @@
       result.battleInsights = completedBattleInsights;
       restoreBattleState(snapshot);
       chargedContinuationMode = previousContinuationMode;
+      battleIntelligenceRuntimeContext = previousIntelligenceContext;
       suppressRender = false;
       return result;
     }

@@ -192,12 +192,13 @@ function extractLiveWorkerSource() {
   return context.result;
 }
 
-function createWorkerAdapter(source) {
+function createWorkerAdapter(source, options = {}) {
   const posted = [];
   const context = {
     console,
     setTimeout,
     clearTimeout,
+    BATTLE_INTELLIGENCE_STRICT: options.strict === true,
     self: {
       postMessage(message) {
         posted.push(message);
@@ -215,7 +216,11 @@ function createWorkerAdapter(source) {
       context.self.onmessage({ data: payload });
       const response = posted.shift();
       if (!response) throw new Error(`No worker response for ${payload.key}.`);
-      if (response.error || response.message) throw new Error(`${payload.key}: ${response.error || response.message}`);
+      if (response.error || response.message) {
+        const error = new Error(`${payload.key}: ${response.error || response.message}`);
+        error.code = response.code || null;
+        throw error;
+      }
       if (response.type !== "matrixCellResult") throw new Error(`${payload.key}: unexpected worker response.`);
       return response.result;
     }

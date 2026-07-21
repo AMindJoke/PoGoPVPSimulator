@@ -47,6 +47,9 @@ function createPvPeakBattleIntelligenceApi() {
   const fastPathCache = new Map();
   const MAX_CACHE_ENTRIES = 2048;
   const statistics = createStatistics();
+  const strictByDefault = readStrictModeDefault();
+  const auditConfiguration = { enabled: strictByDefault, strict: strictByDefault, retainEvents: strictByDefault };
+  let audit = createAuditState();
 
   function rule(id, name, priorityClass, reasonCode, requiresContinuationSearch = false) {
     return Object.freeze({ id, name, description: name, priorityClass, reasonCode, requiresContinuationSearch });
@@ -82,6 +85,61 @@ function createPvPeakBattleIntelligenceApi() {
 
   function clearCache() {
     fastPathCache.clear();
+  }
+
+  function createAuditState() {
+    return {
+      totalDecisions: 0,
+      battleIntelligenceDecisions: 0,
+      legacyFallbackDecisions: 0,
+      manualDecisions: 0,
+      forcedPolicyDecisions: 0,
+      intelligenceOwnedDecisions: 0,
+      bypassedStrategicDecisions: 0,
+      byCategory: {},
+      byContext: {},
+      fallbackReasons: {},
+      events: []
+    };
+  }
+
+  function configureAudit(options = {}) {
+    if (Object.prototype.hasOwnProperty.call(options, "enabled")) auditConfiguration.enabled = !!options.enabled;
+    if (Object.prototype.hasOwnProperty.call(options, "strict")) auditConfiguration.strict = !!options.strict;
+    if (Object.prototype.hasOwnProperty.call(options, "retainEvents")) auditConfiguration.retainEvents = !!options.retainEvents;
+    if (auditConfiguration.strict) auditConfiguration.enabled = true;
+    return getAuditReport();
+  }
+
+  function resetAudit() {
+    audit = createAuditState();
+  }
+
+  function getAuditReport() {
+    const strategic = audit.battleIntelligenceDecisions + audit.legacyFallbackDecisions + audit.forcedPolicyDecisions;
+    return {
+      ...audit,
+      byCategory: cloneCounters(audit.byCategory),
+      byContext: cloneCounters(audit.byContext),
+      fallbackReasons: { ...audit.fallbackReasons },
+      events: audit.events.map(event => ({ ...event, ruleIds: [...event.ruleIds], categories: [...event.categories] })),
+      fallbackRate: strategic ? audit.legacyFallbackDecisions / strategic : 0,
+      runtimeCoverage: strategic ? audit.intelligenceOwnedDecisions / strategic : 0,
+      configuration: { ...auditConfiguration }
+    };
+  }
+
+  function recordExternalDecision(input = {}) {
+    return recordAuditDecision({
+      source: input.source || "manual",
+      action: input.action || null,
+      ruleIds: input.ruleIds || [],
+      policy: input.policy || null,
+      callerContext: input.callerContext || "battle",
+      categories: input.categories || ["manual"],
+      fallbackReasonCode: input.fallbackReasonCode || null,
+      intelligenceOwned: input.intelligenceOwned === true
+    });
   }
 
   function resolvePolicy(input) {
@@ -210,6 +268,11 @@ function createPvPeakBattleIntelligenceApi() {
     const context = input.context || {};
     const legalActions = (input.legalActions || []).map(action => normalizeAction(action, side));
     const candidates = legalActions.map(action => createCandidate(action));
+    const auditMeta = {
+      callerContext: context.callerContext || "unknown",
+      cmp: Array.isArray(input.state?.cmpState?.readySides) && input.state.cmpState.readySides.length > 1
+    };
+    candidates.forEach(candidate => { candidate.auditMeta = auditMeta; });
     statistics.selections++;
     statistics.evaluatedCandidates += candidates.length;
 
@@ -360,21 +423,22 @@ function createPvPeakBattleIntelligenceApi() {
     const damage = Math.max(0, numeric(threat.damage));
     const energyCost = Math.max(0, numeric(threat.energyCost));
 
-    if (!shields) return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "No shield is available.", .99);
+    const done = result => finalizeShieldResult(result, input, policy);
+    if (!shields) return done(shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "No shield is available.", .99));
     if (policy === "no-first" && chargedTaken === 0) {
-      return shieldResult(false, "BI_SHIELD_POLICY", "No First shield logic lets the first charged move through.", .99);
+      return done(shieldResult(false, "BI_SHIELD_POLICY", "No First shield logic lets the first charged move through.", .99));
     }
     if (policy === "always") {
-      return shieldResult(true, "BI_SHIELD_POLICY", "Always shield logic uses a shield.", .99);
+      return done(shieldResult(true, "BI_SHIELD_POLICY", "Always shield logic uses a shield.", .99));
     }
     if (policy === "nuke") {
       const shield = damage >= hp || damage >= maxHp * .35 || energyCost >= 55;
-      return shieldResult(
+      return done(shieldResult(
         shield,
         shield ? "BI_SHIELD_HEAVY_PRESSURE" : "BI_SAVE_SHIELD_LOW_THREAT",
         shield ? "Nuke shield logic blocks high-threat damage." : "Nuke shield logic lets low-threat damage through.",
         .9
-      );
+      ));
     }
 
     if (counterfactual) {
@@ -382,7 +446,7 @@ function createPvPeakBattleIntelligenceApi() {
       const withoutShield = outcomeRank(counterfactual.outcomeWithoutShield);
       if (withShield !== withoutShield) {
         const shield = withShield > withoutShield;
-        return shieldResult(
+        return done(shieldResult(
           shield,
           "BI_SHIELD_PRESERVES_WIN",
           shield
@@ -390,24 +454,39 @@ function createPvPeakBattleIntelligenceApi() {
             : "Smart shield preserves a winning continuation by saving the shield.",
           .98,
           { counterfactual }
-        );
+        ));
       }
     }
 
-    if (damage >= hp) return shieldResult(true, "BI_SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98);
-    if (threat.entersFarmRange) return shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield avoids farm range.", .9);
+    if (damage >= hp) return done(shieldResult(true, "BI_SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98));
+    if (threat.entersFarmRange) return done(shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield avoids farm range.", .9));
     if (threat.losesChargedThreat) {
-      return shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield preserves charged-move threat.", .88);
+      return done(shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield preserves charged-move threat.", .88));
     }
     const damageRatio = damage / maxHp;
     if (shields >= 2 && (damageRatio >= .42 || energyCost >= 55)) {
-      return shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield spends from 2 shields against heavy pressure.", .82);
+      return done(shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield spends from 2 shields against heavy pressure.", .82));
     }
-    if (damageRatio >= .55) return shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield blocks major damage.", .82);
+    if (damageRatio >= .55) return done(shieldResult(true, "BI_SHIELD_HEAVY_PRESSURE", "Smart shield blocks major damage.", .82));
     if (damageRatio <= .25 && energyCost < 55) {
-      return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield calls low-impact bait.", .78);
+      return done(shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield calls low-impact bait.", .78));
     }
-    return shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield saves shield for higher threat.", .72);
+    return done(shieldResult(false, "BI_SAVE_SHIELD_LOW_THREAT", "Smart shield saves shield for higher threat.", .72));
+  }
+
+  function finalizeShieldResult(result, input, policy) {
+    const source = policy === "always" || policy === "no-first" ? "forced-policy" : "battle-intelligence";
+    const categories = ["shield-selection"];
+    if (result.reasonCodes.includes("SHIELD_PRESERVES_WIN_CONDITION")) categories.push("continuation-search");
+    return attachAudit(result, {
+      source,
+      action: result.action,
+      ruleIds: result.sourceRuleIds,
+      policy: String(input.intelligencePolicy || input.policy || "FAST").toUpperCase(),
+      callerContext: input.callerContext || "unknown",
+      categories,
+      intelligenceOwned: true
+    });
   }
 
   function shieldResult(shield, ruleId, explanation, confidence, evidence = null) {
@@ -568,7 +647,7 @@ function createPvPeakBattleIntelligenceApi() {
 
   function selectionResult(candidate, candidates, policy, fastPath, reasonCodes, explanation) {
     if (fastPath) statistics.fastPathSelections++;
-    return {
+    const result = {
       action: candidate?.action || null,
       chosenCandidate: candidate || null,
       candidates,
@@ -579,6 +658,119 @@ function createPvPeakBattleIntelligenceApi() {
       explanation: explanation || "",
       evidence: candidate?.evidence || null
     };
+    const legacyTactical = !!candidate?.evidence?.tacticalAdvice;
+    const legacyAdapter = candidate?.sourceRuleIds?.includes("BI_LEGACY_ADAPTER");
+    const forcedPolicy = candidate?.sourceRuleIds?.includes("BI_ONLY_LEGAL_ACTION");
+    const source = legacyTactical || legacyAdapter
+      ? "legacy-fallback"
+      : forcedPolicy ? "forced-policy" : "battle-intelligence";
+    const fallbackReasonCode = legacyTactical
+      ? "LEGACY_CONTINUATION_NOT_MIGRATED"
+      : legacyAdapter && candidate?.evidence?.legacyDecision
+        ? "LEGACY_CALLER_NOT_MIGRATED"
+        : legacyAdapter ? "LEGACY_UNSUPPORTED_ACTION_TYPE" : null;
+    return attachAudit(result, {
+      source,
+      action: result.action,
+      ruleIds: result.sourceRuleIds,
+      policy: policy.id,
+      callerContext: candidate?.auditMeta?.callerContext || "unknown",
+      categories: decisionCategories(candidate),
+      fallbackReasonCode,
+      intelligenceOwned: source !== "legacy-fallback"
+    });
+  }
+
+  function decisionCategories(candidate) {
+    const categories = new Set(["fast-vs-charged"]);
+    const action = candidate?.action || {};
+    const rules = candidate?.sourceRuleIds || [];
+    const reason = String(candidate?.evidence?.tacticalAdvice?.reason || "").toLowerCase();
+    if (action.type === ACTION_TYPES.CHARGED_MOVE) categories.add("charged-selection");
+    if (rules.includes("BI_THROW_BEFORE_FAINT")) categories.add("throw-before-faint");
+    if (rules.includes("BI_REACHABLE_CHARGED")) categories.add("cheaper-reachable-charged");
+    if (rules.includes("BI_GUARANTEED_LETHAL")) categories.add("guaranteed-lethal");
+    if (rules.includes("BI_AVOID_LETHAL_OVERFARM") || reason.includes("overfarm")) categories.add("overfarm");
+    if (rules.includes("BI_GUARANTEED_EFFECT")) categories.add("guaranteed-effect");
+    if (candidate?.auditMeta?.cmp) categories.add("cmp-ordering");
+    if (reason.includes("bait")) categories.add("baiting");
+    if (reason.includes("self-debuff")) categories.add("delayed-self-debuff");
+    if (reason.includes("continuation") || candidate?.evidence?.tacticalAdvice?.traceCandidates) categories.add("continuation-search");
+    if (rules.includes("BI_LEGACY_ADAPTER")) categories.add("tie-breaking");
+    return [...categories];
+  }
+
+  function attachAudit(result, entry) {
+    const recorded = recordAuditDecision(entry);
+    return {
+      ...result,
+      source: entry.source,
+      fallbackReasonCode: entry.fallbackReasonCode || null,
+      decisionCategories: [...entry.categories],
+      callerContext: entry.callerContext,
+      auditEvent: recorded
+    };
+  }
+
+  function recordAuditDecision(entry) {
+    if (entry.source === "legacy-fallback" && auditConfiguration.strict) {
+      const code = entry.fallbackReasonCode || "LEGACY_CALLER_NOT_MIGRATED";
+      const error = new Error(`Battle Intelligence strict mode rejected strategic fallback: ${code}`);
+      error.code = code;
+      error.auditEntry = entry;
+      throw error;
+    }
+    if (!auditConfiguration.enabled) return null;
+    const normalized = {
+      source: entry.source || "battle-intelligence",
+      action: entry.action ? { type: entry.action.type || null, moveId: entry.action.moveId || null, side: entry.action.side || null } : null,
+      ruleIds: [...(entry.ruleIds || [])],
+      policy: entry.policy || null,
+      callerContext: entry.callerContext || "unknown",
+      categories: [...new Set(entry.categories || [])],
+      fallbackReasonCode: entry.fallbackReasonCode || null,
+      intelligenceOwned: entry.intelligenceOwned === true
+    };
+    audit.totalDecisions++;
+    if (normalized.source === "legacy-fallback") audit.legacyFallbackDecisions++;
+    else if (normalized.source === "manual") audit.manualDecisions++;
+    else if (normalized.source === "forced-policy") audit.forcedPolicyDecisions++;
+    else audit.battleIntelligenceDecisions++;
+    if (normalized.source !== "manual") {
+      if (normalized.intelligenceOwned) audit.intelligenceOwnedDecisions++;
+      else audit.bypassedStrategicDecisions++;
+    }
+    incrementCounter(audit.byContext, normalized.callerContext, normalized.source);
+    normalized.categories.forEach(category => incrementCounter(audit.byCategory, category, normalized.source));
+    if (normalized.fallbackReasonCode) audit.fallbackReasons[normalized.fallbackReasonCode] = (audit.fallbackReasons[normalized.fallbackReasonCode] || 0) + 1;
+    if (auditConfiguration.retainEvents) audit.events.push(normalized);
+    return normalized;
+  }
+
+  function incrementCounter(group, key, source) {
+    const bucket = group[key] ||= { total: 0, battleIntelligence: 0, legacyFallback: 0, manual: 0, forcedPolicy: 0 };
+    bucket.total++;
+    if (source === "legacy-fallback") bucket.legacyFallback++;
+    else if (source === "manual") bucket.manual++;
+    else if (source === "forced-policy") bucket.forcedPolicy++;
+    else bucket.battleIntelligence++;
+  }
+
+  function cloneCounters(group) {
+    return Object.fromEntries(Object.entries(group).map(([key, value]) => [key, { ...value }]));
+  }
+
+  function readStrictModeDefault() {
+    try {
+      const value = typeof globalThis !== "undefined" ? globalThis.BATTLE_INTELLIGENCE_STRICT : null;
+      if (value === true || String(value || "").toLowerCase() === "true") return true;
+    } catch (_) {}
+    try {
+      const value = typeof process !== "undefined" ? process.env?.BATTLE_INTELLIGENCE_STRICT : null;
+      return value === "true" || value === "1";
+    } catch (_) {
+      return false;
+    }
   }
 
   function cacheFastPath(key, result) {
@@ -677,7 +869,11 @@ function createPvPeakBattleIntelligenceApi() {
     pruneDominatedCandidates,
     clearCache,
     resetStatistics,
-    getStatistics
+    getStatistics,
+    configureAudit,
+    resetAudit,
+    getAuditReport,
+    recordExternalDecision
   });
 }
 

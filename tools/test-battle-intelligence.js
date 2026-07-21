@@ -213,4 +213,58 @@ const changedTiming = state({ hpB: 45, energyA: 60, currentTurn: 6 });
 select(changedTiming);
 assert.equal(Intelligence.getStatistics().cacheMisses, 2);
 
+Intelligence.clearCache();
+Intelligence.resetAudit();
+Intelligence.configureAudit({ enabled: true, strict: false, retainEvents: true });
+const auditedLethal = Intelligence.selectAction({
+  state: lethalState,
+  side: "A",
+  legalActions: TurnEngine.getLegalActions(lethalState, "A"),
+  policy: "FAST",
+  context: {
+    callerContext: "battle",
+    estimateDamage: action => Number(action.move?.damage || 0),
+    willOpponentShield: () => false
+  }
+});
+assert.equal(auditedLethal.source, "battle-intelligence");
+assert(auditedLethal.decisionCategories.includes("guaranteed-lethal"));
+
+const auditedTactical = Intelligence.selectAction({
+  state: tacticalState,
+  side: "A",
+  legalActions: tacticalActions,
+  policy: "FAST",
+  context: {
+    callerContext: "matrix",
+    estimateDamage: action => Number(action.move?.damage || 0),
+    tacticalAdvice: { type: Intelligence.ACTION_TYPES.CHARGED_MOVE, moveId: "NUKE", reason: "bait continuation", confidence: .9 }
+  }
+});
+assert.equal(auditedTactical.source, "legacy-fallback");
+assert.equal(auditedTactical.fallbackReasonCode, "LEGACY_CONTINUATION_NOT_MIGRATED");
+const auditReport = Intelligence.getAuditReport();
+assert.equal(auditReport.totalDecisions, 2);
+assert.equal(auditReport.battleIntelligenceDecisions, 1);
+assert.equal(auditReport.legacyFallbackDecisions, 1);
+assert.equal(auditReport.byContext.matrix.legacyFallback, 1);
+assert.equal(auditReport.fallbackRate, .5);
+assert.equal(auditReport.intelligenceOwnedDecisions, 1);
+assert.equal(auditReport.bypassedStrategicDecisions, 1);
+assert.equal(auditReport.runtimeCoverage, .5);
+
+Intelligence.configureAudit({ strict: true });
+assert.throws(() => Intelligence.selectAction({
+  state: tacticalState,
+  side: "A",
+  legalActions: tacticalActions,
+  policy: "FAST",
+  context: {
+    callerContext: "scenario-review",
+    estimateDamage: action => Number(action.move?.damage || 0),
+    tacticalAdvice: { type: Intelligence.ACTION_TYPES.CHARGED_MOVE, moveId: "NUKE", reason: "legacy continuation" }
+  }
+}), error => error && error.code === "LEGACY_CONTINUATION_NOT_MIGRATED");
+Intelligence.configureAudit({ enabled: false, strict: false, retainEvents: false });
+
 console.log("Battle Intelligence tests passed.");
