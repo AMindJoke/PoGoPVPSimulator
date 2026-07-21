@@ -148,13 +148,20 @@ assert.strictEqual(multipleReadyDecision.candidates.length, 2);
 assert.strictEqual(multipleReadyDecision.chosenCandidate.moveName, "Strong Test");
 assert(multipleReadyDecision.candidates.some(candidate => candidate.moveName === "Cheap Test"));
 
-// Keep a canonical pre-existing flip covered while the continuation boundary evolves.
+// Keep a canonical pre-existing flip covered while enforcing the visible timing limit.
+// Dewgong needs two Ice Shards (six turns), so the line remains available for
+// analysis but must not create a matrix marker.
 const existingFlip = simulate(canonicalConfig("dewgong", "azumarill"), {
   aShields: 1,
   bShields: 1,
   includeSwing: true
 });
-assert.strictEqual(existingFlip.details.flipPotential.visible, true);
-assert(existingFlip.details.flipPotential.best, "Expected the existing Dewgong/Azumarill flip candidate.");
+assert.strictEqual(existingFlip.details.flipPotential.visible, false);
+assert(existingFlip.details.flipPotential.candidates.some(candidate =>
+  candidate.side === "A"
+  && candidate.fastMoveCount === 2
+  && candidate.totalTurnCost === 6
+  && candidate.excludedReason === "medium-hard-timing"
+), "Expected the Dewgong/Azumarill flip to remain available as a hidden analysis candidate.");
 
 console.log(`Flip continuation analysis regressions passed in ${Date.now() - startedAt}ms.`);

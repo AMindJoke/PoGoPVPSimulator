@@ -5,7 +5,7 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v9";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v11";
   const TRACE_SCHEMA_VERSION = 1;
   const REGRESSION_SCHEMA_VERSION = 1;
 

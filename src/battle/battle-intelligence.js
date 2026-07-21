@@ -178,6 +178,8 @@ function createPvPeakBattleIntelligenceApi() {
       sourceRuleIds: [...(input.sourceRuleIds || [])],
       tacticalScore: Number(input.tacticalScore || 0),
       continuationScore: input.continuationScore == null ? null : Number(input.continuationScore),
+      continuationPenalty: Math.max(0, Number(input.continuationPenalty || 0)),
+      strategicallyExcluded: !!input.strategicallyExcluded,
       confidence: Number(input.confidence ?? .5),
       reasonCodes: [...(input.reasonCodes || [])],
       requiresContinuationSearch: !!input.requiresContinuationSearch,
@@ -364,8 +366,10 @@ function createPvPeakBattleIntelligenceApi() {
       applyCandidateEvidence(candidate, evidence);
     }
 
+    const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
+
     if (typeof context.evaluateContinuation === "function") {
-      const searchCandidates = meaningful
+      const searchCandidates = selectable
         .filter(candidate => candidate.requiresContinuationSearch)
         .sort(compareCandidates)
         .slice(0, policy.maxCandidates);
@@ -378,7 +382,7 @@ function createPvPeakBattleIntelligenceApi() {
       }
     }
 
-    const fallback = [...meaningful].sort(compareCandidates)[0] || candidates[0];
+    const fallback = [...selectable].sort(compareCandidates)[0] || candidates[0];
     applyRule(fallback, "BI_CANDIDATE_EVIDENCE", 0, .7);
     const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback));
     finishTiming(startedAt);
@@ -392,6 +396,8 @@ function createPvPeakBattleIntelligenceApi() {
       .map(([key, value]) => [key, Number(value)]));
     candidate.scoreComponents = components;
     candidate.tacticalScore += Object.values(components).reduce((sum, value) => sum + value, 0);
+    candidate.continuationPenalty = Math.max(0, Number(input.continuationPenalty || candidate.continuationPenalty || 0));
+    candidate.strategicallyExcluded ||= input.strategicallyExcluded === true;
     candidate.requiresContinuationSearch ||= input.requiresContinuationSearch === true;
     candidate.evidence = {
       ...(candidate.evidence || {}),
@@ -571,7 +577,7 @@ function createPvPeakBattleIntelligenceApi() {
       evaluatedCandidates++;
       explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
       if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
-      candidate.continuationScore = Number(evaluation.score);
+      candidate.continuationScore = Number(evaluation.score) - Math.max(0, Number(candidate.continuationPenalty || 0));
       candidate.evidence = { ...(candidate.evidence || {}), continuation: evaluation };
       if (!best || compareCandidates(candidate, best) < 0) best = candidate;
     }

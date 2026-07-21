@@ -9353,7 +9353,9 @@
         credibleNukeBehindBait,
         credibleShieldPressureMove,
         opponentPressureForcesThrow,
+        deterministicShieldCoversChargedThreat,
         shouldOverfarmForCloser,
+        shieldedResidualOverfarmReason,
         shouldWaitForChargeTiming,
         chargeTimingWaitReason,
         fastsToSafeChargeTiming,
@@ -9449,12 +9451,40 @@
         }
 
         function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
-          const result = simulateShieldMatrixCell(aShields, bShields, {
-            includeSwing: false,
-            preFastAdvantage: { side, fastMoves },
-            policy,
-            continuationMode: "flip-analysis"
-          });
+          const saved = {
+            left,
+            right,
+            log,
+            timeline,
+            initialTimelineState,
+            battleTurns,
+            suppressRender,
+            activeAutoTurnContext,
+            chargedContinuationOpening,
+            currentMatrixConfig,
+            battleInsights
+          };
+          let result;
+          try {
+            result = simulateShieldMatrixCell(aShields, bShields, {
+              includeSwing: false,
+              preFastAdvantage: { side, fastMoves },
+              policy,
+              continuationMode: "flip-analysis"
+            });
+          } finally {
+            left = saved.left;
+            right = saved.right;
+            log = saved.log;
+            timeline = saved.timeline;
+            initialTimelineState = saved.initialTimelineState;
+            battleTurns = saved.battleTurns;
+            suppressRender = saved.suppressRender;
+            activeAutoTurnContext = saved.activeAutoTurnContext;
+            chargedContinuationOpening = saved.chargedContinuationOpening;
+            currentMatrixConfig = saved.currentMatrixConfig;
+            battleInsights = saved.battleInsights;
+          }
           const isAWin = result.details && result.details.winnerEdge > 0;
           const isBWin = result.details && result.details.winnerEdge < 0;
           return isAWin ? "A" : isBWin ? "B" : null;
@@ -12990,7 +13020,10 @@
       const credibleNuke = cheapest ? credibleShieldPressureMove(attacker, defender, cheapest) : null;
       const forcedByPressure = opponentPressureForcesThrow(attacker, defender);
       const timingReasons = new Map(available.map(candidate => [candidate.id, chargeTimingWaitReason(attacker, defender, candidate)]));
+      const residualOverfarm = straight ? shieldedResidualOverfarmReason(attacker, defender, straight) : "";
       const needsContinuation = shouldEvaluateChargedContinuations(attacker, defender, available);
+      let continuationPenalty = 0;
+      let strategicallyExcluded = false;
 
       if (isFast) {
         components.immediateDamage = Math.min(40, damage);
@@ -13032,6 +13065,12 @@
           reasons.push(`safe overfarm toward ${bestDamageMoveName(attacker, defender)}`);
           ruleIds.push("BI_OVERFARM");
         }
+        if (residualOverfarm) {
+          components.energyPreservation = Math.max(components.energyPreservation || 0, 1250);
+          reasons.push(residualOverfarm);
+          ruleIds.push("BI_OVERFARM");
+          reasonCodes.push("ENERGY_PRESERVATION");
+        }
         if (attacker.baiting === "selective" && credibleNuke && attacker.energy < credibleNuke.energyCost && attacker.energy < 100) {
           components.shieldPressure = Math.max(components.shieldPressure || 0, 600);
           reasons.push(`builds credible ${credibleNuke.name} shield pressure`);
@@ -13047,6 +13086,25 @@
         const energyCost = Math.max(1, Number(move.energyCost || 1));
         components.immediateDamage = damage * 2;
         components.damageEfficiency = damage / energyCost * 20;
+        const uncredibleSelectiveBait = attacker.baiting !== "on"
+          && defender.shields > 0
+          && preferredStraight
+          && move !== preferredStraight
+          && Number(move.energyCost || 0) < Number(preferredStraight.energyCost || 0)
+          && !credibleNukeBehindBait(attacker, defender, move);
+        if (uncredibleSelectiveBait) {
+          components.risk = Math.min(Number(components.risk || 0), -1200);
+          continuationPenalty = 1500;
+          strategicallyExcluded = true;
+          reasons.push(`${preferredStraight.name} does not create enough absolute pressure to make a ${move.name} bait reliable`);
+          reasonCodes.push("BAIT_NOT_CREDIBLE");
+        }
+        if (residualOverfarm && move === straight) {
+          components.energyPreservation = -1250;
+          continuationPenalty = Math.max(continuationPenalty, 1500);
+          reasons.push(`delays ${move.name} one safe Fast Move to preserve useful residual energy`);
+          reasonCodes.push("ENERGY_PRESERVATION");
+        }
         if (defender.shields <= 0 && move === straight) {
           components.directPressure = 500;
           reasons.push("highest unshielded damage");
@@ -13118,6 +13176,8 @@
         ruleIds,
         reasonCodes,
         confidence: needsContinuation ? .9 : .78,
+        continuationPenalty,
+        strategicallyExcluded,
         requiresContinuationSearch: needsContinuation && !isFast
       };
     }
@@ -13714,6 +13774,7 @@
       if (!attacker || !defender || defender.shields <= 0 || !attacker.fast || attacker.baiting === "off") return null;
       const moves = equalCostNonDominatedChargedMoves(attacker, defender);
       if (moves.length < 2) return null;
+      const strongestDamage = Math.max(...moves.map(move => estimate(attacker, defender, move)));
       const gain = Math.max(1, Number(attacker.fast.energyGain || 1));
       const fastTurns = Math.max(1, Number(attacker.fast.turns || 1));
       const fastDamage = estimate(attacker, defender, attacker.fast);
@@ -13742,6 +13803,11 @@
         if (isDominatedShieldPlanState(state, seen)) continue;
         seen.push(state);
         for (const move of moves) {
+          if (!state.firstMove
+            && estimate(attacker, defender, move) < strongestDamage
+            && !credibleNukeBehindBait(attacker, defender, move)) {
+            continue;
+          }
           const cost = Math.max(1, Number(move.energyCost || 1));
           const fasts = Math.max(0, Math.ceil((cost - state.energy) / gain));
           const turnsAfterFast = state.turns + fasts * fastTurns;
@@ -14016,11 +14082,10 @@
 
     function credibleNukeBehindBait(attacker, defender, baitMove) {
       if (!attacker || !defender || !baitMove) return null;
-      const baitDamage = estimate(attacker, defender, baitMove);
       return validChargedMoves(attacker)
         .filter(move => move !== baitMove)
         .map(move => ({ move, damage: estimate(attacker, defender, move) }))
-        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .6 || item.damage >= baitDamage * 1.5)
+        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .45)
         .sort((a, b) => b.damage - a.damage || b.move.energyCost - a.move.energyCost)[0]?.move || null;
     }
 
@@ -14031,6 +14096,7 @@
         .filter(move => move.energyCost > cheapest.energyCost)
         .map(move => ({ move, damage: estimate(attacker, defender, move) }))
         .filter(item => item.damage > cheapestDamage * 1.15)
+        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .45)
         .sort((a, b) => b.damage - a.damage || b.move.energyCost - a.move.energyCost)[0]?.move || null;
     }
 
@@ -14038,7 +14104,20 @@
       if (!attacker || !defender) return false;
       if (estimate(defender, attacker, defender.fast) >= attacker.hp) return true;
       if (fastsToSafeChargeTiming(attacker, defender) > 0) return false;
+      if (deterministicShieldCoversChargedThreat(attacker, defender)) return false;
       return opponentChargedThreatens(attacker, defender);
+    }
+
+    function deterministicShieldCoversChargedThreat(combatant, opponent) {
+      if (!combatant || Number(combatant.shields || 0) <= 0) return false;
+      const mode = String(combatant.shieldMode || "always").toLowerCase();
+      const willShield = mode === "always"
+        || (mode === "no-first" && Number(combatant.chargedTaken || 0) > 0);
+      if (!willShield || !opponent) return false;
+      if (Number(opponent.shields || 0) <= 0) return true;
+      const straight = validChargedMoves(combatant)
+        .sort((a, b) => estimate(combatant, opponent, b) - estimate(combatant, opponent, a) || a.energyCost - b.energyCost)[0];
+      return !!straight && Number(combatant.energy || 0) >= Number(straight.energyCost || 0);
     }
 
     function shouldOverfarmForCloser(attacker, defender, available, currentMove) {
@@ -14839,6 +14918,20 @@
       }
       return true;
     }
+
+    function shieldedResidualOverfarmReason(attacker, defender, straightMove) {
+      if (!attacker || !defender || !straightMove || !attacker.fast || defender.shields <= 0) return "";
+      if (Math.max(1, Number(attacker.fast.turns || 1)) !== 1) return "";
+      const gain = Math.max(0, Number(attacker.fast.energyGain || 0));
+      const cost = Math.max(1, Number(straightMove.energyCost || 1));
+      const residual = Number(attacker.energy || 0) - cost;
+      if (gain <= 0 || residual < 0 || residual >= gain) return "";
+      if (Number(attacker.energy || 0) + gain > 100) return "";
+      if (estimate(defender, attacker, defender.fast) >= attacker.hp) return "";
+      if (opponentPressureForcesThrow(attacker, defender)) return "";
+      return `one safe ${attacker.fast.name} preserves useful residual energy before ${straightMove.name}`;
+    }
+
 
     function animateScenarioIncomingCard(side) {
       const card = document.querySelector(`.trainer-card.${side === "A" ? "a" : "b"}`);
@@ -16533,22 +16626,48 @@
     function applyAdvantagePressureFloor(result, context) {
       const advantage = matchupAdvantageContext(context);
       if (!advantage || context.options.skipAdvantagePressureFloor) return result;
-      const baseline = simulateShieldMatrixCell(context.aShields, context.bShields, {
-        includeSwing: false,
-        policy: context.options.policy,
-        skipAdvantagePressureFloor: true,
-        baselineStartEnergy: true
-      });
+      const saved = {
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns,
+        suppressRender,
+        activeAutoTurnContext,
+        chargedContinuationOpening,
+        currentMatrixConfig,
+        battleInsights
+      };
+      let baseline;
+      try {
+        baseline = simulateShieldMatrixCell(context.aShields, context.bShields, {
+          includeSwing: false,
+          policy: context.options.policy,
+          skipAdvantagePressureFloor: true,
+          baselineStartEnergy: true
+        });
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        currentMatrixConfig = saved.currentMatrixConfig;
+        battleInsights = saved.battleInsights;
+      }
       const baseWinner = matrixWinnerSide(baseline);
       const currentWinner = matrixWinnerSide(result);
       if (!baseWinner || baseWinner !== currentWinner || advantage.side === currentWinner) return result;
       const winnerHpDrop = Math.max(0, winnerHpRatio(baseline, currentWinner) - winnerHpRatio(result, currentWinner));
-      if (winnerHpDrop <= 0) return result;
       const pressureGain = Math.min(18, Math.round(winnerHpDrop * 45));
-      if (pressureGain <= 0) return result;
       const adjustedScore = advantage.side === "A"
-        ? Math.min(499, Math.max(result.score, baseline.score + pressureGain))
-        : Math.max(501, Math.min(result.score, baseline.score - pressureGain));
+        ? Math.min(499, Math.max(result.score, baseline.score + Math.max(0, pressureGain)))
+        : Math.max(501, Math.min(result.score, baseline.score - Math.max(0, pressureGain)));
       if (adjustedScore === result.score) return result;
       const next = {
         ...result,
@@ -16772,10 +16891,10 @@
         { lineType: "straight", confidence: .85, visibleInMatrix: true, reason: "Both sides prefer direct charged-move pressure.", policy: matrixPolicyForLine(side, "straight") },
         { lineType: "shield-dependent", confidence: .58, visibleInMatrix: false, excludedReason: "bad-no-shield", requiresOpponentBlunder: true, requiresBadNoShield: true, reason: "The flip depends on the opponent not shielding a major charged-move threat.", policy: matrixPolicyForLine(side, "shield-dependent") }
       ];
-      if (hasTrueBaitOption(combatant)) {
+      if (hasTrueBaitOption(combatant, opponentCombatant)) {
         variants.push({ lineType: "bait", confidence: .68, visibleInMatrix: true, reason: `${combatant.p.name} can use a cheaper move before committing to its stronger line.`, policy: matrixPolicyForLine(side, "bait") });
       }
-      if (hasTrueBaitOption(opponentCombatant)) {
+      if (hasTrueBaitOption(opponentCombatant, combatant)) {
         variants.push({ lineType: "opponent-bait", confidence: .55, visibleInMatrix: false, excludedReason: "unstable-bait-guess", reason: "The opponent may spend less energy on a bait move.", policy: matrixPolicyForLine(side, "opponent-bait") });
       }
       if (validChargedMoves(combatant).some(hasSelfDebuff)) {
@@ -16790,11 +16909,14 @@
       return variants;
     }
 
-    function hasTrueBaitOption(combatant) {
-      const costs = validChargedMoves(combatant)
-        .map(move => Number(move.energyCost || 0))
-        .filter(cost => cost > 0);
-      return costs.length >= 2 && Math.min(...costs) < Math.max(...costs);
+    function hasTrueBaitOption(combatant, opponent = null) {
+      const moves = validChargedMoves(combatant);
+      if (!opponent || moves.length < 2) return false;
+      const fullHealthOpponent = { ...opponent, hp: opponent.maxHp };
+      return moves.some(move => moves.some(other =>
+        Number(move.energyCost || 0) < Number(other.energyCost || 0)
+        && credibleNukeBehindBait(combatant, fullHealthOpponent, move) === other
+      ));
     }
 
     function flipCandidateVisibility(policy, fastMoves, turnCost) {

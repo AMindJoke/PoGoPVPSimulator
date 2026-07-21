@@ -49,8 +49,16 @@ function simulate(config, shields = 1, options = {}) {
     debugChargedDecisions: false,
     trace: true,
     source: "battle-regression",
+    preFastAdvantage: options.preFastAdvantage || null,
+    continuationMode: options.continuationMode || "presentation",
     config
   });
+}
+
+function winnerSide(result) {
+  if (result.details?.winnerEdge > 0) return "A";
+  if (result.details?.winnerEdge < 0) return "B";
+  return null;
 }
 
 function decisionsFor(result, pokemonName) {
@@ -121,6 +129,28 @@ const equalCostSwing = simulate(battleConfig("sableye_shadow", "empoleon", {
 }), 1, { includeSwing: true });
 const equalCostCandidates = equalCostSwing.details?.flipPotential?.candidates || [];
 assert(!equalCostCandidates.some(item => item.lineType === "bait" || item.lineType === "opponent-bait"), "Equal-cost charged moves must not be classified as bait lines.");
+
+const kingdraCarbink = battleConfig("kingdra", "carbink", {
+  aCharged: ["SURF", "SWIFT"]
+});
+const kingdraTwoShield = simulate(kingdraCarbink, 2, { includeSwing: true });
+assert.strictEqual(winnerSide(kingdraTwoShield), "B");
+assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.side, "A");
+assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.fastMoveCount, 2);
+assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.lineType, "straight");
+const kingdraPlusOne = simulate(kingdraCarbink, 2, {
+  preFastAdvantage: { side: "A", fastMoves: 1 },
+  continuationMode: "flip-analysis"
+});
+assert.strictEqual(winnerSide(kingdraPlusOne), "B", "One stored Dragon Breath must not flip through an uncredible Swift bait.");
+const kingdraPlusTwo = simulate(kingdraCarbink, 2, {
+  preFastAdvantage: { side: "A", fastMoves: 2 },
+  continuationMode: "flip-analysis"
+});
+assert.strictEqual(winnerSide(kingdraPlusTwo), "A");
+assert((kingdraPlusTwo.decisionTrace?.decisions || [])
+  .filter(item => item.side === "A" && item.decisionType === "charged-move-selection")
+  .every(item => item.chosenCandidate?.moveId === "SURF"), "The detected Kingdra flip must use the straight Surf line.");
 
 const seaking = simulate(battleConfig("seaking", "hawlucha", {
   aCharged: ["DRILL_RUN", "ICY_WIND"]
