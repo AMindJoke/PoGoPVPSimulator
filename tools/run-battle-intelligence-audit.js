@@ -20,9 +20,9 @@ const CALL_SITES = Object.freeze([
   { id: "shield-decision", path: "useCharge -> shieldDecisionForMove -> selectShieldAction", routed: true },
   { id: "smart-shield-counterfactual", path: "useCharge -> buildShieldCounterfactual -> selectShieldAction", routed: true },
   { id: "shield-continuation", path: "simulateShieldDecisionContinuation -> autoAction", routed: true },
-  { id: "charged-continuation-opening", path: "autoAction chargedContinuationOpening -> useFast/useCharge", routed: false },
-  { id: "timing-plan-execution", path: "autoAction timingPlanMoveId -> planned action", routed: false },
-  { id: "dre-reconstruction", path: "resolveTechnicalDreIfNeeded -> useCharge", routed: false }
+  { id: "charged-continuation", path: "selectAction -> boundedContinuation -> simulateBattleIntelligenceContinuation", routed: true },
+  { id: "timing-and-overfarm", path: "evaluateCandidate -> candidate score -> selectAction", routed: true },
+  { id: "bait-and-self-debuff", path: "evaluateCandidate -> candidate score -> selectAction", routed: true }
 ]);
 
 const REPRESENTATIVE_IDS = Object.freeze([
@@ -133,8 +133,14 @@ function summarizeContext(runtime, config, source, id) {
 function runStrictCheck(testCase) {
   const runtime = createRuntime({ strict: true });
   try {
-    runRegressionCase(testCase, runtime, 1, { trace: true });
-    return { rejectedFallback: false, reasonCode: null };
+    const result = runRegressionCase(testCase, runtime, 1, { trace: true });
+    const audit = result.trace?.intelligenceAudit || {};
+    return {
+      rejectedFallback: false,
+      reasonCode: null,
+      legacyFallbackDecisions: Number(audit.legacyFallbackDecisions || 0),
+      runtimeCoverage: Number(audit.runtimeCoverage || 0)
+    };
   } catch (error) {
     return { rejectedFallback: true, reasonCode: error.code || null, message: error.message };
   }

@@ -47,12 +47,7 @@ function select(currentState, overrides = {}) {
       willOpponentShield: () => !!overrides.shielded,
       hasGuaranteedEffect: action => Number(action.move?.buffApplyChance || 0) >= 1,
       opponentLethalBeforeNextWindow: !!overrides.opponentLethalBeforeNextWindow,
-      legacySelect: actions => overrides.legacySelect
-        ? overrides.legacySelect(actions)
-        : { moveId: actions.find(action => action.type === "charged_move")?.moveId, type: "charged_move", reason: "fixture adapter" },
-      legacySelectCharged: actions => overrides.legacySelectCharged
-        ? overrides.legacySelectCharged(actions)
-        : { moveId: actions.find(action => action.type === "charged_move")?.moveId, type: "charged_move", reason: "fixture charged adapter" },
+      evaluateCandidate: overrides.evaluateCandidate,
       evaluateContinuation: overrides.evaluateContinuation
     }
   });
@@ -132,11 +127,10 @@ const secondBuff = move("SECOND_BUFF", 40, 25, { buffApplyChance: 1, buffs: [-1,
 const budgetState = state({ energyA: 40, chargedA: [buff, secondBuff] });
 const budgetFallback = select(budgetState, {
   policy: "FAST",
-  evaluateContinuation: () => null,
-  legacySelect: actions => ({ moveId: actions.find(action => action.type === "charged_move").moveId, type: "charged_move", reason: "deterministic budget fallback" })
+  evaluateContinuation: () => null
 });
 assert.equal(budgetFallback.action.moveId, "BUFF");
-assert(budgetFallback.sourceRuleIds.includes("BI_LEGACY_ADAPTER"));
+assert(budgetFallback.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
 
 const tacticalState = state({ energyA: 60 });
 const tacticalActions = TurnEngine.getLegalActions(tacticalState, "A");
@@ -147,18 +141,15 @@ const tacticalDecision = Intelligence.selectAction({
   policy: "FAST",
   context: {
     estimateDamage: action => Number(action.move?.damage || 0),
-    tacticalAdvice: {
-      type: Intelligence.ACTION_TYPES.CHARGED_MOVE,
-      moveId: "NUKE",
-      reason: "Projected continuation favors the nuke.",
-      reasonCode: "BETTER_PROJECTED_OUTCOME",
-      confidence: .91
-    }
+    evaluateCandidate: action => ({
+      components: { futureDamage: action.moveId === "NUKE" ? 500 : 0 },
+      reasons: action.moveId === "NUKE" ? ["highest future damage"] : []
+    })
   }
 });
 assert.equal(tacticalDecision.action.moveId, "NUKE");
-assert(tacticalDecision.sourceRuleIds.includes("BI_TACTICAL_PLAN"));
-assert.equal(tacticalDecision.evidence.tacticalAdvice.moveId, "NUKE");
+assert(tacticalDecision.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
+assert.equal(tacticalDecision.evidence.candidateEvaluation.components.futureDamage, 500);
 
 const alwaysShield = Intelligence.selectShieldAction({
   policy: "always",
@@ -230,7 +221,7 @@ const auditedLethal = Intelligence.selectAction({
 assert.equal(auditedLethal.source, "battle-intelligence");
 assert(auditedLethal.decisionCategories.includes("guaranteed-lethal"));
 
-const auditedTactical = Intelligence.selectAction({
+const auditedCandidate = Intelligence.selectAction({
   state: tacticalState,
   side: "A",
   legalActions: tacticalActions,
@@ -238,23 +229,23 @@ const auditedTactical = Intelligence.selectAction({
   context: {
     callerContext: "matrix",
     estimateDamage: action => Number(action.move?.damage || 0),
-    tacticalAdvice: { type: Intelligence.ACTION_TYPES.CHARGED_MOVE, moveId: "NUKE", reason: "bait continuation", confidence: .9 }
+    evaluateCandidate: action => ({ components: { baitValue: action.moveId === "NUKE" ? 100 : 0 }, reasons: ["candidate evidence"] })
   }
 });
-assert.equal(auditedTactical.source, "legacy-fallback");
-assert.equal(auditedTactical.fallbackReasonCode, "LEGACY_CONTINUATION_NOT_MIGRATED");
+assert.equal(auditedCandidate.source, "battle-intelligence");
+assert.equal(auditedCandidate.fallbackReasonCode, null);
 const auditReport = Intelligence.getAuditReport();
 assert.equal(auditReport.totalDecisions, 2);
-assert.equal(auditReport.battleIntelligenceDecisions, 1);
-assert.equal(auditReport.legacyFallbackDecisions, 1);
-assert.equal(auditReport.byContext.matrix.legacyFallback, 1);
-assert.equal(auditReport.fallbackRate, .5);
-assert.equal(auditReport.intelligenceOwnedDecisions, 1);
-assert.equal(auditReport.bypassedStrategicDecisions, 1);
-assert.equal(auditReport.runtimeCoverage, .5);
+assert.equal(auditReport.battleIntelligenceDecisions, 2);
+assert.equal(auditReport.legacyFallbackDecisions, 0);
+assert.equal(auditReport.byContext.matrix.battleIntelligence, 1);
+assert.equal(auditReport.fallbackRate, 0);
+assert.equal(auditReport.intelligenceOwnedDecisions, 2);
+assert.equal(auditReport.bypassedStrategicDecisions, 0);
+assert.equal(auditReport.runtimeCoverage, 1);
 
 Intelligence.configureAudit({ strict: true });
-assert.throws(() => Intelligence.selectAction({
+const strictDecision = Intelligence.selectAction({
   state: tacticalState,
   side: "A",
   legalActions: tacticalActions,
@@ -262,9 +253,10 @@ assert.throws(() => Intelligence.selectAction({
   context: {
     callerContext: "scenario-review",
     estimateDamage: action => Number(action.move?.damage || 0),
-    tacticalAdvice: { type: Intelligence.ACTION_TYPES.CHARGED_MOVE, moveId: "NUKE", reason: "legacy continuation" }
+    evaluateCandidate: action => ({ components: { immediateDamage: Number(action.move?.damage || 0) } })
   }
-}), error => error && error.code === "LEGACY_CONTINUATION_NOT_MIGRATED");
+});
+assert.equal(strictDecision.source, "battle-intelligence");
 Intelligence.configureAudit({ enabled: false, strict: false, retainEvents: false });
 
 console.log("Battle Intelligence tests passed.");

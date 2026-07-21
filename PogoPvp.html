@@ -9312,6 +9312,7 @@
         battleIntelligenceCallerContext,
         recordExternalIntelligenceDecision,
         selectBattleIntelligenceAction,
+        battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
         autoAction,
         automaticBattleStep,
@@ -9323,7 +9324,9 @@
         shouldEvaluateChargedContinuations,
         hasGuaranteedStatEffect,
         guaranteedStatEffectChangesState,
+        guaranteedStatEffectBenefitsUser,
         statArrayChangesState,
+        simulateBattleIntelligenceContinuation,
         simulateChargedCandidateContinuation,
         compareChargedContinuationResults,
         chargedContinuationOutcome,
@@ -12367,7 +12370,12 @@
           damage: unshieldedDamage,
           energyCost: move?.energyCost || 0,
           entersFarmRange,
-          losesChargedThreat
+          losesChargedThreat,
+          preBuffDefenseWindow: needsSmartThreat && !!attacker && validChargedMoves(defender).some(candidate =>
+            defender.energy + Number(defender.fast?.energyGain || 0) >= Number(candidate.energyCost || 0)
+            && guaranteedStatEffectChangesState(defender, attacker, candidate)
+            && chargedMoveEffectSummary(candidate).includes("self DEF +")
+          )
         },
         counterfactual
       });
@@ -12802,7 +12810,13 @@
         A: traceCombatantState(left),
         B: traceCombatantState(right)
       };
-      currentBattleDecisionTrace.intelligenceStats = intelligenceApi?.getStatistics?.() || null;
+      const intelligenceStats = intelligenceApi?.getStatistics?.() || null;
+      if (intelligenceStats) {
+        const { maxDecisionMs, totalDecisionMs, averageDecisionMs, ...deterministicStats } = intelligenceStats;
+        currentBattleDecisionTrace.intelligenceStats = deterministicStats;
+      } else {
+        currentBattleDecisionTrace.intelligenceStats = null;
+      }
       currentBattleDecisionTrace.intelligenceAudit = intelligenceApi?.getAuditReport?.() || null;
       if (!currentBattleDecisionTrace.intelligenceAudit?.configuration?.strict) {
         intelligenceApi?.configureAudit?.({ enabled: false, retainEvents: false });
@@ -12911,6 +12925,12 @@
         }
         return null;
       }
+      const legalChargedIds = new Set(legalActions
+        .filter(action => action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
+        .map(action => action.moveId));
+      const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
+      const continuationEligible = chargedContinuationDepth === 0
+        && shouldEvaluateChargedContinuations(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
         side: attacker.trainer,
@@ -12928,30 +12948,201 @@
           },
           hasGuaranteedEffect(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
-            return hasGuaranteedStatEffect(move);
+            return guaranteedStatEffectChangesState(attacker, defender, move) && !hasSelfDebuff(move);
           },
-          getTacticalAdvice(actions) {
-            const chargedMoves = actions
-              .filter(action => action.type === api.ACTION_TYPES.CHARGED_MOVE)
-              .map(action => validChargedMoves(attacker).find(move => move.id === action.moveId))
-              .filter(Boolean);
-            if (!chargedMoves.length) return null;
-            const decision = chooseChargedMoveDecision(attacker, defender, chargedMoves);
-            return decision.move
-              ? { ...decision, moveId: decision.move.id, type: api.ACTION_TYPES.CHARGED_MOVE }
-              : { ...decision, type: api.ACTION_TYPES.FAST_MOVE };
-          }
+          evaluateCandidate(action) {
+            return battleIntelligenceCandidateEvidence(attacker, defender, action, available);
+          },
+          evaluateContinuation: continuationEligible
+            ? action => simulateBattleIntelligenceContinuation(attacker, defender, action)
+            : null
         }
       });
     }
 
+    function battleIntelligenceCandidateEvidence(attacker, defender, action, available) {
+      const isFast = action.type === "fast_move" || action.type === "fast";
+      const move = isFast
+        ? attacker.fast
+        : validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
+      if (!move) return null;
+      const components = {};
+      const reasons = [];
+      const ruleIds = [];
+      const reasonCodes = [];
+      const damage = estimate(attacker, defender, move);
+      const allCharged = validChargedMoves(attacker);
+      const byDamage = [...available].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || a.energyCost - b.energyCost);
+      const straight = byDamage[0] || null;
+      const cheapest = [...available].sort((a, b) => a.energyCost - b.energyCost || estimate(attacker, defender, b) - estimate(attacker, defender, a))[0] || null;
+      const preferredStraight = [...allCharged].sort((a, b) => estimate(attacker, defender, b) - estimate(attacker, defender, a) || a.energyCost - b.energyCost)[0] || null;
+      const cmpSetup = winningCmpSetupMove(attacker, defender, available);
+      const noShieldPlan = bestNoShieldChargedPlan(attacker, defender, available);
+      const shieldPlan = bestShieldPressurePlan(attacker, defender, available);
+      const betterWait = straight ? betterChargedWaitReason(attacker, defender, available, straight) : "";
+      const overfarm = straight ? shouldOverfarmForCloser(attacker, defender, available, straight) : false;
+      const safeBait = straight ? safeDefaultBaitMove(attacker, defender, available, straight)
+        || (attacker.linePolicy === "safe-bait" ? safeBaitMove(attacker, defender, available, straight) : null) : null;
+      const futureSafeBait = preferredStraight
+        ? safeDefaultBaitMove(attacker, defender, allCharged, preferredStraight)
+          || (attacker.linePolicy === "safe-bait" ? safeBaitMove(attacker, defender, allCharged, preferredStraight) : null)
+        : null;
+      const credibleNuke = cheapest ? credibleShieldPressureMove(attacker, defender, cheapest) : null;
+      const forcedByPressure = opponentPressureForcesThrow(attacker, defender);
+      const timingReasons = new Map(available.map(candidate => [candidate.id, chargeTimingWaitReason(attacker, defender, candidate)]));
+      const needsContinuation = shouldEvaluateChargedContinuations(attacker, defender, available);
+
+      if (isFast) {
+        components.immediateDamage = Math.min(40, damage);
+        components.energyGain = Math.max(0, Number(move.energyGain || 0)) * 2;
+        if (cmpSetup) {
+          components.cmpPotential = 1200;
+          reasons.push(`one ${move.name} sets up winning CMP into ${cmpSetup.name}`);
+          ruleIds.push("BI_CMP_AWARE");
+        }
+        if (futureSafeBait && !available.includes(futureSafeBait)) {
+          const nextEnergy = Math.min(100, attacker.energy + Number(move.energyGain || 0));
+          const survivesFast = estimate(defender, attacker, defender.fast) < attacker.hp;
+          if (nextEnergy >= futureSafeBait.energyCost && survivesFast) {
+            components.baitValue = Math.max(components.baitValue || 0, 1050);
+            components.selfDebuffAvoidance = Math.max(components.selfDebuffAvoidance || 0, 550);
+            reasons.push(`builds one Fast Move to safe ${futureSafeBait.name} pressure`);
+            ruleIds.push("BI_BAIT_VALUE", "BI_SELF_DEBUFF_AVOIDANCE");
+            reasonCodes.push("AVOID_EARLY_SELF_DEBUFF");
+          }
+        }
+        if (attacker.linePolicy === "force-straight" && preferredStraight && !available.includes(preferredStraight)) {
+          components.linePolicy = 900;
+          reasons.push(`builds to forced ${preferredStraight.name} pressure`);
+        }
+        if (noShieldPlan && !noShieldPlan.ready) {
+          components.futureDamage = 850;
+          reasons.push(`reaches fastest no-shield KO line into ${noShieldPlan.move.name}`);
+        }
+        if (shieldPlan && !shieldPlan.ready) {
+          components.shieldPressure = 800;
+          reasons.push(`builds shield pressure into ${shieldPlan.move.name}`);
+        }
+        if (betterWait) {
+          components.futureDamage = Math.max(components.futureDamage || 0, 700);
+          reasons.push(betterWait);
+        }
+        if (overfarm) {
+          components.energyPreservation = 650;
+          reasons.push(`safe overfarm toward ${bestDamageMoveName(attacker, defender)}`);
+          ruleIds.push("BI_OVERFARM");
+        }
+        if (attacker.baiting === "selective" && credibleNuke && attacker.energy < credibleNuke.energyCost && attacker.energy < 100) {
+          components.shieldPressure = Math.max(components.shieldPressure || 0, 600);
+          reasons.push(`builds credible ${credibleNuke.name} shield pressure`);
+        }
+        const timingReason = [...timingReasons.values()].find(Boolean);
+        if (timingReason) {
+          components.timing = 750;
+          reasons.push(timingReason);
+          ruleIds.push("BI_TIMING_VALUE");
+        }
+        if (forcedByPressure) components.risk = -1000;
+      } else {
+        const energyCost = Math.max(1, Number(move.energyCost || 1));
+        components.immediateDamage = damage * 2;
+        components.damageEfficiency = damage / energyCost * 20;
+        if (defender.shields <= 0 && move === straight) {
+          components.directPressure = 500;
+          reasons.push("highest unshielded damage");
+        }
+        if (forcedByPressure) {
+          const urgent = urgentChargedMove(attacker, defender, available, straight, cheapest);
+          components.risk = move === urgent ? 1000 : -250;
+          if (move === urgent) reasons.push("throws before opponent pressure closes the window");
+        }
+        if (noShieldPlan?.ready) {
+          components.futureDamage = move === noShieldPlan.move ? 900 : -200;
+          if (move === noShieldPlan.move) reasons.push(`fastest no-shield KO line in ${noShieldPlan.turns} turns`);
+        }
+        if (shieldPlan?.ready) {
+          components.shieldPressure = move === shieldPlan.move ? 850 : -150;
+          if (move === shieldPlan.move) reasons.push(shieldPlan.reason);
+        }
+        if (attacker.linePolicy === "force-straight" && preferredStraight) {
+          components.linePolicy = move === preferredStraight ? 1000 : -500;
+          if (move === preferredStraight) reasons.push("forced straight-line pressure");
+        }
+        if (safeBait) {
+          components.baitValue = move === safeBait ? 750 : 0;
+          if (move === safeBait) {
+            reasons.push("credible low-risk bait before stronger pressure");
+            ruleIds.push("BI_BAIT_VALUE");
+            if (straight && hasSelfDebuff(straight)) ruleIds.push("BI_SELF_DEBUFF_AVOIDANCE");
+          }
+        } else if (defender.shields > 0 && cheapest && straight) {
+          if (attacker.baiting === "on") components.baitValue = move === cheapest ? 650 : 0;
+          else if (attacker.baiting === "off") components.directPressure = move === straight ? 650 : 0;
+          else if (attacker.baiting === "selective" && credibleNuke && attacker.energy >= credibleNuke.energyCost) {
+            components.baitValue = move === cheapest ? 550 : 0;
+          }
+        }
+        const timingReason = timingReasons.get(move.id);
+        if (timingReason) {
+          components.timing = -900;
+          reasons.push(`delays ${move.name} for better timing`);
+        }
+        if (hasSelfDebuff(move)) {
+          const unsafe = attacker.linePolicy === "avoid-self-debuff" || (defender.shields > 0 && !forcedByPressure);
+          components.selfDebuffRisk = unsafe ? -2000 : -50;
+          if (unsafe) {
+            reasons.push("avoids premature self-debuff commitment");
+            reasonCodes.push("AVOID_EARLY_SELF_DEBUFF");
+          }
+        } else if (available.some(candidate => candidate !== move && hasSelfDebuff(candidate))) {
+          components.selfDebuffAvoidance = 500;
+          reasons.push("preserves stats while an unsafe self-debuff alternative is available");
+          reasonCodes.push("AVOID_EARLY_SELF_DEBUFF");
+        }
+        if (guaranteedStatEffectBenefitsUser(attacker, defender, move)) {
+          components.guaranteedEffect = 1200;
+          reasons.push("guaranteed stat effect improves the continuation");
+          const effectSummary = chargedMoveEffectSummary(move);
+          if (effectSummary.includes("self DEF +")) {
+            reasonCodes.push("GUARANTEED_DEFENSE_BUFF_VALUE");
+          }
+          if (effectSummary.includes("opponent ATK -")) {
+            reasonCodes.push("GUARANTEED_ATTACK_DEBUFF_VALUE");
+          }
+        }
+        if (move === straight) reasonCodes.push("BEST_IMMEDIATE_DAMAGE");
+      }
+      return {
+        components,
+        reasons,
+        ruleIds,
+        reasonCodes,
+        confidence: needsContinuation ? .9 : .78,
+        requiresContinuationSearch: needsContinuation && !isFast
+      };
+    }
+
     function recordBattleIntelligenceDecision(attacker, defender, selection) {
-      if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action || selection.evidence?.legacyDecision || selection.evidence?.tacticalAdvice) return;
+      if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action) return;
       const move = validChargedMoves(attacker).find(candidate => candidate.id === selection.action.moveId);
       if (!move) return;
+      const evaluatedByMove = new Map((selection.candidates || [])
+        .filter(candidate => candidate?.action?.moveId)
+        .map(candidate => [candidate.action.moveId, candidate]));
       const candidates = validChargedMoves(attacker)
         .filter(candidate => attacker.energy >= candidate.energyCost)
-        .map(candidate => traceMoveCandidate(attacker, defender, candidate));
+        .map(candidate => {
+          const evaluated = evaluatedByMove.get(candidate.id);
+          const continuation = evaluated?.evidence?.continuation;
+          return traceMoveCandidate(attacker, defender, candidate, continuation ? {
+            projectedOutcome: continuation.outcome || null,
+            projectedRating: Number.isFinite(Number(continuation.score)) ? Math.round(Number(continuation.score)) : null,
+            projectedRemainingHp: continuation.remainingHp ?? null,
+            projectedRemainingEnergy: continuation.remainingEnergy ?? null,
+            shieldsUsed: continuation.shieldsSpent ?? null,
+            branchDepth: 1
+          } : {});
+        });
       recordBattleDecision({
         turn: Number(battleTurns[attacker.trainer] || 0),
         side: attacker.trainer,
@@ -12970,55 +13161,12 @@
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const legalActions = legalBattleActions(attacker, Number(battleTurns[attacker.trainer] || 0));
       if (!legalActions.length) return false;
-      if (chargedContinuationOpening && !chargedContinuationOpening.completed && chargedContinuationOpening.trainer === attacker.trainer) {
-        const targetMove = validChargedMoves(attacker).find(move => move.id === chargedContinuationOpening.moveId);
-        if (!targetMove) {
-          chargedContinuationOpening.completed = true;
-        } else if (attacker.energy >= targetMove.energyCost) {
-          chargedContinuationOpening.completed = true;
-          recordExternalIntelligenceDecision({
-            source: "legacy-fallback",
-            action: { type: "charged_move", side: attacker.trainer, moveId: targetMove.id },
-            categories: ["charged-selection", "continuation-search"],
-            fallbackReasonCode: "LEGACY_CONTINUATION_NOT_MIGRATED"
-          });
-          return useCharge(attacker, defender, attacker.charged.indexOf(targetMove), {
-            aiReason: "projected charged continuation",
-            deferCooldownReset: true
-          });
-        } else {
-          recordExternalIntelligenceDecision({
-            source: "legacy-fallback",
-            action: { type: "fast_move", side: attacker.trainer, moveId: attacker.fast?.id || null },
-            categories: ["fast-vs-charged", "continuation-search"],
-            fallbackReasonCode: "LEGACY_CONTINUATION_NOT_MIGRATED"
-          });
-          return useFast(attacker, defender);
-        }
-      }
-      const legalChargedIds = new Set(legalActions.filter(action => action.type === "charged").map(action => action.moveId));
+      const legalChargedIds = new Set(legalActions.filter(action => action.type === "charged" || action.type === "charged_move").map(action => action.moveId));
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
-      const plannedMove = available.find(move => move.id === attacker.timingPlanMoveId);
-      if (attacker.timingPlanMoveId && !plannedMove) attacker.timingPlanMoveId = null;
-      const intelligenceSelection = plannedMove
-        ? {
-            action: { type: "charged_move", moveId: plannedMove.id },
-            sourceRuleIds: [],
-            reasonCodes: [],
-            explanation: `completing the planned ${plannedMove.name} timing`,
-            evidence: null
-          }
-        : selectBattleIntelligenceAction(attacker, defender, legalActions);
-      if (plannedMove) {
-        recordExternalIntelligenceDecision({
-          source: "forced-policy",
-          action: { type: "charged_move", side: attacker.trainer, moveId: plannedMove.id },
-          categories: ["charged-selection", "timing-plan"]
-        });
-      }
+      const intelligenceSelection = selectBattleIntelligenceAction(attacker, defender, legalActions);
       if (!intelligenceSelection?.action) return false;
       if (intelligenceSelection.action.type === "fast_move") {
-        const waitReason = intelligenceSelection.evidence?.legacyReason || intelligenceSelection.explanation;
+        const waitReason = intelligenceSelection.explanation;
         if (available.length && waitReason) {
           add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
         }
@@ -13029,16 +13177,7 @@
       const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
       if (!move) return legalActions.some(action => action.type === "fast") ? useFast(attacker, defender) : false;
       recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
-      const urgent = intelligenceSelection.sourceRuleIds?.some(ruleId =>
-        ruleId === "BI_THROW_BEFORE_FAINT" || ruleId === "BI_AVOID_LETHAL_OVERFARM"
-      );
-      const timingReason = urgent ? "" : chargeTimingWaitReason(attacker, defender, move);
-      if (timingReason) {
-        attacker.timingPlanMoveId = move.id;
-        add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits before ${move.name}. Reasoning: ${timingReason}.`, "info");
-        return useFast(attacker, defender);
-      }
-      const aiReason = intelligenceSelection.evidence?.legacyReason || intelligenceSelection.explanation;
+      const aiReason = intelligenceSelection.explanation;
       return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });
     }
 
@@ -13260,11 +13399,122 @@
       return statArrayChangesState(target, move.buffs);
     }
 
+    function guaranteedStatEffectBenefitsUser(attacker, defender, move) {
+      if (!hasGuaranteedStatEffect(move)) return false;
+      const hasPositive = values => Array.isArray(values) && values.some(value => Number(value || 0) > 0);
+      const hasNegative = values => Array.isArray(values) && values.some(value => Number(value || 0) < 0);
+      if (move.buffTarget === "both") {
+        return (hasPositive(move.buffsSelf) && statArrayChangesState(attacker, move.buffsSelf))
+          || (hasNegative(move.buffsOpponent) && statArrayChangesState(defender, move.buffsOpponent));
+      }
+      if (move.buffTarget === "opponent") {
+        return hasNegative(move.buffs) && statArrayChangesState(defender, move.buffs);
+      }
+      return hasPositive(move.buffs) && statArrayChangesState(attacker, move.buffs);
+    }
+
     function statArrayChangesState(combatant, buffs) {
       if (!combatant || !Array.isArray(buffs)) return false;
       const nextAttack = clampStage(Number(combatant.attackStage || 0) + Number(buffs[0] || 0));
       const nextDefense = clampStage(Number(combatant.defenseStage || 0) + Number(buffs[1] || 0));
       return nextAttack !== Number(combatant.attackStage || 0) || nextDefense !== Number(combatant.defenseStage || 0);
+    }
+
+    function simulateBattleIntelligenceContinuation(attacker, defender, action) {
+      const saved = {
+        left,
+        right,
+        log,
+        timeline,
+        initialTimelineState,
+        battleTurns,
+        suppressRender,
+        activeAutoTurnContext,
+        chargedContinuationOpening
+      };
+      const trainer = attacker.trainer;
+      const originalContext = activeAutoTurnContext;
+      const actionType = action?.type === "fast" ? "fast_move"
+        : action?.type === "charged" ? "charged_move" : action?.type;
+      let evaluation = null;
+      chargedContinuationDepth++;
+      try {
+        left = JSON.parse(JSON.stringify(saved.left));
+        right = JSON.parse(JSON.stringify(saved.right));
+        log = [];
+        timeline = JSON.parse(JSON.stringify(saved.timeline || []));
+        initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
+        battleTurns = { ...saved.battleTurns };
+        suppressRender = true;
+        activeAutoTurnContext = null;
+        chargedContinuationOpening = null;
+
+        const branchAttacker = trainer === "A" ? left : right;
+        const branchDefender = trainer === "A" ? right : left;
+        const startShields = branchAttacker.shields;
+        const currentTurn = Number(originalContext?.currentTurn ?? battleTurns[trainer] ?? 0);
+        const timelineStart = timeline.length;
+        let applied = false;
+        let candidateMove = null;
+        if (actionType === "fast_move") {
+          candidateMove = branchAttacker.fast;
+          applied = useFast(branchAttacker, branchDefender);
+        } else if (actionType === "charged_move") {
+          const moveIndex = branchAttacker.charged.findIndex(candidate => candidate && candidate.id === action.moveId);
+          candidateMove = moveIndex >= 0 ? branchAttacker.charged[moveIndex] : null;
+          if (moveIndex >= 0 && branchAttacker.energy >= Number(candidateMove.energyCost || 0)) {
+            applied = useCharge(branchAttacker, branchDefender, moveIndex, {
+              aiReason: "Battle Intelligence continuation candidate",
+              deferCooldownReset: true
+            });
+          }
+        }
+        if (!applied) return null;
+
+        if (!battleEnded() && originalContext) {
+          for (const side of originalContext.actorOrder || []) {
+            if (side === trainer || originalContext.acted?.has(side)) continue;
+            const nextAttacker = side === "A" ? left : right;
+            const nextDefender = side === "A" ? right : left;
+            if (nextAttacker.hp <= 0 || nextDefender.hp <= 0) break;
+            autoAction(nextAttacker, nextDefender);
+          }
+        }
+        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        const steps = runAutomaticBattleToEnd(1000);
+        const result = scoreShieldMatrixResult(left, right, { includeSwing: false });
+        const finalAttacker = trainer === "A" ? left : right;
+        const finalDefender = trainer === "A" ? right : left;
+        const outcome = chargedContinuationOutcome(finalAttacker, finalDefender);
+        const perspectiveScore = trainer === "A" ? result.score : 1000 - result.score;
+        evaluation = {
+          score: perspectiveScore,
+          evaluatedStates: Math.max(1, steps),
+          outcome: outcome === 2 ? "win" : outcome === 1 ? "draw" : "loss",
+          remainingHp: finalAttacker.hp,
+          remainingEnergy: finalAttacker.energy,
+          remainingShields: finalAttacker.shields,
+          opponentRemainingHp: finalDefender.hp,
+          shieldsSpent: Math.max(0, startShields - finalAttacker.shields),
+          action: {
+            type: actionType,
+            moveId: candidateMove?.id || action.moveId || null,
+            moveName: candidateMove?.name || null
+          }
+        };
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        chargedContinuationDepth--;
+      }
+      return evaluation;
     }
 
     function simulateChargedCandidateContinuation(attacker, defender, move) {
@@ -13696,7 +13946,7 @@
       const defenderTurn = Number(battleTurns[defender.trainer] || 0);
       const attackerFastTurns = Math.max(1, Number(attacker.fast.turns || 1));
       const defenderFastTurns = Math.max(1, Number(defender.fast.turns || 1));
-      if (attackerTurn !== defenderTurn || attackerFastTurns !== defenderFastTurns) return null;
+      if (attackerFastTurns !== defenderFastTurns) return null;
       if (wouldOvercapAfterFast(attacker)) return null;
       const defenderReadyNow = validChargedMoves(defender).some(move => defender.energy >= move.energyCost);
       if (defenderReadyNow) return null;
@@ -13770,7 +14020,7 @@
       return validChargedMoves(attacker)
         .filter(move => move !== baitMove)
         .map(move => ({ move, damage: estimate(attacker, defender, move) }))
-        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .65 || item.damage > baitDamage * 2)
+        .filter(item => item.damage >= defender.hp || item.damage >= defender.maxHp * .6 || item.damage >= baitDamage * 1.5)
         .sort((a, b) => b.damage - a.damage || b.move.energyCost - a.move.energyCost)[0]?.move || null;
     }
 

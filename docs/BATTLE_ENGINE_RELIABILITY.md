@@ -37,6 +37,14 @@ supplies structured tactical evidence to that shared resolver, while shield poli
 and Smart shield counterfactuals are resolved there directly. The Meta fallback also
 uses the same automatic turn loop instead of maintaining a separate actor order.
 
+`battle-planner-v9` completes strategic ownership by Unified Battle Intelligence.
+Fast-versus-Charged selection, charged choice, bounded continuation, bait safety,
+overfarm, move timing, CMP setup, and self-debuff sequencing are evaluated as
+shared candidates before one final deterministic selection. Automatic Battle,
+Matrix, Offline, Scenario Review, and Preview paths have zero legacy strategic
+fallbacks; manual actions and explicit Scenario Review technical reconstruction
+remain intentionally outside automatic strategy.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.

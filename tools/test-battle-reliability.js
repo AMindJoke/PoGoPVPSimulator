@@ -56,7 +56,7 @@ function testTrace(runtime, fixture) {
 
 function testRegressionSuite(runtime) {
   const output = runRegressionSuite({ runtime, writeReports: false });
-  assert.strictEqual(output.summary.total, 6);
+  assert.strictEqual(output.summary.total, loadRegressionFixtures().cases.length);
   assert.strictEqual(output.summary.failed, 0, JSON.stringify(output.summary.cases, null, 2));
 }
 

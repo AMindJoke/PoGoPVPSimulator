@@ -31,16 +31,21 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT"),
     rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE"),
     rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE"),
-    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.OUTCOME_EFFECT, "BETTER_PROJECTED_OUTCOME", true),
+    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
+    rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
+    rule("BI_OVERFARM", "Preserve safe overfarm", PRIORITY_CLASSES.RESOURCE, "ENERGY_PRESERVATION"),
+    rule("BI_BAIT_VALUE", "Value credible bait pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_PRESSURE"),
+    rule("BI_TIMING_VALUE", "Improve charged move timing", PRIORITY_CLASSES.RESOURCE, "OPTIMAL_MOVE_TIMING"),
+    rule("BI_SELF_DEBUFF_RISK", "Delay unsafe self debuff", PRIORITY_CLASSES.RESOURCE, "SELF_DEBUFF_TIMING"),
+    rule("BI_SELF_DEBUFF_AVOIDANCE", "Preserve stats before self debuff", PRIORITY_CLASSES.OUTCOME_EFFECT, "AVOID_EARLY_SELF_DEBUFF"),
+    rule("BI_CANDIDATE_EVIDENCE", "Evaluate strategic evidence", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
     rule("BI_SHIELD_POLICY", "Respect explicit shield policy", PRIORITY_CLASSES.LEGALITY, "SHIELD_POLICY_ALWAYS"),
     rule("BI_SHIELD_PREVENTS_KO", "Shield to prevent knockout", PRIORITY_CLASSES.SURVIVAL_LETHAL, "SHIELD_PREVENTS_KO"),
     rule("BI_SHIELD_PRESERVES_WIN", "Shield preserves winning continuation", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_PRESERVES_WIN_CONDITION", true),
     rule("BI_SHIELD_AVOIDS_FARM", "Shield avoids farm range", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_AVOIDS_FARM_RANGE"),
     rule("BI_SHIELD_HEAVY_PRESSURE", "Shield heavy pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_HEAVY_PRESSURE"),
-    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT"),
-    rule("BI_TACTICAL_PLAN", "Resolve tactical plan", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
-    rule("BI_LEGACY_ADAPTER", "Compatibility planner", PRIORITY_CLASSES.FALLBACK, "HEURISTIC_FALLBACK")
+    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT")
   ]);
 
   const ruleMap = new Map(RULES.map(item => [item.id, item]));
@@ -328,8 +333,7 @@ function createPvPeakBattleIntelligenceApi() {
 
     const pendingLethal = nextPendingLethal(state, side);
     if (pendingLethal && charged.length) {
-      const chosen = selectChargedThroughAdapter(charged, context)
-        || [...charged].sort((a, b) => damageFor(b, context) - damageFor(a, context) || actionEnergyCost(a.action) - actionEnergyCost(b.action) || stableCandidateOrder(a, b))[0];
+      const chosen = [...charged].sort((a, b) => damageFor(b, context) - damageFor(a, context) || actionEnergyCost(a.action) - actionEnergyCost(b.action) || stableCandidateOrder(a, b))[0];
       applyRule(chosen, "BI_THROW_BEFORE_FAINT", 900, .98, { pendingEventId: pendingLethal.id, resolveTurn: pendingLethal.resolveTurn });
       applyRule(chosen, "BI_REACHABLE_CHARGED", 100, .98);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, `Pending ${pendingLethal.moveId || "Fast Move"} damage creates a final Charged Move window.`);
@@ -339,7 +343,7 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     if (charged.length && context.opponentLethalBeforeNextWindow === true) {
-      const chosen = selectChargedThroughAdapter(charged, context) || charged.sort(stableCandidateOrder)[0];
+      const chosen = [...charged].sort(stableCandidateOrder)[0];
       applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Another Fast Move gives the opponent a lethal action window.");
       cacheFastPath(cacheKey, result);
@@ -353,62 +357,72 @@ function createPvPeakBattleIntelligenceApi() {
       applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
     }
 
+    for (const candidate of meaningful) {
+      const evidence = typeof context.evaluateCandidate === "function"
+        ? context.evaluateCandidate(candidate.action, { state, policy: policy.id })
+        : null;
+      applyCandidateEvidence(candidate, evidence);
+    }
+
     if (typeof context.evaluateContinuation === "function") {
       const searchCandidates = meaningful
         .filter(candidate => candidate.requiresContinuationSearch)
+        .sort(compareCandidates)
         .slice(0, policy.maxCandidates);
       if (searchCandidates.length > 1) {
         statistics.continuationSearches++;
-        const searched = boundedContinuation(searchCandidates, state, policy, context, startedAt);
+        const searched = boundedContinuation(searchCandidates, state, policy, context, now());
         if (searched) {
-          const result = selectionResult(searched, candidates, policy, false, searched.reasonCodes, "Bounded continuation found the strongest line.");
-          finishTiming(startedAt);
-          return result;
+          applyRule(searched, "BI_CONTINUATION", 0, .92);
         }
       }
     }
 
-    const tacticalAdvice = context.tacticalAdvice || (typeof context.getTacticalAdvice === "function"
-      ? context.getTacticalAdvice(meaningful.map(candidate => candidate.action))
-      : null);
-    const tactical = selectFromTacticalAdvice(meaningful, tacticalAdvice);
-    if (tactical) {
-      applyRule(tactical.candidate, "BI_TACTICAL_PLAN", 0, tactical.confidence, tactical.advice);
-      if (tactical.advice.reasonCode && !tactical.candidate.reasonCodes.includes(tactical.advice.reasonCode)) {
-        tactical.candidate.reasonCodes.push(tactical.advice.reasonCode);
-      }
-      const result = selectionResult(
-        tactical.candidate,
-        candidates,
-        policy,
-        false,
-        tactical.candidate.reasonCodes,
-        tactical.advice.reason || "Structured tactical evidence selected the action."
-      );
-      finishTiming(startedAt);
-      return result;
-    }
-
-    const delegated = selectThroughCompatibilityAdapter(meaningful, context);
-    if (delegated) {
-      applyRule(delegated, "BI_LEGACY_ADAPTER", 0, .8);
-      const result = selectionResult(
-        delegated,
-        candidates,
-        policy,
-        false,
-        delegated.reasonCodes,
-        delegated.evidence?.legacyReason || "Compatibility planner selected the ambiguous action."
-      );
-      finishTiming(startedAt);
-      return result;
-    }
-
     const fallback = [...meaningful].sort(compareCandidates)[0] || candidates[0];
-    applyRule(fallback, "BI_LEGACY_ADAPTER", 0, .5);
-    const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, "Deterministic fallback selected the action.");
+    applyRule(fallback, "BI_CANDIDATE_EVIDENCE", 0, .7);
+    const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback));
     finishTiming(startedAt);
     return result;
+  }
+
+  function applyCandidateEvidence(candidate, input) {
+    if (!candidate || !input || typeof input !== "object") return candidate;
+    const components = Object.fromEntries(Object.entries(input.components || {})
+      .filter(([, value]) => Number.isFinite(Number(value)))
+      .map(([key, value]) => [key, Number(value)]));
+    candidate.scoreComponents = components;
+    candidate.tacticalScore += Object.values(components).reduce((sum, value) => sum + value, 0);
+    candidate.requiresContinuationSearch ||= input.requiresContinuationSearch === true;
+    candidate.evidence = {
+      ...(candidate.evidence || {}),
+      candidateEvaluation: {
+        ...input,
+        components,
+        reasons: [...(input.reasons || [])]
+      }
+    };
+    const newReasonCodes = (input.reasonCodes || []).filter(reasonCode => !candidate.reasonCodes.includes(reasonCode));
+    candidate.reasonCodes = [...newReasonCodes, ...candidate.reasonCodes];
+    for (const ruleId of input.ruleIds || []) applyRule(candidate, ruleId, 0, input.confidence || .8);
+    return candidate;
+  }
+
+  function explainSelection(candidate) {
+    const evaluation = candidate?.evidence?.candidateEvaluation || {};
+    const continuation = candidate?.evidence?.continuation || null;
+    const reasons = [...(evaluation.reasons || [])];
+    if (continuation && Number.isFinite(Number(continuation.score))) {
+      reasons.unshift(`highest continuation score ${Math.round(Number(continuation.score))}`);
+    }
+    if (!reasons.length) reasons.push("highest deterministic candidate score");
+    return `Selected ${actionLabel(candidate?.action)}: ${reasons.slice(0, 4).join("; ")}.`;
+  }
+
+  function actionLabel(action) {
+    if (!action) return "no action";
+    if (action.type === ACTION_TYPES.FAST_MOVE) return action.move?.name || "Fast Move";
+    if (action.type === ACTION_TYPES.CHARGED_MOVE) return action.move?.name || action.moveId || "Charged Move";
+    return action.type || "action";
   }
 
   function selectShieldAction(input = {}) {
@@ -459,6 +473,9 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     if (damage >= hp) return done(shieldResult(true, "BI_SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98));
+    if (threat.preBuffDefenseWindow && shields >= 2 && damage / maxHp >= .12) {
+      return done(shieldResult(true, "BI_SHIELD_PRESERVES_WIN", "Smart shield preserves HP before activating a guaranteed Defense boost.", .9));
+    }
     if (threat.entersFarmRange) return done(shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield avoids farm range.", .9));
     if (threat.losesChargedThreat) {
       return done(shieldResult(true, "BI_SHIELD_AVOIDS_FARM", "Smart shield preserves charged-move threat.", .88));
@@ -523,22 +540,35 @@ function createPvPeakBattleIntelligenceApi() {
         && other.action.type === ACTION_TYPES.CHARGED_MOVE
         && actionEnergyCost(other.action) === cost
         && !hasGuaranteedEffect(other, context)
+        && !hasHarmfulSelfEffect(other.action)
         && damageFor(other, context) > damage
       );
     });
   }
 
+  function hasHarmfulSelfEffect(action) {
+    const move = action?.move || {};
+    if (Number(move.buffApplyChance || 0) <= 0) return false;
+    const hasNegative = values => Array.isArray(values) && values.some(value => Number(value || 0) < 0);
+    if (move.buffTarget === "both") return hasNegative(move.buffsSelf);
+    if (move.buffTarget === "opponent") return false;
+    return hasNegative(move.buffs);
+  }
+
   function boundedContinuation(candidates, state, policy, context, startedAt) {
     let best = null;
     let explored = 0;
+    let evaluatedCandidates = 0;
+    const minimumComparableCandidates = Math.min(2, candidates.length);
     for (const candidate of candidates) {
-      if (explored >= policy.maxStates || now() - startedAt >= policy.timeBudgetMs) break;
+      if (explored >= policy.maxStates || (evaluatedCandidates >= minimumComparableCandidates && now() - startedAt >= policy.timeBudgetMs)) break;
       const evaluation = context.evaluateContinuation(candidate.action, {
         state,
         maxDepth: policy.maxDepth,
         maxStates: policy.maxStates - explored,
         timeBudgetMs: Math.max(0, policy.timeBudgetMs - (now() - startedAt))
       });
+      evaluatedCandidates++;
       explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
       if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
       candidate.continuationScore = Number(evaluation.score);
@@ -546,59 +576,6 @@ function createPvPeakBattleIntelligenceApi() {
       if (!best || compareCandidates(candidate, best) < 0) best = candidate;
     }
     return best;
-  }
-
-  function selectThroughCompatibilityAdapter(candidates, context) {
-    if (typeof context.legacySelect !== "function") return null;
-    const decision = context.legacySelect(candidates.map(candidate => candidate.action));
-    const selected = matchDecision(candidates, decision);
-    if (!selected) return null;
-    selected.evidence = {
-      ...(selected.evidence || {}),
-      legacyReason: decision?.reason || null,
-      legacyDecision: decision || null
-    };
-    if (decision?.reasonCode) selected.reasonCodes.push(decision.reasonCode);
-    return selected;
-  }
-
-  function selectFromTacticalAdvice(candidates, advice) {
-    if (!advice || typeof advice !== "object") return null;
-    const advisedType = advice.type === "fast" ? ACTION_TYPES.FAST_MOVE
-      : advice.type === "charged" ? ACTION_TYPES.CHARGED_MOVE
-        : advice.type;
-    const candidate = candidates.find(item => {
-      if (advice.moveId) return item.action.moveId === advice.moveId;
-      return advisedType && item.action.type === advisedType;
-    });
-    if (!candidate) return null;
-    candidate.evidence = { ...(candidate.evidence || {}), tacticalAdvice: advice };
-    return {
-      candidate,
-      advice,
-      confidence: Math.max(0, Math.min(1, numeric(advice.confidence, .8)))
-    };
-  }
-
-  function selectChargedThroughAdapter(candidates, context) {
-    if (typeof context.legacySelectCharged !== "function") return null;
-    const decision = context.legacySelectCharged(candidates.map(candidate => candidate.action));
-    const selected = matchDecision(candidates, decision);
-    if (!selected) return null;
-    selected.evidence = {
-      ...(selected.evidence || {}),
-      legacyReason: decision?.reason || null,
-      legacyDecision: decision || null
-    };
-    return selected;
-  }
-
-  function matchDecision(candidates, decision) {
-    const moveId = decision?.moveId || decision?.move?.id || decision?.action?.moveId || null;
-    const type = decision?.type || decision?.action?.type || null;
-    return candidates.find(candidate => moveId && candidate.action.moveId === moveId)
-      || candidates.find(candidate => type && candidate.action.type === type)
-      || null;
   }
 
   function isGuaranteedLethal(candidate, state, side, context) {
@@ -658,17 +635,8 @@ function createPvPeakBattleIntelligenceApi() {
       explanation: explanation || "",
       evidence: candidate?.evidence || null
     };
-    const legacyTactical = !!candidate?.evidence?.tacticalAdvice;
-    const legacyAdapter = candidate?.sourceRuleIds?.includes("BI_LEGACY_ADAPTER");
     const forcedPolicy = candidate?.sourceRuleIds?.includes("BI_ONLY_LEGAL_ACTION");
-    const source = legacyTactical || legacyAdapter
-      ? "legacy-fallback"
-      : forcedPolicy ? "forced-policy" : "battle-intelligence";
-    const fallbackReasonCode = legacyTactical
-      ? "LEGACY_CONTINUATION_NOT_MIGRATED"
-      : legacyAdapter && candidate?.evidence?.legacyDecision
-        ? "LEGACY_CALLER_NOT_MIGRATED"
-        : legacyAdapter ? "LEGACY_UNSUPPORTED_ACTION_TYPE" : null;
+    const source = forcedPolicy ? "forced-policy" : "battle-intelligence";
     return attachAudit(result, {
       source,
       action: result.action,
@@ -676,8 +644,8 @@ function createPvPeakBattleIntelligenceApi() {
       policy: policy.id,
       callerContext: candidate?.auditMeta?.callerContext || "unknown",
       categories: decisionCategories(candidate),
-      fallbackReasonCode,
-      intelligenceOwned: source !== "legacy-fallback"
+      fallbackReasonCode: null,
+      intelligenceOwned: true
     });
   }
 
@@ -685,18 +653,17 @@ function createPvPeakBattleIntelligenceApi() {
     const categories = new Set(["fast-vs-charged"]);
     const action = candidate?.action || {};
     const rules = candidate?.sourceRuleIds || [];
-    const reason = String(candidate?.evidence?.tacticalAdvice?.reason || "").toLowerCase();
+    const reasons = (candidate?.evidence?.candidateEvaluation?.reasons || []).join(" ").toLowerCase();
     if (action.type === ACTION_TYPES.CHARGED_MOVE) categories.add("charged-selection");
     if (rules.includes("BI_THROW_BEFORE_FAINT")) categories.add("throw-before-faint");
     if (rules.includes("BI_REACHABLE_CHARGED")) categories.add("cheaper-reachable-charged");
     if (rules.includes("BI_GUARANTEED_LETHAL")) categories.add("guaranteed-lethal");
-    if (rules.includes("BI_AVOID_LETHAL_OVERFARM") || reason.includes("overfarm")) categories.add("overfarm");
+    if (rules.includes("BI_AVOID_LETHAL_OVERFARM") || reasons.includes("overfarm")) categories.add("overfarm");
     if (rules.includes("BI_GUARANTEED_EFFECT")) categories.add("guaranteed-effect");
     if (candidate?.auditMeta?.cmp) categories.add("cmp-ordering");
-    if (reason.includes("bait")) categories.add("baiting");
-    if (reason.includes("self-debuff")) categories.add("delayed-self-debuff");
-    if (reason.includes("continuation") || candidate?.evidence?.tacticalAdvice?.traceCandidates) categories.add("continuation-search");
-    if (rules.includes("BI_LEGACY_ADAPTER")) categories.add("tie-breaking");
+    if (reasons.includes("bait")) categories.add("baiting");
+    if (reasons.includes("self-debuff")) categories.add("delayed-self-debuff");
+    if (candidate?.evidence?.continuation) categories.add("continuation-search");
     return [...categories];
   }
 

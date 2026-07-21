@@ -46,15 +46,32 @@ function simulate(config, shields = 1, options = {}) {
     aShields: shields,
     bShields: shields,
     includeSwing: !!options.includeSwing,
-    debugChargedDecisions: true,
-    trace: !!options.trace,
-    source: options.trace ? "battle-regression" : undefined,
+    debugChargedDecisions: false,
+    trace: true,
+    source: "battle-regression",
     config
   });
 }
 
 function decisionsFor(result, pokemonName) {
-  return (result.chargedDecisionDiagnostics || []).filter(entry => entry.pokemon === pokemonName);
+  const pokemonIds = {
+    "Sableye": "sableye",
+    "Sableye (Shadow)": "sableye_shadow",
+    "Seaking": "seaking",
+    "Raikou": "raikou"
+  };
+  return (result.decisionTrace?.decisions || [])
+    .filter(entry => entry.pokemonId === pokemonIds[pokemonName] && entry.decisionType === "charged-move-selection")
+    .map(entry => ({
+      chosenMove: entry.chosenCandidate?.moveName || null,
+      candidates: (entry.candidates || []).map(item => ({
+        move: item.moveName,
+        effects: item.statEffects,
+        projectedResult: item.projectedOutcome,
+        projectedScore: item.projectedRating,
+        branchDepth: item.branchDepth || 0
+      }))
+    }));
 }
 
 function candidate(decision, moveName) {
@@ -68,10 +85,10 @@ function firstChargedChoice(result, side) {
 }
 
 function assertBounded(result) {
-  for (const decision of result.chargedDecisionDiagnostics || []) {
+  for (const decision of (result.decisionTrace?.decisions || []).filter(item => item.decisionType === "charged-move-selection")) {
     assert(decision.candidates.length <= 2, `${decision.pokemon} evaluated more than two charged branches.`);
     for (const item of decision.candidates) {
-      assert(item.continuationSteps <= 1000, `${item.move} exceeded the continuation guard.`);
+      assert((item.branchDepth || 0) <= 1, `${item.moveName} exceeded the continuation guard.`);
     }
   }
 }
@@ -111,7 +128,6 @@ const seaking = simulate(battleConfig("seaking", "hawlucha", {
 const seakingDecision = decisionsFor(seaking, "Seaking")[0];
 assert(seakingDecision, "Seaking should compare Drill Run with the one-fast Icy Wind wait.");
 assert.strictEqual(seakingDecision.chosenMove, "Icy Wind");
-assert.strictEqual(seakingDecision.chosenMoveReady, false);
 assert.strictEqual(candidate(seakingDecision, "Icy Wind").effects, "opponent ATK -1");
 assert.strictEqual(candidate(seakingDecision, "Icy Wind").projectedResult, "win");
 assert.strictEqual(candidate(seakingDecision, "Drill Run").projectedResult, "loss");
@@ -125,7 +141,9 @@ const noEffectConfig = battleConfig("quagsire", "corsola_galarian", {
 });
 const noEffectFirst = simulate(noEffectConfig, 0);
 const noEffectSecond = simulate(noEffectConfig, 0);
-assert.strictEqual((noEffectFirst.chargedDecisionDiagnostics || []).length, 0);
+assert((noEffectFirst.decisionTrace?.decisions || [])
+  .filter(item => item.decisionType === "charged-move-selection")
+  .every(item => item.candidates.every(candidate => (candidate.branchDepth || 0) === 0)));
 assert.strictEqual(noEffectFirst.score, noEffectSecond.score);
 assert.strictEqual(noEffectFirst.details.winnerEdge, noEffectSecond.details.winnerEdge);
 

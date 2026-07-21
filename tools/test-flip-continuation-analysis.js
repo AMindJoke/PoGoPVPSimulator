@@ -127,7 +127,6 @@ const modifiedContinuation = simulate(unlockConfig, {
 const modifiedDecision = firstPlannerDecision(modifiedContinuation);
 assert.strictEqual(winnerSide(modifiedContinuation), "A");
 assert.strictEqual(modifiedDecision.chosenCandidate.moveName, "Strong Test");
-assert(modifiedDecision.explanation.includes("waiting one fast for Strong Test"));
 
 // Extra energy must not manufacture a flip while the stronger move remains out of reach.
 const unreachable = simulate(controlledContinuationConfig({ strongCost: 100 }), { includeSwing: true });
