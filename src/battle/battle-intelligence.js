@@ -34,6 +34,8 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
     rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
+    rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE"),
+    rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true),
     rule("BI_OVERFARM", "Preserve safe overfarm", PRIORITY_CLASSES.RESOURCE, "ENERGY_PRESERVATION"),
     rule("BI_BAIT_VALUE", "Value credible bait pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_PRESSURE"),
     rule("BI_TIMING_VALUE", "Improve charged move timing", PRIORITY_CLASSES.RESOURCE, "OPTIMAL_MOVE_TIMING"),
@@ -369,15 +371,33 @@ function createPvPeakBattleIntelligenceApi() {
     const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
 
     if (typeof context.evaluateContinuation === "function") {
+      const timingComparison = selectable.some(candidate =>
+        candidate?.evidence?.candidateEvaluation?.ruleIds?.includes("BI_TIMING_CONTINUATION")
+      );
+      const fullChargedComparison = context.forceChargedContinuation === true;
+      // A timing decision has three meaningful shapes: throw now, a safe Fast,
+      // and the other legal Charged Move. Retain that full small set rather than
+      // letting the normal two-candidate budget silently drop one branch.
+      const continuationLimit = timingComparison
+        ? Math.max(policy.maxCandidates, Math.min(3, selectable.length))
+        : policy.maxCandidates;
       const searchCandidates = selectable
-        .filter(candidate => candidate.requiresContinuationSearch)
+        .filter(candidate => fullChargedComparison
+          ? candidate.action.type === ACTION_TYPES.CHARGED_MOVE
+          : candidate.requiresContinuationSearch)
         .sort(compareCandidates)
-        .slice(0, policy.maxCandidates);
+        .slice(0, continuationLimit);
       if (searchCandidates.length > 1) {
         statistics.continuationSearches++;
-        const searched = boundedContinuation(searchCandidates, state, policy, context, now());
+        const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
+          // PCSV is only trustworthy when both legal charged alternatives are
+          // simulated from the same state. Timing additionally includes Fast.
+          minimumComparableCandidates: timingComparison
+            ? Math.min(3, searchCandidates.length)
+            : fullChargedComparison ? Math.min(2, searchCandidates.length) : 1
+        });
         if (searched) {
-          applyRule(searched, "BI_CONTINUATION", 0, .92);
+          applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
         }
       }
     }
@@ -417,7 +437,9 @@ function createPvPeakBattleIntelligenceApi() {
     const evaluation = candidate?.evidence?.candidateEvaluation || {};
     const continuation = candidate?.evidence?.continuation || null;
     const reasons = [...(evaluation.reasons || [])];
-    if (continuation && Number.isFinite(Number(continuation.score))) {
+    if (continuation?.pcsv && Number.isFinite(Number(continuation.pcsv.value))) {
+      reasons.unshift(`strongest projected charged sequence (${continuation.pcsv.chargedMoveCount} Charged Moves, PCSV ${Math.round(Number(continuation.pcsv.value))})`);
+    } else if (continuation && Number.isFinite(Number(continuation.score))) {
       reasons.unshift(`highest continuation score ${Math.round(Number(continuation.score))}`);
     }
     if (!reasons.length) reasons.push("highest deterministic candidate score");
@@ -561,13 +583,20 @@ function createPvPeakBattleIntelligenceApi() {
     return hasNegative(move.buffs);
   }
 
-  function boundedContinuation(candidates, state, policy, context, startedAt) {
+  function boundedContinuation(candidates, state, policy, context, startedAt, options = {}) {
     let best = null;
     let explored = 0;
     let evaluatedCandidates = 0;
-    const minimumComparableCandidates = Math.min(2, candidates.length);
+    const minimumComparableCandidates = Math.max(1, Math.min(
+      candidates.length,
+      Number(options.minimumComparableCandidates || 1)
+    ));
     for (const candidate of candidates) {
-      if (explored >= policy.maxStates || (evaluatedCandidates >= minimumComparableCandidates && now() - startedAt >= policy.timeBudgetMs)) break;
+      // A timing decision is only meaningful if throw-now and the principal
+      // alternative both receive a continuation from the same state. Budget
+      // limits apply after that minimum comparable pair, never before it.
+      if (evaluatedCandidates >= minimumComparableCandidates
+        && (explored >= policy.maxStates || now() - startedAt >= policy.timeBudgetMs)) break;
       const evaluation = context.evaluateContinuation(candidate.action, {
         state,
         maxDepth: policy.maxDepth,
@@ -577,7 +606,7 @@ function createPvPeakBattleIntelligenceApi() {
       evaluatedCandidates++;
       explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
       if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
-      candidate.continuationScore = Number(evaluation.score) - Math.max(0, Number(candidate.continuationPenalty || 0));
+      candidate.continuationScore = Number(evaluation.pcsv?.value ?? evaluation.score) - Math.max(0, Number(candidate.continuationPenalty || 0));
       candidate.evidence = { ...(candidate.evidence || {}), continuation: evaluation };
       if (!best || compareCandidates(candidate, best) < 0) best = candidate;
     }

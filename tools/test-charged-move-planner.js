@@ -184,6 +184,24 @@ assert((noEffectFirst.decisionTrace?.decisions || [])
 assert.strictEqual(noEffectFirst.score, noEffectSecond.score);
 assert.strictEqual(noEffectFirst.details.winnerEdge, noEffectSecond.details.winnerEdge);
 
+const timingQuagsire = simulate(battleConfig("quagsire_shadow", "corsola_galarian", {
+  aCharged: ["AQUA_TAIL", "MUD_BOMB"]
+}), 2);
+const timingDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
+  item.side === "A" && item.decisionType === "charged-timing-selection"
+);
+assert(timingDecision, "Shadow Quagsire should expose a charged timing comparison after Corsola throws.");
+assert.strictEqual(timingDecision.chosenCandidate?.action, "FAST_THEN_REEVALUATE");
+assert(timingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
+assert(timingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
+const followUp = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
+  item.side === "A"
+  && item.decisionType === "charged-move-selection"
+  && item.turn > timingDecision.turn
+  && item.chosenCandidate?.moveId === "AQUA_TAIL"
+);
+assert(followUp, "The timing line must re-evaluate and throw Aqua Tail after the safe Mud Shot.");
+
 const selfDebuff = simulate(battleConfig("raikou", "pachirisu", {
   aFast: "VOLT_SWITCH",
   bFast: "VOLT_SWITCH",
@@ -226,7 +244,7 @@ assert(lateSableyeDecision, "Expected a later Sableye decision after the defensi
 assert.strictEqual(lateSableyeDecision.chosenMove, "Foul Play");
 assert(candidate(lateSableyeDecision, "Foul Play").projectedScore >= candidate(lateSableyeDecision, "Drain Punch").projectedScore);
 
-[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, kingdraTwoShield, kingdraPlusOne, kingdraPlusTwo, abomasnowLickilicky, seaking, dewgongSwing, noEffectFirst, selfDebuff, swampertSingleMoveOpponent, swampertTwoMoveOpponent, swampertCheaperBait, sableyeZero, sableyeTwo].forEach(assertBounded);
+[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, kingdraTwoShield, kingdraPlusOne, kingdraPlusTwo, abomasnowLickilicky, seaking, dewgongSwing, noEffectFirst, timingQuagsire, selfDebuff, swampertSingleMoveOpponent, swampertTwoMoveOpponent, swampertCheaperBait, sableyeZero, sableyeTwo].forEach(assertBounded);
 
 console.log(`Charged continuation planner regressions passed in ${Date.now() - startedAt}ms.`);
 console.log(`Sableye 1-1: ${sableyeDecision.chosenMove}; Seaking 1-1: ${seakingDecision.chosenMove}; Raikou 1-1: ${selfDebuffDecision.chosenMove}.`);

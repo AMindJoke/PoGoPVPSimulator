@@ -15,7 +15,7 @@ const {
 const { loadGoldenCorpus, runPlannerBenchmark, parseArguments } = require("./run-planner-benchmark");
 
 const corpus = loadGoldenCorpus();
-assert.strictEqual(corpus.cases.length, 21);
+assert.strictEqual(corpus.cases.length, 29);
 assert.strictEqual(validateGoldenCorpus(corpus).length, 0);
 assert.strictEqual(loadGoldenCorpusObject(JSON.stringify(corpus)).id, corpus.id);
 assert.throws(() => loadGoldenCorpusObject({ schemaVersion: 1, cases: [{ id: "broken" }] }), /Invalid Golden Corpus/);

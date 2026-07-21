@@ -15,6 +15,8 @@ const TACTICAL_CATEGORIES = Object.freeze({
   "energy-management": "Energy Management",
   "closing-move": "Closing Move",
   "cheap-move-vs-nuke": "Cheap Move vs Nuke",
+  "projected-charged-sequence": "Projected Charged Sequence",
+  "charged-timing": "Charged Timing",
   "safe-sacrifice": "Safe Sacrifice",
   "fast-move-pressure": "Fast Move Pressure"
 });

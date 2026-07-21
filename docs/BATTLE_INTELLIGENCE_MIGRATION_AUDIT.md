@@ -122,6 +122,20 @@ local bundled Node runtime after warm-up. Aggregate audit counters are retained
 in production; detailed event retention remains debug-only. Focused tactical
 regressions complete in roughly 0.35-0.45 seconds.
 
+## Charged Timing Follow-up
+
+Charged timing now has an explicit candidate model rather than being only a
+penalty on a charged move. `THROW_NOW` is compared with
+`FAST_THEN_REEVALUATE` from the same cloned canonical state. Timing intent is
+part of the strategic state key, so a cached pre-Fast decision cannot be reused
+after the state changes.
+
+The Shadow Quagsire versus Galarian Corsola 2-2 regression validates the
+post-Night-Shade window: the planner selects a safe Mud Shot, then re-evaluates
+and uses Aqua Tail. The trace captures ready turns, Fast Move durations, pending
+impacts, resources, candidate continuations, and reason codes. See
+`BATTLE_INTELLIGENCE_TIMING_MODEL.md` for the bounded timing model.
+
 ## Exit Criteria
 
 The strategic migration exit criteria are satisfied:
