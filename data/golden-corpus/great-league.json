@@ -399,15 +399,15 @@
     },
     {
       "id": "charged-timing-shadow-quagsire-corsola-2s",
-      "description": "Shadow Quagsire should evaluate a safe Mud Shot after Corsola's first Night Shade before re-evaluating Aqua Tail.",
+      "description": "Shadow Quagsire should use a safe Mud Shot after Corsola's first Night Shade, then hold one turn to throw Aqua Tail at the final Astonish alignment point.",
       "tacticalCategory": "charged-timing",
       "category": ["charged-timing", "energy-management", "shielding"],
       "pokemonA": { "id": "quagsire_shadow", "moves": { "charged": ["AQUA_TAIL", "MUD_BOMB"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 2 },
       "pokemonB": { "id": "corsola_galarian", "moves": {}, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 2 },
       "policy": { "baiting": "selective", "shieldMode": "always" },
       "expectations": { "winner": "B", "requiredReasonCodes": ["SAFE_EXTRA_FAST"] },
-      "expectedPlannerBehavior": "Compare the immediate charged line with a safe one-Fast continuation after the opposing charged move.",
-      "expectedImportantDecision": "Re-evaluate Aqua Tail after the additional Mud Shot instead of forcing the initial throw timing.",
+      "expectedPlannerBehavior": "Compare throwing now, one Fast, and a legal one-turn alignment wait after the opposing charged move.",
+      "expectedImportantDecision": "Throw Aqua Tail one turn before Astonish completes instead of forcing the earliest available timing.",
       "notes": "Canonical charged-timing fixture; winner parity remains a separate mechanics and long-horizon validation target.",
       "confidence": "high"
     }

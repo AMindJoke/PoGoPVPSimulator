@@ -194,13 +194,19 @@ assert(timingDecision, "Shadow Quagsire should expose a charged timing compariso
 assert.strictEqual(timingDecision.chosenCandidate?.action, "FAST_THEN_REEVALUATE");
 assert(timingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
 assert(timingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
+const alignmentDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
+  item.side === "A"
+  && item.decisionType === "charged-timing-selection"
+  && item.chosenCandidate?.action === "WAIT_THEN_THROW"
+);
+assert(alignmentDecision, "Shadow Quagsire should use the one-turn alignment wait inside Corsola's Astonish.");
 const followUp = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   item.side === "A"
   && item.decisionType === "charged-move-selection"
-  && item.turn > timingDecision.turn
+  && item.turn === alignmentDecision.turn + 1
   && item.chosenCandidate?.moveId === "AQUA_TAIL"
 );
-assert(followUp, "The timing line must re-evaluate and throw Aqua Tail after the safe Mud Shot.");
+assert(followUp, "The alignment line must throw Aqua Tail one turn before Astonish completes.");
 
 const selfDebuff = simulate(battleConfig("raikou", "pachirisu", {
   aFast: "VOLT_SWITCH",

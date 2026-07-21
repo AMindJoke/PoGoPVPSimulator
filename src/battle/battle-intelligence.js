@@ -374,12 +374,16 @@ function createPvPeakBattleIntelligenceApi() {
       const timingComparison = selectable.some(candidate =>
         candidate?.evidence?.candidateEvaluation?.ruleIds?.includes("BI_TIMING_CONTINUATION")
       );
-      const fullChargedComparison = context.forceChargedContinuation === true;
-      // A timing decision has three meaningful shapes: throw now, a safe Fast,
-      // and the other legal Charged Move. Retain that full small set rather than
-      // letting the normal two-candidate budget silently drop one branch.
+      // PCSV normally compares only Charged candidates. A timing window is a
+      // stricter decision: it must keep Fast/Wait alternatives in the set, or
+      // the engine silently loses the alignment line before it is evaluated.
+      const fullChargedComparison = context.forceChargedContinuation === true && !timingComparison;
+      // A timing decision can contain throw-now, a safe Fast, a one-turn
+      // alignment wait, and the other legal Charged Move. Retain that small
+      // complete set rather than letting the normal candidate budget silently
+      // remove the exact timing branch we need to compare.
       const continuationLimit = timingComparison
-        ? Math.max(policy.maxCandidates, Math.min(3, selectable.length))
+        ? Math.max(policy.maxCandidates, Math.min(4, selectable.length))
         : policy.maxCandidates;
       const searchCandidates = selectable
         .filter(candidate => fullChargedComparison
@@ -391,9 +395,10 @@ function createPvPeakBattleIntelligenceApi() {
         statistics.continuationSearches++;
         const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
           // PCSV is only trustworthy when both legal charged alternatives are
-          // simulated from the same state. Timing additionally includes Fast.
+          // simulated from the same state. Timing additionally includes Fast
+          // and, where legal, a one-turn alignment wait.
           minimumComparableCandidates: timingComparison
-            ? Math.min(3, searchCandidates.length)
+            ? Math.min(4, searchCandidates.length)
             : fullChargedComparison ? Math.min(2, searchCandidates.length) : 1
         });
         if (searched) {

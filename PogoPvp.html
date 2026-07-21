@@ -9278,6 +9278,7 @@
         orderedBattleActors,
         battleEnded,
         useFast,
+        useTimingWait,
         useCharge,
         formChangeLogText,
         shouldShield,
@@ -9327,6 +9328,8 @@
         shouldCompareShieldedChargedLines,
         shouldEvaluateProjectedChargedSequence,
         shouldEvaluateChargedTimingContinuation,
+        chargeTimingWaitWindow,
+        buildChargeTimingWaitAction,
         shieldedChargedComparisonNeedsWait,
         credibleStraightSpamMove,
         hasGuaranteedStatEffect,
@@ -9562,7 +9565,21 @@
           };
           if (chargedDecisionDiagnosticsEnabled) result.chargedDecisionDiagnostics = lastChargedDecisionDiagnostics;
           result.battleInsights = completedBattleInsights;
-          if (battleDecisionTraceEnabled) result.decisionTrace = completeBattleDecisionTrace();
+          if (battleDecisionTraceEnabled) {
+            result.decisionTrace = completeBattleDecisionTrace();
+          }
+          // Explicit diagnostic mode only: normal UI traces stay compact.
+          if (options.debugTimeline === true) {
+            result.timelineTrace = timeline.map(event => ({
+              trainer: event.trainer,
+              kind: event.kind,
+              moveId: event.move?.id || null,
+              moveName: event.move?.name || null,
+              start: Number(event.start || 0),
+              duration: Number(event.duration || 0),
+              sneaked: !!event.sneaked
+            }));
+          }
           chargedDecisionDiagnosticsEnabled = false;
           battleDecisionTraceEnabled = previousTraceEnabled;
           battleDecisionCounterfactualsEnabled = previousCounterfactualsEnabled;
@@ -9574,7 +9591,7 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled } = event.data || {};
           try {
             const normalizedSource = String(source || "").toLowerCase();
             battleIntelligenceRuntimeContext = normalizedSource.includes("offline")
@@ -9586,6 +9603,7 @@
             const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
+              debugTimeline,
               trace,
               preFastAdvantage,
               policy,
@@ -12154,6 +12172,19 @@
       return finish();
     }
 
+    function useTimingWait(attacker, defender, timingWindow, options = {}) {
+      if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const waitTurns = Math.max(1, Number(timingWindow?.waitTurns || 1));
+      const currentTurn = Number(battleTurns[attacker.trainer] || 0);
+      const targetTurn = currentTurn + waitTurns;
+      attacker.timingPlanMoveId = options.moveId || null;
+      battleTurns[attacker.trainer] = targetTurn;
+      if (!options.silent) {
+        add(`T${currentTurn} - ${attacker.trainer}: ${attacker.p.name} holds for ${waitTurns} turn to align a Charged Move before ${timingWindow?.opponentFastName || defender.fast.name} completes.`, "info");
+      }
+      return true;
+    }
+
     async function useManualCharge(attacker, defender, index) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const move = attacker.charged[index];
@@ -13058,8 +13089,12 @@
           evaluateContinuation: continuationEligible
             ? action => {
               const isFast = action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE;
-              if (isFast && timingContinuationEligible) {
-                return simulateBestChargedTimingContinuation(attacker, defender, available);
+              const isTimingWait = action.type === "wait" || action.type === api.ACTION_TYPES.WAIT;
+              if ((isFast || isTimingWait) && timingContinuationEligible) {
+                return simulateBestChargedTimingContinuation(attacker, defender, available, {
+                  timingActionType: isTimingWait ? "wait" : "fast_move",
+                  timingWindow: action.metadata?.timingWindow || null
+                });
               }
               return simulateBattleIntelligenceContinuation(attacker, defender, action, {
                 repeatCharged: compareStraightChargedLines && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE),
@@ -13075,6 +13110,22 @@
 
     function battleIntelligenceCandidateEvidence(attacker, defender, action, available) {
       const isFast = action.type === "fast_move" || action.type === "fast";
+      const isTimingWait = action.type === "wait";
+      const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
+      if (isTimingWait) {
+        const timingWindow = action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
+        if (!timingWindow) return null;
+        return {
+          components: { timingPlan: 20 },
+          reasons: [`waits ${timingWindow.waitTurns} turn to throw one turn before ${defender.fast.name} completes`],
+          ruleIds: ["BI_TIMING_CONTINUATION"],
+          reasonCodes: ["OPTIMAL_CHARGE_TIMING"],
+          confidence: .9,
+          continuationPenalty: 0,
+          strategicallyExcluded: false,
+          requiresContinuationSearch: true
+        };
+      }
       const move = isFast
         ? attacker.fast
         : validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
@@ -13102,13 +13153,17 @@
         : null;
       const credibleNuke = cheapest ? credibleShieldPressureMove(attacker, defender, cheapest) : null;
       const forcedByPressure = opponentPressureForcesThrow(attacker, defender);
-      const timingReasons = new Map(available.map(candidate => [candidate.id, chargeTimingWaitReason(attacker, defender, candidate)]));
+      // The bounded timing search owns the decision whenever it is active.
+      // Do not let the older ratio heuristic pre-select Fast/Charged before
+      // throw-now, one Fast, and a one-turn alignment wait are compared.
+      const timingReasons = timingContinuationEligible
+        ? new Map()
+        : new Map(available.map(candidate => [candidate.id, chargeTimingWaitReason(attacker, defender, candidate)]));
       const residualOverfarm = straight ? shieldedResidualOverfarmReason(attacker, defender, straight) : "";
       const needsContinuation = shouldEvaluateChargedContinuations(attacker, defender, available);
       const compareShieldedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       const compareShieldedWait = compareShieldedLines && shieldedChargedComparisonNeedsWait(attacker, available);
       const projectedSequenceEligible = shouldEvaluateProjectedChargedSequence(attacker, defender, available);
-      const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
       let continuationPenalty = 0;
       let strategicallyExcluded = false;
 
@@ -13294,6 +13349,10 @@
     function shouldEvaluateChargedTimingContinuation(attacker, defender, available) {
       if (!attacker || !defender || !attacker.fast || !defender.fast || !Array.isArray(available) || !available.length) return false;
       if (chargedContinuationDepth > 0 || chargedContinuationMode === "flip-analysis" || attacker.energy >= 100) return false;
+      // A Fast Move can end before the opposing Fast Move. In that specific
+      // gap, waiting exactly one turn can throw at the final safe alignment
+      // point. This is a legal tactical option, not an artificial delay.
+      if (chargeTimingWaitWindow(attacker, defender)) return true;
       // No-shield closing races already use the exact fastest-KO sequence planner.
       // Keep this bounded timing branch for shielded, alignment-sensitive states.
       if (defender.shields <= 0) return false;
@@ -13318,6 +13377,43 @@
       const opponentReadyCharge = validChargedMoves(defender).some(move => defender.energy >= Number(move.energyCost || 0));
       if (opponentReadyCharge && attacker.shields <= 0) return false;
       return true;
+    }
+
+    function chargeTimingWaitWindow(attacker, defender) {
+      if (!attacker || !defender || !attacker.fast || !defender.fast || !Array.isArray(timeline)) return null;
+      const currentTurn = Number(battleTurns[attacker.trainer] || 0);
+      const opponentFast = [...timeline].reverse().find(event =>
+        event?.kind === "fast"
+        && event.trainer === defender.trainer
+        && Number(event.start || 0) < currentTurn
+        && currentTurn < Number(event.start || 0) + Math.max(1, Number(event.duration || defender.fast.turns || 1))
+      );
+      if (!opponentFast) return null;
+      // Fast Move durations are represented as [start, start + duration).
+      // A Charged Move at the final active turn is the latest safe timing
+      // point before the opponent becomes free again.
+      const targetTurn = Number(opponentFast.start || 0) + Math.max(1, Number(opponentFast.duration || defender.fast.turns || 1)) - 1;
+      const waitTurns = targetTurn - currentTurn;
+      if (waitTurns !== 1) return null;
+      if (Number(battleTurns[defender.trainer] || 0) <= targetTurn) return null;
+      return {
+        waitTurns,
+        targetTurn,
+        opponentFastStart: Number(opponentFast.start || 0),
+        opponentFastEnd: Number(opponentFast.start || 0) + Math.max(1, Number(opponentFast.duration || defender.fast.turns || 1)),
+        opponentFastName: opponentFast.move?.name || defender.fast.name
+      };
+    }
+
+    function buildChargeTimingWaitAction(attacker, defender, available) {
+      const timingWindow = chargeTimingWaitWindow(attacker, defender);
+      if (!timingWindow || !available?.length) return null;
+      return {
+        type: "wait",
+        side: attacker.trainer,
+        startTurn: Number(battleTurns[attacker.trainer] || 0),
+        metadata: { timingWindow }
+      };
     }
 
     function recordBattleIntelligenceDecision(attacker, defender, selection) {
@@ -13364,9 +13460,11 @@
         const continuation = candidate?.evidence?.continuation || null;
         const action = candidate?.action || {};
         return {
-          action: action.type === "fast_move" ? "FAST_THEN_REEVALUATE" : "THROW_NOW",
+          action: action.type === "wait"
+            ? "WAIT_THEN_THROW"
+            : action.type === "fast_move" ? "FAST_THEN_REEVALUATE" : "THROW_NOW",
           moveId: action.moveId || action.move?.id || null,
-          moveName: action.move?.name || action.moveId || (action.type === "fast_move" ? attacker.fast?.name : "Charged Move"),
+          moveName: action.move?.name || action.moveId || (action.type === "fast_move" ? attacker.fast?.name : action.type === "wait" ? "Timing wait" : "Charged Move"),
           projectedOutcome: continuation?.outcome || null,
           projectedScore: Number.isFinite(Number(continuation?.score)) ? Math.round(Number(continuation.score)) : null,
           projectedRemainingHp: continuation?.remainingHp ?? null,
@@ -13382,7 +13480,9 @@
         decisionType: "charged-timing-selection",
         stateBefore: traceStateSnapshot(attacker, defender),
         candidates,
-        chosenCandidate: candidates.find(candidate => candidate.action === "FAST_THEN_REEVALUATE") || null,
+        chosenCandidate: candidates.find(candidate => candidate.action === "WAIT_THEN_THROW")
+          || candidates.find(candidate => candidate.action === "FAST_THEN_REEVALUATE")
+          || null,
         reasonCode: selection.reasonCodes?.[0] || "OPTIMAL_CHARGE_TIMING",
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
@@ -13395,19 +13495,54 @@
       if (!legalActions.length) return false;
       const legalChargedIds = new Set(legalActions.filter(action => action.type === "charged" || action.type === "charged_move").map(action => action.moveId));
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
-      const intelligenceSelection = selectBattleIntelligenceAction(attacker, defender, legalActions);
+      const timingWaitAction = buildChargeTimingWaitAction(attacker, defender, available);
+      const intelligenceSelection = selectBattleIntelligenceAction(attacker, defender, timingWaitAction
+        ? [...legalActions, timingWaitAction]
+        : legalActions);
       if (!intelligenceSelection?.action) return false;
+      // A timing wait has already selected this exact Charged Move from a
+      // complete continuation. Respect it unless the move is no longer legal.
+      if (attacker.timingPlanMoveId) {
+        const plannedMove = available.find(candidate => candidate.id === attacker.timingPlanMoveId);
+        if (plannedMove) {
+          recordBattleIntelligenceDecision(attacker, defender, {
+            ...intelligenceSelection,
+            action: { type: "charged_move", moveId: plannedMove.id, move: plannedMove },
+            explanation: `executes the verified ${plannedMove.name} timing line`,
+            reasonCodes: ["OPTIMAL_CHARGE_TIMING"]
+          });
+          return useCharge(attacker, defender, attacker.charged.indexOf(plannedMove), {
+            aiReason: `executes the verified ${plannedMove.name} timing line`,
+            deferCooldownReset: true
+          });
+        }
+        attacker.timingPlanMoveId = null;
+      }
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.explanation;
         if (intelligenceSelection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")) {
           attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-          attacker.timingPlanMoveId = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan?.moveId || null;
+          // A Fast Move advances the state; it does not commit the following
+          // Charged Move. Re-evaluate after the Fast so a one-turn alignment
+          // wait can be considered if the opponent starts a longer Fast Move.
+          attacker.timingPlanMoveId = null;
           recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
         }
         if (available.length && waitReason) {
           add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
         }
         return useFast(attacker, defender);
+      }
+      if (intelligenceSelection.action.type === "wait") {
+        const timingWindow = intelligenceSelection.action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
+        if (!timingWindow) return false;
+        const timingPlan = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan || null;
+        attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
+        attacker.timingPlanMoveId = timingPlan?.moveId || null;
+        recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
+        return useTimingWait(attacker, defender, timingWindow, {
+          moveId: timingPlan?.moveId || null
+        });
       }
       if (intelligenceSelection.action.type !== "charged_move") return false;
 
@@ -13767,13 +13902,16 @@
       };
     }
 
-    function simulateBestChargedTimingContinuation(attacker, defender, available) {
+    function simulateBestChargedTimingContinuation(attacker, defender, available, options = {}) {
+      const timingActionType = options.timingActionType === "wait" ? "wait" : "fast_move";
+      const timingWindow = options.timingWindow || null;
       const candidates = (available || []).slice(0, 2).map(move => {
         const evaluation = simulateBattleIntelligenceContinuation(attacker, defender, {
-          type: "fast_move",
+          type: timingActionType,
           side: attacker.trainer,
           move: attacker.fast,
-          moveId: attacker.fast?.id || null
+          moveId: attacker.fast?.id || null,
+          metadata: timingWindow ? { timingWindow } : null
         }, {
           projectedChargedSequence: true,
           timingFollowUpMoveId: move.id
@@ -13792,12 +13930,13 @@
       return {
         ...best.evaluation,
         timingPlan: {
-          type: "FAST_THEN_THROW",
-          fastMoveId: attacker.fast?.id || null,
-          fastMoveName: attacker.fast?.name || "Fast Move",
+          type: timingActionType === "wait" ? "WAIT_THEN_THROW" : "FAST_THEN_THROW",
+          fastMoveId: timingActionType === "fast_move" ? attacker.fast?.id || null : null,
+          fastMoveName: timingActionType === "fast_move" ? attacker.fast?.name || "Fast Move" : null,
           moveId: best.move.id,
           moveName: best.move.name,
-          fastCount: 1,
+          fastCount: timingActionType === "fast_move" ? 1 : 0,
+          waitTurns: timingActionType === "wait" ? Number(timingWindow?.waitTurns || 1) : 0,
           alternatives: candidates.map(item => ({
             moveId: item.move.id,
             moveName: item.move.name,
@@ -13853,6 +13992,12 @@
         if (actionType === "fast_move") {
           candidateMove = branchAttacker.fast;
           applied = useFast(branchAttacker, branchDefender);
+        } else if (actionType === "wait") {
+          candidateMove = validChargedMoves(branchAttacker).find(move => move.id === options.timingFollowUpMoveId) || null;
+          applied = useTimingWait(branchAttacker, branchDefender, action.metadata?.timingWindow, {
+            moveId: options.timingFollowUpMoveId || null,
+            silent: true
+          });
         } else if (actionType === "charged_move") {
           const moveIndex = branchAttacker.charged.findIndex(candidate => candidate && candidate.id === action.moveId);
           candidateMove = moveIndex >= 0 ? branchAttacker.charged[moveIndex] : null;
