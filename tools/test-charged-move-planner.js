@@ -152,6 +152,13 @@ assert((kingdraPlusTwo.decisionTrace?.decisions || [])
   .filter(item => item.side === "A" && item.decisionType === "charged-move-selection")
   .every(item => item.chosenCandidate?.moveId === "SURF"), "The detected Kingdra flip must use the straight Surf line.");
 
+const abomasnowLickilicky = simulate(battleConfig("abomasnow", "lickilicky", {
+  aCharged: ["WEATHER_BALL_ICE", "ENERGY_BALL"],
+  bCharged: ["BODY_SLAM", "SHADOW_BALL"]
+}), 1);
+assert.strictEqual(winnerSide(abomasnowLickilicky), "B", "Lickilicky should win the one-shield matchup with its straight Body Slam line.");
+assert.strictEqual(firstChargedChoice(abomasnowLickilicky, "B"), "BODY_SLAM", "Lickilicky must compare the cheaper straight line before waiting for Shadow Ball.");
+
 const seaking = simulate(battleConfig("seaking", "hawlucha", {
   aCharged: ["DRILL_RUN", "ICY_WIND"]
 }), 1);
@@ -219,7 +226,7 @@ assert(lateSableyeDecision, "Expected a later Sableye decision after the defensi
 assert.strictEqual(lateSableyeDecision.chosenMove, "Foul Play");
 assert(candidate(lateSableyeDecision, "Foul Play").projectedScore >= candidate(lateSableyeDecision, "Drain Punch").projectedScore);
 
-[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, seaking, dewgongSwing, noEffectFirst, selfDebuff, swampertSingleMoveOpponent, swampertTwoMoveOpponent, swampertCheaperBait, sableyeZero, sableyeTwo].forEach(assertBounded);
+[sableyeOne, shadowSableye, shadowSableyeZero, shadowSableyeTwo, equalCostSwing, kingdraTwoShield, kingdraPlusOne, kingdraPlusTwo, abomasnowLickilicky, seaking, dewgongSwing, noEffectFirst, selfDebuff, swampertSingleMoveOpponent, swampertTwoMoveOpponent, swampertCheaperBait, sableyeZero, sableyeTwo].forEach(assertBounded);
 
 console.log(`Charged continuation planner regressions passed in ${Date.now() - startedAt}ms.`);
 console.log(`Sableye 1-1: ${sableyeDecision.chosenMove}; Seaking 1-1: ${seakingDecision.chosenMove}; Raikou 1-1: ${selfDebuffDecision.chosenMove}.`);

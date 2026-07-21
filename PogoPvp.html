@@ -9322,6 +9322,9 @@
         continuationChargedMoveDecision,
         chargedContinuationCandidates,
         shouldEvaluateChargedContinuations,
+        shouldCompareShieldedChargedLines,
+        shieldedChargedComparisonNeedsWait,
+        credibleStraightSpamMove,
         hasGuaranteedStatEffect,
         guaranteedStatEffectChangesState,
         guaranteedStatEffectBenefitsUser,
@@ -12959,8 +12962,32 @@
         .filter(action => action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
         .map(action => action.moveId));
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
+      if (chargedContinuationDepth > 0 && chargedContinuationOpening?.repeat
+        && chargedContinuationOpening.trainer === attacker.trainer) {
+        const forcedCharged = legalActions.find(action =>
+          (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
+          && action.moveId === chargedContinuationOpening.moveId
+        );
+        const forcedFast = legalActions.find(action => action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE);
+        const forcedAction = forcedCharged
+          ? { ...forcedCharged, type: api.ACTION_TYPES.CHARGED_MOVE }
+          : forcedFast ? { ...forcedFast, type: api.ACTION_TYPES.FAST_MOVE } : null;
+        if (forcedAction) {
+          return {
+            action: forcedAction,
+            candidates: [],
+            chosenCandidate: null,
+            reasonCodes: ["STRAIGHT_LINE_CONTINUATION"],
+            explanation: forcedCharged
+              ? `continuing straight ${forcedCharged.move?.name || forcedCharged.moveId} line`
+              : `building to straight ${chargedContinuationOpening.moveId} line`
+          };
+        }
+      }
       const continuationEligible = chargedContinuationDepth === 0
-        && shouldEvaluateChargedContinuations(attacker, defender, available);
+        && (shouldEvaluateChargedContinuations(attacker, defender, available)
+          || shouldCompareShieldedChargedLines(attacker, defender, available));
+      const compareStraightChargedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
         side: attacker.trainer,
@@ -12984,7 +13011,9 @@
             return battleIntelligenceCandidateEvidence(attacker, defender, action, available);
           },
           evaluateContinuation: continuationEligible
-            ? action => simulateBattleIntelligenceContinuation(attacker, defender, action)
+            ? action => simulateBattleIntelligenceContinuation(attacker, defender, action, {
+              repeatCharged: compareStraightChargedLines && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
+            })
             : null
         }
       });
@@ -13022,6 +13051,8 @@
       const timingReasons = new Map(available.map(candidate => [candidate.id, chargeTimingWaitReason(attacker, defender, candidate)]));
       const residualOverfarm = straight ? shieldedResidualOverfarmReason(attacker, defender, straight) : "";
       const needsContinuation = shouldEvaluateChargedContinuations(attacker, defender, available);
+      const compareShieldedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
+      const compareShieldedWait = compareShieldedLines && shieldedChargedComparisonNeedsWait(attacker, available);
       let continuationPenalty = 0;
       let strategicallyExcluded = false;
 
@@ -13091,6 +13122,7 @@
           && preferredStraight
           && move !== preferredStraight
           && Number(move.energyCost || 0) < Number(preferredStraight.energyCost || 0)
+          && !credibleStraightSpamMove(attacker, defender, move, preferredStraight)
           && !credibleNukeBehindBait(attacker, defender, move);
         if (uncredibleSelectiveBait) {
           components.risk = Math.min(Number(components.risk || 0), -1200);
@@ -13178,7 +13210,8 @@
         confidence: needsContinuation ? .9 : .78,
         continuationPenalty,
         strategicallyExcluded,
-        requiresContinuationSearch: needsContinuation && !isFast
+        requiresContinuationSearch: (compareShieldedLines && (!isFast || compareShieldedWait))
+          || (needsContinuation && !isFast)
       };
     }
 
@@ -13444,6 +13477,33 @@
       return candidates.some(move => guaranteedStatEffectChangesState(attacker, defender, move));
     }
 
+    function shouldCompareShieldedChargedLines(attacker, defender, available) {
+      if (!attacker || !defender || defender.shields <= 0 || !attacker.fast || !Array.isArray(available) || !available.length) return false;
+      const moves = validChargedMoves(attacker);
+      if (moves.length < 2) return false;
+      if (moves.some(hasGuaranteedStatEffect)) return false;
+      return available.some(ready => moves.some(later =>
+        later.id !== ready.id
+        && Number(later.energyCost || 0) > Number(ready.energyCost || 0)
+        && estimate(attacker, defender, later) > estimate(attacker, defender, ready)
+      ));
+    }
+
+    function shieldedChargedComparisonNeedsWait(attacker, available) {
+      const readyIds = new Set((available || []).map(move => move.id));
+      return validChargedMoves(attacker).some(move => !readyIds.has(move.id));
+    }
+
+    function credibleStraightSpamMove(attacker, defender, move, strongerMove) {
+      if (!attacker || !defender || !move || !strongerMove) return false;
+      const damage = estimate(attacker, defender, move);
+      const strongerDamage = estimate(attacker, defender, strongerMove);
+      const dpe = damage / Math.max(1, Number(move.energyCost || 1));
+      const strongerDpe = strongerDamage / Math.max(1, Number(strongerMove.energyCost || 1));
+      return damage >= Math.max(1, Number(defender.maxHp || defender.hp || 1)) * .2
+        && dpe >= strongerDpe * .8;
+    }
+
     function hasGuaranteedStatEffect(move) {
       if (!move || Number(move.buffApplyChance || 0) < 1) return false;
       return [move.buffs, move.buffsSelf, move.buffsOpponent]
@@ -13480,7 +13540,7 @@
       return nextAttack !== Number(combatant.attackStage || 0) || nextDefense !== Number(combatant.defenseStage || 0);
     }
 
-    function simulateBattleIntelligenceContinuation(attacker, defender, action) {
+    function simulateBattleIntelligenceContinuation(attacker, defender, action, options = {}) {
       const saved = {
         left,
         right,
@@ -13507,7 +13567,9 @@
         battleTurns = { ...saved.battleTurns };
         suppressRender = true;
         activeAutoTurnContext = null;
-        chargedContinuationOpening = null;
+        chargedContinuationOpening = options.repeatCharged
+          ? { trainer, moveId: action.moveId || null, repeat: true }
+          : null;
 
         const branchAttacker = trainer === "A" ? left : right;
         const branchDefender = trainer === "A" ? right : left;
