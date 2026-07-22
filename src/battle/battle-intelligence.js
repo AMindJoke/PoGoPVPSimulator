@@ -1,6 +1,9 @@
 "use strict";
 
 function createPvPeakBattleIntelligenceApi() {
+  const perfDebug = typeof globalThis !== "undefined" && globalThis.PvPeakPerfDebug?.enabled
+    ? globalThis.PvPeakPerfDebug
+    : null;
   const STRATEGIC_STATE_SCHEMA_VERSION = "strategic-state-v2";
   const ACTION_TYPES = Object.freeze({
     FAST_MOVE: "fast_move",
@@ -289,11 +292,15 @@ function createPvPeakBattleIntelligenceApi() {
 
   function selectAction(input = {}) {
     const startedAt = now();
+    const selectionSpan = perfDebug?.startSpan("battleIntelligence.selection");
     const policy = resolvePolicy(input.policy);
     const side = input.side;
     const context = input.context || {};
+    const candidateSpan = perfDebug?.startSpan("candidate.generation");
     const legalActions = (input.legalActions || []).map(action => normalizeAction(action, side));
     const candidates = legalActions.map(action => createCandidate(action));
+    perfDebug?.endSpan(candidateSpan);
+    perfDebug?.increment("candidate.generated", candidates.length);
     const auditMeta = {
       callerContext: context.callerContext || "unknown",
       cmp: Array.isArray(input.state?.cmpState?.readySides) && input.state.cmpState.readySides.length > 1
@@ -304,14 +311,14 @@ function createPvPeakBattleIntelligenceApi() {
 
     if (!candidates.length) {
       const result = selectionResult(null, candidates, policy, false, ["NO_LEGAL_ACTION"], "No legal action is available.");
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
     if (candidates.length === 1) {
       const chosen = applyRule(candidates[0], "BI_ONLY_LEGAL_ACTION", 100, .99);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Only one legal action is available.");
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
@@ -320,7 +327,7 @@ function createPvPeakBattleIntelligenceApi() {
     if (!charged.length && fast.length) {
       const chosen = applyRule(fast[0], "BI_ONLY_LEGAL_ACTION", 100, .99);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Fast Move is the only legal progression.");
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
@@ -334,7 +341,7 @@ function createPvPeakBattleIntelligenceApi() {
       context
     });
     if (plannedSelection) {
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return plannedSelection;
     }
     const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|${legalActions.map(actionKey).join(",")}`;
@@ -343,12 +350,14 @@ function createPvPeakBattleIntelligenceApi() {
       const action = legalActions.find(item => actionKey(item) === cached.actionKey);
       if (action) {
         statistics.cacheHits++;
+        perfDebug?.recordCache("battle-intelligence", true, { size: fastPathCache.size });
         const result = resultFromCached(action, candidates, cached, policy);
-        finishTiming(startedAt);
+        finishTiming(startedAt, selectionSpan);
         return result;
       }
     }
     statistics.cacheMisses++;
+    perfDebug?.recordCache("battle-intelligence", false, { size: fastPathCache.size });
 
     const lethal = charged
       .filter(candidate => isGuaranteedLethal(candidate, state, side, context))
@@ -360,7 +369,7 @@ function createPvPeakBattleIntelligenceApi() {
       });
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Lowest-cost legal Charged Move guarantees the knockout.");
       cacheFastPath(cacheKey, result);
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
@@ -371,7 +380,7 @@ function createPvPeakBattleIntelligenceApi() {
       applyRule(chosen, "BI_REACHABLE_CHARGED", 100, .98);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, `Pending ${pendingLethal.moveId || "Fast Move"} damage creates a final Charged Move window.`);
       cacheFastPath(cacheKey, result);
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
@@ -380,7 +389,7 @@ function createPvPeakBattleIntelligenceApi() {
       applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Another Fast Move gives the opponent a lethal action window.");
       cacheFastPath(cacheKey, result);
-      finishTiming(startedAt);
+      finishTiming(startedAt, selectionSpan);
       return result;
     }
 
@@ -390,12 +399,14 @@ function createPvPeakBattleIntelligenceApi() {
       applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
     }
 
+    const evaluationSpan = perfDebug?.startSpan("candidate.evaluation");
     for (const candidate of meaningful) {
       const evidence = typeof context.evaluateCandidate === "function"
         ? context.evaluateCandidate(candidate.action, { state, policy: policy.id })
         : null;
       applyCandidateEvidence(candidate, evidence);
     }
+    perfDebug?.endSpan(evaluationSpan);
 
     const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
 
@@ -422,6 +433,7 @@ function createPvPeakBattleIntelligenceApi() {
         .slice(0, continuationLimit);
       if (searchCandidates.length > 1) {
         statistics.continuationSearches++;
+        const continuationSpan = perfDebug?.startSpan("continuation.search");
         const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
           // PCSV is only trustworthy when both legal charged alternatives are
           // simulated from the same state. Timing additionally includes Fast
@@ -433,13 +445,14 @@ function createPvPeakBattleIntelligenceApi() {
         if (searched) {
           applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
         }
+        perfDebug?.endSpan(continuationSpan);
       }
     }
 
     const fallback = [...selectable].sort(compareCandidates)[0] || candidates[0];
     applyRule(fallback, "BI_CANDIDATE_EVIDENCE", 0, .7);
     const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback));
-    finishTiming(startedAt);
+    finishTiming(startedAt, selectionSpan);
     return result;
   }
 
@@ -951,10 +964,11 @@ function createPvPeakBattleIntelligenceApi() {
     return typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
   }
 
-  function finishTiming(startedAt) {
+  function finishTiming(startedAt, perfSpan = null) {
     const duration = Math.max(0, now() - startedAt);
     statistics.totalDecisionMs += duration;
     statistics.maxDecisionMs = Math.max(statistics.maxDecisionMs, duration);
+    perfDebug?.endSpan(perfSpan);
   }
 
   return Object.freeze({

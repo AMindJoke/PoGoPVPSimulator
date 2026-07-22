@@ -34,6 +34,7 @@
     "test:terminal-pressure": "node tools/test-terminal-pressure.js",
     "test:iv-optimization": "node tools/test-iv-optimization.js",
     "test:iv-stat-sensitivity": "node tools/test-iv-stat-sensitivity.js",
+    "test:perf-debug": "node tools/test-perf-debug.js",
     "test:ux-presenters": "node tools/test-ux-presenters.js",
     "build:ranking-details": "node tools/build-ranking-details.js",
     "test:hp-swing": "node tools/test-hp-swing-analysis.js",

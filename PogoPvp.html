@@ -8,6 +8,7 @@
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
   <script src="data/great-league-ranking-details.js"></script>
+  <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
   <script src="src/reliability/battle-reliability.js"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
@@ -8744,6 +8745,12 @@
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
+    const perfDebug = window.PvPeakPerfDebug || null;
+    const perfDebugEnabled = perfDebug?.enabled === true;
+    let activeBattlePerfRunId = null;
+    let activeBattleStartupSpan = null;
+    const matrixPerfRuns = perfDebugEnabled ? new Map() : null;
+    const perfWorkerRequests = perfDebugEnabled ? new Map() : null;
     let moveMap = new Map();
     let allPokemon = [];
     let visiblePokemon = [];
@@ -8796,6 +8803,8 @@
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
     let matrixComputeWorkerSeq = 0;
+    let matrixComputeWorkerSourceCache = null;
+    const matrixWorkerConfigSignatures = new Set();
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
     const metaMatchupCacheVersion = `meta-v6:${battleEngineVersion}`;
@@ -8803,6 +8812,8 @@
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
     const metaCombatantSignatureCache = new Map();
+    let matrixBattleConfigCache = null;
+    let matrixSignatureCache = null;
     const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
     let metaBuildQueue = [];
     let metaBuildActive = false;
@@ -8936,9 +8947,62 @@
       [49,.83529999],[49.5,.8378039],[50,.84029999],[50.5,.8428039],[51,.84529999]
     ];
 
+    function beginMatrixPerfRun(signature) {
+      if (!perfDebugEnabled || !signature) return null;
+      let entry = matrixPerfRuns.get(signature);
+      if (entry) return entry;
+      const runId = perfDebug.beginRun("matrix", { signature });
+      entry = { runId, span: perfDebug.startSpan("matrix.generation", runId), requests: 0 };
+      matrixPerfRuns.set(signature, entry);
+      return entry;
+    }
+
+    function finishMatrixPerfRun(signature) {
+      if (!perfDebugEnabled) return;
+      const entry = matrixPerfRuns.get(signature);
+      if (!entry) return;
+      perfDebug.endSpan(entry.span);
+      perfDebug.gauge("matrix.workerRequests", entry.requests, entry.runId);
+      perfDebug.finishRun(entry.runId, { completed: true });
+      matrixPerfRuns.delete(signature);
+    }
+
+    function registerWorkerPerfRequest(id, source, signature) {
+      if (!perfDebugEnabled) return null;
+      const matrixRun = source === "live" ? beginMatrixPerfRun(signature) : null;
+      const runId = matrixRun?.runId || perfDebug.beginRun(source === "meta" ? "meta-cell" : "worker-request", { source, signature });
+      if (matrixRun) matrixRun.requests++;
+      const request = { runId, source, signature, sentAt: performance.now(), standalone: !matrixRun };
+      perfWorkerRequests.set(id, request);
+      return request;
+    }
+
+    function completeWorkerPerfRequest(message) {
+      if (!perfDebugEnabled) return;
+      const request = perfWorkerRequests.get(message.id);
+      if (!request) return;
+      perfWorkerRequests.delete(message.id);
+      const roundTrip = Math.max(0, performance.now() - request.sentAt);
+      const workerDuration = Math.max(0, Number(message.perfReport?.durationMs || 0));
+      perfDebug.recordWorker("communication", Math.max(0, roundTrip - workerDuration), request.runId);
+      perfDebug.recordWorker("roundTrip", roundTrip, request.runId);
+      if (message.perfReport) perfDebug.merge(message.perfReport, request.runId);
+      if (request.standalone) perfDebug.finishRun(request.runId, { completed: message.type !== "matrixCellError" });
+    }
+
+    function activeUiPerfRunId() {
+      if (!perfDebugEnabled) return null;
+      if (activeBattlePerfRunId) return activeBattlePerfRunId;
+      return matrixPerfRuns.get(shieldMatrixPendingSignature)?.runId || null;
+    }
+
     function init() {
+      const pagePerfRunId = perfDebugEnabled ? perfDebug.beginRun("startup") : null;
+      const inputSpan = pagePerfRunId ? perfDebug.startSpan("input.processing", pagePerfRunId) : null;
       if (!gm || !gm.pokemon || !gm.moves) {
         showError("Could not find gamemaster-data.js. Keep PogoPvp.html and gamemaster-data.js in the same folder.");
+        if (inputSpan) perfDebug.endSpan(inputSpan);
+        if (pagePerfRunId) perfDebug.finishRun(pagePerfRunId, { error: "missing-gamemaster" });
         return;
       }
       initMatrixCacheWorker();
@@ -8980,6 +9044,7 @@
         }))
         .filter(p => p.fast.length && p.charged.length)
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+      if (inputSpan) perfDebug.endSpan(inputSpan);
 
       if (typeof matchMedia === "function" && matchMedia("(max-width: 900px)").matches) {
         $("releasedOnly").checked = false;
@@ -9173,6 +9238,12 @@
       resetBattleStateFromSetup();
       renderMetaRankings();
       updateBattleAvailability();
+      if (pagePerfRunId) {
+        requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
+          pokemon: allPokemon.length,
+          moves: moveMap.size
+        })));
+      }
     }
 
     function showError(message) {
@@ -9245,22 +9316,44 @@
 
     function initMatrixComputeWorker() {
       if (!("Worker" in window)) return;
+      const startupSpan = perfDebugEnabled ? perfDebug.startSpan("worker.startup") : null;
       try {
-        const workerSource = buildMatrixComputeWorkerSource();
+        const workerSource = matrixComputeWorkerSourceCache || (matrixComputeWorkerSourceCache = buildMatrixComputeWorkerSource());
         const blob = new Blob([workerSource], { type: "text/javascript" });
         matrixComputeWorker = new Worker(URL.createObjectURL(blob));
+        matrixWorkerConfigSignatures.clear();
         matrixComputeWorker.onmessage = handleMatrixComputeWorkerMessage;
         matrixComputeWorker.onerror = () => {
           matrixComputeWorker?.terminate();
           matrixComputeWorker = null;
+          matrixWorkerConfigSignatures.clear();
           shieldMatrixComputing.clear();
         };
       } catch (_) {
         matrixComputeWorker = null;
+      } finally {
+        if (startupSpan) perfDebug.endSpan(startupSpan);
       }
     }
 
     function buildMatrixComputeWorkerSource() {
+      const perfFactory = window.createPvPeakPerfDebugApi || function createDisabledPerfDebugApi() {
+        const noop = () => null;
+        return Object.freeze({
+          enabled: false,
+          beginRun: noop,
+          finishRun: noop,
+          startSpan: noop,
+          endSpan: noop,
+          increment: noop,
+          gauge: noop,
+          recordCache: noop,
+          recordClone: noop,
+          recordSerialization: noop,
+          recordWorker: noop,
+          merge: noop
+        });
+      };
       const functions = [
         effectiveness,
         estimate,
@@ -9450,10 +9543,24 @@
         const MAX_FARM_PRESSURE_EDGE = ${MAX_FARM_PRESSURE_EDGE};
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
         const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
+        const PvPeakPerfDebug = (${perfFactory.toString()})({
+          root: globalThis,
+          enabled: ${perfDebugEnabled},
+          context: "matrix-worker",
+          persist: false,
+          dashboard: false
+        });
+        globalThis.PvPeakPerfDebug = PvPeakPerfDebug;
+        const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
+        const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
         const PvPeakMatchupPlanner = (${window.createPvPeakMatchupPlannerApi.toString()})();
         const PvPeakMatchupPlannerAdapter = (${window.createPvPeakMatchupPlannerAdapterApi.toString()})(PvPeakMatchupPlanner);
+        if (plannerInitSpan) PvPeakPerfDebug.endSpan(plannerInitSpan);
+        const intelligenceInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("battleIntelligence.init", workerStartupRunId) : null;
         const PvPeakBattleIntelligence = (${window.createPvPeakBattleIntelligenceApi.toString()})();
+        if (intelligenceInitSpan) PvPeakPerfDebug.endSpan(intelligenceInitSpan);
+        let workerStartupReport = workerStartupRunId ? PvPeakPerfDebug.finishRun(workerStartupRunId) : null;
         let left = null;
         let right = null;
         let log = [];
@@ -9478,6 +9585,9 @@
         let forcedMatchupPlan = null;
         const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
         let currentMatrixConfig = null;
+        const matrixConfigCache = new Map();
+        const workerClock = () => globalThis.performance?.now?.() ?? Date.now();
+        let workerLastFinishedAt = workerClock();
 
         function render() {}
         function ready() { return !battleEnded(); }
@@ -9487,7 +9597,14 @@
         ${functions}
 
         function cloneCombatant(combatant) {
-          return JSON.parse(JSON.stringify(combatant));
+          const startedAt = PvPeakPerfDebug.enabled ? workerClock() : 0;
+          const serialized = JSON.stringify(combatant);
+          const clone = JSON.parse(serialized);
+          if (PvPeakPerfDebug.enabled) {
+            PvPeakPerfDebug.recordClone("deep", 1, undefined, serialized.length * 2);
+            PvPeakPerfDebug.recordSerialization("serialize", workerClock() - startedAt, serialized.length * 2);
+          }
+          return clone;
         }
 
         function simulateShieldMatrixCell(aShields, bShields, options = {}) {
@@ -9625,9 +9742,19 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch } = event.data || {};
           const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
           const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
+          const perfRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun(source === "meta" ? "meta-cell" : "matrix-cell", { key, signature, source }) : null;
+          if (perfRunId && workerStartupReport) {
+            PvPeakPerfDebug.merge(workerStartupReport, perfRunId);
+            workerStartupReport = null;
+          }
+          const executionSpan = perfRunId ? PvPeakPerfDebug.startSpan("worker.execution", perfRunId) : null;
+          if (perfRunId) {
+            PvPeakPerfDebug.recordWorker("queue", Math.max(0, Date.now() - Number(perfSentEpoch || Date.now())), perfRunId);
+            PvPeakPerfDebug.recordWorker("idle", Math.max(0, workerClock() - workerLastFinishedAt), perfRunId);
+          }
           try {
             globalThis.MATCHUP_PLANNER_V2 = matchupPlannerV2 === true;
             matchupPlannerPolicyOverride = plannerPolicy || null;
@@ -9637,8 +9764,14 @@
               : normalizedSource.includes("scenario") ? "scenario-review"
                 : normalizedSource.includes("preview") ? "preview"
                   : normalizedSource.includes("matrix") || normalizedSource.includes("meta") ? "matrix" : "battle";
-            currentMatrixConfig = config;
-            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
+            if (config && signature) {
+              matrixConfigCache.set(signature, config);
+              while (matrixConfigCache.size > 12) matrixConfigCache.delete(matrixConfigCache.keys().next().value);
+            }
+            const resolvedConfig = config || matrixConfigCache.get(signature);
+            if (!resolvedConfig) throw new Error("Missing matrix configuration for signature");
+            currentMatrixConfig = resolvedConfig;
+            const result = simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
               debugTimeline,
@@ -9653,8 +9786,12 @@
               source: source || "live"
             });
             result.swingReady = !!includeSwing;
-            self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
+            if (executionSpan) PvPeakPerfDebug.endSpan(executionSpan);
+            const perfReport = perfRunId ? PvPeakPerfDebug.finishRun(perfRunId) : null;
+            self.postMessage({ id, source, type: "matrixCellResult", key, signature, result, perfReport, perfReturnedEpoch: Date.now() });
           } catch (error) {
+            if (executionSpan) PvPeakPerfDebug.endSpan(executionSpan);
+            const perfReport = perfRunId ? PvPeakPerfDebug.finishRun(perfRunId, { error: true }) : null;
             self.postMessage({
               id,
               source,
@@ -9662,9 +9799,12 @@
               key,
               signature,
               code: error?.code || null,
-              message: error && error.message ? error.message : String(error)
+              message: error && error.message ? error.message : String(error),
+              perfReport,
+              perfReturnedEpoch: Date.now()
             });
           } finally {
+            workerLastFinishedAt = workerClock();
             globalThis.MATCHUP_PLANNER_V2 = previousMatchupPlannerV2;
             matchupPlannerPolicyOverride = previousMatchupPlannerPolicy;
           }
@@ -10718,15 +10858,18 @@
     function requestMetaMatchupCompute(job) {
       if (!matrixComputeWorker) return false;
       try {
+        const requestId = ++matrixComputeWorkerSeq;
+        registerWorkerPerfRequest(requestId, "meta", "meta");
         matrixComputeWorker.postMessage({
-          id: ++matrixComputeWorkerSeq,
+          id: requestId,
           source: "meta",
           key: job.key,
           signature: "meta",
           aShields: job.aShields,
           bShields: job.bShields,
           includeSwing: false,
-          config: createMetaBattleConfig(job.a, job.b)
+          config: createMetaBattleConfig(job.a, job.b),
+          perfSentEpoch: perfDebugEnabled ? Date.now() : undefined
         });
         return true;
       } catch (_) {
@@ -11766,17 +11909,45 @@
 
     function createMatrixBattleConfig() {
       if (!setupReadyForBattle()) return null;
+      const cacheKey = matrixInputIdentity();
+      if (matrixBattleConfigCache?.key === cacheKey) {
+        if (perfDebugEnabled) perfDebug.recordCache("matrix-config", true, { size: 1 }, activeUiPerfRunId());
+        return matrixBattleConfigCache.value;
+      }
+      if (perfDebugEnabled) perfDebug.recordCache("matrix-config", false, { size: matrixBattleConfigCache ? 1 : 0 }, activeUiPerfRunId());
       const a = create("p1", "A");
       const b = create("p2", "B");
-      return {
+      const value = {
         left: cloneMatrixCombatant(a),
         right: cloneMatrixCombatant(b),
         startEnergyA: a.energy,
         startEnergyB: b.energy
       };
+      matrixBattleConfigCache = { key: cacheKey, value };
+      return value;
+    }
+
+    function matrixInputIdentity() {
+      return ["p1", "p2"].map(prefix => [
+        $(`${prefix}Pokemon`)?.value,
+        $(`${prefix}Fast`)?.value,
+        $(`${prefix}Charged1`)?.value,
+        $(`${prefix}Charged2`)?.value,
+        $(`${prefix}IvAtk`)?.value,
+        $(`${prefix}IvDef`)?.value,
+        $(`${prefix}IvHp`)?.value,
+        $(`${prefix}Level`)?.value,
+        $(`${prefix}Cp`)?.value,
+        $(`${prefix}StartEnergy`)?.value,
+        $(`${prefix}Baiting`)?.value,
+        $(`${prefix}ShieldMode`)?.value,
+        $(`${prefix}Shields`)?.value
+      ].join("\u001f")).join("\u001e");
     }
 
     function cloneMatrixCombatant(combatant) {
+      const perfRunId = activeUiPerfRunId();
+      if (perfRunId) perfDebug.recordClone("state", 1, perfRunId);
       return {
         trainer: combatant.trainer,
         p: cloneMatrixPokemon(combatant.p),
@@ -13090,6 +13261,9 @@
 
     function clonePlannerCombatant(combatant) {
       if (!combatant) return null;
+      if (typeof globalThis !== "undefined" && globalThis.PvPeakPerfDebug?.enabled) {
+        globalThis.PvPeakPerfDebug.recordClone("state");
+      }
       return {
         ...combatant,
         p: combatant.p,
@@ -15357,6 +15531,10 @@
 
     function runBattleToEnd(options = {}) {
       if (!setupReadyForBattle()) return;
+      if (perfDebugEnabled && !activeBattlePerfRunId) {
+        activeBattlePerfRunId = perfDebug.beginRun("battle", { source: document.body.dataset.view || "simulator" });
+        activeBattleStartupSpan = perfDebug.startSpan("battle.startup", activeBattlePerfRunId);
+      }
       stopTimelineReplay();
       timelinePresentationPending = true;
       document.body.classList.add("battle-results-visible");
@@ -15376,6 +15554,7 @@
     }
 
     function runBattleToEndNow(options = {}) {
+      const simulationSpan = activeBattlePerfRunId ? perfDebug.startSpan("simulation.total", activeBattlePerfRunId) : null;
       battleDecisionTraceEnabled = true;
       battleDecisionCounterfactualsEnabled = false;
       beginBattleDecisionTrace({ source: "live-interactive" });
@@ -15391,6 +15570,21 @@
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
       queueTimelineReplay();
+      if (simulationSpan) perfDebug.endSpan(simulationSpan);
+      if (activeBattleStartupSpan) {
+        perfDebug.endSpan(activeBattleStartupSpan);
+        activeBattleStartupSpan = null;
+      }
+      if (activeBattlePerfRunId) {
+        const completedRunId = activeBattlePerfRunId;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          perfDebug.finishRun(completedRunId, {
+            winner: left?.hp > 0 ? "A" : right?.hp > 0 ? "B" : "draw",
+            turns: Math.max(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
+          });
+        }));
+        activeBattlePerfRunId = null;
+      }
     }
 
     function buildLiveTacticalPatternSummary() {
@@ -15505,8 +15699,11 @@
 
     function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
+      const stateSpan = activeBattlePerfRunId ? perfDebug.startSpan("battle.state", activeBattlePerfRunId) : null;
+      const combatantSpan = activeBattlePerfRunId ? perfDebug.startSpan("combatants.create", activeBattlePerfRunId) : null;
       left = create("p1", "A");
       right = create("p2", "B");
+      if (combatantSpan) perfDebug.endSpan(combatantSpan);
       if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
         const reduced = options.startingHpReduction.side === "A" ? left : right;
         reduced.hp = Math.max(1, reduced.maxHp - Math.round(Number(options.startingHpReduction.amount)));
@@ -15524,6 +15721,7 @@
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       lastBattleInitialSimulatorState = snapshotFullSimulatorState();
       if (!options.skipRender) render();
+      if (stateSpan) perfDebug.endSpan(stateSpan);
     }
 
     function hideBattleResultsForSetupChange() {
@@ -15869,6 +16067,8 @@
     }
 
     function render() {
+      const perfRunId = activeUiPerfRunId();
+      const renderSpan = perfRunId ? perfDebug.startSpan("render", perfRunId) : null;
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
@@ -15884,6 +16084,7 @@
       renderScenarioReview();
       renderTechnicalReview();
       renderScenarioStacks();
+      if (renderSpan) perfDebug.endSpan(renderSpan);
     }
 
     function scenarioApi() {
@@ -16060,8 +16261,14 @@
 
     function cloneTechnicalValue(value) {
       if (value == null) return value;
-      if (typeof structuredClone === "function") return structuredClone(value);
-      return JSON.parse(JSON.stringify(value));
+      const runId = activeUiPerfRunId();
+      if (typeof structuredClone === "function") {
+        if (runId) perfDebug.recordClone("structured", 1, runId);
+        return structuredClone(value);
+      }
+      const serialized = JSON.stringify(value);
+      if (runId) perfDebug.recordClone("deep", 1, runId, serialized.length * 2);
+      return JSON.parse(serialized);
     }
 
     function captureTechnicalRuntimeState() {
@@ -16147,6 +16354,8 @@
     }
 
     function simulateTechnicalIssue(issue) {
+      const perfRunId = perfDebugEnabled ? perfDebug.beginRun("scenario-review", { issue: issue?.type || "unknown" }) : null;
+      const scenarioSpan = perfRunId ? perfDebug.startSpan("scenario.simulation", perfRunId) : null;
       const observedState = captureTechnicalRuntimeState();
       restoreTechnicalRuntimeState(technicalSegmentStartState);
       technicalSimulationRunning = true;
@@ -16184,6 +16393,8 @@
       selectedTimelineIndex = null;
       document.body.classList.add("technical-review-branch");
       render();
+      if (scenarioSpan) perfDebug.endSpan(scenarioSpan);
+      if (perfRunId) perfDebug.finishRun(perfRunId);
     }
 
     function applyTechnicalIssueIfNeeded(kind, attacker, defender, move) {
@@ -16629,9 +16840,13 @@
     }
 
     function scheduleHpSwingAnalysis(signature, key, aShields, bShields, baselineResult) {
+      const perfRunId = perfDebugEnabled ? perfDebug.beginRun("swing", { signature, key, type: "hp" }) : null;
+      const swingSpan = perfRunId ? perfDebug.startSpan("swing.generation", perfRunId) : null;
       const baseWinner = matrixWinnerSide(baselineResult);
       if (!baseWinner) {
         hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) perfDebug.finishRun(perfRunId);
         return;
       }
       const losingSide = baseWinner === "A" ? "B" : "A";
@@ -16639,6 +16854,8 @@
       const loser = losingSide === "A" ? left : right;
       if (!winner || !loser || winner.maxHp <= 1) {
         hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) perfDebug.finishRun(perfRunId);
         return;
       }
       hpSwingAnalysisPending.add(key);
@@ -16648,10 +16865,17 @@
         hpSwingAnalysisPending.delete(key);
         hpSwingAnalysisCache.set(key, { ready: true, value });
         if (!previewState.active && shieldMatrixSignature() === signature && document.body.classList.contains("battle-results-visible")) renderBattleReview();
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) {
+          perfDebug.gauge("swing.simulations", reduction, perfRunId);
+          perfDebug.finishRun(perfRunId, { found: !!value });
+        }
       };
       const step = () => {
         if (previewState.active || shieldMatrixSignature() !== signature) {
           hpSwingAnalysisPending.delete(key);
+          if (swingSpan) perfDebug.endSpan(swingSpan);
+          if (perfRunId) perfDebug.finishRun(perfRunId, { cancelled: true });
           return;
         }
         if (reduction > maxReduction) {
@@ -16807,12 +17031,21 @@
     }
 
     function renderShieldMatrix() {
+      const perfRunId = activeUiPerfRunId();
+      const matrixRenderSpan = perfRunId ? perfDebug.startSpan("dom.update", perfRunId, { component: "matrix" }) : null;
       const box = $("shieldMatrix");
-      if (!box || suppressRender) return;
-      if (!document.body.classList.contains("battle-results-visible") && !previewState.active) return;
+      if (!box || suppressRender) {
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
+        return;
+      }
+      if (!document.body.classList.contains("battle-results-visible") && !previewState.active) {
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
+        return;
+      }
       if (!left || !right) {
         box.innerHTML = "";
         $("matrixExplanation").innerHTML = "";
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
         return;
       }
       const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
@@ -16825,6 +17058,7 @@
         $("matrixExplanation").innerHTML = "";
         scheduleShieldMatrixCalculation(signature);
         if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
         return;
       }
       const rows = [];
@@ -16853,6 +17087,7 @@
       renderMatrixExplanation(currentResult);
       renderMatchupInspector();
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+      if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
     }
 
     function toggleMatchupInspector() {
@@ -17185,6 +17420,8 @@
 
     function cachedShieldMatrixCell(signature, aShields, bShields) {
       const key = shieldMatrixCacheKey(signature, aShields, bShields);
+      const perfRunId = matrixPerfRuns?.get(signature)?.runId || activeUiPerfRunId();
+      if (perfRunId) perfDebug.recordCache("shield-matrix", shieldMatrixCache.has(key), { size: shieldMatrixCache.size }, perfRunId);
       if (!shieldMatrixCache.has(key)) {
         const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
         result.swingReady = false;
@@ -17232,6 +17469,7 @@
 
     function scheduleShieldMatrixCalculation(signature) {
       if (shieldMatrixPendingSignature === signature) return;
+      beginMatrixPerfRun(signature);
       if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
       shieldMatrixPendingSignature = signature;
       const currentA = Number($("p1Shields").value || 0);
@@ -17273,6 +17511,7 @@
             renderShieldMatrix();
             renderBattleReview();
           }
+          finishMatrixPerfRun(signature);
           return;
         }
         if (requestShieldMatrixCellCompute(signature, cell[0], cell[1], phase === "swing")) {
@@ -17301,8 +17540,12 @@
       if (!config) return false;
       shieldMatrixComputing.add(key);
       try {
+        const requestId = ++matrixComputeWorkerSeq;
+        registerWorkerPerfRequest(requestId, "live", signature);
+        const sendConfig = !matrixWorkerConfigSignatures.has(signature);
+        if (sendConfig) matrixWorkerConfigSignatures.add(signature);
         matrixComputeWorker.postMessage({
-          id: ++matrixComputeWorkerSeq,
+          id: requestId,
           key,
           signature,
           aShields,
@@ -17310,9 +17553,16 @@
           includeSwing,
           trace: debugBattleTracing,
           source: "live",
-          config
+          config: sendConfig ? config : null,
+          perfSentEpoch: perfDebugEnabled ? Date.now() : undefined
         });
         const timeout = setTimeout(() => {
+          const request = perfWorkerRequests?.get(requestId);
+          if (request) {
+            perfWorkerRequests.delete(requestId);
+            perfDebug.increment("worker.timeouts", 1, request.runId);
+            if (request.standalone) perfDebug.finishRun(request.runId, { timeout: true });
+          }
           shieldMatrixComputing.delete(key);
           shieldMatrixComputeTimeouts.delete(key);
           if (!shieldMatrixPendingTimer && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
@@ -17323,6 +17573,7 @@
         shieldMatrixComputeTimeouts.set(key, timeout);
       } catch (_) {
         matrixComputeWorker = null;
+        matrixWorkerConfigSignatures.delete(signature);
         shieldMatrixComputing.delete(key);
         return false;
       }
@@ -17399,6 +17650,7 @@
 
     function handleMatrixComputeWorkerMessage(event) {
       const message = event.data || {};
+      completeWorkerPerfRequest(message);
       if (message.source === "meta") {
         handleMetaComputeWorkerMessage(message);
         return;
@@ -17464,8 +17716,17 @@
 
     function cancelShieldMatrixCalculation() {
       if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
+      const cancelledSignature = shieldMatrixPendingSignature;
       shieldMatrixPendingTimer = null;
       shieldMatrixPendingSignature = "";
+      if (perfDebugEnabled && cancelledSignature) {
+        const entry = matrixPerfRuns.get(cancelledSignature);
+        if (entry) {
+          perfDebug.endSpan(entry.span);
+          perfDebug.finishRun(entry.runId, { cancelled: true });
+          matrixPerfRuns.delete(cancelledSignature);
+        }
+      }
     }
 
     function trimShieldMatrixCache() {
@@ -17479,7 +17740,15 @@
     }
 
     function shieldMatrixSignature() {
-      return ["p1", "p2"].map((prefix, index) => {
+      const inputKey = matrixInputIdentity();
+      const perfRunId = activeUiPerfRunId();
+      if (matrixSignatureCache?.key === inputKey) {
+        if (perfRunId) perfDebug.recordCache("matrix-signature", true, { size: 1 }, perfRunId);
+        return matrixSignatureCache.value;
+      }
+      if (perfRunId) perfDebug.recordCache("matrix-signature", false, { size: matrixSignatureCache ? 1 : 0 }, perfRunId);
+      const signatureSpan = perfRunId ? perfDebug.startSpan("serialization.signature", perfRunId) : null;
+      const value = ["p1", "p2"].map((prefix, index) => {
         const pokemon = findPokemon($(`${prefix}Pokemon`).value);
         if (!pokemon) return `${index}:missing`;
         const stats = selectedStats(prefix, pokemon);
@@ -17497,6 +17766,12 @@
           shieldMode: $(`${prefix}ShieldMode`).value
         });
       }).join("|");
+      if (signatureSpan) {
+        const duration = perfDebug.endSpan(signatureSpan);
+        perfDebug.recordSerialization("serialize", duration, value.length * 2, perfRunId);
+      }
+      matrixSignatureCache = { key: inputKey, value };
+      return value;
     }
 
     function handleMatrixClick(event) {
@@ -18786,6 +19061,8 @@
     }
 
     function renderTimeline() {
+      const perfRunId = activeUiPerfRunId();
+      const timelineSpan = perfRunId ? perfDebug.startSpan("timeline.generation", perfRunId) : null;
       renderTimelineZoomControl();
       if (!left || !right) {
         $("timelineScroll")?.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
@@ -18796,6 +19073,7 @@
         $("p2Timeline").innerHTML = "";
         hideTimelineHover();
         hideTimelineMoveTooltip();
+        if (timelineSpan) perfDebug.endSpan(timelineSpan);
         return;
       }
       renderTimelinePokemonZone("p1", left);
@@ -18816,6 +19094,7 @@
       renderTechnicalTimelineState();
       if (isFit) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+      if (timelineSpan) perfDebug.endSpan(timelineSpan);
     }
 
     function renderTimelinePokemonZone(prefix, combatant) {
