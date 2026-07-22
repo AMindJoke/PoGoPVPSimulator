@@ -23,8 +23,13 @@ The initial implementation uses deterministic depth-bounded minimax with:
 - stable candidate ordering;
 - terminal and bounded-horizon leaves;
 - principal-variation retention.
+- iterative deepening;
+- alpha-beta pruning with lexicographic outcome bounds;
+- complete-root iteration retention.
 
-Alpha-beta and dominance pruning will be added with the canonical adapter, where legal simultaneous responses can be ordered safely.
+Only the deepest iteration that evaluated every root candidate is authoritative. If a budget expires midway through a deeper iteration, the planner retains the previous complete iteration rather than favoring whichever candidate happened to be searched first.
+
+`src/battle/matchup-planner-adapter.js` defines the compact adapter boundary. It strips presentation state from hashes, caches legal strategic candidates, annotates canonical actions with planning intent, and supplies actionable-energy diagnostics to bounded evaluators. Battle mechanics remain callback-owned; the adapter does not call DOM or rendering code.
 
 ## Strategic Candidates
 
@@ -53,4 +58,4 @@ PCSV may remain a same-outcome sequence-quality signal. It must never replace th
 
 ## Known Limitation
 
-The pure search is complete only relative to its adapter candidates and horizon. The current production rollout is not yet a canonical planner adapter and remains unchanged during this migration stage.
+The pure search is complete only relative to its adapter candidates and horizon. The compact adapter contract is now available, but the production browser has not yet connected canonical joint-turn resolution to it. Normal Battle therefore remains on the existing resolver while `MATCHUP_PLANNER_V2` stays disabled.

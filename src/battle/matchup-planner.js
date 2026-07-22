@@ -87,6 +87,11 @@ function createPvPeakMatchupPlannerApi() {
       confidence: clamp(numeric(input.confidence, .5), 0, 1),
       searchedNodes: Math.max(0, Math.floor(numeric(input.searchedNodes))),
       depthReached: Math.max(0, Math.floor(numeric(input.depthReached))),
+      completedDepth: Math.max(0, Math.floor(numeric(input.completedDepth))),
+      cacheHits: Math.max(0, Math.floor(numeric(input.cacheHits))),
+      prunedBranches: Math.max(0, Math.floor(numeric(input.prunedBranches))),
+      elapsedMs: Math.max(0, numeric(input.elapsedMs)),
+      incompleteHorizon: input.incompleteHorizon === true,
       horizonReason: input.horizonReason || null,
       explanation: input.explanation || "",
       reasonCodes: Object.freeze([...(input.reasonCodes || [])])
@@ -107,37 +112,25 @@ function createPvPeakMatchupPlannerApi() {
     const perspective = input.perspective || input.side;
     const startedAt = now();
     const table = input.transpositionTable || new Map();
-    const stats = { nodes: 0, cacheHits: 0, pruned: 0, depthReached: 0, timedOut: false };
+    const stats = { nodes: 0, cacheHits: 0, pruned: 0, depthReached: 0, completedDepth: 0, timedOut: false };
     const context = { adapter, policy, perspective, startedAt, table, stats };
     const rootState = input.state;
     const rootSide = input.side;
     const candidates = stableCandidates(adapter.candidates(rootState, rootSide, { policy: policy.id }));
-    const lines = [];
+    let lines = [];
+    let partialLines = [];
 
-    for (const candidate of candidates) {
-      if (budgetExceeded(context)) break;
-      const transition = adapter.apply(rootState, rootSide, candidate, { policy: policy.id });
-      if (!transition?.state) continue;
-      const child = minimax(transition.state, transition.nextSide, policy.maxDepth - 1, context);
-      const step = createPlanStep({
-        stateHash: adapter.hash(rootState, policy.id),
-        action: candidate.action || candidate,
-        expectedOpponentResponse: child.steps[0]?.action || null,
-        resultingStateHash: adapter.hash(transition.state, policy.id),
-        strategicPurpose: candidate.strategicPurpose || null,
-        timingIntent: candidate.timingIntent || null,
-        confidence: child.complete ? .95 : .65
-      });
-      lines.push(createStrategicLine({
-        actions: [candidate.action || candidate, ...child.actions],
-        opponentResponses: child.responses,
-        outcome: child.outcome,
-        finalState: child.finalState,
-        completeness: child.complete ? "complete" : "bounded",
-        horizonReason: child.horizonReason,
-        principalVariation: [step, ...child.steps]
-      }));
+    // Keep the deepest fully evaluated root iteration. A timeout must never
+    // make a later root candidate lose merely because it was searched last.
+    for (let depth = 1; depth <= policy.maxDepth; depth++) {
+      const iteration = searchRootIteration(rootState, rootSide, candidates, depth, context);
+      if (iteration.lines.length) partialLines = iteration.lines;
+      if (!iteration.complete) break;
+      lines = iteration.lines;
+      stats.completedDepth = depth;
+      if (iteration.lines.every(line => line.completeness === "complete")) break;
     }
+    if (!lines.length) lines = partialLines;
 
     lines.sort((a, b) => compareOutcomeVectors(a.outcome, b.outcome));
     const principalLine = lines[0] || createStrategicLine({
@@ -156,6 +149,11 @@ function createPvPeakMatchupPlannerApi() {
       confidence: principalLine.completeness === "complete" ? .95 : .65,
       searchedNodes: stats.nodes,
       depthReached: stats.depthReached,
+      completedDepth: stats.completedDepth,
+      cacheHits: stats.cacheHits,
+      prunedBranches: stats.pruned,
+      elapsedMs: now() - startedAt,
+      incompleteHorizon: stats.timedOut || principalLine.completeness !== "complete",
       horizonReason: principalLine.horizonReason,
       explanation: principalLine.actions.length
         ? `Selected the first action of the best ${principalLine.outcome.outcomeClass} line.`
@@ -168,13 +166,51 @@ function createPvPeakMatchupPlannerApi() {
     });
   }
 
-  function minimax(state, side, depth, context) {
+  function searchRootIteration(rootState, rootSide, candidates, depth, context) {
+    const lines = [];
+    let complete = true;
+    for (const candidate of candidates) {
+      if (budgetExceeded(context)) {
+        complete = false;
+        break;
+      }
+      const transition = context.adapter.apply(rootState, rootSide, candidate, { policy: context.policy.id });
+      if (!transition?.state) continue;
+      const child = minimax(transition.state, transition.nextSide, depth - 1, context, null, null, 1);
+      if (child.budgetInterrupted) complete = false;
+      const step = createPlanStep({
+        stateHash: context.adapter.hash(rootState, context.policy.id),
+        action: candidate.action || candidate,
+        expectedOpponentResponse: child.steps[0]?.action || null,
+        resultingStateHash: context.adapter.hash(transition.state, context.policy.id),
+        strategicPurpose: candidate.strategicPurpose || null,
+        timingIntent: candidate.timingIntent || null,
+        confidence: child.complete ? .95 : .65
+      });
+      lines.push(createStrategicLine({
+        actions: [candidate.action || candidate, ...child.actions],
+        opponentResponses: child.responses,
+        outcome: child.outcome,
+        finalState: child.finalState,
+        completeness: child.complete ? "complete" : "bounded",
+        horizonReason: child.horizonReason,
+        principalVariation: [step, ...child.steps]
+      }));
+      if (!complete) break;
+    }
+    return { lines, complete: complete && lines.length === candidates.length };
+  }
+
+  function minimax(state, side, depth, context, alpha, beta, ply) {
     context.stats.nodes++;
-    context.stats.depthReached = Math.max(context.stats.depthReached, context.policy.maxDepth - depth);
+    context.stats.depthReached = Math.max(context.stats.depthReached, ply);
     const terminal = context.adapter.terminal(state, context.perspective);
     if (terminal) return leaf(state, terminal, true, "terminal");
-    if (depth <= 0 || budgetExceeded(context)) {
-      return leaf(state, context.adapter.evaluate(state, context.perspective, { horizon: true }), false, context.stats.timedOut ? "time-budget" : "depth-budget");
+    if (budgetExceeded(context)) {
+      return leaf(state, context.adapter.evaluate(state, context.perspective, { horizon: true }), false, "time-budget", true);
+    }
+    if (depth <= 0) {
+      return leaf(state, context.adapter.evaluate(state, context.perspective, { horizon: true }), false, "depth-budget");
     }
 
     const key = `${context.adapter.hash(state, context.policy.id)}|${side}|${depth}|${context.perspective}`;
@@ -188,11 +224,13 @@ function createPvPeakMatchupPlannerApi() {
 
     const maximizing = side === context.perspective;
     let best = null;
-    for (const candidate of candidates) {
+    let prunedAtNode = false;
+    for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
+      const candidate = candidates[candidateIndex];
       if (budgetExceeded(context)) break;
       const transition = context.adapter.apply(state, side, candidate, { policy: context.policy.id });
       if (!transition?.state) continue;
-      const child = minimax(transition.state, transition.nextSide, depth - 1, context);
+      const child = minimax(transition.state, transition.nextSide, depth - 1, context, alpha, beta, ply + 1);
       const result = {
         ...child,
         actions: [candidate.action || candidate, ...child.actions],
@@ -209,17 +247,26 @@ function createPvPeakMatchupPlannerApi() {
       if (!best || (maximizing
         ? compareOutcomeVectors(result.outcome, best.outcome) < 0
         : compareOutcomeVectors(result.outcome, best.outcome) > 0)) best = result;
+      if (maximizing && (!alpha || compareOutcomeVectors(best.outcome, alpha) < 0)) alpha = best.outcome;
+      if (!maximizing && (!beta || compareOutcomeVectors(best.outcome, beta) > 0)) beta = best.outcome;
+      if (alpha && beta && compareOutcomeVectors(alpha, beta) <= 0) {
+        context.stats.pruned += Math.max(0, candidates.length - candidateIndex - 1);
+        prunedAtNode = true;
+        break;
+      }
+      if (child.budgetInterrupted) break;
     }
     if (!best) best = leaf(state, context.adapter.evaluate(state, context.perspective, { horizon: true }), false, "budget");
-    context.table.set(key, best);
+    if (!best.budgetInterrupted && !prunedAtNode) context.table.set(key, best);
     return best;
   }
 
-  function leaf(state, outcome, complete, horizonReason) {
+  function leaf(state, outcome, complete, horizonReason, budgetInterrupted = false) {
     return {
       outcome: isOutcomeVector(outcome) ? outcome : createOutcomeVector(outcome),
       finalState: cloneStable(state),
       complete,
+      budgetInterrupted,
       horizonReason,
       actions: [],
       responses: [],

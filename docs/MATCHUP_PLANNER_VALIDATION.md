@@ -32,12 +32,23 @@ The diagnostic plan hook exists only in the matrix worker test path. It is inert
 - the maximizing side selects a winning continuation;
 - the opponent selects its minimizing best response;
 - principal variation records both decisions.
+- iterative deepening replaces an attractive shallow line with a proven deeper win;
+- only complete root iterations become authoritative;
+- planner diagnostics expose completed depth, cache hits, pruning, elapsed time, and incomplete horizon state.
+
+`tools/test-matchup-planner-adapter.js` verifies:
+
+- presentation-only data does not affect canonical state hashes;
+- root states are not mutated by adapter transitions;
+- throw-now and Fast-then-re-evaluate are both explicit candidates when a Charged Move is ready;
+- the next Charged breakpoint is represented as planning metadata;
+- actionable and stranded energy are reported separately.
 
 ## Required Next Validation
 
 Before enabling the planner:
 
-1. Implement the canonical live adapter.
+1. Connect the compact adapter to canonical joint-turn resolution in the browser worker.
 2. Prove whether Quagsire's winning line survives Corsola's best response, not only the reference response.
 3. Add synthetic timing, shield, CMP, and endgame fixtures.
 4. Run all Golden and tactical suites.

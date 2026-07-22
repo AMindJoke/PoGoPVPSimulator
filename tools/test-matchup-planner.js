@@ -53,5 +53,45 @@ assert.strictEqual(plan.outcomeClass, "win");
 assert.strictEqual(plan.principalVariation[0].action.type, "patient", "Planner must select the winning continuation over the locally attractive loss.");
 assert.strictEqual(plan.principalVariation[0].expectedOpponentResponse.type, "best", "Planner must retain the opponent's minimizing best response.");
 assert(plan.searchedNodes > 0);
+assert.strictEqual(plan.completedDepth, 2, "Iterative deepening must retain the deepest complete root iteration.");
+assert(plan.depthReached >= plan.completedDepth);
+assert(Number.isFinite(plan.elapsedMs));
+assert(Number.isInteger(plan.cacheHits));
+assert(Number.isInteger(plan.prunedBranches));
+assert.strictEqual(plan.incompleteHorizon, false, "A terminally solved graph must not report an incomplete horizon.");
+
+const depthTrap = {
+  root: { side: "A", edges: { apparent: "apparent-1", patient: "patient-1" } },
+  "apparent-1": { side: "B", edges: { reply: "apparent-2" } },
+  "apparent-2": { side: "A", edges: { finish: "deep-loss" } },
+  "patient-1": { side: "B", edges: { reply: "patient-2" } },
+  "patient-2": { side: "A", edges: { finish: "deep-win" } },
+  "deep-loss": { outcome: "loss", hp: 100 },
+  "deep-win": { outcome: "win", hp: 1 }
+};
+const depthAdapter = {
+  hash(state) { return state; },
+  terminal(state) {
+    const node = depthTrap[state];
+    return node.outcome ? Planner.createOutcomeVector({ outcome: node.outcome, remainingHp: node.hp }) : null;
+  },
+  evaluate(state) {
+    return Planner.createOutcomeVector({
+      outcome: "draw",
+      heuristicTieBreak: state.startsWith("apparent") ? 100 : 0
+    });
+  },
+  candidates(state) {
+    return Object.keys(depthTrap[state].edges || {}).map(id => ({ id, action: { type: id } }));
+  },
+  apply(state, side, candidate) {
+    const next = depthTrap[state].edges[candidate.id];
+    return { state: next, nextSide: depthTrap[next].side || (side === "A" ? "B" : "A") };
+  }
+};
+const deepPlan = Planner.search({ state: "root", side: "A", perspective: "A", policy: "DEEP_REVIEW", adapter: depthAdapter });
+assert.strictEqual(deepPlan.outcomeClass, "win");
+assert.strictEqual(deepPlan.principalVariation[0].action.type, "patient", "A complete deeper iteration must replace the attractive shallow line.");
+assert.strictEqual(deepPlan.completedDepth, 3);
 
 console.log("Matchup planner model tests passed.");

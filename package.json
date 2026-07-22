@@ -18,6 +18,7 @@
     "test:charged-planner": "node tools/test-charged-move-planner.js",
     "test:matchup-fixture": "node tools/test-matchup-planner-fixture.js",
     "test:matchup-planner": "node tools/test-matchup-planner.js",
+    "test:matchup-planner-adapter": "node tools/test-matchup-planner-adapter.js",
     "test:flip-continuations": "node tools/test-flip-continuation-analysis.js",
     "planner:benchmark": "node tools/run-planner-benchmark.js",
     "test:planner-qa": "node tools/test-planner-qa.js",
