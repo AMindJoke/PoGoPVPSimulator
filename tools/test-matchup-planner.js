@@ -94,4 +94,23 @@ assert.strictEqual(deepPlan.outcomeClass, "win");
 assert.strictEqual(deepPlan.principalVariation[0].action.type, "patient", "A complete deeper iteration must replace the attractive shallow line.");
 assert.strictEqual(deepPlan.completedDepth, 3);
 
+const boundedGraph = {
+  root: { side: "A", edges: { continue: "loop" } },
+  loop: { side: "B", edges: { continue: "root" } }
+};
+const boundedAdapter = {
+  hash(state) { return state; },
+  terminal() { return null; },
+  evaluate() { return Planner.createOutcomeVector({ outcome: "draw", heuristicTieBreak: 1 }); },
+  candidates(state) { return [{ id: "continue", action: { type: "fast_move" } }]; },
+  apply(state) {
+    const next = boundedGraph[state].edges.continue;
+    return { state: next, nextSide: boundedGraph[next].side };
+  }
+};
+const boundedPlan = Planner.search({ state: "root", side: "A", perspective: "A", policy: "FAST", adapter: boundedAdapter });
+assert.strictEqual(boundedPlan.incompleteHorizon, true);
+assert(boundedPlan.reasonCodes.includes("MP_SEARCH_HORIZON_INCOMPLETE"));
+assert(!boundedPlan.reasonCodes.includes("MP_PROVEN_DRAW"), "A bounded draw-like evaluation must not be reported as a proven draw.");
+
 console.log("Matchup planner model tests passed.");

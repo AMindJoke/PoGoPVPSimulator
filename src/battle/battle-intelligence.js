@@ -437,6 +437,8 @@ function createPvPeakBattleIntelligenceApi() {
     } catch (_) {
       return null;
     }
+    const provenPlan = plan?.principalLine?.completeness === "complete" && plan?.incompleteHorizon !== true;
+    if (!provenPlan && context.allowBoundedMatchupPlan !== true) return null;
     const plannedAction = normalizeAction(
       plan?.selectedAction || plan?.principalVariation?.[0]?.action || plan?.principalLine?.actions?.[0],
       side

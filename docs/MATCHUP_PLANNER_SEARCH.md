@@ -29,6 +29,10 @@ The initial implementation uses deterministic depth-bounded minimax with:
 
 Only the deepest iteration that evaluated every root candidate is authoritative. If a budget expires midway through a deeper iteration, the planner retains the previous complete iteration rather than favoring whichever candidate happened to be searched first.
 
+An iteration that reaches only its bounded evaluator is not a proven draw. Battle Intelligence rejects bounded plans by default and retains its deterministic existing path. This gate prevents time-budget jitter from changing live actions during migration.
+
+The live adapter collects both actors for the current canonical round before calling the existing cooldown reset and sneak handling. This follows the same joint-action principle documented by PvPoke's public `Battle.js`: both turn actions are chosen before queued Fast and Charged actions are resolved. The implementation remains based on this project's own mechanics functions.
+
 `src/battle/matchup-planner-adapter.js` defines the compact adapter boundary. It strips presentation state from hashes, caches legal strategic candidates, annotates canonical actions with planning intent, and supplies actionable-energy diagnostics to bounded evaluators. Battle mechanics remain callback-owned; the adapter does not call DOM or rendering code.
 
 ## Strategic Candidates

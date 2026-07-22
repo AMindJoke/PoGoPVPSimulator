@@ -40,7 +40,7 @@ function fixtureConfig() {
   return config;
 }
 
-function simulate(key, diagnosticPlan = null) {
+function simulate(key, diagnosticPlan = null, options = {}) {
   return adapter.simulate({
     id: key,
     key,
@@ -52,6 +52,7 @@ function simulate(key, diagnosticPlan = null) {
     trace: true,
     continuationMode: "presentation",
     diagnosticPlan,
+    ...options,
     config: fixtureConfig()
   });
 }
@@ -79,6 +80,26 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(baseline.decisionTrace.finalSta
   fastMoveTurns: 2,
   readyTurn: 41
 });
+
+const guardedPlanner = simulate("quagsire-corsola-guarded-planner", null, {
+  matchupPlannerV2: true,
+  plannerPolicy: "FAST"
+});
+assert.deepStrictEqual(
+  chargedTurns(guardedPlanner, "A", "AQUA_TAIL"),
+  chargedTurns(baseline, "A", "AQUA_TAIL"),
+  "An incomplete FAST plan must fall back without changing the canonical baseline timeline."
+);
+assert.deepStrictEqual(
+  chargedTurns(guardedPlanner, "B", "NIGHT_SHADE"),
+  chargedTurns(baseline, "B", "NIGHT_SHADE")
+);
+assert.strictEqual(guardedPlanner.details.winnerEdge < 0, true);
+assert.strictEqual(
+  guardedPlanner.decisionTrace.decisions.some(decision => String(decision.reasonCode || "").startsWith("MP_PROVEN_")),
+  false,
+  "A bounded planner result must not be presented as proven."
+);
 
 const verifiedLine = simulate("quagsire-corsola-verified-line", {
   defaultAction: "fast",

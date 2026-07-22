@@ -139,6 +139,7 @@ function createPvPeakMatchupPlannerApi() {
       completeness: "bounded",
       horizonReason: stats.timedOut ? "time-budget" : "no-candidate"
     });
+    const provenOutcome = principalLine.completeness === "complete";
     return createMatchupPlan({
       planId: `mp-${hashString(adapter.hash(rootState, policy.id))}`,
       rootStateHash: adapter.hash(rootState, policy.id),
@@ -146,7 +147,7 @@ function createPvPeakMatchupPlannerApi() {
       policy,
       principalLine,
       alternativeLines: lines.slice(1),
-      confidence: principalLine.completeness === "complete" ? .95 : .65,
+      confidence: provenOutcome ? .95 : .55,
       searchedNodes: stats.nodes,
       depthReached: stats.depthReached,
       completedDepth: stats.completedDepth,
@@ -156,12 +157,16 @@ function createPvPeakMatchupPlannerApi() {
       incompleteHorizon: stats.timedOut || principalLine.completeness !== "complete",
       horizonReason: principalLine.horizonReason,
       explanation: principalLine.actions.length
-        ? `Selected the first action of the best ${principalLine.outcome.outcomeClass} line.`
+        ? provenOutcome
+          ? `Selected the first action of the best proven ${principalLine.outcome.outcomeClass} line.`
+          : "Selected the first action of the best bounded line; the terminal outcome is not proven."
         : "No strategic action was available.",
       reasonCodes: [
-        principalLine.outcome.outcomeClass === "win" ? "MP_PROVEN_WIN"
-          : principalLine.outcome.outcomeClass === "draw" ? "MP_PROVEN_DRAW" : "MP_AVOID_PROVEN_LOSS",
-        ...(stats.timedOut ? ["MP_SEARCH_HORIZON_INCOMPLETE"] : [])
+        ...(provenOutcome
+          ? [principalLine.outcome.outcomeClass === "win" ? "MP_PROVEN_WIN"
+            : principalLine.outcome.outcomeClass === "draw" ? "MP_PROVEN_DRAW" : "MP_AVOID_PROVEN_LOSS"]
+          : ["MP_SEARCH_HORIZON_INCOMPLETE"]),
+        ...(stats.timedOut ? ["MP_FAST_POLICY_TIMEOUT"] : [])
       ]
     });
   }

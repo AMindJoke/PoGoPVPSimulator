@@ -8768,6 +8768,8 @@
     let chargedContinuationOpening = null;
     let chargedContinuationMode = "presentation";
     let projectedChargedSequenceValueEnabled = true;
+    let matchupPlannerPolicyOverride = null;
+    const liveMatchupPlannerTable = new Map();
     let chargedDecisionDiagnosticsEnabled = false;
     let lastChargedDecisionDiagnostics = [];
     let battleDecisionTraceEnabled = false;
@@ -9312,6 +9314,18 @@
         completeBattleDecisionTrace,
         validChargedMoves,
         battleIntelligenceState,
+        matchupPlannerRuntimeEnabled,
+        clonePlannerCombatant,
+        plannerRuntimeSnapshot,
+        withPlannerRuntime,
+        plannerRoundForCurrentState,
+        plannerLegalActions,
+        plannerApplyOne,
+        plannerApplyAction,
+        plannerTerminalOutcome,
+        plannerBoundedOutcome,
+        createLiveMatchupPlannerAdapter,
+        planLiveMatchup,
         battleIntelligencePolicy,
         battleIntelligenceCallerContext,
         recordExternalIntelligenceDecision,
@@ -9429,6 +9443,8 @@
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
         const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
+        const PvPeakMatchupPlanner = (${window.createPvPeakMatchupPlannerApi.toString()})();
+        const PvPeakMatchupPlannerAdapter = (${window.createPvPeakMatchupPlannerAdapterApi.toString()})(PvPeakMatchupPlanner);
         const PvPeakBattleIntelligence = (${window.createPvPeakBattleIntelligenceApi.toString()})();
         let left = null;
         let right = null;
@@ -9442,6 +9458,8 @@
         let chargedContinuationOpening = null;
         let chargedContinuationMode = "presentation";
         let projectedChargedSequenceValueEnabled = true;
+        let matchupPlannerPolicyOverride = null;
+        const liveMatchupPlannerTable = new Map();
         let chargedDecisionDiagnosticsEnabled = false;
         let lastChargedDecisionDiagnostics = [];
         let battleDecisionTraceEnabled = false;
@@ -9599,8 +9617,12 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy } = event.data || {};
+          const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
+          const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
           try {
+            globalThis.MATCHUP_PLANNER_V2 = matchupPlannerV2 === true;
+            matchupPlannerPolicyOverride = plannerPolicy || null;
             const normalizedSource = String(source || "").toLowerCase();
             battleIntelligenceRuntimeContext = normalizedSource.includes("offline")
               ? "offline"
@@ -9634,6 +9656,9 @@
               code: error?.code || null,
               message: error && error.message ? error.message : String(error)
             });
+          } finally {
+            globalThis.MATCHUP_PLANNER_V2 = previousMatchupPlannerV2;
+            matchupPlannerPolicyOverride = previousMatchupPlannerPolicy;
           }
         };
       `;
@@ -12979,6 +13004,236 @@
       };
     }
 
+    function matchupPlannerRuntimeEnabled() {
+      if (chargedContinuationDepth > 0) return false;
+      try {
+        const value = typeof globalThis !== "undefined" ? globalThis.MATCHUP_PLANNER_V2 : null;
+        return value === true || value === 1 || String(value || "").toLowerCase() === "true";
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function clonePlannerCombatant(combatant) {
+      if (!combatant) return null;
+      return {
+        ...combatant,
+        p: combatant.p,
+        fast: combatant.fast,
+        charged: [...(combatant.charged || [])],
+        formCatalog: combatant.formCatalog
+      };
+    }
+
+    function plannerRuntimeSnapshot(round = null, roundTimeline = []) {
+      const state = battleIntelligenceState(round?.currentTurn ?? null);
+      if (!state) return null;
+      const acted = [...(round?.acted || [])];
+      return {
+        ...state,
+        sideToAct: round?.actorOrder?.find(side => !acted.includes(side)) || null,
+        mechanicsState: {
+          roundTurn: Number(round?.currentTurn ?? state.currentTurn),
+          actorOrder: [...(round?.actorOrder || [])],
+          acted
+        },
+        runtime: {
+          sides: { A: clonePlannerCombatant(left), B: clonePlannerCombatant(right) },
+          battleTurns: { ...battleTurns },
+          roundTimeline: (roundTimeline || []).map(event => ({ ...event }))
+        }
+      };
+    }
+
+    function withPlannerRuntime(state, callback) {
+      const saved = {
+        left, right, log, timeline, initialTimelineState, battleTurns,
+        suppressRender, activeAutoTurnContext, chargedContinuationOpening,
+        battleDecisionTraceEnabled, battleDecisionCounterfactualsEnabled
+      };
+      chargedContinuationDepth++;
+      try {
+        left = clonePlannerCombatant(state.runtime?.sides?.A);
+        right = clonePlannerCombatant(state.runtime?.sides?.B);
+        log = [];
+        timeline = (state.runtime?.roundTimeline || []).map(event => ({ ...event }));
+        initialTimelineState = null;
+        battleTurns = { ...(state.runtime?.battleTurns || { A: 0, B: 0 }) };
+        suppressRender = true;
+        chargedContinuationOpening = null;
+        battleDecisionTraceEnabled = false;
+        battleDecisionCounterfactualsEnabled = false;
+        return callback();
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        battleDecisionTraceEnabled = saved.battleDecisionTraceEnabled;
+        battleDecisionCounterfactualsEnabled = saved.battleDecisionCounterfactualsEnabled;
+        chargedContinuationDepth--;
+      }
+    }
+
+    function plannerRoundForCurrentState() {
+      const currentTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      return {
+        currentTurn,
+        actorOrder: orderedBattleActors(currentTurn).map(([actor]) => actor.trainer),
+        acted: new Set()
+      };
+    }
+
+    function plannerLegalActions(state, side) {
+      return withPlannerRuntime(state, () => {
+        const roundData = state.mechanicsState || {};
+        const round = {
+          currentTurn: Number(roundData.roundTurn ?? state.currentTurn ?? 0),
+          actorOrder: [...(roundData.actorOrder || [])],
+          acted: new Set(roundData.acted || [])
+        };
+        activeAutoTurnContext = round;
+        const combatant = side === "A" ? left : right;
+        const opponent = side === "A" ? right : left;
+        const actions = legalBattleActions(combatant, round.currentTurn);
+        const available = validChargedMoves(combatant).filter(move => actions.some(action => action.moveId === move.id));
+        const wait = buildChargeTimingWaitAction(combatant, opponent, available);
+        return (wait ? [...actions, wait] : actions).map(action => ({
+          type: action.type,
+          moveId: action.moveId || action.move?.id || null,
+          moveIndex: Number.isInteger(action.moveIndex) ? action.moveIndex : null,
+          startTurn: Number.isFinite(Number(action.startTurn)) ? Number(action.startTurn) : round.currentTurn,
+          metadata: action.metadata || null
+        }));
+      });
+    }
+
+    function plannerApplyOne(state, side, action) {
+      return withPlannerRuntime(state, () => {
+        const roundData = state.mechanicsState || {};
+        const round = {
+          currentTurn: Number(roundData.roundTurn ?? state.currentTurn ?? 0),
+          actorOrder: [...(roundData.actorOrder || [])],
+          acted: new Set(roundData.acted || [])
+        };
+        activeAutoTurnContext = round;
+        const attacker = side === "A" ? left : right;
+        const defender = side === "A" ? right : left;
+        let applied = false;
+        const type = action.type === "fast" ? "fast_move" : action.type === "charged" ? "charged_move" : action.type;
+        if (type === "fast_move") applied = useFast(attacker, defender);
+        else if (type === "wait") applied = useTimingWait(attacker, defender, action.metadata?.timingWindow, { silent: true });
+        else if (type === "charged_move") {
+          const moveIndex = attacker.charged.findIndex(move => move?.id === action.moveId);
+          if (moveIndex >= 0) applied = useCharge(attacker, defender, moveIndex, {
+            aiReason: "Matchup Planner candidate",
+            deferCooldownReset: true
+          });
+        }
+        if (!applied) return null;
+        round.acted.add(side);
+
+        if (!battleEnded()) {
+          const remaining = round.actorOrder.filter(actorSide => !round.acted.has(actorSide))
+            .filter(actorSide => (actorSide === "A" ? left : right).hp > 0);
+          if (!remaining.length) {
+            resetCooldownsAfterChargedTurn(round.currentTurn, 0);
+            timeline = [];
+            const next = plannerRoundForCurrentState();
+            round.currentTurn = next.currentTurn;
+            round.actorOrder = next.actorOrder;
+            round.acted = next.acted;
+          }
+        }
+        const nextState = plannerRuntimeSnapshot(round, timeline);
+        const nextSide = battleEnded()
+          ? null
+          : round.actorOrder.find(actorSide => !round.acted.has(actorSide)) || null;
+        return nextState ? { state: nextState, nextSide } : null;
+      });
+    }
+
+    function plannerApplyAction(state, side, action, context = {}) {
+      let transition = plannerApplyOne(state, side, action);
+      let forcedActions = 0;
+      const forcedLimit = context.policy === "DEEP_REVIEW" ? 80 : context.policy === "STANDARD" ? 24 : 6;
+      while (transition?.state && transition.nextSide && forcedActions < forcedLimit) {
+        if (plannerTerminalOutcome(transition.state, side)) break;
+        const forced = plannerLegalActions(transition.state, transition.nextSide);
+        if (forced.length !== 1 || !["fast", "fast_move"].includes(forced[0].type)) break;
+        transition = plannerApplyOne(transition.state, transition.nextSide, forced[0]);
+        forcedActions++;
+      }
+      return transition;
+    }
+
+    function plannerTerminalOutcome(state, perspective) {
+      const own = state?.sides?.[perspective];
+      const opponent = state?.sides?.[perspective === "A" ? "B" : "A"];
+      if (!own || !opponent || (own.hp > 0 && opponent.hp > 0)) return null;
+      const outcome = own.hp > 0 ? "win" : opponent.hp > 0 ? "loss" : "draw";
+      return PvPeakMatchupPlanner.createOutcomeVector({
+        outcome,
+        remainingHp: own.hp,
+        remainingShields: own.shields,
+        actionableEnergy: own.hp > 0 ? own.energy : 0,
+        stableOrder: perspective
+      });
+    }
+
+    function plannerBoundedOutcome(state, perspective, context = {}) {
+      const own = state?.sides?.[perspective];
+      const opponent = state?.sides?.[perspective === "A" ? "B" : "A"];
+      if (!own || !opponent) return PvPeakMatchupPlanner.createOutcomeVector({ outcome: "loss" });
+      const ownHpRatio = own.maxHp ? own.hp / own.maxHp : 0;
+      const opponentHpRatio = opponent.maxHp ? opponent.hp / opponent.maxHp : 0;
+      return PvPeakMatchupPlanner.createOutcomeVector({
+        outcome: "draw",
+        remainingHp: Math.round((ownHpRatio - opponentHpRatio) * 1000),
+        remainingShields: own.shields - opponent.shields,
+        actionableEnergy: context.energy?.actionableEnergy || 0,
+        positionalValue: Number(own.energy || 0) - Number(opponent.energy || 0),
+        turnsToMeaningfulAction: context.energy?.nextChargedFastCount,
+        stableOrder: perspective
+      });
+    }
+
+    function createLiveMatchupPlannerAdapter() {
+      return PvPeakMatchupPlannerAdapter.createAdapter({
+        mechanicsVersion: `${battleEngineVersion}-matchup-planner-v2`,
+        legalActions: plannerLegalActions,
+        applyAction: plannerApplyAction,
+        terminalOutcome: plannerTerminalOutcome,
+        evaluateOutcome: plannerBoundedOutcome,
+        fastsBeforeFaint(state, perspective) {
+          const own = state?.sides?.[perspective];
+          const opponent = state?.sides?.[perspective === "A" ? "B" : "A"];
+          if (!own || !opponent || !opponent.fastMove) return 0;
+          return Math.max(0, Math.ceil(Number(own.hp || 0) / Math.max(1, Number(opponent.fastMove.power || 1))));
+        }
+      });
+    }
+
+    function planLiveMatchup(input = {}) {
+      if (!matchupPlannerRuntimeEnabled() || !PvPeakMatchupPlanner || !PvPeakMatchupPlannerAdapter) return null;
+      if (liveMatchupPlannerTable.size > 50000) liveMatchupPlannerTable.clear();
+      const rootState = plannerRuntimeSnapshot(plannerRoundForCurrentState());
+      if (!rootState) return null;
+      return PvPeakMatchupPlanner.search({
+        state: rootState,
+        side: input.side,
+        perspective: input.side,
+        policy: matchupPlannerPolicyOverride || input.policy || battleIntelligencePolicy(),
+        adapter: createLiveMatchupPlannerAdapter(),
+        transpositionTable: liveMatchupPlannerTable
+      });
+    }
+
     function battleIntelligencePolicy() {
       if (chargedContinuationMode === "flip-analysis") return "STANDARD";
       if (typeof document !== "undefined" && document.body?.dataset?.view === "scenario-review" && technicalSimulationRunning) {
@@ -13079,6 +13334,8 @@
         policy: battleIntelligencePolicy(),
         context: {
           callerContext: battleIntelligenceCallerContext(),
+          matchupPlannerV2: matchupPlannerRuntimeEnabled(),
+          planMatchup: planLiveMatchup,
           forceChargedContinuation: projectedSequenceEligible,
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;

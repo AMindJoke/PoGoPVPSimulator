@@ -21,6 +21,8 @@ Verified legal candidate line under the project's canonical mechanics:
 
 The diagnostic plan hook exists only in the matrix worker test path. It is inert unless an explicit `diagnosticPlan` payload is supplied, and it is not exposed by the application UI.
 
+The compact live adapter is available behind `MATCHUP_PLANNER_V2`, but Battle Intelligence accepts its action only when the principal line reaches a terminal state. A bounded result is diagnostic evidence, not a proven draw and not an executable plan. The guarded fixture verifies that an incomplete FAST search reproduces the unchanged baseline timeline.
+
 ## Model Tests
 
 `tools/test-matchup-planner.js` verifies:
@@ -64,3 +66,5 @@ Budgets are provisional until measured:
 - DEEP_REVIEW may use hundreds of milliseconds with explicit diagnostics.
 
 No parity claim is made before benchmark data exists.
+
+Current development measurement for the flagged, guarded Quagsire/Corsola worker fixture is roughly 340-470 ms after excluding nested planner calls. This is not an acceptance result: the flag remains disabled because the target is an interactive single-digit-millisecond decision path and the expert fixture is not solved adversarially yet.

@@ -187,6 +187,7 @@ function createPvPeakMatchupPlannerAdapterApi(plannerApi = null) {
       side: action.side || side || null,
       moveId: action.moveId || action.move?.id || null,
       moveIndex: Number.isInteger(action.moveIndex) ? action.moveIndex : null,
+      startTurn: Number.isFinite(Number(action.startTurn)) ? Number(action.startTurn) : null,
       metadata: compactValue(action.metadata)
     };
   }

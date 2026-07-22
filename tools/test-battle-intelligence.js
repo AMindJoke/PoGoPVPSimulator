@@ -158,6 +158,8 @@ const plannedDecision = select(tacticalState, {
   matchupPlannerV2: true,
   planMatchup: ({ legalActions }) => ({
     selectedAction: legalActions.find(action => action.moveId === "CHEAP"),
+    incompleteHorizon: false,
+    principalLine: { completeness: "complete", actions: [legalActions.find(action => action.moveId === "CHEAP")] },
     confidence: .96,
     outcomeClass: "win",
     reasonCodes: ["MP_PROVEN_WIN"],
@@ -166,6 +168,21 @@ const plannedDecision = select(tacticalState, {
 });
 assert.equal(plannedDecision.action.moveId, "CHEAP");
 assert(plannedDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
+
+const boundedPlanDecision = select(tacticalState, {
+  matchupPlannerV2: true,
+  planMatchup({ legalActions }) {
+    const cheap = legalActions.find(action => action.moveId === "CHEAP");
+    return {
+      selectedAction: cheap,
+      incompleteHorizon: true,
+      principalLine: { completeness: "bounded", actions: [cheap] },
+      reasonCodes: ["MP_SEARCH_HORIZON_INCOMPLETE"]
+    };
+  }
+});
+assert.notStrictEqual(boundedPlanDecision.action.moveId, "CHEAP", "An incomplete matchup plan must not override the deterministic fallback action.");
+assert(!boundedPlanDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
 assert(plannedDecision.reasonCodes.includes("MP_PROVEN_WIN"));
 assert.equal(plannedDecision.evidence.matchupPlan.outcomeClass, "win");
 
