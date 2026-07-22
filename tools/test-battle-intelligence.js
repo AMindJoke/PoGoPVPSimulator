@@ -134,6 +134,25 @@ const budgetFallback = select(budgetState, {
 assert.equal(budgetFallback.action.moveId, "BUFF");
 assert(budgetFallback.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
 
+const timingTieState = state({ energyA: 40 });
+const timingTie = select(timingTieState, {
+  policy: "STANDARD",
+  evaluateCandidate: () => ({
+    components: {},
+    ruleIds: ["BI_TIMING_CONTINUATION"],
+    requiresContinuationSearch: true
+  }),
+  evaluateContinuation: action => ({
+    score: 500,
+    evaluatedStates: 4,
+    timingQuality: {
+      score: action.type === "fast_move" ? 1 : 0,
+      classification: action.type === "fast_move" ? "optimal" : "alignment"
+    }
+  })
+});
+assert.equal(timingTie.action.type, "fast_move", "Equal continuations should prefer the action that produces better Charged Move timing.");
+
 const tacticalState = state({ energyA: 60 });
 const tacticalActions = TurnEngine.getLegalActions(tacticalState, "A");
 const tacticalDecision = Intelligence.selectAction({

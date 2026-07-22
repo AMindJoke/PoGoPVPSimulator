@@ -865,8 +865,15 @@ function createPvPeakBattleIntelligenceApi() {
   function compareCandidates(a, b) {
     const continuationA = a.continuationScore == null ? -Infinity : a.continuationScore;
     const continuationB = b.continuationScore == null ? -Infinity : b.continuationScore;
+    const timingQualityA = numeric(a.evidence?.continuation?.timingQuality?.score);
+    const timingQualityB = numeric(b.evidence?.continuation?.timingQuality?.score);
     return a.priorityClass - b.priorityClass
       || continuationB - continuationA
+      // When two complete continuations reach the same outcome and resources,
+      // prefer the line whose first Charged Move lands deeper inside the
+      // opponent's active Fast Move. This is a deterministic timing tie-break,
+      // never a substitute for a stronger continuation.
+      || timingQualityB - timingQualityA
       || b.tacticalScore - a.tacticalScore
       || stableCandidateOrder(a, b);
   }

@@ -18,7 +18,7 @@ const {
   createWorkerAdapter,
   normalizeMove,
   normalizePokemon,
-  createBattleConfig
+  createCombatant
 } = require("./build-great-league-meta-database");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -53,10 +53,14 @@ function buildCaseConfig(testCase, runtime) {
   const pokemonA = runtime.pokemonMap.get(testCase.pokemonA.id);
   const pokemonB = runtime.pokemonMap.get(testCase.pokemonB.id);
   if (!pokemonA || !pokemonB) throw new Error(`${testCase.id}: Pokemon not found.`);
-  const profile = testCase.pokemonA.ivPreset === "rank1" && testCase.pokemonB.ivPreset === "rank1"
-    ? RANK1_PROFILE
-    : DEFAULT_PROFILE;
-  const config = createBattleConfig(pokemonA, pokemonB, profile, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap);
+  const profileA = testCase.pokemonA.ivPreset === "rank1" ? RANK1_PROFILE : DEFAULT_PROFILE;
+  const profileB = testCase.pokemonB.ivPreset === "rank1" ? RANK1_PROFILE : DEFAULT_PROFILE;
+  const config = {
+    left: createCombatant(pokemonA, "A", profileA, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap),
+    right: createCombatant(pokemonB, "B", profileB, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap),
+    startEnergyA: 0,
+    startEnergyB: 0
+  };
   applyPokemonFixture(config.left, testCase.pokemonA, runtime.moveMap);
   applyPokemonFixture(config.right, testCase.pokemonB, runtime.moveMap);
   applyPolicy(config.left, testCase.policy);

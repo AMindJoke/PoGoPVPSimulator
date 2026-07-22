@@ -64,22 +64,24 @@ function chargedTurns(result, side, moveId) {
 }
 
 const baseline = simulate("quagsire-corsola-baseline");
-assert(baseline.details.winnerEdge < 0, "The frozen baseline must reproduce the current incorrect Quagsire loss.");
-assert.deepStrictEqual(chargedTurns(baseline, "A", "AQUA_TAIL"), [8, 17, 25, 33]);
-assert.deepStrictEqual(chargedTurns(baseline, "B", "NIGHT_SHADE"), [18, 26, 40]);
+assert(baseline.details.winnerEdge > 0, "Shadow Quagsire must find the legal winning two-shield line.");
+assert.deepStrictEqual(chargedTurns(baseline, "A", "AQUA_TAIL"), [8, 17, 30, 37, 44]);
+assert.deepStrictEqual(chargedTurns(baseline, "B", "NIGHT_SHADE"), [21, 34]);
 assert.deepStrictEqual(JSON.parse(JSON.stringify(baseline.decisionTrace.finalState.A)), {
   pokemonId: "quagsire_shadow",
-  hp: 0,
+  hp: 19,
   maxHp: 161,
-  energy: 31,
+  energy: 5,
   shields: 0,
   attackStage: 0,
   defenseStage: 0,
   fastMoveId: "MUD_SHOT",
   fastMoveName: "Mud Shot",
   fastMoveTurns: 2,
-  readyTurn: 41
+  readyTurn: 45
 });
+assert.strictEqual(baseline.decisionTrace.finalState.B.hp, 0);
+assert.strictEqual(baseline.decisionTrace.finalState.B.energy, 50);
 
 const guardedPlanner = simulate("quagsire-corsola-guarded-planner", null, {
   matchupPlannerV2: true,
@@ -88,13 +90,13 @@ const guardedPlanner = simulate("quagsire-corsola-guarded-planner", null, {
 assert.deepStrictEqual(
   chargedTurns(guardedPlanner, "A", "AQUA_TAIL"),
   chargedTurns(baseline, "A", "AQUA_TAIL"),
-  "An incomplete FAST plan must fall back without changing the canonical baseline timeline."
+  "An incomplete FAST plan must fall back without changing the corrected canonical timeline."
 );
 assert.deepStrictEqual(
   chargedTurns(guardedPlanner, "B", "NIGHT_SHADE"),
   chargedTurns(baseline, "B", "NIGHT_SHADE")
 );
-assert.strictEqual(guardedPlanner.details.winnerEdge < 0, true);
+assert.strictEqual(guardedPlanner.details.winnerEdge > 0, true);
 assert.strictEqual(
   guardedPlanner.decisionTrace.decisions.some(decision => String(decision.reasonCode || "").startsWith("MP_PROVEN_")),
   false,
@@ -118,5 +120,5 @@ assert.strictEqual(verifiedLine.decisionTrace.finalState.B.hp, 0);
 assert.strictEqual(verifiedLine.decisionTrace.finalState.B.energy, 50);
 
 console.log("Matchup planner fixture passed.");
-console.log("Baseline: Corsola wins; Quagsire faints with 31 stranded energy after four Aqua Tails.");
-console.log("Verified line: Quagsire wins with 19 HP and 5 energy after five Aqua Tails.");
+console.log("Automatic line: Quagsire wins with 19 HP and 5 energy after five Aqua Tails.");
+console.log("Verified line: automatic and diagnostic timelines agree at 8/17/30/37/44 vs 21/34.");

@@ -54,7 +54,7 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   setSingleCharged(config.left, "AURA_WHEEL_ELECTRIC");
   config.left.energy = config.startEnergyA = 100;
   const result = simulate(config, 0, 0, "morpeko-toggle");
-  assert.equal(result.decisionTrace.finalState.A.pokemonId, "morpeko_hangry");
+  assert.equal(result.decisionTrace.finalState.A.pokemonId, "morpeko_full_belly");
   assert.equal(result.decisionTrace.decisions[0].chosenCandidate.moveId, "AURA_WHEEL_ELECTRIC");
   assert.equal(result.decisionTrace.decisions[1].chosenCandidate.moveId, "AURA_WHEEL_DARK");
 }

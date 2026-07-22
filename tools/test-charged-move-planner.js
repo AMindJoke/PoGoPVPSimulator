@@ -180,7 +180,8 @@ const noEffectFirst = simulate(noEffectConfig, 0);
 const noEffectSecond = simulate(noEffectConfig, 0);
 assert((noEffectFirst.decisionTrace?.decisions || [])
   .filter(item => item.decisionType === "charged-move-selection")
-  .every(item => item.candidates.every(candidate => (candidate.branchDepth || 0) === 0)));
+  .every(item => item.candidates.every(candidate => (candidate.branchDepth || 0) <= 1)),
+  "No-shield timing continuations must remain bounded to one branch level.");
 assert.strictEqual(noEffectFirst.score, noEffectSecond.score);
 assert.strictEqual(noEffectFirst.details.winnerEdge, noEffectSecond.details.winnerEdge);
 
@@ -210,6 +211,26 @@ const followUp = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   && item.chosenCandidate?.moveId === "AQUA_TAIL"
 );
 assert(followUp, "The first perfect timing window must throw Aqua Tail on Astonish's final active turn.");
+
+const asymmetricTiming = simulate(battleConfig("swampert", "skarmory", {
+  aFast: "MUD_SHOT",
+  bFast: "AIR_SLASH",
+  aCharged: ["HYDRO_CANNON", "EARTHQUAKE"],
+  bCharged: ["SKY_ATTACK", "BRAVE_BIRD"]
+}), 2);
+const swampertTiming = (asymmetricTiming.decisionTrace?.decisions || []).find(item =>
+  item.side === "A"
+  && item.decisionType === "charged-timing-selection"
+  && item.turn === 10
+);
+assert(swampertTiming, "Swampert should compare its equal-outcome timing lines against Air Slash.");
+assert.strictEqual(swampertTiming.chosenCandidate?.action, "FAST_THEN_REEVALUATE");
+assert.strictEqual(swampertTiming.chosenCandidate?.timingQuality?.classification, "optimal");
+const immediateSwampertThrow = swampertTiming.candidates.find(item => item.action === "THROW_NOW");
+assert(immediateSwampertThrow, "The immediate Hydro Cannon branch must remain visible for comparison.");
+assert.strictEqual(immediateSwampertThrow.continuationScore, swampertTiming.chosenCandidate.continuationScore);
+assert(swampertTiming.chosenCandidate.timingQuality.score > immediateSwampertThrow.timingQuality.score,
+  "Equal continuations must prefer the branch that concedes fewer Air Slash turns.");
 
 const selfDebuff = simulate(battleConfig("raikou", "pachirisu", {
   aFast: "VOLT_SWITCH",
