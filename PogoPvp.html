@@ -23,6 +23,7 @@
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
+  <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/battle-intelligence.js"></script>
   <style>
     :root {
@@ -9317,6 +9318,7 @@
         battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
         recordBattleIntelligenceTimingDecision,
+        diagnosticPlannedAction,
         autoAction,
         automaticBattleStep,
         runAutomaticBattleToEnd,
@@ -9446,6 +9448,7 @@
         let currentBattleDecisionTrace = null;
         let battleIntelligenceRuntimeContext = null;
         let battleInsights = [];
+        let forcedMatchupPlan = null;
         const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
         let currentMatrixConfig = null;
 
@@ -9512,6 +9515,7 @@
           const previousBattleInsights = battleInsights;
           const previousContinuationMode = chargedContinuationMode;
           const previousProjectedChargedSequenceValueEnabled = projectedChargedSequenceValueEnabled;
+          const previousForcedMatchupPlan = forcedMatchupPlan;
           battleDecisionTraceEnabled = options.trace === true;
           battleDecisionCounterfactualsEnabled = options.trace === true;
           currentBattleDecisionTrace = battleDecisionTraceEnabled
@@ -9523,6 +9527,7 @@
             : null;
           chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
+          forcedMatchupPlan = options.diagnosticPlan || null;
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -9588,11 +9593,12 @@
           battleInsights = previousBattleInsights;
           chargedContinuationMode = previousContinuationMode;
           projectedChargedSequenceValueEnabled = previousProjectedChargedSequenceValueEnabled;
+          forcedMatchupPlan = previousForcedMatchupPlan;
           return result;
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan } = event.data || {};
           try {
             const normalizedSource = String(source || "").toLowerCase();
             battleIntelligenceRuntimeContext = normalizedSource.includes("offline")
@@ -9610,6 +9616,7 @@
               policy,
               continuationMode,
               pcsvEnabled,
+              diagnosticPlan,
               battleId: key,
               datasetVersion,
               source: source || "live"
@@ -13369,6 +13376,11 @@
     function shouldEvaluateChargedTimingContinuation(attacker, defender, available) {
       if (!attacker || !defender || !attacker.fast || !defender.fast || !Array.isArray(available) || !available.length) return false;
       if (chargedContinuationDepth > 0 || chargedContinuationMode === "flip-analysis" || attacker.energy >= 100) return false;
+      // A Charged Move that is ready on the final active turn of the opposing
+      // Fast Move is already at a perfect registration point. This must be
+      // evaluated from turn zero as well as after either side has thrown: the
+      // first such window is often the entire matchup's alignment.
+      if (defender.shields > 0 && perfectChargeTimingWindow(attacker, defender)) return true;
       // A Fast Move can end before the opposing Fast Move. In that specific
       // gap, waiting exactly one turn can throw at the final safe alignment
       // point. This is a legal tactical option, not an artificial delay.
@@ -13534,6 +13546,16 @@
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const legalActions = legalBattleActions(attacker, Number(battleTurns[attacker.trainer] || 0));
       if (!legalActions.length) return false;
+      const diagnosticAction = diagnosticPlannedAction(attacker, legalActions);
+      if (diagnosticAction) {
+        if (diagnosticAction.type === "fast" || diagnosticAction.type === "fast_move") return useFast(attacker, defender);
+        const moveIndex = attacker.charged.findIndex(move => move?.id === diagnosticAction.moveId);
+        if (moveIndex < 0) throw new Error(`Diagnostic plan references unavailable move ${diagnosticAction.moveId}.`);
+        return useCharge(attacker, defender, moveIndex, {
+          aiReason: "deterministic matchup-planner fixture",
+          deferCooldownReset: true
+        });
+      }
       const legalChargedIds = new Set(legalActions.filter(action => action.type === "charged" || action.type === "charged_move").map(action => action.moveId));
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
       const timingWaitAction = buildChargeTimingWaitAction(attacker, defender, available);
@@ -13593,6 +13615,30 @@
       recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
       const aiReason = intelligenceSelection.explanation;
       return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });
+    }
+
+    function diagnosticPlannedAction(attacker, legalActions) {
+      if (typeof forcedMatchupPlan === "undefined" || !forcedMatchupPlan || chargedContinuationDepth !== 0) return null;
+      const steps = Array.isArray(forcedMatchupPlan.steps) ? forcedMatchupPlan.steps : [];
+      const currentTurn = Number(battleTurns[attacker.trainer] || 0);
+      const exact = steps.find(step => step?.side === attacker.trainer && Number(step.turn) === currentTurn);
+      if (exact) {
+        const moveId = exact.moveId || null;
+        const legal = legalActions.find(action => {
+          const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
+          return type === exact.type && (!moveId || action.moveId === moveId);
+        });
+        if (!legal) {
+          const error = new Error(`Illegal diagnostic action ${exact.type}:${moveId || "none"} for ${attacker.trainer} at T${currentTurn}.`);
+          error.code = "MATCHUP_FIXTURE_ILLEGAL_ACTION";
+          throw error;
+        }
+        return legal;
+      }
+      if (forcedMatchupPlan.defaultAction === "fast") {
+        return legalActions.find(action => action.type === "fast" || action.type === "fast_move") || null;
+      }
+      return null;
     }
 
     function automaticBattleStep() {

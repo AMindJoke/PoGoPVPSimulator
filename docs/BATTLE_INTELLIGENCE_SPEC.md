@@ -9,10 +9,10 @@ The canonical flow is:
 ```text
 Authoritative Battle State
   -> Turn Resolution normalization and legal actions
-  -> Battle Intelligence candidates
-  -> cheap tactical rules and conservative pruning
-  -> deterministic priority resolution
-  -> optional bounded continuation
+  -> Battle Intelligence
+  -> Matchup Planning Engine when MATCHUP_PLANNER_V2 is enabled
+  -> first canonical legal action of the best reachable line
+  -> current tactical resolver while the migration flag is disabled
   -> selected BattleAction
   -> Unified Turn Resolution and battle mechanics
   -> updated authoritative state
@@ -27,6 +27,8 @@ The state is the only source of battle facts: turn, HP, energy, shields, stat st
 ### Battle Intelligence
 
 Battle Intelligence may normalize actions, score candidates, reject objectively dominated actions, identify urgency, request bounded continuation and retain reason codes. It must not apply damage, spend energy, alter shields, apply effects or advance turns.
+
+During the planner migration, Battle Intelligence is also the only caller allowed to accept a `MatchupPlan`. It validates the plan's first action against the current legal-action set before returning it. Missing, failed or stale plans fall back to the current resolver while the migration flag remains available.
 
 ### Unified Turn Resolution
 
@@ -84,6 +86,7 @@ The budgets are hard ceilings, not targets. Obvious actions return through the f
 - `BI_AVOID_LETHAL_OVERFARM`: reject another Fast Move when it gives the opponent a lethal action window.
 - `BI_GUARANTEED_EFFECT`: preserve guaranteed-effect candidates for continuation comparison.
 - `BI_CMP_AWARE`: use authoritative CMP ordering rather than arbitrary side order.
+- `BI_MATCHUP_PLAN`: execute the first currently legal action of the best reachable matchup plan.
 - `BI_SHIELD_POLICY`: respect explicit Always and No First shield policies.
 - `BI_SHIELD_PREVENTS_KO`: shield a lethal Charged Move when policy permits it.
 - `BI_SHIELD_PRESERVES_WIN`: use bounded shield/no-shield outcomes for Smart decisions.
@@ -129,6 +132,8 @@ No broad golden expectation may be rewritten merely to make a refactor pass. Cha
 ## Migration Status
 
 Milestone 2 makes Battle Intelligence the final resolver for Fast/Charged and Shield/No Shield actions. Existing bait, timing, overfarm and charged-continuation code now supplies structured tactical evidence instead of executing an action directly. The Smart shield counterfactual is resolved by the same module.
+
+The Matchup Planning migration adds an opt-in `MATCHUP_PLANNER_V2` boundary. With the flag enabled and a canonical planner callback available, Battle Intelligence requests a plan and executes only its first legal action. The production browser does not enable the flag yet; the live canonical adapter and adversarial fixture validation are still required.
 
 Battle, Preview, matrix workers, offline generation, the Meta fallback and Scenario Review use the shared automatic battle loop. The compatibility adapter remains only for isolated fixtures and callers not yet supplying structured evidence; production browser battles no longer use it.
 

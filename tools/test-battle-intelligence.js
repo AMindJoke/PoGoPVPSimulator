@@ -48,7 +48,9 @@ function select(currentState, overrides = {}) {
       hasGuaranteedEffect: action => Number(action.move?.buffApplyChance || 0) >= 1,
       opponentLethalBeforeNextWindow: !!overrides.opponentLethalBeforeNextWindow,
       evaluateCandidate: overrides.evaluateCandidate,
-      evaluateContinuation: overrides.evaluateContinuation
+      evaluateContinuation: overrides.evaluateContinuation,
+      matchupPlannerV2: overrides.matchupPlannerV2,
+      planMatchup: overrides.planMatchup
     }
   });
 }
@@ -150,6 +152,36 @@ const tacticalDecision = Intelligence.selectAction({
 assert.equal(tacticalDecision.action.moveId, "NUKE");
 assert(tacticalDecision.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
 assert.equal(tacticalDecision.evidence.candidateEvaluation.components.futureDamage, 500);
+
+Intelligence.clearCache();
+const plannedDecision = select(tacticalState, {
+  matchupPlannerV2: true,
+  planMatchup: ({ legalActions }) => ({
+    selectedAction: legalActions.find(action => action.moveId === "CHEAP"),
+    confidence: .96,
+    outcomeClass: "win",
+    reasonCodes: ["MP_PROVEN_WIN"],
+    explanation: "The cheaper move starts the only proven winning line."
+  })
+});
+assert.equal(plannedDecision.action.moveId, "CHEAP");
+assert(plannedDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
+assert(plannedDecision.reasonCodes.includes("MP_PROVEN_WIN"));
+assert.equal(plannedDecision.evidence.matchupPlan.outcomeClass, "win");
+
+const disabledPlannerDecision = select(tacticalState, {
+  matchupPlannerV2: false,
+  evaluateCandidate: action => ({ components: { damage: Number(action.move?.damage || 0) } }),
+  planMatchup: () => ({ selectedAction: { type: "charged_move", moveId: "CHEAP", side: "A" } })
+});
+assert.equal(disabledPlannerDecision.action.moveId, "NUKE");
+
+const invalidPlannerDecision = select(tacticalState, {
+  matchupPlannerV2: true,
+  evaluateCandidate: action => ({ components: { damage: Number(action.move?.damage || 0) } }),
+  planMatchup: () => ({ selectedAction: { type: "charged_move", moveId: "NOT_LEGAL", side: "A" } })
+});
+assert.equal(invalidPlannerDecision.action.moveId, "NUKE");
 
 const alwaysShield = Intelligence.selectShieldAction({
   policy: "always",

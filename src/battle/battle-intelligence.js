@@ -33,6 +33,7 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE"),
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
+    rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED"),
     rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
     rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE"),
     rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true),
@@ -308,6 +309,18 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     const state = normalizeState(input.state);
+    const plannedSelection = selectMatchupPlanAction({
+      state,
+      side,
+      legalActions,
+      candidates,
+      policy,
+      context
+    });
+    if (plannedSelection) {
+      finishTiming(startedAt);
+      return plannedSelection;
+    }
     const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|${legalActions.map(actionKey).join(",")}`;
     const cached = fastPathCache.get(cacheKey);
     if (cached) {
@@ -412,6 +425,53 @@ function createPvPeakBattleIntelligenceApi() {
     const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback));
     finishTiming(startedAt);
     return result;
+  }
+
+  function selectMatchupPlanAction(input) {
+    const { state, side, legalActions, candidates, policy, context } = input;
+    if (!matchupPlannerEnabled(context) || typeof context.planMatchup !== "function") return null;
+
+    let plan = null;
+    try {
+      plan = context.planMatchup({ state, side, legalActions, policy: policy.id });
+    } catch (_) {
+      return null;
+    }
+    const plannedAction = normalizeAction(
+      plan?.selectedAction || plan?.principalVariation?.[0]?.action || plan?.principalLine?.actions?.[0],
+      side
+    );
+    const legalAction = legalActions.find(action => actionKey(action) === actionKey(plannedAction));
+    if (!legalAction) return null;
+
+    const chosen = candidates.find(candidate => actionKey(candidate.action) === actionKey(legalAction))
+      || createCandidate(legalAction);
+    chosen.evidence = { ...(chosen.evidence || {}), matchupPlan: plan };
+    applyRule(chosen, "BI_MATCHUP_PLAN", 0, Number(plan?.confidence || .8));
+    const reasonCodes = [...new Set([...(plan?.reasonCodes || []), ...chosen.reasonCodes])];
+    return selectionResult(
+      chosen,
+      candidates,
+      policy,
+      false,
+      reasonCodes,
+      plan?.explanation || "Selected the first legal action of the best reachable matchup plan."
+    );
+  }
+
+  function matchupPlannerEnabled(context = {}) {
+    if (context.matchupPlannerV2 === true) return true;
+    if (context.matchupPlannerV2 === false) return false;
+    try {
+      const value = typeof globalThis !== "undefined" ? globalThis.MATCHUP_PLANNER_V2 : null;
+      if (value === true || String(value || "").toLowerCase() === "true" || value === "1") return true;
+    } catch (_) {}
+    try {
+      const value = typeof process !== "undefined" ? process.env?.MATCHUP_PLANNER_V2 : null;
+      return value === "true" || value === "1";
+    } catch (_) {
+      return false;
+    }
   }
 
   function applyCandidateEvidence(candidate, input) {

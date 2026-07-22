@@ -190,17 +190,23 @@ const timingQuagsire = simulate(battleConfig("quagsire_shadow", "corsola_galaria
 const timingDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   item.side === "A"
   && item.decisionType === "charged-timing-selection"
+  && item.turn === 8
+);
+assert(timingDecision, "Shadow Quagsire should evaluate its first perfect Aqua Tail timing window.");
+assert.strictEqual(timingDecision.chosenCandidate?.action, "THROW_NOW");
+const postNightShadeTimingDecision = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
+  item.side === "A"
+  && item.decisionType === "charged-timing-selection"
   && item.turn === 17
 );
-assert(timingDecision, "Shadow Quagsire should expose a charged timing comparison after Corsola throws.");
-assert.strictEqual(timingDecision.chosenCandidate?.action, "THROW_NOW");
-assert.strictEqual(timingDecision.turn, 17);
-assert(timingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
-assert(timingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
+assert(postNightShadeTimingDecision, "Shadow Quagsire should expose a charged timing comparison after Corsola throws.");
+assert.strictEqual(postNightShadeTimingDecision.chosenCandidate?.action, "THROW_NOW");
+assert(postNightShadeTimingDecision.candidates.some(item => item.action === "THROW_NOW"), "Timing comparison must retain an immediate-throw branch.");
+assert(postNightShadeTimingDecision.candidates.some(item => item.action === "FAST_THEN_REEVALUATE"), "Timing comparison must retain the safe Fast branch.");
 const followUp = (timingQuagsire.decisionTrace?.decisions || []).find(item =>
   item.side === "A"
   && item.decisionType === "charged-move-selection"
-  && item.turn === timingDecision.turn
+  && item.turn === postNightShadeTimingDecision.turn
   && item.chosenCandidate?.moveId === "AQUA_TAIL"
 );
 assert(followUp, "The first perfect timing window must throw Aqua Tail on Astonish's final active turn.");
