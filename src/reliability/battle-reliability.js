@@ -5,7 +5,7 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v15";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v17";
   const TRACE_SCHEMA_VERSION = 1;
   const REGRESSION_SCHEMA_VERSION = 1;
 
@@ -41,7 +41,13 @@
     "DOMINATED_BRANCH",
     "DEPTH_LIMIT_REACHED",
     "MEMOIZED_RESULT",
-    "HEURISTIC_FALLBACK"
+    "HEURISTIC_FALLBACK",
+    "STAT_FAST_DAMAGE_BREAKPOINT",
+    "STAT_FAST_DAMAGE_BULKPOINT",
+    "STAT_SURVIVES_EXTRA_FAST",
+    "STAT_REACHES_EXTRA_CHARGED",
+    "STAT_CMP_CHANGED",
+    "STAT_TERMINAL_LINE_FLIPPED"
   ]);
 
   const BUG_CATEGORIES = Object.freeze([

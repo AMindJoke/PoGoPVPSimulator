@@ -314,6 +314,16 @@ function defaultStats(p) {
   return best || pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
 }
 
+function statsForIvSpread(p, ivAtk, ivDef, ivHp) {
+  let best = null;
+  for (const [level, cpm] of cpMultipliers) {
+    const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
+    if (stats.cp <= CP_CAP) best = stats;
+    else break;
+  }
+  return best || pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
+}
+
 function rank1Stats(p) {
   const cached = persistentRank1Stats[p.id];
   if (cached && cached.cp <= CP_CAP && cached.ivAtk !== undefined && cached.ivDef !== undefined && cached.ivHp !== undefined) {
@@ -599,9 +609,46 @@ function moveSignatureForPokemon(p, moveMap, standardMovesets) {
   return `${p.id}:${moveset.fast || "none"}:${(moveset.charged || []).join("+") || "none"}`;
 }
 
-function matchupCacheKey({ profile, attacker, defender, shieldState, moveMap, standardMovesets, category = "standard", extra = "" }) {
-  const attackerSig = moveSignatureForPokemon(attacker, moveMap, standardMovesets);
-  const defenderSig = moveSignatureForPokemon(defender, moveMap, standardMovesets);
+function combatantStateSignature(combatant) {
+  if (!combatant) return "missing";
+  const moves = [combatant.fast, ...(combatant.charged || [])].filter(Boolean).map(move => ({
+    id: move.id,
+    type: move.type,
+    power: Number(move.power || 0),
+    energyGain: Number(move.energyGain || 0),
+    energyCost: Number(move.energyCost || 0),
+    turns: Number(move.turns || 0),
+    buffs: move.buffs || null,
+    buffsSelf: move.buffsSelf || null,
+    buffsOpponent: move.buffsOpponent || null,
+    buffTarget: move.buffTarget || null,
+    buffApplyChance: Number(move.buffApplyChance || 0)
+  }));
+  return JSON.stringify({
+    id: combatant.p?.id || null,
+    formId: combatant.currentFormId || combatant.p?.id || null,
+    level: Number(combatant.level || 0),
+    cp: Number(combatant.cp || 0),
+    ivs: [Number(combatant.ivAtk || 0), Number(combatant.ivDef || 0), Number(combatant.ivHp || 0)],
+    attack: Number(combatant.attack || 0),
+    defense: Number(combatant.defense || 0),
+    maxHp: Number(combatant.maxHp || 0),
+    hp: Number(combatant.hp || 0),
+    energy: Number(combatant.energy || 0),
+    shields: Number(combatant.shields || 0),
+    stages: [Number(combatant.attackStage || 0), Number(combatant.defenseStage || 0)],
+    readyTurn: Number(combatant.readyTurn || 0),
+    moves,
+    baiting: combatant.baiting || null,
+    shieldMode: combatant.shieldMode || null,
+    linePolicy: combatant.linePolicy || null,
+    mechanicState: combatant.mechanicState || null
+  });
+}
+
+function matchupCacheKey({ profile, attacker, defender, shieldState, config, category = "standard", extra = "" }) {
+  const attackerSig = combatantStateSignature(config?.left);
+  const defenderSig = combatantStateSignature(config?.right);
   return [
     MATRIX_VERSION,
     profile,
@@ -612,8 +659,8 @@ function matchupCacheKey({ profile, attacker, defender, shieldState, moveMap, st
   ].filter(Boolean).join("|");
 }
 
-function matchupCacheCellKey({ defender, shieldState, moveMap, standardMovesets, category = "standard", extra = "" }) {
-  const defenderSig = moveSignatureForPokemon(defender, moveMap, standardMovesets);
+function matchupCacheCellKey({ defender, shieldState, config, category = "standard", extra = "" }) {
+  const defenderSig = combatantStateSignature(config?.right);
   return [defenderSig, shieldState, category, extra].filter(Boolean).join("|");
 }
 
@@ -656,9 +703,9 @@ function inflateCacheResult(value) {
   };
 }
 
-function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defender, shieldState, aShields, bShields, config, moveMap, standardMovesets, category = "standard", extra = "" }) {
-  const key = matchupCacheKey({ profile, attacker, defender, shieldState, moveMap, standardMovesets, category, extra });
-  const cacheKey = matchupCacheCellKey({ defender, shieldState, moveMap, standardMovesets, category, extra });
+function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defender, shieldState, aShields, bShields, config, category = "standard", extra = "" }) {
+  const key = matchupCacheKey({ profile, attacker, defender, shieldState, config, category, extra });
+  const cacheKey = matchupCacheCellKey({ defender, shieldState, config, category, extra });
   if (useMatchupCache && cache.cells[cacheKey]) {
     matchupCacheStats.hits++;
     return { key, result: inflateCacheResult(cache.cells[cacheKey]) };
@@ -1128,7 +1175,7 @@ function main() {
   for (const profile of profiles) {
     for (const a of pool) {
       const attackerMoveset = moveIdsFor(a, moveMap, standardMovesets);
-      const attackerSignature = moveSignatureForPokemon(a, moveMap, standardMovesets);
+      const attackerSignature = combatantStateSignature(createCombatant(a, "A", profile, moveMap, standardMovesets, allPokemon));
       const matchupCache = loadMatchupCacheFile(profile, a.id, attackerSignature);
       const splitRows = splitMatchups
         ? Object.fromEntries(scenarios.map(([aShields, bShields]) => [`${aShields}-${bShields}`, []]))
@@ -1424,7 +1471,9 @@ module.exports = {
   normalizeMove,
   normalizePokemon,
   defaultStats,
+  statsForIvSpread,
   rank1Stats,
+  combatantStateSignature,
   createCombatant,
   createBattleConfig,
   cloneBattleConfig

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "league": "great",
+  "cases": [
+    { "id": "tinkaton-rank1", "ivs": [0, 10, 14], "expectedWinner": "A" },
+    { "id": "tinkaton-high-attack", "ivs": [15, 0, 0], "expectedWinner": "B" },
+    { "id": "tinkaton-default", "ivs": [4, 15, 14], "expectedWinner": "B" },
+    { "id": "tinkaton-nearby-hp-loss", "ivs": [0, 12, 10], "expectedWinner": "B" },
+    { "id": "tinkaton-nearby-hp-win", "ivs": [0, 12, 11], "expectedWinner": "A" }
+  ]
+}

@@ -1,6 +1,7 @@
 "use strict";
 
 function createPvPeakBattleIntelligenceApi() {
+  const STRATEGIC_STATE_SCHEMA_VERSION = "strategic-state-v2";
   const ACTION_TYPES = Object.freeze({
     FAST_MOVE: "fast_move",
     CHARGED_MOVE: "charged_move",
@@ -197,6 +198,11 @@ function createPvPeakBattleIntelligenceApi() {
       sides[sideId] = {
         id: side.id || side.pokemonId || null,
         formId: side.formId || side.currentFormId || null,
+        level: numeric(side.level),
+        cp: numeric(side.cp),
+        ivAtk: numeric(side.ivAtk),
+        ivDef: numeric(side.ivDef),
+        ivHp: numeric(side.ivHp),
         hp: numeric(side.hp),
         maxHp: numeric(side.maxHp),
         energy: clamp(numeric(side.energy), 0, 100),
@@ -215,6 +221,7 @@ function createPvPeakBattleIntelligenceApi() {
       };
     }
     return {
+      mechanicsVersion: input.mechanicsVersion || null,
       currentTurn: Math.max(0, numeric(input.currentTurn)),
       sides,
       pendingEvents: [...(input.pendingEvents || [])]
@@ -225,10 +232,12 @@ function createPvPeakBattleIntelligenceApi() {
           sourceSide: event.sourceSide || null,
           targetSide: event.targetSide || null,
           moveId: event.moveId || null,
+          startTurn: numeric(event.startTurn ?? event.start),
           damage: numeric(event.damage),
           resolveTurn: numeric(event.resolveTurn),
           status: event.status || "pending",
-          source: event.source || null
+          source: event.source || null,
+          metadata: stableObject(event.metadata || null)
         }))
         .sort(compareEvents),
       cmpState: stableObject(input.cmpState || null),
@@ -243,6 +252,8 @@ function createPvPeakBattleIntelligenceApi() {
 
   function strategicStateKeyFromNormalized(state, policy = "FAST") {
     const compact = {
+      schema: STRATEGIC_STATE_SCHEMA_VERSION,
+      mechanicsVersion: state.mechanicsVersion,
       policy: resolvePolicy(policy).id,
       turn: state.currentTurn,
       sides: Object.fromEntries(["A", "B"].map(sideId => {
@@ -250,6 +261,11 @@ function createPvPeakBattleIntelligenceApi() {
         return [sideId, {
           id: side.id,
           form: side.formId,
+          level: side.level,
+          cp: side.cp,
+          ivs: [side.ivAtk, side.ivDef, side.ivHp],
+          attack: side.attack,
+          defense: side.defense,
           hp: side.hp,
           maxHp: side.maxHp,
           energy: side.energy,
@@ -889,7 +905,19 @@ function createPvPeakBattleIntelligenceApi() {
 
   function moveKey(move) {
     if (!move) return null;
-    return [move.id || move.moveId || null, numeric(move.energyCost), numeric(move.energyGain), numeric(move.turns), stableObject(move.buffs), stableObject(move.buffsSelf), stableObject(move.buffsOpponent), numeric(move.buffApplyChance)].join(":");
+    return JSON.stringify({
+      id: move.id || move.moveId || null,
+      type: move.type || null,
+      power: numeric(move.power),
+      energyCost: numeric(move.energyCost),
+      energyGain: numeric(move.energyGain),
+      turns: numeric(move.turns),
+      buffs: stableObject(move.buffs),
+      buffsSelf: stableObject(move.buffsSelf),
+      buffsOpponent: stableObject(move.buffsOpponent),
+      buffTarget: move.buffTarget || null,
+      buffApplyChance: numeric(move.buffApplyChance)
+    });
   }
 
   function actionKey(action) {
@@ -932,6 +960,7 @@ function createPvPeakBattleIntelligenceApi() {
   return Object.freeze({
     createApi: createPvPeakBattleIntelligenceApi,
     ACTION_TYPES,
+    STRATEGIC_STATE_SCHEMA_VERSION,
     PRIORITY_CLASSES,
     POLICIES,
     RULES,

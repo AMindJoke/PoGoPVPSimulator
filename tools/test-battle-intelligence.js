@@ -272,6 +272,46 @@ const changedTiming = state({ hpB: 45, energyA: 60, currentTurn: 6 });
 select(changedTiming);
 assert.equal(Intelligence.getStatistics().cacheMisses, 2);
 
+const statSensitiveA = state({ hpB: 45, energyA: 60 });
+Object.assign(statSensitiveA.sides.A, {
+  level: 26, cp: 1500, ivAtk: 0, ivDef: 10, ivHp: 14,
+  attack: 105.58, defense: 140.32, maxHp: 40, shields: 1,
+  attackStage: 0, defenseStage: 0, linePolicy: "balanced"
+});
+statSensitiveA.mechanicsVersion = "fixture-v1";
+const statSensitiveB = JSON.parse(JSON.stringify(statSensitiveA));
+Object.assign(statSensitiveB.sides.A, {
+  level: 25, cp: 1492, ivAtk: 15, ivDef: 0, ivHp: 0,
+  attack: 113.55, defense: 130.92
+});
+assert.notEqual(
+  Intelligence.strategicStateKey(statSensitiveA),
+  Intelligence.strategicStateKey(statSensitiveB),
+  "Derived stats and IV metadata must participate in Battle Intelligence memoization."
+);
+const baselineStrategicKey = Intelligence.strategicStateKey(statSensitiveA);
+for (const [label, mutate] of [
+  ["current HP", current => { current.sides.A.hp -= 1; }],
+  ["max HP", current => { current.sides.A.maxHp += 1; }],
+  ["energy", current => { current.sides.A.energy += 1; }],
+  ["shields", current => { current.sides.A.shields = 0; }],
+  ["Attack stage", current => { current.sides.A.attackStage = 1; }],
+  ["Defense stage", current => { current.sides.A.defenseStage = -1; }],
+  ["ready turn", current => { current.sides.A.readyTurn += 1; }],
+  ["move mechanics", current => { current.sides.A.fastMove.power = Number(current.sides.A.fastMove.power || 0) + 1; }],
+  ["form", current => { current.sides.A.formId = "alternate"; }],
+  ["policy", current => { current.sides.A.linePolicy = "straight"; }],
+  ["mechanics version", current => { current.mechanicsVersion = "fixture-v2"; }],
+  ["pending impact", current => { current.pendingEvents = [{ id: "impact", type: "fast", sourceSide: "B", targetSide: "A", moveId: "FAST", startTurn: 1, resolveTurn: 2, damage: 3 }]; }]
+]) {
+  const changed = JSON.parse(JSON.stringify(statSensitiveA));
+  mutate(changed);
+  assert.notEqual(Intelligence.strategicStateKey(changed), baselineStrategicKey, `${label} must participate in strategic identity.`);
+}
+select(statSensitiveA);
+select(statSensitiveB);
+assert.equal(Intelligence.getStatistics().cacheMisses, 4, "Different stat spreads must occupy distinct strategic cache entries.");
+
 Intelligence.clearCache();
 Intelligence.resetAudit();
 Intelligence.configureAudit({ enabled: true, strict: false, retainEvents: true });

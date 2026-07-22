@@ -66,6 +66,11 @@ function createPvPeakMatchupPlannerAdapterApi(plannerApi = null) {
     return {
       id: side.id || null,
       formId: side.formId || side.id || null,
+      level: numeric(side.level),
+      cp: numeric(side.cp),
+      ivAtk: numeric(side.ivAtk),
+      ivDef: numeric(side.ivDef),
+      ivHp: numeric(side.ivHp),
       hp: numeric(side.hp),
       maxHp: numeric(side.maxHp),
       energy: clamp(numeric(side.energy), 0, 100),

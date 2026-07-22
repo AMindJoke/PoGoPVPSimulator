@@ -18,7 +18,8 @@ const {
   createWorkerAdapter,
   normalizeMove,
   normalizePokemon,
-  createCombatant
+  createCombatant,
+  statsForIvSpread
 } = require("./build-great-league-meta-database");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -71,6 +72,26 @@ function buildCaseConfig(testCase, runtime) {
 }
 
 function applyPokemonFixture(combatant, fixture, moveMap) {
+  if (fixture.ivs && combatant.p) {
+    const stats = statsForIvSpread(
+      combatant.p,
+      Number(fixture.ivs.attack || 0),
+      Number(fixture.ivs.defense || 0),
+      Number(fixture.ivs.hp || 0)
+    );
+    Object.assign(combatant, {
+      level: stats.level,
+      cp: stats.cp,
+      ivAtk: stats.ivAtk,
+      ivDef: stats.ivDef,
+      ivHp: stats.ivHp,
+      maxHp: stats.hp,
+      hp: stats.hp,
+      attack: stats.attack,
+      defense: stats.defense,
+      cpm: stats.attack / Math.max(1, combatant.p.atk + stats.ivAtk)
+    });
+  }
   const moves = fixture.moves || {};
   if (moves.fast) combatant.fast = cloneMove(moveMap, moves.fast);
   if (Array.isArray(moves.charged)) combatant.charged = moves.charged.map(id => cloneMove(moveMap, id));

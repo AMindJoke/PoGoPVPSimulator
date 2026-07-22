@@ -8791,17 +8791,18 @@
     const hpSwingAnalysisCache = new Map();
     const hpSwingAnalysisPending = new Set();
     const shieldMatrixCacheLimit = 900;
-    const shieldMatrixCacheVersion = `matrix-v13:${battleEngineVersion}`;
+    const shieldMatrixCacheVersion = `matrix-v15:${battleEngineVersion}`;
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
     let matrixComputeWorkerSeq = 0;
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
-    const metaMatchupCacheVersion = "meta-v5";
+    const metaMatchupCacheVersion = `meta-v6:${battleEngineVersion}`;
     const metaRankingDataUrl = "data/great-league-rankings.json";
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
+    const metaCombatantSignatureCache = new Map();
     const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
     let metaBuildQueue = [];
     let metaBuildActive = false;
@@ -9009,11 +9010,17 @@
         button.onclick = () => setShieldMode(button.closest(".shield-mode-toggle").dataset.prefix, button.dataset.shieldMode);
       });
       ["p1IvAtk", "p1IvDef", "p1IvHp"].forEach(id => {
-        $(id).oninput = () => setIvProfileState("p1", "custom");
+        $(id).oninput = () => {
+          setIvProfileState("p1", "custom");
+          syncSelection("p1");
+        };
         $(id).onchange = () => syncSelection("p1");
       });
       ["p2IvAtk", "p2IvDef", "p2IvHp"].forEach(id => {
-        $(id).oninput = () => setIvProfileState("p2", "custom");
+        $(id).oninput = () => {
+          setIvProfileState("p2", "custom");
+          syncSelection("p2");
+        };
         $(id).onchange = () => syncSelection("p2");
       });
       document.querySelectorAll("[data-iv-profile]").forEach(button => {
@@ -10644,7 +10651,7 @@
     }
 
     function metaCacheLabel(p) {
-      const cached = [...metaMatchupCache.keys()].filter(key => key.includes(`|${p.id}|`) || key.includes(`|${p.id}>`)).length;
+      const cached = [...metaMatchupCache.keys()].filter(key => key.startsWith(`${metaMatchupCacheVersion}|${p.id}@`)).length;
       return cached ? `${cached} cells` : "not cached";
     }
 
@@ -10653,8 +10660,8 @@
       let count = 0;
       for (const [key, result] of metaMatchupCache.entries()) {
         if (!result || !result.score) continue;
-        const marker = `${metaMatchupCacheVersion}|${p.id}>`;
-        if (!key.includes(marker)) continue;
+        const marker = `${metaMatchupCacheVersion}|${p.id}@`;
+        if (!key.startsWith(marker)) continue;
         total += result.score;
         count++;
       }
@@ -10670,7 +10677,7 @@
         for (const b of pool) {
           if (!a || !b || a.id === b.id) continue;
           for (const [aShields, bShields] of metaBuildScenarios) {
-            const key = metaMatchupKey(a.id, b.id, aShields, bShields);
+            const key = metaMatchupKey(a, b, aShields, bShields);
             if (!metaMatchupCache.has(key)) metaBuildQueue.push({ a, b, aShields, bShields, key });
           }
         }
@@ -10793,8 +10800,16 @@
       }, p);
     }
 
-    function metaMatchupKey(aId, bId, aShields, bShields) {
-      return `${metaMatchupCacheVersion}|${aId}>${bId}|${aShields}-${bShields}`;
+    function metaMatchupKey(a, b, aShields, bShields) {
+      return `${metaMatchupCacheVersion}|${metaCombatantSignature(a)}>${metaCombatantSignature(b)}|${aShields}-${bShields}`;
+    }
+
+    function metaCombatantSignature(pokemon) {
+      if (!pokemon) return "missing";
+      if (!metaCombatantSignatureCache.has(pokemon.id)) {
+        metaCombatantSignatureCache.set(pokemon.id, matrixCombatantSignature(createMetaCombatant(pokemon, "A")));
+      }
+      return metaCombatantSignatureCache.get(pokemon.id);
     }
 
     function storeMetaMatchupResult(key, result) {
@@ -11885,6 +11900,23 @@
       };
     }
 
+    function matrixCombatantSignature(combatant) {
+      if (!combatant) return "missing";
+      const moveSignature = [combatant.fast, ...(combatant.charged || [])].filter(Boolean).map(move => [
+        move.id, move.type, Number(move.power || 0), Number(move.energyGain || 0), Number(move.energyCost || 0), Number(move.turns || 0),
+        JSON.stringify(move.buffs || null), JSON.stringify(move.buffsSelf || null), JSON.stringify(move.buffsOpponent || null),
+        move.buffTarget || "", Number(move.buffApplyChance || 0)
+      ].join("~")).join("+");
+      return [
+        combatant.p?.id || "unknown", combatant.currentFormId || combatant.p?.id || "unknown",
+        Number(combatant.level || 0), Number(combatant.cp || 0),
+        `${Number(combatant.ivAtk || 0)}/${Number(combatant.ivDef || 0)}/${Number(combatant.ivHp || 0)}`,
+        Number(combatant.attack || 0), Number(combatant.defense || 0), Number(combatant.maxHp || 0), Number(combatant.hp || 0),
+        Number(combatant.energy || 0), Number(combatant.attackStage || 0), Number(combatant.defenseStage || 0),
+        combatant.baiting || "", combatant.shieldMode || "", combatant.linePolicy || "", moveSignature
+      ].join("@");
+    }
+
     function damageModifier(attacker, defender, move) {
       const stab = attacker.p.types.includes(move.type) ? 1.2 : 1;
       return stab * effectiveness(move.type, defender.p.types);
@@ -12939,12 +12971,36 @@
         engineVersion: battleEngineVersion,
         datasetVersion: options.datasetVersion || null,
         source: options.source || "live",
+        derivedStats: typeof debugBattleTracing !== "undefined" && debugBattleTracing && left && right ? {
+          A: debugDerivedCombatantState(left),
+          B: debugDerivedCombatantState(right)
+        } : null,
         decisions: [],
         shieldCounterfactuals: [],
         terminalSnapshots: [],
         finalState: null
       };
+      if (typeof debugBattleTracing !== "undefined" && debugBattleTracing && currentBattleDecisionTrace.derivedStats) {
+        console.table(currentBattleDecisionTrace.derivedStats);
+      }
       return currentBattleDecisionTrace;
+    }
+
+    function debugDerivedCombatantState(combatant) {
+      return {
+        pokemon: combatant.p?.id || null,
+        form: combatant.currentFormId || combatant.p?.id || null,
+        level: combatant.level,
+        cp: combatant.cp,
+        ivs: `${combatant.ivAtk}/${combatant.ivDef}/${combatant.ivHp}`,
+        attack: Number(combatant.attack || 0),
+        defense: Number(combatant.defense || 0),
+        maxHp: Number(combatant.maxHp || 0),
+        hp: Number(combatant.hp || 0),
+        energy: Number(combatant.energy || 0),
+        shields: Number(combatant.shields || 0),
+        stages: `${Number(combatant.attackStage || 0)}/${Number(combatant.defenseStage || 0)}`
+      };
     }
 
     function completeBattleDecisionTrace() {
@@ -12980,6 +13036,11 @@
       const sideState = combatant => ({
         id: combatant.p?.id || combatant.trainer,
         formId: combatant.currentFormId || combatant.p?.id || null,
+        level: combatant.level,
+        cp: combatant.cp,
+        ivAtk: combatant.ivAtk,
+        ivDef: combatant.ivDef,
+        ivHp: combatant.ivHp,
         hp: combatant.hp,
         maxHp: combatant.maxHp,
         energy: combatant.energy,
@@ -13002,6 +13063,7 @@
         }
       });
       return {
+        mechanicsVersion: battleEngineVersion,
         currentTurn: turnState?.currentTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)),
         sides: { A: sideState(left), B: sideState(right) },
         pendingEvents: turnState?.pendingEvents || [],
@@ -13223,10 +13285,14 @@
         terminalOutcome: plannerTerminalOutcome,
         evaluateOutcome: plannerBoundedOutcome,
         fastsBeforeFaint(state, perspective) {
-          const own = state?.sides?.[perspective];
-          const opponent = state?.sides?.[perspective === "A" ? "B" : "A"];
-          if (!own || !opponent || !opponent.fastMove) return 0;
-          return Math.max(0, Math.ceil(Number(own.hp || 0) / Math.max(1, Number(opponent.fastMove.power || 1))));
+          const opponentSide = perspective === "A" ? "B" : "A";
+          return withPlannerRuntime(state, runtime => {
+            const own = runtime?.sides?.[perspective];
+            const opponent = runtime?.sides?.[opponentSide];
+            if (!own || !opponent || !opponent.fast) return 0;
+            const damage = Math.max(1, estimate(opponent, own, opponent.fast));
+            return Math.max(0, Math.ceil(Number(own.hp || 0) / damage));
+          }) || 0;
         }
       });
     }
@@ -17413,18 +17479,24 @@
     }
 
     function shieldMatrixSignature() {
-      return ["p1", "p2"].map(prefix => [
-        $(`${prefix}Pokemon`).value,
-        $(`${prefix}Fast`).value,
-        $(`${prefix}Charged1`).value,
-        $(`${prefix}Charged2`).value,
-        $(`${prefix}IvAtk`).value,
-        $(`${prefix}IvDef`).value,
-        $(`${prefix}IvHp`).value,
-        $(`${prefix}StartEnergy`).value,
-        $(`${prefix}Baiting`).value,
-        $(`${prefix}ShieldMode`).value
-      ].join(":")).join("|");
+      return ["p1", "p2"].map((prefix, index) => {
+        const pokemon = findPokemon($(`${prefix}Pokemon`).value);
+        if (!pokemon) return `${index}:missing`;
+        const stats = selectedStats(prefix, pokemon);
+        return JSON.stringify({
+          id: pokemon.id,
+          level: stats.level,
+          cp: stats.cp,
+          ivs: [stats.ivAtk, stats.ivDef, stats.ivHp],
+          attack: stats.attack,
+          defense: stats.defense,
+          maxHp: stats.hp,
+          moves: [$(`${prefix}Fast`).value, $(`${prefix}Charged1`).value, $(`${prefix}Charged2`).value],
+          startEnergy: clampEnergy($(`${prefix}StartEnergy`).value || 0),
+          baiting: $(`${prefix}Baiting`).value,
+          shieldMode: $(`${prefix}ShieldMode`).value
+        });
+      }).join("|");
     }
 
     function handleMatrixClick(event) {

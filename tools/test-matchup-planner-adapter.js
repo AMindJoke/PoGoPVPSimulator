@@ -105,6 +105,12 @@ const hashWithPresentation = adapter.hash(state({ presentation: { selectedEvent:
 const hashWithoutPresentation = adapter.hash(state({ presentation: { selectedEvent: 500 } }), "FAST");
 assert.strictEqual(hashWithPresentation, hashWithoutPresentation, "Presentation-only state must not invalidate planner caches.");
 
+const spreadA = state();
+Object.assign(spreadA.sides.A, { level: 26, cp: 1500, ivAtk: 0, ivDef: 10, ivHp: 14, attack: 105.58, defense: 140.32 });
+const spreadB = JSON.parse(JSON.stringify(spreadA));
+Object.assign(spreadB.sides.A, { level: 25, cp: 1492, ivAtk: 15, ivDef: 0, ivHp: 0, attack: 113.55, defense: 130.92 });
+assert.notStrictEqual(adapter.hash(spreadA, "FAST"), adapter.hash(spreadB, "FAST"), "Planner hashes must distinguish IV-derived battle stats.");
+
 const compact = AdapterApi.compactBattleState(state());
 assert.strictEqual(Object.prototype.hasOwnProperty.call(compact, "presentation"), false);
 assert.deepStrictEqual(AdapterApi.energyDiagnostics(state(), "A", { fastsBeforeFaint: () => 1 }), {
