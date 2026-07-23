@@ -8,6 +8,7 @@ const {
   PRINCIPLE_PRIORITY_GROUPS,
   validateBattlePrincipleRegistry
 } = require("../src/battle/battle-principles");
+const BattleIntelligence = require("../src/battle/battle-intelligence");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUTPUT = path.join(ROOT, "docs", "BATTLE_PRINCIPLE_REGISTRY.md");
@@ -38,6 +39,14 @@ function render() {
     "## Priority Groups",
     "",
     ...Object.entries(PRINCIPLE_PRIORITY_GROUPS).map(([name, value]) => `- \`${value}\` ${name}`),
+    "",
+    "## Runtime Rule Mapping",
+    "",
+    "The current Battle Intelligence runtime still emits legacy `BI_*` rule IDs. Each active runtime rule must map to one or more principle IDs so no strategic behavior remains anonymous during the rebuild.",
+    "",
+    "| Runtime rule | Principle IDs |",
+    "|---|---|",
+    ...BattleIntelligence.RULES.map(rule => `| \`${rule.id}\` | ${rule.principleIds.map(id => `\`${id}\``).join(", ")} |`),
     "",
     "## Principles",
     ""

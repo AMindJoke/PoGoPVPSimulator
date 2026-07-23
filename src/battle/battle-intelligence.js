@@ -30,32 +30,32 @@ function createPvPeakBattleIntelligenceApi() {
   });
 
   const RULES = Object.freeze([
-    rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK"),
-    rule("BI_THROW_BEFORE_FAINT", "Throw before fainting", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT"),
-    rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT"),
-    rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE"),
-    rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE"),
-    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true),
-    rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
-    rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED"),
-    rule("BI_HYBRID_BASELINE", "Use the bounded hybrid baseline", PRIORITY_CLASSES.OUTCOME_EFFECT, "BOUNDED_OFFENSIVE_ROUTE"),
-    rule("BI_SELECTIVE_DEEP_SEARCH", "Verify an ambiguous hybrid decision", PRIORITY_CLASSES.CONTINUATION, "AMBIGUOUS_DEEP_SEARCH", true),
-    rule("BI_FARM_DOWN", "Use the best farm-down route", PRIORITY_CLASSES.RESOURCE, "FARM_DOWN_ROUTE"),
-    rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
-    rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE"),
-    rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true),
-    rule("BI_OVERFARM", "Preserve safe overfarm", PRIORITY_CLASSES.RESOURCE, "ENERGY_PRESERVATION"),
-    rule("BI_BAIT_VALUE", "Value credible bait pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_PRESSURE"),
-    rule("BI_TIMING_VALUE", "Improve charged move timing", PRIORITY_CLASSES.RESOURCE, "OPTIMAL_MOVE_TIMING"),
-    rule("BI_SELF_DEBUFF_RISK", "Delay unsafe self debuff", PRIORITY_CLASSES.RESOURCE, "SELF_DEBUFF_TIMING"),
-    rule("BI_SELF_DEBUFF_AVOIDANCE", "Preserve stats before self debuff", PRIORITY_CLASSES.OUTCOME_EFFECT, "AVOID_EARLY_SELF_DEBUFF"),
-    rule("BI_CANDIDATE_EVIDENCE", "Evaluate strategic evidence", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
-    rule("BI_SHIELD_POLICY", "Respect explicit shield policy", PRIORITY_CLASSES.LEGALITY, "SHIELD_POLICY_ALWAYS"),
-    rule("BI_SHIELD_PREVENTS_KO", "Shield to prevent knockout", PRIORITY_CLASSES.SURVIVAL_LETHAL, "SHIELD_PREVENTS_KO"),
-    rule("BI_SHIELD_PRESERVES_WIN", "Shield preserves winning continuation", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_PRESERVES_WIN_CONDITION", true),
-    rule("BI_SHIELD_AVOIDS_FARM", "Shield avoids farm range", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_AVOIDS_FARM_RANGE"),
-    rule("BI_SHIELD_HEAVY_PRESSURE", "Shield heavy pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_HEAVY_PRESSURE"),
-    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT")
+    rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK", false, ["AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE", "ROUTE-026_BUILD_TO_SELECTED_MOVE"]),
+    rule("BI_THROW_BEFORE_FAINT", "Throw before fainting", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
+    rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["ROUTE-004_CHARGED_READINESS_CALCULATION", "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
+    rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE", false, ["TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"]),
+    rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON", "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"]),
+    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true, ["EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"]),
+    rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"]),
+    rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT"]),
+    rule("BI_HYBRID_BASELINE", "Use the bounded hybrid baseline", PRIORITY_CLASSES.OUTCOME_EFFECT, "BOUNDED_OFFENSIVE_ROUTE", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"]),
+    rule("BI_SELECTIVE_DEEP_SEARCH", "Verify an ambiguous hybrid decision", PRIORITY_CLASSES.CONTINUATION, "AMBIGUOUS_DEEP_SEARCH", true, ["SEARCH-029_BOUND_PLANNER_STATE_COUNT", "SEARCH-035_PRUNE_DOMINATED_STATES"]),
+    rule("BI_FARM_DOWN", "Use the best farm-down route", PRIORITY_CLASSES.RESOURCE, "FARM_DOWN_ROUTE", false, ["FARM-033_FARM_DOWN_ROUTE_CANDIDATE"]),
+    rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"]),
+    rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE", false, ["ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE", "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE"]),
+    rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true, ["TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"]),
+    rule("BI_OVERFARM", "Preserve safe overfarm", PRIORITY_CLASSES.RESOURCE, "ENERGY_PRESERVATION", false, ["TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS", "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"]),
+    rule("BI_BAIT_VALUE", "Value credible bait pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_PRESSURE", false, ["BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT", "BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE", "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"]),
+    rule("BI_TIMING_VALUE", "Improve charged move timing", PRIORITY_CLASSES.RESOURCE, "OPTIMAL_MOVE_TIMING", false, ["TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS", "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION", "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION"]),
+    rule("BI_SELF_DEBUFF_RISK", "Delay unsafe self debuff", PRIORITY_CLASSES.RESOURCE, "SELF_DEBUFF_TIMING", false, ["EFFECT-027_STACK_SELF_DEBUFFING_MOVES", "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"]),
+    rule("BI_SELF_DEBUFF_AVOIDANCE", "Preserve stats before self debuff", PRIORITY_CLASSES.OUTCOME_EFFECT, "AVOID_EARLY_SELF_DEBUFF", false, ["MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE", "BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE", "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"]),
+    rule("BI_CANDIDATE_EVIDENCE", "Evaluate strategic evidence", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME", false, ["MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS", "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE", "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES"]),
+    rule("BI_SHIELD_POLICY", "Respect explicit shield policy", PRIORITY_CLASSES.LEGALITY, "SHIELD_POLICY_ALWAYS", false, ["SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD", "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
+    rule("BI_SHIELD_PREVENTS_KO", "Shield to prevent knockout", PRIORITY_CLASSES.SURVIVAL_LETHAL, "SHIELD_PREVENTS_KO", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
+    rule("BI_SHIELD_PRESERVES_WIN", "Shield preserves winning continuation", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_PRESERVES_WIN_CONDITION", true, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
+    rule("BI_SHIELD_AVOIDS_FARM", "Shield avoids farm range", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_AVOIDS_FARM_RANGE", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
+    rule("BI_SHIELD_HEAVY_PRESSURE", "Shield heavy pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_HEAVY_PRESSURE", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
+    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"])
   ]);
 
   const ruleMap = new Map(RULES.map(item => [item.id, item]));
@@ -68,8 +68,16 @@ function createPvPeakBattleIntelligenceApi() {
   const auditConfiguration = { enabled: strictByDefault, strict: strictByDefault, retainEvents: strictByDefault };
   let audit = createAuditState();
 
-  function rule(id, name, priorityClass, reasonCode, requiresContinuationSearch = false) {
-    return Object.freeze({ id, name, description: name, priorityClass, reasonCode, requiresContinuationSearch });
+  function rule(id, name, priorityClass, reasonCode, requiresContinuationSearch = false, principleIds = []) {
+    return Object.freeze({
+      id,
+      name,
+      description: name,
+      priorityClass,
+      reasonCode,
+      requiresContinuationSearch,
+      principleIds: Object.freeze([...principleIds])
+    });
   }
 
   function createStatistics() {
@@ -144,7 +152,12 @@ function createPvPeakBattleIntelligenceApi() {
       byCategory: cloneCounters(audit.byCategory),
       byContext: cloneCounters(audit.byContext),
       fallbackReasons: { ...audit.fallbackReasons },
-      events: audit.events.map(event => ({ ...event, ruleIds: [...event.ruleIds], categories: [...event.categories] })),
+      events: audit.events.map(event => ({
+        ...event,
+        ruleIds: [...event.ruleIds],
+        principleIds: [...event.principleIds],
+        categories: [...event.categories]
+      })),
       fallbackRate: strategic ? audit.legacyFallbackDecisions / strategic : 0,
       runtimeCoverage: strategic ? audit.intelligenceOwnedDecisions / strategic : 0,
       configuration: { ...auditConfiguration }
@@ -156,6 +169,7 @@ function createPvPeakBattleIntelligenceApi() {
       source: input.source || "manual",
       action: input.action || null,
       ruleIds: input.ruleIds || [],
+      principleIds: [...(input.principleIds || [])],
       policy: input.policy || null,
       callerContext: input.callerContext || "battle",
       categories: input.categories || ["manual"],
@@ -193,6 +207,7 @@ function createPvPeakBattleIntelligenceApi() {
       legal: input.legal !== false,
       priorityClass: input.priorityClass ?? PRIORITY_CLASSES.FALLBACK,
       sourceRuleIds: [...(input.sourceRuleIds || [])],
+      principleIds: [...(input.principleIds || [])],
       tacticalScore: Number(input.tacticalScore || 0),
       continuationScore: input.continuationScore == null ? null : Number(input.continuationScore),
       continuationPenalty: Math.max(0, Number(input.continuationPenalty || 0)),
@@ -727,6 +742,7 @@ function createPvPeakBattleIntelligenceApi() {
       },
       shield: !!shield,
       sourceRuleIds: definition ? [definition.id] : [],
+      principleIds: definition ? [...(definition.principleIds || [])] : [],
       reasonCodes: definition?.reasonCode ? [definition.reasonCode] : [],
       explanation,
       confidence,
@@ -834,6 +850,9 @@ function createPvPeakBattleIntelligenceApi() {
     const definition = ruleMap.get(ruleId);
     if (!candidate || !definition) return candidate;
     if (!candidate.sourceRuleIds.includes(ruleId)) candidate.sourceRuleIds.push(ruleId);
+    for (const principleId of definition.principleIds || []) {
+      if (!candidate.principleIds.includes(principleId)) candidate.principleIds.push(principleId);
+    }
     if (definition.reasonCode && !candidate.reasonCodes.includes(definition.reasonCode)) candidate.reasonCodes.push(definition.reasonCode);
     candidate.priorityClass = Math.min(candidate.priorityClass, definition.priorityClass);
     candidate.tacticalScore += Number(score || 0);
@@ -852,6 +871,7 @@ function createPvPeakBattleIntelligenceApi() {
       policy: policy.id,
       fastPath: !!fastPath,
       sourceRuleIds: [...(candidate?.sourceRuleIds || [])],
+      principleIds: [...(candidate?.principleIds || [])],
       reasonCodes: [...new Set(reasonCodes || [])],
       explanation: explanation || "",
       evidence: candidate?.evidence || null
@@ -862,6 +882,7 @@ function createPvPeakBattleIntelligenceApi() {
       source,
       action: result.action,
       ruleIds: result.sourceRuleIds,
+      principleIds: result.principleIds,
       policy: policy.id,
       callerContext: candidate?.auditMeta?.callerContext || "unknown",
       categories: decisionCategories(candidate),
@@ -896,6 +917,7 @@ function createPvPeakBattleIntelligenceApi() {
       fallbackReasonCode: entry.fallbackReasonCode || null,
       decisionCategories: [...entry.categories],
       callerContext: entry.callerContext,
+      principleIds: [...(entry.principleIds || result.principleIds || [])],
       auditEvent: recorded
     };
   }
@@ -913,6 +935,7 @@ function createPvPeakBattleIntelligenceApi() {
       source: entry.source || "battle-intelligence",
       action: entry.action ? { type: entry.action.type || null, moveId: entry.action.moveId || null, side: entry.action.side || null } : null,
       ruleIds: [...(entry.ruleIds || [])],
+      principleIds: [...(entry.principleIds || [])],
       policy: entry.policy || null,
       callerContext: entry.callerContext || "unknown",
       categories: [...new Set(entry.categories || [])],
@@ -967,6 +990,7 @@ function createPvPeakBattleIntelligenceApi() {
     fastPathCache.set(key, {
       actionKey: actionKey(result.action),
       sourceRuleIds: result.sourceRuleIds,
+      principleIds: result.principleIds,
       reasonCodes: result.reasonCodes,
       explanation: result.explanation,
       evidence: result.evidence
@@ -976,6 +1000,7 @@ function createPvPeakBattleIntelligenceApi() {
   function resultFromCached(action, candidates, cached, policy) {
     const candidate = candidates.find(item => actionKey(item.action) === cached.actionKey) || createCandidate(action);
     candidate.sourceRuleIds = [...cached.sourceRuleIds];
+    candidate.principleIds = [...(cached.principleIds || [])];
     candidate.reasonCodes = [...cached.reasonCodes, "MEMOIZED_RESULT"];
     candidate.evidence = cached.evidence;
     return selectionResult(candidate, candidates, policy, true, candidate.reasonCodes, cached.explanation);

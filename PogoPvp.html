@@ -27,6 +27,7 @@
   <script src="src/battle/hybrid-battle-intelligence.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
+  <script src="src/battle/battle-principles.js"></script>
   <script src="src/battle/battle-intelligence.js"></script>
   <style>
     :root {
@@ -12571,6 +12572,8 @@
           counterfactual: shieldCounterfactual,
           explanation: shieldDecision.reason || (shielded ? "Always shield logic uses a shield" : "Shield logic lets the move through"),
           reasonCode: shieldDecision.reasonCode || (shielded ? "SHIELD_POLICY_ALWAYS" : "SHIELD_SAVED_LOW_THREAT"),
+          sourceRuleIds: shieldDecision.sourceRuleIds || [],
+          principleIds: shieldDecision.principleIds || [],
           confidence: shieldDecision.reason ? .8 : .65
         });
         if (battleDecisionTraceEnabled && shieldCounterfactual && currentBattleDecisionTrace) {
@@ -12749,6 +12752,7 @@
         reason: String(result.explanation || "").replace(/\.$/, ""),
         reasonCode: result.reasonCodes?.[0] || null,
         sourceRuleIds: result.sourceRuleIds || [],
+        principleIds: result.principleIds || [],
         confidence: result.confidence
       };
     }
@@ -13378,6 +13382,8 @@
         chosenCandidate,
         counterfactual: input.counterfactual || null,
         reasonCode: input.reasonCode || battleReasonCode(input.decisionType, input.explanation, chosenCandidate, candidates),
+        sourceRuleIds: [...(input.sourceRuleIds || [])],
+        principleIds: [...(input.principleIds || [])],
         explanation: input.explanation || "",
         confidence: input.confidence || null
       };
@@ -14561,6 +14567,8 @@
         candidates,
         chosenCandidate: candidates.find(candidate => candidate.moveId === move.id) || traceMoveCandidate(attacker, defender, move),
         reasonCode: selection.reasonCodes?.[0] || "HEURISTIC_FALLBACK",
+        sourceRuleIds: selection.sourceRuleIds || [],
+        principleIds: selection.principleIds || [],
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
       });
@@ -14589,6 +14597,8 @@
           continuationScore: candidate?.continuationScore ?? null,
           continuationPenalty: candidate?.continuationPenalty ?? 0,
           priorityClass: candidate?.priorityClass ?? null,
+          sourceRuleIds: candidate?.sourceRuleIds || [],
+          principleIds: candidate?.principleIds || [],
           tacticalScore: candidate?.tacticalScore ?? null
         };
       });
@@ -14605,6 +14615,8 @@
         candidates,
         chosenCandidate: candidates.find(candidate => candidate.action === selectedActionLabel) || null,
         reasonCode: selection.reasonCodes?.[0] || "OPTIMAL_CHARGE_TIMING",
+        sourceRuleIds: selection.sourceRuleIds || [],
+        principleIds: selection.principleIds || [],
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
       });

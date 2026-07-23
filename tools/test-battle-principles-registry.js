@@ -6,6 +6,7 @@ const {
   PRINCIPLE_PRIORITY_GROUPS,
   validateBattlePrincipleRegistry
 } = require("../src/battle/battle-principles");
+const BattleIntelligence = require("../src/battle/battle-intelligence");
 
 const report = validateBattlePrincipleRegistry();
 assert.deepStrictEqual(report.errors, []);
@@ -31,6 +32,15 @@ for (const item of BATTLE_PRINCIPLES) {
     item.forbiddenSideEffects.includes("MUST_NOT_USE_SPECIES_ID_EXCEPTION"),
     `${item.id} must forbid species-specific exceptions`
   );
+}
+
+const principleIds = new Set(BATTLE_PRINCIPLES.map(item => item.id));
+for (const rule of BattleIntelligence.RULES) {
+  assert(Array.isArray(rule.principleIds), `${rule.id} must declare principleIds`);
+  assert(rule.principleIds.length > 0, `${rule.id} must map to at least one battle principle`);
+  for (const principleId of rule.principleIds) {
+    assert(principleIds.has(principleId), `${rule.id} references unknown principle ${principleId}`);
+  }
 }
 
 console.log("Battle principle registry validation passed.");
