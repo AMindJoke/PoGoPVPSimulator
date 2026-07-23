@@ -50,6 +50,9 @@ function select(currentState, overrides = {}) {
       evaluateCandidate: overrides.evaluateCandidate,
       evaluateContinuation: overrides.evaluateContinuation,
       evaluateHybrid: overrides.evaluateHybrid,
+      chargedTimingOptimization: overrides.chargedTimingOptimization,
+      estimateFastDamage: overrides.estimateFastDamage,
+      estimateOpponentDamage: overrides.estimateOpponentDamage,
       matchupPlannerV2: overrides.matchupPlannerV2,
       planMatchup: overrides.planMatchup
     }
@@ -152,10 +155,60 @@ assert(overfarmDanger.sourceRuleIds.includes("BI_AVOID_LETHAL_OVERFARM"));
 const cappedEnergy = select(state({ energyA: 96, hpB: 120 }));
 assert.equal(cappedEnergy.action.type, "charged_move");
 assert.equal(cappedEnergy.action.moveId, "NUKE");
-assert(cappedEnergy.sourceRuleIds.includes("BI_ENERGY_CAP_FORCES_THROW"));
 assert(cappedEnergy.principleIds.includes("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS"));
-assert(cappedEnergy.principleIds.includes("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"));
 assert(!cappedEnergy.sourceRuleIds.includes("BI_HYBRID_BASELINE"));
+assert.equal(cappedEnergy.principleResult.intent, "THROW_NOW");
+assert.equal(cappedEnergy.finalAuthority, "PRINCIPLE_ENGINE_TIMING");
+
+const timingPending = TurnEngine.createFastImpactEvent({
+  id: "opponent-fast-in-flight",
+  sourceSide: "B",
+  targetSide: "A",
+  moveId: "FAST_B",
+  damage: 8,
+  startTurn: 6,
+  duration: 4,
+  source: "timing-test"
+});
+let safeTimingHybridCalls = 0;
+const safeTimingWait = select(state({
+  energyA: 40,
+  readyA: 5,
+  readyB: 10,
+  pendingEvents: [timingPending]
+}), {
+  chargedTimingOptimization: true,
+  estimateFastDamage: () => 8,
+  estimateOpponentDamage: move => Number(move?.damage || 0),
+  evaluateHybrid() {
+    safeTimingHybridCalls++;
+    throw new Error("Hybrid timing must not run after WAIT_ONE_FAST is resolved.");
+  }
+});
+assert.equal(safeTimingWait.action.type, "fast_move");
+assert.equal(safeTimingWait.principleResult.intent, "WAIT_ONE_FAST");
+assert(safeTimingWait.principlesTriggered.includes("TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"));
+assert.equal(safeTimingWait.finalAuthority, "PRINCIPLE_ENGINE");
+assert.equal(safeTimingHybridCalls, 0);
+
+let blockedTimingOverrides = 0;
+const constrainedTimingThrow = select(state({ energyA: 96, hpB: 120 }), {
+  evaluateHybrid() {
+    blockedTimingOverrides++;
+    return {
+      action: { type: "fast_move", side: "A", moveId: "FAST_A", startTurn: 5 },
+      decisive: true,
+      fastPath: true,
+      reasonCodes: ["SAFE_EXTRA_FAST"]
+    };
+  }
+});
+assert.equal(blockedTimingOverrides, 1);
+assert.equal(constrainedTimingThrow.action.type, "charged_move");
+assert.equal(constrainedTimingThrow.principleResult.intent, "THROW_NOW");
+assert.equal(constrainedTimingThrow.overrideBlocked, true);
+assert.equal(constrainedTimingThrow.principleDecisionPreserved, true);
+assert.equal(constrainedTimingThrow.fallbackUsed, true);
 
 const weak = move("WEAK", 40, 30);
 const strong = move("STRONG", 40, 55);
@@ -420,5 +473,39 @@ const strictDecision = Intelligence.selectAction({
 });
 assert.equal(strictDecision.source, "battle-intelligence");
 Intelligence.configureAudit({ enabled: false, strict: false, retainEvents: false });
+
+const metricsApi = Intelligence.createApi();
+const metricsAvailabilityState = state({ energyA: 0 });
+metricsApi.selectAction({
+  state: metricsAvailabilityState,
+  side: "A",
+  legalActions: TurnEngine.getLegalActions(metricsAvailabilityState, "A"),
+  policy: "FAST",
+  context: { estimateDamage: action => Number(action.move?.damage || 0) }
+});
+const metricsFallbackState = state({ energyA: 40, hpB: 120 });
+metricsApi.selectAction({
+  state: metricsFallbackState,
+  side: "A",
+  legalActions: TurnEngine.getLegalActions(metricsFallbackState, "A"),
+  policy: "FAST",
+  context: {
+    estimateDamage: action => Number(action.move?.damage || 0),
+    evaluateHybrid() {
+      return {
+        action: { type: "charged_move", side: "A", moveId: "CHEAP", startTurn: 5 },
+        decisive: true,
+        reasonCodes: ["BOUNDED_OFFENSIVE_ROUTE"]
+      };
+    }
+  }
+});
+const principleMetrics = metricsApi.getPrincipleStatistics();
+assert.equal(principleMetrics.totalAutomaticDecisions, 2);
+assert.equal(principleMetrics.principleEngineResolvedDecisions, 1);
+assert.equal(principleMetrics.hybridFallbackDecisions, 1);
+assert.equal(principleMetrics.resolvedByCategory.availability, 1);
+assert.equal(principleMetrics.fallbackPercentage, .5);
+assert.deepEqual(principleMetrics.migratedCategories, ["availability", "tactical", "timing"]);
 
 console.log("Battle Intelligence tests passed.");

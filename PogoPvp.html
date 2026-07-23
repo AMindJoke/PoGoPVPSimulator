@@ -14062,6 +14062,7 @@
       const effectContinuationEligible = shouldEvaluateChargedContinuations(attacker, defender, available);
       const shieldedLineContinuationEligible = shouldCompareShieldedChargedLines(attacker, defender, available);
       let hybridEvaluationComputed = false;
+      let hybridPlannerInvoked = false;
       let hybridEvaluation = null;
       let hybridHighImpactAmbiguity = false;
       function ensureHybridEvaluation() {
@@ -14069,7 +14070,12 @@
           return { evaluation: hybridEvaluation, highImpactAmbiguity: hybridHighImpactAmbiguity };
         }
         hybridEvaluationComputed = true;
+        const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
+          ? PvPeakHybridBattleIntelligence
+          : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
+        const hybridSelectionsBefore = Number(hybridApi?.getStatistics?.().selections || 0);
         hybridEvaluation = evaluateHybridBattleAction(attacker, defender, legalActions);
+        hybridPlannerInvoked = Number(hybridApi?.getStatistics?.().selections || 0) > hybridSelectionsBefore;
         const hybridAmbiguityReasons = [
           timingContinuationEligible && !hybridEvaluation?.decisive ? "TIMING_ROUTE_DIFFERS" : null,
           effectContinuationEligible ? "GUARANTEED_EFFECT_ROUTE_DIFFERS" : null,
@@ -14195,6 +14201,19 @@
           planMatchup: planLiveMatchup,
           evaluateHybrid() {
             return ensureHybridEvaluation().evaluation;
+          },
+          hybridWasInvoked() {
+            return hybridPlannerInvoked;
+          },
+          chargedTimingOptimization: timingContinuationEligible,
+          canonicalOpponentLethalBeforeNextWindow: opponentPressureForcesThrow(attacker, defender),
+          estimateFastDamage(side) {
+            return side === "opponent"
+              ? estimate(defender, attacker, defender.fast)
+              : estimate(attacker, defender, attacker.fast);
+          },
+          estimateOpponentDamage(move) {
+            return estimate(defender, attacker, move);
           },
           forceChargedContinuation: projectedSequenceEligible,
           estimateDamage(action) {

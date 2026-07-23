@@ -62,6 +62,22 @@ for (const decision of decisions) {
   for (const principleId of decision.principleIds) {
     assert(principleIds.has(principleId), `${decision.decisionId} references unknown principle ${principleId}.`);
   }
+  assert.equal(typeof decision.principleEngineEvaluated, "boolean", `${decision.decisionId} must expose Principle Engine evaluation state.`);
+  assert(Array.isArray(decision.migratedCategoriesEvaluated), `${decision.decisionId} must expose migrated categories.`);
+  assert(Array.isArray(decision.principlesTriggered), `${decision.decisionId} must expose triggered principles.`);
+  assert(Array.isArray(decision.principlesRejected), `${decision.decisionId} must expose rejected principles.`);
+  assert.equal(typeof decision.principleResolved, "boolean", `${decision.decisionId} must expose resolution ownership.`);
+  assert.equal(typeof decision.fallbackUsed, "boolean", `${decision.decisionId} must expose fallback usage.`);
+  assert.equal(typeof decision.overrideBlocked, "boolean", `${decision.decisionId} must expose override blocking.`);
+  if (decision.finalAuthority === "PRINCIPLE_ENGINE") {
+    assert.equal(decision.principleResolved, true, `${decision.decisionId} cannot claim Principle Engine authority without direct resolution.`);
+    assert.equal(decision.fallbackUsed, false, `${decision.decisionId} cannot claim direct authority after fallback.`);
+  }
 }
+
+const principleStats = result.decisionTrace?.principleEngineStats;
+assert(principleStats, "Worker trace must expose Principle Engine migration metrics.");
+assert.equal(principleStats.hybridFallbackDecisions, result.decisionTrace?.hybridStats?.selections);
+assert(principleStats.principleEngineResolvedDecisions > 0, "Worker runtime must execute direct principles.");
 
 console.log("Principle trace contract passed.");

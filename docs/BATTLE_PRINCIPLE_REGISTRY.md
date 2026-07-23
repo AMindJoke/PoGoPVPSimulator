@@ -36,7 +36,6 @@ The current Battle Intelligence runtime still emits legacy `BI_*` rule IDs. Each
 | `BI_REACHABLE_CHARGED` | `ROUTE-004_CHARGED_READINESS_CALCULATION`, `TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT` |
 | `BI_GUARANTEED_LETHAL` | `TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL` |
 | `BI_AVOID_LETHAL_OVERFARM` | `SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON`, `TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE` |
-| `BI_ENERGY_CAP_FORCES_THROW` | `TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS`, `TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE` |
 | `BI_GUARANTEED_EFFECT` | `EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS` |
 | `BI_CMP_AWARE` | `SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON` |
 | `BI_MATCHUP_PLAN` | `COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE`, `SEARCH-029_BOUND_PLANNER_STATE_COUNT` |
@@ -748,4 +747,3 @@ Prefer a stable alternative when a nonlethal self-debuffing nuke is not needed a
 - tests: `principle-shield-043-current-future-resource-value`, `DM-01`
 
 Shield decisions consider immediate lethal, damage pressure, remaining shields, next-cycle pressure, Fast DPT, future Charged reachability, self-debuff nuke pressure, and bait policy.
-

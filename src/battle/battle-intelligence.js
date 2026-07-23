@@ -34,7 +34,7 @@ function createPvPeakBattleIntelligenceApi() {
     WAIT_ONE_FAST: "WAIT_ONE_FAST",
     NO_TIMING_PREFERENCE: "NO_TIMING_PREFERENCE"
   });
-  const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze(["availability", "tactical"]);
+  const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze(["availability", "tactical", "timing"]);
 
   const RULES = Object.freeze([
     rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK", false, ["AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE", "ROUTE-026_BUILD_TO_SELECTED_MOVE"]),
@@ -42,7 +42,6 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["ROUTE-004_CHARGED_READINESS_CALCULATION", "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
     rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE", false, ["TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"]),
     rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON", "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"]),
-    rule("BI_ENERGY_CAP_FORCES_THROW", "Throw before energy cap overflow", PRIORITY_CLASSES.RESOURCE, "ENERGY_CAP_FORCES_THROW", false, ["TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS", "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"]),
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true, ["EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"]),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"]),
     rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT"]),
@@ -382,7 +381,18 @@ function createPvPeakBattleIntelligenceApi() {
       "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
       "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
       "TACTICAL-009_DO_NOT_THROW_WHEN_FAST_ALREADY_KOS",
-      "SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER"
+      "SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER",
+      "TIMING-011_OPTIMIZE_CHARGED_TIMING",
+      "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+      "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+      "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+      "TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS",
+      "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+      "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE",
+      "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS",
+      "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+      "TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL",
+      "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"
     ];
     const triggered = ["ROUTE-004_CHARGED_READINESS_CALCULATION", "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"];
     const rejected = [];
@@ -499,6 +509,46 @@ function createPvPeakBattleIntelligenceApi() {
     if (twoCheapEvidence.retained) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
     else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
 
+    const timing = evaluateTimingPrinciples({
+      state,
+      side,
+      actor,
+      opponent,
+      fast,
+      charged,
+      context,
+      readiness,
+      survival: baseEvidence.survivalHorizon
+    });
+    triggered.push(...timing.principlesTriggered);
+    rejected.push(...timing.principlesRejected);
+    if (timing.intent === PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST && fast) {
+      return resolvedPrinciple(
+        fast,
+        "timing",
+        PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST,
+        triggered,
+        rejected,
+        { ...baseEvidence, twoCheapRoute: twoCheapEvidence, timing: timing.evidence }
+      );
+    }
+    if (timing.intent === PRINCIPLE_TIMING_INTENTS.THROW_NOW && charged.length) {
+      return {
+        ...resolvedPrinciple(
+          null,
+          "timing",
+          PRINCIPLE_TIMING_INTENTS.THROW_NOW,
+          triggered,
+          rejected,
+          { ...baseEvidence, twoCheapRoute: twoCheapEvidence, timing: timing.evidence }
+        ),
+        timingIntentOnly: true,
+        allowedActionTypes: [ACTION_TYPES.CHARGED_MOVE],
+        unresolvedCategories: ["route", "farm", "bait", "shield", "effects", "ambiguity"],
+        fallbackAllowed: true
+      };
+    }
+
     return {
       resolved: false,
       action: null,
@@ -509,7 +559,8 @@ function createPvPeakBattleIntelligenceApi() {
       principlesTriggered: [...new Set(triggered)],
       principlesRejected: [...new Set(rejected)],
       evidence: { ...baseEvidence, twoCheapRoute: twoCheapEvidence },
-      unresolvedCategories: ["timing", "route", "farm", "bait", "shield", "effects", "ambiguity"],
+      timingIntent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
+      unresolvedCategories: ["route", "farm", "bait", "shield", "effects", "ambiguity"],
       migratedCategories: [...MIGRATED_PRINCIPLE_CATEGORIES],
       fallbackAllowed: true
     };
@@ -621,6 +672,42 @@ function createPvPeakBattleIntelligenceApi() {
     )[0] || null;
   }
 
+  function completeChargedMoveChoice(charged, state, policy, context) {
+    if (typeof context.evaluateCandidate !== "function" && typeof context.evaluateContinuation !== "function") {
+      return bestMeaningfulCharged(charged, context);
+    }
+    const meaningful = pruneDominatedCandidates(charged, context);
+    for (const candidate of meaningful) {
+      if (hasGuaranteedEffect(candidate, context)) applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
+      const evidence = typeof context.evaluateCandidate === "function"
+        ? context.evaluateCandidate(candidate.action, { state, policy: policy.id })
+        : null;
+      applyCandidateEvidence(candidate, evidence);
+    }
+    const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
+    if (typeof context.evaluateContinuation === "function" && selectable.length > 1) {
+      const searchCandidates = [...selectable]
+        .filter(candidate => {
+          if (context.forceChargedContinuation === true) return true;
+          const ruleIds = candidate.evidence?.candidateEvaluation?.ruleIds || [];
+          const timingOnly = ruleIds.length > 0 && ruleIds.every(ruleId =>
+            ruleId === "BI_TIMING_CONTINUATION" || ruleId === "BI_TIMING_VALUE"
+          );
+          return candidate.requiresContinuationSearch && !timingOnly;
+        })
+        .sort(compareCandidates)
+        .slice(0, Math.max(2, policy.maxCandidates));
+      if (searchCandidates.length > 1) {
+        statistics.continuationSearches++;
+        const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
+          minimumComparableCandidates: Math.min(2, searchCandidates.length)
+        });
+        if (searched) applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
+      }
+    }
+    return [...selectable].sort(compareCandidates)[0] || meaningful[0] || null;
+  }
+
   function twoCheapRouteEvidence(actor, charged) {
     if (charged.length < 2) return { retained: false };
     const ordered = [...charged].sort((a, b) =>
@@ -639,6 +726,236 @@ function createPvPeakBattleIntelligenceApi() {
       nukeMoveId: nuke.action.moveId,
       completeRouteRequired: true
     };
+  }
+
+  function evaluateTimingPrinciples(input = {}) {
+    const {
+      state,
+      side,
+      actor = {},
+      opponent = {},
+      fast,
+      charged = [],
+      context = {},
+      readiness = [],
+      survival = {}
+    } = input;
+    const currentTurn = Math.max(0, numeric(state?.currentTurn));
+    const actorReadyTurn = Math.max(currentTurn, numeric(actor.readyTurn, currentTurn));
+    const opponentReadyTurn = Math.max(currentTurn, numeric(opponent.readyTurn, currentTurn));
+    const ownFastDuration = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const opponentFastDuration = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const waitEndTurn = actorReadyTurn + ownFastDuration;
+    const fastEnergyGain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    const projectedEnergy = numeric(actor.energy) + fastEnergyGain;
+    const incomingPendingDamage = pendingDamageThrough(state, side, waitEndTurn);
+    const opponentFastCount = countActionsBeforeTurn(opponentReadyTurn, opponentFastDuration, waitEndTurn);
+    const opponentFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("opponent")
+        : opponent.fastMove?.damage
+    ));
+    const ownFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("actor")
+        : actor.fastMove?.damage
+    ));
+    const ownFastKOsAfterWait = numeric(opponent.hp) > 0 && ownFastDamage >= numeric(opponent.hp);
+    const actorEnergyAfterWait = clamp(numeric(actor.energy) + fastEnergyGain, 0, 100);
+    const fittedOpponentFastDamage = opponentFastCount * opponentFastDamage;
+    const actorFaints = numeric(actor.hp) > 0
+      && incomingPendingDamage + fittedOpponentFastDamage >= numeric(actor.hp);
+    const opponentEnergyAfterWait = clamp(
+      numeric(opponent.energy) + opponentFastCount * Math.max(0, numeric(opponent.fastMove?.energyGain)),
+      0,
+      100
+    );
+    const opponentLethalCharged = numeric(actor.shields) <= 0 && (opponent.chargedMoves || []).some(move => {
+      if (opponentEnergyAfterWait < numeric(move?.energyCost)) return false;
+      const damage = typeof context.estimateOpponentDamage === "function"
+        ? context.estimateOpponentDamage(move)
+        : numeric(move?.damage);
+      return numeric(damage) >= Math.max(0, numeric(actor.hp) - incomingPendingDamage - fittedOpponentFastDamage);
+    });
+    const canonicalOpponentLethal = typeof context.canonicalOpponentLethalBeforeNextWindow === "boolean"
+      ? context.canonicalOpponentLethalBeforeNextWindow
+      : context.opponentLethalBeforeNextWindow;
+    const hasCanonicalOpponentLethal = typeof canonicalOpponentLethal === "boolean";
+    const opponentReadyAfterWait = opponentReadyTurn + opponentFastCount * opponentFastDuration;
+    const actorLethalChargedAfterWait = (actor.chargedMoves || []).some(move => {
+      if (actorEnergyAfterWait < numeric(move?.energyCost)) return false;
+      const damage = typeof context.estimateDamage === "function"
+        ? context.estimateDamage({ type: ACTION_TYPES.CHARGED_MOVE, moveId: move?.id || null, move })
+        : numeric(move?.damage);
+      return numeric(damage) >= Math.max(0, numeric(opponent.hp) - ownFastDamage);
+    });
+    const actorWinsCmpAfterWait = actorLethalChargedAfterWait
+      && waitEndTurn === opponentReadyAfterWait
+      && (numeric(actor.attack) > numeric(opponent.attack)
+        || state?.cmpState?.readySides?.[0] === side);
+    const opponentLethalConfirmed = !ownFastKOsAfterWait && !actorWinsCmpAfterWait && (hasCanonicalOpponentLethal
+      ? canonicalOpponentLethal
+      : opponentLethalCharged);
+    const pendingOpponentFast = (state?.pendingEvents || []).find(event =>
+      event?.status !== "denied"
+      && event?.sourceSide === opponentOf(side)
+      && event?.targetSide === side
+      && numeric(event?.resolveTurn) >= currentTurn
+    ) || null;
+    const sameDuration = ownFastDuration === opponentFastDuration;
+    const exactMultiple = ownFastDuration > opponentFastDuration
+      && ownFastDuration % opponentFastDuration === 0;
+    const currentTimingOptimal = !!pendingOpponentFast
+      && opponentReadyTurn > actorReadyTurn
+      && actorReadyTurn === opponentReadyTurn - 1;
+    const currentReachableChargedCount = reachableChargedCountForEnergy(actor.energy, actor.chargedMoves);
+    const survivingActionWindows = actorFaints ? 0
+      : survival.pendingFastLethal ? 1
+        : Infinity;
+    const currentResourcesBecomeUnusable = Number.isFinite(survivingActionWindows)
+      && survivingActionWindows < currentReachableChargedCount;
+    const timingOptimizationEnabled = context.chargedTimingOptimization !== false;
+    const timingCanImprove = timingOptimizationEnabled
+      && !!pendingOpponentFast
+      && !sameDuration
+      && !exactMultiple
+      && waitEndTurn < opponentReadyTurn;
+    const principlesTriggered = ["TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS"];
+    const principlesRejected = [];
+
+    if (!fast || !charged.length) {
+      principlesRejected.push(
+        "TIMING-011_OPTIMIZE_CHARGED_TIMING",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS",
+        "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+        "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS",
+        "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+        "TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL",
+        "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"
+      );
+      return {
+        intent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
+        principlesTriggered,
+        principlesRejected,
+        evidence: { currentTurn, actorReadyTurn, opponentReadyTurn, reason: "NO_FAST_AND_CHARGED_CHOICE" }
+      };
+    }
+
+    if (actorFaints) principlesTriggered.push("TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS");
+    else principlesRejected.push("TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS");
+    if (projectedEnergy > 100) principlesTriggered.push("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS");
+    else principlesRejected.push("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS");
+    if (currentResourcesBecomeUnusable) principlesTriggered.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
+    else principlesRejected.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
+    principlesRejected.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
+    if (opponentLethalConfirmed) {
+      principlesTriggered.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
+    } else {
+      principlesRejected.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
+    }
+    if (fittedOpponentFastDamage >= numeric(actor.hp) && numeric(actor.hp) > 0) {
+      principlesTriggered.push("TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL");
+    } else {
+      principlesRejected.push("TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL");
+    }
+
+    const unsafeToWait = actorFaints
+      || projectedEnergy > 100
+      || currentResourcesBecomeUnusable
+      || opponentLethalConfirmed
+      || (fittedOpponentFastDamage >= numeric(actor.hp) && numeric(actor.hp) > 0);
+    const evidence = {
+      currentTurn,
+      actorReadyTurn,
+      opponentReadyTurn,
+      ownFastDuration,
+      opponentFastDuration,
+      waitEndTurn,
+      projectedEnergy,
+      incomingPendingDamage,
+      fittedOpponentFastDamage,
+      ownFastDamage,
+      ownFastKOsAfterWait,
+      actorEnergyAfterWait,
+      actorLethalChargedAfterWait,
+      actorWinsCmpAfterWait,
+      opponentReadyAfterWait,
+      opponentEnergyAfterWait,
+      opponentLethalCharged,
+      opponentLethalConfirmed,
+      currentReachableChargedCount,
+      survivingActionWindows: Number.isFinite(survivingActionWindows) ? survivingActionWindows : null,
+      timingTarget: Math.max(currentTurn, opponentReadyTurn - 1),
+      currentTimingOptimal,
+      pendingOpponentFastEventId: pendingOpponentFast?.id || null,
+      readiness
+    };
+
+    if (unsafeToWait || currentTimingOptimal) {
+      principlesTriggered.push("TIMING-011_OPTIMIZE_CHARGED_TIMING");
+      if (currentTimingOptimal) evidence.currentTimingOptimal = true;
+      return {
+        intent: PRINCIPLE_TIMING_INTENTS.THROW_NOW,
+        principlesTriggered,
+        principlesRejected,
+        evidence
+      };
+    }
+    if (sameDuration) {
+      principlesTriggered.push("TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION");
+      principlesRejected.push("TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+      return {
+        intent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
+        principlesTriggered,
+        principlesRejected,
+        evidence
+      };
+    }
+    principlesRejected.push("TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION");
+    if (exactMultiple) {
+      principlesTriggered.push("TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION");
+      principlesRejected.push("TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+      return {
+        intent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
+        principlesTriggered,
+        principlesRejected,
+        evidence
+      };
+    }
+    principlesRejected.push("TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION");
+    if (timingCanImprove) {
+      principlesTriggered.push(
+        "TIMING-011_OPTIMIZE_CHARGED_TIMING",
+        "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"
+      );
+      return {
+        intent: PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST,
+        principlesTriggered,
+        principlesRejected,
+        evidence
+      };
+    }
+    principlesRejected.push("TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+    return {
+      intent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
+      principlesTriggered,
+      principlesRejected,
+      evidence
+    };
+  }
+
+  function countActionsBeforeTurn(readyTurn, duration, endTurn) {
+    if (readyTurn >= endTurn) return 0;
+    return Math.max(0, Math.ceil((endTurn - readyTurn) / Math.max(1, duration)));
+  }
+
+  function reachableChargedCountForEnergy(energy, moves = []) {
+    const costs = (moves || []).filter(Boolean).map(move => Math.max(0, numeric(move.energyCost))).filter(cost => cost > 0);
+    if (!costs.length) return 0;
+    return Math.floor(Math.max(0, numeric(energy)) / Math.min(...costs));
   }
 
   function selectAction(input = {}) {
@@ -682,6 +999,16 @@ function createPvPeakBattleIntelligenceApi() {
       policy,
       context
     });
+    let hybridEvaluationResolved = false;
+    let hybridEvaluation = null;
+    const resolveHybridEvaluation = () => {
+      if (hybridEvaluationResolved) return hybridEvaluation;
+      hybridEvaluationResolved = true;
+      hybridEvaluation = typeof context.evaluateHybrid === "function"
+        ? context.evaluateHybrid()
+        : context.hybridEvaluation;
+      return hybridEvaluation;
+    };
     if (principleEvaluation.resolved && principleEvaluation.candidate) {
       const cached = fastPathCache.get(cacheKey);
       if (cached) {
@@ -706,6 +1033,9 @@ function createPvPeakBattleIntelligenceApi() {
         applyRule(chosen, "BI_GUARANTEED_LETHAL", 1000, .99);
       } else if (principleEvaluation.intent === "THROW_BEFORE_OPPONENT_LETHAL") {
         applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
+      } else if (principleEvaluation.category === "timing") {
+        chosen.reasonCodes.push(...timingReasonCodes(principleEvaluation.principlesTriggered));
+        chosen.reasonCodes = [...new Set(chosen.reasonCodes)];
       }
       for (const principleId of principleEvaluation.principleIds) {
         if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
@@ -723,6 +1053,88 @@ function createPvPeakBattleIntelligenceApi() {
           fallbackUsed: false,
           principleDecisionPreserved: true,
           finalAuthority: "PRINCIPLE_ENGINE"
+        }
+      );
+      cacheFastPath(cacheKey, result);
+      finishTiming(startedAt, selectionSpan);
+      return result;
+    }
+
+    if (principleEvaluation.timingIntentOnly
+      && principleEvaluation.intent === PRINCIPLE_TIMING_INTENTS.THROW_NOW
+      && charged.length) {
+      const constrainedLegalActions = legalActions.filter(action => action.type === ACTION_TYPES.CHARGED_MOVE);
+      const constrainedCandidates = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
+      const urgentSurvivalThrow = principleEvaluation.principlesTriggered.some(principleId =>
+        [
+          "TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS",
+          "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+          "TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL"
+        ].includes(principleId)
+      );
+      const routeEvidenceRequiresHybrid = !urgentSurvivalThrow && (
+        principleEvaluation.evidence?.twoCheapRoute?.retained === true
+        || context.forceChargedContinuation === true
+        || constrainedCandidates.some(candidate =>
+          hasHarmfulSelfEffect(candidate.action) || hasGuaranteedEffect(candidate, context)
+        )
+      );
+      const hybridAvailable = routeEvidenceRequiresHybrid
+        && (typeof context.evaluateHybrid === "function" || !!context.hybridEvaluation);
+      const evaluatedFallback = hybridAvailable ? resolveHybridEvaluation() : null;
+      const fallbackRequestedType = evaluatedFallback?.action
+        ? normalizeAction(evaluatedFallback.action, side).type
+        : null;
+      const overrideBlocked = !!fallbackRequestedType
+        && fallbackRequestedType !== ACTION_TYPES.CHARGED_MOVE;
+      const hybridSelection = applyHybridEvaluation({
+        evaluation: evaluatedFallback,
+        legalActions: constrainedLegalActions,
+        candidates: constrainedCandidates,
+        policy,
+        cacheKey,
+        principleEvaluation,
+        overrideBlocked,
+        finalAuthority: "PRINCIPLE_ENGINE_TIMING_WITH_HYBRID_MOVE_CHOICE"
+      });
+      if (hybridSelection?.result) {
+        finishTiming(startedAt, selectionSpan);
+        return hybridSelection.result;
+      }
+      const chosen = (urgentSurvivalThrow
+        ? bestMeaningfulCharged(constrainedCandidates, context)
+        : completeChargedMoveChoice(constrainedCandidates, state, policy, context))
+        || bestMeaningfulCharged(constrainedCandidates, context);
+      const hybridUsedDuringCompletion = hybridEvaluationResolved
+        ? (typeof context.hybridWasInvoked === "function" ? context.hybridWasInvoked() : !!evaluatedFallback)
+        : (typeof context.hybridWasInvoked === "function" && context.hybridWasInvoked());
+      for (const principleId of principleEvaluation.principleIds) {
+        if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
+      }
+      chosen.reasonCodes.push(...timingReasonCodes(principleEvaluation.principlesTriggered));
+      chosen.reasonCodes = [...new Set(chosen.reasonCodes)];
+      chosen.evidence = { ...(chosen.evidence || {}), principleEngine: principleEvaluation.evidence };
+      const result = selectionResult(
+        chosen,
+        candidates,
+        policy,
+        true,
+        chosen.reasonCodes,
+        "The Timing Engine requires THROW_NOW; unresolved move ordering is completed within the Charged-only constraint.",
+        {
+          principleEvaluation,
+          fallbackUsed: hybridUsedDuringCompletion,
+          fallbackReason: "TIMING_RESOLVED_MOVE_CHOICE_UNRESOLVED",
+          fallbackResult: evaluatedFallback ? {
+            decisive: evaluatedFallback.decisive === true,
+            reasonCodes: [...(evaluatedFallback.reasonCodes || [])],
+            action: evaluatedFallback.action || null
+          } : null,
+          principleDecisionPreserved: true,
+          overrideBlocked,
+          finalAuthority: hybridUsedDuringCompletion
+            ? "PRINCIPLE_ENGINE_TIMING_WITH_LEGACY_MOVE_CHOICE"
+            : "PRINCIPLE_ENGINE_TIMING"
         }
       );
       cacheFastPath(cacheKey, result);
@@ -769,27 +1181,7 @@ function createPvPeakBattleIntelligenceApi() {
     statistics.cacheMisses++;
     perfDebug?.recordCache("battle-intelligence", false, { size: fastPathCache.size });
 
-    const energyCapThrow = selectEnergyCapForcedThrow(charged, state, side, context);
-    if (energyCapThrow) {
-      const chosen = applyRule(energyCapThrow, "BI_ENERGY_CAP_FORCES_THROW", 650, .92, {
-        currentEnergy: state.sides[side]?.energy || 0,
-        fastEnergyGain: Math.max(0, numeric(state.sides[side]?.fastMove?.energyGain)),
-        energyCap: 100
-      });
-      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Next Fast Move would overflow energy, so the best immediate Charged Move is used before waiting.", {
-        principleEvaluation,
-        fallbackUsed: false,
-        principleDecisionPreserved: true,
-        finalAuthority: "LEGACY_DIRECT_GATE"
-      });
-      cacheFastPath(cacheKey, result);
-      finishTiming(startedAt, selectionSpan);
-      return result;
-    }
-
-    const hybridEvaluation = typeof context.evaluateHybrid === "function"
-      ? context.evaluateHybrid()
-      : context.hybridEvaluation;
+    hybridEvaluation = resolveHybridEvaluation();
     const hybridSelection = applyHybridEvaluation({
       evaluation: hybridEvaluation,
       legalActions,
@@ -866,7 +1258,9 @@ function createPvPeakBattleIntelligenceApi() {
     applyRule(fallback, "BI_CANDIDATE_EVIDENCE", 0, .7);
     const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback), {
       principleEvaluation,
-      fallbackUsed: typeof context.evaluateHybrid === "function" || !!context.hybridEvaluation,
+      fallbackUsed: typeof context.hybridWasInvoked === "function"
+        ? context.hybridWasInvoked()
+        : !!hybridEvaluation,
       fallbackReason: "PRINCIPLE_CATEGORIES_UNRESOLVED",
       fallbackResult: hybridEvaluation ? {
         decisive: hybridEvaluation.decisive === true,
@@ -887,6 +1281,9 @@ function createPvPeakBattleIntelligenceApi() {
     const legalAction = input.legalActions.find(action => actionKey(action) === actionKey(normalized));
     const chosen = input.candidates.find(candidate => actionKey(candidate.action) === actionKey(normalized));
     if (!legalAction || !chosen) return null;
+    for (const principleId of input.principleEvaluation?.principleIds || []) {
+      if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
+    }
     chosen.evidence = {
       ...(chosen.evidence || {}),
       hybrid: {
@@ -922,7 +1319,8 @@ function createPvPeakBattleIntelligenceApi() {
             action: chosen.action
           },
           principleDecisionPreserved: true,
-          finalAuthority: "HYBRID_FALLBACK"
+          overrideBlocked: input.overrideBlocked === true,
+          finalAuthority: input.finalAuthority || "HYBRID_FALLBACK"
         }
       );
       cacheFastPath(input.cacheKey, result);
@@ -1062,7 +1460,24 @@ function createPvPeakBattleIntelligenceApi() {
     if (evaluation.intent === "BREAK_PROTECTION") {
       return "The cheapest safe Charged Move breaks the active generic protection mechanic.";
     }
+    if (evaluation.intent === PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST) {
+      return "The Timing Engine selected exactly one safe Fast Move, followed by canonical resolution and re-planning.";
+    }
     return "The Principle Engine directly resolved the action.";
+  }
+
+  function timingReasonCodes(principleIds = []) {
+    const ids = new Set(principleIds || []);
+    const reasons = [];
+    if (ids.has("TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS")) reasons.push("FAINTS_WHILE_WAITING");
+    if (ids.has("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS")) reasons.push("ENERGY_CAP_FORCES_THROW");
+    if (ids.has("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE")) reasons.push("CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
+    if (ids.has("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS")) reasons.push("IMMEDIATE_LETHAL_LOST");
+    if (ids.has("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE")) reasons.push("LETHAL_CHARGED_CONCEDED");
+    if (ids.has("TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL")) reasons.push("FAST_DAMAGE_LETHAL_WHILE_WAITING");
+    if (ids.has("TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN")) reasons.push("SAFE_EXTRA_FAST", "OPTIMAL_CHARGE_TIMING");
+    if (!reasons.length && ids.has("TIMING-011_OPTIMIZE_CHARGED_TIMING")) reasons.push("OPTIMAL_CHARGE_TIMING");
+    return reasons;
   }
 
   function actionLabel(action) {
@@ -1245,20 +1660,6 @@ function createPvPeakBattleIntelligenceApi() {
     const damage = damageFor(candidate, context);
     if (damage < target.hp) return false;
     return typeof context.willOpponentShield === "function" ? !context.willOpponentShield(candidate.action) : target.shields <= 0;
-  }
-
-  function selectEnergyCapForcedThrow(charged, state, side, context) {
-    if (!charged?.length) return null;
-    const actor = state.sides?.[side] || {};
-    const currentEnergy = clamp(numeric(actor.energy), 0, 100);
-    if (numeric(state.currentTurn) <= 0 && currentEnergy >= 100) return null;
-    const fastEnergyGain = Math.max(0, numeric(actor.fastMove?.energyGain));
-    if (fastEnergyGain <= 0 || currentEnergy + fastEnergyGain <= 100) return null;
-    return [...charged].sort((a, b) =>
-      damageFor(b, context) - damageFor(a, context)
-      || actionEnergyCost(a.action) - actionEnergyCost(b.action)
-      || stableCandidateOrder(a, b)
-    )[0] || null;
   }
 
   function nextPendingLethal(state, side) {
