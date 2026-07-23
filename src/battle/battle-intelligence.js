@@ -38,6 +38,9 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP"),
     rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED"),
+    rule("BI_HYBRID_BASELINE", "Use the bounded hybrid baseline", PRIORITY_CLASSES.OUTCOME_EFFECT, "BOUNDED_OFFENSIVE_ROUTE"),
+    rule("BI_SELECTIVE_DEEP_SEARCH", "Verify an ambiguous hybrid decision", PRIORITY_CLASSES.CONTINUATION, "AMBIGUOUS_DEEP_SEARCH", true),
+    rule("BI_FARM_DOWN", "Use the best farm-down route", PRIORITY_CLASSES.RESOURCE, "FARM_DOWN_ROUTE"),
     rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME"),
     rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE"),
     rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true),
@@ -393,6 +396,18 @@ function createPvPeakBattleIntelligenceApi() {
       return result;
     }
 
+    const hybridSelection = applyHybridEvaluation({
+      evaluation: context.hybridEvaluation,
+      legalActions,
+      candidates,
+      policy,
+      cacheKey
+    });
+    if (hybridSelection?.result) {
+      finishTiming(startedAt, selectionSpan);
+      return hybridSelection.result;
+    }
+
     const meaningful = pruneDominatedCandidates(candidates, context);
     for (const candidate of meaningful) {
       if (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || !hasGuaranteedEffect(candidate, context)) continue;
@@ -418,6 +433,7 @@ function createPvPeakBattleIntelligenceApi() {
       // stricter decision: it must keep Fast/Wait alternatives in the set, or
       // the engine silently loses the alignment line before it is evaluated.
       const fullChargedComparison = context.forceChargedContinuation === true && !timingComparison;
+      const hybridComparison = context.hybridEvaluation?.ambiguity?.ambiguous === true;
       // A timing decision can contain throw-now, a safe Fast, a one-turn
       // alignment wait, and the other legal Charged Move. Retain that small
       // complete set rather than letting the normal candidate budget silently
@@ -440,7 +456,9 @@ function createPvPeakBattleIntelligenceApi() {
           // and, where legal, a one-turn alignment wait.
           minimumComparableCandidates: timingComparison
             ? Math.min(4, searchCandidates.length)
-            : fullChargedComparison ? Math.min(2, searchCandidates.length) : 1
+            : fullChargedComparison ? Math.min(2, searchCandidates.length)
+            : hybridComparison ? searchCandidates.length
+            : 1
         });
         if (searched) {
           applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
@@ -454,6 +472,65 @@ function createPvPeakBattleIntelligenceApi() {
     const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback));
     finishTiming(startedAt, selectionSpan);
     return result;
+  }
+
+  function applyHybridEvaluation(input = {}) {
+    const evaluation = input.evaluation;
+    if (!evaluation?.action) return null;
+    const normalized = normalizeAction(evaluation.action, evaluation.action.side);
+    const legalAction = input.legalActions.find(action => actionKey(action) === actionKey(normalized));
+    const chosen = input.candidates.find(candidate => actionKey(candidate.action) === actionKey(normalized));
+    if (!legalAction || !chosen) return null;
+    chosen.evidence = {
+      ...(chosen.evidence || {}),
+      hybrid: {
+        timing: evaluation.timing || null,
+        routePlan: evaluation.routePlan || null,
+        ambiguity: evaluation.ambiguity || null,
+        completeness: evaluation.completeness || "unknown"
+      }
+    };
+    if (evaluation.decisive) {
+      for (const reasonCode of evaluation.reasonCodes || []) {
+        if (!chosen.reasonCodes.includes(reasonCode)) chosen.reasonCodes.push(reasonCode);
+      }
+      if (evaluation.reasonCodes?.includes("FARM_DOWN_ROUTE")) {
+        applyRule(chosen, "BI_FARM_DOWN", 0, .92);
+      } else {
+        applyRule(chosen, "BI_HYBRID_BASELINE", 0, .94);
+      }
+      const result = selectionResult(
+        chosen,
+        input.candidates,
+        input.policy,
+        evaluation.fastPath === true,
+        chosen.reasonCodes,
+        evaluation.explanation || "Selected by the bounded hybrid baseline."
+      );
+      cacheFastPath(input.cacheKey, result);
+      return { result, chosen };
+    }
+
+    const alternativeKeys = new Set((evaluation.ambiguity?.alternatives || [])
+      .map(alternative => actionIntentKey(normalizeAction(alternative.firstAction || {}, normalized.side))));
+    for (const candidate of input.candidates) {
+      if (!alternativeKeys.has(actionIntentKey(candidate.action))) continue;
+      candidate.requiresContinuationSearch = true;
+      candidate.evidence = {
+        ...(candidate.evidence || {}),
+        hybridAlternative: (evaluation.ambiguity?.alternatives || []).find(alternative =>
+          actionIntentKey(normalizeAction(alternative.firstAction || {}, normalized.side)) === actionIntentKey(candidate.action)
+        ) || null
+      };
+      // Search eligibility is not a preference. Elevating every ambiguous
+      // alternative into the continuation priority class changes the result
+      // before any continuation has been compared.
+      if (!candidate.sourceRuleIds.includes("BI_SELECTIVE_DEEP_SEARCH")) {
+        candidate.sourceRuleIds.push("BI_SELECTIVE_DEEP_SEARCH");
+      }
+      candidate.confidence = Math.max(candidate.confidence, .82);
+    }
+    return { result: null, chosen };
   }
 
   function selectMatchupPlanAction(input) {
@@ -703,6 +780,12 @@ function createPvPeakBattleIntelligenceApi() {
       explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
       if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
       candidate.continuationScore = Number(evaluation.pcsv?.value ?? evaluation.score) - Math.max(0, Number(candidate.continuationPenalty || 0));
+      // A provisional rollout winner is not a certified battle outcome.
+      // Outcome classes outrank heuristics only when the evaluator reached a
+      // complete terminal state; incomplete evidence remains a score/tie-break.
+      candidate.outcomeClass = evaluation.complete === true
+        ? normalizeOutcomeClass(evaluation.outcome)
+        : null;
       candidate.evidence = { ...(candidate.evidence || {}), continuation: evaluation };
       if (!best || compareCandidates(candidate, best) < 0) best = candidate;
     }
@@ -892,11 +975,14 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function compareCandidates(a, b) {
+    const outcomeA = outcomeRank(a.outcomeClass);
+    const outcomeB = outcomeRank(b.outcomeClass);
     const continuationA = a.continuationScore == null ? -Infinity : a.continuationScore;
     const continuationB = b.continuationScore == null ? -Infinity : b.continuationScore;
     const timingQualityA = numeric(a.evidence?.continuation?.timingQuality?.score);
     const timingQualityB = numeric(b.evidence?.continuation?.timingQuality?.score);
-    return a.priorityClass - b.priorityClass
+    return (outcomeA >= 0 && outcomeB >= 0 ? outcomeB - outcomeA : 0)
+      || a.priorityClass - b.priorityClass
       || continuationB - continuationA
       // When two complete continuations reach the same outcome and resources,
       // prefer the line whose first Charged Move lands deeper inside the
@@ -905,6 +991,11 @@ function createPvPeakBattleIntelligenceApi() {
       || timingQualityB - timingQualityA
       || b.tacticalScore - a.tacticalScore
       || stableCandidateOrder(a, b);
+  }
+
+  function normalizeOutcomeClass(value) {
+    const outcome = String(value || "").toLowerCase();
+    return ["win", "draw", "loss"].includes(outcome) ? outcome : null;
   }
 
   function stableCandidateOrder(a, b) {
@@ -935,6 +1026,10 @@ function createPvPeakBattleIntelligenceApi() {
 
   function actionKey(action) {
     return [action?.type || "none", action?.side || "?", action?.moveId || "none", action?.timing?.startTurn ?? ""].join(":");
+  }
+
+  function actionIntentKey(action) {
+    return [action?.type || "none", action?.side || "?", action?.moveId || "none"].join(":");
   }
 
   function opponentOf(side) {

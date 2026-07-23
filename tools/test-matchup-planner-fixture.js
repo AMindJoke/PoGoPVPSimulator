@@ -64,9 +64,9 @@ function chargedTurns(result, side, moveId) {
 }
 
 const baseline = simulate("quagsire-corsola-baseline");
-assert(baseline.details.winnerEdge > 0, "Shadow Quagsire must find the legal winning two-shield line.");
-assert.deepStrictEqual(chargedTurns(baseline, "A", "AQUA_TAIL"), [8, 17, 30, 37, 44]);
-assert.deepStrictEqual(chargedTurns(baseline, "B", "NIGHT_SHADE"), [21, 34]);
+assert(baseline.details.winnerEdge > 0, "Shadow Quagsire must adapt to Corsola's charged timing and win.");
+assert.deepStrictEqual(chargedTurns(baseline, "A", "AQUA_TAIL"), [8, 17, 34, 37, 44]);
+assert.deepStrictEqual(chargedTurns(baseline, "B", "NIGHT_SHADE"), [21, 31]);
 assert.deepStrictEqual(JSON.parse(JSON.stringify(baseline.decisionTrace.finalState.A)), {
   pokemonId: "quagsire_shadow",
   hp: 19,
@@ -83,27 +83,13 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(baseline.decisionTrace.finalSta
 assert.strictEqual(baseline.decisionTrace.finalState.B.hp, 0);
 assert.strictEqual(baseline.decisionTrace.finalState.B.energy, 50);
 
-const guardedPlanner = simulate("quagsire-corsola-guarded-planner", null, {
-  matchupPlannerV2: true,
-  plannerPolicy: "FAST"
-});
-assert.deepStrictEqual(
-  chargedTurns(guardedPlanner, "A", "AQUA_TAIL"),
-  chargedTurns(baseline, "A", "AQUA_TAIL"),
-  "An incomplete FAST plan must fall back without changing the corrected canonical timeline."
-);
-assert.deepStrictEqual(
-  chargedTurns(guardedPlanner, "B", "NIGHT_SHADE"),
-  chargedTurns(baseline, "B", "NIGHT_SHADE")
-);
-assert.strictEqual(guardedPlanner.details.winnerEdge > 0, true);
 assert.strictEqual(
-  guardedPlanner.decisionTrace.decisions.some(decision => String(decision.reasonCode || "").startsWith("MP_PROVEN_")),
+  baseline.decisionTrace.decisions.some(decision => String(decision.reasonCode || "").startsWith("MP_PROVEN_")),
   false,
-  "A bounded planner result must not be presented as proven."
+  "The optional Matchup Planner V2 must remain disabled by default."
 );
 
-const verifiedLine = simulate("quagsire-corsola-verified-line", {
+const publishedFixedLine = simulate("quagsire-corsola-published-fixed-line", {
   defaultAction: "fast",
   steps: [
     ...[8, 17, 30, 37, 44].map(turn => ({ side: "A", turn, type: "charged_move", moveId: "AQUA_TAIL" })),
@@ -111,14 +97,40 @@ const verifiedLine = simulate("quagsire-corsola-verified-line", {
   ]
 });
 
-assert(verifiedLine.details.winnerEdge > 0, "The canonical engine must reproduce the legal Shadow Quagsire winning line.");
-assert.deepStrictEqual(chargedTurns(verifiedLine, "A", "AQUA_TAIL"), [8, 17, 30, 37, 44]);
-assert.deepStrictEqual(chargedTurns(verifiedLine, "B", "NIGHT_SHADE"), [21, 34]);
-assert.strictEqual(verifiedLine.decisionTrace.finalState.A.hp, 19);
-assert.strictEqual(verifiedLine.decisionTrace.finalState.A.energy, 5);
-assert.strictEqual(verifiedLine.decisionTrace.finalState.B.hp, 0);
-assert.strictEqual(verifiedLine.decisionTrace.finalState.B.energy, 50);
+assert(publishedFixedLine.details.winnerEdge > 0, "The engine must reproduce the published cooperative line.");
+assert.deepStrictEqual(chargedTurns(publishedFixedLine, "A", "AQUA_TAIL"), [8, 17, 30, 37, 44]);
+assert.deepStrictEqual(chargedTurns(publishedFixedLine, "B", "NIGHT_SHADE"), [21, 34]);
+assert.strictEqual(publishedFixedLine.decisionTrace.finalState.A.hp, 19);
+assert.strictEqual(publishedFixedLine.decisionTrace.finalState.A.energy, 5);
+assert.strictEqual(publishedFixedLine.decisionTrace.finalState.B.hp, 0);
+assert.strictEqual(publishedFixedLine.decisionTrace.finalState.B.energy, 50);
+
+function actionSteps(result, side) {
+  return Array.from(result.timelineTrace || [])
+    .filter(event => event.trainer === side && (event.kind === "fast" || event.kind === "charge"))
+    .map(event => ({
+      side,
+      turn: event.start,
+      type: event.kind === "fast" ? "fast_move" : "charged_move",
+      ...(event.kind === "charge" ? { moveId: event.moveId } : {})
+    }));
+}
+
+const rationalResponse = simulate("quagsire-corsola-rational-response", {
+  steps: [
+    ...actionSteps(publishedFixedLine, "A"),
+    { side: "B", turn: 21, type: "charged_move", moveId: "NIGHT_SHADE" },
+    { side: "B", turn: 31, type: "charged_move", moveId: "NIGHT_SHADE" }
+  ]
+});
+assert(
+  rationalResponse.details.winnerEdge < 0,
+  "The published fixed line must not be described as proven: Corsola's legal T31 Night Shade flips it."
+);
+assert.strictEqual(rationalResponse.decisionTrace.finalState.A.hp, 0);
+assert.strictEqual(rationalResponse.decisionTrace.finalState.B.hp, 23);
+assert.deepStrictEqual(chargedTurns(rationalResponse, "B", "NIGHT_SHADE"), [21, 31, 44]);
 
 console.log("Matchup planner fixture passed.");
-console.log("Automatic line: Quagsire wins with 19 HP and 5 energy after five Aqua Tails.");
-console.log("Verified line: automatic and diagnostic timelines agree at 8/17/30/37/44 vs 21/34.");
+console.log("Adaptive line: Quagsire wins with 19 HP after Aqua Tails at 8/17/34/37/44.");
+console.log("Counterexample: the fixed 8/17/30/37/44 line loses to Corsola's legal T31 Night Shade.");

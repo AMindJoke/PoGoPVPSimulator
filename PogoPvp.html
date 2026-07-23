@@ -24,6 +24,7 @@
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
+  <script src="src/battle/hybrid-battle-intelligence.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-intelligence.js"></script>
@@ -9429,6 +9430,9 @@
         battleIntelligencePolicy,
         battleIntelligenceCallerContext,
         recordExternalIntelligenceDecision,
+        hybridDamageAtStages,
+        hybridSurvivalProjection,
+        evaluateHybridBattleAction,
         selectBattleIntelligenceAction,
         battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
@@ -9553,6 +9557,7 @@
         globalThis.PvPeakPerfDebug = PvPeakPerfDebug;
         const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
+        const PvPeakHybridBattleIntelligence = (${window.createPvPeakHybridBattleIntelligenceApi.toString()})();
         const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
         const PvPeakMatchupPlanner = (${window.createPvPeakMatchupPlannerApi.toString()})();
         const PvPeakMatchupPlannerAdapter = (${window.createPvPeakMatchupPlannerAdapterApi.toString()})(PvPeakMatchupPlanner);
@@ -9672,6 +9677,11 @@
           chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
           forcedMatchupPlan = options.diagnosticPlan || null;
+          if (forcedMatchupPlan) {
+            PvPeakBattleIntelligence?.clearCache?.();
+            PvPeakHybridBattleIntelligence?.clearCache?.();
+            liveMatchupPlannerTable.clear();
+          }
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -13529,6 +13539,138 @@
       });
     }
 
+    function hybridDamageAtStages(attacker, defender, move, side, stages = {}) {
+      if (!attacker || !defender || !move) return 0;
+      const source = side === "opponent" ? defender : attacker;
+      const target = side === "opponent" ? attacker : defender;
+      const saved = {
+        sourceAttack: Number(source.attackStage || 0),
+        sourceDefense: Number(source.defenseStage || 0),
+        targetAttack: Number(target.attackStage || 0),
+        targetDefense: Number(target.defenseStage || 0)
+      };
+      try {
+        if (side === "opponent") {
+          source.attackStage = clampStage(stages.defenderAttackStage ?? saved.sourceAttack);
+          source.defenseStage = clampStage(stages.defenderDefenseStage ?? saved.sourceDefense);
+          target.attackStage = clampStage(stages.actorAttackStage ?? saved.targetAttack);
+          target.defenseStage = clampStage(stages.actorDefenseStage ?? saved.targetDefense);
+        } else {
+          source.attackStage = clampStage(stages.actorAttackStage ?? saved.sourceAttack);
+          source.defenseStage = clampStage(stages.actorDefenseStage ?? saved.sourceDefense);
+          target.attackStage = clampStage(stages.defenderAttackStage ?? saved.targetAttack);
+          target.defenseStage = clampStage(stages.defenderDefenseStage ?? saved.targetDefense);
+        }
+        return estimate(source, target, move);
+      } finally {
+        source.attackStage = saved.sourceAttack;
+        source.defenseStage = saved.sourceDefense;
+        target.attackStage = saved.targetAttack;
+        target.defenseStage = saved.targetDefense;
+      }
+    }
+
+    function hybridSurvivalProjection(attacker, defender, routeState = {}) {
+      if (!attacker || !defender || !defender.fast) {
+        return { turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 };
+      }
+      let hp = Math.max(0, Number(attacker.hp || 0));
+      let energy = Math.max(0, Number(defender.energy || 0));
+      let shields = Math.max(0, Number(attacker.shields || 0));
+      let turn = 0;
+      let chargedCount = 0;
+      let damageTaken = 0;
+      const stages = {
+        actorAttackStage: Number(routeState.actorAttackStage ?? attacker.attackStage ?? 0),
+        actorDefenseStage: Number(routeState.actorDefenseStage ?? attacker.defenseStage ?? 0),
+        defenderAttackStage: Number(routeState.defenderAttackStage ?? defender.attackStage ?? 0),
+        defenderDefenseStage: Number(routeState.defenderDefenseStage ?? defender.defenseStage ?? 0)
+      };
+      for (let actionCount = 0; hp > 0 && actionCount < 100; actionCount++) {
+        const readyCharged = validChargedMoves(defender)
+          .filter(move => energy >= Number(move.energyCost || 0))
+          .sort((a, b) =>
+            hybridDamageAtStages(attacker, defender, b, "opponent", stages)
+              - hybridDamageAtStages(attacker, defender, a, "opponent", stages)
+            || Number(a.energyCost || 0) - Number(b.energyCost || 0)
+            || String(a.id || "").localeCompare(String(b.id || ""))
+          )[0] || null;
+        if (readyCharged) {
+          const damage = shields > 0
+            ? 1
+            : hybridDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+          if (shields > 0) shields--;
+          energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
+          hp = Math.max(0, hp - damage);
+          damageTaken += damage;
+          chargedCount++;
+          turn += 1;
+          continue;
+        }
+        const damage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - damage);
+        damageTaken += damage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+        turn += Math.max(1, Number(defender.fast.turns || 1));
+      }
+      return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
+    }
+
+    function evaluateHybridBattleAction(attacker, defender, legalActions) {
+      // Continuation simulations must compare root alternatives against the
+      // same rollout policy. Re-entering the hybrid selector inside cloned
+      // continuations changes the opponent/response model mid-comparison and
+      // makes otherwise equal-depth evidence incomparable.
+      if (chargedContinuationDepth > 0) return null;
+      const hybrid = typeof PvPeakHybridBattleIntelligence !== "undefined"
+        ? PvPeakHybridBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
+      const intelligence = typeof PvPeakBattleIntelligence !== "undefined"
+        ? PvPeakBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      if (!hybrid?.selectAction || !attacker || !defender) return null;
+      const state = battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0));
+      const actorState = state?.sides?.[attacker.trainer];
+      const defenderState = state?.sides?.[defender.trainer];
+      if (!state || !actorState || !defenderState) return null;
+      const policy = battleIntelligencePolicy();
+      const routeCacheKey = intelligence?.strategicStateKey
+        ? intelligence.strategicStateKey(state, policy)
+        : null;
+      return hybrid.selectAction({
+        policy,
+        actorSide: attacker.trainer,
+        opponentSide: defender.trainer,
+        currentTurn: state.currentTurn,
+        actor: actorState,
+        opponent: defenderState,
+        legalActions,
+        pendingEvents: state.pendingEvents,
+        baitPolicy: attacker.baiting,
+        cmpAdvantage: Number(attacker.attack || 0) - Number(defender.attack || 0),
+        routeCacheKey,
+        damage(side, move, stages) {
+          return hybridDamageAtStages(attacker, defender, move, side, stages);
+        },
+        willShield(move, routeState = {}) {
+          const shields = Math.max(0, Number(routeState.defenderShields ?? routeState.shields ?? defender.shields));
+          if (!shields) return false;
+          if (String(attacker.baiting || "").toLowerCase() === "on") return true;
+          const savedShields = defender.shields;
+          try {
+            defender.shields = shields;
+            const damage = hybridDamageAtStages(attacker, defender, move, "actor", routeState);
+            return shouldShield(defender, move, damage, attacker);
+          } finally {
+            defender.shields = savedShields;
+          }
+        },
+        survivalProjection(routeState) {
+          return hybridSurvivalProjection(attacker, defender, routeState);
+        }
+      });
+    }
+
     function selectBattleIntelligenceAction(attacker, defender, legalActions) {
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
@@ -13549,6 +13691,37 @@
       const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
       const projectedSequenceEligible = shouldEvaluateProjectedChargedSequence(attacker, defender, available);
       const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
+      const effectContinuationEligible = shouldEvaluateChargedContinuations(attacker, defender, available);
+      const shieldedLineContinuationEligible = shouldCompareShieldedChargedLines(attacker, defender, available);
+      const hybridEvaluation = evaluateHybridBattleAction(attacker, defender, legalActions);
+      const hybridAmbiguityReasons = [
+        timingContinuationEligible && !hybridEvaluation?.decisive ? "TIMING_ROUTE_DIFFERS" : null,
+        effectContinuationEligible ? "GUARANTEED_EFFECT_ROUTE_DIFFERS" : null,
+        shieldedLineContinuationEligible ? "SHIELD_ALLOCATION_DIFFERS" : null,
+        projectedSequenceEligible ? "CHARGED_SEQUENCE_DIFFERS" : null
+      ].filter(Boolean);
+      if (hybridEvaluation && hybridAmbiguityReasons.length) {
+        hybridEvaluation.decisive = false;
+        hybridEvaluation.fastPath = false;
+        hybridEvaluation.ambiguity = {
+          ...(hybridEvaluation.ambiguity || {}),
+          ambiguous: true,
+          reasonCodes: [...new Set([
+            ...(hybridEvaluation.ambiguity?.reasonCodes || []),
+            ...hybridAmbiguityReasons
+          ])],
+          alternatives: legalActions
+            .filter(action => ["fast", "fast_move", "charged", "charged_move", "wait"].includes(action.type))
+            .map(action => ({
+              firstAction: {
+                type: action.type === "fast" ? "fast_move" : action.type === "charged" ? "charged_move" : action.type,
+                moveId: action.moveId || action.move?.id || null
+              },
+              outcomeClass: "unknown",
+              complete: false
+            }))
+        };
+      }
       if (chargedContinuationDepth > 0 && (chargedContinuationOpening?.repeat || chargedContinuationOpening?.timingOnce || chargedContinuationOpening?.sequence)
         && chargedContinuationOpening.trainer === attacker.trainer) {
         const timingFastRequired = !!(chargedContinuationOpening.timingOnce
@@ -13609,10 +13782,12 @@
         }
       }
       const continuationEligible = chargedContinuationDepth === 0
-        && (shouldEvaluateChargedContinuations(attacker, defender, available)
-          || shouldCompareShieldedChargedLines(attacker, defender, available)
+        && hybridEvaluation?.ambiguity?.ambiguous === true
+        && (effectContinuationEligible
+          || shieldedLineContinuationEligible
           || projectedSequenceEligible
-          || timingContinuationEligible);
+          || timingContinuationEligible
+          || hybridEvaluation?.ambiguity?.ambiguous === true);
       const compareStraightChargedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
@@ -13623,6 +13798,7 @@
           callerContext: battleIntelligenceCallerContext(),
           matchupPlannerV2: matchupPlannerRuntimeEnabled(),
           planMatchup: planLiveMatchup,
+          hybridEvaluation,
           forceChargedContinuation: projectedSequenceEligible,
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;

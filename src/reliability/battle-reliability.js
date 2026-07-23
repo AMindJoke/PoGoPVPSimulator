@@ -5,7 +5,7 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v17";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v18";
   const TRACE_SCHEMA_VERSION = 1;
   const REGRESSION_SCHEMA_VERSION = 1;
 
@@ -16,9 +16,22 @@
     "SAFE_EXTRA_FAST",
     "DELAY_REACHES_ADDITIONAL_CHARGE",
     "AVOID_ENERGY_STRANDING",
+    "ENERGY_PRESERVATION",
     "THROW_NOW_PREVENTS_OPPONENT_CHARGE",
     "TIMING_CONTINUATION_FLIP",
     "ENERGY_CAP_FORCES_THROW",
+    "FAST_DEFAULT",
+    "FORCED_THROW_BEFORE_FAINT",
+    "PENDING_FAST_LETHAL",
+    "FARM_DOWN_ROUTE",
+    "BOUNDED_OFFENSIVE_ROUTE",
+    "AMBIGUOUS_DEEP_SEARCH",
+    "CONCEDES_FAST_MOVE",
+    "DENIES_FAST_MOVE",
+    "IMMEDIATE_LETHAL_LOST",
+    "OPPONENT_CHARGED_REACHED",
+    "LETHAL_CHARGED_CONCEDED",
+    "FAINTS_WHILE_WAITING",
     "GUARANTEED_DEFENSE_BUFF_VALUE",
     "GUARANTEED_ATTACK_DEBUFF_VALUE",
     "LETHAL_MOVE_AVAILABLE",
