@@ -2,8 +2,8 @@
 
 ## Status
 
-Interactive design phase. No battle behavior in this rulebook is implemented
-until the corresponding policy question is resolved.
+Interactive design phase completed for DM-01 through DM-04. Approved policy
+rules are recorded below and may now be implemented through focused fixtures.
 
 Protected baseline:
 
@@ -47,7 +47,7 @@ Frozen regression families before mechanics changes:
 - `data/golden-corpus/great-league.json`
 - `data/battle-regressions/iv-sensitivity.json`
 
-## Pending policy questions
+## Policy questions
 
 ### DM-01 — Deterministic bait and shield policy
 
@@ -105,7 +105,16 @@ Affected functions:
 
 User answer:
 
-- `DM-01: A`, `DM-01: B`, `DM-01: C`, or a custom rule.
+- `DM-01: C`
+
+Resolution:
+
+- Status: approved.
+- Final rule: use a compact deterministic `wouldShield` policy for the default
+  response. If `SHIELD` and `NO_SHIELD` can materially change the outcome,
+  retain both roots for comparable selective evaluation.
+- Reason: preserves a fast deterministic baseline without presenting an
+  uncertain shield assumption as proven.
 
 ### DM-02 — Non-guaranteed stat effects
 
@@ -162,7 +171,16 @@ Affected functions:
 
 User answer:
 
-- `DM-02: A`, `DM-02: B`, `DM-02: C`, or a custom rule.
+- `DM-02: A`
+
+Resolution:
+
+- Status: approved.
+- Final rule: ordinary deterministic Matrix evaluation uses the no-proc branch
+  for non-guaranteed stat effects. Scenario Review exposes explicit proc and
+  no-proc continuations.
+- Reason: keeps deterministic results reproducible while retaining effect
+  sensitivity as review evidence.
 
 ### DM-03 — Ordering two certified wins
 
@@ -216,7 +234,16 @@ Affected functions:
 
 User answer:
 
-- `DM-03: A`, `DM-03: B`, `DM-03: C`, or a custom ordering.
+- `DM-03: C`
+
+Resolution:
+
+- Status: approved.
+- Final rule: within the same certified outcome class, compare robustness,
+  remaining shields, remaining HP, actionable energy, and completion turn, in
+  that order. Stranded energy is explanatory only.
+- Reason: stable resource-preserving wins outrank fragile or wasteful wins
+  without ever crossing the `WIN > DRAW > LOSS` boundary.
 
 ### DM-04 — Selective-search budget expires before comparability
 
@@ -266,8 +293,22 @@ Affected functions:
 
 User answer:
 
-- `DM-04: A`, `DM-04: B`, `DM-04: C`, or a custom rule.
+- `DM-04: B`
+
+Resolution:
+
+- Status: approved.
+- Final rule: when retained roots have incomparable horizons, Matrix and live
+  Battle fall back to the compact deterministic choice and label the result
+  provisional. Scenario Review may continue with a deeper budget.
+- Reason: keeps interactive paths responsive without ranking unequal evidence
+  as though it were comparable.
 
 ## Resolved rules
 
-No interactive policy rule has been resolved yet.
+| Rule | Classification | Owner | Final policy | Fixture |
+|---|---|---|---|---|
+| DM-01 | Strategic policy | Shield Policy / Ambiguity Detector | Deterministic `wouldShield`; retain materially different shield roots | `decision-model-dm-01-*` |
+| DM-02 | Strategic policy | Effect Policy | No-proc deterministic Matrix; explicit proc/no-proc Scenario Review | `decision-model-dm-02-*` |
+| DM-03 | Strategic policy | Outcome Comparator | Robustness, shields, HP, actionable energy, then speed | `decision-model-dm-03-certified-win-order` |
+| DM-04 | Search policy | Search Budget / Battle Intelligence | Compact provisional fallback for incomparable horizons | `decision-model-dm-04-incomparable-timeout` |
