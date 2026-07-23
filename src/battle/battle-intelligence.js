@@ -1063,6 +1063,7 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function now() {
+    if (typeof globalThis !== "undefined" && globalThis.PVPEAK_DETERMINISTIC_PLANNER_TIME === true) return 0;
     return typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
   }
 

@@ -9563,6 +9563,7 @@
         });
         globalThis.PvPeakPerfDebug = PvPeakPerfDebug;
         const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
+        globalThis.PVPEAK_DETERMINISTIC_PLANNER_TIME = true;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
         const PvPeakHybridBattleIntelligence = (${window.createPvPeakHybridBattleIntelligenceApi.toString()})();
         const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
