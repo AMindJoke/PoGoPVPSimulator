@@ -14382,7 +14382,7 @@
         const selectedMoveId = intelligenceSelection.action.type === "charged_move"
           ? intelligenceSelection.action.moveId || null
           : null;
-        if (plannedMove && (!selectedMoveId || selectedMoveId === plannedMove.id)) {
+        if (plannedMove && selectedMoveId === plannedMove.id) {
           recordBattleIntelligenceDecision(attacker, defender, {
             ...intelligenceSelection,
             action: { type: "charged_move", moveId: plannedMove.id, move: plannedMove },

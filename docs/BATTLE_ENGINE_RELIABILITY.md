@@ -58,6 +58,11 @@ full charged-sequence selector before execution. A previously verified timing
 move can no longer override a later state where another legal Charged Move has
 the demonstrated winning continuation.
 
+`battle-planner-v20` requires persisted timing micro-plans to be explicitly
+reselected by the current charged-action selector before execution. If the
+current state prefers farming, waiting, or a different Charged Move, the stale
+micro-plan is discarded instead of being treated as a forced throw.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.
