@@ -46,6 +46,7 @@ function simulate(config, shields = 1, options = {}) {
     aShields: shields,
     bShields: shields,
     includeSwing: !!options.includeSwing,
+    counterfactuals: !!options.includeSwing || options.counterfactuals === true,
     debugChargedDecisions: false,
     trace: true,
     source: "battle-regression",

@@ -9402,7 +9402,14 @@
         battleSnapshot,
         traceCombatantState,
         traceStateSnapshot,
+        traceStateHash,
         traceMoveCandidate,
+        nextActionTraceId,
+        beginAutomaticActionLifecycle,
+        completeAutomaticActionLifecycle,
+        invalidateAutomaticActionLifecycle,
+        executeAutomaticBattleAction,
+        materializeResolvedActionTrace,
         traceOutcomeForSide,
         traceAffordableChargedMoves,
         simulateShieldDecisionContinuation,
@@ -9666,7 +9673,7 @@
           const previousProjectedChargedSequenceValueEnabled = projectedChargedSequenceValueEnabled;
           const previousForcedMatchupPlan = forcedMatchupPlan;
           battleDecisionTraceEnabled = options.trace === true;
-          battleDecisionCounterfactualsEnabled = options.trace === true;
+          battleDecisionCounterfactualsEnabled = options.counterfactuals === true;
           currentBattleDecisionTrace = battleDecisionTraceEnabled
             ? beginBattleDecisionTrace({
                 battleId: options.battleId,
@@ -9733,10 +9740,23 @@
               kind: event.kind,
               moveId: event.move?.id || null,
               moveName: event.move?.name || null,
-              start: Number(event.start || 0),
-              duration: Number(event.duration || 0),
-              sneaked: !!event.sneaked
-            }));
+               start: Number(event.start || 0),
+               duration: Number(event.duration || 0),
+               sneaked: !!event.sneaked,
+               timelineEventId: event.timelineEventId || null,
+               decisionId: event.decisionId || null,
+               actionIntentId: event.actionIntentId || null,
+               queuedActionId: event.queuedActionId || null,
+               registeredActionId: event.registeredActionId || null,
+               resolvedActionId: event.resolvedActionId || null,
+               registrationTurn: Number(event.registrationTurn ?? event.start ?? 0),
+               resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+               energyBefore: Number(event.energyBefore || 0),
+               energyAfter: Number(event.energyAfter || 0),
+               hpBefore: Number(event.hpBefore || 0),
+               hpAfter: Number(event.hpAfter || 0),
+               damage: Number(event.damage || 0)
+             }));
           }
           chargedDecisionDiagnosticsEnabled = false;
           battleDecisionTraceEnabled = previousTraceEnabled;
@@ -9750,7 +9770,7 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch } = event.data || {};
           const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
           const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
           const perfRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun(source === "meta" ? "meta-cell" : "matrix-cell", { key, signature, source }) : null;
@@ -9784,6 +9804,7 @@
               debugChargedDecisions,
               debugTimeline,
               trace,
+              counterfactuals: counterfactuals === true || !!includeSwing,
               preFastAdvantage,
               policy,
               continuationMode,
@@ -12383,7 +12404,7 @@
       return true;
     }
 
-    function useFast(attacker, defender) {
+    function useFast(attacker, defender, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       const dreFastOrdinal = typeof nextTechnicalDreFastOrdinal === "function" ? nextTechnicalDreFastOrdinal(attacker) : 0;
@@ -12394,7 +12415,13 @@
       const deferLagDamage = typeof shouldDeferTechnicalLagFast === "function" && shouldDeferTechnicalLagFast(attacker, defender, damage, hpBefore);
       if (deferDreDamage || deferLagDamage) defender.hp = hpBefore;
       const energyGained = attacker.energy - energyBefore;
-      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore);
+      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
+        actionLifecycle: options.actionLifecycle || null,
+        energyAfter: attacker.energy,
+        hpBefore,
+        hpAfter: defender.hp
+      });
+      completeAutomaticActionLifecycle(options.actionLifecycle, event, attacker, defender);
       if (deferDreDamage) {
         event.drePending = true;
         event.state = battleSnapshot();
@@ -12425,6 +12452,10 @@
       const targetTurn = currentTurn + waitTurns;
       attacker.timingPlanMoveId = options.moveId || null;
       battleTurns[attacker.trainer] = targetTurn;
+      completeAutomaticActionLifecycle(options.actionLifecycle || null, null, attacker, defender, {
+        registrationTurn: currentTurn,
+        resolutionTurn: targetTurn
+      });
       if (!options.silent) {
         add(`T${currentTurn} - ${attacker.trainer}: ${attacker.p.name} holds for ${waitTurns} turn to align a Charged Move before ${timingWindow?.opponentFastName || defender.fast.name} completes.`, "info");
       }
@@ -12451,6 +12482,7 @@
       const move = attacker.charged[index];
       if (!move) return false;
       if (attacker.energy < move.energyCost) {
+        invalidateAutomaticActionLifecycle(options.actionLifecycle || null, "INSUFFICIENT_ENERGY", attacker, defender);
         add(`${attacker.trainer}: not enough energy for ${move.name} (${attacker.energy}/${move.energyCost}).`, "charge");
         render();
         return false;
@@ -12462,6 +12494,8 @@
       const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
       if (chargedActivationChange) formChanges.push(chargedActivationChange);
       const attackerNameAtThrow = attacker.p.name;
+      const energyBefore = attacker.energy;
+      const hpBefore = defender.hp;
       const unshieldedDamage = estimate(attacker, defender, move);
       let shieldDecision = options.shielded !== undefined
         ? { shield: !!options.shielded && defender.shields > 0, reason: "", reasonCode: null, sourceRuleIds: [] }
@@ -12568,7 +12602,13 @@
       }
       const chargedCompletionChange = applyFormChange(attacker, "charged_move", move);
       if (chargedCompletionChange) formChanges.push(chargedCompletionChange);
-      const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
+      const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded, energyBefore, {
+        actionLifecycle: options.actionLifecycle || null,
+        energyAfter: attacker.energy,
+        hpBefore,
+        hpAfter: defender.hp
+      });
+      completeAutomaticActionLifecycle(options.actionLifecycle, chargeEvent, attacker, defender);
       chargeEvent.buffs = buffMessages;
       chargeEvent.buffEffects = appliedBuffEffects(attacker, defender, stagesBeforeBuff);
       chargeEvent.unshieldedDamage = unshieldedDamage;
@@ -12784,7 +12824,7 @@
       return true;
     }
 
-    function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null) {
+    function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null, traceContext = {}) {
       const duration = kind === "fast" ? Math.max(1, move.turns || 1) : 1;
       const start = battleTurns[attacker.trainer] || 0;
       const energyBefore = energyBeforeOverride !== null
@@ -12800,7 +12840,18 @@
         shielded,
         start,
         duration,
-        energyBefore
+        energyBefore,
+        energyAfter: Number(traceContext.energyAfter ?? attacker.energy ?? 0),
+        hpBefore: Number(traceContext.hpBefore ?? 0),
+        hpAfter: Number(traceContext.hpAfter ?? 0),
+        registrationTurn: start,
+        resolutionTurn: start,
+        timelineEventId: null,
+        decisionId: traceContext.actionLifecycle?.decisionId || null,
+        actionIntentId: traceContext.actionLifecycle?.actionIntentId || null,
+        queuedActionId: traceContext.actionLifecycle?.queuedActionId || null,
+        registeredActionId: traceContext.actionLifecycle?.registeredActionId || null,
+        resolvedActionId: traceContext.actionLifecycle?.resolvedActionId || null
       };
       event.timelineIndex = timeline.length;
       event.state = battleSnapshot();
@@ -12890,6 +12941,202 @@
         opponent: traceCombatantState(opponent),
         pendingFastImpacts
       };
+    }
+
+    function traceStateHash(snapshot) {
+      const text = JSON.stringify(snapshot || null);
+      let hash = 2166136261;
+      for (let index = 0; index < text.length; index++) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return `state-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+    }
+
+    function nextActionTraceId(prefix) {
+      if (!currentBattleDecisionTrace) return null;
+      currentBattleDecisionTrace.sequence = Number(currentBattleDecisionTrace.sequence || 0) + 1;
+      return `${prefix}-${String(currentBattleDecisionTrace.sequence).padStart(6, "0")}`;
+    }
+
+    function beginAutomaticActionLifecycle(attacker, defender, action, source = "battle-intelligence") {
+      if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0 || !attacker || !action) return null;
+      const currentTurn = Number(battleTurns?.[attacker.trainer] || 0);
+      const type = action.type === "charged" || action.type === "charged_move"
+        ? "charged_move"
+        : action.type === "wait" ? "wait" : "fast_move";
+      const moveId = action.moveId || action.move?.id || (type === "fast_move" ? attacker.fast?.id : null);
+      if (type !== "wait") {
+        return {
+          deferred: true,
+          side: attacker.trainer,
+          actionType: type,
+          moveId,
+          moveName: action.move?.name || (type === "fast_move" ? attacker.fast?.name : moveId),
+          source,
+          selectedTurn: currentTurn
+        };
+      }
+      const matchingDecision = [...currentBattleDecisionTrace.decisions].reverse().find(decision => {
+        if (decision.side !== attacker.trainer || Number(decision.turn) !== currentTurn) return false;
+        const chosen = decision.chosenCandidate || {};
+        if (type === "charged_move") return (chosen.moveId || chosen.action?.moveId) === moveId;
+        if (type === "wait") return chosen.action === "WAIT_THEN_THROW" || chosen.action?.type === "wait";
+        return chosen.action === "FAST_THEN_REEVALUATE" || chosen.action === "FAST" || chosen.action?.type === "fast_move";
+      }) || null;
+      const stateBefore = turnEngineState(currentTurn);
+      const lifecycle = {
+        decisionId: matchingDecision?.decisionId || nextActionTraceId("decision"),
+        actionIntentId: nextActionTraceId("intent"),
+        queuedActionId: nextActionTraceId("queued"),
+        registeredActionId: nextActionTraceId("registered"),
+        resolvedActionId: nextActionTraceId("resolved"),
+        timelineEventId: null,
+        side: attacker.trainer,
+        pokemonId: attacker.p?.id || null,
+        actionType: type,
+        moveId,
+        moveName: action.move?.name || (type === "fast_move" ? attacker.fast?.name : moveId),
+        source,
+        selectedTurn: currentTurn,
+        queueTurn: currentTurn,
+        registrationTurn: currentTurn,
+        resolutionTurn: null,
+        energyCost: Number(type === "charged_move" ? action.move?.energyCost || 0 : 0),
+        energyGain: Number(type === "fast_move" ? attacker.fast?.energyGain || 0 : 0),
+        hpChange: null,
+        stateHashBefore: traceStateHash(stateBefore),
+        stateHashAfter: null,
+        status: "REGISTERED",
+        statusHistory: [
+          { status: "SELECTED", turn: currentTurn },
+          { status: "QUEUED", turn: currentTurn },
+          { status: "REGISTERED", turn: currentTurn }
+        ],
+        invalidationReason: null
+      };
+      currentBattleDecisionTrace.actions.push(lifecycle);
+      return lifecycle;
+    }
+
+    function completeAutomaticActionLifecycle(lifecycle, timelineEvent, attacker, defender, overrides = {}) {
+      if (lifecycle?.deferred) return lifecycle;
+      if (!lifecycle || lifecycle.status === "RESOLVED" || lifecycle.status === "INVALIDATED") return lifecycle;
+      lifecycle.timelineEventId = timelineEvent?.timelineEventId || null;
+      lifecycle.resolutionTurn = Number(overrides.resolutionTurn ?? timelineEvent?.resolutionTurn ?? timelineEvent?.start ?? battleTurns?.[attacker?.trainer] ?? 0);
+      lifecycle.registrationTurn = Number(overrides.registrationTurn ?? timelineEvent?.registrationTurn ?? lifecycle.registrationTurn ?? 0);
+      lifecycle.energyCost = Number(timelineEvent?.kind === "charge" ? timelineEvent.move?.energyCost || lifecycle.energyCost || 0 : 0);
+      lifecycle.energyGain = Number(timelineEvent?.kind === "fast"
+        ? Math.max(0, Number(timelineEvent.energyAfter || 0) - Number(timelineEvent.energyBefore || 0))
+        : 0);
+      lifecycle.hpChange = timelineEvent
+        ? Math.max(0, Number(timelineEvent.hpBefore || 0) - Number(timelineEvent.hpAfter || 0))
+        : 0;
+      lifecycle.stateHashAfter = traceStateHash(turnEngineState());
+      lifecycle.status = "RESOLVED";
+      lifecycle.statusHistory.push({ status: "RESOLVED", turn: lifecycle.resolutionTurn });
+      if (timelineEvent) timelineEvent.resolvedActionId = lifecycle.resolvedActionId;
+      return lifecycle;
+    }
+
+    function invalidateAutomaticActionLifecycle(lifecycle, reason, attacker, defender) {
+      if (lifecycle?.deferred) return lifecycle;
+      if (!lifecycle || lifecycle.status === "RESOLVED" || lifecycle.status === "INVALIDATED") return lifecycle;
+      const turn = Number(battleTurns?.[attacker?.trainer] || lifecycle.registrationTurn || 0);
+      lifecycle.status = "INVALIDATED";
+      lifecycle.resolutionTurn = turn;
+      lifecycle.invalidationReason = reason || "ILLEGAL_ACTION";
+      lifecycle.stateHashAfter = traceStateHash(turnEngineState());
+      lifecycle.statusHistory.push({ status: "INVALIDATED", turn, reason: lifecycle.invalidationReason });
+      return lifecycle;
+    }
+
+    function executeAutomaticBattleAction(attacker, defender, action, options = {}) {
+      if (!action) return false;
+      const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
+      const normalized = { ...action, type };
+      if (type === "charged_move" && !normalized.move) {
+        normalized.move = validChargedMoves(attacker).find(move => move.id === normalized.moveId) || null;
+      }
+      if (type === "fast_move" && !normalized.move) normalized.move = attacker.fast;
+      const lifecycle = beginAutomaticActionLifecycle(attacker, defender, normalized, options.source || "battle-intelligence");
+      let result = false;
+      if (type === "fast_move") {
+        result = useFast(attacker, defender, { ...options, actionLifecycle: lifecycle });
+      } else if (type === "charged_move") {
+        const moveIndex = attacker.charged.findIndex(move => move && move.id === normalized.moveId);
+        if (moveIndex >= 0) result = useCharge(attacker, defender, moveIndex, { ...options, actionLifecycle: lifecycle });
+        else invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      } else if (type === "wait") {
+        result = useTimingWait(attacker, defender, normalized.metadata?.timingWindow, { ...options, actionLifecycle: lifecycle });
+      } else {
+        invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      }
+      if (result && lifecycle?.status === "REGISTERED") {
+        completeAutomaticActionLifecycle(lifecycle, null, attacker, defender);
+      }
+      if (!result && lifecycle?.status !== "INVALIDATED") {
+        invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      }
+      return result;
+    }
+
+    function materializeResolvedActionTrace() {
+      if (!currentBattleDecisionTrace) return;
+      let previousState = initialTimelineState || null;
+      for (const event of (timeline || []).filter(item => item?.kind === "fast" || item?.kind === "charge")) {
+        const actionType = event.kind === "charge" ? "charged_move" : "fast_move";
+        const moveId = event.move?.id || null;
+        const turn = Number(event.registrationTurn ?? event.start ?? 0);
+        const matchingDecision = [...currentBattleDecisionTrace.decisions].reverse().find(decision => {
+          if (decision.side !== event.trainer || Number(decision.turn) !== turn) return false;
+          const chosen = decision.chosenCandidate || {};
+          return actionType === "charged_move"
+            ? (chosen.moveId || chosen.action?.moveId) === moveId
+            : chosen.action === "FAST_THEN_REEVALUATE" || chosen.action === "FAST" || chosen.action?.type === "fast_move";
+        }) || null;
+        const action = {
+          decisionId: matchingDecision?.decisionId || nextActionTraceId("decision"),
+          actionIntentId: nextActionTraceId("intent"),
+          queuedActionId: nextActionTraceId("queued"),
+          registeredActionId: nextActionTraceId("registered"),
+          resolvedActionId: nextActionTraceId("resolved"),
+          timelineEventId: nextActionTraceId("timeline"),
+          side: event.trainer,
+          pokemonId: previousState?.[event.trainer]?.pokemonId || null,
+          actionType,
+          moveId,
+          moveName: event.move?.name || moveId,
+          source: matchingDecision ? "battle-intelligence" : "legal-fast-fallback",
+          selectedTurn: turn,
+          queueTurn: turn,
+          registrationTurn: turn,
+          resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+          energyCost: Number(actionType === "charged_move" ? event.move?.energyCost || 0 : 0),
+          energyGain: Number(actionType === "fast_move"
+            ? Math.max(0, Number(event.energyAfter || 0) - Number(event.energyBefore || 0))
+            : 0),
+          hpChange: Math.max(0, Number(event.hpBefore || 0) - Number(event.hpAfter || 0)),
+          stateHashBefore: traceStateHash(previousState),
+          stateHashAfter: traceStateHash(event.state || null),
+          status: "RESOLVED",
+          statusHistory: [
+            { status: "SELECTED", turn },
+            { status: "QUEUED", turn },
+            { status: "REGISTERED", turn },
+            { status: "RESOLVED", turn: Number(event.resolutionTurn ?? event.start ?? 0) }
+          ],
+          invalidationReason: null
+        };
+        currentBattleDecisionTrace.actions.push(action);
+        event.timelineEventId = action.timelineEventId;
+        event.decisionId = action.decisionId;
+        event.actionIntentId = action.actionIntentId;
+        event.queuedActionId = action.queuedActionId;
+        event.registeredActionId = action.registeredActionId;
+        event.resolvedActionId = action.resolvedActionId;
+        previousState = event.state || previousState;
+      }
     }
 
     function traceMoveCandidate(attacker, defender, move, overrides = {}) {
@@ -13119,7 +13366,8 @@
       if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0) return;
       const candidates = (input.candidates || []).filter(Boolean).map(candidate => JSON.parse(JSON.stringify(candidate)));
       const chosenCandidate = input.chosenCandidate ? JSON.parse(JSON.stringify(input.chosenCandidate)) : null;
-      currentBattleDecisionTrace.decisions.push({
+      const decision = {
+        decisionId: input.decisionId || nextActionTraceId("decision"),
         turn: Number(input.turn || 0),
         side: input.side || null,
         pokemonId: input.pokemonId || null,
@@ -13131,7 +13379,9 @@
         reasonCode: input.reasonCode || battleReasonCode(input.decisionType, input.explanation, chosenCandidate, candidates),
         explanation: input.explanation || "",
         confidence: input.confidence || null
-      });
+      };
+      currentBattleDecisionTrace.decisions.push(decision);
+      return decision;
     }
 
     function beginBattleDecisionTrace(options = {}) {
@@ -13149,7 +13399,7 @@
         retainEvents: typeof debugBattleTracing !== "undefined" && debugBattleTracing
       });
       currentBattleDecisionTrace = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         battleId: options.battleId || null,
         engineVersion: battleEngineVersion,
         datasetVersion: options.datasetVersion || null,
@@ -13158,7 +13408,10 @@
           A: debugDerivedCombatantState(left),
           B: debugDerivedCombatantState(right)
         } : null,
+        sequence: 0,
         decisions: [],
+        actions: [],
+        timelineActions: [],
         shieldCounterfactuals: [],
         terminalSnapshots: [],
         finalState: null
@@ -13194,10 +13447,27 @@
       const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
         ? PvPeakHybridBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
+      materializeResolvedActionTrace();
       currentBattleDecisionTrace.finalState = {
         A: traceCombatantState(left),
         B: traceCombatantState(right)
       };
+      currentBattleDecisionTrace.timelineActions = (timeline || [])
+        .filter(event => event?.kind === "fast" || event?.kind === "charge")
+        .map(event => ({
+          timelineEventId: event.timelineEventId || null,
+          resolvedActionId: event.resolvedActionId || null,
+          side: event.trainer || null,
+          actionType: event.kind === "charge" ? "charged_move" : "fast_move",
+          moveId: event.move?.id || null,
+          registrationTurn: Number(event.registrationTurn ?? event.start ?? 0),
+          resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+          energyCost: Number(event.kind === "charge" ? event.move?.energyCost || 0 : 0),
+          energyGain: Number(event.kind === "fast"
+            ? Math.max(0, Number(event.energyAfter || 0) - Number(event.energyBefore || 0))
+            : 0),
+          hpChange: Math.max(0, Number(event.hpBefore || 0) - Number(event.hpAfter || 0))
+        }));
       const intelligenceStats = intelligenceApi?.getStatistics?.() || null;
       if (intelligenceStats) {
         const {
@@ -14345,10 +14615,8 @@
       if (!legalActions.length) return false;
       const diagnosticAction = diagnosticPlannedAction(attacker, legalActions);
       if (diagnosticAction) {
-        if (diagnosticAction.type === "fast" || diagnosticAction.type === "fast_move") return useFast(attacker, defender);
-        const moveIndex = attacker.charged.findIndex(move => move?.id === diagnosticAction.moveId);
-        if (moveIndex < 0) throw new Error(`Diagnostic plan references unavailable move ${diagnosticAction.moveId}.`);
-        return useCharge(attacker, defender, moveIndex, {
+        return executeAutomaticBattleAction(attacker, defender, diagnosticAction, {
+          source: "diagnostic-plan",
           aiReason: "deterministic matchup-planner fixture",
           deferCooldownReset: true
         });
@@ -14361,7 +14629,9 @@
           && estimate(defender, attacker, defender.fast) < attacker.hp;
         if (safeToContinue) {
           attacker.timingPlanFastMovesRemaining = Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1);
-          return useFast(attacker, defender);
+          return executeAutomaticBattleAction(attacker, defender, plannedFast, {
+            source: "persisted-timing-plan"
+          });
         }
         attacker.timingPlanFastMovesRemaining = 0;
         attacker.timingPlanMoveId = null;
@@ -14389,7 +14659,12 @@
             explanation: `executes the verified ${plannedMove.name} timing line`,
             reasonCodes: ["OPTIMAL_CHARGE_TIMING"]
           });
-          return useCharge(attacker, defender, attacker.charged.indexOf(plannedMove), {
+          return executeAutomaticBattleAction(attacker, defender, {
+            type: "charged_move",
+            moveId: plannedMove.id,
+            move: plannedMove
+          }, {
+            source: "verified-timing-line",
             aiReason: `executes the verified ${plannedMove.name} timing line`,
             deferCooldownReset: true
           });
@@ -14414,7 +14689,9 @@
         if (available.length && waitReason) {
           add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
         }
-        return useFast(attacker, defender);
+        return executeAutomaticBattleAction(attacker, defender, intelligenceSelection.action, {
+          source: "battle-intelligence"
+        });
       }
       if (intelligenceSelection.action.type === "wait") {
         const timingWindow = intelligenceSelection.action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
@@ -14423,18 +14700,35 @@
         attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
         attacker.timingPlanMoveId = timingPlan?.moveId || null;
         recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
-        return useTimingWait(attacker, defender, timingWindow, {
+        return executeAutomaticBattleAction(attacker, defender, {
+          ...intelligenceSelection.action,
+          metadata: { ...(intelligenceSelection.action.metadata || {}), timingWindow }
+        }, {
+          source: "timing-evaluator",
           moveId: timingPlan?.moveId || null
         });
       }
       if (intelligenceSelection.action.type !== "charged_move") return false;
 
       const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
-      if (!move) return legalActions.some(action => action.type === "fast") ? useFast(attacker, defender) : false;
+      if (!move) {
+        const fallbackFast = legalActions.find(action => action.type === "fast" || action.type === "fast_move");
+        return fallbackFast
+          ? executeAutomaticBattleAction(attacker, defender, fallbackFast, { source: "legal-fast-fallback" })
+          : false;
+      }
       recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
       recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
       const aiReason = intelligenceSelection.explanation;
-      return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });
+      return executeAutomaticBattleAction(attacker, defender, {
+        ...intelligenceSelection.action,
+        move,
+        moveId: move.id
+      }, {
+        source: "battle-intelligence",
+        aiReason,
+        deferCooldownReset: true
+      });
     }
 
     function diagnosticPlannedAction(attacker, legalActions) {
@@ -18629,13 +18923,24 @@
 
     function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
       const snapshot = snapshotBattleState();
-      const result = simulateShieldMatrixCell(aShields, bShields, {
-        includeSwing: false,
-        preFastAdvantage: { side, fastMoves },
-        policy,
-        continuationMode: "flip-analysis"
-      });
-      restoreBattleState(snapshot);
+      const previousTraceEnabled = battleDecisionTraceEnabled;
+      let result;
+      try {
+        // Swing candidates are counterfactual battles, not actions from the
+        // displayed battle. Recording them in the root action lifecycle both
+        // contaminates the evidence chain and changes legacy time-budget
+        // behavior through tracing overhead.
+        battleDecisionTraceEnabled = false;
+        result = simulateShieldMatrixCell(aShields, bShields, {
+          includeSwing: false,
+          preFastAdvantage: { side, fastMoves },
+          policy,
+          continuationMode: "flip-analysis"
+        });
+      } finally {
+        battleDecisionTraceEnabled = previousTraceEnabled;
+        restoreBattleState(snapshot);
+      }
       const isAWin = result.details && result.details.winnerEdge > 0;
       const isBWin = result.details && result.details.winnerEdge < 0;
       return isAWin ? "A" : isBWin ? "B" : null;

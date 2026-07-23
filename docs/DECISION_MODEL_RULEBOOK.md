@@ -301,6 +301,19 @@ Resolution:
 - Final rule: when retained roots have incomparable horizons, Matrix and live
   Battle fall back to the compact deterministic choice and label the result
   provisional. Scenario Review may continue with a deeper budget.
+- Open migration item: the current compact, Matchup, and Swing planners retain
+  their existing elapsed-time cutoffs. They must be converted under
+  equal-continuation work before repeated-run decision determinism can be
+  certified. This trace-contract commit does not silently recalibrate them.
+- Reproduced evidence:
+  - the default Shadow Quagsire/Galarian Corsola fixture can alternate between
+    `MUD_BOMB -> AQUA_TAIL -> AQUA_TAIL` and
+    `AQUA_TAIL -> MUD_BOMB -> AQUA_TAIL` while preserving the same winner;
+  - the Kingdra/Carbink Swing threshold can alternate between one and two stored
+    Dragon Breaths;
+  - replacing milliseconds with a single uncalibrated state cap changes other
+    frozen self-debuff and continuation fixtures, so budget migration requires
+    equal-policy comparison fixtures rather than a scalar substitution.
 - Reason: keeps interactive paths responsive without ranking unequal evidence
   as though it were comparable.
 

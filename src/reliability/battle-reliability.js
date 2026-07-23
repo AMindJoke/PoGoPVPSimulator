@@ -5,8 +5,8 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v20";
-  const TRACE_SCHEMA_VERSION = 1;
+  const BATTLE_ENGINE_VERSION = "battle-planner-v21";
+  const TRACE_SCHEMA_VERSION = 2;
   const REGRESSION_SCHEMA_VERSION = 1;
 
   const REASON_CODES = Object.freeze([
@@ -127,6 +127,8 @@
     if (trace.schemaVersion !== TRACE_SCHEMA_VERSION) errors.push("Unsupported trace schema version.");
     if (!trace.engineVersion) errors.push("Trace engineVersion is required.");
     if (!Array.isArray(trace.decisions)) errors.push("Trace decisions must be an array.");
+    if (!Array.isArray(trace.actions)) errors.push("Trace actions must be an array.");
+    if (!Array.isArray(trace.timelineActions)) errors.push("Trace timelineActions must be an array.");
     if (trace.shieldCounterfactuals !== undefined && !Array.isArray(trace.shieldCounterfactuals)) {
       errors.push("Trace shieldCounterfactuals must be an array when present.");
     }
@@ -141,6 +143,70 @@
       if (!decision.decisionType) errors.push(`Decision ${index} is missing decisionType.`);
       if (!isValidReasonCode(decision.reasonCode)) errors.push(`Decision ${index} has invalid reasonCode ${decision.reasonCode}.`);
       if (!Array.isArray(decision.candidates)) errors.push(`Decision ${index} candidates must be an array.`);
+      if (!decision.decisionId) errors.push(`Decision ${index} is missing decisionId.`);
+    }
+    errors.push(...validateActionTraceContract(trace));
+    return errors;
+  }
+
+  function validateActionTraceContract(trace) {
+    const errors = [];
+    const actions = Array.isArray(trace?.actions) ? trace.actions : [];
+    const timelineActions = Array.isArray(trace?.timelineActions) ? trace.timelineActions : [];
+    const resolvedById = new Map();
+    for (const [index, action] of actions.entries()) {
+      if (!action || typeof action !== "object") {
+        errors.push(`Action ${index} must be an object.`);
+        continue;
+      }
+      for (const field of ["decisionId", "actionIntentId", "queuedActionId", "registeredActionId", "resolvedActionId"]) {
+        if (!action[field]) errors.push(`Action ${index} is missing ${field}.`);
+      }
+      const statuses = (action.statusHistory || []).map(entry => entry?.status);
+      for (const required of ["SELECTED", "QUEUED", "REGISTERED"]) {
+        if (!statuses.includes(required)) errors.push(`Action ${index} is missing ${required} status.`);
+      }
+      if (action.status === "RESOLVED") {
+        if (!statuses.includes("RESOLVED")) errors.push(`Action ${index} is missing RESOLVED status.`);
+        if (!action.stateHashBefore || !action.stateHashAfter) errors.push(`Action ${index} is missing canonical state hashes.`);
+        if (resolvedById.has(action.resolvedActionId)) errors.push(`Duplicate resolvedActionId ${action.resolvedActionId}.`);
+        resolvedById.set(action.resolvedActionId, action);
+      } else if (action.status === "INVALIDATED") {
+        if (!statuses.includes("INVALIDATED")) errors.push(`Action ${index} is missing INVALIDATED status.`);
+        if (!action.invalidationReason) errors.push(`Action ${index} is missing invalidationReason.`);
+      } else {
+        errors.push(`Action ${index} has non-terminal status ${action.status}.`);
+      }
+    }
+    for (const [index, event] of timelineActions.entries()) {
+      if (!event?.timelineEventId) errors.push(`Timeline action ${index} is missing timelineEventId.`);
+      if (!event?.resolvedActionId) {
+        errors.push(`Timeline action ${index} is missing resolvedActionId.`);
+        continue;
+      }
+      const action = resolvedById.get(event.resolvedActionId);
+      if (!action) {
+        errors.push(`Timeline action ${index} has no linked resolved action ${event.resolvedActionId}.`);
+        continue;
+      }
+      const comparableFields = [
+        ["side", String],
+        ["actionType", String],
+        ["moveId", String],
+        ["registrationTurn", Number],
+        ["resolutionTurn", Number],
+        ["energyCost", Number],
+        ["energyGain", Number],
+        ["hpChange", Number]
+      ];
+      for (const [field, normalize] of comparableFields) {
+        if (normalize(event[field] ?? "") !== normalize(action[field] ?? "")) {
+          errors.push(`Timeline action ${index} disagrees with ${event.resolvedActionId} on ${field}.`);
+        }
+      }
+      if (event.timelineEventId !== action.timelineEventId) {
+        errors.push(`Timeline action ${index} disagrees with ${event.resolvedActionId} on timelineEventId.`);
+      }
     }
     return errors;
   }
@@ -167,6 +233,7 @@
     isValidBugCategory,
     createMatchupProvenance,
     validateTrace,
+    validateActionTraceContract,
     validateRegressionCase
   });
 });
