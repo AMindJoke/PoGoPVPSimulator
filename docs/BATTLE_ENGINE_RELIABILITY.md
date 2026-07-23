@@ -53,6 +53,11 @@ timing requires a real pending Fast impact, forced throws distinguish lethal
 from merely reachable opposing Charged Moves, and diagnostic scenario roots
 clear strategic memo tables before replay.
 
+`battle-planner-v19` revalidates persisted timing micro-plans against the current
+full charged-sequence selector before execution. A previously verified timing
+move can no longer override a later state where another legal Charged Move has
+the demonstrated winning continuation.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.

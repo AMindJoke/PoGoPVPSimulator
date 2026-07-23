@@ -9677,11 +9677,9 @@
           chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
           forcedMatchupPlan = options.diagnosticPlan || null;
-          if (forcedMatchupPlan) {
-            PvPeakBattleIntelligence?.clearCache?.();
-            PvPeakHybridBattleIntelligence?.clearCache?.();
-            liveMatchupPlannerTable.clear();
-          }
+          PvPeakBattleIntelligence?.clearCache?.();
+          PvPeakHybridBattleIntelligence?.clearCache?.();
+          liveMatchupPlannerTable.clear();
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -14375,11 +14373,16 @@
         ? [...legalActions, timingWaitAction]
         : legalActions);
       if (!intelligenceSelection?.action) return false;
-      // A timing wait has already selected this exact Charged Move from a
-      // complete continuation. Respect it unless the move is no longer legal.
+      // A persisted timing micro-plan is only valid while the current
+      // full-state selector still agrees with it. If the updated charged
+      // sequence comparison proves a different legal move, the older timing
+      // plan must not override it.
       if (attacker.timingPlanMoveId) {
         const plannedMove = available.find(candidate => candidate.id === attacker.timingPlanMoveId);
-        if (plannedMove) {
+        const selectedMoveId = intelligenceSelection.action.type === "charged_move"
+          ? intelligenceSelection.action.moveId || null
+          : null;
+        if (plannedMove && (!selectedMoveId || selectedMoveId === plannedMove.id)) {
           recordBattleIntelligenceDecision(attacker, defender, {
             ...intelligenceSelection,
             action: { type: "charged_move", moveId: plannedMove.id, move: plannedMove },
@@ -15942,6 +15945,9 @@
 
     function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
+      (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
+      (typeof PvPeakHybridBattleIntelligence !== "undefined" ? PvPeakHybridBattleIntelligence : window.PvPeakHybridBattleIntelligence)?.clearCache?.();
+      liveMatchupPlannerTable.clear();
       const stateSpan = activeBattlePerfRunId ? perfDebug.startSpan("battle.state", activeBattlePerfRunId) : null;
       const combatantSpan = activeBattlePerfRunId ? perfDebug.startSpan("combatants.create", activeBattlePerfRunId) : null;
       left = create("p1", "A");
@@ -18201,6 +18207,9 @@
       const snapshot = snapshotBattleState();
       const previousContinuationMode = chargedContinuationMode;
       const previousIntelligenceContext = battleIntelligenceRuntimeContext;
+      (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
+      (typeof PvPeakHybridBattleIntelligence !== "undefined" ? PvPeakHybridBattleIntelligence : window.PvPeakHybridBattleIntelligence)?.clearCache?.();
+      liveMatchupPlannerTable.clear();
       battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
       chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
