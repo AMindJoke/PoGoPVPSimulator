@@ -17121,6 +17121,10 @@
           if (perfRunId) perfDebug.finishRun(perfRunId, { cancelled: true });
           return;
         }
+        if (timelineReplayIsRunning()) {
+          window.setTimeout(step, 180);
+          return;
+        }
         if (reduction > maxReduction) {
           finish(null);
           return;
@@ -17761,21 +17765,13 @@
           shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 35 : 60);
           return;
         }
-        if (phase === "base") cachedShieldMatrixCell(signature, cell[0], cell[1]);
-        else enrichShieldMatrixCell(signature, cell[0], cell[1]);
-        if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
-          if (phase === "base" && shieldMatrixReady(signature)) renderShieldMatrix();
-          if (phase === "swing") {
-            renderShieldMatrix();
-            if (cell[0] === Number($("p1Shields").value || 0) && cell[1] === Number($("p2Shields").value || 0)) renderBattleReview();
-          }
-        }
-        shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 0 : 30);
+        shieldMatrixPendingTimer = setTimeout(step, 180);
       };
       shieldMatrixPendingTimer = setTimeout(step, 40);
     }
 
     function requestShieldMatrixCellCompute(signature, aShields, bShields, includeSwing) {
+      if (!matrixComputeWorker) initMatrixComputeWorker();
       if (!matrixComputeWorker) return false;
       const key = shieldMatrixCacheKey(signature, aShields, bShields);
       if (shieldMatrixComputing.has(key)) return true;
