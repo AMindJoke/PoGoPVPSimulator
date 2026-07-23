@@ -31,6 +31,8 @@
     "test:timing-compatibility": "node tools/test-timing-compatibility.js",
     "test:quagsire-corsola-ledger": "node tools/test-quagsire-corsola-mechanics-ledger.js",
     "test:quagsire-corsola-default": "node tools/test-quagsire-corsola-default-pvpoke.js",
+    "test:battle-principles": "node tools/test-battle-principles-registry.js",
+    "docs:battle-principles": "node tools/generate-battle-principle-registry-doc.js",
     "test:battle-intelligence": "node tools/test-battle-intelligence.js",
     "test:hybrid-battle-intelligence": "node tools/test-hybrid-battle-intelligence.js",
     "audit:battle-intelligence": "node tools/run-battle-intelligence-audit.js",
