@@ -2,6 +2,10 @@
 
 The Turn Resolution Engine is the shared timing and legality layer for 1v1 battles and Scenario Review reconstructions.
 
+The normative vocabulary, phase ownership, and boundary order are defined in
+`docs/CANONICAL_BATTLE_TURN_MODEL.md`. This document is an implementation
+overview.
+
 ## Responsibilities
 
 The engine owns five reusable concepts:
@@ -46,11 +50,15 @@ The initial integration uses scheduled impacts for timing-sensitive technical re
 
 ## CMP And Sneak
 
-When both sides are ready:
+After both ready sides have selected their intents:
 
-- a side with a legal Charged Move acts before a side limited to a Fast Move;
-- if both select Charged Moves, higher Attack wins CMP;
+- a selected Charged Move registers before a newly selected Fast Move;
+- if both selected Charged Moves, higher Attack wins CMP;
 - stable side ordering breaks a true Attack tie deterministically.
+
+Merely having enough energy for a Charged Move does not enter CMP. The legacy
+`orderReadySides()` helper is compatibility scheduling; canonical registration
+uses `registerActionIntents()` after intent collection.
 
 Sneak detection is derived from the Fast Move active window and the opposing Charged Move turn. The timeline renderer only displays the resulting metadata.
 

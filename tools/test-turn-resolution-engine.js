@@ -34,6 +34,36 @@ assert.deepEqual(TurnEngine.getLegalActions(state, "B"), []);
 
 const cmpState = battleState({ readyB: 5, energyB: 40, attackA: 130, attackB: 110 });
 assert.deepEqual(TurnEngine.orderReadySides(cmpState), ["A", "B"]);
+assert.deepEqual(
+  TurnEngine.registerActionIntents(cmpState, [
+    { side: "B", type: "charged_move", moveId: "BODY_SLAM", requestTurn: 5 },
+    { side: "A", type: "charged_move", moveId: "FLY", requestTurn: 5 }
+  ]).map(intent => [intent.sideId, intent.registrationOrder]),
+  [["A", 0], ["B", 1]]
+);
+const cmpLossState = battleState({ readyB: 5, energyB: 40, attackA: 100, attackB: 130 });
+assert.deepEqual(
+  TurnEngine.orderActionIntents(cmpLossState, [
+    { side: "A", type: "charged", moveId: "FLY" },
+    { side: "B", type: "charged", moveId: "BODY_SLAM" }
+  ]).map(intent => intent.sideId),
+  ["B", "A"]
+);
+assert.deepEqual(
+  TurnEngine.orderActionIntents(cmpState, [
+    { side: "A", type: "fast", moveId: "INCINERATE" },
+    { side: "B", type: "charged", moveId: "BODY_SLAM" }
+  ]).map(intent => intent.type),
+  ["charged", "fast"]
+);
+assert.equal(
+  TurnEngine.orderActionIntents(cmpState, [{ side: "B", type: "charged", moveId: "NOT_A_MOVE" }]).length,
+  0
+);
+
+for (const duration of [1, 2, 3, 4, 5]) {
+  assert.equal(TurnEngine.fastImpactTurn(7, duration), 7 + duration - 1);
+}
 
 const pendingRollout = TurnEngine.createFastImpactEvent({
   sourceSide: "B",
@@ -69,6 +99,35 @@ const sourceFainted = TurnEngine.createState({
 const deniedImpact = TurnEngine.resolveFastImpact(sourceFainted, pendingRollout);
 assert.equal(deniedImpact.event.status, "denied");
 assert.equal(deniedImpact.state.sides.A.hp, 25);
+
+const simultaneousFastState = TurnEngine.createState({
+  currentTurn: 4,
+  sides: {
+    A: { hp: 10, energy: 0, readyTurn: 5 },
+    B: { hp: 10, energy: 0, readyTurn: 5 }
+  },
+  pendingEvents: [
+    TurnEngine.createFastImpactEvent({
+      id: "a-fast",
+      sourceSide: "A",
+      targetSide: "B",
+      damage: 10,
+      startTurn: 4,
+      duration: 1
+    }),
+    TurnEngine.createFastImpactEvent({
+      id: "b-fast",
+      sourceSide: "B",
+      targetSide: "A",
+      damage: 10,
+      startTurn: 4,
+      duration: 1
+    })
+  ]
+});
+const simultaneousFastResult = TurnEngine.resolveDueFastImpacts(simultaneousFastState, 4);
+assert.equal(simultaneousFastResult.outcome.winner, "tie");
+assert.deepEqual(simultaneousFastResult.events.map(event => event.status), ["resolved", "resolved"]);
 
 const dreImpact = TurnEngine.createFastImpactEvent({
   ...pendingRollout,

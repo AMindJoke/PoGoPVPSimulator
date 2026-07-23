@@ -90,6 +90,58 @@ function createPvPeakTurnEngineApi() {
     });
   }
 
+  function normalizeActionIntent(state, intent = {}) {
+    const sideId = intent.sideId || intent.side || null;
+    const type = intent.type === "charged_move"
+      ? "charged"
+      : intent.type === "fast_move"
+        ? "fast"
+        : intent.type;
+    const legalAction = getLegalActions(state, sideId).find(action =>
+      action.type === type
+      && (!intent.moveId || action.moveId === intent.moveId)
+    );
+    if (!legalAction) return null;
+    return {
+      ...intent,
+      sideId,
+      type,
+      moveId: intent.moveId || legalAction.moveId,
+      move: intent.move || legalAction.move,
+      requestTurn: Math.max(0, numeric(intent.requestTurn, state.currentTurn)),
+      queueTurn: Math.max(0, numeric(intent.queueTurn, state.currentTurn)),
+      registrationTurn: state.currentTurn
+    };
+  }
+
+  function orderActionIntents(state, intents = []) {
+    return intents
+      .map(intent => normalizeActionIntent(state, intent))
+      .filter(Boolean)
+      .sort((a, b) => {
+        const aCharged = a.type === "charged";
+        const bCharged = b.type === "charged";
+        if (aCharged !== bCharged) return aCharged ? -1 : 1;
+        if (aCharged && bCharged) {
+          const attackDifference = numeric(state.sides[b.sideId].attack) - numeric(state.sides[a.sideId].attack);
+          if (attackDifference) return attackDifference;
+        }
+        return a.sideId.localeCompare(b.sideId);
+      });
+  }
+
+  function registerActionIntents(state, intents = []) {
+    return orderActionIntents(state, intents).map((intent, index) => ({
+      ...intent,
+      registrationOrder: index,
+      status: "registered"
+    }));
+  }
+
+  function fastImpactTurn(startTurn, duration) {
+    return Math.max(0, numeric(startTurn)) + Math.max(1, numeric(duration, 1)) - 1;
+  }
+
   function createFastImpactEvent(input = {}) {
     const startTurn = Math.max(0, numeric(input.startTurn));
     const duration = Math.max(1, numeric(input.duration, 1));
@@ -104,7 +156,7 @@ function createPvPeakTurnEngineApi() {
       damage: Math.max(0, numeric(input.damage)),
       startTurn,
       duration,
-      resolveTurn: startTurn + duration - 1,
+      resolveTurn: fastImpactTurn(startTurn, duration),
       timelineIndex: Number.isInteger(input.timelineIndex) ? input.timelineIndex : null,
       source: input.source || "battle",
       status: "pending"
@@ -166,6 +218,38 @@ function createPvPeakTurnEngineApi() {
     return { state: next, event: resolvedEvent, outcome: terminalOutcome(next) };
   }
 
+  function resolveDueFastImpacts(state, turn = state?.currentTurn) {
+    const next = createState({ ...state, currentTurn: numeric(turn) });
+    const due = eventsDue(next.pendingEvents, turn).filter(event => event.type === "fast-impact");
+    const resolvedEvents = [];
+    const dueIds = new Set(due.map(event => event.id));
+
+    for (const resolveTurn of [...new Set(due.map(event => numeric(event.resolveTurn)))]) {
+      const simultaneous = due.filter(event => numeric(event.resolveTurn) === resolveTurn);
+      const aliveAtPhaseStart = {
+        A: next.sides.A.hp > 0,
+        B: next.sides.B.hp > 0
+      };
+      const damageByTarget = { A: 0, B: 0 };
+      simultaneous.forEach(event => {
+        const resolvedEvent = { ...event };
+        if (!aliveAtPhaseStart[event.sourceSide] || !next.sides[event.targetSide]) {
+          resolvedEvent.status = "denied";
+        } else {
+          resolvedEvent.status = "resolved";
+          damageByTarget[event.targetSide] += Math.max(0, numeric(event.damage));
+        }
+        resolvedEvents.push(resolvedEvent);
+      });
+      for (const sideId of ["A", "B"]) {
+        next.sides[sideId].hp = Math.max(0, next.sides[sideId].hp - damageByTarget[sideId]);
+      }
+    }
+
+    next.pendingEvents = next.pendingEvents.filter(event => !dueIds.has(event.id));
+    return { state: next, events: resolvedEvents, outcome: terminalOutcome(next) };
+  }
+
   function sneakPairs(timeline, currentTurn, timelineStart = 0, impactTurnForEvent = null) {
     const events = Array.isArray(timeline) ? timeline : [];
     const charges = events.slice(timelineStart)
@@ -214,6 +298,10 @@ function createPvPeakTurnEngineApi() {
     getLegalActions,
     readySides,
     orderReadySides,
+    normalizeActionIntent,
+    orderActionIntents,
+    registerActionIntents,
+    fastImpactTurn,
     createFastImpactEvent,
     scheduleEvent,
     eventsDue,
@@ -221,6 +309,7 @@ function createPvPeakTurnEngineApi() {
     shouldDeferLethalFastImpact,
     nextPendingLethalImpact,
     resolveFastImpact,
+    resolveDueFastImpacts,
     sneakPairs,
     validateState
   });
