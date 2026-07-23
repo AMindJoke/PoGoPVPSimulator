@@ -14749,6 +14749,23 @@
         }
         return legal;
       }
+      const chargedSequences = forcedMatchupPlan.chargedSequences || {};
+      const sequence = Array.isArray(chargedSequences[attacker.trainer])
+        ? chargedSequences[attacker.trainer]
+        : [];
+      forcedMatchupPlan.chargedSequenceCursor = forcedMatchupPlan.chargedSequenceCursor || {};
+      const cursor = Math.max(0, Number(forcedMatchupPlan.chargedSequenceCursor[attacker.trainer] || 0));
+      const nextMoveId = sequence[cursor] || null;
+      if (nextMoveId) {
+        const legal = legalActions.find(action => {
+          const type = action.type === "charged" ? "charged_move" : action.type;
+          return type === "charged_move" && action.moveId === nextMoveId;
+        });
+        if (legal) {
+          forcedMatchupPlan.chargedSequenceCursor[attacker.trainer] = cursor + 1;
+          return legal;
+        }
+      }
       if (forcedMatchupPlan.defaultAction === "fast") {
         return legalActions.find(action => action.type === "fast" || action.type === "fast_move") || null;
       }

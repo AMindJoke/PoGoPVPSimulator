@@ -29,6 +29,7 @@
     "test:scenario-model": "node tools/test-scenario-model.js",
     "test:turn-engine": "node tools/test-turn-resolution-engine.js",
     "test:timing-compatibility": "node tools/test-timing-compatibility.js",
+    "test:quagsire-corsola-ledger": "node tools/test-quagsire-corsola-mechanics-ledger.js",
     "test:battle-intelligence": "node tools/test-battle-intelligence.js",
     "test:hybrid-battle-intelligence": "node tools/test-hybrid-battle-intelligence.js",
     "audit:battle-intelligence": "node tools/run-battle-intelligence-audit.js",
