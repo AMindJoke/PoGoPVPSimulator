@@ -35,6 +35,7 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["ROUTE-004_CHARGED_READINESS_CALCULATION", "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
     rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE", false, ["TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"]),
     rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON", "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"]),
+    rule("BI_ENERGY_CAP_FORCES_THROW", "Throw before energy cap overflow", PRIORITY_CLASSES.RESOURCE, "ENERGY_CAP_FORCES_THROW", false, ["TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS", "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"]),
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true, ["EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"]),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"]),
     rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT"]),
@@ -413,6 +414,19 @@ function createPvPeakBattleIntelligenceApi() {
       const chosen = [...charged].sort(stableCandidateOrder)[0];
       applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
       const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Another Fast Move gives the opponent a lethal action window.");
+      cacheFastPath(cacheKey, result);
+      finishTiming(startedAt, selectionSpan);
+      return result;
+    }
+
+    const energyCapThrow = selectEnergyCapForcedThrow(charged, state, side, context);
+    if (energyCapThrow) {
+      const chosen = applyRule(energyCapThrow, "BI_ENERGY_CAP_FORCES_THROW", 650, .92, {
+        currentEnergy: state.sides[side]?.energy || 0,
+        fastEnergyGain: Math.max(0, numeric(state.sides[side]?.fastMove?.energyGain)),
+        energyCap: 100
+      });
+      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Next Fast Move would overflow energy, so the best immediate Charged Move is used before waiting.");
       cacheFastPath(cacheKey, result);
       finishTiming(startedAt, selectionSpan);
       return result;
@@ -821,6 +835,20 @@ function createPvPeakBattleIntelligenceApi() {
     const damage = damageFor(candidate, context);
     if (damage < target.hp) return false;
     return typeof context.willOpponentShield === "function" ? !context.willOpponentShield(candidate.action) : target.shields <= 0;
+  }
+
+  function selectEnergyCapForcedThrow(charged, state, side, context) {
+    if (!charged?.length) return null;
+    const actor = state.sides?.[side] || {};
+    const currentEnergy = clamp(numeric(actor.energy), 0, 100);
+    if (numeric(state.currentTurn) <= 0 && currentEnergy >= 100) return null;
+    const fastEnergyGain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    if (fastEnergyGain <= 0 || currentEnergy + fastEnergyGain <= 100) return null;
+    return [...charged].sort((a, b) =>
+      damageFor(b, context) - damageFor(a, context)
+      || actionEnergyCost(a.action) - actionEnergyCost(b.action)
+      || stableCandidateOrder(a, b)
+    )[0] || null;
   }
 
   function nextPendingLethal(state, side) {

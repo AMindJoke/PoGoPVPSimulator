@@ -103,6 +103,14 @@ const overfarmDanger = select(state({ energyA: 40 }), {
 assert.equal(overfarmDanger.action.type, "charged_move");
 assert(overfarmDanger.sourceRuleIds.includes("BI_AVOID_LETHAL_OVERFARM"));
 
+const cappedEnergy = select(state({ energyA: 96, hpB: 120 }));
+assert.equal(cappedEnergy.action.type, "charged_move");
+assert.equal(cappedEnergy.action.moveId, "NUKE");
+assert(cappedEnergy.sourceRuleIds.includes("BI_ENERGY_CAP_FORCES_THROW"));
+assert(cappedEnergy.principleIds.includes("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS"));
+assert(cappedEnergy.principleIds.includes("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"));
+assert(!cappedEnergy.sourceRuleIds.includes("BI_HYBRID_BASELINE"));
+
 const weak = move("WEAK", 40, 30);
 const strong = move("STRONG", 40, 55);
 const dominatedState = state({ energyA: 40, chargedA: [weak, strong] });
