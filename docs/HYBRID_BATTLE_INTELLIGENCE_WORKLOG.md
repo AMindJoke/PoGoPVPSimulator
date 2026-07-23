@@ -66,7 +66,8 @@
   - reliability regression suite;
   - focused Quagsire/Corsola response fixture.
 - Result:
-  - Golden corpus: 24/30 in 12,748 ms versus 22/30 in 15,798 ms;
+  - final profiled Golden run: 25/30 in 15,193 ms versus the frozen
+    22/30 in 15,798 ms;
   - reliability corpus: 6/7 in 1,252 ms versus 5/7 in 2,496 ms;
   - the fixed Quagsire `8/17/30/37/44` Aqua Tail line wins against
     `21/34` Night Shade, but loses to the legal `21/31/44` response with
@@ -76,3 +77,38 @@
   timing semantics, score-neutral ambiguity escalation, and equal-treatment
   continuation set. Keep the Quagsire counterexample as a regression and do not
   describe the fixed line as proven.
+
+## 2026-07-23 — Profiler and selective-search tightening
+
+- Hypothesis: low-impact route-shape differences were causing unnecessary
+  cloned continuations; only response-sensitive disagreements should escalate.
+- Evidence:
+  - frozen v17 traces recorded 207 continuation searches and 32,908 evaluated
+    candidates;
+  - the first hybrid integration recorded 228 searches because nearly every
+    `ROUTE_SEQUENCE_DIFFERS` result escalated;
+  - restricting escalation to outcome, shield, CMP, lethal timing, explicit
+    timing, guaranteed effects, charged sequences, and shielded multi-move
+    routes reduced the final count to 217 while retaining the Dedenne shield
+    regression;
+  - the first timing-sample implementation used `Array.shift()` after its cap
+    and inflated a run to 19,662 ms; a circular fixed-size sample removed that
+    profiler-induced O(n) cost.
+- Files changed:
+  - `PogoPvp.html`
+  - `src/battle/battle-intelligence.js`
+  - `src/battle/hybrid-battle-intelligence.js`
+  - `tools/run-hybrid-battle-intelligence-benchmark.js`
+  - `docs/HYBRID_BATTLE_INTELLIGENCE_DESIGN.md`
+  - `docs/HYBRID_BATTLE_INTELLIGENCE_PERFORMANCE.md`
+- Tests run:
+  - 30-case hybrid performance benchmark;
+  - focused Dedenne shielded-route regression;
+  - profiler, intelligence, planner, adapter, turn-resolution, reliability, and
+    Quagsire response suites.
+- Result: the final conservative profile is 25/30 in 15,193 ms, with 509
+  candidate routes, 1,228 compact nodes, 217 continuation searches, hybrid p95
+  4 ms, and hybrid worst case 7 ms.
+- Decision: keep high-impact selective escalation and constant-time sampling.
+  Do not claim cloned continuation count is lower than v17; immutable
+  continuation transitions remain the next optimization target.

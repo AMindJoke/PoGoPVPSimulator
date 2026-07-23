@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-23T08:05:45.686Z",
+  "baseline": {
+    "engineVersion": "battle-planner-v17",
+    "cases": 30,
+    "passed": 22,
+    "failed": 8,
+    "durationMs": 15798.26
+  },
+  "current": {
+    "engineVersion": "battle-planner-v18",
+    "cases": 30,
+    "passed": 25,
+    "failed": 5,
+    "passRate": 83.3,
+    "durationMs": 15192.678
+  },
+  "comparison": {
+    "passDelta": 3,
+    "durationDeltaMs": -605.5820000000003,
+    "durationReductionPercent": 3.833
+  },
+  "search": {
+    "candidateRoutesEvaluated": 509,
+    "compactPlannerNodes": 1228,
+    "compactPlannerCalls": 244,
+    "incompleteCompactPlans": 227,
+    "ambiguousSelections": 224,
+    "continuationSearchesTriggered": 217,
+    "continuationCandidatesEvaluated": 33342
+  },
+  "cache": {
+    "hybrid": {
+      "hits": 17,
+      "misses": 227,
+      "hitRate": 0.07
+    },
+    "battleIntelligence": {
+      "hits": 932,
+      "misses": 4937,
+      "hitRate": 0.159
+    }
+  },
+  "latencyMs": {
+    "hybrid": {
+      "samples": 1378,
+      "average": 0.583,
+      "median": 0,
+      "p95": 4,
+      "worst": 7
+    },
+    "battleIntelligence": {
+      "samples": 24643,
+      "average": 0.699,
+      "median": 0,
+      "p95": 1,
+      "worst": 227
+    }
+  },
+  "failures": [
+    {
+      "id": "cheap-vs-nuke-shadow-quagsire-corsola-0s",
+      "failures": [
+        "Expected MUD_BOMB at A decision 1; actual AQUA_TAIL."
+      ]
+    },
+    {
+      "id": "energy-kingdra-carbink-1s",
+      "failures": [
+        "Expected SURF at A decision 1; actual SWIFT."
+      ]
+    },
+    {
+      "id": "energy-kingdra-carbink-1s-extra-dragon-breath",
+      "failures": [
+        "Expected SURF at A decision 1; actual SWIFT."
+      ]
+    },
+    {
+      "id": "energy-kingdra-carbink-2s",
+      "failures": [
+        "Expected winner B; actual A.",
+        "Expected SURF at A decision 2; actual SWIFT."
+      ]
+    },
+    {
+      "id": "closing-quagsire-corsola-0s",
+      "failures": [
+        "Expected winner A; actual B.",
+        "Expected MUD_BOMB at A decision 1; actual AQUA_TAIL."
+      ]
+    }
+  ]
+}

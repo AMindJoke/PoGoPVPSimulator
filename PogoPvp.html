@@ -13140,7 +13140,11 @@
       const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
+        ? PvPeakHybridBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
       intelligenceApi?.resetStatistics?.();
+      hybridApi?.resetStatistics?.();
       intelligenceApi?.resetAudit?.();
       intelligenceApi?.configureAudit?.({
         enabled: true,
@@ -13189,16 +13193,60 @@
       const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
+        ? PvPeakHybridBattleIntelligence
+        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
       currentBattleDecisionTrace.finalState = {
         A: traceCombatantState(left),
         B: traceCombatantState(right)
       };
       const intelligenceStats = intelligenceApi?.getStatistics?.() || null;
       if (intelligenceStats) {
-        const { maxDecisionMs, totalDecisionMs, averageDecisionMs, ...deterministicStats } = intelligenceStats;
+        const {
+          maxDecisionMs,
+          totalDecisionMs,
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          decisionDurationSamples,
+          ...deterministicStats
+        } = intelligenceStats;
         currentBattleDecisionTrace.intelligenceStats = deterministicStats;
+        currentBattleDecisionTrace.intelligencePerformance = {
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          maxDecisionMs,
+          totalDecisionMs,
+          decisionDurationSamples
+        };
       } else {
         currentBattleDecisionTrace.intelligenceStats = null;
+        currentBattleDecisionTrace.intelligencePerformance = null;
+      }
+      const hybridStats = hybridApi?.getStatistics?.() || null;
+      if (hybridStats) {
+        const {
+          maxDecisionMs,
+          totalDecisionMs,
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          decisionDurationSamples,
+          ...deterministicStats
+        } = hybridStats;
+        currentBattleDecisionTrace.hybridStats = deterministicStats;
+        currentBattleDecisionTrace.hybridPerformance = {
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          maxDecisionMs,
+          totalDecisionMs,
+          decisionDurationSamples
+        };
+      } else {
+        currentBattleDecisionTrace.hybridStats = null;
+        currentBattleDecisionTrace.hybridPerformance = null;
       }
       currentBattleDecisionTrace.intelligenceAudit = intelligenceApi?.getAuditReport?.() || null;
       if (!currentBattleDecisionTrace.intelligenceAudit?.configuration?.strict) {
@@ -13722,6 +13770,30 @@
             }))
         };
       }
+      const hybridHighImpactAmbiguity = !!hybridEvaluation?.ambiguity?.ambiguous
+        && (hybridEvaluation.ambiguity.reasonCodes || []).some(reason =>
+          [
+            "OUTCOME_CLASS_DIFFERS",
+            "SHIELD_ALLOCATION_DIFFERS",
+            "CMP_BOUNDARY_DIFFERS",
+            "LETHAL_TIMING_DIFFERS",
+            "TIMING_ROUTE_DIFFERS",
+            "GUARANTEED_EFFECT_ROUTE_DIFFERS",
+            "CHARGED_SEQUENCE_DIFFERS"
+          ].includes(reason)
+          || (["CHARGED_ROUTE_DIFFERS", "ROUTE_SEQUENCE_DIFFERS"].includes(reason)
+            && Number(defender.shields || 0) > 0
+            && validChargedMoves(attacker).length > 1)
+        );
+      if (hybridEvaluation?.ambiguity?.ambiguous && !hybridHighImpactAmbiguity) {
+        hybridEvaluation.decisive = true;
+        hybridEvaluation.fastPath = false;
+        hybridEvaluation.ambiguity = {
+          ...hybridEvaluation.ambiguity,
+          ambiguous: false,
+          resolvedBy: "compact-outcome-vector"
+        };
+      }
       if (chargedContinuationDepth > 0 && (chargedContinuationOpening?.repeat || chargedContinuationOpening?.timingOnce || chargedContinuationOpening?.sequence)
         && chargedContinuationOpening.trainer === attacker.trainer) {
         const timingFastRequired = !!(chargedContinuationOpening.timingOnce
@@ -13782,12 +13854,7 @@
         }
       }
       const continuationEligible = chargedContinuationDepth === 0
-        && hybridEvaluation?.ambiguity?.ambiguous === true
-        && (effectContinuationEligible
-          || shieldedLineContinuationEligible
-          || projectedSequenceEligible
-          || timingContinuationEligible
-          || hybridEvaluation?.ambiguity?.ambiguous === true);
+        && hybridHighImpactAmbiguity;
       const compareStraightChargedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),

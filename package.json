@@ -21,6 +21,7 @@
     "test:matchup-planner-adapter": "node tools/test-matchup-planner-adapter.js",
     "test:flip-continuations": "node tools/test-flip-continuation-analysis.js",
     "planner:benchmark": "node tools/run-planner-benchmark.js",
+    "planner:benchmark:hybrid": "node tools/run-hybrid-battle-intelligence-benchmark.js --write",
     "test:planner-qa": "node tools/test-planner-qa.js",
     "test:battle-regressions": "node tools/run-battle-regressions.js",
     "test:battle-reliability": "node tools/test-battle-reliability.js",

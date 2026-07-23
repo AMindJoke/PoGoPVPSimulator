@@ -13,7 +13,9 @@ function createPvPeakHybridBattleIntelligenceApi() {
   });
   const routeCache = new Map();
   const MAX_ROUTE_CACHE = 8192;
+  const MAX_DECISION_SAMPLES = 8192;
   const statistics = createStatistics();
+  const decisionDurations = [];
 
   function createStatistics() {
     return {
@@ -22,21 +24,30 @@ function createPvPeakHybridBattleIntelligenceApi() {
       tacticalExits: 0,
       plannerCalls: 0,
       plannerNodes: 0,
+      routesEvaluated: 0,
       incompletePlans: 0,
       ambiguousSelections: 0,
       cacheHits: 0,
-      cacheMisses: 0
+      cacheMisses: 0,
+      totalDecisionMs: 0,
+      maxDecisionMs: 0
     };
   }
 
   function resetStatistics() {
     Object.assign(statistics, createStatistics());
+    decisionDurations.length = 0;
   }
 
   function getStatistics() {
     const lookups = statistics.cacheHits + statistics.cacheMisses;
+    const sortedDurations = [...decisionDurations].sort((a, b) => a - b);
     return {
       ...statistics,
+      averageDecisionMs: statistics.selections ? statistics.totalDecisionMs / statistics.selections : 0,
+      medianDecisionMs: percentile(sortedDurations, .5),
+      p95DecisionMs: percentile(sortedDurations, .95),
+      decisionDurationSamples: [...decisionDurations],
       cacheHitRate: lookups ? statistics.cacheHits / lookups : 0,
       cacheSize: routeCache.size
     };
@@ -317,6 +328,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
       terminalRoutes.length ? terminalRoutes : [...boundedByFirst.values()]
     );
     const routes = [...bestByFirst.values()].sort(compareRoutes);
+    statistics.routesEvaluated += routes.length;
     const result = {
       bestRoute: routes[0] || null,
       routes,
@@ -362,6 +374,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
   }
 
   function selectAction(input = {}) {
+    const startedAt = now();
     statistics.selections++;
     const legalActions = (input.legalActions || []).map(action => normalizeAction(action, input.actorSide));
     const fast = legalActions.find(action => action.type === "fast_move") || null;
@@ -371,7 +384,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
 
     if (!charged.length) {
       statistics.fastDefaults++;
-      return decision(fast, true, ["FAST_DEFAULT"], "No Charged Move is currently legal.");
+      return finishDecision(decision(fast, true, ["FAST_DEFAULT"], "No Charged Move is currently legal."), startedAt);
     }
 
     const ownPendingLethal = (input.pendingEvents || []).some(event =>
@@ -383,7 +396,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
     );
     if (ownPendingLethal && fast) {
       statistics.tacticalExits++;
-      return decision(fast, true, ["PENDING_FAST_LETHAL", "FAST_DEFAULT"], "A committed Fast impact already guarantees the knockout.");
+      return finishDecision(decision(fast, true, ["PENDING_FAST_LETHAL", "FAST_DEFAULT"], "A committed Fast impact already guarantees the knockout."), startedAt);
     }
 
     const immediateLethal = charged
@@ -392,7 +405,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
       .sort((a, b) => energyCost(a.move) - energyCost(b.move) || stableActionKey(a).localeCompare(stableActionKey(b)))[0];
     if (immediateLethal) {
       statistics.tacticalExits++;
-      return decision(immediateLethal, true, ["LETHAL_MOVE_AVAILABLE"], "The lowest-cost legal Charged Move guarantees the knockout.");
+      return finishDecision(decision(immediateLethal, true, ["LETHAL_MOVE_AVAILABLE"], "The lowest-cost legal Charged Move guarantees the knockout."), startedAt);
     }
 
     const timing = evaluateTiming({
@@ -418,7 +431,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
         : timing.faintsWhileWaiting ? ["FORCED_THROW_BEFORE_FAINT"]
           : timing.currentTimingOptimal ? ["OPTIMAL_CHARGE_TIMING"]
             : ["THROW_NOW_PREVENTS_OPPONENT_CHARGE"];
-      return decision(bestThrow, true, reasons, "Waiting loses the current meaningful Charged Move window.", { timing });
+      return finishDecision(decision(bestThrow, true, reasons, "Waiting loses the current meaningful Charged Move window.", { timing }), startedAt);
     }
 
     const routePlan = planOffensiveRoutes({
@@ -433,11 +446,11 @@ function createPvPeakHybridBattleIntelligenceApi() {
     const selected = actionForRoute(routePlan.bestRoute, fast, charged);
     if (!selected) {
       statistics.fastDefaults++;
-      return decision(fast, true, ["FAST_DEFAULT"], "No bounded route justifies interrupting Fast Move pressure.", {
+      return finishDecision(decision(fast, true, ["FAST_DEFAULT"], "No bounded route justifies interrupting Fast Move pressure.", {
         timing,
         routePlan,
         ambiguity
-      });
+      }), startedAt);
     }
     const farm = routePlan.bestRoute?.routeType === "farm-down";
     const reasonCodes = farm
@@ -445,7 +458,7 @@ function createPvPeakHybridBattleIntelligenceApi() {
       : selected.type === "fast_move"
         ? [timing.safeToWait ? "SAFE_EXTRA_FAST" : "FAST_DEFAULT"]
         : ["BOUNDED_OFFENSIVE_ROUTE"];
-    return decision(
+    return finishDecision(decision(
       selected,
       !ambiguity.ambiguous,
       reasonCodes,
@@ -455,7 +468,16 @@ function createPvPeakHybridBattleIntelligenceApi() {
           ? "One Fast Move improves the best bounded route; re-plan after it resolves."
           : "The bounded offensive route starts with this Charged Move.",
       { timing, routePlan, ambiguity }
-    );
+    ), startedAt);
+  }
+
+  function finishDecision(result, startedAt) {
+    const duration = Math.max(0, now() - startedAt);
+    statistics.totalDecisionMs += duration;
+    statistics.maxDecisionMs = Math.max(statistics.maxDecisionMs, duration);
+    const sampleIndex = Math.max(0, statistics.selections - 1) % MAX_DECISION_SAMPLES;
+    decisionDurations[sampleIndex] = duration;
+    return result;
   }
 
   function decision(action, decisive, reasonCodes, explanation, evidence = {}) {
@@ -871,6 +893,12 @@ function createPvPeakHybridBattleIntelligenceApi() {
     return typeof performance !== "undefined" && typeof performance.now === "function"
       ? performance.now()
       : Date.now();
+  }
+
+  function percentile(sortedValues, fraction) {
+    if (!sortedValues.length) return 0;
+    const index = Math.min(sortedValues.length - 1, Math.max(0, Math.ceil(sortedValues.length * fraction) - 1));
+    return sortedValues[index];
   }
 
   return Object.freeze({

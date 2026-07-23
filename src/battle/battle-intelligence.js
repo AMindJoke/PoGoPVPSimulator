@@ -61,7 +61,9 @@ function createPvPeakBattleIntelligenceApi() {
   const ruleMap = new Map(RULES.map(item => [item.id, item]));
   const fastPathCache = new Map();
   const MAX_CACHE_ENTRIES = 2048;
+  const MAX_DECISION_SAMPLES = 8192;
   const statistics = createStatistics();
+  const decisionDurations = [];
   const strictByDefault = readStrictModeDefault();
   const auditConfiguration = { enabled: strictByDefault, strict: strictByDefault, retainEvents: strictByDefault };
   let audit = createAuditState();
@@ -85,12 +87,17 @@ function createPvPeakBattleIntelligenceApi() {
 
   function resetStatistics() {
     Object.assign(statistics, createStatistics());
+    decisionDurations.length = 0;
   }
 
   function getStatistics() {
+    const sortedDurations = [...decisionDurations].sort((a, b) => a - b);
     return {
       ...statistics,
       averageDecisionMs: statistics.selections ? statistics.totalDecisionMs / statistics.selections : 0,
+      medianDecisionMs: percentile(sortedDurations, .5),
+      p95DecisionMs: percentile(sortedDurations, .95),
+      decisionDurationSamples: [...decisionDurations],
       cacheHitRate: statistics.cacheHits + statistics.cacheMisses
         ? statistics.cacheHits / (statistics.cacheHits + statistics.cacheMisses)
         : 0,
@@ -1063,7 +1070,15 @@ function createPvPeakBattleIntelligenceApi() {
     const duration = Math.max(0, now() - startedAt);
     statistics.totalDecisionMs += duration;
     statistics.maxDecisionMs = Math.max(statistics.maxDecisionMs, duration);
+    const sampleIndex = Math.max(0, statistics.selections - 1) % MAX_DECISION_SAMPLES;
+    decisionDurations[sampleIndex] = duration;
     perfDebug?.endSpan(perfSpan);
+  }
+
+  function percentile(sortedValues, fraction) {
+    if (!sortedValues.length) return 0;
+    const index = Math.min(sortedValues.length - 1, Math.max(0, Math.ceil(sortedValues.length * fraction) - 1));
+    return sortedValues[index];
   }
 
   return Object.freeze({

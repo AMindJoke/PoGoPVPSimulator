@@ -45,6 +45,14 @@ Matrix, Offline, Scenario Review, and Preview paths have zero legacy strategic
 fallbacks; manual actions and explicit Scenario Review technical reconstruction
 remain intentionally outside automatic strategy.
 
+`battle-planner-v18` adds the hybrid 1v1 strategy architecture. Obvious states
+use tactical gates and a compact offensive route planner; response-sensitive
+outcome, shield, CMP, timing, guaranteed-effect, and shielded charged-route
+disagreements escalate to an equal-treatment continuation set. Structured
+timing requires a real pending Fast impact, forced throws distinguish lethal
+from merely reachable opposing Charged Moves, and diagnostic scenario roots
+clear strategic memo tables before replay.
+
 Increment it whenever a behavior-affecting rule changes, including move choice, shield policy, bait policy, stat-effect valuation, continuation search, CMP handling, or move timing. Browser matrix cache keys and offline matchup cache files include this version.
 
 An offline or cached result is stale when its engine version is missing or differs from the current planner version. Stale data may be inspected, but it must not be silently presented as current engine output.
@@ -89,6 +97,10 @@ Completed traced battles also expose:
 
 - `shieldCounterfactuals`: the same decision simulated with and without a shield, including outcome, remaining HP, energy, shields, and charged-move access;
 - `terminalSnapshots`: energy, affordable or lethal charged moves, faint cause, and action-window evidence for each fainted Pokemon.
+- `intelligenceStats` and `hybridStats`: deterministic selection, route,
+  continuation, and cache counters;
+- `intelligencePerformance` and `hybridPerformance`: developer timing samples
+  and average, median, p95, worst, and total decision time.
 
 These fields are observational. A terminal snapshot only sets `legalMoveCouldChangeOutcome` when an evaluated same-turn planner candidate already demonstrated a winning continuation. Remaining energy by itself is not enough to accuse the planner of missing a move.
 
