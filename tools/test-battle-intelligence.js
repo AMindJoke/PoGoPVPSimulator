@@ -53,6 +53,9 @@ function select(currentState, overrides = {}) {
       chargedTimingOptimization: overrides.chargedTimingOptimization,
       estimateFastDamage: overrides.estimateFastDamage,
       estimateOpponentDamage: overrides.estimateOpponentDamage,
+      compactDamage: overrides.compactDamage,
+      compactSurvivalProjection: overrides.compactSurvivalProjection,
+      compactCmpAdvantage: overrides.compactCmpAdvantage,
       matchupPlannerV2: overrides.matchupPlannerV2,
       planMatchup: overrides.planMatchup
     }
@@ -97,6 +100,61 @@ assert(lethal.reasonCodes.includes("LETHAL_MOVE_AVAILABLE"));
 assert.equal(lethal.finalAuthority, "PRINCIPLE_ENGINE");
 assert(lethal.principlesTriggered.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"));
 assert.equal(lethalHybridCalls, 0);
+
+Intelligence.clearCache();
+const compactBreakpointState = state({
+  hpA: 13,
+  hpB: 43,
+  energyA: 38,
+  energyB: 45,
+  readyA: 5,
+  readyB: 7,
+  chargedA: [move("CHEAP", 35, 36), move("NUKE", 45, 42)]
+});
+let compactHybridCalls = 0;
+const compactBreakpoint = select(compactBreakpointState, {
+  compactDamage: (_side, compactMove) => Number(compactMove?.damage || 0),
+  compactSurvivalProjection: () => ({ turnsToFaint: 3, damageTaken: 13, opponentChargedCount: 1 }),
+  compactCmpAdvantage: 10,
+  evaluateHybrid() {
+    compactHybridCalls++;
+    throw new Error("Hybrid must not run for a principle-owned compact route.");
+  }
+});
+assert.equal(compactBreakpoint.action.type, "fast_move");
+assert.equal(compactBreakpoint.finalAuthority, "PRINCIPLE_ENGINE");
+assert.equal(compactBreakpoint.fallbackUsed, false);
+assert.equal(compactHybridCalls, 0);
+assert(compactBreakpoint.sourceRuleIds.includes("BI_PRINCIPLE_COMPACT_ROUTE"));
+assert(compactBreakpoint.principlesTriggered.includes("COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE"));
+assert(compactBreakpoint.principlesTriggered.includes("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"));
+assert.equal(
+  compactBreakpoint.principleResult.evidence.compactRoute.bestRoute.sequence.at(-1).moveId,
+  "NUKE"
+);
+
+Intelligence.clearCache();
+const twoCheapRouteState = state({
+  hpA: 100,
+  hpB: 100,
+  energyA: 70,
+  chargedA: [move("CHEAP", 35, 55), move("NUKE", 60, 90)]
+});
+let twoCheapHybridCalls = 0;
+const twoCheapRoute = select(twoCheapRouteState, {
+  compactDamage: (_side, compactMove) => Number(compactMove?.damage || 0),
+  compactSurvivalProjection: () => ({ turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 }),
+  compactCmpAdvantage: 10,
+  evaluateHybrid() {
+    twoCheapHybridCalls++;
+    throw new Error("Hybrid must not run when ROUTE-007 resolves the complete route value.");
+  }
+});
+assert.equal(twoCheapRoute.action.moveId, "CHEAP");
+assert.equal(twoCheapRoute.finalAuthority, "PRINCIPLE_ENGINE");
+assert.equal(twoCheapHybridCalls, 0);
+assert(twoCheapRoute.principlesTriggered.includes("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"));
+assert.equal(twoCheapRoute.principleResult.evidence.twoCheapRoute.retained, true);
 
 Intelligence.clearCache();
 let unresolvedHybridCalls = 0;
@@ -506,6 +564,6 @@ assert.equal(principleMetrics.principleEngineResolvedDecisions, 1);
 assert.equal(principleMetrics.hybridFallbackDecisions, 1);
 assert.equal(principleMetrics.resolvedByCategory.availability, 1);
 assert.equal(principleMetrics.fallbackPercentage, .5);
-assert.deepEqual(principleMetrics.migratedCategories, ["availability", "tactical", "timing"]);
+assert.deepEqual(principleMetrics.migratedCategories, ["availability", "tactical", "timing", "route", "compact-planner"]);
 
 console.log("Battle Intelligence tests passed.");

@@ -34,7 +34,7 @@ function createPvPeakBattleIntelligenceApi() {
     WAIT_ONE_FAST: "WAIT_ONE_FAST",
     NO_TIMING_PREFERENCE: "NO_TIMING_PREFERENCE"
   });
-  const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze(["availability", "tactical", "timing"]);
+  const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze(["availability", "tactical", "timing", "route", "compact-planner"]);
 
   const RULES = Object.freeze([
     rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK", false, ["AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE", "ROUTE-026_BUILD_TO_SELECTED_MOVE"]),
@@ -45,6 +45,7 @@ function createPvPeakBattleIntelligenceApi() {
     rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true, ["EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"]),
     rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"]),
     rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT"]),
+    rule("BI_PRINCIPLE_COMPACT_ROUTE", "Execute the principle-owned compact route", PRIORITY_CLASSES.OUTCOME_EFFECT, "COMPACT_ROUTE_GENERATED", false, ["ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE", "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"]),
     rule("BI_HYBRID_BASELINE", "Use the bounded hybrid baseline", PRIORITY_CLASSES.OUTCOME_EFFECT, "BOUNDED_OFFENSIVE_ROUTE", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"]),
     rule("BI_SELECTIVE_DEEP_SEARCH", "Verify an ambiguous hybrid decision", PRIORITY_CLASSES.CONTINUATION, "AMBIGUOUS_DEEP_SEARCH", true, ["SEARCH-029_BOUND_PLANNER_STATE_COUNT", "SEARCH-035_PRUNE_DOMINATED_STATES"]),
     rule("BI_FARM_DOWN", "Use the best farm-down route", PRIORITY_CLASSES.RESOURCE, "FARM_DOWN_ROUTE", false, ["FARM-033_FARM_DOWN_ROUTE_CANDIDATE"]),
@@ -509,6 +510,30 @@ function createPvPeakBattleIntelligenceApi() {
     if (twoCheapEvidence.retained) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
     else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
 
+    const compactRoute = evaluateCompactRoutePrinciples({
+      state,
+      side,
+      actor,
+      opponent,
+      candidates,
+      fast,
+      charged,
+      context,
+      policy: input.policy
+    });
+    triggered.push(...compactRoute.principlesTriggered);
+    rejected.push(...compactRoute.principlesRejected);
+    if (compactRoute.resolved && compactRoute.candidate) {
+      return resolvedPrinciple(
+        compactRoute.candidate,
+        "route",
+        "COMPACT_ROUTE",
+        triggered,
+        rejected,
+        { ...baseEvidence, twoCheapRoute: compactRoute.twoCheapRoute, compactRoute: compactRoute.evidence }
+      );
+    }
+
     const timing = evaluateTimingPrinciples({
       state,
       side,
@@ -529,7 +554,7 @@ function createPvPeakBattleIntelligenceApi() {
         PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST,
         triggered,
         rejected,
-        { ...baseEvidence, twoCheapRoute: twoCheapEvidence, timing: timing.evidence }
+        { ...baseEvidence, twoCheapRoute: twoCheapEvidence, compactRoute: compactRoute.evidence, timing: timing.evidence }
       );
     }
     if (timing.intent === PRINCIPLE_TIMING_INTENTS.THROW_NOW && charged.length) {
@@ -540,7 +565,7 @@ function createPvPeakBattleIntelligenceApi() {
           PRINCIPLE_TIMING_INTENTS.THROW_NOW,
           triggered,
           rejected,
-          { ...baseEvidence, twoCheapRoute: twoCheapEvidence, timing: timing.evidence }
+          { ...baseEvidence, twoCheapRoute: twoCheapEvidence, compactRoute: compactRoute.evidence, timing: timing.evidence }
         ),
         timingIntentOnly: true,
         allowedActionTypes: [ACTION_TYPES.CHARGED_MOVE],
@@ -558,7 +583,7 @@ function createPvPeakBattleIntelligenceApi() {
       principlesEvaluated: evaluated,
       principlesTriggered: [...new Set(triggered)],
       principlesRejected: [...new Set(rejected)],
-      evidence: { ...baseEvidence, twoCheapRoute: twoCheapEvidence },
+      evidence: { ...baseEvidence, twoCheapRoute: twoCheapEvidence, compactRoute: compactRoute.evidence },
       timingIntent: PRINCIPLE_TIMING_INTENTS.NO_TIMING_PREFERENCE,
       unresolvedCategories: ["route", "farm", "bait", "shield", "effects", "ambiguity"],
       migratedCategories: [...MIGRATED_PRINCIPLE_CATEGORIES],
@@ -726,6 +751,352 @@ function createPvPeakBattleIntelligenceApi() {
       nukeMoveId: nuke.action.moveId,
       completeRouteRequired: true
     };
+  }
+
+  function evaluateCompactRoutePrinciples(input = {}) {
+    const rejected = [];
+    const triggered = [];
+    const actor = input.actor || {};
+    const opponent = input.opponent || {};
+    const candidates = input.candidates || [];
+    const fastCandidate = input.fast || candidates.find(candidate =>
+      candidate.action.type === ACTION_TYPES.FAST_MOVE
+    ) || null;
+    const legalChargedIds = new Set((input.charged || [])
+      .map(candidate => candidate.action.moveId)
+      .filter(Boolean));
+    const chargedMoves = (actor.chargedMoves || []).filter(Boolean);
+    const unresolved = result => ({
+      resolved: false,
+      candidate: null,
+      principlesTriggered: triggered,
+      principlesRejected: rejected,
+      twoCheapRoute: result?.twoCheapRoute || { retained: false },
+      evidence: result || null
+    });
+
+    if (!fastCandidate || !chargedMoves.length || typeof input.context?.compactSurvivalProjection !== "function") {
+      rejected.push(
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"
+      );
+      return unresolved({ reason: "COMPACT_ROUTE_INPUTS_INCOMPLETE" });
+    }
+    if (numeric(opponent.shields) > 0) {
+      rejected.push(
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"
+      );
+      return unresolved({ reason: "SHIELD_ROUTE_NOT_MIGRATED" });
+    }
+    if (chargedMoves.some(compactMoveHasEffects)) {
+      rejected.push(
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"
+      );
+      return unresolved({ reason: "EFFECT_ROUTE_NOT_MIGRATED" });
+    }
+
+    const policy = input.policy || POLICIES.FAST;
+    const maxStates = Math.max(24, Math.min(384, numeric(policy.maxStates, 96)));
+    const maxTurns = Math.max(24, Math.min(96, numeric(input.context.compactMaxTurns, 64)));
+    const root = {
+      energy: clamp(numeric(actor.energy), 0, 100),
+      defenderHp: Math.max(0, numeric(opponent.hp)),
+      turn: 0,
+      sequence: [],
+      firstAction: null,
+      chargedCount: 0,
+      fastCount: 0
+    };
+    const frontier = [root];
+    const terminal = [];
+    const dominance = new Map();
+    const legalRootActionKeys = new Set([
+      compactActionKey(fastCandidate.action),
+      ...(input.charged || []).map(candidate => compactActionKey(candidate.action))
+    ]);
+    let exploredStates = 0;
+    let orderedFrontiers = 0;
+    let searchCompleted = false;
+
+    while (frontier.length && exploredStates < maxStates) {
+      if (frontier.length > 1) orderedFrontiers++;
+      frontier.sort(compareCompactFrontierStates);
+      const routeState = frontier.shift();
+      exploredStates++;
+      if (!routeState || routeState.turn > maxTurns) continue;
+      if (compactRouteDominated(routeState, dominance)) continue;
+      rememberCompactDominance(routeState, dominance);
+
+      const survival = compactSurvival(input, routeState);
+      if (!compactActorCanAct(routeState, survival, input)) continue;
+      if (routeState.defenderHp <= 0) {
+        terminal.push(compactTerminalRoute(routeState, survival, actor));
+        const terminalFirstActions = new Set(terminal.map(route => compactActionKey(route.firstAction)));
+        if ([...legalRootActionKeys].every(key => terminalFirstActions.has(key))) {
+          searchCompleted = true;
+          break;
+        }
+        continue;
+      }
+
+      const fastState = applyCompactFast(routeState, actor, input);
+      if (fastState && fastState.turn <= maxTurns) frontier.push(fastState);
+      for (const move of chargedMoves) {
+        if (routeState.energy < compactEnergyCost(move)) continue;
+        if (!routeState.firstAction && !legalChargedIds.has(move.id || move.moveId)) continue;
+        const chargedState = applyCompactCharged(routeState, move, input);
+        if (chargedState && chargedState.turn <= maxTurns) frontier.push(chargedState);
+      }
+    }
+
+    triggered.push("COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE");
+    if (orderedFrontiers > 0) triggered.push("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT");
+    else rejected.push("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT");
+
+    const routesByFirst = new Map();
+    for (const route of terminal) {
+      const key = compactActionKey(route.firstAction);
+      const previous = routesByFirst.get(key);
+      if (!previous || compareCompactRoutes(route, previous) < 0) routesByFirst.set(key, route);
+    }
+    const routes = [...routesByFirst.values()].sort(compareCompactRoutes);
+    const twoCheapRoute = compactTwoCheapEvidence(root, routes, chargedMoves);
+    if (twoCheapRoute.retained) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+    else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+
+    const best = routes[0] || null;
+    const selected = best
+      ? candidates.find(candidate => compactActionKey(candidate.action) === compactActionKey(best.firstAction)) || null
+      : null;
+    const second = routes[1] || null;
+    const exactTie = !!(best && second && compareCompactRouteValue(best, second) === 0);
+    const complete = searchCompleted || frontier.length === 0;
+    const chargedIdsInBest = new Set((best?.sequence || [])
+      .filter(action => action.type === ACTION_TYPES.CHARGED_MOVE)
+      .map(action => action.moveId));
+    const buildsToUnreadyCharged = best?.firstAction?.type === ACTION_TYPES.FAST_MOVE
+      && [...chargedIdsInBest].some(moveId => !legalChargedIds.has(moveId));
+    const routeAlternativeEstablished = twoCheapRoute.retained
+      || (buildsToUnreadyCharged && best?.cmpBoundary === true);
+    if (!complete || !selected || best?.outcome !== "win" || exactTie || !routeAlternativeEstablished) {
+      return unresolved({
+        reason: !complete
+          ? "COMPACT_ROUTE_BUDGET_EXHAUSTED"
+          : exactTie
+          ? "COMPACT_ROUTE_AMBIGUOUS"
+          : !routeAlternativeEstablished ? "NO_ROUTE_ALTERNATIVE_ESTABLISHED" : "NO_COMPLETE_WINNING_ROUTE",
+        exploredStates,
+        complete,
+        routes,
+        twoCheapRoute
+      });
+    }
+
+    return {
+      resolved: true,
+      candidate: selected,
+      principlesTriggered: triggered,
+      principlesRejected: rejected,
+      twoCheapRoute,
+      evidence: {
+        exploredStates,
+        complete,
+        orderedFrontiers,
+        bestRoute: best,
+        routes,
+        twoCheapRoute
+      }
+    };
+  }
+
+  function compactMoveHasEffects(move) {
+    if (numeric(move?.buffApplyChance) <= 0) return false;
+    return [move?.buffs, move?.buffsSelf, move?.buffsOpponent]
+      .some(values => Array.isArray(values) && values.some(value => numeric(value) !== 0));
+  }
+
+  function applyCompactFast(state, actor, input) {
+    const move = actor.fastMove;
+    if (!move) return null;
+    const turns = Math.max(1, numeric(move.turns, 1));
+    const damage = compactDamage(input, ACTION_TYPES.FAST_MOVE, move, state);
+    const action = { type: ACTION_TYPES.FAST_MOVE, moveId: move.id || move.moveId || null };
+    return {
+      ...state,
+      energy: Math.min(100, state.energy + Math.max(0, numeric(move.energyGain))),
+      defenderHp: Math.max(0, state.defenderHp - damage),
+      turn: state.turn + turns,
+      sequence: [...state.sequence, action],
+      firstAction: state.firstAction || action,
+      fastCount: state.fastCount + 1
+    };
+  }
+
+  function applyCompactCharged(state, move, input) {
+    const cost = compactEnergyCost(move);
+    if (!cost || state.energy < cost) return null;
+    const action = { type: ACTION_TYPES.CHARGED_MOVE, moveId: move.id || move.moveId || null };
+    return {
+      ...state,
+      energy: Math.max(0, state.energy - cost),
+      defenderHp: Math.max(0, state.defenderHp - compactDamage(input, ACTION_TYPES.CHARGED_MOVE, move, state)),
+      turn: state.turn + 1,
+      sequence: [...state.sequence, action],
+      firstAction: state.firstAction || action,
+      chargedCount: state.chargedCount + 1
+    };
+  }
+
+  function compactDamage(input, type, move, state) {
+    if (typeof input.context?.compactDamage === "function") {
+      return Math.max(0, numeric(input.context.compactDamage("actor", move, {
+        turn: state.turn,
+        energy: state.energy,
+        defenderHp: state.defenderHp
+      })));
+    }
+    if (type === ACTION_TYPES.FAST_MOVE && typeof input.context?.estimateFastDamage === "function") {
+      return Math.max(0, numeric(input.context.estimateFastDamage("actor")));
+    }
+    if (type === ACTION_TYPES.CHARGED_MOVE && typeof input.context?.estimateDamage === "function") {
+      return Math.max(0, numeric(input.context.estimateDamage({
+        type,
+        moveId: move.id || move.moveId || null,
+        move
+      })));
+    }
+    return Math.max(0, numeric(move?.damage ?? move?.metadata?.damage));
+  }
+
+  function compactSurvival(input, state) {
+    const projected = input.context.compactSurvivalProjection({
+      energy: state.energy,
+      defenderHp: state.defenderHp,
+      turn: state.turn,
+      sequence: state.sequence,
+      fastCount: state.fastCount,
+      chargedCount: state.chargedCount
+    }) || {};
+    return {
+      turnsToFaint: Number.isFinite(Number(projected.turnsToFaint))
+        ? Number(projected.turnsToFaint)
+        : Number.POSITIVE_INFINITY,
+      damageTaken: Math.max(0, numeric(projected.damageTaken)),
+      opponentChargedCount: Math.max(0, numeric(projected.opponentChargedCount))
+    };
+  }
+
+  function compactActorCanAct(state, survival, input) {
+    if (state.turn < survival.turnsToFaint) return true;
+    if (state.turn > survival.turnsToFaint) return false;
+    return numeric(input.context?.compactCmpAdvantage) > 0;
+  }
+
+  function compactTerminalRoute(state, survival, actor) {
+    const hpRemaining = Math.max(1, numeric(actor.hp) - survival.damageTaken);
+    return {
+      firstAction: state.firstAction,
+      sequence: state.sequence,
+      outcome: "win",
+      turn: state.turn,
+      hpRemaining,
+      energyAfter: state.energy,
+      chargedCount: state.chargedCount,
+      fastCount: state.fastCount,
+      cmpBoundary: state.turn === survival.turnsToFaint,
+      complete: true
+    };
+  }
+
+  function compareCompactFrontierStates(a, b) {
+    return a.turn - b.turn
+      || a.defenderHp - b.defenderHp
+      || b.energy - a.energy
+      || compactSequenceKey(a.sequence).localeCompare(compactSequenceKey(b.sequence));
+  }
+
+  function compareCompactRoutes(a, b) {
+    return compareCompactRouteValue(a, b)
+      || compactActionKey(a.firstAction).localeCompare(compactActionKey(b.firstAction));
+  }
+
+  function compareCompactRouteValue(a, b) {
+    return ({ loss: 0, draw: 1, win: 2 })[b.outcome] - ({ loss: 0, draw: 1, win: 2 })[a.outcome]
+      || a.turn - b.turn
+      || b.hpRemaining - a.hpRemaining
+      || b.energyAfter - a.energyAfter
+      || a.chargedCount - b.chargedCount
+      || compactSequenceKey(a.sequence).localeCompare(compactSequenceKey(b.sequence));
+  }
+
+  function compactRouteDominated(state, dominance) {
+    const key = `${state.defenderHp}:${state.turn}`;
+    const previous = dominance.get(key);
+    return !!previous && previous.energy >= state.energy
+      && previous.chargedCount <= state.chargedCount
+      && previous.fastCount <= state.fastCount;
+  }
+
+  function rememberCompactDominance(state, dominance) {
+    const key = `${state.defenderHp}:${state.turn}`;
+    const previous = dominance.get(key);
+    if (!previous || state.energy > previous.energy
+      || state.chargedCount < previous.chargedCount
+      || state.fastCount < previous.fastCount) {
+      dominance.set(key, {
+        energy: state.energy,
+        chargedCount: state.chargedCount,
+        fastCount: state.fastCount
+      });
+    }
+  }
+
+  function compactTwoCheapEvidence(root, routes, moves) {
+    if (moves.length < 2) return { retained: false };
+    const ordered = [...moves].sort((a, b) =>
+      compactEnergyCost(a) - compactEnergyCost(b)
+      || String(a.id || a.moveId || "").localeCompare(String(b.id || b.moveId || ""))
+    );
+    const cheap = ordered[0];
+    const nuke = ordered[ordered.length - 1];
+    const cheapId = cheap.id || cheap.moveId || null;
+    const nukeId = nuke.id || nuke.moveId || null;
+    const twoCheap = routes.find(route =>
+      route.sequence.filter(action => action.type === ACTION_TYPES.CHARGED_MOVE).slice(0, 2)
+        .every((action, index, pair) => pair.length === 2 && action.moveId === cheapId)
+    ) || null;
+    const oneNuke = routes.find(route =>
+      route.sequence.some(action => action.type === ACTION_TYPES.CHARGED_MOVE && action.moveId === nukeId)
+    ) || null;
+    const retained = cheapId !== nukeId
+      && compactEnergyCost(cheap) > 0
+      && root.energy >= compactEnergyCost(cheap) * 2
+      && !!twoCheap
+      && (!oneNuke || compareCompactRouteValue(twoCheap, oneNuke) < 0);
+    return {
+      retained,
+      cheapMoveId: cheapId,
+      nukeMoveId: nukeId,
+      twoCheapRoute: twoCheap,
+      oneNukeRoute: oneNuke
+    };
+  }
+
+  function compactEnergyCost(move) {
+    return Math.max(0, numeric(move?.energyCost ?? move?.metadata?.energyCost));
+  }
+
+  function compactActionKey(action) {
+    return `${action?.type || "none"}:${action?.moveId || ""}`;
+  }
+
+  function compactSequenceKey(sequence) {
+    return (sequence || []).map(compactActionKey).join(">");
   }
 
   function evaluateTimingPrinciples(input = {}) {
@@ -1033,6 +1404,8 @@ function createPvPeakBattleIntelligenceApi() {
         applyRule(chosen, "BI_GUARANTEED_LETHAL", 1000, .99);
       } else if (principleEvaluation.intent === "THROW_BEFORE_OPPONENT_LETHAL") {
         applyRule(chosen, "BI_AVOID_LETHAL_OVERFARM", 800, .9);
+      } else if (principleEvaluation.category === "route") {
+        applyRule(chosen, "BI_PRINCIPLE_COMPACT_ROUTE", 0, .94);
       } else if (principleEvaluation.category === "timing") {
         chosen.reasonCodes.push(...timingReasonCodes(principleEvaluation.principlesTriggered));
         chosen.reasonCodes = [...new Set(chosen.reasonCodes)];

@@ -9441,6 +9441,7 @@
         recordExternalIntelligenceDecision,
         hybridDamageAtStages,
         hybridSurvivalProjection,
+        compactRouteSurvivalProjection,
         evaluateHybridBattleAction,
         selectBattleIntelligenceAction,
         battleIntelligenceCandidateEvidence,
@@ -13984,6 +13985,60 @@
       return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
     }
 
+    function compactRouteSurvivalProjection(attacker, defender, routeState = {}) {
+      if (!attacker || !defender || !defender.fast) {
+        return { turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 };
+      }
+      let hp = Math.max(0, Number(attacker.hp || 0));
+      let energy = Math.max(0, Number(defender.energy || 0));
+      let shields = Math.max(0, Number(attacker.shields || 0));
+      const actorTurn = Number(battleTurns[attacker.trainer] || 0);
+      const defenderTurn = Number(battleTurns[defender.trainer] || actorTurn);
+      let turn = Math.max(0, defenderTurn - actorTurn);
+      let chargedCount = 0;
+      let damageTaken = 0;
+      const stages = {
+        actorAttackStage: Number(routeState.actorAttackStage ?? attacker.attackStage ?? 0),
+        actorDefenseStage: Number(routeState.actorDefenseStage ?? attacker.defenseStage ?? 0),
+        defenderAttackStage: Number(routeState.defenderAttackStage ?? defender.attackStage ?? 0),
+        defenderDefenseStage: Number(routeState.defenderDefenseStage ?? defender.defenseStage ?? 0)
+      };
+      if (turn > 0) {
+        const pendingFastDamage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - pendingFastDamage);
+        damageTaken += pendingFastDamage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+      }
+      for (let actionCount = 0; hp > 0 && actionCount < 100; actionCount++) {
+        const readyCharged = validChargedMoves(defender)
+          .filter(move => energy >= Number(move.energyCost || 0))
+          .sort((a, b) =>
+            hybridDamageAtStages(attacker, defender, b, "opponent", stages)
+              - hybridDamageAtStages(attacker, defender, a, "opponent", stages)
+            || Number(a.energyCost || 0) - Number(b.energyCost || 0)
+            || String(a.id || "").localeCompare(String(b.id || ""))
+          )[0] || null;
+        if (readyCharged) {
+          const damage = shields > 0
+            ? 1
+            : hybridDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+          if (shields > 0) shields--;
+          energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
+          hp = Math.max(0, hp - damage);
+          damageTaken += damage;
+          chargedCount++;
+          turn += 1;
+          continue;
+        }
+        const damage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - damage);
+        damageTaken += damage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+        turn += Math.max(1, Number(defender.fast.turns || 1));
+      }
+      return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
+    }
+
     function evaluateHybridBattleAction(attacker, defender, legalActions) {
       // Continuation simulations must compare root alternatives against the
       // same rollout policy. Re-entering the hybrid selector inside cloned
@@ -14215,6 +14270,13 @@
           estimateOpponentDamage(move) {
             return estimate(defender, attacker, move);
           },
+          compactDamage(side, move, stages) {
+            return hybridDamageAtStages(attacker, defender, move, side, stages);
+          },
+          compactSurvivalProjection(routeState) {
+            return compactRouteSurvivalProjection(attacker, defender, routeState);
+          },
+          compactCmpAdvantage: Number(attacker.attack || 0) - Number(defender.attack || 0),
           forceChargedContinuation: projectedSequenceEligible,
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
