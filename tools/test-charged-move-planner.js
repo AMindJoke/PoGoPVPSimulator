@@ -137,13 +137,16 @@ const kingdraCarbink = battleConfig("kingdra", "carbink", {
 const kingdraTwoShield = simulate(kingdraCarbink, 2, { includeSwing: true });
 assert.strictEqual(winnerSide(kingdraTwoShield), "B");
 assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.side, "A");
-assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.fastMoveCount, 2);
+assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.fastMoveCount, 1);
 assert.strictEqual(kingdraTwoShield.details.flipPotential?.best?.lineType, "straight");
 const kingdraPlusOne = simulate(kingdraCarbink, 2, {
   preFastAdvantage: { side: "A", fastMoves: 1 },
   continuationMode: "flip-analysis"
 });
-assert.strictEqual(winnerSide(kingdraPlusOne), "B", "One stored Dragon Breath must not flip through an uncredible Swift bait.");
+assert.strictEqual(winnerSide(kingdraPlusOne), "A", "One stored Dragon Breath flips only when the direct tactical path preserves the committed Fast impact.");
+assert((kingdraPlusOne.decisionTrace?.decisions || [])
+  .filter(item => item.side === "A" && item.decisionType === "charged-move-selection")
+  .every(item => item.chosenCandidate?.moveId === "SURF"), "The detected +1 flip must remain a straight Surf line, never an uncredible Swift bait.");
 const kingdraPlusTwo = simulate(kingdraCarbink, 2, {
   preFastAdvantage: { side: "A", fastMoves: 2 },
   continuationMode: "flip-analysis"

@@ -49,6 +49,7 @@ function select(currentState, overrides = {}) {
       opponentLethalBeforeNextWindow: !!overrides.opponentLethalBeforeNextWindow,
       evaluateCandidate: overrides.evaluateCandidate,
       evaluateContinuation: overrides.evaluateContinuation,
+      evaluateHybrid: overrides.evaluateHybrid,
       matchupPlannerV2: overrides.matchupPlannerV2,
       planMatchup: overrides.planMatchup
     }
@@ -62,12 +63,57 @@ const fastOnlyState = state({ energyA: 0 });
 const fastOnly = select(fastOnlyState);
 assert.equal(fastOnly.action.type, "fast_move");
 assert.equal(fastOnly.fastPath, true);
+assert.equal(fastOnly.principleResolved, true);
+assert.equal(fastOnly.finalAuthority, "PRINCIPLE_ENGINE");
+assert(fastOnly.principlesTriggered.includes("AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE"));
+assert.equal(fastOnly.fallbackUsed, false);
+
+const noActiveChargedState = state({ energyA: 0, chargedA: [] });
+let availabilityHybridCalls = 0;
+const noActiveCharged = select(noActiveChargedState, {
+  evaluateHybrid() {
+    availabilityHybridCalls++;
+    throw new Error("Hybrid must not run for principle-resolved availability.");
+  }
+});
+assert.equal(noActiveCharged.action.type, "fast_move");
+assert(noActiveCharged.principlesTriggered.includes("AVAIL-001_NO_ACTIVE_CHARGED_MOVE"));
+assert.equal(availabilityHybridCalls, 0);
 
 const lethalState = state({ hpB: 45, energyA: 60 });
-const lethal = select(lethalState);
+let lethalHybridCalls = 0;
+const lethal = select(lethalState, {
+  evaluateHybrid() {
+    lethalHybridCalls++;
+    throw new Error("Hybrid must not run for principle-selected immediate lethal.");
+  }
+});
 assert.equal(lethal.action.moveId, "CHEAP");
 assert(lethal.sourceRuleIds.includes("BI_GUARANTEED_LETHAL"));
 assert(lethal.reasonCodes.includes("LETHAL_MOVE_AVAILABLE"));
+assert.equal(lethal.finalAuthority, "PRINCIPLE_ENGINE");
+assert(lethal.principlesTriggered.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"));
+assert.equal(lethalHybridCalls, 0);
+
+Intelligence.clearCache();
+let unresolvedHybridCalls = 0;
+const unresolvedHybrid = select(state({ energyA: 40, hpB: 120 }), {
+  evaluateHybrid() {
+    unresolvedHybridCalls++;
+    return {
+      action: { type: "charged_move", side: "A", moveId: "CHEAP", startTurn: 5 },
+      decisive: true,
+      fastPath: false,
+      reasonCodes: ["BOUNDED_OFFENSIVE_ROUTE"]
+    };
+  }
+});
+assert.equal(unresolvedHybridCalls, 1);
+assert.equal(unresolvedHybrid.action.moveId, "CHEAP");
+assert.equal(unresolvedHybrid.fallbackUsed, true);
+assert.equal(unresolvedHybrid.finalAuthority, "HYBRID_FALLBACK");
+assert.equal(unresolvedHybrid.principleResolved, false);
+assert.equal(unresolvedHybrid.principleDecisionPreserved, true);
 
 const pending = TurnEngine.createFastImpactEvent({
   id: "lagged-fast",
