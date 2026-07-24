@@ -95,7 +95,8 @@ const lethal = select(lethalState, {
   }
 });
 assert.equal(lethal.action.moveId, "CHEAP");
-assert(lethal.sourceRuleIds.includes("BI_GUARANTEED_LETHAL"));
+assert(lethal.principlesTriggered.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"));
+assert.equal(lethal.sourceRuleIds.length, 0);
 assert(lethal.reasonCodes.includes("LETHAL_MOVE_AVAILABLE"));
 assert.equal(lethal.finalAuthority, "PRINCIPLE_ENGINE");
 assert(lethal.principlesTriggered.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"));
@@ -125,7 +126,8 @@ assert.equal(compactBreakpoint.action.type, "fast_move");
 assert.equal(compactBreakpoint.finalAuthority, "PRINCIPLE_ENGINE");
 assert.equal(compactBreakpoint.fallbackUsed, false);
 assert.equal(compactHybridCalls, 0);
-assert(compactBreakpoint.sourceRuleIds.includes("BI_PRINCIPLE_COMPACT_ROUTE"));
+assert(compactBreakpoint.principlesTriggered.includes("COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE"));
+assert.equal(compactBreakpoint.sourceRuleIds.length, 0);
 assert(compactBreakpoint.principlesTriggered.includes("COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE"));
 assert(compactBreakpoint.principlesTriggered.includes("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"));
 assert.equal(
@@ -157,24 +159,19 @@ assert(twoCheapRoute.principlesTriggered.includes("ROUTE-007_TWO_COPIES_OUTRANK_
 assert.equal(twoCheapRoute.principleResult.evidence.twoCheapRoute.retained, true);
 
 Intelligence.clearCache();
-let unresolvedHybridCalls = 0;
-const unresolvedHybrid = select(state({ energyA: 40, hpB: 120 }), {
+let obsoleteHybridCalls = 0;
+const directlyResolved = select(state({ energyA: 40, hpB: 120 }), {
   evaluateHybrid() {
-    unresolvedHybridCalls++;
-    return {
-      action: { type: "charged_move", side: "A", moveId: "CHEAP", startTurn: 5 },
-      decisive: true,
-      fastPath: false,
-      reasonCodes: ["BOUNDED_OFFENSIVE_ROUTE"]
-    };
+    obsoleteHybridCalls++;
+    throw new Error("Ordinary strategic decisions must be resolved directly by the Principle Engine.");
   }
 });
-assert.equal(unresolvedHybridCalls, 1);
-assert.equal(unresolvedHybrid.action.moveId, "CHEAP");
-assert.equal(unresolvedHybrid.fallbackUsed, true);
-assert.equal(unresolvedHybrid.finalAuthority, "HYBRID_FALLBACK");
-assert.equal(unresolvedHybrid.principleResolved, false);
-assert.equal(unresolvedHybrid.principleDecisionPreserved, true);
+assert.equal(obsoleteHybridCalls, 0);
+assert.equal(directlyResolved.action.moveId, "CHEAP");
+assert.equal(directlyResolved.fallbackUsed, false);
+assert.equal(directlyResolved.finalAuthority, "PRINCIPLE_ENGINE");
+assert.equal(directlyResolved.principleResolved, true);
+assert.equal(directlyResolved.principleDecisionPreserved, true);
 
 const pending = TurnEngine.createFastImpactEvent({
   id: "lagged-fast",
@@ -191,7 +188,7 @@ const lagDecision = select(lagState, {
   legacySelectCharged: actions => ({ moveId: actions.find(action => action.moveId === "CHEAP").moveId, type: "charged_move" })
 });
 assert.equal(lagDecision.action.moveId, "CHEAP");
-assert(lagDecision.sourceRuleIds.includes("BI_THROW_BEFORE_FAINT"));
+assert(lagDecision.principlesTriggered.includes("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"));
 
 const noLagUnreachable = state({ energyA: 30, pendingEvents: [] });
 assert.deepEqual(TurnEngine.getLegalActions(noLagUnreachable, "A").map(action => action.type), ["fast"]);
@@ -208,7 +205,7 @@ const overfarmDanger = select(state({ energyA: 40 }), {
   legacySelectCharged: actions => ({ moveId: actions[0].moveId, type: "charged_move" })
 });
 assert.equal(overfarmDanger.action.type, "charged_move");
-assert(overfarmDanger.sourceRuleIds.includes("BI_AVOID_LETHAL_OVERFARM"));
+assert(overfarmDanger.principlesTriggered.includes("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"));
 
 const cappedEnergy = select(state({ energyA: 96, hpB: 120 }));
 assert.equal(cappedEnergy.action.type, "charged_move");
@@ -216,7 +213,7 @@ assert.equal(cappedEnergy.action.moveId, "NUKE");
 assert(cappedEnergy.principleIds.includes("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS"));
 assert(!cappedEnergy.sourceRuleIds.includes("BI_HYBRID_BASELINE"));
 assert.equal(cappedEnergy.principleResult.intent, "THROW_NOW");
-assert.equal(cappedEnergy.finalAuthority, "PRINCIPLE_ENGINE_TIMING");
+assert.equal(cappedEnergy.finalAuthority, "PRINCIPLE_ENGINE");
 
 const timingPending = TurnEngine.createFastImpactEvent({
   id: "opponent-fast-in-flight",
@@ -261,12 +258,12 @@ const constrainedTimingThrow = select(state({ energyA: 96, hpB: 120 }), {
     };
   }
 });
-assert.equal(blockedTimingOverrides, 1);
+assert.equal(blockedTimingOverrides, 0);
 assert.equal(constrainedTimingThrow.action.type, "charged_move");
 assert.equal(constrainedTimingThrow.principleResult.intent, "THROW_NOW");
-assert.equal(constrainedTimingThrow.overrideBlocked, true);
+assert.equal(constrainedTimingThrow.overrideBlocked, false);
 assert.equal(constrainedTimingThrow.principleDecisionPreserved, true);
-assert.equal(constrainedTimingThrow.fallbackUsed, true);
+assert.equal(constrainedTimingThrow.fallbackUsed, false);
 
 const weak = move("WEAK", 40, 30);
 const strong = move("STRONG", 40, 55);
@@ -288,7 +285,7 @@ const effectDecision = select(effectState, {
   evaluateContinuation: action => ({ score: action.moveId === "BUFF" ? 800 : 600, evaluatedStates: 4 })
 });
 assert.equal(effectDecision.action.moveId, "BUFF");
-assert(effectDecision.sourceRuleIds.includes("BI_GUARANTEED_EFFECT"));
+assert(effectDecision.principlesTriggered.includes("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"));
 
 const secondBuff = move("SECOND_BUFF", 40, 25, { buffApplyChance: 1, buffs: [-1, 0] });
 const budgetState = state({ energyA: 40, chargedA: [buff, secondBuff] });
@@ -297,7 +294,7 @@ const budgetFallback = select(budgetState, {
   evaluateContinuation: () => null
 });
 assert.equal(budgetFallback.action.moveId, "BUFF");
-assert(budgetFallback.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
+assert.equal(budgetFallback.finalAuthority, "PRINCIPLE_ENGINE");
 
 const timingTieState = state({ energyA: 40 });
 const timingTie = select(timingTieState, {
@@ -316,7 +313,12 @@ const timingTie = select(timingTieState, {
     }
   })
 });
-assert.equal(timingTie.action.type, "fast_move", "Equal continuations should prefer the action that produces better Charged Move timing.");
+assert.equal(
+  timingTie.action.type,
+  "charged_move",
+  "Legacy continuation callbacks must not replace the Principle Engine's canonical timing calculation."
+);
+assert(!timingTie.sourceRuleIds.includes("BI_TIMING_CONTINUATION"));
 
 const tacticalState = state({ energyA: 60 });
 const tacticalActions = TurnEngine.getLegalActions(tacticalState, "A");
@@ -334,8 +336,8 @@ const tacticalDecision = Intelligence.selectAction({
   }
 });
 assert.equal(tacticalDecision.action.moveId, "NUKE");
-assert(tacticalDecision.sourceRuleIds.includes("BI_CANDIDATE_EVIDENCE"));
-assert.equal(tacticalDecision.evidence.candidateEvaluation.components.futureDamage, 500);
+assert(tacticalDecision.principlesTriggered.includes("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"));
+assert.equal(tacticalDecision.evidence.candidateEvaluation, undefined);
 
 Intelligence.clearCache();
 const plannedDecision = select(tacticalState, {
@@ -350,8 +352,8 @@ const plannedDecision = select(tacticalState, {
     explanation: "The cheaper move starts the only proven winning line."
   })
 });
-assert.equal(plannedDecision.action.moveId, "CHEAP");
-assert(plannedDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
+assert.equal(plannedDecision.action.moveId, "NUKE");
+assert(!plannedDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
 
 const boundedPlanDecision = select(tacticalState, {
   matchupPlannerV2: true,
@@ -365,10 +367,10 @@ const boundedPlanDecision = select(tacticalState, {
     };
   }
 });
-assert.notStrictEqual(boundedPlanDecision.action.moveId, "CHEAP", "An incomplete matchup plan must not override the deterministic fallback action.");
+assert.notStrictEqual(boundedPlanDecision.action.moveId, "CHEAP", "An incomplete legacy matchup plan must not override the Principle Engine.");
 assert(!boundedPlanDecision.sourceRuleIds.includes("BI_MATCHUP_PLAN"));
-assert(plannedDecision.reasonCodes.includes("MP_PROVEN_WIN"));
-assert.equal(plannedDecision.evidence.matchupPlan.outcomeClass, "win");
+assert(!plannedDecision.reasonCodes.includes("MP_PROVEN_WIN"));
+assert.equal(plannedDecision.evidence.matchupPlan, undefined);
 
 const disabledPlannerDecision = select(tacticalState, {
   matchupPlannerV2: false,
@@ -390,7 +392,11 @@ const alwaysShield = Intelligence.selectShieldAction({
   threat: { damage: 10, energyCost: 35 }
 });
 assert.equal(alwaysShield.shield, true);
-assert(alwaysShield.sourceRuleIds.includes("BI_SHIELD_POLICY"));
+assert.equal(alwaysShield.sourceRuleIds.length, 0);
+assert(alwaysShield.principleIds.includes("SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD"));
+assert(alwaysShield.principleIds.includes("SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"));
+assert.equal(alwaysShield.finalAuthority, "PRINCIPLE_ENGINE");
+assert.equal(alwaysShield.fallbackUsed, false);
 
 const noFirstShield = Intelligence.selectShieldAction({
   policy: "no-first",
@@ -398,6 +404,8 @@ const noFirstShield = Intelligence.selectShieldAction({
   threat: { damage: 100, energyCost: 55 }
 });
 assert.equal(noFirstShield.shield, false);
+assert(noFirstShield.principleIds.includes("SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"));
+assert.equal(noFirstShield.finalAuthority, "PRINCIPLE_ENGINE");
 
 const smartKoShield = Intelligence.selectShieldAction({
   policy: "smart",
@@ -406,6 +414,7 @@ const smartKoShield = Intelligence.selectShieldAction({
 });
 assert.equal(smartKoShield.shield, true);
 assert(smartKoShield.reasonCodes.includes("SHIELD_PREVENTS_KO"));
+assert.equal(smartKoShield.finalAuthority, "PRINCIPLE_ENGINE");
 
 const smartCounterfactual = Intelligence.selectShieldAction({
   policy: "smart",
@@ -542,6 +551,7 @@ metricsApi.selectAction({
   context: { estimateDamage: action => Number(action.move?.damage || 0) }
 });
 const metricsFallbackState = state({ energyA: 40, hpB: 120 });
+let metricsHybridCalls = 0;
 metricsApi.selectAction({
   state: metricsFallbackState,
   side: "A",
@@ -550,20 +560,23 @@ metricsApi.selectAction({
   context: {
     estimateDamage: action => Number(action.move?.damage || 0),
     evaluateHybrid() {
-      return {
-        action: { type: "charged_move", side: "A", moveId: "CHEAP", startTurn: 5 },
-        decisive: true,
-        reasonCodes: ["BOUNDED_OFFENSIVE_ROUTE"]
-      };
+      metricsHybridCalls++;
+      throw new Error("The complete Principle Engine must not invoke hybrid fallback.");
     }
   }
 });
 const principleMetrics = metricsApi.getPrincipleStatistics();
 assert.equal(principleMetrics.totalAutomaticDecisions, 2);
-assert.equal(principleMetrics.principleEngineResolvedDecisions, 1);
-assert.equal(principleMetrics.hybridFallbackDecisions, 1);
+assert.equal(principleMetrics.principleEngineResolvedDecisions, 2);
+assert.equal(principleMetrics.hybridFallbackDecisions, 0);
+assert.equal(principleMetrics.unresolvedPrincipleDecisions, 0);
 assert.equal(principleMetrics.resolvedByCategory.availability, 1);
-assert.equal(principleMetrics.fallbackPercentage, .5);
-assert.deepEqual(principleMetrics.migratedCategories, ["availability", "tactical", "timing", "route", "compact-planner"]);
+assert.equal(principleMetrics.resolvedByCategory.route, 1);
+assert.equal(principleMetrics.fallbackPercentage, 0);
+assert.equal(principleMetrics.principleResolvedPercentage, 1);
+assert.equal(metricsHybridCalls, 0);
+assert(principleMetrics.migratedCategories.includes("farm"));
+assert(principleMetrics.migratedCategories.includes("bait"));
+assert(principleMetrics.migratedCategories.includes("move-ordering"));
 
 console.log("Battle Intelligence tests passed.");
