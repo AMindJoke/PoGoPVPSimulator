@@ -1,5 +1,8 @@
 "use strict";
 
+// Frozen pre-migration reference only. Production, Matrix worker, offline
+// simulation, and Scenario Review do not load or execute this module.
+
 function createPvPeakHybridBattleIntelligenceApi() {
   const BAIT_POLICIES = Object.freeze({
     OFF: "OFF",

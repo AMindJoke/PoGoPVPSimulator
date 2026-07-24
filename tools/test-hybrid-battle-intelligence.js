@@ -3,7 +3,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
-const Hybrid = require("../src/battle/hybrid-battle-intelligence");
+const Hybrid = require("./legacy/hybrid-battle-intelligence-reference");
 
 const ROOT = path.resolve(__dirname, "..");
 const fixtureCatalog = JSON.parse(fs.readFileSync(
@@ -316,7 +316,7 @@ const tinyBudget = Hybrid.planOffensiveRoutes({
 assert.strictEqual(tinyBudget.complete, false);
 assert.strictEqual(tinyBudget.horizonReason, "state-budget");
 
-const source = fs.readFileSync(path.join(ROOT, "src", "battle", "hybrid-battle-intelligence.js"), "utf8");
+const source = fs.readFileSync(path.join(ROOT, "tools", "legacy", "hybrid-battle-intelligence-reference.js"), "utf8");
 for (const speciesId of ["quagsire", "corsola", "melmetal", "cresselia"]) {
   assert.strictEqual(source.toLowerCase().includes(speciesId), false, `Production hybrid policy contains ${speciesId}.`);
 }

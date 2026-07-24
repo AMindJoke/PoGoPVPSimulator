@@ -46,7 +46,13 @@ function createPvPeakBattleIntelligenceApi() {
     "bait",
     "move-ordering",
     "effect-sequencing",
-    "chance-policy"
+    "chance-policy",
+    "outcome-comparison",
+    "ambiguity",
+    "search",
+    "tie-break",
+    "performance",
+    "long-match"
   ]);
 
   const RULES = Object.freeze([
@@ -579,6 +585,7 @@ function createPvPeakBattleIntelligenceApi() {
       fast,
       charged,
       context,
+      policy: input.policy,
       timingIntent: timing.intent
     });
     evaluated.push(...directStrategy.principlesEvaluated);
@@ -728,42 +735,6 @@ function createPvPeakBattleIntelligenceApi() {
     )[0] || null;
   }
 
-  function completeChargedMoveChoice(charged, state, policy, context) {
-    if (typeof context.evaluateCandidate !== "function" && typeof context.evaluateContinuation !== "function") {
-      return bestMeaningfulCharged(charged, context);
-    }
-    const meaningful = pruneDominatedCandidates(charged, context);
-    for (const candidate of meaningful) {
-      if (hasGuaranteedEffect(candidate, context)) applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
-      const evidence = typeof context.evaluateCandidate === "function"
-        ? context.evaluateCandidate(candidate.action, { state, policy: policy.id })
-        : null;
-      applyCandidateEvidence(candidate, evidence);
-    }
-    const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
-    if (typeof context.evaluateContinuation === "function" && selectable.length > 1) {
-      const searchCandidates = [...selectable]
-        .filter(candidate => {
-          if (context.forceChargedContinuation === true) return true;
-          const ruleIds = candidate.evidence?.candidateEvaluation?.ruleIds || [];
-          const timingOnly = ruleIds.length > 0 && ruleIds.every(ruleId =>
-            ruleId === "BI_TIMING_CONTINUATION" || ruleId === "BI_TIMING_VALUE"
-          );
-          return candidate.requiresContinuationSearch && !timingOnly;
-        })
-        .sort(compareCandidates)
-        .slice(0, Math.max(2, policy.maxCandidates));
-      if (searchCandidates.length > 1) {
-        statistics.continuationSearches++;
-        const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
-          minimumComparableCandidates: Math.min(2, searchCandidates.length)
-        });
-        if (searched) applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
-      }
-    }
-    return [...selectable].sort(compareCandidates)[0] || meaningful[0] || null;
-  }
-
   function evaluateDirectStrategicPrinciples(input = {}) {
     const principlesEvaluated = [
       "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
@@ -782,6 +753,8 @@ function createPvPeakBattleIntelligenceApi() {
       "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS",
       "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE",
       "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+      ,"SEARCH-029_BOUND_PLANNER_STATE_COUNT"
+      ,"SEARCH-035_PRUNE_DOMINATED_STATES"
     ];
     const principlesTriggered = [];
     const principlesRejected = [];
@@ -792,7 +765,17 @@ function createPvPeakBattleIntelligenceApi() {
     const context = input.context || {};
     const moveRoutes = charged.map(candidate => principleMoveRoute(candidate, input));
     const farmRoute = principleFarmDownRoute(input);
+    const ambiguity = detectPrincipleAmbiguity([...moveRoutes, farmRoute]);
+    const selectiveContinuation = evaluateSelectivePrincipleContinuation(
+      [...moveRoutes, farmRoute],
+      ambiguity,
+      input
+    );
     principlesTriggered.push("FARM-033_FARM_DOWN_ROUTE_CANDIDATE");
+    if (ambiguity.detected) principlesTriggered.push("SEARCH-029_BOUND_PLANNER_STATE_COUNT");
+    else principlesRejected.push("SEARCH-029_BOUND_PLANNER_STATE_COUNT");
+    if (selectiveContinuation.prunedAlternatives.length) principlesTriggered.push("SEARCH-035_PRUNE_DOMINATED_STATES");
+    else principlesRejected.push("SEARCH-035_PRUNE_DOMINATED_STATES");
     const buildToLethal = principleBuildToLethalRoute(input);
     if (buildToLethal.safe && fast) {
       principlesTriggered.push(
@@ -808,6 +791,33 @@ function createPvPeakBattleIntelligenceApi() {
         principlesRejected,
         evidence: {
           buildToLethal,
+          ambiguity,
+          selectiveContinuation,
+          farmRoute: principleRouteEvidence(farmRoute),
+          chargedRoutes: moveRoutes.map(principleRouteEvidence)
+        }
+      };
+    }
+    const buildToPreferred = principleBuildToPreferredMove(input, moveRoutes);
+    if (buildToPreferred.safe && fast) {
+      principlesTriggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE");
+      principlesTriggered.push(
+        buildToPreferred.guaranteedEffect
+          ? "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"
+          : "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      );
+      return {
+        candidate: fast,
+        category: buildToPreferred.guaranteedEffect ? "effects" : "route",
+        intent: "BUILD_TO_SELECTED_MOVE",
+        principlesEvaluated,
+        principlesTriggered,
+        principlesRejected,
+        evidence: {
+          buildToLethal,
+          buildToPreferred,
+          ambiguity,
+          selectiveContinuation,
           farmRoute: principleRouteEvidence(farmRoute),
           chargedRoutes: moveRoutes.map(principleRouteEvidence)
         }
@@ -828,7 +838,9 @@ function createPvPeakBattleIntelligenceApi() {
           principlesRejected,
           evidence: {
             farmRoute: principleRouteEvidence(farmRoute),
-            chargedRoutes: moveRoutes.map(principleRouteEvidence)
+            chargedRoutes: moveRoutes.map(principleRouteEvidence),
+            ambiguity,
+            selectiveContinuation
           }
         };
       }
@@ -853,12 +865,13 @@ function createPvPeakBattleIntelligenceApi() {
         || context.willOpponentShield(expensiveThreat.candidate.action)));
     const baitCredible = hasDistinctBait
       && threatWouldShield
-      && numeric(actor.energy) >= expensiveThreat.energyCost;
+      && numeric(actor.energy) >= expensiveThreat.energyCost
+      && cheap.damage >= expensiveThreat.damage * .7;
 
     if (baitPolicy !== "off" && hasDistinctBait && numeric(opponent.shields) > 0) {
       if (threatWouldShield) {
         principlesTriggered.push("BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT");
-        if (!baitCredible && fast) {
+        if (!baitCredible && fast && cheap.damage >= expensiveThreat.damage * .7) {
           principlesTriggered.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE", "ROUTE-026_BUILD_TO_SELECTED_MOVE");
           return {
             candidate: fast,
@@ -870,6 +883,8 @@ function createPvPeakBattleIntelligenceApi() {
             evidence: {
               baitPolicy,
               buildToLethal,
+              ambiguity,
+              selectiveContinuation,
               baitCredible: false,
               currentEnergy: numeric(actor.energy),
               representedEnergy: expensiveThreat.energyCost,
@@ -901,6 +916,8 @@ function createPvPeakBattleIntelligenceApi() {
             evidence: {
               baitPolicy,
               buildToLethal,
+              ambiguity,
+              selectiveContinuation,
               baitCredible: true,
               threatWouldShield,
               cheapMoveId: cheap.candidate.action.moveId,
@@ -928,8 +945,11 @@ function createPvPeakBattleIntelligenceApi() {
     const stableRoutes = moveRoutes.filter(route => !route.selfDebuffing);
     const healthy = numeric(actor.maxHp) > 0 && numeric(actor.hp) / numeric(actor.maxHp) > .5;
     const bestSelfDebuff = orderedByPressure.find(route => route.selfDebuffing) || null;
+    const strongStableRoutes = bestSelfDebuff
+      ? stableRoutes.filter(route => route.damage >= bestSelfDebuff.damage * .8)
+      : stableRoutes;
     if (bestSelfDebuff && healthy && numeric(opponent.shields) <= 0
-      && bestSelfDebuff.damage < numeric(opponent.hp) && stableRoutes.length) {
+      && bestSelfDebuff.damage < numeric(opponent.hp) && strongStableRoutes.length) {
       principlesTriggered.push(
         "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE",
         "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
@@ -941,8 +961,8 @@ function createPvPeakBattleIntelligenceApi() {
       );
     }
 
-    const selectableRoutes = bestSelfDebuff && healthy && bestSelfDebuff.damage < numeric(opponent.hp) && stableRoutes.length
-      ? stableRoutes
+    const selectableRoutes = bestSelfDebuff && healthy && bestSelfDebuff.damage < numeric(opponent.hp) && strongStableRoutes.length
+      ? strongStableRoutes
       : moveRoutes;
     const guaranteedEffects = selectableRoutes.filter(route => route.guaranteedEffect);
     if (guaranteedEffects.length) principlesTriggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
@@ -956,7 +976,7 @@ function createPvPeakBattleIntelligenceApi() {
     const bestAvailableDamage = Math.max(0, ...selectableRoutes.map(route => route.damage));
     const valuableGuaranteedEffects = guaranteedEffects.filter(route =>
       !route.selfDebuffing
-      && route.damage >= bestAvailableDamage * .35
+      && (numeric(opponent.shields) > 0 || route.damage >= bestAvailableDamage * .35)
       && numeric(opponent.hp) > bestAvailableDamage
     );
     const orderingRoutes = valuableGuaranteedEffects.length ? valuableGuaranteedEffects : selectableRoutes;
@@ -967,6 +987,16 @@ function createPvPeakBattleIntelligenceApi() {
       || stableCandidateOrder(a.candidate, b.candidate)
     )[0] || null;
     if (chosenRoute) {
+      const equivalentSelfDebuffAlternative = orderingRoutes.some(route =>
+        route !== chosenRoute
+        && comparePrincipleOutcomeVectors(route, chosenRoute, { stable: false }) === 0
+        && route.selfDebuffing !== chosenRoute.selfDebuffing
+      );
+      if (equivalentSelfDebuffAlternative && !chosenRoute.selfDebuffing) {
+        principlesTriggered.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
+      } else {
+        principlesRejected.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
+      }
       principlesTriggered.push(
         numeric(opponent.shields) > 0
           ? "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE"
@@ -989,6 +1019,8 @@ function createPvPeakBattleIntelligenceApi() {
         evidence: {
           baitPolicy,
           buildToLethal,
+          ambiguity,
+          selectiveContinuation,
           farmRoute: principleRouteEvidence(farmRoute),
           chargedRoutes: moveRoutes.map(principleRouteEvidence),
           selectedRoute: principleRouteEvidence(chosenRoute),
@@ -1009,6 +1041,8 @@ function createPvPeakBattleIntelligenceApi() {
         evidence: {
           baitPolicy,
           buildToLethal,
+          ambiguity,
+          selectiveContinuation,
           farmRoute: principleRouteEvidence(farmRoute),
           chargedRoutes: moveRoutes.map(principleRouteEvidence)
         }
@@ -1024,6 +1058,8 @@ function createPvPeakBattleIntelligenceApi() {
       evidence: {
         baitPolicy,
         buildToLethal,
+        ambiguity,
+        selectiveContinuation,
         farmRoute: principleRouteEvidence(farmRoute),
         chargedRoutes: moveRoutes.map(principleRouteEvidence)
       }
@@ -1233,26 +1269,228 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
+  function principleBuildToPreferredMove(input = {}, legalRoutes = []) {
+    const actor = input.actor || {};
+    const opponent = input.opponent || {};
+    const context = input.context || {};
+    const fastGain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const actorReadyTurn = Math.max(numeric(input.state?.currentTurn), numeric(actor.readyTurn));
+    const opponentReadyTurn = Math.max(numeric(input.state?.currentTurn), numeric(opponent.readyTurn));
+    const currentBestDamage = Math.max(0, ...legalRoutes.map(route => route.damage));
+    const legalIds = new Set(legalRoutes.map(route => route.action?.moveId).filter(Boolean));
+    const future = (actor.chargedMoves || []).filter(Boolean)
+      .filter(move => !legalIds.has(move.id || move.moveId))
+      .map(move => {
+        const energyCost = Math.max(0, numeric(move.energyCost));
+        const missing = Math.max(0, energyCost - numeric(actor.energy));
+        const fastCount = fastGain > 0 ? Math.ceil(missing / fastGain) : Number.POSITIVE_INFINITY;
+        const readyTurn = actorReadyTurn + fastCount * fastTurns;
+        const action = {
+          type: ACTION_TYPES.CHARGED_MOVE,
+          side: input.side,
+          moveId: move.id || move.moveId || null,
+          move
+        };
+        const damage = Math.max(0, numeric(
+          typeof context.estimateDamage === "function"
+            ? context.estimateDamage(action)
+            : move.damage ?? move.power
+        ));
+        const effectValues = [move.buffs, move.buffsSelf, move.buffsOpponent]
+          .flatMap(values => Array.isArray(values) ? values : [])
+          .map(numeric)
+          .filter(value => value !== 0);
+        const guaranteedEffect = numeric(move.buffApplyChance) >= 1
+          && effectValues.length > 0
+          && !hasHarmfulSelfEffect(action);
+        const strategicallyPreferred = guaranteedEffect && numeric(opponent.shields) > 0
+          || damage >= currentBestDamage * 1.5;
+        const opponentFastDamage = Math.max(0, numeric(
+          typeof context.estimateFastDamage === "function"
+            ? context.estimateFastDamage("opponent")
+            : opponent.fastMove?.damage
+        ));
+        const opponentFastCount = countActionsBeforeTurn(
+          opponentReadyTurn,
+          Math.max(1, numeric(opponent.fastMove?.turns, 1)),
+          readyTurn
+        );
+        const pendingDamage = pendingDamageThrough(input.state, input.side, readyTurn);
+        const opponentImmediateLethal = numeric(actor.shields) <= 0 && (opponent.chargedMoves || []).some(opponentMove => {
+          if (numeric(opponent.energy) < numeric(opponentMove.energyCost) || opponentReadyTurn > readyTurn) return false;
+          const incoming = typeof context.estimateOpponentDamage === "function"
+            ? context.estimateOpponentDamage(opponentMove)
+            : numeric(opponentMove.damage ?? opponentMove.power);
+          return numeric(incoming) >= numeric(actor.hp) - pendingDamage;
+        });
+        const survives = numeric(actor.hp) > pendingDamage + opponentFastCount * opponentFastDamage;
+        return {
+          moveId: action.moveId,
+          energyCost,
+          fastCount: Number.isFinite(fastCount) ? fastCount : null,
+          readyTurn: Number.isFinite(readyTurn) ? readyTurn : null,
+          damage,
+          guaranteedEffect,
+          strategicallyPreferred,
+          opponentFastCount,
+          pendingDamage,
+          opponentImmediateLethal,
+          survives,
+          safe: fastCount > 0
+            && fastCount <= (fastTurns === 1 ? 2 : 1)
+            && strategicallyPreferred
+            && survives
+            && !opponentImmediateLethal
+            && input.timingIntent !== PRINCIPLE_TIMING_INTENTS.THROW_NOW
+        };
+      })
+      .sort((a, b) =>
+        Number(b.safe) - Number(a.safe)
+        || Number(b.guaranteedEffect) - Number(a.guaranteedEffect)
+        || b.damage - a.damage
+        || a.energyCost - b.energyCost
+        || String(a.moveId || "").localeCompare(String(b.moveId || ""))
+      );
+    return future[0] || { safe: false, reason: "NO_PREFERRED_UNREADY_MOVE" };
+  }
+
   function comparePrincipleOutcomeRoutes(a, b) {
-    const outcomeA = outcomeRank(a?.certifiedOutcome);
-    const outcomeB = outcomeRank(b?.certifiedOutcome);
-    if (outcomeA >= 0 || outcomeB >= 0) {
-      const normalizedA = outcomeA >= 0 ? outcomeA : -1;
-      const normalizedB = outcomeB >= 0 ? outcomeB : -1;
-      if (normalizedA !== normalizedB) return normalizedB - normalizedA;
+    return comparePrincipleOutcomeVectors(a, b);
+  }
+
+  function createPrincipleOutcomeVector(input = {}) {
+    const rawEnergy = Math.max(0, numeric(input.rawEnergy));
+    const actionableEnergy = clamp(numeric(input.actionableEnergy), 0, rawEnergy);
+    return {
+      certifiedOutcome: ["win", "draw", "loss"].includes(String(input.certifiedOutcome || "").toLowerCase())
+        ? String(input.certifiedOutcome).toLowerCase()
+        : null,
+      terminalLegal: input.terminalLegal !== false,
+      complete: input.complete === true,
+      survivingHp: Math.max(0, numeric(input.survivingHp)),
+      shields: Math.max(0, numeric(input.shields)),
+      additionalChargedMoves: Math.max(0, numeric(input.additionalChargedMoves)),
+      rawEnergy,
+      actionableEnergy,
+      strandedEnergy: Math.max(0, numeric(input.strandedEnergy, rawEnergy - actionableEnergy)),
+      futureLethalAccess: input.futureLethalAccess === true,
+      turnsToMeaningfulAction: Math.max(0, numeric(input.turnsToMeaningfulAction, Number.MAX_SAFE_INTEGER)),
+      positionalValue: numeric(input.positionalValue),
+      robustness: numeric(input.robustness),
+      tacticalEfficiency: numeric(input.tacticalEfficiency),
+      stableOrder: String(input.stableOrder || "")
+    };
+  }
+
+  function comparePrincipleOutcomeVectors(left, right, options = {}) {
+    const a = createPrincipleOutcomeVector(left);
+    const b = createPrincipleOutcomeVector(right);
+    const outcomeA = outcomeRank(a.certifiedOutcome);
+    const outcomeB = outcomeRank(b.certifiedOutcome);
+    const outcomeComparison = outcomeA >= 0 && outcomeB >= 0 ? outcomeB - outcomeA : 0;
+    return outcomeComparison
+      || Number(b.terminalLegal) - Number(a.terminalLegal)
+      || Number(b.complete) - Number(a.complete)
+      || b.survivingHp - a.survivingHp
+      || b.shields - a.shields
+      || b.additionalChargedMoves - a.additionalChargedMoves
+      || b.actionableEnergy - a.actionableEnergy
+      || Number(b.futureLethalAccess) - Number(a.futureLethalAccess)
+      || a.turnsToMeaningfulAction - b.turnsToMeaningfulAction
+      || b.positionalValue - a.positionalValue
+      || b.robustness - a.robustness
+      || b.tacticalEfficiency - a.tacticalEfficiency
+      || (options.stable === false ? 0 : a.stableOrder.localeCompare(b.stableOrder));
+  }
+
+  function detectPrincipleAmbiguity(routes = []) {
+    const alternatives = routes.filter(route => route?.action && route.terminalLegal !== false);
+    const materialPairs = [];
+    for (let leftIndex = 0; leftIndex < alternatives.length; leftIndex++) {
+      for (let rightIndex = leftIndex + 1; rightIndex < alternatives.length; rightIndex++) {
+        const left = alternatives[leftIndex];
+        const right = alternatives[rightIndex];
+        const reasons = [];
+        if (left.certifiedOutcome && right.certifiedOutcome && left.certifiedOutcome !== right.certifiedOutcome) {
+          reasons.push("OUTCOME_CLASS_DIFFERS");
+        }
+        if (left.complete !== right.complete) reasons.push("ROUTE_COMPLETENESS_DIFFERS");
+        if (left.safe !== right.safe && (left.safe === true || right.safe === true)) reasons.push("FARM_DOWN_SAFETY_DIFFERS");
+        if (numeric(left.shieldConsumed) !== numeric(right.shieldConsumed)) reasons.push("SHIELD_ALLOCATION_DIFFERS");
+        if (left.complete && right.complete && numeric(left.turns) !== numeric(right.turns)) reasons.push("LETHAL_TIMING_DIFFERS");
+        if (numeric(left.additionalChargedMoves) !== numeric(right.additionalChargedMoves)) reasons.push("CHARGED_COUNT_DIFFERS");
+        if (numeric(left.actionableEnergy) !== numeric(right.actionableEnergy)
+          && (left.futureLethalAccess || right.futureLethalAccess)) reasons.push("ACTIONABLE_ENERGY_DIFFERS");
+        if (left.selfDebuffing !== right.selfDebuffing) reasons.push("EFFECT_TRAJECTORY_DIFFERS");
+        if (reasons.length) {
+          materialPairs.push({
+            left: principleRouteEvidence(left),
+            right: principleRouteEvidence(right),
+            reasonCodes: reasons
+          });
+        }
+      }
     }
-    return Number(b?.terminalLegal) - Number(a?.terminalLegal)
-      || Number(b?.complete) - Number(a?.complete)
-      || numeric(b?.survivingHp) - numeric(a?.survivingHp)
-      || numeric(b?.shields) - numeric(a?.shields)
-      || numeric(b?.additionalChargedMoves) - numeric(a?.additionalChargedMoves)
-      || numeric(b?.actionableEnergy) - numeric(a?.actionableEnergy)
-      || Number(b?.futureLethalAccess) - Number(a?.futureLethalAccess)
-      || numeric(a?.turnsToMeaningfulAction, Number.MAX_SAFE_INTEGER) - numeric(b?.turnsToMeaningfulAction, Number.MAX_SAFE_INTEGER)
-      || numeric(b?.positionalValue) - numeric(a?.positionalValue)
-      || numeric(b?.robustness) - numeric(a?.robustness)
-      || numeric(b?.tacticalEfficiency) - numeric(a?.tacticalEfficiency)
-      || String(a?.stableOrder || "").localeCompare(String(b?.stableOrder || ""));
+    return {
+      detected: materialPairs.length > 0,
+      reasonCodes: [...new Set(materialPairs.flatMap(pair => pair.reasonCodes))],
+      materialPairs,
+      retainedAlternatives: alternatives.map(principleRouteEvidence),
+      requiredContinuationHorizon: alternatives.reduce((maximum, route) =>
+        Math.max(maximum, numeric(route.turnsToMeaningfulAction)), 0)
+    };
+  }
+
+  function evaluateSelectivePrincipleContinuation(routes, ambiguity, input = {}) {
+    if (!ambiguity.detected) {
+      return {
+        searched: false,
+        rootStateHash: strategicStateKeyFromNormalized(input.state, "FAST"),
+        meaningfulHorizon: 0,
+        retainedAlternatives: [],
+        prunedAlternatives: [],
+        completeness: "not-required"
+      };
+    }
+    const limit = Math.max(2, numeric(input.policy?.maxCandidates, 4));
+    const ordered = routes.filter(route => route?.action && route.terminalLegal !== false)
+      .sort(comparePrincipleOutcomeVectors);
+    const retainedAlternatives = [];
+    const prunedAlternatives = [];
+    for (const route of ordered) {
+      const dominatedBy = retainedAlternatives.find(retained =>
+        comparablePrincipleRoutes(route, retained)
+        && comparePrincipleOutcomeVectors(retained, route, { stable: false }) <= 0
+      );
+      if (dominatedBy || retainedAlternatives.length >= limit) {
+        prunedAlternatives.push({
+          route: principleRouteEvidence(route),
+          reason: dominatedBy ? "DOMINATED_STATE_PRUNED" : "SEARCH_BUDGET_APPLIED",
+          dominatedBy: dominatedBy ? principleRouteEvidence(dominatedBy) : null
+        });
+      } else {
+        retainedAlternatives.push(route);
+      }
+    }
+    return {
+      searched: true,
+      rootStateHash: strategicStateKeyFromNormalized(input.state, input.policy?.id || "FAST"),
+      meaningfulHorizon: ambiguity.requiredContinuationHorizon,
+      retainedAlternatives: retainedAlternatives.map(principleRouteEvidence),
+      prunedAlternatives,
+      completeness: prunedAlternatives.some(item => item.reason === "SEARCH_BUDGET_APPLIED")
+        ? "bounded"
+        : "complete",
+      rolloutPolicy: "PRINCIPLE_ENGINE"
+    };
+  }
+
+  function comparablePrincipleRoutes(left, right) {
+    return left.certifiedOutcome === right.certifiedOutcome
+      && left.complete === right.complete
+      && numeric(left.shields) === numeric(right.shields)
+      && left.selfDebuffing === right.selfDebuffing;
   }
 
   function comparePrincipleMoveRoutes(a, b, opponentShields = 0) {
@@ -1261,9 +1499,9 @@ function createPvPeakBattleIntelligenceApi() {
     if (outcomeA >= 0 || outcomeB >= 0) return comparePrincipleOutcomeRoutes(a, b);
     if (opponentShields > 0) {
       return Number(a?.selfDebuffing) - Number(b?.selfDebuffing)
+        || numeric(b?.damage) - numeric(a?.damage)
         || numeric(b?.damagePerEnergy) - numeric(a?.damagePerEnergy)
-        || numeric(a?.energyCost) - numeric(b?.energyCost)
-        || numeric(b?.damage) - numeric(a?.damage);
+        || numeric(a?.energyCost) - numeric(b?.energyCost);
     }
     return numeric(b?.damage) - numeric(a?.damage)
       || numeric(b?.damagePerEnergy) - numeric(a?.damagePerEnergy)
@@ -1924,8 +2162,6 @@ function createPvPeakBattleIntelligenceApi() {
       return result;
     }
 
-    const charged = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
-    const fast = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.FAST_MOVE);
     const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|${legalActions.map(actionKey).join(",")}`;
     const principleEvaluation = evaluatePrinciples({
       state,
@@ -1935,16 +2171,6 @@ function createPvPeakBattleIntelligenceApi() {
       policy,
       context
     });
-    let hybridEvaluationResolved = false;
-    let hybridEvaluation = null;
-    const resolveHybridEvaluation = () => {
-      if (hybridEvaluationResolved) return hybridEvaluation;
-      hybridEvaluationResolved = true;
-      hybridEvaluation = typeof context.evaluateHybrid === "function"
-        ? context.evaluateHybrid()
-        : context.hybridEvaluation;
-      return hybridEvaluation;
-    };
     if (principleEvaluation.resolved && principleEvaluation.candidate) {
       const cached = fastPathCache.get(cacheKey);
       if (cached) {
@@ -1960,8 +2186,11 @@ function createPvPeakBattleIntelligenceApi() {
       statistics.cacheMisses++;
       perfDebug?.recordCache("battle-intelligence", false, { size: fastPathCache.size });
       const chosen = principleEvaluation.candidate;
-      chosen.reasonCodes.push(...principleReasonCodes(principleEvaluation.principlesTriggered));
-      chosen.reasonCodes = [...new Set(chosen.reasonCodes)];
+      chosen.reasonCodes = [...new Set([
+        primaryPrincipleReasonCode(principleEvaluation, chosen.action),
+        ...chosen.reasonCodes,
+        ...principleReasonCodes(principleEvaluation.principlesTriggered)
+      ].filter(Boolean))];
       for (const principleId of principleEvaluation.principleIds) {
         if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
       }
@@ -1984,386 +2213,11 @@ function createPvPeakBattleIntelligenceApi() {
       finishTiming(startedAt, selectionSpan);
       return result;
     }
-
-    if (principleEvaluation.timingIntentOnly
-      && principleEvaluation.intent === PRINCIPLE_TIMING_INTENTS.THROW_NOW
-      && charged.length) {
-      const constrainedLegalActions = legalActions.filter(action => action.type === ACTION_TYPES.CHARGED_MOVE);
-      const constrainedCandidates = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
-      const urgentSurvivalThrow = principleEvaluation.principlesTriggered.some(principleId =>
-        [
-          "TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS",
-          "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
-          "TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL"
-        ].includes(principleId)
-      );
-      const routeEvidenceRequiresHybrid = !urgentSurvivalThrow && (
-        principleEvaluation.evidence?.twoCheapRoute?.retained === true
-        || context.forceChargedContinuation === true
-        || constrainedCandidates.some(candidate =>
-          hasHarmfulSelfEffect(candidate.action) || hasGuaranteedEffect(candidate, context)
-        )
-      );
-      const hybridAvailable = routeEvidenceRequiresHybrid
-        && (typeof context.evaluateHybrid === "function" || !!context.hybridEvaluation);
-      const evaluatedFallback = hybridAvailable ? resolveHybridEvaluation() : null;
-      const fallbackRequestedType = evaluatedFallback?.action
-        ? normalizeAction(evaluatedFallback.action, side).type
-        : null;
-      const overrideBlocked = !!fallbackRequestedType
-        && fallbackRequestedType !== ACTION_TYPES.CHARGED_MOVE;
-      const hybridSelection = applyHybridEvaluation({
-        evaluation: evaluatedFallback,
-        legalActions: constrainedLegalActions,
-        candidates: constrainedCandidates,
-        policy,
-        cacheKey,
-        principleEvaluation,
-        overrideBlocked,
-        finalAuthority: "PRINCIPLE_ENGINE_TIMING_WITH_HYBRID_MOVE_CHOICE"
-      });
-      if (hybridSelection?.result) {
-        finishTiming(startedAt, selectionSpan);
-        return hybridSelection.result;
-      }
-      const chosen = (urgentSurvivalThrow
-        ? bestMeaningfulCharged(constrainedCandidates, context)
-        : completeChargedMoveChoice(constrainedCandidates, state, policy, context))
-        || bestMeaningfulCharged(constrainedCandidates, context);
-      const hybridUsedDuringCompletion = hybridEvaluationResolved
-        ? (typeof context.hybridWasInvoked === "function" ? context.hybridWasInvoked() : !!evaluatedFallback)
-        : (typeof context.hybridWasInvoked === "function" && context.hybridWasInvoked());
-      for (const principleId of principleEvaluation.principleIds) {
-        if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
-      }
-      chosen.reasonCodes.push(...timingReasonCodes(principleEvaluation.principlesTriggered));
-      chosen.reasonCodes = [...new Set(chosen.reasonCodes)];
-      chosen.evidence = { ...(chosen.evidence || {}), principleEngine: principleEvaluation.evidence };
-      const result = selectionResult(
-        chosen,
-        candidates,
-        policy,
-        true,
-        chosen.reasonCodes,
-        "The Timing Engine requires THROW_NOW; unresolved move ordering is completed within the Charged-only constraint.",
-        {
-          principleEvaluation,
-          fallbackUsed: hybridUsedDuringCompletion,
-          fallbackReason: "TIMING_RESOLVED_MOVE_CHOICE_UNRESOLVED",
-          fallbackResult: evaluatedFallback ? {
-            decisive: evaluatedFallback.decisive === true,
-            reasonCodes: [...(evaluatedFallback.reasonCodes || [])],
-            action: evaluatedFallback.action || null
-          } : null,
-          principleDecisionPreserved: true,
-          overrideBlocked,
-          finalAuthority: hybridUsedDuringCompletion
-            ? "PRINCIPLE_ENGINE_TIMING_WITH_LEGACY_MOVE_CHOICE"
-            : "PRINCIPLE_ENGINE_TIMING"
-        }
-      );
-      cacheFastPath(cacheKey, result);
-      finishTiming(startedAt, selectionSpan);
-      return result;
-    }
-
-    if (candidates.length === 1) {
-      const chosen = applyRule(candidates[0], "BI_ONLY_LEGAL_ACTION", 100, .99);
-      const result = selectionResult(chosen, candidates, policy, true, chosen.reasonCodes, "Only one legal action is available.", {
-        principleEvaluation,
-        fallbackUsed: false,
-        principleDecisionPreserved: true,
-        finalAuthority: "CANONICAL_LEGALITY"
-      });
-      finishTiming(startedAt, selectionSpan);
-      return result;
-    }
-
-    const plannedSelection = selectMatchupPlanAction({
-      state,
-      side,
-      legalActions,
-      candidates,
-      policy,
-      context,
-      principleEvaluation
-    });
-    if (plannedSelection) {
-      finishTiming(startedAt, selectionSpan);
-      return plannedSelection;
-    }
-    const cached = fastPathCache.get(cacheKey);
-    if (cached) {
-      const action = legalActions.find(item => actionKey(item) === cached.actionKey);
-      if (action) {
-        statistics.cacheHits++;
-        perfDebug?.recordCache("battle-intelligence", true, { size: fastPathCache.size });
-        const result = resultFromCached(action, candidates, cached, policy, principleEvaluation);
-        finishTiming(startedAt, selectionSpan);
-        return result;
-      }
-    }
-    statistics.cacheMisses++;
-    perfDebug?.recordCache("battle-intelligence", false, { size: fastPathCache.size });
-
-    hybridEvaluation = resolveHybridEvaluation();
-    const hybridSelection = applyHybridEvaluation({
-      evaluation: hybridEvaluation,
-      legalActions,
-      candidates,
-      policy,
-      cacheKey,
-      principleEvaluation
-    });
-    if (hybridSelection?.result) {
-      finishTiming(startedAt, selectionSpan);
-      return hybridSelection.result;
-    }
-
-    const meaningful = pruneDominatedCandidates(candidates, context);
-    for (const candidate of meaningful) {
-      if (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || !hasGuaranteedEffect(candidate, context)) continue;
-      applyRule(candidate, "BI_GUARANTEED_EFFECT", 25, .75);
-    }
-
-    const evaluationSpan = perfDebug?.startSpan("candidate.evaluation");
-    for (const candidate of meaningful) {
-      const evidence = typeof context.evaluateCandidate === "function"
-        ? context.evaluateCandidate(candidate.action, { state, policy: policy.id })
-        : null;
-      applyCandidateEvidence(candidate, evidence);
-    }
-    perfDebug?.endSpan(evaluationSpan);
-
-    const selectable = meaningful.filter(candidate => !candidate.strategicallyExcluded);
-
-    if (typeof context.evaluateContinuation === "function") {
-      const timingComparison = selectable.some(candidate =>
-        candidate?.evidence?.candidateEvaluation?.ruleIds?.includes("BI_TIMING_CONTINUATION")
-      );
-      // PCSV normally compares only Charged candidates. A timing window is a
-      // stricter decision: it must keep Fast/Wait alternatives in the set, or
-      // the engine silently loses the alignment line before it is evaluated.
-      const fullChargedComparison = context.forceChargedContinuation === true && !timingComparison;
-      const hybridComparison = hybridEvaluation?.ambiguity?.ambiguous === true;
-      // A timing decision can contain throw-now, a safe Fast, a one-turn
-      // alignment wait, and the other legal Charged Move. Retain that small
-      // complete set rather than letting the normal candidate budget silently
-      // remove the exact timing branch we need to compare.
-      const continuationLimit = timingComparison
-        ? Math.max(policy.maxCandidates, Math.min(4, selectable.length))
-        : policy.maxCandidates;
-      const searchCandidates = selectable
-        .filter(candidate => fullChargedComparison
-          ? candidate.action.type === ACTION_TYPES.CHARGED_MOVE
-          : candidate.requiresContinuationSearch)
-        .sort(compareCandidates)
-        .slice(0, continuationLimit);
-      if (searchCandidates.length > 1) {
-        statistics.continuationSearches++;
-        const continuationSpan = perfDebug?.startSpan("continuation.search");
-        const searched = boundedContinuation(searchCandidates, state, policy, context, now(), {
-          // PCSV is only trustworthy when both legal charged alternatives are
-          // simulated from the same state. Timing additionally includes Fast
-          // and, where legal, a one-turn alignment wait.
-          minimumComparableCandidates: timingComparison
-            ? Math.min(4, searchCandidates.length)
-            : fullChargedComparison ? Math.min(2, searchCandidates.length)
-            : hybridComparison ? searchCandidates.length
-            : 1
-        });
-        if (searched) {
-          applyRule(searched, searched.evidence?.continuation?.pcsv ? "BI_PCSV" : "BI_CONTINUATION", 0, .92);
-        }
-        perfDebug?.endSpan(continuationSpan);
-      }
-    }
-
-    const fallback = [...selectable].sort(compareCandidates)[0] || candidates[0];
-    applyRule(fallback, "BI_CANDIDATE_EVIDENCE", 0, .7);
-    const result = selectionResult(fallback, candidates, policy, false, fallback.reasonCodes, explainSelection(fallback), {
-      principleEvaluation,
-      fallbackUsed: typeof context.hybridWasInvoked === "function"
-        ? context.hybridWasInvoked()
-        : !!hybridEvaluation,
-      fallbackReason: "PRINCIPLE_CATEGORIES_UNRESOLVED",
-      fallbackResult: hybridEvaluation ? {
-        decisive: hybridEvaluation.decisive === true,
-        reasonCodes: [...(hybridEvaluation.reasonCodes || [])],
-        action: hybridEvaluation.action || null
-      } : null,
-      principleDecisionPreserved: true,
-      finalAuthority: hybridEvaluation ? "HYBRID_FALLBACK_WITH_LEGACY_COMPLETION" : "LEGACY_CANDIDATE_EVALUATION"
-    });
     finishTiming(startedAt, selectionSpan);
-    return result;
-  }
-
-  function applyHybridEvaluation(input = {}) {
-    const evaluation = input.evaluation;
-    if (!evaluation?.action) return null;
-    const normalized = normalizeAction(evaluation.action, evaluation.action.side);
-    const legalAction = input.legalActions.find(action => actionKey(action) === actionKey(normalized));
-    const chosen = input.candidates.find(candidate => actionKey(candidate.action) === actionKey(normalized));
-    if (!legalAction || !chosen) return null;
-    for (const principleId of input.principleEvaluation?.principleIds || []) {
-      if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
-    }
-    chosen.evidence = {
-      ...(chosen.evidence || {}),
-      hybrid: {
-        timing: evaluation.timing || null,
-        routePlan: evaluation.routePlan || null,
-        ambiguity: evaluation.ambiguity || null,
-        completeness: evaluation.completeness || "unknown"
-      }
-    };
-    if (evaluation.decisive) {
-      for (const reasonCode of evaluation.reasonCodes || []) {
-        if (!chosen.reasonCodes.includes(reasonCode)) chosen.reasonCodes.push(reasonCode);
-      }
-      if (evaluation.reasonCodes?.includes("FARM_DOWN_ROUTE")) {
-        applyRule(chosen, "BI_FARM_DOWN", 0, .92);
-      } else {
-        applyRule(chosen, "BI_HYBRID_BASELINE", 0, .94);
-      }
-      const result = selectionResult(
-        chosen,
-        input.candidates,
-        input.policy,
-        evaluation.fastPath === true,
-        chosen.reasonCodes,
-        evaluation.explanation || "Selected by the bounded hybrid baseline.",
-        {
-          principleEvaluation: input.principleEvaluation,
-          fallbackUsed: true,
-          fallbackReason: "PRINCIPLE_CATEGORIES_UNRESOLVED",
-          fallbackResult: {
-            decisive: true,
-            reasonCodes: [...(evaluation.reasonCodes || [])],
-            action: chosen.action
-          },
-          principleDecisionPreserved: true,
-          overrideBlocked: input.overrideBlocked === true,
-          finalAuthority: input.finalAuthority || "HYBRID_FALLBACK"
-        }
-      );
-      cacheFastPath(input.cacheKey, result);
-      return { result, chosen };
-    }
-
-    const alternativeKeys = new Set((evaluation.ambiguity?.alternatives || [])
-      .map(alternative => actionIntentKey(normalizeAction(alternative.firstAction || {}, normalized.side))));
-    for (const candidate of input.candidates) {
-      if (!alternativeKeys.has(actionIntentKey(candidate.action))) continue;
-      candidate.requiresContinuationSearch = true;
-      candidate.evidence = {
-        ...(candidate.evidence || {}),
-        hybridAlternative: (evaluation.ambiguity?.alternatives || []).find(alternative =>
-          actionIntentKey(normalizeAction(alternative.firstAction || {}, normalized.side)) === actionIntentKey(candidate.action)
-        ) || null
-      };
-      // Search eligibility is not a preference. Elevating every ambiguous
-      // alternative into the continuation priority class changes the result
-      // before any continuation has been compared.
-      if (!candidate.sourceRuleIds.includes("BI_SELECTIVE_DEEP_SEARCH")) {
-        candidate.sourceRuleIds.push("BI_SELECTIVE_DEEP_SEARCH");
-      }
-      candidate.confidence = Math.max(candidate.confidence, .82);
-    }
-    return { result: null, chosen };
-  }
-
-  function selectMatchupPlanAction(input) {
-    const { state, side, legalActions, candidates, policy, context, principleEvaluation } = input;
-    if (!matchupPlannerEnabled(context) || typeof context.planMatchup !== "function") return null;
-
-    let plan = null;
-    try {
-      plan = context.planMatchup({ state, side, legalActions, policy: policy.id });
-    } catch (_) {
-      return null;
-    }
-    const provenPlan = plan?.principalLine?.completeness === "complete" && plan?.incompleteHorizon !== true;
-    if (!provenPlan && context.allowBoundedMatchupPlan !== true) return null;
-    const plannedAction = normalizeAction(
-      plan?.selectedAction || plan?.principalVariation?.[0]?.action || plan?.principalLine?.actions?.[0],
-      side
-    );
-    const legalAction = legalActions.find(action => actionKey(action) === actionKey(plannedAction));
-    if (!legalAction) return null;
-
-    const chosen = candidates.find(candidate => actionKey(candidate.action) === actionKey(legalAction))
-      || createCandidate(legalAction);
-    chosen.evidence = { ...(chosen.evidence || {}), matchupPlan: plan };
-    applyRule(chosen, "BI_MATCHUP_PLAN", 0, Number(plan?.confidence || .8));
-    const reasonCodes = [...new Set([...(plan?.reasonCodes || []), ...chosen.reasonCodes])];
-    return selectionResult(
-      chosen,
-      candidates,
-      policy,
-      false,
-      reasonCodes,
-      plan?.explanation || "Selected the first legal action of the best reachable matchup plan.",
-      {
-        principleEvaluation,
-        fallbackUsed: false,
-        principleDecisionPreserved: true,
-        finalAuthority: "MATCHUP_PLANNER"
-      }
-    );
-  }
-
-  function matchupPlannerEnabled(context = {}) {
-    if (context.matchupPlannerV2 === true) return true;
-    if (context.matchupPlannerV2 === false) return false;
-    try {
-      const value = typeof globalThis !== "undefined" ? globalThis.MATCHUP_PLANNER_V2 : null;
-      if (value === true || String(value || "").toLowerCase() === "true" || value === "1") return true;
-    } catch (_) {}
-    try {
-      const value = typeof process !== "undefined" ? process.env?.MATCHUP_PLANNER_V2 : null;
-      return value === "true" || value === "1";
-    } catch (_) {
-      return false;
-    }
-  }
-
-  function applyCandidateEvidence(candidate, input) {
-    if (!candidate || !input || typeof input !== "object") return candidate;
-    const components = Object.fromEntries(Object.entries(input.components || {})
-      .filter(([, value]) => Number.isFinite(Number(value)))
-      .map(([key, value]) => [key, Number(value)]));
-    candidate.scoreComponents = components;
-    candidate.tacticalScore += Object.values(components).reduce((sum, value) => sum + value, 0);
-    candidate.continuationPenalty = Math.max(0, Number(input.continuationPenalty || candidate.continuationPenalty || 0));
-    candidate.strategicallyExcluded ||= input.strategicallyExcluded === true;
-    candidate.requiresContinuationSearch ||= input.requiresContinuationSearch === true;
-    candidate.evidence = {
-      ...(candidate.evidence || {}),
-      candidateEvaluation: {
-        ...input,
-        components,
-        reasons: [...(input.reasons || [])]
-      }
-    };
-    const newReasonCodes = (input.reasonCodes || []).filter(reasonCode => !candidate.reasonCodes.includes(reasonCode));
-    candidate.reasonCodes = [...newReasonCodes, ...candidate.reasonCodes];
-    for (const ruleId of input.ruleIds || []) applyRule(candidate, ruleId, 0, input.confidence || .8);
-    return candidate;
-  }
-
-  function explainSelection(candidate) {
-    const evaluation = candidate?.evidence?.candidateEvaluation || {};
-    const continuation = candidate?.evidence?.continuation || null;
-    const reasons = [...(evaluation.reasons || [])];
-    if (continuation?.pcsv && Number.isFinite(Number(continuation.pcsv.value))) {
-      reasons.unshift(`strongest projected charged sequence (${continuation.pcsv.chargedMoveCount} Charged Moves, PCSV ${Math.round(Number(continuation.pcsv.value))})`);
-    } else if (continuation && Number.isFinite(Number(continuation.score))) {
-      reasons.unshift(`highest continuation score ${Math.round(Number(continuation.score))}`);
-    }
-    if (!reasons.length) reasons.push("highest deterministic candidate score");
-    return `Selected ${actionLabel(candidate?.action)}: ${reasons.slice(0, 4).join("; ")}.`;
+    const error = new Error("The Principle Engine could not resolve an automatic strategic decision.");
+    error.code = "PRINCIPLE_ENGINE_UNSUPPORTED_STATE";
+    error.principleEvaluation = principleEvaluation;
+    throw error;
   }
 
   function explainPrincipleDecision(evaluation) {
@@ -2405,6 +2259,42 @@ function createPvPeakBattleIntelligenceApi() {
     return reasons;
   }
 
+  function primaryPrincipleReasonCode(evaluation = {}, action = null) {
+    if (evaluation.intent === "IMMEDIATE_LETHAL") return "LETHAL_MOVE_AVAILABLE";
+    if (evaluation.intent === "THROW_BEFORE_FAINT") return "FORCED_THROW_BEFORE_FAINT";
+    if (evaluation.intent === "THROW_BEFORE_OPPONENT_LETHAL") return "LETHAL_CHARGED_CONCEDED";
+    if (evaluation.intent === PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST) return "SAFE_EXTRA_FAST";
+    if (evaluation.intent === "FARM_DOWN_ROUTE") return "FARM_DOWN_ROUTE";
+    if (evaluation.intent === "COMPACT_ROUTE"
+      && evaluation.principlesTriggered?.includes("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE")) {
+      return "PROJECTED_CHARGED_SEQUENCE_VALUE";
+    }
+    if (evaluation.intent === "COMPACT_ROUTE") return "COMPACT_ROUTE_GENERATED";
+    if (evaluation.intent === "BUILD_TO_CREDIBLE_NUKE"
+      || evaluation.intent === "ALWAYS_BAIT"
+      || evaluation.intent === "SELECTIVE_CREDIBLE_BAIT") return "BAIT_REQUIRED";
+    if (evaluation.intent === "BUILD_TO_SELECTED_MOVE") return "BUILD_TO_SELECTED_MOVE";
+    if (evaluation.category === "effects") return guaranteedEffectReasonCode(action);
+    if (evaluation.category === "route") return "BEST_IMMEDIATE_DAMAGE";
+    if (evaluation.category === "availability") return evaluation.principlesTriggered?.includes("AVAIL-001_NO_ACTIVE_CHARGED_MOVE")
+      ? "NO_ACTIVE_CHARGED_MOVE"
+      : "CHEAPEST_CHARGED_NOT_AFFORDABLE";
+    return principleReasonCodes(evaluation.principlesTriggered)[0] || null;
+  }
+
+  function guaranteedEffectReasonCode(action) {
+    const move = action?.move || {};
+    const ownValues = move.buffTarget === "opponent" ? [] : move.buffTarget === "both"
+      ? move.buffsSelf || []
+      : move.buffs || [];
+    const opponentValues = move.buffTarget === "both"
+      ? move.buffsOpponent || []
+      : move.buffTarget === "opponent" ? move.buffs || [] : [];
+    if (numeric(ownValues?.[1]) > 0) return "GUARANTEED_DEFENSE_BUFF_VALUE";
+    if (numeric(opponentValues?.[0]) < 0) return "GUARANTEED_ATTACK_DEBUFF_VALUE";
+    return "GUARANTEED_EFFECT_PROJECTED";
+  }
+
   function principleReasonCodes(principleIds = []) {
     const reasonByPrinciple = {
       AVAIL_001_NO_ACTIVE_CHARGED_MOVE: "NO_ACTIVE_CHARGED_MOVE",
@@ -2435,13 +2325,6 @@ function createPvPeakBattleIntelligenceApi() {
     return [...new Set([...direct, ...timingReasonCodes(principleIds)])];
   }
 
-  function actionLabel(action) {
-    if (!action) return "no action";
-    if (action.type === ACTION_TYPES.FAST_MOVE) return action.move?.name || "Fast Move";
-    if (action.type === ACTION_TYPES.CHARGED_MOVE) return action.move?.name || action.moveId || "Charged Move";
-    return action.type || "action";
-  }
-
   function selectShieldAction(input = {}) {
     const policy = String(input.policy || "always").toLowerCase();
     const state = input.state || {};
@@ -2457,10 +2340,10 @@ function createPvPeakBattleIntelligenceApi() {
     const done = result => finalizeShieldResult(result, input, policy);
     if (!shields) return done(shieldResult(false, "NO_SHIELD_AVAILABLE", "No shield is available.", .99));
     if (policy === "no-first" && chargedTaken === 0) {
-      return done(shieldResult(false, "EXPLICIT_NO_FIRST_SHIELD_POLICY", "No First shield logic lets the first charged move through.", .99));
+      return done(shieldResult(false, "SHIELD_POLICY_NO_FIRST", "No First shield logic lets the first charged move through.", .99));
     }
     if (policy === "always") {
-      return done(shieldResult(true, "EXPLICIT_ALWAYS_SHIELD_POLICY", "Always shield logic uses a shield.", .99));
+      return done(shieldResult(true, "SHIELD_POLICY_ALWAYS", "Always shield logic uses a shield.", .99));
     }
     if (policy === "nuke") {
       const shield = damage >= hp || damage >= maxHp * .35 || energyCost >= 55;
@@ -2599,42 +2482,6 @@ function createPvPeakBattleIntelligenceApi() {
     return hasNegative(move.buffs);
   }
 
-  function boundedContinuation(candidates, state, policy, context, startedAt, options = {}) {
-    let best = null;
-    let explored = 0;
-    let evaluatedCandidates = 0;
-    const minimumComparableCandidates = Math.max(1, Math.min(
-      candidates.length,
-      Number(options.minimumComparableCandidates || 1)
-    ));
-    for (const candidate of candidates) {
-      // A timing decision is only meaningful if throw-now and the principal
-      // alternative both receive a continuation from the same state. Budget
-      // limits apply after that minimum comparable pair, never before it.
-      if (evaluatedCandidates >= minimumComparableCandidates
-        && (explored >= policy.maxStates || now() - startedAt >= policy.timeBudgetMs)) break;
-      const evaluation = context.evaluateContinuation(candidate.action, {
-        state,
-        maxDepth: policy.maxDepth,
-        maxStates: policy.maxStates - explored,
-        timeBudgetMs: Math.max(0, policy.timeBudgetMs - (now() - startedAt))
-      });
-      evaluatedCandidates++;
-      explored += Math.max(1, Number(evaluation?.evaluatedStates || 1));
-      if (!evaluation || !Number.isFinite(Number(evaluation.score))) continue;
-      candidate.continuationScore = Number(evaluation.pcsv?.value ?? evaluation.score) - Math.max(0, Number(candidate.continuationPenalty || 0));
-      // A provisional rollout winner is not a certified battle outcome.
-      // Outcome classes outrank heuristics only when the evaluator reached a
-      // complete terminal state; incomplete evidence remains a score/tie-break.
-      candidate.outcomeClass = evaluation.complete === true
-        ? normalizeOutcomeClass(evaluation.outcome)
-        : null;
-      candidate.evidence = { ...(candidate.evidence || {}), continuation: evaluation };
-      if (!best || compareCandidates(candidate, best) < 0) best = candidate;
-    }
-    return best;
-  }
-
   function isGuaranteedLethal(candidate, state, side, context) {
     const target = state.sides[opponentOf(side)];
     if (!target || target.hp <= 0) return false;
@@ -2664,22 +2511,6 @@ function createPvPeakBattleIntelligenceApi() {
   function damageFor(candidate, context) {
     if (typeof context.estimateDamage !== "function") return numeric(candidate.action.metadata?.damage);
     return Math.max(0, numeric(context.estimateDamage(candidate.action)));
-  }
-
-  function applyRule(candidate, ruleId, score, confidence, evidence = null) {
-    const definition = ruleMap.get(ruleId);
-    if (!candidate || !definition) return candidate;
-    if (!candidate.sourceRuleIds.includes(ruleId)) candidate.sourceRuleIds.push(ruleId);
-    for (const principleId of definition.principleIds || []) {
-      if (!candidate.principleIds.includes(principleId)) candidate.principleIds.push(principleId);
-    }
-    if (definition.reasonCode && !candidate.reasonCodes.includes(definition.reasonCode)) candidate.reasonCodes.push(definition.reasonCode);
-    candidate.priorityClass = Math.min(candidate.priorityClass, definition.priorityClass);
-    candidate.tacticalScore += Number(score || 0);
-    candidate.confidence = Math.max(candidate.confidence, Number(confidence || 0));
-    candidate.requiresContinuationSearch ||= definition.requiresContinuationSearch;
-    if (evidence) candidate.evidence = { ...(candidate.evidence || {}), [ruleId]: evidence };
-    return candidate;
   }
 
   function selectionResult(candidate, candidates, policy, fastPath, reasonCodes, explanation, authority = {}) {
@@ -2748,6 +2579,7 @@ function createPvPeakBattleIntelligenceApi() {
       ...result,
       principleEngineEvaluated: authority.principleEngineEvaluated ?? !!evaluation,
       migratedCategoriesEvaluated: [...(evaluation?.migratedCategories || [])],
+      principlesEvaluated: [...(evaluation?.principlesEvaluated || [])],
       principlesTriggered: [...(evaluation?.principlesTriggered || [])],
       principlesRejected: [...(evaluation?.principlesRejected || [])],
       principleResult,
@@ -2884,32 +2716,8 @@ function createPvPeakBattleIntelligenceApi() {
       principleEvaluation,
       fallbackUsed: false,
       principleDecisionPreserved: true,
-      finalAuthority: cached.finalAuthority || "MEMOIZED_DIRECT_RESULT"
+      finalAuthority: "PRINCIPLE_ENGINE"
     });
-  }
-
-  function compareCandidates(a, b) {
-    const outcomeA = outcomeRank(a.outcomeClass);
-    const outcomeB = outcomeRank(b.outcomeClass);
-    const continuationA = a.continuationScore == null ? -Infinity : a.continuationScore;
-    const continuationB = b.continuationScore == null ? -Infinity : b.continuationScore;
-    const timingQualityA = numeric(a.evidence?.continuation?.timingQuality?.score);
-    const timingQualityB = numeric(b.evidence?.continuation?.timingQuality?.score);
-    return (outcomeA >= 0 && outcomeB >= 0 ? outcomeB - outcomeA : 0)
-      || a.priorityClass - b.priorityClass
-      || continuationB - continuationA
-      // When two complete continuations reach the same outcome and resources,
-      // prefer the line whose first Charged Move lands deeper inside the
-      // opponent's active Fast Move. This is a deterministic timing tie-break,
-      // never a substitute for a stronger continuation.
-      || timingQualityB - timingQualityA
-      || b.tacticalScore - a.tacticalScore
-      || stableCandidateOrder(a, b);
-  }
-
-  function normalizeOutcomeClass(value) {
-    const outcome = String(value || "").toLowerCase();
-    return ["win", "draw", "loss"].includes(outcome) ? outcome : null;
   }
 
   function stableCandidateOrder(a, b) {
@@ -2940,10 +2748,6 @@ function createPvPeakBattleIntelligenceApi() {
 
   function actionKey(action) {
     return [action?.type || "none", action?.side || "?", action?.moveId || "none", action?.timing?.startTurn ?? ""].join(":");
-  }
-
-  function actionIntentKey(action) {
-    return [action?.type || "none", action?.side || "?", action?.moveId || "none"].join(":");
   }
 
   function opponentOf(side) {
@@ -3009,6 +2813,9 @@ function createPvPeakBattleIntelligenceApi() {
     resolvePolicy,
     selectAction,
     selectShieldAction,
+    createPrincipleOutcomeVector,
+    comparePrincipleOutcomeVectors,
+    detectPrincipleAmbiguity,
     pruneDominatedCandidates,
     clearCache,
     resetStatistics,

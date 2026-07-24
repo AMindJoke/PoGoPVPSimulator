@@ -24,7 +24,6 @@
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/hybrid-battle-intelligence.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
@@ -9442,7 +9441,6 @@
         hybridDamageAtStages,
         hybridSurvivalProjection,
         compactRouteSurvivalProjection,
-        evaluateHybridBattleAction,
         selectBattleIntelligenceAction,
         battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
@@ -9568,7 +9566,6 @@
         const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
         globalThis.PVPEAK_DETERMINISTIC_PLANNER_TIME = true;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
-        const PvPeakHybridBattleIntelligence = (${window.createPvPeakHybridBattleIntelligenceApi.toString()})();
         const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
         const PvPeakMatchupPlanner = (${window.createPvPeakMatchupPlannerApi.toString()})();
         const PvPeakMatchupPlannerAdapter = (${window.createPvPeakMatchupPlannerAdapterApi.toString()})(PvPeakMatchupPlanner);
@@ -9689,7 +9686,6 @@
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
           forcedMatchupPlan = options.diagnosticPlan || null;
           PvPeakBattleIntelligence?.clearCache?.();
-          PvPeakHybridBattleIntelligence?.clearCache?.();
           liveMatchupPlannerTable.clear();
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
@@ -12576,7 +12572,8 @@
           reasonCode: shieldDecision.reasonCode || (shielded ? "SHIELD_POLICY_ALWAYS" : "SHIELD_SAVED_LOW_THREAT"),
           sourceRuleIds: shieldDecision.sourceRuleIds || [],
           principleIds: shieldDecision.principleIds || [],
-          confidence: shieldDecision.reason ? .8 : .65
+          confidence: shieldDecision.reason ? .8 : .65,
+          ...principleAuthorityTrace(shieldDecision)
         });
         if (battleDecisionTraceEnabled && shieldCounterfactual && currentBattleDecisionTrace) {
           currentBattleDecisionTrace.shieldCounterfactuals.push(shieldCounterfactual);
@@ -12755,7 +12752,8 @@
         reasonCode: result.reasonCodes?.[0] || null,
         sourceRuleIds: result.sourceRuleIds || [],
         principleIds: result.principleIds || [],
-        confidence: result.confidence
+        confidence: result.confidence,
+        ...principleAuthorityTrace(result)
       };
     }
 
@@ -13388,6 +13386,7 @@
         principleIds: [...(input.principleIds || [])],
         principleEngineEvaluated: input.principleEngineEvaluated === true,
         migratedCategoriesEvaluated: [...(input.migratedCategoriesEvaluated || [])],
+        principlesEvaluated: [...(input.principlesEvaluated || [])],
         principlesTriggered: [...(input.principlesTriggered || [])],
         principlesRejected: [...(input.principlesRejected || [])],
         principleResult: input.principleResult ? JSON.parse(JSON.stringify(input.principleResult)) : null,
@@ -13412,6 +13411,7 @@
       return {
         principleEngineEvaluated: selection?.principleEngineEvaluated === true,
         migratedCategoriesEvaluated: selection?.migratedCategoriesEvaluated || [],
+        principlesEvaluated: selection?.principlesEvaluated || [],
         principlesTriggered: selection?.principlesTriggered || [],
         principlesRejected: selection?.principlesRejected || [],
         principleResult: selection?.principleResult || null,
@@ -13432,11 +13432,7 @@
       const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
-      const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
-        ? PvPeakHybridBattleIntelligence
-        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
       intelligenceApi?.resetStatistics?.();
-      hybridApi?.resetStatistics?.();
       intelligenceApi?.resetAudit?.();
       intelligenceApi?.configureAudit?.({
         enabled: true,
@@ -13488,9 +13484,6 @@
       const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
-      const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
-        ? PvPeakHybridBattleIntelligence
-        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
       materializeResolvedActionTrace();
       currentBattleDecisionTrace.finalState = {
         A: traceCombatantState(left),
@@ -13537,30 +13530,8 @@
         currentBattleDecisionTrace.intelligencePerformance = null;
       }
       currentBattleDecisionTrace.principleEngineStats = intelligenceApi?.getPrincipleStatistics?.() || null;
-      const hybridStats = hybridApi?.getStatistics?.() || null;
-      if (hybridStats) {
-        const {
-          maxDecisionMs,
-          totalDecisionMs,
-          averageDecisionMs,
-          medianDecisionMs,
-          p95DecisionMs,
-          decisionDurationSamples,
-          ...deterministicStats
-        } = hybridStats;
-        currentBattleDecisionTrace.hybridStats = deterministicStats;
-        currentBattleDecisionTrace.hybridPerformance = {
-          averageDecisionMs,
-          medianDecisionMs,
-          p95DecisionMs,
-          maxDecisionMs,
-          totalDecisionMs,
-          decisionDurationSamples
-        };
-      } else {
-        currentBattleDecisionTrace.hybridStats = null;
-        currentBattleDecisionTrace.hybridPerformance = null;
-      }
+      currentBattleDecisionTrace.hybridStats = { selections: 0, disabled: true };
+      currentBattleDecisionTrace.hybridPerformance = null;
       currentBattleDecisionTrace.intelligenceAudit = intelligenceApi?.getAuditReport?.() || null;
       if (!currentBattleDecisionTrace.intelligenceAudit?.configuration?.strict) {
         intelligenceApi?.configureAudit?.({ enabled: false, retainEvents: false });
@@ -14039,61 +14010,6 @@
       return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
     }
 
-    function evaluateHybridBattleAction(attacker, defender, legalActions) {
-      // Continuation simulations must compare root alternatives against the
-      // same rollout policy. Re-entering the hybrid selector inside cloned
-      // continuations changes the opponent/response model mid-comparison and
-      // makes otherwise equal-depth evidence incomparable.
-      if (chargedContinuationDepth > 0) return null;
-      const hybrid = typeof PvPeakHybridBattleIntelligence !== "undefined"
-        ? PvPeakHybridBattleIntelligence
-        : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
-      const intelligence = typeof PvPeakBattleIntelligence !== "undefined"
-        ? PvPeakBattleIntelligence
-        : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
-      if (!hybrid?.selectAction || !attacker || !defender) return null;
-      const state = battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0));
-      const actorState = state?.sides?.[attacker.trainer];
-      const defenderState = state?.sides?.[defender.trainer];
-      if (!state || !actorState || !defenderState) return null;
-      const policy = battleIntelligencePolicy();
-      const routeCacheKey = intelligence?.strategicStateKey
-        ? intelligence.strategicStateKey(state, policy)
-        : null;
-      return hybrid.selectAction({
-        policy,
-        actorSide: attacker.trainer,
-        opponentSide: defender.trainer,
-        currentTurn: state.currentTurn,
-        actor: actorState,
-        opponent: defenderState,
-        legalActions,
-        pendingEvents: state.pendingEvents,
-        baitPolicy: attacker.baiting,
-        cmpAdvantage: Number(attacker.attack || 0) - Number(defender.attack || 0),
-        routeCacheKey,
-        damage(side, move, stages) {
-          return hybridDamageAtStages(attacker, defender, move, side, stages);
-        },
-        willShield(move, routeState = {}) {
-          const shields = Math.max(0, Number(routeState.defenderShields ?? routeState.shields ?? defender.shields));
-          if (!shields) return false;
-          if (String(attacker.baiting || "").toLowerCase() === "on") return true;
-          const savedShields = defender.shields;
-          try {
-            defender.shields = shields;
-            const damage = hybridDamageAtStages(attacker, defender, move, "actor", routeState);
-            return shouldShield(defender, move, damage, attacker);
-          } finally {
-            defender.shields = savedShields;
-          }
-        },
-        survivalProjection(routeState) {
-          return hybridSurvivalProjection(attacker, defender, routeState);
-        }
-      });
-    }
-
     function selectBattleIntelligenceAction(attacker, defender, legalActions) {
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
@@ -14108,143 +14024,6 @@
         }
         return null;
       }
-      const legalChargedIds = new Set(legalActions
-        .filter(action => action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
-        .map(action => action.moveId));
-      const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
-      const projectedSequenceEligible = shouldEvaluateProjectedChargedSequence(attacker, defender, available);
-      const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
-      const effectContinuationEligible = shouldEvaluateChargedContinuations(attacker, defender, available);
-      const shieldedLineContinuationEligible = shouldCompareShieldedChargedLines(attacker, defender, available);
-      let hybridEvaluationComputed = false;
-      let hybridPlannerInvoked = false;
-      let hybridEvaluation = null;
-      let hybridHighImpactAmbiguity = false;
-      function ensureHybridEvaluation() {
-        if (hybridEvaluationComputed) {
-          return { evaluation: hybridEvaluation, highImpactAmbiguity: hybridHighImpactAmbiguity };
-        }
-        hybridEvaluationComputed = true;
-        const hybridApi = typeof PvPeakHybridBattleIntelligence !== "undefined"
-          ? PvPeakHybridBattleIntelligence
-          : typeof window !== "undefined" ? window.PvPeakHybridBattleIntelligence : null;
-        const hybridSelectionsBefore = Number(hybridApi?.getStatistics?.().selections || 0);
-        hybridEvaluation = evaluateHybridBattleAction(attacker, defender, legalActions);
-        hybridPlannerInvoked = Number(hybridApi?.getStatistics?.().selections || 0) > hybridSelectionsBefore;
-        const hybridAmbiguityReasons = [
-          timingContinuationEligible && !hybridEvaluation?.decisive ? "TIMING_ROUTE_DIFFERS" : null,
-          effectContinuationEligible ? "GUARANTEED_EFFECT_ROUTE_DIFFERS" : null,
-          shieldedLineContinuationEligible ? "SHIELD_ALLOCATION_DIFFERS" : null,
-          projectedSequenceEligible ? "CHARGED_SEQUENCE_DIFFERS" : null
-        ].filter(Boolean);
-        if (hybridEvaluation && hybridAmbiguityReasons.length) {
-          hybridEvaluation.decisive = false;
-          hybridEvaluation.fastPath = false;
-          hybridEvaluation.ambiguity = {
-            ...(hybridEvaluation.ambiguity || {}),
-            ambiguous: true,
-            reasonCodes: [...new Set([
-              ...(hybridEvaluation.ambiguity?.reasonCodes || []),
-              ...hybridAmbiguityReasons
-            ])],
-            alternatives: legalActions
-              .filter(action => ["fast", "fast_move", "charged", "charged_move", "wait"].includes(action.type))
-              .map(action => ({
-                firstAction: {
-                  type: action.type === "fast" ? "fast_move" : action.type === "charged" ? "charged_move" : action.type,
-                  moveId: action.moveId || action.move?.id || null
-                },
-                outcomeClass: "unknown",
-                complete: false
-              }))
-          };
-        }
-        hybridHighImpactAmbiguity = !!hybridEvaluation?.ambiguity?.ambiguous
-          && (hybridEvaluation.ambiguity.reasonCodes || []).some(reason =>
-            [
-              "OUTCOME_CLASS_DIFFERS",
-              "SHIELD_ALLOCATION_DIFFERS",
-              "CMP_BOUNDARY_DIFFERS",
-              "LETHAL_TIMING_DIFFERS",
-              "TIMING_ROUTE_DIFFERS",
-              "GUARANTEED_EFFECT_ROUTE_DIFFERS",
-              "CHARGED_SEQUENCE_DIFFERS"
-            ].includes(reason)
-            || (["CHARGED_ROUTE_DIFFERS", "ROUTE_SEQUENCE_DIFFERS"].includes(reason)
-              && Number(defender.shields || 0) > 0
-              && validChargedMoves(attacker).length > 1)
-          );
-        if (hybridEvaluation?.ambiguity?.ambiguous && !hybridHighImpactAmbiguity) {
-          hybridEvaluation.decisive = true;
-          hybridEvaluation.fastPath = false;
-          hybridEvaluation.ambiguity = {
-            ...hybridEvaluation.ambiguity,
-            ambiguous: false,
-            resolvedBy: "compact-outcome-vector"
-          };
-        }
-        return { evaluation: hybridEvaluation, highImpactAmbiguity: hybridHighImpactAmbiguity };
-      }
-      if (chargedContinuationDepth > 0 && (chargedContinuationOpening?.repeat || chargedContinuationOpening?.timingOnce || chargedContinuationOpening?.sequence)
-        && chargedContinuationOpening.trainer === attacker.trainer) {
-        const timingFastRequired = !!(chargedContinuationOpening.timingOnce
-          && Number(chargedContinuationOpening.fastsRemaining || 0) > 0);
-        const sequenceIndex = Math.max(0, Number(chargedContinuationOpening.sequenceIndex || 0));
-        const sequenceFastRequired = !!(chargedContinuationOpening.sequence
-          && Number(chargedContinuationOpening.sequenceExtraFasts?.[sequenceIndex] || 0) > 0);
-        const forcedCharged = legalActions.find(action =>
-          (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
-          && action.moveId === chargedContinuationOpening.moveId
-        );
-        const forcedFast = legalActions.find(action => action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE);
-        const forcedAction = (timingFastRequired || sequenceFastRequired) && forcedFast
-          ? { ...forcedFast, type: api.ACTION_TYPES.FAST_MOVE }
-          : forcedCharged
-          ? { ...forcedCharged, type: api.ACTION_TYPES.CHARGED_MOVE }
-          : forcedFast ? { ...forcedFast, type: api.ACTION_TYPES.FAST_MOVE } : null;
-        if (forcedAction) {
-          if (timingFastRequired && forcedAction.type === api.ACTION_TYPES.FAST_MOVE) {
-            chargedContinuationOpening.fastsRemaining = Math.max(0, Number(chargedContinuationOpening.fastsRemaining || 0) - 1);
-          }
-          if (sequenceFastRequired && forcedAction.type === api.ACTION_TYPES.FAST_MOVE) {
-            chargedContinuationOpening.sequenceExtraFasts[sequenceIndex] = Math.max(
-              0,
-              Number(chargedContinuationOpening.sequenceExtraFasts[sequenceIndex] || 0) - 1
-            );
-          }
-          const executingTimingPlan = !!(forcedAction.type === api.ACTION_TYPES.CHARGED_MOVE
-            && forcedCharged
-            && chargedContinuationOpening.timingOnce);
-          const executingSequenceMove = !!(forcedAction.type === api.ACTION_TYPES.CHARGED_MOVE
-            && forcedCharged
-            && chargedContinuationOpening.sequence);
-          if (executingTimingPlan) {
-            if (Array.isArray(chargedContinuationOpening.sequenceExtraFasts)
-              && chargedContinuationOpening.sequenceExtraFasts.length) {
-              chargedContinuationOpening.timingOnce = false;
-              chargedContinuationOpening.sequence = true;
-              chargedContinuationOpening.sequenceIndex = 0;
-            } else {
-              chargedContinuationOpening = null;
-            }
-          } else if (executingSequenceMove) {
-            chargedContinuationOpening.sequenceIndex = sequenceIndex + 1;
-            if (chargedContinuationOpening.sequenceIndex >= chargedContinuationOpening.sequenceExtraFasts.length) {
-              chargedContinuationOpening = null;
-            }
-          }
-          return {
-            action: forcedAction,
-            candidates: [],
-            chosenCandidate: null,
-            reasonCodes: ["STRAIGHT_LINE_CONTINUATION"],
-            explanation: forcedCharged
-              ? `${executingTimingPlan ? "executing planned timing" : "continuing straight"} ${forcedCharged.move?.name || forcedCharged.moveId} line`
-              : `building to ${chargedContinuationOpening.moveId} line`
-          };
-        }
-      }
-      const compareStraightChargedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
         side: attacker.trainer,
@@ -14252,15 +14031,7 @@
         policy: battleIntelligencePolicy(),
         context: {
           callerContext: battleIntelligenceCallerContext(),
-          matchupPlannerV2: matchupPlannerRuntimeEnabled(),
-          planMatchup: planLiveMatchup,
-          evaluateHybrid() {
-            return ensureHybridEvaluation().evaluation;
-          },
-          hybridWasInvoked() {
-            return hybridPlannerInvoked;
-          },
-          chargedTimingOptimization: timingContinuationEligible,
+          chargedTimingOptimization: true,
           canonicalOpponentLethalBeforeNextWindow: opponentPressureForcesThrow(attacker, defender),
           estimateFastDamage(side) {
             return side === "opponent"
@@ -14277,7 +14048,6 @@
             return compactRouteSurvivalProjection(attacker, defender, routeState);
           },
           compactCmpAdvantage: Number(attacker.attack || 0) - Number(defender.attack || 0),
-          forceChargedContinuation: projectedSequenceEligible,
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return move ? estimate(attacker, defender, move) : 0;
@@ -14289,29 +14059,7 @@
           hasGuaranteedEffect(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return guaranteedStatEffectChangesState(attacker, defender, move) && !hasSelfDebuff(move);
-          },
-          evaluateCandidate(action) {
-            return battleIntelligenceCandidateEvidence(attacker, defender, action, available);
-          },
-          evaluateContinuation: action => {
-              const continuationEligible = chargedContinuationDepth === 0
-                && ensureHybridEvaluation().highImpactAmbiguity;
-              if (!continuationEligible) return null;
-              const isFast = action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE;
-              const isTimingWait = action.type === "wait" || action.type === api.ACTION_TYPES.WAIT;
-              if ((isFast || isTimingWait) && timingContinuationEligible) {
-                return simulateBestChargedTimingContinuation(attacker, defender, available, {
-                  timingActionType: isTimingWait ? "wait" : "fast_move",
-                  timingWindow: action.metadata?.timingWindow || null
-                });
-              }
-              return simulateBattleIntelligenceContinuation(attacker, defender, action, {
-                repeatCharged: compareStraightChargedLines && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE),
-                projectedChargedSequence: (projectedSequenceEligible || timingContinuationEligible)
-                  && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE || isFast),
-                timingContinuation: timingContinuationEligible
-              });
-            }
+          }
         }
       });
     }
@@ -16409,7 +16157,6 @@
     function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
       (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
-      (typeof PvPeakHybridBattleIntelligence !== "undefined" ? PvPeakHybridBattleIntelligence : window.PvPeakHybridBattleIntelligence)?.clearCache?.();
       liveMatchupPlannerTable.clear();
       const stateSpan = activeBattlePerfRunId ? perfDebug.startSpan("battle.state", activeBattlePerfRunId) : null;
       const combatantSpan = activeBattlePerfRunId ? perfDebug.startSpan("combatants.create", activeBattlePerfRunId) : null;
@@ -18671,7 +18418,6 @@
       const previousContinuationMode = chargedContinuationMode;
       const previousIntelligenceContext = battleIntelligenceRuntimeContext;
       (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
-      (typeof PvPeakHybridBattleIntelligence !== "undefined" ? PvPeakHybridBattleIntelligence : window.PvPeakHybridBattleIntelligence)?.clearCache?.();
       liveMatchupPlannerTable.clear();
       battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
