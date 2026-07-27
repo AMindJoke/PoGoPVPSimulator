@@ -1892,6 +1892,10 @@ function createPvPeakBattleIntelligenceApi() {
     let selected = sequence[0];
     const debuffingMove = sequence.some(move => move.selfDebuffing);
     const mostExpensive = [...sequence].sort((a, b) => b.energyCost - a.energyCost)[0];
+    const bestImmediateDamage = Math.max(0, ...(moves || []).map(move => numeric(move.damage)));
+    const preserveGuaranteedEffectOpener = selected?.guaranteedEffect
+      && selected.effectStrategicValue?.valuable !== false
+      && numeric(selected.damage) >= bestImmediateDamage * .75;
 
     if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1
       && numeric(actor.energy) < moves[1].energyCost
@@ -1963,7 +1967,29 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
     }
 
-    if (numeric(opponent.shields) > 0 && moves.length > 1
+    const equalCostPressure = !preserveGuaranteedEffectOpener && moves.length > 1
+      ? moves
+        .filter(move =>
+          numeric(actor.energy) >= move.energyCost
+          && numeric(move.energyCost) === numeric(selected.energyCost)
+          && numeric(move.damage) > numeric(selected.damage)
+          && !move.selfDebuffing
+        )
+        .sort((a, b) =>
+          numeric(b.damage) - numeric(a.damage)
+          || numeric(b.dpe) - numeric(a.dpe)
+          || stableCandidateOrder(a.original || a, b.original || b)
+        )[0] || null
+      : null;
+    if (equalCostPressure) {
+      selected = equalCostPressure;
+      triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+      rejected.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE");
+      rejected.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+
+    if (!preserveGuaranteedEffectOpener
+      && numeric(opponent.shields) > 0 && moves.length > 1
       && moves[0].energyCost <= selected.energyCost
       && moves[0].dpe > selected.dpe
       && !moves[0].selfDebuffing) {
@@ -1981,17 +2007,20 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY");
     } else rejected.push("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY");
 
-    if (moves.length > 1 && moves[0].energyCost === selected.energyCost
+    if (!preserveGuaranteedEffectOpener
+      && moves.length > 1 && moves[0].energyCost === selected.energyCost
       && moves[0].dpe > selected.dpe && !moves[0].selfDebuffing) {
       selected = moves[0];
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
     }
-    if (moves.length > 1 && moves[0].energyCost - 10 <= selected.energyCost
+    if (!preserveGuaranteedEffectOpener
+      && moves.length > 1 && moves[0].energyCost - 10 <= selected.energyCost
       && moves[0].dpe > selected.dpe && selected.selfDebuffing && !moves[0].selfDebuffing) {
       selected = moves[0];
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
     }
-    if (moves.length > 1 && moves[0].energyCost - selected.energyCost <= 5
+    if (!preserveGuaranteedEffectOpener
+      && moves.length > 1 && moves[0].energyCost - selected.energyCost <= 5
       && moves[0].dpe > selected.dpe && moves[0].selfBuffing) {
       selected = moves[0];
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
@@ -2073,6 +2102,9 @@ function createPvPeakBattleIntelligenceApi() {
         rejected,
         evidence: { selectedCost: selected.energyCost, currentEnergy: actor.energy }
       };
+    }
+    if (selected.guaranteedEffect) {
+      triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
     }
     return {
       candidate: pvpokeCandidateForMove(selected, chargedCandidates),
@@ -4005,7 +4037,7 @@ function createPvPeakBattleIntelligenceApi() {
     if (normalizeBaitPolicy(attacker.baiting) === "always") shield = true;
     return shieldResult(
       shield,
-      shield ? "PVPOKE_WOULD_SHIELD" : "PVPOKE_WOULD_NOT_SHIELD",
+      shield ? "SHIELD_PRESERVES_WIN_CONDITION" : "SHIELD_SAVED_LOW_THREAT",
       shield
         ? "PvPoke wouldShield blocks this Charged Move from current and next-cycle pressure."
         : "PvPoke wouldShield preserves the shield because current and next-cycle pressure stay below its gates.",
@@ -4019,7 +4051,8 @@ function createPvPeakBattleIntelligenceApi() {
         cycleDamage,
         fastDpt,
         shieldWeight,
-        noShieldWeight
+        noShieldWeight,
+        parityReason: shield ? "PVPOKE_WOULD_SHIELD" : "PVPOKE_WOULD_NOT_SHIELD"
       }
     );
   }
