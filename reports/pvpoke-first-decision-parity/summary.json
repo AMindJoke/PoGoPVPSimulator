@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-27T09:46:26.591Z",
+  "suite": "RULE_CONFORMANCE",
+  "reference": "manual expected fixture conformance",
+  "generatedAt": "2026-07-27T10:35:14.165Z",
   "pvpokeRevision": "5e1e3d971369a47aaf3e7247f50710d80205d570",
   "objective": "first-strategic-decision-parity",
   "totalStates": 640,

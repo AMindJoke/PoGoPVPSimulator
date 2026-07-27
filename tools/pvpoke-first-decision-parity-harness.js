@@ -231,6 +231,8 @@ function summarize(results) {
   }
   return {
     schemaVersion: 1,
+    suite: "RULE_CONFORMANCE",
+    reference: "manual expected fixture conformance",
     generatedAt: new Date().toISOString(),
     pvpokeRevision: Fixtures.PVPOKE_REVISION,
     objective: "first-strategic-decision-parity",
@@ -275,6 +277,10 @@ function writeReports(report, reportDir = REPORT_DIR) {
 function markdownReport(report) {
   const lines = [
     "# PvPoke First Decision Parity",
+    "",
+    "- Suite: `RULE_CONFORMANCE`",
+    "- Reference: manual expected fixture conformance",
+    "- This is separate from `PVPOKE_DIFFERENTIAL_PARITY`, which executes the actual pinned PvPoke runtime.",
     "",
     `- PvPoke revision: \`${report.pvpokeRevision}\``,
     `- Objective: ${report.objective}`,

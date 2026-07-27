@@ -6,3 +6,14 @@ data/great-league-rank1-stats-cache.json
 reports/battle-regressions/
 reports/battle-contradictions/
 reports/planner-benchmark/
+vendor/pvpoke/**
+!vendor/pvpoke/
+!vendor/pvpoke/.pinned-revision
+!vendor/pvpoke/src/
+!vendor/pvpoke/src/js/
+!vendor/pvpoke/src/js/battle/
+!vendor/pvpoke/src/js/battle/DamageCalculator.js
+!vendor/pvpoke/src/js/battle/actions/
+!vendor/pvpoke/src/js/battle/actions/ActionLogic.js
+!vendor/pvpoke/src/js/battle/timeline/
+!vendor/pvpoke/src/js/battle/timeline/TimelineAction.js

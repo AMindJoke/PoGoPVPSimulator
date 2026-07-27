@@ -1,0 +1,58 @@
+{
+  "totalStates": 640,
+  "uniqueStateHashes": 640,
+  "uniqueMatchups": 80,
+  "uniqueSpecies": 80,
+  "uniqueMovePairs": 80,
+  "uniqueDecisionFamilies": 12,
+  "familyClusters": [
+    {
+      "key": "battle-opening",
+      "count": 54
+    },
+    {
+      "key": "mid-energy-lead",
+      "count": 54
+    },
+    {
+      "key": "endgame-no-shield",
+      "count": 54
+    },
+    {
+      "key": "bait-shields",
+      "count": 54
+    },
+    {
+      "key": "timing-window",
+      "count": 53
+    },
+    {
+      "key": "cmp-window",
+      "count": 53
+    },
+    {
+      "key": "immediate-lethal",
+      "count": 53
+    },
+    {
+      "key": "farm-down",
+      "count": 53
+    },
+    {
+      "key": "self-debuff-pressure",
+      "count": 53
+    },
+    {
+      "key": "pending-fast",
+      "count": 53
+    },
+    {
+      "key": "buff-debuff",
+      "count": 53
+    },
+    {
+      "key": "long-match",
+      "count": 53
+    }
+  ]
+}
