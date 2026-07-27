@@ -892,6 +892,19 @@ function createPvPeakBattleIntelligenceApi() {
       });
     }
 
+    const buildToLethal = principleBuildToLethalRoute({ state, side, actor, opponent, context });
+    if (buildToLethal.safe && fast) {
+      triggered.push(
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      );
+      return finish(fast, "route", "BUILD_TO_SELECTED_MOVE", {
+        sourceBranch: "ActionLogic:414-984; closer route pre-check",
+        timing: timing.evidence,
+        buildToLethal
+      });
+    }
+
     const compact = pvpokeCompactDecision({
       state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context
     });

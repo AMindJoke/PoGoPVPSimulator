@@ -161,6 +161,33 @@ assert.equal(
 assert.equal(guaranteedEffectOrdering.fallbackUsed, false);
 
 Intelligence.clearCache();
+const buildToUnshieldedCloserState = state({
+  hpA: 6,
+  hpB: 70,
+  energyA: 53,
+  readyA: 5,
+  readyB: 5,
+  chargedA: [
+    move("BAIT", 50, 55, { buffApplyChance: 1, buffs: [0, 1], buffTarget: "self" }),
+    move("CLOSER", 60, 100)
+  ]
+});
+const buildToUnshieldedCloser = select(buildToUnshieldedCloserState, {
+  chargedTimingOptimization: false,
+  estimateFastDamage: side => side === "opponent" ? 5 : 4,
+  compactDamage: (_side, compactMove) => Number(compactMove?.damage || 0),
+  compactSurvivalProjection: () => ({ turnsToFaint: 2, damageTaken: 5, opponentChargedCount: 0 }),
+  compactCmpAdvantage: 10
+});
+assert.equal(
+  buildToUnshieldedCloser.action.type,
+  "fast_move",
+  "PVPOKE_PARITY must build one safe Fast Move to an unshielded lethal closer instead of throwing a nonlethal bait."
+);
+assert(buildToUnshieldedCloser.principlesTriggered.includes("ROUTE-026_BUILD_TO_SELECTED_MOVE"));
+assert.equal(buildToUnshieldedCloser.fallbackUsed, false);
+
+Intelligence.clearCache();
 const twoCheapRouteState = state({
   hpA: 100,
   hpB: 100,
