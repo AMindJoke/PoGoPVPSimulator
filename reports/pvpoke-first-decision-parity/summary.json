@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-27T09:46:26.591Z",
+  "pvpokeRevision": "5e1e3d971369a47aaf3e7247f50710d80205d570",
+  "objective": "first-strategic-decision-parity",
+  "totalStates": 640,
+  "actionStates": 600,
+  "shieldStates": 40,
+  "passed": 640,
+  "failed": 0,
+  "overallParityPercent": 100,
+  "categoryParity": [
+    {
+      "category": "availability",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "bait",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "bait-enabled",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "battle-start",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "buff",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "cmp-loss",
+      "pass": 20,
+      "fail": 0,
+      "total": 20,
+      "ratePercent": 100
+    },
+    {
+      "category": "cmp-win",
+      "pass": 60,
+      "fail": 0,
+      "total": 60,
+      "ratePercent": 100
+    },
+    {
+      "category": "compact",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "debuff",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "different-fast-durations",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "effects",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "end-game",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "energy",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "energy-lead",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "equal-shields",
+      "pass": 14,
+      "fail": 0,
+      "total": 14,
+      "ratePercent": 100
+    },
+    {
+      "category": "farm",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "farm-down",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "fast-cooldown",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "forced-throw",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "guaranteed-effect",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "hp-lead",
+      "pass": 80,
+      "fail": 0,
+      "total": 80,
+      "ratePercent": 100
+    },
+    {
+      "category": "immediate-lethal",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "long-match",
+      "pass": 160,
+      "fail": 0,
+      "total": 160,
+      "ratePercent": 100
+    },
+    {
+      "category": "mechanic",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "mid-battle",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "move-ordering",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "no-shield",
+      "pass": 20,
+      "fail": 0,
+      "total": 20,
+      "ratePercent": 100
+    },
+    {
+      "category": "pending-fast",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "policy",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "protection",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "queued-fast-impact",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "route",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "self-debuff",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "shield",
+      "pass": 60,
+      "fail": 0,
+      "total": 60,
+      "ratePercent": 100
+    },
+    {
+      "category": "shield-difference",
+      "pass": 26,
+      "fail": 0,
+      "total": 26,
+      "ratePercent": 100
+    },
+    {
+      "category": "shields-down",
+      "pass": 120,
+      "fail": 0,
+      "total": 120,
+      "ratePercent": 100
+    },
+    {
+      "category": "shields-up",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "category": "timing",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    }
+  ],
+  "familyParity": [
+    {
+      "family": "availability-energy",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "availability-none",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "cmp-forced-two-cheap",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "compact-farm-down",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "compact-two-cheap",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "explicit-farm",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "guaranteed-attack-effect-route",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "guaranteed-defense-effect-no-promotion",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "immediate-lethal",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "long-bait",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "long-build",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "long-self-debuff",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "long-throw",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "protection-break",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "timing-wait",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    },
+    {
+      "family": "would-shield",
+      "pass": 40,
+      "fail": 0,
+      "total": 40,
+      "ratePercent": 100
+    }
+  ],
+  "topFailureCategories": [],
+  "failures": []
+}

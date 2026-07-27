@@ -1,6 +1,8 @@
 "use strict";
 
 const PVPOKE_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
+const ACTION_FAMILY_SIZE = 40;
+const SHIELD_FAMILY_SIZE = 40;
 
 function move(id, energyCost, damage, extra = {}) {
   return { id, name: id, energyCost, damage, ...extra };
@@ -67,47 +69,50 @@ function buildActionFixtures() {
     }
   };
 
-  addFamily("availability-none", 10, index => ({
-    state: mergeState(index, { chargedMoves: [], energy: index }),
+  addFamily("availability-none", ACTION_FAMILY_SIZE, index => ({
+    state: mergeState(index, { chargedMoves: [], energy: index % 25, hp: 120 - (index % 12), shields: index % 3 }),
     expected: { type: "fast_move", principleId: "AVAIL-001_NO_ACTIVE_CHARGED_MOVE" },
     source: "ActionLogic:15-18",
-    categories: ["availability"]
+    categories: ["availability", "battle-start"]
   }));
-  addFamily("availability-energy", 10, index => ({
-    state: mergeState(index, { energy: 5 + index }),
+  addFamily("availability-energy", ACTION_FAMILY_SIZE, index => ({
+    state: mergeState(index, { energy: 5 + (index % 20), readyTurn: 5 }),
     expected: { type: "fast_move", principleId: "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE" },
     source: "ActionLogic:20-23",
-    categories: ["availability", "energy"]
+    categories: ["availability", "energy", "energy-lead"]
   }));
-  addFamily("explicit-farm", 10, index => ({
-    state: mergeState(index, { energy: 40, mechanicState: { farmEnergy: true } }),
+  addFamily("explicit-farm", ACTION_FAMILY_SIZE, index => ({
+    state: mergeState(index, { energy: 40 + (index % 20), hp: 90 + (index % 20), mechanicState: { farmEnergy: true } }),
     context: { farmEnergy: true },
     expected: { type: "fast_move", principleId: "POLICY-003_EXPLICIT_FARM_ENERGY_MODE" },
     source: "ActionLogic:20-23",
-    categories: ["farm", "policy"]
+    categories: ["farm", "policy", "mid-battle"]
   }));
-  addFamily("immediate-lethal", 10, index => ({
-    state: mergeState(index, { energy: 40 }, { hp: 25 + index, maxHp: 35 }),
+  addFamily("immediate-lethal", ACTION_FAMILY_SIZE, index => ({
+    state: mergeState(index, { energy: 40 }, { hp: 20 + (index % 25), maxHp: 60 }),
     expected: { type: "charged_move", moveId: "CHEAP", principleId: "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL" },
     source: "ActionLogic:211-230",
-    categories: ["immediate-lethal", "shields-down"]
+    categories: ["immediate-lethal", "shields-down", "end-game"]
   }));
-  addFamily("protection-break", 10, index => ({
+  addFamily("protection-break", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, { energy: 40 }, {
       hp: 130 + index,
       mechanicState: { chargedProtection: { active: true, capability: "charged-damage-protection" } }
     }),
     expected: { type: "charged_move", moveId: "CHEAP", principleId: "SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER" },
     source: "ActionLogic:236-247",
-    categories: ["protection"]
+    categories: ["protection", "mechanic"]
   }));
-  addFamily("timing-wait", 10, index => ({
-    state: mergeState(index, { energy: 40, readyTurn: 5 }, { readyTurn: 9 + (index % 2) }),
+  addFamily("timing-wait", ACTION_FAMILY_SIZE, index => ({
+    state: mergeState(index, { energy: 40 + (index % 10), readyTurn: 5 }, {
+      readyTurn: 9 + (index % 2),
+      fastMove: move("FAST_B", 0, 6, { turns: 3 + (index % 2), energyGain: 8 })
+    }),
     expected: { type: "fast_move", principleId: "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN", intent: "WAIT_ONE_FAST" },
     source: "ActionLogic:255-359",
-    categories: ["timing", "different-fast-durations"]
+    categories: ["timing", "different-fast-durations", "fast-cooldown"]
   }));
-  addFamily("long-build", 10, index => ({
+  addFamily("long-build", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 35,
       chargedMoves: [move("CHEAP", 35, 20), move("NUKE", 55, 100)]
@@ -115,9 +120,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "fast_move", principleId: "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE" },
     source: "ActionLogic:365-412",
-    categories: ["long-match", "energy"]
+    categories: ["long-match", "energy", "hp-lead"]
   }));
-  addFamily("long-throw", 10, index => ({
+  addFamily("long-throw", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 60,
       chargedMoves: [move("CHEAP", 35, 20), move("NUKE", 55, 100)]
@@ -125,9 +130,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "NUKE", principleId: "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE" },
     source: "ActionLogic:365-412",
-    categories: ["long-match", "shields-down"]
+    categories: ["long-match", "shields-down", "hp-lead"]
   }));
-  addFamily("long-bait", 10, index => ({
+  addFamily("long-bait", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 60,
       baiting: "always",
@@ -136,9 +141,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false, wouldShield: true },
     expected: { type: "charged_move", moveId: "CHEAP", principleId: "BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT" },
     source: "ActionLogic:381-385",
-    categories: ["long-match", "bait", "shields-up"]
+    categories: ["long-match", "bait", "shields-up", "bait-enabled"]
   }));
-  addFamily("long-self-debuff", 10, index => ({
+  addFamily("long-self-debuff", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 60,
       chargedMoves: [
@@ -149,19 +154,19 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "STABLE", principleId: "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE" },
     source: "ActionLogic:387-393",
-    categories: ["long-match", "self-debuff"]
+    categories: ["long-match", "self-debuff", "debuff"]
   }));
-  addFamily("compact-two-cheap", 10, index => ({
+  addFamily("compact-two-cheap", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 70,
       chargedMoves: [move("CHEAP", 35, 55), move("NUKE", 60, 90)]
-    }, { hp: 100 + index, maxHp: 120 }),
+    }, { hp: 100 + (index % 10), maxHp: 120 }),
     context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "CHEAP", principleId: "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE" },
     source: "ActionLogic:414-801",
-    categories: ["compact", "route", "shields-down"]
+    categories: ["compact", "route", "shields-down", index % 2 ? "cmp-loss" : "cmp-win"]
   }));
-  addFamily("compact-farm-down", 10, index => ({
+  addFamily("compact-farm-down", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 35,
       fastMove: move("FAST_A", 0, 10, { turns: 2, energyGain: 8 }),
@@ -170,9 +175,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "fast_move", principleId: "FARM-033_FARM_DOWN_ROUTE_CANDIDATE" },
     source: "ActionLogic:488-507",
-    categories: ["compact", "farm-down"]
+    categories: ["compact", "farm-down", "end-game"]
   }));
-  addFamily("guaranteed-defense-effect-no-promotion", 10, index => ({
+  addFamily("guaranteed-defense-effect-no-promotion", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 40,
       chargedMoves: [
@@ -183,9 +188,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "DIRECT", principleId: "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS" },
     source: "ActionLogic:866-878; canonical effect-target handling must not add a post-processing promotion",
-    categories: ["move-ordering", "guaranteed-effect"]
+    categories: ["move-ordering", "guaranteed-effect", "buff"]
   }));
-  addFamily("guaranteed-attack-effect-route", 10, index => ({
+  addFamily("guaranteed-attack-effect-route", ACTION_FAMILY_SIZE, index => ({
     state: mergeState(index, {
       energy: 40,
       chargedMoves: [
@@ -196,9 +201,9 @@ function buildActionFixtures() {
     context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "BUFF", principleId: "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS" },
     source: "ActionLogic:463-538",
-    categories: ["effects", "guaranteed-effect"]
+    categories: ["effects", "guaranteed-effect", "buff"]
   }));
-  addFamily("cmp-forced-two-cheap", 10, index => {
+  addFamily("cmp-forced-two-cheap", ACTION_FAMILY_SIZE, index => {
     const pending = {
       id: `pending-${index}`,
       type: "fast-impact",
@@ -219,14 +224,14 @@ function buildActionFixtures() {
       }, { attack: 100 }, { pendingEvents: [pending], cmpState: { readySides: ["A", "B"] } }),
       expected: { type: "charged_move", moveId: "CHEAP", principleId: "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT" },
       source: "ActionLogic:142-200 plus canonical pending-impact adaptation",
-      categories: ["forced-throw", "cmp-win", "pending-fast"]
+      categories: ["forced-throw", "cmp-win", "pending-fast", "queued-fast-impact"]
     };
   });
   return fixtures;
 }
 
 function buildShieldFixtures() {
-  return Array.from({ length: 10 }, (_, index) => {
+  return Array.from({ length: SHIELD_FAMILY_SIZE }, (_, index) => {
     const shield = index % 2 === 0;
     const damage = shield ? 97 : 20;
     return {
@@ -234,7 +239,7 @@ function buildShieldFixtures() {
       family: "would-shield",
       pvpokeRevision: PVPOKE_REVISION,
       source: "ActionLogic:1116-1200",
-      categories: ["shield", shield ? "shield" : "no-shield"],
+      categories: ["shield", shield ? "shield" : "no-shield", index % 3 ? "shield-difference" : "equal-shields"],
       input: {
         policy: "smart",
         plannerMode: "PVPOKE_PARITY",
@@ -260,6 +265,8 @@ function buildShieldFixtures() {
 
 module.exports = {
   PVPOKE_REVISION,
+  ACTION_FAMILY_SIZE,
+  SHIELD_FAMILY_SIZE,
   buildActionFixtures,
   buildShieldFixtures
 };

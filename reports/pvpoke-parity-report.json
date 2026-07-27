@@ -19,27 +19,28 @@
     "activeHybridDecisionOwners": 0,
     "supportedFallbackUsage": {
       "used": 0,
-      "total": 160,
+      "total": 640,
       "percent": 0
     },
     "speciesSpecificRules": 0
   },
   "firstDecisionCorpus": {
-    "actionStates": 150,
-    "shieldStates": 10,
-    "total": 160,
-    "passed": 160,
+    "actionStates": 600,
+    "shieldStates": 40,
+    "total": 640,
+    "passed": 640,
     "failed": 0,
     "ratePercent": 100,
     "categories": {
-      "availability": { "passed": 20, "total": 20, "ratePercent": 100 },
-      "tactical": { "passed": 30, "total": 30, "ratePercent": 100 },
-      "timing": { "passed": 10, "total": 10, "ratePercent": 100 },
-      "farm": { "passed": 20, "total": 20, "ratePercent": 100 },
-      "shield": { "passed": 10, "total": 10, "ratePercent": 100 },
-      "bait": { "passed": 10, "total": 10, "ratePercent": 100 },
-      "effects": { "passed": 20, "total": 20, "ratePercent": 100 },
-      "moveOrdering": { "passed": 40, "total": 40, "ratePercent": 100 }
+      "availability": { "passed": 80, "total": 80, "ratePercent": 100 },
+      "tactical": { "passed": 80, "total": 80, "ratePercent": 100 },
+      "timing": { "passed": 40, "total": 40, "ratePercent": 100 },
+      "farm": { "passed": 80, "total": 80, "ratePercent": 100 },
+      "shield": { "passed": 60, "total": 60, "ratePercent": 100 },
+      "bait": { "passed": 40, "total": 40, "ratePercent": 100 },
+      "effects": { "passed": 120, "total": 120, "ratePercent": 100 },
+      "moveOrdering": { "passed": 80, "total": 80, "ratePercent": 100 },
+      "longMatch": { "passed": 160, "total": 160, "ratePercent": 100 }
     }
   },
   "historicalGoldenCorpus": {
