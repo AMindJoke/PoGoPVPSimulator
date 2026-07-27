@@ -3117,6 +3117,13 @@
       box-shadow: var(--panel-shadow);
       overflow: hidden;
     }
+    .matrix-overview .manual-panel {
+      width: 100%;
+      min-width: 0;
+      justify-self: stretch;
+      align-self: stretch;
+      box-shadow: none;
+    }
     .manual-head {
       min-height: 40px;
       padding: 8px 10px;
@@ -3217,6 +3224,9 @@
       box-shadow: var(--panel-shadow);
       padding: 8px;
       overflow: hidden;
+    }
+    .matrix-left {
+      min-width: 0;
     }
     .matrix-head {
       display: flex;
@@ -4069,15 +4079,16 @@
     .matrix-breakdown {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 5px;
+      gap: 5px;
+      margin-top: 0;
     }
     .matrix-breakdown span {
-      padding: 2px 5px;
+      padding: 3px 7px;
       border: 1px solid var(--line);
       border-radius: 999px;
       background: var(--soft);
       white-space: nowrap;
+      font-weight: 850;
     }
     .inspector-panel {
       display: none;
@@ -5977,10 +5988,10 @@
     body.clarity-ui .matrix-panel {
       order: 2;
     }
-    body.clarity-ui .key-numbers {
+    body.clarity-ui .manual-panel {
       order: 3;
     }
-    body.clarity-ui .manual-panel {
+    body.clarity-ui .key-numbers {
       order: 4;
     }
     body.clarity-ui .log-panel {
@@ -6165,8 +6176,9 @@
       }
       body.clarity-ui .matrix-overview {
         display: grid;
-        grid-template-columns: minmax(410px, .9fr) minmax(0, 1.1fr);
-        align-items: center;
+        grid-template-columns: minmax(410px, .9fr) minmax(300px, 1.1fr);
+        justify-items: stretch;
+        align-items: stretch;
         gap: 26px;
         min-height: 216px;
         padding: 6px 8px 14px;
@@ -6199,21 +6211,29 @@
         font-size: 11px;
       }
       body.clarity-ui .matrix-explanation {
-        align-self: stretch;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        max-width: 68ch;
-        margin: 0;
-        padding: 14px 4px 14px 24px;
-        border-top: 0;
-        border-left: 1px solid color-mix(in srgb, var(--line) 68%, transparent);
+        justify-self: stretch;
+        max-width: none;
+        margin: 10px 0 0;
+        padding: 9px 0 0;
+        border-top: 1px solid color-mix(in srgb, var(--line) 68%, transparent);
+        border-left: 0;
         font-size: 13px;
         line-height: 1.5;
       }
+      body.clarity-ui .matrix-overview .manual-panel {
+        align-self: stretch;
+        background: color-mix(in srgb, var(--panel) 78%, transparent);
+      }
+      body.clarity-ui .matrix-overview .manual-grid {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0 12px 12px;
+      }
+      body.clarity-ui .matrix-overview .actions button {
+        min-height: 40px;
+      }
       body.clarity-ui .matrix-breakdown {
         gap: 6px;
-        margin-top: 10px;
+        margin-top: 0;
       }
       body.clarity-ui .matrix-breakdown span {
         padding: 4px 7px;
@@ -8693,25 +8713,6 @@
         </div>
       </section>
 
-      <section class="manual-panel">
-        <div class="manual-head">
-          <h2>Manual controls</h2>
-          <span>Optional testing</span>
-        </div>
-        <div class="manual-grid">
-          <div class="actions" data-label="Pokemon A">
-            <button id="p1UseFast">Fast</button>
-            <button id="p1UseCharge1">Charged 1</button>
-            <button id="p1UseCharge2">Charged 2</button>
-          </div>
-          <div class="actions" data-label="Pokemon B">
-            <button id="p2UseFast">Fast</button>
-            <button id="p2UseCharge1">Charged 1</button>
-            <button id="p2UseCharge2">Charged 2</button>
-          </div>
-        </div>
-      </section>
-
       <section class="matrix-panel">
         <div class="matrix-head">
           <h2>Matchup</h2>
@@ -8721,8 +8722,28 @@
           </div>
         </div>
         <div class="matrix-overview">
-          <div id="shieldMatrix" class="matrix-grid"></div>
-          <div id="matrixExplanation" class="matrix-explanation"></div>
+          <div class="matrix-left">
+            <div id="shieldMatrix" class="matrix-grid"></div>
+            <div id="matrixExplanation" class="matrix-explanation"></div>
+          </div>
+          <section class="manual-panel">
+            <div class="manual-head">
+              <h2>Manual controls</h2>
+              <span>Optional testing</span>
+            </div>
+            <div class="manual-grid">
+              <div class="actions" data-label="Pokemon A">
+                <button id="p1UseFast">Fast</button>
+                <button id="p1UseCharge1">Charged 1</button>
+                <button id="p1UseCharge2">Charged 2</button>
+              </div>
+              <div class="actions" data-label="Pokemon B">
+                <button id="p2UseFast">Fast</button>
+                <button id="p2UseCharge1">Charged 1</button>
+                <button id="p2UseCharge2">Charged 2</button>
+              </div>
+            </div>
+          </section>
         </div>
         <section id="battleReview" class="battle-review" aria-live="polite" hidden></section>
         <div id="matchupInspector" class="inspector-panel" aria-live="polite"></div>
@@ -18510,11 +18531,6 @@
       const box = $("matrixExplanation");
       if (!box || !result || !result.details || !left || !right) return;
       const d = result.details;
-      const direction = result.score > 500
-        ? `${left.p.name} is ahead`
-        : result.score < 500
-          ? `${right.p.name} is ahead`
-          : "This is close";
       const parts = [
         ["HP", d.hpEdge],
         ["Energy", d.energyEdge],
@@ -18524,15 +18540,7 @@
         d.advantagePressureEdge ? ["Advantage", d.advantagePressureEdge] : null,
         ["Outpace", d.outpacePressureEdge]
       ].filter(Boolean).map(([label, value]) => `<span class="${edgeClass(value)}">${label} ${formatEdge(value)}</span>`).join("");
-      const swingText = result.swing ? matrixSwingSummary(result.swing) : "";
-      box.innerHTML = `<strong>${result.score}</strong> starts from 500. ${escapeHtml(direction)} after the sim: winner, remaining HP, energy, shields, charged-move readiness, KO threat, closing cost, farm range, and outpace pressure all move the score. Higher favors ${escapeHtml(left.p.name)}, lower favors ${escapeHtml(right.p.name)}.${swingText}<div class="matrix-breakdown">${parts}</div>`;
-    }
-
-    function matrixSwingSummary(swing) {
-      const label = flipLineLabel(swing.lineType);
-      const line = swing.lineType ? `, ${escapeHtml(swing.lineType)} line` : "";
-      const turns = `${swing.turnCost} turn${swing.turnCost === 1 ? "" : "s"}`;
-      return ` <strong>${label}:</strong> ${escapeHtml(swing.pokemon)} with +${swing.fastMoves} ${escapeHtml(swing.fastMove)} (${turns}${line}).`;
+      box.innerHTML = `<div class="matrix-breakdown" aria-label="Matchup score modifiers">${parts}</div>`;
     }
 
     function edgeClass(value) {
