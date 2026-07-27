@@ -829,6 +829,27 @@ function createPvPeakBattleIntelligenceApi() {
 
     if ((context.canonicalOpponentLethalBeforeNextWindow === true
       || context.opponentLethalBeforeNextWindow === true) && chargedCandidates.length) {
+      const safeBuild = pvpokeSafeOneFastBuildToLethal({
+        state,
+        side,
+        actor,
+        opponent,
+        moves,
+        fast,
+        chargedCandidates
+      });
+      if (safeBuild?.candidate) {
+        triggered.push(
+          "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+          "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+          "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"
+        );
+        return finish(safeBuild.candidate, "route", "BUILD_TO_SELECTED_MOVE", {
+          sourceBranch: "canonical survival-horizon adaptation; CMP-safe one-fast lethal build",
+          survival,
+          buildToLethal: safeBuild.evidence
+        });
+      }
       const urgent = [...chargedCandidates].sort((a, b) =>
         damageFor(b, context) - damageFor(a, context)
         || actionEnergyCost(a.action) - actionEnergyCost(b.action)
@@ -1143,6 +1164,54 @@ function createPvPeakBattleIntelligenceApi() {
       opponentEnergy: opponent.energy,
       opponentCooldownTurns,
       ownFastTurns
+    };
+  }
+
+  function pvpokeSafeOneFastBuildToLethal({ state, side, actor, opponent, moves, fast, chargedCandidates }) {
+    if (!fast || numeric(opponent.shields) > 0) return null;
+    const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
+    const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const fastGain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    if (fastGain <= 0) return null;
+    const readyTurn = currentTurn + fastTurns;
+    const projectedEnergy = Math.min(100, numeric(actor.energy) + fastGain);
+    const pendingDamage = pendingDamageThrough(state, side, readyTurn);
+    if (numeric(actor.hp) <= pendingDamage) return null;
+
+    const opponentReadyTurn = Math.max(numeric(state?.currentTurn), numeric(opponent.readyTurn));
+    const actorWinsCmp = numeric(actor.attack) >= numeric(opponent.attack);
+    if (opponentReadyTurn < readyTurn) return null;
+    if (opponentReadyTurn === readyTurn && !actorWinsCmp) return null;
+
+    const fastDamage = Math.max(0, numeric(actor.fastMove?.damage));
+    const lethalMove = (moves || [])
+      .filter(move =>
+        numeric(actor.energy) < move.energyCost
+        && projectedEnergy >= move.energyCost
+        && !move.selfDebuffing
+        && move.damage + fastDamage >= numeric(opponent.hp)
+      )
+      .sort((a, b) =>
+        b.damage - a.damage
+        || b.dpe - a.dpe
+        || a.energyCost - b.energyCost
+      )[0] || null;
+    if (!lethalMove) return null;
+    return {
+      candidate: fast,
+      evidence: {
+        moveId: lethalMove.id,
+        currentEnergy: actor.energy,
+        projectedEnergy,
+        energyCost: lethalMove.energyCost,
+        readyTurn,
+        opponentReadyTurn,
+        actorWinsCmp,
+        damage: lethalMove.damage,
+        fastDamage,
+        opponentHp: opponent.hp,
+        pendingDamage
+      }
     };
   }
 
