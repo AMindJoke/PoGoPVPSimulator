@@ -193,7 +193,40 @@ function estimateDamage(attacker, defender, move) {
   const attack = Number(attacker.attack || 100) * statMultiplier(attacker.attackStage) * (attacker.shadow ? 1.2 : 1);
   const defense = Number(defender.defense || 100) * statMultiplier(defender.defenseStage) * (defender.shadow ? 0.83333331 : 1);
   const stab = attacker.types?.includes(move.type) ? 1.2000000476837158203125 : 1;
-  return Math.floor(power * stab * (attack / Math.max(1, defense)) * 0.5 * 1.2999999523162842) + 1;
+  const effectiveness = typeEffectiveness(move.type, defender.types || []);
+  return Math.floor(power * stab * (attack / Math.max(1, defense)) * effectiveness * 0.5 * 1.2999999523162842) + 1;
+}
+
+function typeEffectiveness(moveType, defenderTypes = []) {
+  return defenderTypes.reduce((value, targetType) => value * typeMultiplier(moveType, targetType), 1);
+}
+
+function typeMultiplier(moveType, targetType) {
+  const traits = {
+    normal: { weaknesses: ["fighting"], resistances: [], immunities: ["ghost"] },
+    fighting: { weaknesses: ["flying", "psychic", "fairy"], resistances: ["rock", "bug", "dark"], immunities: [] },
+    flying: { weaknesses: ["rock", "electric", "ice"], resistances: ["fighting", "bug", "grass"], immunities: ["ground"] },
+    poison: { weaknesses: ["ground", "psychic"], resistances: ["fighting", "poison", "bug", "fairy", "grass"], immunities: [] },
+    ground: { weaknesses: ["water", "grass", "ice"], resistances: ["poison", "rock"], immunities: ["electric"] },
+    rock: { weaknesses: ["fighting", "ground", "steel", "water", "grass"], resistances: ["normal", "flying", "poison", "fire"], immunities: [] },
+    bug: { weaknesses: ["flying", "rock", "fire"], resistances: ["fighting", "ground", "grass"], immunities: [] },
+    ghost: { weaknesses: ["ghost", "dark"], resistances: ["poison", "bug"], immunities: ["normal", "fighting"] },
+    steel: { weaknesses: ["fighting", "ground", "fire"], resistances: ["normal", "flying", "rock", "bug", "steel", "grass", "psychic", "ice", "dragon", "fairy"], immunities: ["poison"] },
+    fire: { weaknesses: ["ground", "rock", "water"], resistances: ["bug", "steel", "fire", "grass", "ice", "fairy"], immunities: [] },
+    water: { weaknesses: ["grass", "electric"], resistances: ["steel", "fire", "water", "ice"], immunities: [] },
+    grass: { weaknesses: ["flying", "poison", "bug", "fire", "ice"], resistances: ["ground", "water", "grass", "electric"], immunities: [] },
+    electric: { weaknesses: ["ground"], resistances: ["flying", "steel", "electric"], immunities: [] },
+    psychic: { weaknesses: ["bug", "ghost", "dark"], resistances: ["fighting", "psychic"], immunities: [] },
+    ice: { weaknesses: ["fighting", "fire", "steel", "rock"], resistances: ["ice"], immunities: [] },
+    dragon: { weaknesses: ["dragon", "ice", "fairy"], resistances: ["fire", "water", "grass", "electric"], immunities: [] },
+    dark: { weaknesses: ["fighting", "fairy", "bug"], resistances: ["ghost", "dark"], immunities: ["psychic"] },
+    fairy: { weaknesses: ["poison", "steel"], resistances: ["fighting", "bug", "dark"], immunities: ["dragon"] }
+  }[String(targetType || "").toLowerCase()] || { weaknesses: [], resistances: [], immunities: [] };
+  const move = String(moveType || "").toLowerCase();
+  if (traits.weaknesses.includes(move)) return 1.60000002384185791015625;
+  if (traits.resistances.includes(move)) return 0.625;
+  if (traits.immunities.includes(move)) return 0.390625;
+  return 1;
 }
 
 function statMultiplier(stage = 0) {

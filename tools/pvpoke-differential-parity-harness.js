@@ -135,8 +135,47 @@ function evaluateSimulatorFirstAction(fixture) {
     wait: action.type === "wait",
     principleIds: decision?.principlesTriggered || decision?.principleIds || [],
     sourceBranch: decision?.principleResult?.evidence?.sourceBranch || null,
+    intent: decision?.principleResult?.intent || null,
+    finalAuthority: decision?.finalAuthority || null,
+    fallbackUsed: decision?.fallbackUsed === true,
+    explanation: decision?.explanation || null,
+    selectedPrinciple: decision?.principleResult ? {
+      resolved: decision.principleResult.resolved,
+      category: decision.principleResult.category,
+      intent: decision.principleResult.intent,
+      principleIds: decision.principleResult.principleIds || [],
+      evidence: compactEvidence(decision.principleResult.evidence)
+    } : null,
+    chosenCandidate: compactCandidate(decision?.chosenCandidate),
+    topCandidates: (decision?.candidates || []).slice(0, 5).map(compactCandidate),
     rawAction: action
   };
+}
+
+function compactCandidate(candidate) {
+  if (!candidate) return null;
+  return {
+    action: candidate.action ? {
+      type: normalizeSimulatorType(candidate.action.type),
+      moveId: candidate.action.moveId || candidate.action.move?.id || candidate.action.move?.moveId || null
+    } : null,
+    tacticalScore: candidate.tacticalScore,
+    continuationScore: candidate.continuationScore,
+    continuationPenalty: candidate.continuationPenalty,
+    confidence: candidate.confidence,
+    principleIds: candidate.principleIds || [],
+    reasonCodes: candidate.reasonCodes || [],
+    evidence: compactEvidence(candidate.evidence)
+  };
+}
+
+function compactEvidence(evidence) {
+  if (!evidence || typeof evidence !== "object") return evidence || null;
+  return JSON.parse(JSON.stringify(evidence, (_key, value) => {
+    if (typeof value === "function") return "[function]";
+    if (Array.isArray(value) && value.length > 10) return value.slice(0, 10).concat([`...${value.length - 10} more`]);
+    return value;
+  }));
 }
 
 function normalizeSimulatorType(type) {

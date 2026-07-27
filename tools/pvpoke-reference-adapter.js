@@ -63,9 +63,10 @@ function createPvPokeReference(options = {}) {
         moveId: move.moveId || move.id || null,
         wait: false,
         sourceBranch: null,
-        reason: "actual PvPoke ActionLogic.wouldShield()",
-        rawAction: raw,
-        referenceRevision: revision
+      reason: "actual PvPoke ActionLogic.wouldShield()",
+      rawAction: raw,
+      decisionLog: battle.getDecisionLog(),
+      referenceRevision: revision
       };
     }
   });
@@ -134,6 +135,7 @@ function normalizePvPokeAction(rawAction, actor, battle, revision) {
       sourceBranch: null,
       reason: lastDecisionReason(battle) || "PvPoke returned undefined, which means Fast Move / wait according to ActionLogic conventions.",
       rawAction: null,
+      decisionLog: battle.getDecisionLog(),
       referenceRevision: revision
     };
   }
@@ -147,6 +149,7 @@ function normalizePvPokeAction(rawAction, actor, battle, revision) {
       sourceBranch: null,
       reason: lastDecisionReason(battle),
       rawAction,
+      decisionLog: battle.getDecisionLog(),
       referenceRevision: revision
     };
   }
@@ -158,6 +161,7 @@ function normalizePvPokeAction(rawAction, actor, battle, revision) {
     sourceBranch: null,
     reason: lastDecisionReason(battle),
     rawAction,
+    decisionLog: battle.getDecisionLog(),
     referenceRevision: revision
   };
 }

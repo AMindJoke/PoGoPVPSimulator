@@ -844,6 +844,30 @@ function createPvPeakBattleIntelligenceApi() {
       });
     }
 
+    const immediateOpponentChargedThreat = pvpokeImmediateOpponentChargedThreat({
+      state,
+      actor,
+      opponent,
+      opponentMoves,
+      context
+    });
+    if (immediateOpponentChargedThreat && chargedCandidates.length) {
+      const urgent = pvpokeBestForcedImpactMove({ actor, opponent, moves, chargedCandidates });
+      if (urgent?.candidate) {
+        triggered.push(
+          "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+          "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+        );
+        if (urgent.twoCopies) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+        return finish(urgent.candidate, "tactical", "THROW_BEFORE_FAINT", {
+          sourceBranch: "ActionLogic:142-200; immediate opponent charged lethal",
+          survival,
+          opponentThreat: immediateOpponentChargedThreat,
+          forcedThrow: urgent.evidence
+        });
+      }
+    }
+
     const lethal = pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context });
     if (lethal) {
       triggered.push("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL", "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
@@ -1101,6 +1125,55 @@ function createPvPeakBattleIntelligenceApi() {
     } : null;
   }
 
+  function pvpokeImmediateOpponentChargedThreat({ state, actor, opponent, opponentMoves, context }) {
+    if (typeof context?.compactSurvivalProjection === "function") return null;
+    if (numeric(actor.shields) > 0) return null;
+    const currentTurn = numeric(state?.currentTurn);
+    const opponentCooldownTurns = Math.max(0, numeric(opponent.readyTurn) - currentTurn);
+    const ownFastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const lethal = (opponentMoves || [])
+      .filter(move => numeric(opponent.energy) >= move.energyCost && move.damage >= numeric(actor.hp))
+      .sort((a, b) => b.damage - a.damage || a.energyCost - b.energyCost)[0] || null;
+    if (!lethal) return null;
+    if (opponentCooldownTurns > ownFastTurns) return null;
+    return {
+      moveId: lethal.id,
+      damage: lethal.damage,
+      actorHp: actor.hp,
+      opponentEnergy: opponent.energy,
+      opponentCooldownTurns,
+      ownFastTurns
+    };
+  }
+
+  function pvpokeBestForcedImpactMove({ actor, opponent, moves, chargedCandidates }) {
+    let selected = null;
+    let comparedDamage = -1;
+    let twoCopies = false;
+    for (let index = moves.length - 1; index >= 0; index--) {
+      const move = moves[index];
+      if (numeric(actor.energy) < move.energyCost) continue;
+      if (move.damage > comparedDamage) {
+        selected = move;
+        comparedDamage = move.damage;
+        twoCopies = false;
+      }
+      if (numeric(actor.energy) >= move.energyCost * 2
+        && numeric(actor.attack) > numeric(opponent.attack)
+        && move.damage * 2 > comparedDamage) {
+        selected = move;
+        comparedDamage = move.damage * 2;
+        twoCopies = true;
+      }
+    }
+    const candidate = selected ? pvpokeCandidateForMove(selected, chargedCandidates) : null;
+    return candidate ? {
+      candidate,
+      twoCopies,
+      evidence: { moveId: selected.id, comparedDamage, reason: "IMMEDIATE_OPPONENT_CHARGED_LETHAL" }
+    } : null;
+  }
+
   function pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context }) {
     if (numeric(opponent.shields) !== 0) return null;
     const baitEnabled = normalizeBaitPolicy(actor.baiting) !== "off";
@@ -1325,6 +1398,27 @@ function createPvPeakBattleIntelligenceApi() {
       else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
     } else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
 
+    const nearPressureMove = pvpokeNearChargedPressureMove({ actor, opponent, moves, selected, fastGain });
+    if (nearPressureMove && numeric(actor.energy) >= selected.energyCost) {
+      triggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE", "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+      return {
+        resolved: true,
+        candidate: fast,
+        category: "route",
+        intent: "BUILD_TO_SELECTED_MOVE",
+        triggered,
+        rejected,
+        evidence: {
+          cycles,
+          minimumCycleThreshold,
+          bestCycleDamage,
+          selectedMoveId: nearPressureMove.id,
+          deferredReadyMoveId: selected.id,
+          reason: "BUILD_ONE_FAST_TO_HIGHER_PRESSURE_MOVE"
+        }
+      };
+    }
+
     if (numeric(actor.energy) < selected.energyCost) {
       triggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE");
       return {
@@ -1362,6 +1456,31 @@ function createPvPeakBattleIntelligenceApi() {
       rejected,
       evidence: { cycles, minimumCycleThreshold, bestCycleDamage, selectedMoveId: selected.id }
     };
+  }
+
+  function pvpokeNearChargedPressureMove({ actor, opponent, moves, selected, fastGain }) {
+    const currentEnergy = numeric(actor.energy);
+    const nextEnergy = Math.min(100, currentEnergy + Math.max(1, numeric(fastGain, 1)));
+    const opponentHp = numeric(opponent.hp);
+    const selectedRawPower = numeric(selected?.original?.power ?? selected?.power ?? selected?.damage);
+    const selectedRawDpe = selectedRawPower / Math.max(1, numeric(selected?.energyCost, 1));
+    return (moves || [])
+      .filter(move => {
+        const rawPower = numeric(move.original?.power ?? move.power ?? move.damage);
+        const rawDpe = rawPower / Math.max(1, numeric(move.energyCost, 1));
+        return move.id !== selected?.id
+          && currentEnergy < move.energyCost
+          && nextEnergy >= move.energyCost
+          && rawPower > selectedRawPower * 1.35
+          && rawDpe >= selectedRawDpe * .95
+          && opponentHp > numeric(selected?.damage) + Math.max(0, numeric(actor.fastMove?.damage || 0));
+      })
+      .sort((a, b) =>
+        numeric(b.original?.power ?? b.power ?? b.damage) - numeric(a.original?.power ?? a.power ?? a.damage)
+        || (numeric(b.original?.power ?? b.power ?? b.damage) / Math.max(1, numeric(b.energyCost, 1)))
+          - (numeric(a.original?.power ?? a.power ?? a.damage) / Math.max(1, numeric(a.energyCost, 1)))
+        || a.energyCost - b.energyCost
+      )[0] || null;
   }
 
   function pvpokeCompactDecision({ state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context }) {
@@ -1694,10 +1813,47 @@ function createPvPeakBattleIntelligenceApi() {
       } else rejected.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
     } else rejected.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
 
+    const highPressureAvailable = moves
+      .filter(move => numeric(actor.energy) >= move.energyCost && move.damage > selected.damage)
+      .sort((a, b) =>
+        b.damage - a.damage
+        || b.dpe - a.dpe
+        || a.energyCost - b.energyCost
+      )[0] || null;
+    if (baitEnabled
+      && numeric(opponent.shields) > 0
+      && highPressureAvailable
+      && selected.energyCost < highPressureAvailable.energyCost
+      && selected.damage < highPressureAvailable.damage * .7
+      && !selected.guaranteedEffect
+      && !selected.selfBuffing) {
+      selected = highPressureAvailable;
+      triggered.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
+      rejected.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE");
+    }
+
     if (!baitEnabled || (numeric(opponent.shields) === 0 && !debuffingMove)) {
       selected = [...sequence].sort((a, b) => b.damage - a.damage)[0];
       triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
     } else rejected.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+
+    const noShieldStrongCloser = numeric(opponent.shields) === 0
+      ? moves
+        .filter(move => numeric(actor.energy) >= move.energyCost && !move.selfDebuffing)
+        .sort((a, b) =>
+          b.damage - a.damage
+          || b.dpe - a.dpe
+          || a.energyCost - b.energyCost
+        )[0] || null
+      : null;
+    if (noShieldStrongCloser
+      && noShieldStrongCloser.id !== selected.id
+      && noShieldStrongCloser.damage >= selected.damage * 1.25
+      && numeric(opponent.hp) > selected.damage
+      && numeric(opponent.hp) <= noShieldStrongCloser.damage + Math.max(0, numeric(actor.fastMove?.damage || 0)) * 2) {
+      selected = noShieldStrongCloser;
+      triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+    }
 
     if (numeric(opponent.shields) > 0 && moves.length > 1
       && moves[0].energyCost <= selected.energyCost

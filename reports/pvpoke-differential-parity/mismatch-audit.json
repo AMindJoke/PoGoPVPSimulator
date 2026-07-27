@@ -1,0 +1,2900 @@
+{
+  "generatedAt": "2026-07-27T11:29:41.739Z",
+  "mismatchCount": 93,
+  "byDifference": [
+    [
+      "Same DP area, different route ordering/tie-break/post-processing.",
+      39
+    ],
+    [
+      "Same action family, different charged-move ordering criteria.",
+      20
+    ],
+    [
+      "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      18
+    ],
+    [
+      "PvPoke throws now; simulator delays/builds/farms.",
+      16
+    ]
+  ],
+  "byPathPair": [
+    [
+      "PVPOKE_DP_ORDERED_SEQUENCE vs SIM_COMPACT_DP_ROUTE",
+      38
+    ],
+    [
+      "PVPOKE_UNKNOWN_BRANCH vs SIM_COMPACT_DP_ROUTE",
+      10
+    ],
+    [
+      "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT vs SIM_COMPACT_DP_ROUTE",
+      8
+    ],
+    [
+      "PVPOKE_DP_ORDERED_SEQUENCE vs SIM_IMMEDIATE_DAMAGE_ORDERING",
+      7
+    ],
+    [
+      "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT vs SIM_LONG_MATCH_BEST_CYCLE",
+      5
+    ],
+    [
+      "PVPOKE_UNKNOWN_BRANCH vs SIM_IMMEDIATE_LETHAL",
+      4
+    ],
+    [
+      "PVPOKE_DP_KO_OR_FARM_DOWN vs SIM_COMPACT_DP_ROUTE",
+      3
+    ],
+    [
+      "PVPOKE_DP_KO_OR_FARM_DOWN vs SIM_IMMEDIATE_DAMAGE_ORDERING",
+      3
+    ],
+    [
+      "PVPOKE_DP_ORDERED_SEQUENCE vs SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      3
+    ],
+    [
+      "PVPOKE_SELF_DEBUFF_STACK_OR_WAIT vs SIM_SELF_DEBUFF_POLICY",
+      3
+    ],
+    [
+      "PVPOKE_FORCED_THROW_TURNS_TO_LIVE vs SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      2
+    ],
+    [
+      "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT vs SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      2
+    ],
+    [
+      "PVPOKE_UNKNOWN_BRANCH vs SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      2
+    ],
+    [
+      "PVPOKE_DP_KO_OR_FARM_DOWN vs SIM_SELF_DEBUFF_POLICY",
+      1
+    ],
+    [
+      "PVPOKE_DP_ORDERED_SEQUENCE vs SIM_BUILD_TO_REPRESENTED_NUKE",
+      1
+    ],
+    [
+      "PVPOKE_UNKNOWN_BRANCH vs SIM_BUILD_TO_REPRESENTED_NUKE",
+      1
+    ]
+  ],
+  "byClass": [
+    [
+      "MOVE_ID_DIFFERENCE",
+      59
+    ],
+    [
+      "PVPOKE_ACTION_DIFFERENCE",
+      34
+    ]
+  ],
+  "rows": [
+    {
+      "id": "real-diff-018",
+      "matchup": "clodsire_vs_mantine",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:EARTHQUAKE",
+      "simulatorDecision": "charged:STONE_EDGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Earthquake because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Stone Edge after it uses Earthquake"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-024",
+      "matchup": "guzzlord_vs_corsola_galarian",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:BRUTAL_SWING",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_LONG_MATCH_BEST_CYCLE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE"
+      ]
+    },
+    {
+      "id": "real-diff-050",
+      "matchup": "moltres_galarian_vs_sliggoo",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:FLY",
+      "pvpokePath": "PVPOKE_SELF_DEBUFF_STACK_OR_WAIT",
+      "simulatorPath": "SIM_SELF_DEBUFF_POLICY",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Brave Bird because it wants to minimize time debuffed and it can stack the move 1 times"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+      ]
+    },
+    {
+      "id": "real-diff-053",
+      "matchup": "mantine_vs_steelix_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:TWISTER",
+      "simulatorDecision": "charged:WATER_PULSE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-060",
+      "matchup": "drapion_shadow_vs_kingdra_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "charged:AQUA_TAIL",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_BUILD_TO_REPRESENTED_NUKE",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE"
+      ]
+    },
+    {
+      "id": "real-diff-065",
+      "matchup": "aegislash_shield_vs_ninetales_alolan",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:SHADOW_BALL",
+      "simulatorDecision": "charged:GYRO_BALL",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Shadow Ball because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Gyro Ball after it uses Shadow Ball"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-066",
+      "matchup": "bastiodon_vs_registeel",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:STONE_EDGE",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Stone Edge because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Stone Edge after it uses Stone Edge",
+        " wants to use Flamethrower after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-070",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-074",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Drill Run after it uses Drill Run",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-083",
+      "matchup": "tinkaton_vs_lapras",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:BULLDOZE",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Bulldoze because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Bulldoze after it uses Bulldoze",
+        " wants to use Gigaton Hammer after it uses Bulldoze"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-094",
+      "matchup": "forretress_shadow_vs_corviknight_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:SAND_TOMB",
+      "simulatorDecision": "charged:ROCK_TOMB",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Sand Tomb because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Sand Tomb after it uses Sand Tomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-095",
+      "matchup": "corsola_galarian_vs_umbreon",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:NIGHT_SHADE",
+      "simulatorDecision": "charged:POWER_GEM",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Night Shade because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Power Gem after it uses Night Shade"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-116",
+      "matchup": "oinkologne_female_vs_corviknight",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "farm-down",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:BODY_SLAM",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " will force throw a boost move",
+        " uses Body Slam at turn 36 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-129",
+      "matchup": "dusclops_shadow_vs_sableye_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:ICE_PUNCH",
+      "simulatorDecision": "charged:SHADOW_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " has Infinity turns to live",
+        " uses Ice Punch because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Ice Punch after it uses Ice Punch",
+        " wants to use Shadow Punch after it uses Ice Punch"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-130",
+      "matchup": "moltres_galarian_vs_sliggoo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:FLY",
+      "simulatorDecision": "charged:BRAVE_BIRD",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Fly because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Fly after it uses Fly"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD",
+        "EFFECT-027_STACK_SELF_DEBUFFING_MOVES"
+      ]
+    },
+    {
+      "id": "real-diff-150",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:EARTHQUAKE",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-153",
+      "matchup": "stunfisk_vs_sealeo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:MUD_BOMB",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Mud Bomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Mud Bomb after it uses Mud Bomb",
+        " wants to use Discharge after it uses Mud Bomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-154",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-155",
+      "matchup": "malamar_shadow_vs_clefable",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:FOUL_PLAY",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_SELF_DEBUFF_POLICY",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " has Infinity turns to live",
+        " uses Foul Play at turn 26 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+      ]
+    },
+    {
+      "id": "real-diff-158",
+      "matchup": "pelipper_vs_stunfisk",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:WEATHER_BALL_WATER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Weather Ball (Water) because it wants to bait"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-159",
+      "matchup": "melmetal_vs_morpeko_full_belly",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "end-game",
+        "shields-down",
+        "forced-throw"
+      ],
+      "pvpokeDecision": "charged:DOUBLE_IRON_BASH",
+      "simulatorDecision": "charged:DYNAMIC_PUNCH",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-160",
+      "matchup": "morpeko_full_belly_vs_empoleon_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "bait-enabled",
+        "shields-up",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:AURA_WHEEL_ELECTRIC",
+      "simulatorDecision": "charged:PSYCHIC_FANGS",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Aura Wheel because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Psychic Fangs after it uses Aura Wheel",
+        " wants to use Psychic Fangs after it uses Psychic Fangs"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-174",
+      "matchup": "forretress_shadow_vs_corviknight_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:SAND_TOMB",
+      "simulatorDecision": "charged:ROCK_TOMB",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Sand Tomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Sand Tomb after it uses Sand Tomb",
+        " wants to use Sand Tomb after it uses Sand Tomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-194",
+      "matchup": "talonflame_vs_empoleon",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:FLY",
+      "pvpokePath": "PVPOKE_SELF_DEBUFF_STACK_OR_WAIT",
+      "simulatorPath": "SIM_SELF_DEBUFF_POLICY",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Brave Bird because it wants to minimize time debuffed and it can stack the move 1 times"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+      ]
+    },
+    {
+      "id": "real-diff-206",
+      "matchup": "sableye_vs_quagsire",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:FOUL_PLAY",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Foul Play because it wants to bait"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-210",
+      "matchup": "moltres_galarian_vs_sliggoo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:FLY",
+      "simulatorDecision": "charged:BRAVE_BIRD",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Fly because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Fly after it uses Fly"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD",
+        "EFFECT-027_STACK_SELF_DEBUFFING_MOVES"
+      ]
+    },
+    {
+      "id": "real-diff-213",
+      "matchup": "mantine_vs_steelix_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:TWISTER",
+      "simulatorDecision": "charged:WATER_PULSE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-224",
+      "matchup": "swampert_vs_mandibuzz",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "farm-down",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:HYDRO_CANNON",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Hydro Cannon because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Hydro Cannon after it uses Hydro Cannon"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-225",
+      "matchup": "aegislash_shield_vs_ninetales_alolan",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:SHADOW_BALL",
+      "simulatorDecision": "charged:GYRO_BALL",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Shadow Ball at turn 22 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-226",
+      "matchup": "bastiodon_vs_registeel",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:STONE_EDGE",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Stone Edge because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Flamethrower after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-230",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_LONG_MATCH_BEST_CYCLE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE"
+      ]
+    },
+    {
+      "id": "real-diff-233",
+      "matchup": "stunfisk_vs_sealeo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:MUD_BOMB",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Mud Bomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Mud Bomb after it uses Mud Bomb",
+        " wants to use Discharge after it uses Mud Bomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-234",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Drill Run after it uses Drill Run",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-235",
+      "matchup": "malamar_shadow_vs_clefable",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "immediate-lethal",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:FOUL_PLAY",
+      "simulatorDecision": "charged:SUPER_POWER",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " opponent has energy to use Moonblast and it would do 165 damage. I have 2 turn(s) to live, opponent has 66"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-238",
+      "matchup": "pelipper_vs_stunfisk",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:WEATHER_BALL_WATER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Weather Ball (Water) because it wants to bait"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-240",
+      "matchup": "morpeko_full_belly_vs_empoleon_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "charged:PSYCHIC_FANGS",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Psychic Fangs because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Aura Wheel after it uses Psychic Fangs"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-246",
+      "matchup": "altaria_shadow_vs_dusclops_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:SKY_ATTACK",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_FORCED_THROW_TURNS_TO_LIVE",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " opponent has energy to use Ice Punch and it would do 97 damage. I have 1 turn(s) to live, opponent has 70",
+        " has 1 turns to live",
+        " uses Sky Attack at turn 24 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-248",
+      "matchup": "quagsire_shadow_vs_ninetales_alolan_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "farm-down",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:AQUA_TAIL",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Aqua Tail at turn 36 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-251",
+      "matchup": "forretress_vs_altaria",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:SAND_TOMB",
+      "simulatorDecision": "charged:ROCK_TOMB",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Sand Tomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Sand Tomb after it uses Sand Tomb",
+        " wants to use Rock Tomb after it uses Sand Tomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-258",
+      "matchup": "clodsire_vs_mantine",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:EARTHQUAKE",
+      "simulatorDecision": "charged:STONE_EDGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Earthquake because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Stone Edge after it uses Earthquake",
+        " wants to use Stone Edge after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-264",
+      "matchup": "guzzlord_vs_corsola_galarian",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:BRUTAL_SWING",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_LONG_MATCH_BEST_CYCLE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE"
+      ]
+    },
+    {
+      "id": "real-diff-283",
+      "matchup": "dusclops_vs_swampert_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "immediate-lethal",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:ICE_PUNCH",
+      "simulatorDecision": "charged:SHADOW_PUNCH",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_IMMEDIATE_LETHAL",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS"
+      ]
+    },
+    {
+      "id": "real-diff-293",
+      "matchup": "mantine_vs_steelix_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:TWISTER",
+      "simulatorDecision": "charged:WATER_PULSE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-299",
+      "matchup": "charjabug_vs_fearow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:X_SCISSOR",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses X-Scissor at turn 26 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-305",
+      "matchup": "aegislash_shield_vs_ninetales_alolan",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:SHADOW_BALL",
+      "simulatorDecision": "charged:GYRO_BALL",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Shadow Ball because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Gyro Ball after it uses Shadow Ball"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-306",
+      "matchup": "bastiodon_vs_registeel",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:STONE_EDGE",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Stone Edge because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Flamethrower after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-310",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-314",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Drill Run after it uses Drill Run",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-315",
+      "matchup": "malamar_shadow_vs_clefable",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "end-game",
+        "shields-down",
+        "forced-throw"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:SUPER_POWER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " has 4 turns to live",
+        " is optimizing move timing"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-335",
+      "matchup": "corsola_galarian_vs_umbreon",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:NIGHT_SHADE",
+      "simulatorDecision": "charged:POWER_GEM",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Night Shade because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Night Shade after it uses Night Shade",
+        " wants to use Power Gem after it uses Night Shade"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-346",
+      "matchup": "furret_vs_dragonair_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:SWIFT",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Swift at turn 16 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES"
+      ]
+    },
+    {
+      "id": "real-diff-356",
+      "matchup": "oinkologne_female_vs_corviknight",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "farm-down",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:BODY_SLAM",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_KO_OR_FARM_DOWN",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " will force throw a boost move",
+        " uses Body Slam at turn 36 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-367",
+      "matchup": "wigglytuff_vs_feraligatr",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "immediate-lethal",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:ICY_WIND",
+      "simulatorDecision": "charged:SWIFT",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_IMMEDIATE_LETHAL",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS"
+      ]
+    },
+    {
+      "id": "real-diff-369",
+      "matchup": "dusclops_shadow_vs_sableye_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:ICE_PUNCH",
+      "simulatorDecision": "charged:SHADOW_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " has Infinity turns to live",
+        " uses Ice Punch because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Ice Punch after it uses Ice Punch"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-374",
+      "matchup": "talonflame_shadow_vs_aegislash_shield",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:FLY",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_BUILD_TO_REPRESENTED_NUKE",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Fly because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Flame Charge after it uses Fly",
+        " wants to use Flame Charge after it uses Flame Charge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE"
+      ]
+    },
+    {
+      "id": "real-diff-388",
+      "matchup": "swampert_shadow_vs_tinkaton",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "bait-enabled",
+        "shields-up",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:HYDRO_CANNON",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Hydro Cannon because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Earthquake after it uses Hydro Cannon",
+        " wants to use Hydro Cannon after it uses Earthquake"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-390",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:EARTHQUAKE",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-394",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-398",
+      "matchup": "pelipper_vs_stunfisk",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:WEATHER_BALL_WATER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Weather Ball (Water) because it wants to bait"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-399",
+      "matchup": "melmetal_vs_morpeko_full_belly",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "end-game",
+        "shields-down",
+        "forced-throw"
+      ],
+      "pvpokeDecision": "charged:DOUBLE_IRON_BASH",
+      "simulatorDecision": "charged:DYNAMIC_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " uses Double Iron Bash because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Double Iron Bash after it uses Double Iron Bash"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-407",
+      "matchup": "empoleon_shadow_vs_dewgong",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:HYDRO_CANNON",
+      "simulatorDecision": "charged:DRILL_PECK",
+      "pvpokePath": "PVPOKE_FORCED_THROW_TURNS_TO_LIVE",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " opponent has energy to use Drill Run and it would do 77 damage. I have 2 turn(s) to live, opponent has 70",
+        " has 2 turns to live",
+        " uses Hydro Cannon at turn 26 because it KO's or it wants to farm down afterwards"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-438",
+      "matchup": "sealeo_vs_medicham",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:SURF",
+      "simulatorDecision": "charged:BODY_SLAM",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " opponent has energy to use Dynamic Punch and it would do 107 damage. I have 1 turn(s) to live, opponent has 72",
+        " opponent has energy to use Dynamic Punch and it would do 107 damage. I have 2 turn(s) to live, opponent has 81",
+        " uses Surf because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Body Slam after it uses Surf",
+        " wants to use Body Slam after it uses Body Slam"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-450",
+      "matchup": "moltres_galarian_vs_sliggoo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:FLY",
+      "simulatorDecision": "charged:BRAVE_BIRD",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Fly because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Fly after it uses Fly"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD",
+        "EFFECT-027_STACK_SELF_DEBUFFING_MOVES"
+      ]
+    },
+    {
+      "id": "real-diff-453",
+      "matchup": "mantine_vs_steelix_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:TWISTER",
+      "simulatorDecision": "charged:WATER_PULSE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-460",
+      "matchup": "drapion_shadow_vs_kingdra_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "bait-enabled",
+        "shields-up",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:AQUA_TAIL",
+      "simulatorDecision": "charged:CRUNCH",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-464",
+      "matchup": "swampert_vs_mandibuzz",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "farm-down",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:HYDRO_CANNON",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Hydro Cannon because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Hydro Cannon after it uses Hydro Cannon"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-465",
+      "matchup": "aegislash_shield_vs_ninetales_alolan",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:SHADOW_BALL",
+      "simulatorDecision": "charged:GYRO_BALL",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Shadow Ball because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Shadow Ball after it uses Shadow Ball",
+        " wants to use Gyro Ball after it uses Shadow Ball"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-466",
+      "matchup": "bastiodon_vs_registeel",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:STONE_EDGE",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Stone Edge because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Flamethrower after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-470",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_LONG_MATCH_BEST_CYCLE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE"
+      ]
+    },
+    {
+      "id": "real-diff-473",
+      "matchup": "stunfisk_vs_sealeo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:MUD_BOMB",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Mud Bomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Mud Bomb after it uses Mud Bomb",
+        " wants to use Discharge after it uses Mud Bomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-478",
+      "matchup": "pelipper_vs_stunfisk",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:WEATHER_BALL_WATER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Weather Ball (Water) because it wants to bait"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-479",
+      "matchup": "melmetal_vs_morpeko_full_belly",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:DOUBLE_IRON_BASH",
+      "simulatorDecision": "charged:DYNAMIC_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Double Iron Bash because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Double Iron Bash after it uses Double Iron Bash",
+        " wants to use Double Iron Bash after it uses Double Iron Bash"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-480",
+      "matchup": "morpeko_full_belly_vs_empoleon_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "charged:PSYCHIC_FANGS",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Psychic Fangs because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Aura Wheel after it uses Psychic Fangs"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-504",
+      "matchup": "guzzlord_vs_corsola_galarian",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:BRUTAL_SWING",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_LONG_MATCH_BEST_CYCLE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE"
+      ]
+    },
+    {
+      "id": "real-diff-523",
+      "matchup": "dusclops_vs_swampert_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "immediate-lethal",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:ICE_PUNCH",
+      "simulatorDecision": "charged:SHADOW_PUNCH",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_IMMEDIATE_LETHAL",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS"
+      ]
+    },
+    {
+      "id": "real-diff-530",
+      "matchup": "moltres_galarian_vs_sliggoo",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "mid-battle",
+        "energy-lead",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:FLY",
+      "pvpokePath": "PVPOKE_SELF_DEBUFF_STACK_OR_WAIT",
+      "simulatorPath": "SIM_SELF_DEBUFF_POLICY",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " doesn't use Brave Bird because it wants to minimize time debuffed and it can stack the move 1 times"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+      ]
+    },
+    {
+      "id": "real-diff-533",
+      "matchup": "mantine_vs_steelix_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:TWISTER",
+      "simulatorDecision": "charged:WATER_PULSE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-539",
+      "matchup": "charjabug_vs_fearow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:X_SCISSOR",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses X-Scissor because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Discharge after it uses X-Scissor"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-540",
+      "matchup": "drapion_shadow_vs_kingdra_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "long-match",
+        "battle-start"
+      ],
+      "pvpokeDecision": "charged:AQUA_TAIL",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE"
+      ]
+    },
+    {
+      "id": "real-diff-545",
+      "matchup": "aegislash_shield_vs_ninetales_alolan",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:SHADOW_BALL",
+      "simulatorDecision": "charged:GYRO_BALL",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Shadow Ball because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Shadow Ball after it uses Shadow Ball",
+        " wants to use Gyro Ball after it uses Shadow Ball"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-546",
+      "matchup": "bastiodon_vs_registeel",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:STONE_EDGE",
+      "simulatorDecision": "charged:FLAMETHROWER",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Stone Edge because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Flamethrower after it uses Stone Edge"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-550",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-555",
+      "matchup": "malamar_shadow_vs_clefable",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "end-game",
+        "shields-down",
+        "forced-throw"
+      ],
+      "pvpokeDecision": "fast_move",
+      "simulatorDecision": "charged:SUPER_POWER",
+      "pvpokePath": "PVPOKE_RETURN_UNDEFINED_FAST_OR_WAIT",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "PvPoke builds/farms/waits; simulator spends energy immediately.",
+      "pvpokeLog": [
+        " has 4 turns to live",
+        " is optimizing move timing"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-563",
+      "matchup": "tinkaton_vs_lapras",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "buff",
+        "debuff",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:BULLDOZE",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_IMMEDIATE_DAMAGE_ORDERING",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Bulldoze because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Bulldoze after it uses Bulldoze",
+        " wants to use Gigaton Hammer after it uses Bulldoze"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+        "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"
+      ]
+    },
+    {
+      "id": "real-diff-574",
+      "matchup": "forretress_shadow_vs_corviknight_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:SAND_TOMB",
+      "simulatorDecision": "charged:ROCK_TOMB",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Sand Tomb because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Rock Tomb after it uses Sand Tomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-607",
+      "matchup": "wigglytuff_vs_feraligatr",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "immediate-lethal",
+        "end-game"
+      ],
+      "pvpokeDecision": "charged:ICY_WIND",
+      "simulatorDecision": "charged:SWIFT",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_IMMEDIATE_LETHAL",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
+        "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS"
+      ]
+    },
+    {
+      "id": "real-diff-609",
+      "matchup": "dusclops_shadow_vs_sableye_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:ICE_PUNCH",
+      "simulatorDecision": "charged:SHADOW_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " has Infinity turns to live",
+        " uses Ice Punch because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Shadow Punch after it uses Ice Punch",
+        " wants to use Shadow Punch after it uses Shadow Punch"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-617",
+      "matchup": "malamar_vs_altaria_shadow",
+      "classification": "PVPOKE_ACTION_DIFFERENCE",
+      "categories": [
+        "timing",
+        "different-fast-duration"
+      ],
+      "pvpokeDecision": "charged:FOUL_PLAY",
+      "simulatorDecision": "fast_move",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "PvPoke throws now; simulator delays/builds/farms.",
+      "pvpokeLog": [
+        " uses Foul Play because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Foul Play after it uses Foul Play"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "EFFECT-027_STACK_SELF_DEBUFFING_MOVES",
+        "ROUTE-026_BUILD_TO_SELECTED_MOVE"
+      ]
+    },
+    {
+      "id": "real-diff-630",
+      "matchup": "stunfisk_galarian_vs_jumpluff",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "cmp",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:EARTHQUAKE",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_UNKNOWN_BRANCH",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-633",
+      "matchup": "stunfisk_vs_sealeo",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "self-debuffing-moves",
+        "shields"
+      ],
+      "pvpokeDecision": "charged:MUD_BOMB",
+      "simulatorDecision": "charged:DISCHARGE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Mud Bomb because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Mud Bomb after it uses Mud Bomb",
+        " wants to use Discharge after it uses Mud Bomb"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    },
+    {
+      "id": "real-diff-634",
+      "matchup": "dunsparce_vs_lapras_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "pending-fast",
+        "timing"
+      ],
+      "pvpokeDecision": "charged:DRILL_RUN",
+      "simulatorDecision": "charged:ROCK_SLIDE",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Drill Run because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Rock Slide after it uses Drill Run"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"
+      ]
+    },
+    {
+      "id": "real-diff-639",
+      "matchup": "melmetal_vs_morpeko_full_belly",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "end-game",
+        "shields-down",
+        "forced-throw"
+      ],
+      "pvpokeDecision": "charged:DOUBLE_IRON_BASH",
+      "simulatorDecision": "charged:DYNAMIC_PUNCH",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_FORCED_THROW_BEFORE_FAST_FAINT",
+      "difference": "Same action family, different charged-move ordering criteria.",
+      "pvpokeLog": [
+        " uses Double Iron Bash because it thinks that using 1 moves afterwards is the best plan.",
+        " wants to use Double Iron Bash after it uses Double Iron Bash"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"
+      ]
+    },
+    {
+      "id": "real-diff-640",
+      "matchup": "morpeko_full_belly_vs_empoleon_shadow",
+      "classification": "MOVE_ID_DIFFERENCE",
+      "categories": [
+        "bait-enabled",
+        "shields-up",
+        "mid-battle"
+      ],
+      "pvpokeDecision": "charged:AURA_WHEEL_ELECTRIC",
+      "simulatorDecision": "charged:PSYCHIC_FANGS",
+      "pvpokePath": "PVPOKE_DP_ORDERED_SEQUENCE",
+      "simulatorPath": "SIM_COMPACT_DP_ROUTE",
+      "difference": "Same DP area, different route ordering/tie-break/post-processing.",
+      "pvpokeLog": [
+        " uses Aura Wheel because it thinks that using 2 moves afterwards is the best plan.",
+        " wants to use Psychic Fangs after it uses Aura Wheel",
+        " wants to use Psychic Fangs after it uses Psychic Fangs"
+      ],
+      "simulatorPrinciples": [
+        "ROUTE-004_CHARGED_READINESS_CALCULATION",
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+        "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION",
+        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+        "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+        "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+        "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS",
+        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT",
+        "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+        "SEARCH-035_PRUNE_DOMINATED_STATES",
+        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE"
+      ]
+    }
+  ]
+}
