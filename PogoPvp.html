@@ -129,7 +129,98 @@
       background-attachment: fixed;
       color: var(--ink);
     }
+    .pokemon-arena-bg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: min(72vw, 1150px);
+      height: min(72vw, 1150px);
+      transform:
+        translate(-50%, -48%)
+        rotateX(60deg)
+        rotateZ(-45deg);
+      transform-style: preserve-3d;
+      border: 8px solid rgba(255, 255, 255, .9);
+      border-radius: 42px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .52) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(255, 255, 255, .62) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(247, 249, 252, .96), rgba(228, 233, 241, .92));
+      box-shadow:
+        0 45px 100px rgba(15, 23, 42, .12),
+        0 20px 0 rgba(126, 144, 164, .12),
+        inset 0 0 0 2px rgba(148, 163, 184, .12);
+      opacity: .74;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pokemon-arena-bg::before {
+      content: "";
+      position: absolute;
+      inset: 27%;
+      border: 6px solid rgba(255, 255, 255, .68);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(255, 255, 255, .34) 43% 45%, transparent 46%);
+      box-shadow:
+        0 0 0 2px rgba(148, 163, 184, .08),
+        inset 0 0 32px rgba(255, 255, 255, .24);
+    }
+    .pokemon-arena-bg::after {
+      content: "";
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      top: calc(50% - 3px);
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .62);
+      box-shadow: 0 1px 0 rgba(148, 163, 184, .12);
+    }
+    body[data-theme="dark"] .pokemon-arena-bg {
+      border-color: rgba(226, 235, 244, .18);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(226, 235, 244, .18) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(226, 235, 244, .22) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(35, 48, 64, .78), rgba(20, 29, 42, .72));
+      box-shadow:
+        0 45px 100px rgba(0, 0, 0, .22),
+        0 20px 0 rgba(0, 0, 0, .12),
+        inset 0 0 0 2px rgba(226, 235, 244, .07);
+      opacity: .52;
+    }
+    body[data-theme="dark"] .pokemon-arena-bg::before {
+      border-color: rgba(226, 235, 244, .22);
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(226, 235, 244, .14) 43% 45%, transparent 46%);
+    }
+    body[data-theme="dark"] .pokemon-arena-bg::after {
+      background: rgba(226, 235, 244, .22);
+    }
+    body[data-theme="neo"] .pokemon-arena-bg {
+      border-color: rgba(0, 228, 255, .18);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(0, 228, 255, .12) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(0, 228, 255, .18) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(14, 30, 46, .74), rgba(11, 15, 28, .70));
+      box-shadow:
+        0 45px 100px rgba(0, 0, 0, .24),
+        0 0 54px rgba(0, 228, 255, .08),
+        0 20px 0 rgba(0, 228, 255, .06),
+        inset 0 0 0 2px rgba(0, 228, 255, .08);
+      opacity: .46;
+    }
+    body[data-theme="neo"] .pokemon-arena-bg::before {
+      border-color: rgba(0, 228, 255, .20);
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(0, 228, 255, .10) 43% 45%, transparent 46%);
+    }
+    body[data-theme="neo"] .pokemon-arena-bg::after {
+      background: rgba(0, 228, 255, .18);
+    }
     header {
+      position: relative;
+      z-index: 10;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -187,7 +278,7 @@
       background: var(--accent);
       color: #07131c;
     }
-    main { padding: 16px; display: grid; gap: 14px; }
+    main { position: relative; z-index: 1; padding: 16px; display: grid; gap: 14px; }
     .app-view {
       display: grid;
       gap: 14px;
@@ -6296,7 +6387,38 @@
       }
     }
 
+    @media (min-width: 1400px) {
+      .pokemon-arena-bg {
+        width: min(70vw, 1220px);
+        height: min(70vw, 1220px);
+        transform:
+          translate(-50%, -47%)
+          rotateX(60deg)
+          rotateZ(-45deg);
+        opacity: .72;
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1399px) {
+      .pokemon-arena-bg {
+        width: clamp(760px, 70vw, 980px);
+        height: clamp(760px, 70vw, 980px);
+        opacity: .64;
+      }
+    }
+
     @media (max-width: 900px) {
+      .pokemon-arena-bg {
+        width: 920px;
+        height: 920px;
+        top: 52%;
+        opacity: .32;
+        transform:
+          translate(-50%, -50%)
+          rotateX(58deg)
+          rotateZ(-45deg)
+          scale(.78);
+      }
       header {
         align-items: stretch;
         flex-direction: column;
@@ -8232,6 +8354,7 @@
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
+  <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
     <div class="mobile-header-actions" aria-label="Simulator controls">
