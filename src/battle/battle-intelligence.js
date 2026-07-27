@@ -834,9 +834,11 @@ function createPvPeakBattleIntelligenceApi() {
         side,
         actor,
         opponent,
+        opponentMoves,
         moves,
         fast,
-        chargedCandidates
+        chargedCandidates,
+        context
       });
       if (safeBuild?.candidate) {
         triggered.push(
@@ -1167,7 +1169,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeSafeOneFastBuildToLethal({ state, side, actor, opponent, moves, fast, chargedCandidates }) {
+  function pvpokeSafeOneFastBuildToLethal({ state, side, actor, opponent, opponentMoves, moves, fast, chargedCandidates, context }) {
     if (!fast || numeric(opponent.shields) > 0) return null;
     const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
     const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
@@ -1178,17 +1180,29 @@ function createPvPeakBattleIntelligenceApi() {
     const pendingDamage = pendingDamageThrough(state, side, readyTurn);
     if (numeric(actor.hp) <= pendingDamage) return null;
 
-    const opponentReadyTurn = Math.max(numeric(state?.currentTurn), numeric(opponent.readyTurn));
+    const opponentThreat = pvpokeOpponentChargedThreatTurn({
+      state,
+      side,
+      actor,
+      opponent,
+      opponentMoves,
+      throughTurn: readyTurn
+    });
+    const opponentReadyTurn = opponentThreat?.readyTurn ?? Infinity;
     const actorWinsCmp = numeric(actor.attack) >= numeric(opponent.attack);
     if (opponentReadyTurn < readyTurn) return null;
     if (opponentReadyTurn === readyTurn && !actorWinsCmp) return null;
 
-    const fastDamage = Math.max(0, numeric(actor.fastMove?.damage));
+    const fastDamage = Math.max(0, numeric(
+      typeof context?.estimateFastDamage === "function"
+        ? context.estimateFastDamage("actor")
+        : actor.fastMove?.damage ?? actor.fastMove?.power
+    ));
     const lethalMove = (moves || [])
       .filter(move =>
-        numeric(actor.energy) < move.energyCost
-        && projectedEnergy >= move.energyCost
+        projectedEnergy >= move.energyCost
         && !move.selfDebuffing
+        && (numeric(actor.energy) < move.energyCost || move.damage < numeric(opponent.hp))
         && move.damage + fastDamage >= numeric(opponent.hp)
       )
       .sort((a, b) =>
@@ -1207,12 +1221,37 @@ function createPvPeakBattleIntelligenceApi() {
         readyTurn,
         opponentReadyTurn,
         actorWinsCmp,
+        opponentThreatMoveId: opponentThreat?.moveId || null,
         damage: lethalMove.damage,
         fastDamage,
         opponentHp: opponent.hp,
         pendingDamage
       }
     };
+  }
+
+  function pvpokeOpponentChargedThreatTurn({ state, side, actor, opponent, opponentMoves, throughTurn }) {
+    const stateTurn = numeric(state?.currentTurn);
+    const opponentFastTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const opponentFastGain = Math.max(0, numeric(opponent.fastMove?.energyGain));
+    const actorHp = numeric(actor.hp) - pendingDamageThrough(state, side, throughTurn);
+    let best = null;
+    for (const move of opponentMoves || []) {
+      if (move.damage < actorHp) continue;
+      const cost = move.energyCost;
+      const missing = Math.max(0, cost - numeric(opponent.energy));
+      const fastCount = missing <= 0 ? 0 : opponentFastGain > 0 ? Math.ceil(missing / opponentFastGain) : Infinity;
+      if (!Number.isFinite(fastCount)) continue;
+      const readyTurn = Math.max(stateTurn, numeric(opponent.readyTurn)) + fastCount * opponentFastTurns;
+      if (readyTurn > throughTurn) continue;
+      const candidate = { moveId: move.id, readyTurn, damage: move.damage, fastCount };
+      if (!best
+        || candidate.readyTurn < best.readyTurn
+        || (candidate.readyTurn === best.readyTurn && candidate.damage > best.damage)) {
+        best = candidate;
+      }
+    }
+    return best;
   }
 
   function pvpokeBestForcedImpactMove({ actor, opponent, moves, chargedCandidates }) {
