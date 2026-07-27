@@ -227,8 +227,15 @@
       if (!chosen || !effect) return;
       const alternatives = (decision.candidates || []).filter(candidate => candidate?.moveId && candidate.moveId !== chosen.moveId);
       const alternate = bestComparableAlternative(alternatives);
-      const comparison = compareCandidates(chosen, alternate);
-      if (!comparison.measurable || !comparison.meaningful) return;
+      const projectedComparison = compareCandidates(chosen, alternate);
+      const directPrincipleEvidence = decisionHasPrinciple(
+        decision,
+        "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"
+      );
+      if ((!projectedComparison.measurable || !projectedComparison.meaningful) && !directPrincipleEvidence) return;
+      const comparison = directPrincipleEvidence
+        ? principleOwnedComparison(projectedComparison, "guaranteed-effect")
+        : projectedComparison;
       const side = normalizeSide(decision.side);
       findings.push({
         side,
@@ -279,8 +286,17 @@
       });
       const earlyMove = bestComparableAlternative(selfDebuffCandidates);
       if (!earlyMove) return;
-      const comparison = compareCandidates(chosen, earlyMove);
-      if (!comparison.measurable || !comparison.meaningful) return;
+      const projectedComparison = compareCandidates(chosen, earlyMove);
+      const directPrincipleEvidence = decision.reasonCode === "AVOID_EARLY_SELF_DEBUFF"
+        && [
+          "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE",
+          "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY",
+          "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES"
+        ].some(principleId => decisionHasPrinciple(decision, principleId));
+      if ((!projectedComparison.measurable || !projectedComparison.meaningful) && !directPrincipleEvidence) return;
+      const comparison = directPrincipleEvidence
+        ? principleOwnedComparison(projectedComparison, "self-debuff-delay")
+        : projectedComparison;
       const laterDecision = context.decisions.slice(index + 1).find(item => item.side === decision.side && item.chosenCandidate?.moveId === earlyMove.moveId);
       const side = normalizeSide(decision.side);
       const effect = parseStatEffects(earlyMove.statEffects).find(item => item.target === "self" && item.stages < 0);
@@ -317,6 +333,21 @@
       });
     });
     return findings;
+  }
+
+  function decisionHasPrinciple(decision, principleId) {
+    return (decision?.principleIds || decision?.principlesTriggered || []).includes(principleId);
+  }
+
+  function principleOwnedComparison(projectedComparison = {}, relevance) {
+    return {
+      ...projectedComparison,
+      measurable: true,
+      meaningful: true,
+      principleOwned: true,
+      relevance: projectedComparison.relevance || `principle-owned:${relevance}`,
+      changesOutcome: projectedComparison.changesOutcome === true
+    };
   }
 
   function detectExtraFastMoveFlip(context) {
@@ -535,6 +566,9 @@
 
   function confidenceForComparison(context, comparison) {
     if (context.stale) return { level: "low", reasons: ["source result is stale"] };
+    if (comparison.principleOwned) {
+      return { level: "high", reasons: ["deterministic effect is owned and evidenced directly by the Principle Engine"] };
+    }
     if (comparison.changesOutcome || comparison.ratingDelta !== null) {
       return { level: "high", reasons: ["deterministic effect compared across complete projected continuations"] };
     }

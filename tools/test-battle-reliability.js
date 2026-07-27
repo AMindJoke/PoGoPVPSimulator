@@ -37,6 +37,16 @@ function simulate(runtime, testCase, trace) {
   });
 }
 
+function semanticTrace(trace) {
+  const copy = JSON.parse(JSON.stringify(trace));
+  delete copy.intelligencePerformance;
+  delete copy.hybridPerformance;
+  delete copy.intelligenceStats;
+  delete copy.hybridStats;
+  delete copy.intelligenceAudit;
+  return copy;
+}
+
 function testTrace(runtime, fixture) {
   const testCase = fixture.cases[0];
   const withoutTrace = simulate(runtime, testCase, false);
@@ -44,12 +54,24 @@ function testTrace(runtime, fixture) {
   const tracedB = simulate(runtime, testCase, true);
   assert.strictEqual(withoutTrace.decisionTrace, undefined, "Trace must be disabled by default.");
   assert.strictEqual(withoutTrace.score, tracedA.score, "Tracing must not change the battle score.");
-  assert.deepStrictEqual(tracedA.decisionTrace, tracedB.decisionTrace, "Trace output must be deterministic.");
+  assert.deepStrictEqual(semanticTrace(tracedA.decisionTrace), semanticTrace(tracedB.decisionTrace), "Semantic trace output must be deterministic.");
   assert.strictEqual(tracedA.decisionTrace.engineVersion, BATTLE_ENGINE_VERSION);
   assert.strictEqual(validateTrace(tracedA.decisionTrace).length, 0);
   assert(tracedA.decisionTrace.decisions.length > 0);
   assert(tracedA.decisionTrace.decisions.every(decision => REASON_CODES.includes(decision.reasonCode)));
+  assert(tracedA.decisionTrace.decisions.every(decision => decision.decisionId));
+  assert(Array.isArray(tracedA.decisionTrace.actions));
+  assert(tracedA.decisionTrace.actions.length > 0, "Automatic actions must expose their canonical lifecycle.");
+  assert(tracedA.decisionTrace.actions.every(action => ["RESOLVED", "INVALIDATED"].includes(action.status)));
+  assert(Array.isArray(tracedA.decisionTrace.timelineActions));
+  assert(tracedA.decisionTrace.timelineActions.length > 0);
+  assert(tracedA.decisionTrace.timelineActions.every(event => event.timelineEventId && event.resolvedActionId));
   assert(Array.isArray(tracedA.decisionTrace.shieldCounterfactuals));
+  assert.strictEqual(
+    tracedA.decisionTrace.shieldCounterfactuals.length,
+    0,
+    "Tracing alone must not enable shield counterfactual policy."
+  );
   assert(Array.isArray(tracedA.decisionTrace.terminalSnapshots));
   assert(tracedA.decisionTrace.terminalSnapshots.length > 0, "A completed battle must expose a terminal snapshot.");
 }
@@ -206,4 +228,4 @@ function run() {
 
 if (require.main === module) run();
 
-module.exports = { run };
+module.exports = { run, testTrace };

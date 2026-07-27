@@ -35,13 +35,18 @@ current evaluator rejects a timing branch when it would:
 - allow a lethal opposing Fast Move;
 - exceed the 100 Energy cap;
 - ignore an immediate unshielded lethal Charged Move;
-- leave a zero-shield user exposed to an already-ready opposing Charged Move;
+- leave a zero-shield user exposed to an opposing Charged Move that is
+  canonically lethal after the proposed Fast Move;
 - run outside the opponent Fast Move alignment window; or
 - exceed two reconsidered Fast Moves in the same timing window.
 
 This prevents a Fast Move from being considered free merely because the actor
 survives it. The canonical state includes both Fast durations, ready turns, and
 pending Fast Move impacts.
+
+A cooldown offset alone is not an active Fast Move. The
+`currentTimingOptimal` gate requires a real pending opponent Fast impact whose
+resolution turn matches the timing window.
 
 ## Continuation comparison
 
@@ -92,6 +97,10 @@ Relevant reason codes are:
 - `THROW_NOW_PREVENTS_OPPONENT_CHARGE`
 - `TIMING_CONTINUATION_FLIP`
 - `ENERGY_CAP_FORCES_THROW`
+- `LETHAL_CHARGED_CONCEDED`
+- `FAINTS_WHILE_WAITING`
+- `CONCEDES_FAST_MOVE`
+- `DENIES_FAST_MOVE`
 
 ## Regression fixture
 

@@ -115,6 +115,20 @@
         "requiredReasonCodes": ["SHIELD_PRESERVES_WIN_CONDITION"]
       },
       "notes": "Protects sequence-aware shielding before a guaranteed defensive boost without hardcoding either Pokemon in the planner."
+    },
+    {
+      "id": "shadow-quagsire-galarian-corsola-default-0s",
+      "description": "Shadow Quagsire should throw Mud Bomb when the current charged sequence wins the default-IV no-shield matchup.",
+      "category": ["charged-move-choice", "timing", "energy-management"],
+      "league": "great",
+      "pokemonA": { "id": "quagsire_shadow", "moves": { "fast": "MUD_SHOT", "charged": ["AQUA_TAIL", "MUD_BOMB"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "pokemonB": { "id": "corsola_galarian", "moves": { "fast": "ASTONISH", "charged": ["NIGHT_SHADE", "POWER_GEM"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "chargedMoveSequence": { "side": "A", "moves": ["MUD_BOMB", "AQUA_TAIL", "AQUA_TAIL"] }
+      },
+      "notes": "Regression for local timing pressure overriding a later full charged-sequence win."
     }
   ]
 }

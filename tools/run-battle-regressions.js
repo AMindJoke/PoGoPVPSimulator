@@ -124,6 +124,7 @@ function runRegressionCase(testCase, runtime, sequence = 1, options = {}) {
     bShields: Number(testCase.pokemonB.shields || 0),
     includeSwing: false,
     debugChargedDecisions: false,
+    debugTimeline: true,
     trace: options.trace !== false,
     config
   });
@@ -173,6 +174,13 @@ function evaluateExpectations(testCase, result, tacticalSummary = null) {
     const actualMove = selectedMoveAtDecision(trace, expectations.selectedMoveAtDecision);
     if (actualMove !== expectations.selectedMoveAtDecision.moveId) {
       failures.push(`Expected ${expectations.selectedMoveAtDecision.moveId} at ${decisionLabel(expectations.selectedMoveAtDecision)}; actual ${actualMove || "none"}.`);
+    }
+  }
+  if (expectations.chargedMoveSequence) {
+    const actualSequence = chargedMoveSequence(result, expectations.chargedMoveSequence.side);
+    const expectedSequence = expectations.chargedMoveSequence.moves || [];
+    if (actualSequence.join(",") !== expectedSequence.join(",")) {
+      failures.push(`Expected ${expectations.chargedMoveSequence.side} Charged sequence ${expectedSequence.join(" -> ")}; actual ${actualSequence.join(" -> ") || "none"}.`);
     }
   }
   if (expectations.forbiddenMoveAtDecision) {
@@ -230,6 +238,13 @@ function selectedShieldAtDecision(trace, expected) {
     decision.chosenCandidate?.action
   );
   return decisions[Number(expected.occurrence || 0)]?.chosenCandidate?.action || null;
+}
+
+function chargedMoveSequence(result, side) {
+  return (result?.timelineTrace || [])
+    .filter(event => event.trainer === side && event.kind === "charge")
+    .map(event => event.moveId)
+    .filter(Boolean);
 }
 
 function shieldDecisionLabel(expected) {

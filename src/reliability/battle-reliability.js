@@ -5,8 +5,8 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakBattleReliability = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
-  const BATTLE_ENGINE_VERSION = "battle-planner-v17";
-  const TRACE_SCHEMA_VERSION = 1;
+  const BATTLE_ENGINE_VERSION = "battle-planner-v23";
+  const TRACE_SCHEMA_VERSION = 2;
   const REGRESSION_SCHEMA_VERSION = 1;
 
   const REASON_CODES = Object.freeze([
@@ -16,9 +16,22 @@
     "SAFE_EXTRA_FAST",
     "DELAY_REACHES_ADDITIONAL_CHARGE",
     "AVOID_ENERGY_STRANDING",
+    "ENERGY_PRESERVATION",
     "THROW_NOW_PREVENTS_OPPONENT_CHARGE",
     "TIMING_CONTINUATION_FLIP",
     "ENERGY_CAP_FORCES_THROW",
+    "FAST_DEFAULT",
+    "FORCED_THROW_BEFORE_FAINT",
+    "PENDING_FAST_LETHAL",
+    "FARM_DOWN_ROUTE",
+    "BOUNDED_OFFENSIVE_ROUTE",
+    "AMBIGUOUS_DEEP_SEARCH",
+    "CONCEDES_FAST_MOVE",
+    "DENIES_FAST_MOVE",
+    "IMMEDIATE_LETHAL_LOST",
+    "OPPONENT_CHARGED_REACHED",
+    "LETHAL_CHARGED_CONCEDED",
+    "FAINTS_WHILE_WAITING",
     "GUARANTEED_DEFENSE_BUFF_VALUE",
     "GUARANTEED_ATTACK_DEBUFF_VALUE",
     "LETHAL_MOVE_AVAILABLE",
@@ -47,7 +60,41 @@
     "STAT_SURVIVES_EXTRA_FAST",
     "STAT_REACHES_EXTRA_CHARGED",
     "STAT_CMP_CHANGED",
-    "STAT_TERMINAL_LINE_FLIPPED"
+    "STAT_TERMINAL_LINE_FLIPPED",
+    "NO_ACTIVE_CHARGED_MOVE",
+    "CHEAPEST_CHARGED_NOT_AFFORDABLE",
+    "EXPLICIT_FARM_ENERGY_MODE",
+    "CHARGED_READINESS_CALCULATED",
+    "SURVIVAL_HORIZON_ESTIMATED",
+    "TWO_CHEAP_MOVES_OUTRANK_NUKE",
+    "PENDING_FAST_ALREADY_KOS",
+    "PROTECTION_FORM_BREAKER",
+    "TIMING_TARGET_DERIVED",
+    "SAME_FAST_DURATION_NO_TIMING_GAIN",
+    "EXACT_MULTIPLE_FAST_DURATION_NO_TIMING_GAIN",
+    "CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE",
+    "FAST_DAMAGE_LETHAL_WHILE_WAITING",
+    "LONG_REPEATED_CYCLE_MATCHUP",
+    "BEST_LONG_CYCLE_MOVE",
+    "SHIELD_PRESSURE",
+    "PREFER_NON_DEBUFF_ROUTE",
+    "BUILD_TO_SELECTED_MOVE",
+    "SELF_DEBUFF_STACKING",
+    "COMPACT_ROUTE_GENERATED",
+    "SEARCH_BUDGET_APPLIED",
+    "SEARCH_ORDERED_BY_BREAKPOINT",
+    "GUARANTEED_EFFECT_PROJECTED",
+    "NON_GUARANTEED_EFFECT_NO_PROC_MATRIX",
+    "SHIELDED_CHARGED_CONSUMES_SHIELD",
+    "DOMINATED_STATE_PRUNED",
+    "FEWER_SELF_DEBUFFS_TIE_BREAK",
+    "BUILD_TO_CREDIBLE_NUKE",
+    "BAIT_NOT_CREDIBLE",
+    "AVOID_SELF_DEBUFFING_BAIT",
+    "CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE",
+    "SHIELD_POLICY_NO_FIRST",
+    "SHIELD_PRESERVES_CHARGED_THREAT",
+    "NO_SHIELD_AVAILABLE"
   ]);
 
   const BUG_CATEGORIES = Object.freeze([
@@ -114,6 +161,8 @@
     if (trace.schemaVersion !== TRACE_SCHEMA_VERSION) errors.push("Unsupported trace schema version.");
     if (!trace.engineVersion) errors.push("Trace engineVersion is required.");
     if (!Array.isArray(trace.decisions)) errors.push("Trace decisions must be an array.");
+    if (!Array.isArray(trace.actions)) errors.push("Trace actions must be an array.");
+    if (!Array.isArray(trace.timelineActions)) errors.push("Trace timelineActions must be an array.");
     if (trace.shieldCounterfactuals !== undefined && !Array.isArray(trace.shieldCounterfactuals)) {
       errors.push("Trace shieldCounterfactuals must be an array when present.");
     }
@@ -128,6 +177,70 @@
       if (!decision.decisionType) errors.push(`Decision ${index} is missing decisionType.`);
       if (!isValidReasonCode(decision.reasonCode)) errors.push(`Decision ${index} has invalid reasonCode ${decision.reasonCode}.`);
       if (!Array.isArray(decision.candidates)) errors.push(`Decision ${index} candidates must be an array.`);
+      if (!decision.decisionId) errors.push(`Decision ${index} is missing decisionId.`);
+    }
+    errors.push(...validateActionTraceContract(trace));
+    return errors;
+  }
+
+  function validateActionTraceContract(trace) {
+    const errors = [];
+    const actions = Array.isArray(trace?.actions) ? trace.actions : [];
+    const timelineActions = Array.isArray(trace?.timelineActions) ? trace.timelineActions : [];
+    const resolvedById = new Map();
+    for (const [index, action] of actions.entries()) {
+      if (!action || typeof action !== "object") {
+        errors.push(`Action ${index} must be an object.`);
+        continue;
+      }
+      for (const field of ["decisionId", "actionIntentId", "queuedActionId", "registeredActionId", "resolvedActionId"]) {
+        if (!action[field]) errors.push(`Action ${index} is missing ${field}.`);
+      }
+      const statuses = (action.statusHistory || []).map(entry => entry?.status);
+      for (const required of ["SELECTED", "QUEUED", "REGISTERED"]) {
+        if (!statuses.includes(required)) errors.push(`Action ${index} is missing ${required} status.`);
+      }
+      if (action.status === "RESOLVED") {
+        if (!statuses.includes("RESOLVED")) errors.push(`Action ${index} is missing RESOLVED status.`);
+        if (!action.stateHashBefore || !action.stateHashAfter) errors.push(`Action ${index} is missing canonical state hashes.`);
+        if (resolvedById.has(action.resolvedActionId)) errors.push(`Duplicate resolvedActionId ${action.resolvedActionId}.`);
+        resolvedById.set(action.resolvedActionId, action);
+      } else if (action.status === "INVALIDATED") {
+        if (!statuses.includes("INVALIDATED")) errors.push(`Action ${index} is missing INVALIDATED status.`);
+        if (!action.invalidationReason) errors.push(`Action ${index} is missing invalidationReason.`);
+      } else {
+        errors.push(`Action ${index} has non-terminal status ${action.status}.`);
+      }
+    }
+    for (const [index, event] of timelineActions.entries()) {
+      if (!event?.timelineEventId) errors.push(`Timeline action ${index} is missing timelineEventId.`);
+      if (!event?.resolvedActionId) {
+        errors.push(`Timeline action ${index} is missing resolvedActionId.`);
+        continue;
+      }
+      const action = resolvedById.get(event.resolvedActionId);
+      if (!action) {
+        errors.push(`Timeline action ${index} has no linked resolved action ${event.resolvedActionId}.`);
+        continue;
+      }
+      const comparableFields = [
+        ["side", String],
+        ["actionType", String],
+        ["moveId", String],
+        ["registrationTurn", Number],
+        ["resolutionTurn", Number],
+        ["energyCost", Number],
+        ["energyGain", Number],
+        ["hpChange", Number]
+      ];
+      for (const [field, normalize] of comparableFields) {
+        if (normalize(event[field] ?? "") !== normalize(action[field] ?? "")) {
+          errors.push(`Timeline action ${index} disagrees with ${event.resolvedActionId} on ${field}.`);
+        }
+      }
+      if (event.timelineEventId !== action.timelineEventId) {
+        errors.push(`Timeline action ${index} disagrees with ${event.resolvedActionId} on timelineEventId.`);
+      }
     }
     return errors;
   }
@@ -154,6 +267,7 @@
     isValidBugCategory,
     createMatchupProvenance,
     validateTrace,
+    validateActionTraceContract,
     validateRegressionCase
   });
 });

@@ -8,6 +8,7 @@
   <script src="pvpoke-default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
   <script src="data/great-league-ranking-details.js"></script>
+  <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
   <script src="src/reliability/battle-reliability.js"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
@@ -25,6 +26,7 @@
   <script src="src/battle/turn-resolution-engine.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
+  <script src="src/battle/battle-principles.js"></script>
   <script src="src/battle/battle-intelligence.js"></script>
   <style>
     :root {
@@ -127,7 +129,98 @@
       background-attachment: fixed;
       color: var(--ink);
     }
+    .pokemon-arena-bg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: min(72vw, 1150px);
+      height: min(72vw, 1150px);
+      transform:
+        translate(-50%, -48%)
+        rotateX(60deg)
+        rotateZ(-45deg);
+      transform-style: preserve-3d;
+      border: 8px solid rgba(255, 255, 255, .9);
+      border-radius: 42px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .52) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(255, 255, 255, .62) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(247, 249, 252, .96), rgba(228, 233, 241, .92));
+      box-shadow:
+        0 45px 100px rgba(15, 23, 42, .12),
+        0 20px 0 rgba(126, 144, 164, .12),
+        inset 0 0 0 2px rgba(148, 163, 184, .12);
+      opacity: .74;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pokemon-arena-bg::before {
+      content: "";
+      position: absolute;
+      inset: 27%;
+      border: 6px solid rgba(255, 255, 255, .68);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(255, 255, 255, .34) 43% 45%, transparent 46%);
+      box-shadow:
+        0 0 0 2px rgba(148, 163, 184, .08),
+        inset 0 0 32px rgba(255, 255, 255, .24);
+    }
+    .pokemon-arena-bg::after {
+      content: "";
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      top: calc(50% - 3px);
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .62);
+      box-shadow: 0 1px 0 rgba(148, 163, 184, .12);
+    }
+    body[data-theme="dark"] .pokemon-arena-bg {
+      border-color: rgba(226, 235, 244, .18);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(226, 235, 244, .18) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(226, 235, 244, .22) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(35, 48, 64, .78), rgba(20, 29, 42, .72));
+      box-shadow:
+        0 45px 100px rgba(0, 0, 0, .22),
+        0 20px 0 rgba(0, 0, 0, .12),
+        inset 0 0 0 2px rgba(226, 235, 244, .07);
+      opacity: .52;
+    }
+    body[data-theme="dark"] .pokemon-arena-bg::before {
+      border-color: rgba(226, 235, 244, .22);
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(226, 235, 244, .14) 43% 45%, transparent 46%);
+    }
+    body[data-theme="dark"] .pokemon-arena-bg::after {
+      background: rgba(226, 235, 244, .22);
+    }
+    body[data-theme="neo"] .pokemon-arena-bg {
+      border-color: rgba(0, 228, 255, .18);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(0, 228, 255, .12) 0 11%, transparent 11.5%),
+        linear-gradient(90deg, transparent calc(50% - 3px), rgba(0, 228, 255, .18) calc(50% - 3px) calc(50% + 3px), transparent calc(50% + 3px)),
+        linear-gradient(135deg, rgba(14, 30, 46, .74), rgba(11, 15, 28, .70));
+      box-shadow:
+        0 45px 100px rgba(0, 0, 0, .24),
+        0 0 54px rgba(0, 228, 255, .08),
+        0 20px 0 rgba(0, 228, 255, .06),
+        inset 0 0 0 2px rgba(0, 228, 255, .08);
+      opacity: .46;
+    }
+    body[data-theme="neo"] .pokemon-arena-bg::before {
+      border-color: rgba(0, 228, 255, .20);
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(0, 228, 255, .10) 43% 45%, transparent 46%);
+    }
+    body[data-theme="neo"] .pokemon-arena-bg::after {
+      background: rgba(0, 228, 255, .18);
+    }
     header {
+      position: relative;
+      z-index: 10;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -185,7 +278,7 @@
       background: var(--accent);
       color: #07131c;
     }
-    main { padding: 16px; display: grid; gap: 14px; }
+    main { position: relative; z-index: 1; padding: 16px; display: grid; gap: 14px; }
     .app-view {
       display: grid;
       gap: 14px;
@@ -6294,7 +6387,38 @@
       }
     }
 
+    @media (min-width: 1400px) {
+      .pokemon-arena-bg {
+        width: min(70vw, 1220px);
+        height: min(70vw, 1220px);
+        transform:
+          translate(-50%, -47%)
+          rotateX(60deg)
+          rotateZ(-45deg);
+        opacity: .72;
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1399px) {
+      .pokemon-arena-bg {
+        width: clamp(760px, 70vw, 980px);
+        height: clamp(760px, 70vw, 980px);
+        opacity: .64;
+      }
+    }
+
     @media (max-width: 900px) {
+      .pokemon-arena-bg {
+        width: 920px;
+        height: 920px;
+        top: 52%;
+        opacity: .32;
+        transform:
+          translate(-50%, -50%)
+          rotateX(58deg)
+          rotateZ(-45deg)
+          scale(.78);
+      }
       header {
         align-items: stretch;
         flex-direction: column;
@@ -8230,6 +8354,7 @@
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
+  <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
     <h1>Pokemon GO PvP Simulator</h1>
     <div class="mobile-header-actions" aria-label="Simulator controls">
@@ -8744,6 +8869,12 @@
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
+    const perfDebug = window.PvPeakPerfDebug || null;
+    const perfDebugEnabled = perfDebug?.enabled === true;
+    let activeBattlePerfRunId = null;
+    let activeBattleStartupSpan = null;
+    const matrixPerfRuns = perfDebugEnabled ? new Map() : null;
+    const perfWorkerRequests = perfDebugEnabled ? new Map() : null;
     let moveMap = new Map();
     let allPokemon = [];
     let visiblePokemon = [];
@@ -8796,6 +8927,8 @@
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
     let matrixComputeWorkerSeq = 0;
+    let matrixComputeWorkerSourceCache = null;
+    const matrixWorkerConfigSignatures = new Set();
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
     const metaMatchupCacheVersion = `meta-v6:${battleEngineVersion}`;
@@ -8803,6 +8936,8 @@
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
     const metaCombatantSignatureCache = new Map();
+    let matrixBattleConfigCache = null;
+    let matrixSignatureCache = null;
     const metaBuildScenarios = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
     let metaBuildQueue = [];
     let metaBuildActive = false;
@@ -8936,9 +9071,62 @@
       [49,.83529999],[49.5,.8378039],[50,.84029999],[50.5,.8428039],[51,.84529999]
     ];
 
+    function beginMatrixPerfRun(signature) {
+      if (!perfDebugEnabled || !signature) return null;
+      let entry = matrixPerfRuns.get(signature);
+      if (entry) return entry;
+      const runId = perfDebug.beginRun("matrix", { signature });
+      entry = { runId, span: perfDebug.startSpan("matrix.generation", runId), requests: 0 };
+      matrixPerfRuns.set(signature, entry);
+      return entry;
+    }
+
+    function finishMatrixPerfRun(signature) {
+      if (!perfDebugEnabled) return;
+      const entry = matrixPerfRuns.get(signature);
+      if (!entry) return;
+      perfDebug.endSpan(entry.span);
+      perfDebug.gauge("matrix.workerRequests", entry.requests, entry.runId);
+      perfDebug.finishRun(entry.runId, { completed: true });
+      matrixPerfRuns.delete(signature);
+    }
+
+    function registerWorkerPerfRequest(id, source, signature) {
+      if (!perfDebugEnabled) return null;
+      const matrixRun = source === "live" ? beginMatrixPerfRun(signature) : null;
+      const runId = matrixRun?.runId || perfDebug.beginRun(source === "meta" ? "meta-cell" : "worker-request", { source, signature });
+      if (matrixRun) matrixRun.requests++;
+      const request = { runId, source, signature, sentAt: performance.now(), standalone: !matrixRun };
+      perfWorkerRequests.set(id, request);
+      return request;
+    }
+
+    function completeWorkerPerfRequest(message) {
+      if (!perfDebugEnabled) return;
+      const request = perfWorkerRequests.get(message.id);
+      if (!request) return;
+      perfWorkerRequests.delete(message.id);
+      const roundTrip = Math.max(0, performance.now() - request.sentAt);
+      const workerDuration = Math.max(0, Number(message.perfReport?.durationMs || 0));
+      perfDebug.recordWorker("communication", Math.max(0, roundTrip - workerDuration), request.runId);
+      perfDebug.recordWorker("roundTrip", roundTrip, request.runId);
+      if (message.perfReport) perfDebug.merge(message.perfReport, request.runId);
+      if (request.standalone) perfDebug.finishRun(request.runId, { completed: message.type !== "matrixCellError" });
+    }
+
+    function activeUiPerfRunId() {
+      if (!perfDebugEnabled) return null;
+      if (activeBattlePerfRunId) return activeBattlePerfRunId;
+      return matrixPerfRuns.get(shieldMatrixPendingSignature)?.runId || null;
+    }
+
     function init() {
+      const pagePerfRunId = perfDebugEnabled ? perfDebug.beginRun("startup") : null;
+      const inputSpan = pagePerfRunId ? perfDebug.startSpan("input.processing", pagePerfRunId) : null;
       if (!gm || !gm.pokemon || !gm.moves) {
         showError("Could not find gamemaster-data.js. Keep PogoPvp.html and gamemaster-data.js in the same folder.");
+        if (inputSpan) perfDebug.endSpan(inputSpan);
+        if (pagePerfRunId) perfDebug.finishRun(pagePerfRunId, { error: "missing-gamemaster" });
         return;
       }
       initMatrixCacheWorker();
@@ -8980,6 +9168,7 @@
         }))
         .filter(p => p.fast.length && p.charged.length)
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+      if (inputSpan) perfDebug.endSpan(inputSpan);
 
       if (typeof matchMedia === "function" && matchMedia("(max-width: 900px)").matches) {
         $("releasedOnly").checked = false;
@@ -9173,6 +9362,12 @@
       resetBattleStateFromSetup();
       renderMetaRankings();
       updateBattleAvailability();
+      if (pagePerfRunId) {
+        requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
+          pokemon: allPokemon.length,
+          moves: moveMap.size
+        })));
+      }
     }
 
     function showError(message) {
@@ -9245,22 +9440,44 @@
 
     function initMatrixComputeWorker() {
       if (!("Worker" in window)) return;
+      const startupSpan = perfDebugEnabled ? perfDebug.startSpan("worker.startup") : null;
       try {
-        const workerSource = buildMatrixComputeWorkerSource();
+        const workerSource = matrixComputeWorkerSourceCache || (matrixComputeWorkerSourceCache = buildMatrixComputeWorkerSource());
         const blob = new Blob([workerSource], { type: "text/javascript" });
         matrixComputeWorker = new Worker(URL.createObjectURL(blob));
+        matrixWorkerConfigSignatures.clear();
         matrixComputeWorker.onmessage = handleMatrixComputeWorkerMessage;
         matrixComputeWorker.onerror = () => {
           matrixComputeWorker?.terminate();
           matrixComputeWorker = null;
+          matrixWorkerConfigSignatures.clear();
           shieldMatrixComputing.clear();
         };
       } catch (_) {
         matrixComputeWorker = null;
+      } finally {
+        if (startupSpan) perfDebug.endSpan(startupSpan);
       }
     }
 
     function buildMatrixComputeWorkerSource() {
+      const perfFactory = window.createPvPeakPerfDebugApi || function createDisabledPerfDebugApi() {
+        const noop = () => null;
+        return Object.freeze({
+          enabled: false,
+          beginRun: noop,
+          finishRun: noop,
+          startSpan: noop,
+          endSpan: noop,
+          increment: noop,
+          gauge: noop,
+          recordCache: noop,
+          recordClone: noop,
+          recordSerialization: noop,
+          recordWorker: noop,
+          merge: noop
+        });
+      };
       const functions = [
         effectiveness,
         estimate,
@@ -9308,7 +9525,14 @@
         battleSnapshot,
         traceCombatantState,
         traceStateSnapshot,
+        traceStateHash,
         traceMoveCandidate,
+        nextActionTraceId,
+        beginAutomaticActionLifecycle,
+        completeAutomaticActionLifecycle,
+        invalidateAutomaticActionLifecycle,
+        executeAutomaticBattleAction,
+        materializeResolvedActionTrace,
         traceOutcomeForSide,
         traceAffordableChargedMoves,
         simulateShieldDecisionContinuation,
@@ -9317,6 +9541,7 @@
         recordTerminalTraceIfNeeded,
         battleReasonCode,
         recordBattleDecision,
+        principleAuthorityTrace,
         beginBattleDecisionTrace,
         completeBattleDecisionTrace,
         validChargedMoves,
@@ -9336,10 +9561,13 @@
         battleIntelligencePolicy,
         battleIntelligenceCallerContext,
         recordExternalIntelligenceDecision,
+        principleDamageAtStages,
+        principleSurvivalProjection,
+        compactRouteSurvivalProjection,
         selectBattleIntelligenceAction,
-        battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
         recordBattleIntelligenceTimingDecision,
+        isPrincipleTimingSelection,
         diagnosticPlannedAction,
         autoAction,
         automaticBattleStep,
@@ -9450,10 +9678,25 @@
         const MAX_FARM_PRESSURE_EDGE = ${MAX_FARM_PRESSURE_EDGE};
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
         const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
+        const PvPeakPerfDebug = (${perfFactory.toString()})({
+          root: globalThis,
+          enabled: ${perfDebugEnabled},
+          context: "matrix-worker",
+          persist: false,
+          dashboard: false
+        });
+        globalThis.PvPeakPerfDebug = PvPeakPerfDebug;
+        const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
+        globalThis.PVPEAK_DETERMINISTIC_PLANNER_TIME = true;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
+        const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
         const PvPeakMatchupPlanner = (${window.createPvPeakMatchupPlannerApi.toString()})();
         const PvPeakMatchupPlannerAdapter = (${window.createPvPeakMatchupPlannerAdapterApi.toString()})(PvPeakMatchupPlanner);
+        if (plannerInitSpan) PvPeakPerfDebug.endSpan(plannerInitSpan);
+        const intelligenceInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("battleIntelligence.init", workerStartupRunId) : null;
         const PvPeakBattleIntelligence = (${window.createPvPeakBattleIntelligenceApi.toString()})();
+        if (intelligenceInitSpan) PvPeakPerfDebug.endSpan(intelligenceInitSpan);
+        let workerStartupReport = workerStartupRunId ? PvPeakPerfDebug.finishRun(workerStartupRunId) : null;
         let left = null;
         let right = null;
         let log = [];
@@ -9478,6 +9721,9 @@
         let forcedMatchupPlan = null;
         const battleEngineVersion = ${JSON.stringify(battleEngineVersion)};
         let currentMatrixConfig = null;
+        const matrixConfigCache = new Map();
+        const workerClock = () => globalThis.performance?.now?.() ?? Date.now();
+        let workerLastFinishedAt = workerClock();
 
         function render() {}
         function ready() { return !battleEnded(); }
@@ -9487,7 +9733,14 @@
         ${functions}
 
         function cloneCombatant(combatant) {
-          return JSON.parse(JSON.stringify(combatant));
+          const startedAt = PvPeakPerfDebug.enabled ? workerClock() : 0;
+          const serialized = JSON.stringify(combatant);
+          const clone = JSON.parse(serialized);
+          if (PvPeakPerfDebug.enabled) {
+            PvPeakPerfDebug.recordClone("deep", 1, undefined, serialized.length * 2);
+            PvPeakPerfDebug.recordSerialization("serialize", workerClock() - startedAt, serialized.length * 2);
+          }
+          return clone;
         }
 
         function simulateShieldMatrixCell(aShields, bShields, options = {}) {
@@ -9544,7 +9797,7 @@
           const previousProjectedChargedSequenceValueEnabled = projectedChargedSequenceValueEnabled;
           const previousForcedMatchupPlan = forcedMatchupPlan;
           battleDecisionTraceEnabled = options.trace === true;
-          battleDecisionCounterfactualsEnabled = options.trace === true;
+          battleDecisionCounterfactualsEnabled = options.counterfactuals === true;
           currentBattleDecisionTrace = battleDecisionTraceEnabled
             ? beginBattleDecisionTrace({
                 battleId: options.battleId,
@@ -9555,6 +9808,8 @@
           chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
           forcedMatchupPlan = options.diagnosticPlan || null;
+          PvPeakBattleIntelligence?.clearCache?.();
+          liveMatchupPlannerTable.clear();
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
@@ -9608,10 +9863,23 @@
               kind: event.kind,
               moveId: event.move?.id || null,
               moveName: event.move?.name || null,
-              start: Number(event.start || 0),
-              duration: Number(event.duration || 0),
-              sneaked: !!event.sneaked
-            }));
+               start: Number(event.start || 0),
+               duration: Number(event.duration || 0),
+               sneaked: !!event.sneaked,
+               timelineEventId: event.timelineEventId || null,
+               decisionId: event.decisionId || null,
+               actionIntentId: event.actionIntentId || null,
+               queuedActionId: event.queuedActionId || null,
+               registeredActionId: event.registeredActionId || null,
+               resolvedActionId: event.resolvedActionId || null,
+               registrationTurn: Number(event.registrationTurn ?? event.start ?? 0),
+               resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+               energyBefore: Number(event.energyBefore || 0),
+               energyAfter: Number(event.energyAfter || 0),
+               hpBefore: Number(event.hpBefore || 0),
+               hpAfter: Number(event.hpAfter || 0),
+               damage: Number(event.damage || 0)
+             }));
           }
           chargedDecisionDiagnosticsEnabled = false;
           battleDecisionTraceEnabled = previousTraceEnabled;
@@ -9625,9 +9893,19 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch } = event.data || {};
           const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
           const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
+          const perfRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun(source === "meta" ? "meta-cell" : "matrix-cell", { key, signature, source }) : null;
+          if (perfRunId && workerStartupReport) {
+            PvPeakPerfDebug.merge(workerStartupReport, perfRunId);
+            workerStartupReport = null;
+          }
+          const executionSpan = perfRunId ? PvPeakPerfDebug.startSpan("worker.execution", perfRunId) : null;
+          if (perfRunId) {
+            PvPeakPerfDebug.recordWorker("queue", Math.max(0, Date.now() - Number(perfSentEpoch || Date.now())), perfRunId);
+            PvPeakPerfDebug.recordWorker("idle", Math.max(0, workerClock() - workerLastFinishedAt), perfRunId);
+          }
           try {
             globalThis.MATCHUP_PLANNER_V2 = matchupPlannerV2 === true;
             matchupPlannerPolicyOverride = plannerPolicy || null;
@@ -9637,12 +9915,19 @@
               : normalizedSource.includes("scenario") ? "scenario-review"
                 : normalizedSource.includes("preview") ? "preview"
                   : normalizedSource.includes("matrix") || normalizedSource.includes("meta") ? "matrix" : "battle";
-            currentMatrixConfig = config;
-            const result = simulateShieldMatrixCellFromConfig(config, aShields, bShields, {
+            if (config && signature) {
+              matrixConfigCache.set(signature, config);
+              while (matrixConfigCache.size > 12) matrixConfigCache.delete(matrixConfigCache.keys().next().value);
+            }
+            const resolvedConfig = config || matrixConfigCache.get(signature);
+            if (!resolvedConfig) throw new Error("Missing matrix configuration for signature");
+            currentMatrixConfig = resolvedConfig;
+            const result = simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
               debugTimeline,
               trace,
+              counterfactuals: counterfactuals === true || !!includeSwing,
               preFastAdvantage,
               policy,
               continuationMode,
@@ -9653,8 +9938,12 @@
               source: source || "live"
             });
             result.swingReady = !!includeSwing;
-            self.postMessage({ id, source, type: "matrixCellResult", key, signature, result });
+            if (executionSpan) PvPeakPerfDebug.endSpan(executionSpan);
+            const perfReport = perfRunId ? PvPeakPerfDebug.finishRun(perfRunId) : null;
+            self.postMessage({ id, source, type: "matrixCellResult", key, signature, result, perfReport, perfReturnedEpoch: Date.now() });
           } catch (error) {
+            if (executionSpan) PvPeakPerfDebug.endSpan(executionSpan);
+            const perfReport = perfRunId ? PvPeakPerfDebug.finishRun(perfRunId, { error: true }) : null;
             self.postMessage({
               id,
               source,
@@ -9662,9 +9951,12 @@
               key,
               signature,
               code: error?.code || null,
-              message: error && error.message ? error.message : String(error)
+              message: error && error.message ? error.message : String(error),
+              perfReport,
+              perfReturnedEpoch: Date.now()
             });
           } finally {
+            workerLastFinishedAt = workerClock();
             globalThis.MATCHUP_PLANNER_V2 = previousMatchupPlannerV2;
             matchupPlannerPolicyOverride = previousMatchupPlannerPolicy;
           }
@@ -10718,15 +11010,18 @@
     function requestMetaMatchupCompute(job) {
       if (!matrixComputeWorker) return false;
       try {
+        const requestId = ++matrixComputeWorkerSeq;
+        registerWorkerPerfRequest(requestId, "meta", "meta");
         matrixComputeWorker.postMessage({
-          id: ++matrixComputeWorkerSeq,
+          id: requestId,
           source: "meta",
           key: job.key,
           signature: "meta",
           aShields: job.aShields,
           bShields: job.bShields,
           includeSwing: false,
-          config: createMetaBattleConfig(job.a, job.b)
+          config: createMetaBattleConfig(job.a, job.b),
+          perfSentEpoch: perfDebugEnabled ? Date.now() : undefined
         });
         return true;
       } catch (_) {
@@ -11766,17 +12061,45 @@
 
     function createMatrixBattleConfig() {
       if (!setupReadyForBattle()) return null;
+      const cacheKey = matrixInputIdentity();
+      if (matrixBattleConfigCache?.key === cacheKey) {
+        if (perfDebugEnabled) perfDebug.recordCache("matrix-config", true, { size: 1 }, activeUiPerfRunId());
+        return matrixBattleConfigCache.value;
+      }
+      if (perfDebugEnabled) perfDebug.recordCache("matrix-config", false, { size: matrixBattleConfigCache ? 1 : 0 }, activeUiPerfRunId());
       const a = create("p1", "A");
       const b = create("p2", "B");
-      return {
+      const value = {
         left: cloneMatrixCombatant(a),
         right: cloneMatrixCombatant(b),
         startEnergyA: a.energy,
         startEnergyB: b.energy
       };
+      matrixBattleConfigCache = { key: cacheKey, value };
+      return value;
+    }
+
+    function matrixInputIdentity() {
+      return ["p1", "p2"].map(prefix => [
+        $(`${prefix}Pokemon`)?.value,
+        $(`${prefix}Fast`)?.value,
+        $(`${prefix}Charged1`)?.value,
+        $(`${prefix}Charged2`)?.value,
+        $(`${prefix}IvAtk`)?.value,
+        $(`${prefix}IvDef`)?.value,
+        $(`${prefix}IvHp`)?.value,
+        $(`${prefix}Level`)?.value,
+        $(`${prefix}Cp`)?.value,
+        $(`${prefix}StartEnergy`)?.value,
+        $(`${prefix}Baiting`)?.value,
+        $(`${prefix}ShieldMode`)?.value,
+        $(`${prefix}Shields`)?.value
+      ].join("\u001f")).join("\u001e");
     }
 
     function cloneMatrixCombatant(combatant) {
+      const perfRunId = activeUiPerfRunId();
+      if (perfRunId) perfDebug.recordClone("state", 1, perfRunId);
       return {
         trainer: combatant.trainer,
         p: cloneMatrixPokemon(combatant.p),
@@ -12204,7 +12527,7 @@
       return true;
     }
 
-    function useFast(attacker, defender) {
+    function useFast(attacker, defender, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       const dreFastOrdinal = typeof nextTechnicalDreFastOrdinal === "function" ? nextTechnicalDreFastOrdinal(attacker) : 0;
@@ -12215,7 +12538,13 @@
       const deferLagDamage = typeof shouldDeferTechnicalLagFast === "function" && shouldDeferTechnicalLagFast(attacker, defender, damage, hpBefore);
       if (deferDreDamage || deferLagDamage) defender.hp = hpBefore;
       const energyGained = attacker.energy - energyBefore;
-      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore);
+      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
+        actionLifecycle: options.actionLifecycle || null,
+        energyAfter: attacker.energy,
+        hpBefore,
+        hpAfter: defender.hp
+      });
+      completeAutomaticActionLifecycle(options.actionLifecycle, event, attacker, defender);
       if (deferDreDamage) {
         event.drePending = true;
         event.state = battleSnapshot();
@@ -12246,6 +12575,10 @@
       const targetTurn = currentTurn + waitTurns;
       attacker.timingPlanMoveId = options.moveId || null;
       battleTurns[attacker.trainer] = targetTurn;
+      completeAutomaticActionLifecycle(options.actionLifecycle || null, null, attacker, defender, {
+        registrationTurn: currentTurn,
+        resolutionTurn: targetTurn
+      });
       if (!options.silent) {
         add(`T${currentTurn} - ${attacker.trainer}: ${attacker.p.name} holds for ${waitTurns} turn to align a Charged Move before ${timingWindow?.opponentFastName || defender.fast.name} completes.`, "info");
       }
@@ -12272,6 +12605,7 @@
       const move = attacker.charged[index];
       if (!move) return false;
       if (attacker.energy < move.energyCost) {
+        invalidateAutomaticActionLifecycle(options.actionLifecycle || null, "INSUFFICIENT_ENERGY", attacker, defender);
         add(`${attacker.trainer}: not enough energy for ${move.name} (${attacker.energy}/${move.energyCost}).`, "charge");
         render();
         return false;
@@ -12283,6 +12617,8 @@
       const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
       if (chargedActivationChange) formChanges.push(chargedActivationChange);
       const attackerNameAtThrow = attacker.p.name;
+      const energyBefore = attacker.energy;
+      const hpBefore = defender.hp;
       const unshieldedDamage = estimate(attacker, defender, move);
       let shieldDecision = options.shielded !== undefined
         ? { shield: !!options.shielded && defender.shields > 0, reason: "", reasonCode: null, sourceRuleIds: [] }
@@ -12357,7 +12693,10 @@
           counterfactual: shieldCounterfactual,
           explanation: shieldDecision.reason || (shielded ? "Always shield logic uses a shield" : "Shield logic lets the move through"),
           reasonCode: shieldDecision.reasonCode || (shielded ? "SHIELD_POLICY_ALWAYS" : "SHIELD_SAVED_LOW_THREAT"),
-          confidence: shieldDecision.reason ? .8 : .65
+          sourceRuleIds: shieldDecision.sourceRuleIds || [],
+          principleIds: shieldDecision.principleIds || [],
+          confidence: shieldDecision.reason ? .8 : .65,
+          ...principleAuthorityTrace(shieldDecision)
         });
         if (battleDecisionTraceEnabled && shieldCounterfactual && currentBattleDecisionTrace) {
           currentBattleDecisionTrace.shieldCounterfactuals.push(shieldCounterfactual);
@@ -12389,7 +12728,13 @@
       }
       const chargedCompletionChange = applyFormChange(attacker, "charged_move", move);
       if (chargedCompletionChange) formChanges.push(chargedCompletionChange);
-      const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded);
+      const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded, energyBefore, {
+        actionLifecycle: options.actionLifecycle || null,
+        energyAfter: attacker.energy,
+        hpBefore,
+        hpAfter: defender.hp
+      });
+      completeAutomaticActionLifecycle(options.actionLifecycle, chargeEvent, attacker, defender);
       chargeEvent.buffs = buffMessages;
       chargeEvent.buffEffects = appliedBuffEffects(attacker, defender, stagesBeforeBuff);
       chargeEvent.unshieldedDamage = unshieldedDamage;
@@ -12503,6 +12848,7 @@
         : false;
       const result = api.selectShieldAction({
         policy,
+        plannerMode: "PVPOKE_PARITY",
         intelligencePolicy: battleIntelligencePolicy(),
         callerContext: battleIntelligenceCallerContext(),
         state: {
@@ -12522,6 +12868,48 @@
             && chargedMoveEffectSummary(candidate).includes("self DEF +")
           )
         },
+        parityThreat: attacker ? (() => {
+          const ownBuffs = move?.buffTarget === "both"
+            ? move?.buffsSelf
+            : move?.buffTarget === "opponent" ? null : move?.buffs;
+          const opponentBuffs = move?.buffTarget === "both"
+            ? move?.buffsOpponent
+            : move?.buffTarget === "opponent" ? move?.buffs : null;
+          const guaranteed = Number(move?.buffApplyChance || 0) >= 1;
+          const effectStages = {
+            actorAttackStage: Number(attacker.attackStage || 0) + (guaranteed ? Number(ownBuffs?.[0] || 0) : 0),
+            actorDefenseStage: Number(attacker.defenseStage || 0) + (guaranteed ? Number(ownBuffs?.[1] || 0) : 0),
+            defenderAttackStage: Number(defender.attackStage || 0) + (guaranteed ? Number(opponentBuffs?.[0] || 0) : 0),
+            defenderDefenseStage: Number(defender.defenseStage || 0) + (guaranteed ? Number(opponentBuffs?.[1] || 0) : 0)
+          };
+          return {
+            attacker: {
+              energy: attacker.energy,
+              baiting: attacker.baiting,
+              fastMove: attacker.fast
+            },
+            defender: {
+              hp: defender.hp,
+              maxHp: defender.maxHp,
+              shields: defender.shields
+            },
+            move: {
+              id: move?.id || null,
+              energyCost: move?.energyCost || 0,
+              selfAttackDebuffing: Number(ownBuffs?.[0] || 0) < 0,
+              damage: unshieldedDamage
+            },
+            fastDamage: attacker.fast ? estimate(attacker, defender, attacker.fast) : 0,
+            fastDamageAfterMoveEffect: attacker.fast
+              ? principleDamageAtStages(attacker, defender, attacker.fast, "actor", effectStages)
+              : 0,
+            attackerChargedMoves: validChargedMoves(attacker).map(candidate => ({
+              id: candidate.id,
+              energyCost: candidate.energyCost,
+              damage: estimate(attacker, defender, candidate)
+            }))
+          };
+        })() : null,
         counterfactual
       });
       return {
@@ -12529,7 +12917,9 @@
         reason: String(result.explanation || "").replace(/\.$/, ""),
         reasonCode: result.reasonCodes?.[0] || null,
         sourceRuleIds: result.sourceRuleIds || [],
-        confidence: result.confidence
+        principleIds: result.principleIds || [],
+        confidence: result.confidence,
+        ...principleAuthorityTrace(result)
       };
     }
 
@@ -12605,7 +12995,7 @@
       return true;
     }
 
-    function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null) {
+    function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null, traceContext = {}) {
       const duration = kind === "fast" ? Math.max(1, move.turns || 1) : 1;
       const start = battleTurns[attacker.trainer] || 0;
       const energyBefore = energyBeforeOverride !== null
@@ -12621,7 +13011,18 @@
         shielded,
         start,
         duration,
-        energyBefore
+        energyBefore,
+        energyAfter: Number(traceContext.energyAfter ?? attacker.energy ?? 0),
+        hpBefore: Number(traceContext.hpBefore ?? 0),
+        hpAfter: Number(traceContext.hpAfter ?? 0),
+        registrationTurn: start,
+        resolutionTurn: start,
+        timelineEventId: null,
+        decisionId: traceContext.actionLifecycle?.decisionId || null,
+        actionIntentId: traceContext.actionLifecycle?.actionIntentId || null,
+        queuedActionId: traceContext.actionLifecycle?.queuedActionId || null,
+        registeredActionId: traceContext.actionLifecycle?.registeredActionId || null,
+        resolvedActionId: traceContext.actionLifecycle?.resolvedActionId || null
       };
       event.timelineIndex = timeline.length;
       event.state = battleSnapshot();
@@ -12711,6 +13112,202 @@
         opponent: traceCombatantState(opponent),
         pendingFastImpacts
       };
+    }
+
+    function traceStateHash(snapshot) {
+      const text = JSON.stringify(snapshot || null);
+      let hash = 2166136261;
+      for (let index = 0; index < text.length; index++) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return `state-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+    }
+
+    function nextActionTraceId(prefix) {
+      if (!currentBattleDecisionTrace) return null;
+      currentBattleDecisionTrace.sequence = Number(currentBattleDecisionTrace.sequence || 0) + 1;
+      return `${prefix}-${String(currentBattleDecisionTrace.sequence).padStart(6, "0")}`;
+    }
+
+    function beginAutomaticActionLifecycle(attacker, defender, action, source = "battle-intelligence") {
+      if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0 || !attacker || !action) return null;
+      const currentTurn = Number(battleTurns?.[attacker.trainer] || 0);
+      const type = action.type === "charged" || action.type === "charged_move"
+        ? "charged_move"
+        : action.type === "wait" ? "wait" : "fast_move";
+      const moveId = action.moveId || action.move?.id || (type === "fast_move" ? attacker.fast?.id : null);
+      if (type !== "wait") {
+        return {
+          deferred: true,
+          side: attacker.trainer,
+          actionType: type,
+          moveId,
+          moveName: action.move?.name || (type === "fast_move" ? attacker.fast?.name : moveId),
+          source,
+          selectedTurn: currentTurn
+        };
+      }
+      const matchingDecision = [...currentBattleDecisionTrace.decisions].reverse().find(decision => {
+        if (decision.side !== attacker.trainer || Number(decision.turn) !== currentTurn) return false;
+        const chosen = decision.chosenCandidate || {};
+        if (type === "charged_move") return (chosen.moveId || chosen.action?.moveId) === moveId;
+        if (type === "wait") return chosen.action === "WAIT_THEN_THROW" || chosen.action?.type === "wait";
+        return chosen.action === "FAST_THEN_REEVALUATE" || chosen.action === "FAST" || chosen.action?.type === "fast_move";
+      }) || null;
+      const stateBefore = turnEngineState(currentTurn);
+      const lifecycle = {
+        decisionId: matchingDecision?.decisionId || nextActionTraceId("decision"),
+        actionIntentId: nextActionTraceId("intent"),
+        queuedActionId: nextActionTraceId("queued"),
+        registeredActionId: nextActionTraceId("registered"),
+        resolvedActionId: nextActionTraceId("resolved"),
+        timelineEventId: null,
+        side: attacker.trainer,
+        pokemonId: attacker.p?.id || null,
+        actionType: type,
+        moveId,
+        moveName: action.move?.name || (type === "fast_move" ? attacker.fast?.name : moveId),
+        source,
+        selectedTurn: currentTurn,
+        queueTurn: currentTurn,
+        registrationTurn: currentTurn,
+        resolutionTurn: null,
+        energyCost: Number(type === "charged_move" ? action.move?.energyCost || 0 : 0),
+        energyGain: Number(type === "fast_move" ? attacker.fast?.energyGain || 0 : 0),
+        hpChange: null,
+        stateHashBefore: traceStateHash(stateBefore),
+        stateHashAfter: null,
+        status: "REGISTERED",
+        statusHistory: [
+          { status: "SELECTED", turn: currentTurn },
+          { status: "QUEUED", turn: currentTurn },
+          { status: "REGISTERED", turn: currentTurn }
+        ],
+        invalidationReason: null
+      };
+      currentBattleDecisionTrace.actions.push(lifecycle);
+      return lifecycle;
+    }
+
+    function completeAutomaticActionLifecycle(lifecycle, timelineEvent, attacker, defender, overrides = {}) {
+      if (lifecycle?.deferred) return lifecycle;
+      if (!lifecycle || lifecycle.status === "RESOLVED" || lifecycle.status === "INVALIDATED") return lifecycle;
+      lifecycle.timelineEventId = timelineEvent?.timelineEventId || null;
+      lifecycle.resolutionTurn = Number(overrides.resolutionTurn ?? timelineEvent?.resolutionTurn ?? timelineEvent?.start ?? battleTurns?.[attacker?.trainer] ?? 0);
+      lifecycle.registrationTurn = Number(overrides.registrationTurn ?? timelineEvent?.registrationTurn ?? lifecycle.registrationTurn ?? 0);
+      lifecycle.energyCost = Number(timelineEvent?.kind === "charge" ? timelineEvent.move?.energyCost || lifecycle.energyCost || 0 : 0);
+      lifecycle.energyGain = Number(timelineEvent?.kind === "fast"
+        ? Math.max(0, Number(timelineEvent.energyAfter || 0) - Number(timelineEvent.energyBefore || 0))
+        : 0);
+      lifecycle.hpChange = timelineEvent
+        ? Math.max(0, Number(timelineEvent.hpBefore || 0) - Number(timelineEvent.hpAfter || 0))
+        : 0;
+      lifecycle.stateHashAfter = traceStateHash(turnEngineState());
+      lifecycle.status = "RESOLVED";
+      lifecycle.statusHistory.push({ status: "RESOLVED", turn: lifecycle.resolutionTurn });
+      if (timelineEvent) timelineEvent.resolvedActionId = lifecycle.resolvedActionId;
+      return lifecycle;
+    }
+
+    function invalidateAutomaticActionLifecycle(lifecycle, reason, attacker, defender) {
+      if (lifecycle?.deferred) return lifecycle;
+      if (!lifecycle || lifecycle.status === "RESOLVED" || lifecycle.status === "INVALIDATED") return lifecycle;
+      const turn = Number(battleTurns?.[attacker?.trainer] || lifecycle.registrationTurn || 0);
+      lifecycle.status = "INVALIDATED";
+      lifecycle.resolutionTurn = turn;
+      lifecycle.invalidationReason = reason || "ILLEGAL_ACTION";
+      lifecycle.stateHashAfter = traceStateHash(turnEngineState());
+      lifecycle.statusHistory.push({ status: "INVALIDATED", turn, reason: lifecycle.invalidationReason });
+      return lifecycle;
+    }
+
+    function executeAutomaticBattleAction(attacker, defender, action, options = {}) {
+      if (!action) return false;
+      const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
+      const normalized = { ...action, type };
+      if (type === "charged_move" && !normalized.move) {
+        normalized.move = validChargedMoves(attacker).find(move => move.id === normalized.moveId) || null;
+      }
+      if (type === "fast_move" && !normalized.move) normalized.move = attacker.fast;
+      const lifecycle = beginAutomaticActionLifecycle(attacker, defender, normalized, options.source || "battle-intelligence");
+      let result = false;
+      if (type === "fast_move") {
+        result = useFast(attacker, defender, { ...options, actionLifecycle: lifecycle });
+      } else if (type === "charged_move") {
+        const moveIndex = attacker.charged.findIndex(move => move && move.id === normalized.moveId);
+        if (moveIndex >= 0) result = useCharge(attacker, defender, moveIndex, { ...options, actionLifecycle: lifecycle });
+        else invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      } else if (type === "wait") {
+        result = useTimingWait(attacker, defender, normalized.metadata?.timingWindow, { ...options, actionLifecycle: lifecycle });
+      } else {
+        invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      }
+      if (result && lifecycle?.status === "REGISTERED") {
+        completeAutomaticActionLifecycle(lifecycle, null, attacker, defender);
+      }
+      if (!result && lifecycle?.status !== "INVALIDATED") {
+        invalidateAutomaticActionLifecycle(lifecycle, "ILLEGAL_ACTION", attacker, defender);
+      }
+      return result;
+    }
+
+    function materializeResolvedActionTrace() {
+      if (!currentBattleDecisionTrace) return;
+      let previousState = initialTimelineState || null;
+      for (const event of (timeline || []).filter(item => item?.kind === "fast" || item?.kind === "charge")) {
+        const actionType = event.kind === "charge" ? "charged_move" : "fast_move";
+        const moveId = event.move?.id || null;
+        const turn = Number(event.registrationTurn ?? event.start ?? 0);
+        const matchingDecision = [...currentBattleDecisionTrace.decisions].reverse().find(decision => {
+          if (decision.side !== event.trainer || Number(decision.turn) !== turn) return false;
+          const chosen = decision.chosenCandidate || {};
+          return actionType === "charged_move"
+            ? (chosen.moveId || chosen.action?.moveId) === moveId
+            : chosen.action === "FAST_THEN_REEVALUATE" || chosen.action === "FAST" || chosen.action?.type === "fast_move";
+        }) || null;
+        const action = {
+          decisionId: matchingDecision?.decisionId || nextActionTraceId("decision"),
+          actionIntentId: nextActionTraceId("intent"),
+          queuedActionId: nextActionTraceId("queued"),
+          registeredActionId: nextActionTraceId("registered"),
+          resolvedActionId: nextActionTraceId("resolved"),
+          timelineEventId: nextActionTraceId("timeline"),
+          side: event.trainer,
+          pokemonId: previousState?.[event.trainer]?.pokemonId || null,
+          actionType,
+          moveId,
+          moveName: event.move?.name || moveId,
+          source: matchingDecision ? "battle-intelligence" : "legal-fast-fallback",
+          selectedTurn: turn,
+          queueTurn: turn,
+          registrationTurn: turn,
+          resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+          energyCost: Number(actionType === "charged_move" ? event.move?.energyCost || 0 : 0),
+          energyGain: Number(actionType === "fast_move"
+            ? Math.max(0, Number(event.energyAfter || 0) - Number(event.energyBefore || 0))
+            : 0),
+          hpChange: Math.max(0, Number(event.hpBefore || 0) - Number(event.hpAfter || 0)),
+          stateHashBefore: traceStateHash(previousState),
+          stateHashAfter: traceStateHash(event.state || null),
+          status: "RESOLVED",
+          statusHistory: [
+            { status: "SELECTED", turn },
+            { status: "QUEUED", turn },
+            { status: "REGISTERED", turn },
+            { status: "RESOLVED", turn: Number(event.resolutionTurn ?? event.start ?? 0) }
+          ],
+          invalidationReason: null
+        };
+        currentBattleDecisionTrace.actions.push(action);
+        event.timelineEventId = action.timelineEventId;
+        event.decisionId = action.decisionId;
+        event.actionIntentId = action.actionIntentId;
+        event.queuedActionId = action.queuedActionId;
+        event.registeredActionId = action.registeredActionId;
+        event.resolvedActionId = action.resolvedActionId;
+        previousState = event.state || previousState;
+      }
     }
 
     function traceMoveCandidate(attacker, defender, move, overrides = {}) {
@@ -12940,7 +13537,8 @@
       if (!battleDecisionTraceEnabled || !currentBattleDecisionTrace || chargedContinuationDepth > 0) return;
       const candidates = (input.candidates || []).filter(Boolean).map(candidate => JSON.parse(JSON.stringify(candidate)));
       const chosenCandidate = input.chosenCandidate ? JSON.parse(JSON.stringify(input.chosenCandidate)) : null;
-      currentBattleDecisionTrace.decisions.push({
+      const decision = {
+        decisionId: input.decisionId || nextActionTraceId("decision"),
         turn: Number(input.turn || 0),
         side: input.side || null,
         pokemonId: input.pokemonId || null,
@@ -12950,9 +13548,50 @@
         chosenCandidate,
         counterfactual: input.counterfactual || null,
         reasonCode: input.reasonCode || battleReasonCode(input.decisionType, input.explanation, chosenCandidate, candidates),
+        sourceRuleIds: [...(input.sourceRuleIds || [])],
+        principleIds: [...(input.principleIds || [])],
+        principleEngineEvaluated: input.principleEngineEvaluated === true,
+        migratedCategoriesEvaluated: [...(input.migratedCategoriesEvaluated || [])],
+        principlesEvaluated: [...(input.principlesEvaluated || [])],
+        principlesTriggered: [...(input.principlesTriggered || [])],
+        principlesRejected: [...(input.principlesRejected || [])],
+        principleResult: input.principleResult ? JSON.parse(JSON.stringify(input.principleResult)) : null,
+        principleResolved: input.principleResolved === true,
+        fallbackUsed: input.fallbackUsed === true,
+        fallbackReason: input.fallbackReason || null,
+        unresolvedCategories: [...(input.unresolvedCategories || [])],
+        migratedCategories: [...(input.migratedCategories || [])],
+        fallbackResult: input.fallbackResult ? JSON.parse(JSON.stringify(input.fallbackResult)) : null,
+        principleDecisionPreserved: input.principleDecisionPreserved !== false,
+        finalAction: input.finalAction ? JSON.parse(JSON.stringify(input.finalAction)) : null,
+        overrideBlocked: input.overrideBlocked === true,
+        finalAuthority: input.finalAuthority || null,
         explanation: input.explanation || "",
         confidence: input.confidence || null
-      });
+      };
+      currentBattleDecisionTrace.decisions.push(decision);
+      return decision;
+    }
+
+    function principleAuthorityTrace(selection) {
+      return {
+        principleEngineEvaluated: selection?.principleEngineEvaluated === true,
+        migratedCategoriesEvaluated: selection?.migratedCategoriesEvaluated || [],
+        principlesEvaluated: selection?.principlesEvaluated || [],
+        principlesTriggered: selection?.principlesTriggered || [],
+        principlesRejected: selection?.principlesRejected || [],
+        principleResult: selection?.principleResult || null,
+        principleResolved: selection?.principleResolved === true,
+        fallbackUsed: selection?.fallbackUsed === true,
+        fallbackReason: selection?.fallbackReason || null,
+        unresolvedCategories: selection?.unresolvedCategories || [],
+        migratedCategories: selection?.migratedCategories || [],
+        fallbackResult: selection?.fallbackResult || null,
+        principleDecisionPreserved: selection?.principleDecisionPreserved !== false,
+        finalAction: selection?.finalAction || selection?.action || null,
+        overrideBlocked: selection?.overrideBlocked === true,
+        finalAuthority: selection?.finalAuthority || null
+      };
     }
 
     function beginBattleDecisionTrace(options = {}) {
@@ -12966,7 +13605,7 @@
         retainEvents: typeof debugBattleTracing !== "undefined" && debugBattleTracing
       });
       currentBattleDecisionTrace = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         battleId: options.battleId || null,
         engineVersion: battleEngineVersion,
         datasetVersion: options.datasetVersion || null,
@@ -12975,7 +13614,10 @@
           A: debugDerivedCombatantState(left),
           B: debugDerivedCombatantState(right)
         } : null,
+        sequence: 0,
         decisions: [],
+        actions: [],
+        timelineActions: [],
         shieldCounterfactuals: [],
         terminalSnapshots: [],
         finalState: null
@@ -13008,17 +13650,54 @@
       const intelligenceApi = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
         : typeof window !== "undefined" ? window.PvPeakBattleIntelligence : null;
+      materializeResolvedActionTrace();
       currentBattleDecisionTrace.finalState = {
         A: traceCombatantState(left),
         B: traceCombatantState(right)
       };
+      currentBattleDecisionTrace.timelineActions = (timeline || [])
+        .filter(event => event?.kind === "fast" || event?.kind === "charge")
+        .map(event => ({
+          timelineEventId: event.timelineEventId || null,
+          resolvedActionId: event.resolvedActionId || null,
+          side: event.trainer || null,
+          actionType: event.kind === "charge" ? "charged_move" : "fast_move",
+          moveId: event.move?.id || null,
+          registrationTurn: Number(event.registrationTurn ?? event.start ?? 0),
+          resolutionTurn: Number(event.resolutionTurn ?? event.start ?? 0),
+          energyCost: Number(event.kind === "charge" ? event.move?.energyCost || 0 : 0),
+          energyGain: Number(event.kind === "fast"
+            ? Math.max(0, Number(event.energyAfter || 0) - Number(event.energyBefore || 0))
+            : 0),
+          hpChange: Math.max(0, Number(event.hpBefore || 0) - Number(event.hpAfter || 0))
+        }));
       const intelligenceStats = intelligenceApi?.getStatistics?.() || null;
       if (intelligenceStats) {
-        const { maxDecisionMs, totalDecisionMs, averageDecisionMs, ...deterministicStats } = intelligenceStats;
+        const {
+          maxDecisionMs,
+          totalDecisionMs,
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          decisionDurationSamples,
+          ...deterministicStats
+        } = intelligenceStats;
         currentBattleDecisionTrace.intelligenceStats = deterministicStats;
+        currentBattleDecisionTrace.intelligencePerformance = {
+          averageDecisionMs,
+          medianDecisionMs,
+          p95DecisionMs,
+          maxDecisionMs,
+          totalDecisionMs,
+          decisionDurationSamples
+        };
       } else {
         currentBattleDecisionTrace.intelligenceStats = null;
+        currentBattleDecisionTrace.intelligencePerformance = null;
       }
+      currentBattleDecisionTrace.principleEngineStats = intelligenceApi?.getPrincipleStatistics?.() || null;
+      currentBattleDecisionTrace.hybridStats = { selections: 0, disabled: true };
+      currentBattleDecisionTrace.hybridPerformance = null;
       currentBattleDecisionTrace.intelligenceAudit = intelligenceApi?.getAuditReport?.() || null;
       if (!currentBattleDecisionTrace.intelligenceAudit?.configuration?.strict) {
         intelligenceApi?.configureAudit?.({ enabled: false, retainEvents: false });
@@ -13033,9 +13712,11 @@
     function battleIntelligenceState(currentTurn = null) {
       if (!left || !right) return null;
       const turnState = turnEngineState(currentTurn);
-      const sideState = combatant => ({
-        id: combatant.p?.id || combatant.trainer,
-        formId: combatant.currentFormId || combatant.p?.id || null,
+      const sideState = combatant => {
+        const chargedProtectionRule = formChangeRule(combatant, "charged_move_damage");
+        return {
+          id: combatant.p?.id || combatant.trainer,
+          formId: combatant.currentFormId || combatant.p?.id || null,
         level: combatant.level,
         cp: combatant.cp,
         ivAtk: combatant.ivAtk,
@@ -13055,13 +13736,19 @@
         baiting: combatant.baiting,
         shieldMode: combatant.shieldMode,
         linePolicy: combatant.linePolicy,
-        mechanicState: {
-          chargedTaken: combatant.chargedTaken,
-          formBaseId: combatant.formBaseId || null,
-          timingPlanMoveId: combatant.timingPlanMoveId || null,
-          timingContinuationCount: Number(combatant.timingContinuationCount || 0)
-        }
-      });
+          mechanicState: {
+            chargedTaken: combatant.chargedTaken,
+            formBaseId: combatant.formBaseId || null,
+            timingPlanMoveId: combatant.timingPlanMoveId || null,
+            timingContinuationCount: Number(combatant.timingContinuationCount || 0),
+            farmEnergy: combatant.linePolicy === "farm-energy",
+            chargedProtection: {
+              active: chargedProtectionRule?.effect === "protect",
+              capability: chargedProtectionRule?.effect === "protect" ? "charged-damage-protection" : null
+            }
+          }
+        };
+      };
       return {
         mechanicsVersion: battleEngineVersion,
         currentTurn: turnState?.currentTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)),
@@ -13090,6 +13777,9 @@
 
     function clonePlannerCombatant(combatant) {
       if (!combatant) return null;
+      if (typeof globalThis !== "undefined" && globalThis.PvPeakPerfDebug?.enabled) {
+        globalThis.PvPeakPerfDebug.recordClone("state");
+      }
       return {
         ...combatant,
         p: combatant.p,
@@ -13355,6 +14045,137 @@
       });
     }
 
+    function principleDamageAtStages(attacker, defender, move, side, stages = {}) {
+      if (!attacker || !defender || !move) return 0;
+      const source = side === "opponent" ? defender : attacker;
+      const target = side === "opponent" ? attacker : defender;
+      const saved = {
+        sourceAttack: Number(source.attackStage || 0),
+        sourceDefense: Number(source.defenseStage || 0),
+        targetAttack: Number(target.attackStage || 0),
+        targetDefense: Number(target.defenseStage || 0)
+      };
+      try {
+        if (side === "opponent") {
+          source.attackStage = clampStage(stages.defenderAttackStage ?? saved.sourceAttack);
+          source.defenseStage = clampStage(stages.defenderDefenseStage ?? saved.sourceDefense);
+          target.attackStage = clampStage(stages.actorAttackStage ?? saved.targetAttack);
+          target.defenseStage = clampStage(stages.actorDefenseStage ?? saved.targetDefense);
+        } else {
+          source.attackStage = clampStage(stages.actorAttackStage ?? saved.sourceAttack);
+          source.defenseStage = clampStage(stages.actorDefenseStage ?? saved.sourceDefense);
+          target.attackStage = clampStage(stages.defenderAttackStage ?? saved.targetAttack);
+          target.defenseStage = clampStage(stages.defenderDefenseStage ?? saved.targetDefense);
+        }
+        return estimate(source, target, move);
+      } finally {
+        source.attackStage = saved.sourceAttack;
+        source.defenseStage = saved.sourceDefense;
+        target.attackStage = saved.targetAttack;
+        target.defenseStage = saved.targetDefense;
+      }
+    }
+
+    function principleSurvivalProjection(attacker, defender, routeState = {}) {
+      if (!attacker || !defender || !defender.fast) {
+        return { turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 };
+      }
+      let hp = Math.max(0, Number(attacker.hp || 0));
+      let energy = Math.max(0, Number(defender.energy || 0));
+      let shields = Math.max(0, Number(attacker.shields || 0));
+      let turn = 0;
+      let chargedCount = 0;
+      let damageTaken = 0;
+      const stages = {
+        actorAttackStage: Number(routeState.actorAttackStage ?? attacker.attackStage ?? 0),
+        actorDefenseStage: Number(routeState.actorDefenseStage ?? attacker.defenseStage ?? 0),
+        defenderAttackStage: Number(routeState.defenderAttackStage ?? defender.attackStage ?? 0),
+        defenderDefenseStage: Number(routeState.defenderDefenseStage ?? defender.defenseStage ?? 0)
+      };
+      for (let actionCount = 0; hp > 0 && actionCount < 100; actionCount++) {
+        const readyCharged = validChargedMoves(defender)
+          .filter(move => energy >= Number(move.energyCost || 0))
+          .sort((a, b) =>
+            principleDamageAtStages(attacker, defender, b, "opponent", stages)
+              - principleDamageAtStages(attacker, defender, a, "opponent", stages)
+            || Number(a.energyCost || 0) - Number(b.energyCost || 0)
+            || String(a.id || "").localeCompare(String(b.id || ""))
+          )[0] || null;
+        if (readyCharged) {
+          const damage = shields > 0
+            ? 1
+            : principleDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+          if (shields > 0) shields--;
+          energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
+          hp = Math.max(0, hp - damage);
+          damageTaken += damage;
+          chargedCount++;
+          turn += 1;
+          continue;
+        }
+        const damage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - damage);
+        damageTaken += damage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+        turn += Math.max(1, Number(defender.fast.turns || 1));
+      }
+      return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
+    }
+
+    function compactRouteSurvivalProjection(attacker, defender, routeState = {}) {
+      if (!attacker || !defender || !defender.fast) {
+        return { turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 };
+      }
+      let hp = Math.max(0, Number(attacker.hp || 0));
+      let energy = Math.max(0, Number(defender.energy || 0));
+      let shields = Math.max(0, Number(attacker.shields || 0));
+      const actorTurn = Number(battleTurns[attacker.trainer] || 0);
+      const defenderTurn = Number(battleTurns[defender.trainer] || actorTurn);
+      let turn = Math.max(0, defenderTurn - actorTurn);
+      let chargedCount = 0;
+      let damageTaken = 0;
+      const stages = {
+        actorAttackStage: Number(routeState.actorAttackStage ?? attacker.attackStage ?? 0),
+        actorDefenseStage: Number(routeState.actorDefenseStage ?? attacker.defenseStage ?? 0),
+        defenderAttackStage: Number(routeState.defenderAttackStage ?? defender.attackStage ?? 0),
+        defenderDefenseStage: Number(routeState.defenderDefenseStage ?? defender.defenseStage ?? 0)
+      };
+      if (turn > 0) {
+        const pendingFastDamage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - pendingFastDamage);
+        damageTaken += pendingFastDamage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+      }
+      for (let actionCount = 0; hp > 0 && actionCount < 100; actionCount++) {
+        const readyCharged = validChargedMoves(defender)
+          .filter(move => energy >= Number(move.energyCost || 0))
+          .sort((a, b) =>
+            principleDamageAtStages(attacker, defender, b, "opponent", stages)
+              - principleDamageAtStages(attacker, defender, a, "opponent", stages)
+            || Number(a.energyCost || 0) - Number(b.energyCost || 0)
+            || String(a.id || "").localeCompare(String(b.id || ""))
+          )[0] || null;
+        if (readyCharged) {
+          const damage = shields > 0
+            ? 1
+            : principleDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+          if (shields > 0) shields--;
+          energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
+          hp = Math.max(0, hp - damage);
+          damageTaken += damage;
+          chargedCount++;
+          turn += 1;
+          continue;
+        }
+        const damage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        hp = Math.max(0, hp - damage);
+        damageTaken += damage;
+        energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
+        turn += Math.max(1, Number(defender.fast.turns || 1));
+      }
+      return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
+    }
+
     function selectBattleIntelligenceAction(attacker, defender, legalActions) {
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
@@ -13369,87 +14190,31 @@
         }
         return null;
       }
-      const legalChargedIds = new Set(legalActions
-        .filter(action => action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
-        .map(action => action.moveId));
-      const available = validChargedMoves(attacker).filter(move => legalChargedIds.has(move.id));
-      const projectedSequenceEligible = shouldEvaluateProjectedChargedSequence(attacker, defender, available);
-      const timingContinuationEligible = shouldEvaluateChargedTimingContinuation(attacker, defender, available);
-      if (chargedContinuationDepth > 0 && (chargedContinuationOpening?.repeat || chargedContinuationOpening?.timingOnce || chargedContinuationOpening?.sequence)
-        && chargedContinuationOpening.trainer === attacker.trainer) {
-        const timingFastRequired = !!(chargedContinuationOpening.timingOnce
-          && Number(chargedContinuationOpening.fastsRemaining || 0) > 0);
-        const sequenceIndex = Math.max(0, Number(chargedContinuationOpening.sequenceIndex || 0));
-        const sequenceFastRequired = !!(chargedContinuationOpening.sequence
-          && Number(chargedContinuationOpening.sequenceExtraFasts?.[sequenceIndex] || 0) > 0);
-        const forcedCharged = legalActions.find(action =>
-          (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE)
-          && action.moveId === chargedContinuationOpening.moveId
-        );
-        const forcedFast = legalActions.find(action => action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE);
-        const forcedAction = (timingFastRequired || sequenceFastRequired) && forcedFast
-          ? { ...forcedFast, type: api.ACTION_TYPES.FAST_MOVE }
-          : forcedCharged
-          ? { ...forcedCharged, type: api.ACTION_TYPES.CHARGED_MOVE }
-          : forcedFast ? { ...forcedFast, type: api.ACTION_TYPES.FAST_MOVE } : null;
-        if (forcedAction) {
-          if (timingFastRequired && forcedAction.type === api.ACTION_TYPES.FAST_MOVE) {
-            chargedContinuationOpening.fastsRemaining = Math.max(0, Number(chargedContinuationOpening.fastsRemaining || 0) - 1);
-          }
-          if (sequenceFastRequired && forcedAction.type === api.ACTION_TYPES.FAST_MOVE) {
-            chargedContinuationOpening.sequenceExtraFasts[sequenceIndex] = Math.max(
-              0,
-              Number(chargedContinuationOpening.sequenceExtraFasts[sequenceIndex] || 0) - 1
-            );
-          }
-          const executingTimingPlan = !!(forcedAction.type === api.ACTION_TYPES.CHARGED_MOVE
-            && forcedCharged
-            && chargedContinuationOpening.timingOnce);
-          const executingSequenceMove = !!(forcedAction.type === api.ACTION_TYPES.CHARGED_MOVE
-            && forcedCharged
-            && chargedContinuationOpening.sequence);
-          if (executingTimingPlan) {
-            if (Array.isArray(chargedContinuationOpening.sequenceExtraFasts)
-              && chargedContinuationOpening.sequenceExtraFasts.length) {
-              chargedContinuationOpening.timingOnce = false;
-              chargedContinuationOpening.sequence = true;
-              chargedContinuationOpening.sequenceIndex = 0;
-            } else {
-              chargedContinuationOpening = null;
-            }
-          } else if (executingSequenceMove) {
-            chargedContinuationOpening.sequenceIndex = sequenceIndex + 1;
-            if (chargedContinuationOpening.sequenceIndex >= chargedContinuationOpening.sequenceExtraFasts.length) {
-              chargedContinuationOpening = null;
-            }
-          }
-          return {
-            action: forcedAction,
-            candidates: [],
-            chosenCandidate: null,
-            reasonCodes: ["STRAIGHT_LINE_CONTINUATION"],
-            explanation: forcedCharged
-              ? `${executingTimingPlan ? "executing planned timing" : "continuing straight"} ${forcedCharged.move?.name || forcedCharged.moveId} line`
-              : `building to ${chargedContinuationOpening.moveId} line`
-          };
-        }
-      }
-      const continuationEligible = chargedContinuationDepth === 0
-        && (shouldEvaluateChargedContinuations(attacker, defender, available)
-          || shouldCompareShieldedChargedLines(attacker, defender, available)
-          || projectedSequenceEligible
-          || timingContinuationEligible);
-      const compareStraightChargedLines = shouldCompareShieldedChargedLines(attacker, defender, available);
       return api.selectAction({
         state: battleIntelligenceState(Number(battleTurns[attacker.trainer] || 0)),
         side: attacker.trainer,
         legalActions,
         policy: battleIntelligencePolicy(),
+        plannerMode: "PVPOKE_PARITY",
         context: {
           callerContext: battleIntelligenceCallerContext(),
-          matchupPlannerV2: matchupPlannerRuntimeEnabled(),
-          planMatchup: planLiveMatchup,
-          forceChargedContinuation: projectedSequenceEligible,
+          chargedTimingOptimization: true,
+          canonicalOpponentLethalBeforeNextWindow: opponentPressureForcesThrow(attacker, defender),
+          estimateFastDamage(side) {
+            return side === "opponent"
+              ? estimate(defender, attacker, defender.fast)
+              : estimate(attacker, defender, attacker.fast);
+          },
+          estimateOpponentDamage(move) {
+            return estimate(defender, attacker, move);
+          },
+          compactDamage(side, move, stages) {
+            return principleDamageAtStages(attacker, defender, move, side, stages);
+          },
+          compactSurvivalProjection(routeState) {
+            return compactRouteSurvivalProjection(attacker, defender, routeState);
+          },
+          compactCmpAdvantage: Number(attacker.attack || 0) - Number(defender.attack || 0),
           estimateDamage(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return move ? estimate(attacker, defender, move) : 0;
@@ -13458,31 +14223,13 @@
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return move ? shouldShield(defender, move, estimate(attacker, defender, move), attacker) : false;
           },
+          willActorShieldAgainstOpponent(move) {
+            return move ? shouldShield(attacker, move, estimate(defender, attacker, move), defender) : false;
+          },
           hasGuaranteedEffect(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return guaranteedStatEffectChangesState(attacker, defender, move) && !hasSelfDebuff(move);
-          },
-          evaluateCandidate(action) {
-            return battleIntelligenceCandidateEvidence(attacker, defender, action, available);
-          },
-          evaluateContinuation: continuationEligible
-            ? action => {
-              const isFast = action.type === "fast" || action.type === api.ACTION_TYPES.FAST_MOVE;
-              const isTimingWait = action.type === "wait" || action.type === api.ACTION_TYPES.WAIT;
-              if ((isFast || isTimingWait) && timingContinuationEligible) {
-                return simulateBestChargedTimingContinuation(attacker, defender, available, {
-                  timingActionType: isTimingWait ? "wait" : "fast_move",
-                  timingWindow: action.metadata?.timingWindow || null
-                });
-              }
-              return simulateBattleIntelligenceContinuation(attacker, defender, action, {
-                repeatCharged: compareStraightChargedLines && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE),
-                projectedChargedSequence: (projectedSequenceEligible || timingContinuationEligible)
-                  && (action.type === "charged" || action.type === api.ACTION_TYPES.CHARGED_MOVE || isFast),
-                timingContinuation: timingContinuationEligible
-              });
-            }
-            : null
+          }
         }
       });
     }
@@ -13875,6 +14622,9 @@
         candidates,
         chosenCandidate: candidates.find(candidate => candidate.moveId === move.id) || traceMoveCandidate(attacker, defender, move),
         reasonCode: selection.reasonCodes?.[0] || "HEURISTIC_FALLBACK",
+        sourceRuleIds: selection.sourceRuleIds || [],
+        principleIds: selection.principleIds || [],
+        ...principleAuthorityTrace(selection),
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
       });
@@ -13882,8 +14632,7 @@
 
     function recordBattleIntelligenceTimingDecision(attacker, defender, selection) {
       if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action) return;
-      if (!selection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")
-        && !selection.sourceRuleIds?.includes("BI_TIMING_VALUE")) return;
+      if (!isPrincipleTimingSelection(selection)) return;
       const candidates = (selection.candidates || []).map(candidate => {
         const continuation = candidate?.evidence?.continuation || null;
         const action = candidate?.action || {};
@@ -13903,6 +14652,8 @@
           continuationScore: candidate?.continuationScore ?? null,
           continuationPenalty: candidate?.continuationPenalty ?? 0,
           priorityClass: candidate?.priorityClass ?? null,
+          sourceRuleIds: candidate?.sourceRuleIds || [],
+          principleIds: candidate?.principleIds || [],
           tacticalScore: candidate?.tacticalScore ?? null
         };
       });
@@ -13919,9 +14670,21 @@
         candidates,
         chosenCandidate: candidates.find(candidate => candidate.action === selectedActionLabel) || null,
         reasonCode: selection.reasonCodes?.[0] || "OPTIMAL_CHARGE_TIMING",
+        sourceRuleIds: selection.sourceRuleIds || [],
+        principleIds: selection.principleIds || [],
+        ...principleAuthorityTrace(selection),
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
       });
+    }
+
+    function isPrincipleTimingSelection(selection) {
+      const principleIds = selection?.principleIds || [];
+      const reasonCodes = selection?.reasonCodes || [];
+      return principleIds.includes("TIMING-011_OPTIMIZE_CHARGED_TIMING")
+        || principleIds.includes("TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN")
+        || reasonCodes.includes("SAFE_EXTRA_FAST")
+        || reasonCodes.includes("OPTIMAL_CHARGE_TIMING");
     }
 
     function autoAction(attacker, defender) {
@@ -13930,10 +14693,8 @@
       if (!legalActions.length) return false;
       const diagnosticAction = diagnosticPlannedAction(attacker, legalActions);
       if (diagnosticAction) {
-        if (diagnosticAction.type === "fast" || diagnosticAction.type === "fast_move") return useFast(attacker, defender);
-        const moveIndex = attacker.charged.findIndex(move => move?.id === diagnosticAction.moveId);
-        if (moveIndex < 0) throw new Error(`Diagnostic plan references unavailable move ${diagnosticAction.moveId}.`);
-        return useCharge(attacker, defender, moveIndex, {
+        return executeAutomaticBattleAction(attacker, defender, diagnosticAction, {
+          source: "diagnostic-plan",
           aiReason: "deterministic matchup-planner fixture",
           deferCooldownReset: true
         });
@@ -13946,7 +14707,9 @@
           && estimate(defender, attacker, defender.fast) < attacker.hp;
         if (safeToContinue) {
           attacker.timingPlanFastMovesRemaining = Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1);
-          return useFast(attacker, defender);
+          return executeAutomaticBattleAction(attacker, defender, plannedFast, {
+            source: "persisted-timing-plan"
+          });
         }
         attacker.timingPlanFastMovesRemaining = 0;
         attacker.timingPlanMoveId = null;
@@ -13958,18 +14721,28 @@
         ? [...legalActions, timingWaitAction]
         : legalActions);
       if (!intelligenceSelection?.action) return false;
-      // A timing wait has already selected this exact Charged Move from a
-      // complete continuation. Respect it unless the move is no longer legal.
+      // A persisted timing micro-plan is only valid while the current
+      // full-state selector still agrees with it. If the updated charged
+      // sequence comparison proves a different legal move, the older timing
+      // plan must not override it.
       if (attacker.timingPlanMoveId) {
         const plannedMove = available.find(candidate => candidate.id === attacker.timingPlanMoveId);
-        if (plannedMove) {
+        const selectedMoveId = intelligenceSelection.action.type === "charged_move"
+          ? intelligenceSelection.action.moveId || null
+          : null;
+        if (plannedMove && selectedMoveId === plannedMove.id) {
           recordBattleIntelligenceDecision(attacker, defender, {
             ...intelligenceSelection,
             action: { type: "charged_move", moveId: plannedMove.id, move: plannedMove },
             explanation: `executes the verified ${plannedMove.name} timing line`,
             reasonCodes: ["OPTIMAL_CHARGE_TIMING"]
           });
-          return useCharge(attacker, defender, attacker.charged.indexOf(plannedMove), {
+          return executeAutomaticBattleAction(attacker, defender, {
+            type: "charged_move",
+            moveId: plannedMove.id,
+            move: plannedMove
+          }, {
+            source: "verified-timing-line",
             aiReason: `executes the verified ${plannedMove.name} timing line`,
             deferCooldownReset: true
           });
@@ -13978,23 +14751,18 @@
       }
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.explanation;
-        if (intelligenceSelection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")) {
-          const timingPlan = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan || null;
+        if (isPrincipleTimingSelection(intelligenceSelection)) {
           attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-          // Persist only the small, fully simulated timing micro-plan. A
-          // one-Fast line is re-evaluated immediately; a two-Fast line keeps
-          // its final Fast and intended Charged Move across an intervening
-          // opponent action.
-          attacker.timingPlanFastMovesRemaining = Math.max(0, Number(timingPlan?.fastCount || 1) - 1);
-          attacker.timingPlanMoveId = attacker.timingPlanFastMovesRemaining > 0
-            ? timingPlan?.moveId || null
-            : null;
+          attacker.timingPlanFastMovesRemaining = 0;
+          attacker.timingPlanMoveId = null;
           recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
         }
         if (available.length && waitReason) {
           add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
         }
-        return useFast(attacker, defender);
+        return executeAutomaticBattleAction(attacker, defender, intelligenceSelection.action, {
+          source: "battle-intelligence"
+        });
       }
       if (intelligenceSelection.action.type === "wait") {
         const timingWindow = intelligenceSelection.action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
@@ -14003,18 +14771,35 @@
         attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
         attacker.timingPlanMoveId = timingPlan?.moveId || null;
         recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
-        return useTimingWait(attacker, defender, timingWindow, {
+        return executeAutomaticBattleAction(attacker, defender, {
+          ...intelligenceSelection.action,
+          metadata: { ...(intelligenceSelection.action.metadata || {}), timingWindow }
+        }, {
+          source: "timing-evaluator",
           moveId: timingPlan?.moveId || null
         });
       }
       if (intelligenceSelection.action.type !== "charged_move") return false;
 
       const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
-      if (!move) return legalActions.some(action => action.type === "fast") ? useFast(attacker, defender) : false;
+      if (!move) {
+        const fallbackFast = legalActions.find(action => action.type === "fast" || action.type === "fast_move");
+        return fallbackFast
+          ? executeAutomaticBattleAction(attacker, defender, fallbackFast, { source: "legal-fast-fallback" })
+          : false;
+      }
       recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
       recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
       const aiReason = intelligenceSelection.explanation;
-      return useCharge(attacker, defender, attacker.charged.indexOf(move), { aiReason, deferCooldownReset: true });
+      return executeAutomaticBattleAction(attacker, defender, {
+        ...intelligenceSelection.action,
+        move,
+        moveId: move.id
+      }, {
+        source: "battle-intelligence",
+        aiReason,
+        deferCooldownReset: true
+      });
     }
 
     function diagnosticPlannedAction(attacker, legalActions) {
@@ -14034,6 +14819,23 @@
           throw error;
         }
         return legal;
+      }
+      const chargedSequences = forcedMatchupPlan.chargedSequences || {};
+      const sequence = Array.isArray(chargedSequences[attacker.trainer])
+        ? chargedSequences[attacker.trainer]
+        : [];
+      forcedMatchupPlan.chargedSequenceCursor = forcedMatchupPlan.chargedSequenceCursor || {};
+      const cursor = Math.max(0, Number(forcedMatchupPlan.chargedSequenceCursor[attacker.trainer] || 0));
+      const nextMoveId = sequence[cursor] || null;
+      if (nextMoveId) {
+        const legal = legalActions.find(action => {
+          const type = action.type === "charged" ? "charged_move" : action.type;
+          return type === "charged_move" && action.moveId === nextMoveId;
+        });
+        if (legal) {
+          forcedMatchupPlan.chargedSequenceCursor[attacker.trainer] = cursor + 1;
+          return legal;
+        }
       }
       if (forcedMatchupPlan.defaultAction === "fast") {
         return legalActions.find(action => action.type === "fast" || action.type === "fast_move") || null;
@@ -15357,6 +16159,10 @@
 
     function runBattleToEnd(options = {}) {
       if (!setupReadyForBattle()) return;
+      if (perfDebugEnabled && !activeBattlePerfRunId) {
+        activeBattlePerfRunId = perfDebug.beginRun("battle", { source: document.body.dataset.view || "simulator" });
+        activeBattleStartupSpan = perfDebug.startSpan("battle.startup", activeBattlePerfRunId);
+      }
       stopTimelineReplay();
       timelinePresentationPending = true;
       document.body.classList.add("battle-results-visible");
@@ -15376,6 +16182,7 @@
     }
 
     function runBattleToEndNow(options = {}) {
+      const simulationSpan = activeBattlePerfRunId ? perfDebug.startSpan("simulation.total", activeBattlePerfRunId) : null;
       battleDecisionTraceEnabled = true;
       battleDecisionCounterfactualsEnabled = false;
       beginBattleDecisionTrace({ source: "live-interactive" });
@@ -15391,6 +16198,21 @@
       if (!battleEnded()) add("Battle stopped before KO because no automatic action could progress.", "info");
       render();
       queueTimelineReplay();
+      if (simulationSpan) perfDebug.endSpan(simulationSpan);
+      if (activeBattleStartupSpan) {
+        perfDebug.endSpan(activeBattleStartupSpan);
+        activeBattleStartupSpan = null;
+      }
+      if (activeBattlePerfRunId) {
+        const completedRunId = activeBattlePerfRunId;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          perfDebug.finishRun(completedRunId, {
+            winner: left?.hp > 0 ? "A" : right?.hp > 0 ? "B" : "draw",
+            turns: Math.max(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
+          });
+        }));
+        activeBattlePerfRunId = null;
+      }
     }
 
     function buildLiveTacticalPatternSummary() {
@@ -15505,8 +16327,13 @@
 
     function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
+      (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
+      liveMatchupPlannerTable.clear();
+      const stateSpan = activeBattlePerfRunId ? perfDebug.startSpan("battle.state", activeBattlePerfRunId) : null;
+      const combatantSpan = activeBattlePerfRunId ? perfDebug.startSpan("combatants.create", activeBattlePerfRunId) : null;
       left = create("p1", "A");
       right = create("p2", "B");
+      if (combatantSpan) perfDebug.endSpan(combatantSpan);
       if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
         const reduced = options.startingHpReduction.side === "A" ? left : right;
         reduced.hp = Math.max(1, reduced.maxHp - Math.round(Number(options.startingHpReduction.amount)));
@@ -15524,6 +16351,7 @@
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       lastBattleInitialSimulatorState = snapshotFullSimulatorState();
       if (!options.skipRender) render();
+      if (stateSpan) perfDebug.endSpan(stateSpan);
     }
 
     function hideBattleResultsForSetupChange() {
@@ -15869,6 +16697,8 @@
     }
 
     function render() {
+      const perfRunId = activeUiPerfRunId();
+      const renderSpan = perfRunId ? perfDebug.startSpan("render", perfRunId) : null;
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
@@ -15884,6 +16714,7 @@
       renderScenarioReview();
       renderTechnicalReview();
       renderScenarioStacks();
+      if (renderSpan) perfDebug.endSpan(renderSpan);
     }
 
     function scenarioApi() {
@@ -16060,8 +16891,14 @@
 
     function cloneTechnicalValue(value) {
       if (value == null) return value;
-      if (typeof structuredClone === "function") return structuredClone(value);
-      return JSON.parse(JSON.stringify(value));
+      const runId = activeUiPerfRunId();
+      if (typeof structuredClone === "function") {
+        if (runId) perfDebug.recordClone("structured", 1, runId);
+        return structuredClone(value);
+      }
+      const serialized = JSON.stringify(value);
+      if (runId) perfDebug.recordClone("deep", 1, runId, serialized.length * 2);
+      return JSON.parse(serialized);
     }
 
     function captureTechnicalRuntimeState() {
@@ -16147,6 +16984,8 @@
     }
 
     function simulateTechnicalIssue(issue) {
+      const perfRunId = perfDebugEnabled ? perfDebug.beginRun("scenario-review", { issue: issue?.type || "unknown" }) : null;
+      const scenarioSpan = perfRunId ? perfDebug.startSpan("scenario.simulation", perfRunId) : null;
       const observedState = captureTechnicalRuntimeState();
       restoreTechnicalRuntimeState(technicalSegmentStartState);
       technicalSimulationRunning = true;
@@ -16184,6 +17023,8 @@
       selectedTimelineIndex = null;
       document.body.classList.add("technical-review-branch");
       render();
+      if (scenarioSpan) perfDebug.endSpan(scenarioSpan);
+      if (perfRunId) perfDebug.finishRun(perfRunId);
     }
 
     function applyTechnicalIssueIfNeeded(kind, attacker, defender, move) {
@@ -16629,9 +17470,13 @@
     }
 
     function scheduleHpSwingAnalysis(signature, key, aShields, bShields, baselineResult) {
+      const perfRunId = perfDebugEnabled ? perfDebug.beginRun("swing", { signature, key, type: "hp" }) : null;
+      const swingSpan = perfRunId ? perfDebug.startSpan("swing.generation", perfRunId) : null;
       const baseWinner = matrixWinnerSide(baselineResult);
       if (!baseWinner) {
         hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) perfDebug.finishRun(perfRunId);
         return;
       }
       const losingSide = baseWinner === "A" ? "B" : "A";
@@ -16639,6 +17484,8 @@
       const loser = losingSide === "A" ? left : right;
       if (!winner || !loser || winner.maxHp <= 1) {
         hpSwingAnalysisCache.set(key, { ready: true, value: null });
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) perfDebug.finishRun(perfRunId);
         return;
       }
       hpSwingAnalysisPending.add(key);
@@ -16648,10 +17495,21 @@
         hpSwingAnalysisPending.delete(key);
         hpSwingAnalysisCache.set(key, { ready: true, value });
         if (!previewState.active && shieldMatrixSignature() === signature && document.body.classList.contains("battle-results-visible")) renderBattleReview();
+        if (swingSpan) perfDebug.endSpan(swingSpan);
+        if (perfRunId) {
+          perfDebug.gauge("swing.simulations", reduction, perfRunId);
+          perfDebug.finishRun(perfRunId, { found: !!value });
+        }
       };
       const step = () => {
         if (previewState.active || shieldMatrixSignature() !== signature) {
           hpSwingAnalysisPending.delete(key);
+          if (swingSpan) perfDebug.endSpan(swingSpan);
+          if (perfRunId) perfDebug.finishRun(perfRunId, { cancelled: true });
+          return;
+        }
+        if (timelineReplayIsRunning()) {
+          window.setTimeout(step, 180);
           return;
         }
         if (reduction > maxReduction) {
@@ -16807,12 +17665,21 @@
     }
 
     function renderShieldMatrix() {
+      const perfRunId = activeUiPerfRunId();
+      const matrixRenderSpan = perfRunId ? perfDebug.startSpan("dom.update", perfRunId, { component: "matrix" }) : null;
       const box = $("shieldMatrix");
-      if (!box || suppressRender) return;
-      if (!document.body.classList.contains("battle-results-visible") && !previewState.active) return;
+      if (!box || suppressRender) {
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
+        return;
+      }
+      if (!document.body.classList.contains("battle-results-visible") && !previewState.active) {
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
+        return;
+      }
       if (!left || !right) {
         box.innerHTML = "";
         $("matrixExplanation").innerHTML = "";
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
         return;
       }
       const previewRenderState = previewState.active && previewState.originalState ? snapshotFullSimulatorState() : null;
@@ -16825,6 +17692,7 @@
         $("matrixExplanation").innerHTML = "";
         scheduleShieldMatrixCalculation(signature);
         if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+        if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
         return;
       }
       const rows = [];
@@ -16853,6 +17721,7 @@
       renderMatrixExplanation(currentResult);
       renderMatchupInspector();
       if (previewRenderState) restoreFullSimulatorState(previewRenderState);
+      if (matrixRenderSpan) perfDebug.endSpan(matrixRenderSpan);
     }
 
     function toggleMatchupInspector() {
@@ -17185,6 +18054,8 @@
 
     function cachedShieldMatrixCell(signature, aShields, bShields) {
       const key = shieldMatrixCacheKey(signature, aShields, bShields);
+      const perfRunId = matrixPerfRuns?.get(signature)?.runId || activeUiPerfRunId();
+      if (perfRunId) perfDebug.recordCache("shield-matrix", shieldMatrixCache.has(key), { size: shieldMatrixCache.size }, perfRunId);
       if (!shieldMatrixCache.has(key)) {
         const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
         result.swingReady = false;
@@ -17232,6 +18103,7 @@
 
     function scheduleShieldMatrixCalculation(signature) {
       if (shieldMatrixPendingSignature === signature) return;
+      beginMatrixPerfRun(signature);
       if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
       shieldMatrixPendingSignature = signature;
       const currentA = Number($("p1Shields").value || 0);
@@ -17273,27 +18145,20 @@
             renderShieldMatrix();
             renderBattleReview();
           }
+          finishMatrixPerfRun(signature);
           return;
         }
         if (requestShieldMatrixCellCompute(signature, cell[0], cell[1], phase === "swing")) {
           shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 35 : 60);
           return;
         }
-        if (phase === "base") cachedShieldMatrixCell(signature, cell[0], cell[1]);
-        else enrichShieldMatrixCell(signature, cell[0], cell[1]);
-        if (document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
-          if (phase === "base" && shieldMatrixReady(signature)) renderShieldMatrix();
-          if (phase === "swing") {
-            renderShieldMatrix();
-            if (cell[0] === Number($("p1Shields").value || 0) && cell[1] === Number($("p2Shields").value || 0)) renderBattleReview();
-          }
-        }
-        shieldMatrixPendingTimer = setTimeout(step, phase === "base" ? 0 : 30);
+        shieldMatrixPendingTimer = setTimeout(step, 180);
       };
       shieldMatrixPendingTimer = setTimeout(step, 40);
     }
 
     function requestShieldMatrixCellCompute(signature, aShields, bShields, includeSwing) {
+      if (!matrixComputeWorker) initMatrixComputeWorker();
       if (!matrixComputeWorker) return false;
       const key = shieldMatrixCacheKey(signature, aShields, bShields);
       if (shieldMatrixComputing.has(key)) return true;
@@ -17301,8 +18166,12 @@
       if (!config) return false;
       shieldMatrixComputing.add(key);
       try {
+        const requestId = ++matrixComputeWorkerSeq;
+        registerWorkerPerfRequest(requestId, "live", signature);
+        const sendConfig = !matrixWorkerConfigSignatures.has(signature);
+        if (sendConfig) matrixWorkerConfigSignatures.add(signature);
         matrixComputeWorker.postMessage({
-          id: ++matrixComputeWorkerSeq,
+          id: requestId,
           key,
           signature,
           aShields,
@@ -17310,9 +18179,16 @@
           includeSwing,
           trace: debugBattleTracing,
           source: "live",
-          config
+          config: sendConfig ? config : null,
+          perfSentEpoch: perfDebugEnabled ? Date.now() : undefined
         });
         const timeout = setTimeout(() => {
+          const request = perfWorkerRequests?.get(requestId);
+          if (request) {
+            perfWorkerRequests.delete(requestId);
+            perfDebug.increment("worker.timeouts", 1, request.runId);
+            if (request.standalone) perfDebug.finishRun(request.runId, { timeout: true });
+          }
           shieldMatrixComputing.delete(key);
           shieldMatrixComputeTimeouts.delete(key);
           if (!shieldMatrixPendingTimer && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
@@ -17323,6 +18199,7 @@
         shieldMatrixComputeTimeouts.set(key, timeout);
       } catch (_) {
         matrixComputeWorker = null;
+        matrixWorkerConfigSignatures.delete(signature);
         shieldMatrixComputing.delete(key);
         return false;
       }
@@ -17399,6 +18276,7 @@
 
     function handleMatrixComputeWorkerMessage(event) {
       const message = event.data || {};
+      completeWorkerPerfRequest(message);
       if (message.source === "meta") {
         handleMetaComputeWorkerMessage(message);
         return;
@@ -17464,8 +18342,17 @@
 
     function cancelShieldMatrixCalculation() {
       if (shieldMatrixPendingTimer) clearTimeout(shieldMatrixPendingTimer);
+      const cancelledSignature = shieldMatrixPendingSignature;
       shieldMatrixPendingTimer = null;
       shieldMatrixPendingSignature = "";
+      if (perfDebugEnabled && cancelledSignature) {
+        const entry = matrixPerfRuns.get(cancelledSignature);
+        if (entry) {
+          perfDebug.endSpan(entry.span);
+          perfDebug.finishRun(entry.runId, { cancelled: true });
+          matrixPerfRuns.delete(cancelledSignature);
+        }
+      }
     }
 
     function trimShieldMatrixCache() {
@@ -17479,7 +18366,15 @@
     }
 
     function shieldMatrixSignature() {
-      return ["p1", "p2"].map((prefix, index) => {
+      const inputKey = matrixInputIdentity();
+      const perfRunId = activeUiPerfRunId();
+      if (matrixSignatureCache?.key === inputKey) {
+        if (perfRunId) perfDebug.recordCache("matrix-signature", true, { size: 1 }, perfRunId);
+        return matrixSignatureCache.value;
+      }
+      if (perfRunId) perfDebug.recordCache("matrix-signature", false, { size: matrixSignatureCache ? 1 : 0 }, perfRunId);
+      const signatureSpan = perfRunId ? perfDebug.startSpan("serialization.signature", perfRunId) : null;
+      const value = ["p1", "p2"].map((prefix, index) => {
         const pokemon = findPokemon($(`${prefix}Pokemon`).value);
         if (!pokemon) return `${index}:missing`;
         const stats = selectedStats(prefix, pokemon);
@@ -17497,6 +18392,12 @@
           shieldMode: $(`${prefix}ShieldMode`).value
         });
       }).join("|");
+      if (signatureSpan) {
+        const duration = perfDebug.endSpan(signatureSpan);
+        perfDebug.recordSerialization("serialize", duration, value.length * 2, perfRunId);
+      }
+      matrixSignatureCache = { key: inputKey, value };
+      return value;
     }
 
     function handleMatrixClick(event) {
@@ -17687,6 +18588,8 @@
       const snapshot = snapshotBattleState();
       const previousContinuationMode = chargedContinuationMode;
       const previousIntelligenceContext = battleIntelligenceRuntimeContext;
+      (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
+      liveMatchupPlannerTable.clear();
       battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
       chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
@@ -18106,13 +19009,24 @@
 
     function simulateFastMoveAdvantageWinner(side, fastMoves, aShields, bShields, policy = null) {
       const snapshot = snapshotBattleState();
-      const result = simulateShieldMatrixCell(aShields, bShields, {
-        includeSwing: false,
-        preFastAdvantage: { side, fastMoves },
-        policy,
-        continuationMode: "flip-analysis"
-      });
-      restoreBattleState(snapshot);
+      const previousTraceEnabled = battleDecisionTraceEnabled;
+      let result;
+      try {
+        // Swing candidates are counterfactual battles, not actions from the
+        // displayed battle. Recording them in the root action lifecycle both
+        // contaminates the evidence chain and changes legacy time-budget
+        // behavior through tracing overhead.
+        battleDecisionTraceEnabled = false;
+        result = simulateShieldMatrixCell(aShields, bShields, {
+          includeSwing: false,
+          preFastAdvantage: { side, fastMoves },
+          policy,
+          continuationMode: "flip-analysis"
+        });
+      } finally {
+        battleDecisionTraceEnabled = previousTraceEnabled;
+        restoreBattleState(snapshot);
+      }
       const isAWin = result.details && result.details.winnerEdge > 0;
       const isBWin = result.details && result.details.winnerEdge < 0;
       return isAWin ? "A" : isBWin ? "B" : null;
@@ -18786,6 +19700,8 @@
     }
 
     function renderTimeline() {
+      const perfRunId = activeUiPerfRunId();
+      const timelineSpan = perfRunId ? perfDebug.startSpan("timeline.generation", perfRunId) : null;
       renderTimelineZoomControl();
       if (!left || !right) {
         $("timelineScroll")?.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
@@ -18796,6 +19712,7 @@
         $("p2Timeline").innerHTML = "";
         hideTimelineHover();
         hideTimelineMoveTooltip();
+        if (timelineSpan) perfDebug.endSpan(timelineSpan);
         return;
       }
       renderTimelinePokemonZone("p1", left);
@@ -18816,6 +19733,7 @@
       renderTechnicalTimelineState();
       if (isFit) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+      if (timelineSpan) perfDebug.endSpan(timelineSpan);
     }
 
     function renderTimelinePokemonZone(prefix, combatant) {
