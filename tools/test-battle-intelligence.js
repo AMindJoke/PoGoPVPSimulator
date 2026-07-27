@@ -137,6 +137,30 @@ assert.equal(
 );
 
 Intelligence.clearCache();
+const guaranteedEffectOrderingState = state({
+  hpB: 90,
+  energyA: 60,
+  readyA: 5,
+  readyB: 7,
+  chargedA: [
+    move("BUFF", 35, 30, { buffApplyChance: 1, buffs: [0, 1], buffTarget: "self" }),
+    move("NUKE", 55, 60)
+  ]
+});
+const guaranteedEffectOrdering = select(guaranteedEffectOrderingState, {
+  chargedTimingOptimization: false,
+  compactDamage: (_side, compactMove) => Number(compactMove?.damage || 0),
+  compactSurvivalProjection: () => ({ turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 }),
+  compactCmpAdvantage: 10
+});
+assert.equal(
+  guaranteedEffectOrdering.action.moveId,
+  "NUKE",
+  "PVPOKE_PARITY must apply guaranteed effects inside route simulation, not promote effect moves as an extra post-processing heuristic."
+);
+assert.equal(guaranteedEffectOrdering.fallbackUsed, false);
+
+Intelligence.clearCache();
 const twoCheapRouteState = state({
   hpA: 100,
   hpB: 100,
@@ -288,8 +312,8 @@ const effectDecision = select(effectState, {
   chargedTimingOptimization: false,
   evaluateContinuation: action => ({ score: action.moveId === "BUFF" ? 800 : 600, evaluatedStates: 4 })
 });
-assert.equal(effectDecision.action.moveId, "BUFF");
-assert(effectDecision.principlesTriggered.includes("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"));
+assert.equal(effectDecision.action.moveId, "DIRECT");
+assert(!effectDecision.principlesTriggered.includes("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"));
 
 const secondBuff = move("SECOND_BUFF", 40, 25, { buffApplyChance: 1, buffs: [-1, 0] });
 const budgetState = state({ energyA: 40, chargedA: [buff, secondBuff] });

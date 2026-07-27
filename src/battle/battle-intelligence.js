@@ -1741,18 +1741,6 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
     }
 
-    const bestImmediateDamage = Math.max(...moves.map(move => move.damage), 0);
-    const approvedGuaranteedEffect = moves.find(move =>
-      move.guaranteedEffect
-      && !move.selfDebuffing
-      && move.damage >= bestImmediateDamage * (numeric(opponent.shields) > 0 ? .35 : .4)
-      && numeric(actor.energy) >= move.energyCost
-    );
-    if (approvedGuaranteedEffect) {
-      selected = approvedGuaranteedEffect;
-      triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
-    }
-
     const opponentBest = pvpokeBestChargedMove(opponentMoves);
     if (selected.selfDebuffing && numeric(actor.shields) === 0 && numeric(actor.energy) < 100 && opponentBest
       && numeric(opponent.energy) >= opponentBest.energyCost

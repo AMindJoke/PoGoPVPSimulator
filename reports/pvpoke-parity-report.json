@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-07-27",
-  "branch": "perf-debug-work",
+  "branch": "main",
   "pvpokeRevision": "5e1e3d971369a47aaf3e7247f50710d80205d570",
   "defaultPlannerMode": "PVPOKE_PARITY",
   "principles": {
@@ -19,16 +19,16 @@
     "activeHybridDecisionOwners": 0,
     "supportedFallbackUsage": {
       "used": 0,
-      "total": 150,
+      "total": 160,
       "percent": 0
     },
     "speciesSpecificRules": 0
   },
   "firstDecisionCorpus": {
-    "actionStates": 140,
+    "actionStates": 150,
     "shieldStates": 10,
-    "total": 150,
-    "passed": 150,
+    "total": 160,
+    "passed": 160,
     "failed": 0,
     "ratePercent": 100,
     "categories": {
@@ -39,7 +39,7 @@
       "shield": { "passed": 10, "total": 10, "ratePercent": 100 },
       "bait": { "passed": 10, "total": 10, "ratePercent": 100 },
       "effects": { "passed": 20, "total": 20, "ratePercent": 100 },
-      "moveOrdering": { "passed": 30, "total": 30, "ratePercent": 100 }
+      "moveOrdering": { "passed": 40, "total": 40, "ratePercent": 100 }
     }
   },
   "historicalGoldenCorpus": {

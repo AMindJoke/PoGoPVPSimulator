@@ -1,6 +1,6 @@
 # PvPoke planner parity report
 
-Generated on 2026-07-27 for branch `perf-debug-work`.
+Generated on 2026-07-27 for branch `main`.
 
 ## Result
 
@@ -57,11 +57,11 @@ The following previous decision owners are unreachable in `PVPOKE_PARITY`:
 
 The older principle-advanced implementation remains isolated behind
 `PRINCIPLE_ADVANCED`; it is not selected by the UI, Matrix or worker. Runtime
-fallback usage in the supported parity corpus is 0/150 (0%).
+fallback usage in the supported parity corpus is 0/160 (0%).
 
 ## First-decision corpus
 
-The pinned fixture corpus contains 140 action states and 10 shield states. It
+The pinned fixture corpus contains 150 action states and 10 shield states. It
 compares the action type, Charged Move ID, intent, principle ID, direct authority,
 fallback state and planner mode.
 
@@ -74,12 +74,14 @@ fallback state and planner mode.
 | Shield / no shield | 10 | 10 | 100% |
 | Bait | 10 | 10 | 100% |
 | Guaranteed and self effects | 20 | 20 | 100% |
-| Move/route ordering | 30 | 30 | 100% |
-| Entire corpus | 150 | 150 | 100% |
+| Move/route ordering | 40 | 40 | 100% |
+| Entire corpus | 160 | 160 | 100% |
 
 These category buckets are a reporting partition of the fixture families.
 Individual fixture metadata also records shields, CMP, pending Fast impacts,
-Fast durations and source branches.
+Fast durations, guaranteed-effect route handling and source branches. The corpus
+now distinguishes applying guaranteed effects inside PvPoke's route simulation
+from incorrectly promoting an effect move during post-processing.
 
 The existing 30-case project golden corpus currently passes 16/30 of its
 historical winner/reason-code assertions. This is deliberately not reported as

@@ -172,7 +172,7 @@ function buildActionFixtures() {
     source: "ActionLogic:488-507",
     categories: ["compact", "farm-down"]
   }));
-  addFamily("guaranteed-effect", 10, index => ({
+  addFamily("guaranteed-defense-effect-no-promotion", 10, index => ({
     state: mergeState(index, {
       energy: 40,
       chargedMoves: [
@@ -181,8 +181,21 @@ function buildActionFixtures() {
       ]
     }, { hp: 100, maxHp: 100 }),
     context: { chargedTimingOptimization: false },
+    expected: { type: "charged_move", moveId: "DIRECT", principleId: "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS" },
+    source: "ActionLogic:866-878; canonical effect-target handling must not add a post-processing promotion",
+    categories: ["move-ordering", "guaranteed-effect"]
+  }));
+  addFamily("guaranteed-attack-effect-route", 10, index => ({
+    state: mergeState(index, {
+      energy: 40,
+      chargedMoves: [
+        move("BUFF", 40, 46 + (index % 3), { buffApplyChance: 1, buffs: [1, 0], buffTarget: "self" }),
+        move("DIRECT", 40, 45)
+      ]
+    }, { hp: 100, maxHp: 100 }),
+    context: { chargedTimingOptimization: false },
     expected: { type: "charged_move", moveId: "BUFF", principleId: "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS" },
-    source: "approved canonical effect-target adaptation",
+    source: "ActionLogic:463-538",
     categories: ["effects", "guaranteed-effect"]
   }));
   addFamily("cmp-forced-two-cheap", 10, index => {

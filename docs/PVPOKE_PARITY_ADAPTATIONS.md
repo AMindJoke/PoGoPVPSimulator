@@ -16,5 +16,6 @@ Not approved for `PVPOKE_PARITY`:
 - deeper minimax or selective deep search;
 - probabilistic bait prediction in deterministic Matrix battles;
 - scalar tactical/continuation bonuses;
+- promoting a guaranteed-effect move outside PvPoke's route simulation and post-processing order;
 - matchup-, species-, move-, IV-, or winner-specific patches;
 - preserving a previous PoGoPVPSimulator winner when PvPoke selects another line.
