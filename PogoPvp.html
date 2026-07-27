@@ -12725,6 +12725,7 @@
         : false;
       const result = api.selectShieldAction({
         policy,
+        plannerMode: "PVPOKE_PARITY",
         intelligencePolicy: battleIntelligencePolicy(),
         callerContext: battleIntelligenceCallerContext(),
         state: {
@@ -12744,6 +12745,48 @@
             && chargedMoveEffectSummary(candidate).includes("self DEF +")
           )
         },
+        parityThreat: attacker ? (() => {
+          const ownBuffs = move?.buffTarget === "both"
+            ? move?.buffsSelf
+            : move?.buffTarget === "opponent" ? null : move?.buffs;
+          const opponentBuffs = move?.buffTarget === "both"
+            ? move?.buffsOpponent
+            : move?.buffTarget === "opponent" ? move?.buffs : null;
+          const guaranteed = Number(move?.buffApplyChance || 0) >= 1;
+          const effectStages = {
+            actorAttackStage: Number(attacker.attackStage || 0) + (guaranteed ? Number(ownBuffs?.[0] || 0) : 0),
+            actorDefenseStage: Number(attacker.defenseStage || 0) + (guaranteed ? Number(ownBuffs?.[1] || 0) : 0),
+            defenderAttackStage: Number(defender.attackStage || 0) + (guaranteed ? Number(opponentBuffs?.[0] || 0) : 0),
+            defenderDefenseStage: Number(defender.defenseStage || 0) + (guaranteed ? Number(opponentBuffs?.[1] || 0) : 0)
+          };
+          return {
+            attacker: {
+              energy: attacker.energy,
+              baiting: attacker.baiting,
+              fastMove: attacker.fast
+            },
+            defender: {
+              hp: defender.hp,
+              maxHp: defender.maxHp,
+              shields: defender.shields
+            },
+            move: {
+              id: move?.id || null,
+              energyCost: move?.energyCost || 0,
+              selfAttackDebuffing: Number(ownBuffs?.[0] || 0) < 0,
+              damage: unshieldedDamage
+            },
+            fastDamage: attacker.fast ? estimate(attacker, defender, attacker.fast) : 0,
+            fastDamageAfterMoveEffect: attacker.fast
+              ? principleDamageAtStages(attacker, defender, attacker.fast, "actor", effectStages)
+              : 0,
+            attackerChargedMoves: validChargedMoves(attacker).map(candidate => ({
+              id: candidate.id,
+              energyCost: candidate.energyCost,
+              damage: estimate(attacker, defender, candidate)
+            }))
+          };
+        })() : null,
         counterfactual
       });
       return {
@@ -14029,6 +14072,7 @@
         side: attacker.trainer,
         legalActions,
         policy: battleIntelligencePolicy(),
+        plannerMode: "PVPOKE_PARITY",
         context: {
           callerContext: battleIntelligenceCallerContext(),
           chargedTimingOptimization: true,
@@ -14055,6 +14099,9 @@
           willOpponentShield(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return move ? shouldShield(defender, move, estimate(attacker, defender, move), attacker) : false;
+          },
+          willActorShieldAgainstOpponent(move) {
+            return move ? shouldShield(attacker, move, estimate(defender, attacker, move), defender) : false;
           },
           hasGuaranteedEffect(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;

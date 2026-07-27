@@ -76,11 +76,12 @@ for (const run of runs) {
   assert.equal(run.finalState.A.energy, 2);
   assert.equal(run.finalState.B.hp, 0);
   assert.equal(run.finalState.B.energy, 45);
-  assert.notDeepEqual(
+  assert.deepEqual(
     run.charged.filter(event => event.side === "A").map(event => event.moveId),
-    ["AQUA_TAIL", "AQUA_TAIL", "AQUA_TAIL"],
-    "Planner must not collapse the winning default line into three Aqua Tails."
+    ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"],
+    "Planner must match PvPoke's Aqua Tail, Mud Bomb, Aqua Tail sequence."
   );
+  assert.equal(run.result.decisionTrace.decisions[0].principleResult.evidence.plannerMode, "PVPOKE_PARITY");
 }
 
 const { config, result, finalState, charged } = runs[0];
@@ -116,5 +117,5 @@ if (process.argv.includes("--json")) {
     sampledLines: runs.map(run => run.charged.map(event => [event.side, event.turn, event.moveId]))
   }, null, 2));
 } else {
-  console.log("Quagsire/Corsola PvPoke default regression passed: Quagsire wins without the triple Aqua Tail line.");
+  console.log("Quagsire/Corsola PvPoke default regression passed: Aqua Tail, Mud Bomb, Aqua Tail; Quagsire wins.");
 }

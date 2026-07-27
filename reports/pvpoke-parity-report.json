@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-07-27",
+  "branch": "perf-debug-work",
+  "pvpokeRevision": "5e1e3d971369a47aaf3e7247f50710d80205d570",
+  "defaultPlannerMode": "PVPOKE_PARITY",
+  "principles": {
+    "total": 43,
+    "classifications": {
+      "EXACT_PARITY": 36,
+      "INTENTIONAL_ADAPTATION": 7,
+      "NOT_MIGRATED": 0,
+      "PARTIAL_PARITY": 0,
+      "MECHANICS_BLOCKED": 0
+    }
+  },
+  "runtime": {
+    "contexts": ["battle", "matrix", "offline", "scenario-review", "worker"],
+    "samePlannerFactory": true,
+    "activeHybridDecisionOwners": 0,
+    "supportedFallbackUsage": {
+      "used": 0,
+      "total": 150,
+      "percent": 0
+    },
+    "speciesSpecificRules": 0
+  },
+  "firstDecisionCorpus": {
+    "actionStates": 140,
+    "shieldStates": 10,
+    "total": 150,
+    "passed": 150,
+    "failed": 0,
+    "ratePercent": 100,
+    "categories": {
+      "availability": { "passed": 20, "total": 20, "ratePercent": 100 },
+      "tactical": { "passed": 30, "total": 30, "ratePercent": 100 },
+      "timing": { "passed": 10, "total": 10, "ratePercent": 100 },
+      "farm": { "passed": 20, "total": 20, "ratePercent": 100 },
+      "shield": { "passed": 10, "total": 10, "ratePercent": 100 },
+      "bait": { "passed": 10, "total": 10, "ratePercent": 100 },
+      "effects": { "passed": 20, "total": 20, "ratePercent": 100 },
+      "moveOrdering": { "passed": 30, "total": 30, "ratePercent": 100 }
+    }
+  },
+  "historicalGoldenCorpus": {
+    "total": 30,
+    "passed": 16,
+    "failed": 14,
+    "ratePercent": 53.3,
+    "classification": "HISTORICAL_PROJECT_EXPECTATIONS_NOT_PVPOKE_PARITY",
+    "validationDurationMs": 707
+  },
+  "quagsireCorsola00": {
+    "beforeFirstDivergence": "SECOND_CHARGED_ACTION",
+    "beforeProjectSequence": ["AQUA_TAIL", "AQUA_TAIL", "AQUA_TAIL"],
+    "pvpokeSequence": ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"],
+    "afterProjectSequence": ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"],
+    "projectTurnsZeroBased": [8, 21, 28],
+    "pvpokeUiTurnsOneBased": [9, 22, 29],
+    "winner": "quagsire_shadow",
+    "remainingHp": 13,
+    "remainingEnergy": 2,
+    "matchupSpecificPatch": false
+  },
+  "remainingDifferences": {
+    "intentional": [
+      "canonical effect target handling",
+      "Unified Turn Resolution pending Fast and CMP representation",
+      "explicit one-Fast re-plan lifecycle",
+      "generic protection capability",
+      "zero-based project trace turns",
+      "deterministic mode excludes randomized action weighting",
+      "species-specific Melmetal/Cresselia PvPoke branch disabled; generic MOVE-041 bandaids retained"
+    ],
+    "mechanicsBlockedSupportedStates": []
+  },
+  "tests": {
+    "status": "PASS",
+    "localTestFilesPassed": 34,
+    "localTestFilesFailed": 0,
+    "names": [
+      "test-pvpoke-principle-parity-audit",
+      "test-pvpoke-first-decision-parity",
+      "test-pvpoke-runtime-parity",
+      "test-principle-engine-complete-migration",
+      "test-battle-intelligence",
+      "test-principle-trace-contract",
+      "test-timing-compatibility",
+      "test-turn-resolution-engine",
+      "test-battle-principles-registry",
+      "test-quagsire-corsola-default-pvpoke",
+      "test-perf-debug"
+    ]
+  }
+}

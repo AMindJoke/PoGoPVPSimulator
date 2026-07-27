@@ -34,6 +34,11 @@ function createPvPeakBattleIntelligenceApi() {
     WAIT_ONE_FAST: "WAIT_ONE_FAST",
     NO_TIMING_PREFERENCE: "NO_TIMING_PREFERENCE"
   });
+  const PLANNER_MODES = Object.freeze({
+    PVPOKE_PARITY: "PVPOKE_PARITY",
+    PRINCIPLE_ADVANCED: "PRINCIPLE_ADVANCED"
+  });
+  const DEFAULT_PLANNER_MODE = PLANNER_MODES.PVPOKE_PARITY;
   const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze([
     "availability",
     "policy",
@@ -336,6 +341,10 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function evaluatePrinciples(input = {}) {
+    const plannerMode = String(input.plannerMode || DEFAULT_PLANNER_MODE).toUpperCase();
+    if (plannerMode === PLANNER_MODES.PVPOKE_PARITY) {
+      return evaluatePvPokeParityPrinciples(input);
+    }
     const state = input.state;
     const side = input.side;
     const actor = state?.sides?.[side] || {};
@@ -598,6 +607,7 @@ function createPvPeakBattleIntelligenceApi() {
       legalActions,
       candidates,
       policy: resolvePolicy(input.policy),
+      plannerMode: input.plannerMode || DEFAULT_PLANNER_MODE,
       context: input.mechanicsCallbacks || input.context || {}
     });
   }
@@ -690,6 +700,1124 @@ function createPvPeakBattleIntelligenceApi() {
       || actionEnergyCost(a.action) - actionEnergyCost(b.action)
       || stableCandidateOrder(a, b)
     )[0] || null;
+  }
+
+  function evaluatePvPokeParityPrinciples(input = {}) {
+    const state = input.state || {};
+    const side = input.side;
+    const actor = state.sides?.[side] || {};
+    const opponentSide = opponentOf(side);
+    const opponent = state.sides?.[opponentSide] || {};
+    const candidates = input.candidates || [];
+    const fast = candidates.find(candidate => candidate.action.type === ACTION_TYPES.FAST_MOVE) || null;
+    const chargedCandidates = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
+    const context = input.context || {};
+    const moves = pvpokeActiveChargedMoves(actor, opponent, context, side);
+    const opponentMoves = pvpokeActiveChargedMoves(opponent, actor, context, opponentSide, true);
+    const readiness = chargedReadiness(actor, state, side);
+    const allPrinciples = [
+      "AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE",
+      "POLICY-003_EXPLICIT_FARM_ENERGY_MODE", "ROUTE-004_CHARGED_READINESS_CALCULATION",
+      "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON", "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT",
+      "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE", "TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL",
+      "TACTICAL-009_DO_NOT_THROW_WHEN_FAST_ALREADY_KOS", "SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER",
+      "TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
+      "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION", "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION",
+      "TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS", "TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS",
+      "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE",
+      "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS",
+      "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE",
+      "TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL",
+      "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN",
+      "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS", "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE",
+      "BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT", "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE",
+      "ROUTE-026_BUILD_TO_SELECTED_MOVE", "EFFECT-027_STACK_SELF_DEBUFFING_MOVES",
+      "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+      "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT", "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS",
+      "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS", "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+      "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD", "SEARCH-035_PRUNE_DOMINATED_STATES",
+      "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES", "BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE",
+      "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD",
+      "BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE",
+      "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS",
+      "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE",
+      "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY",
+      "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"
+    ];
+    const triggered = ["ROUTE-004_CHARGED_READINESS_CALCULATION"];
+    const rejected = [];
+    const finish = (candidate, category, intent, evidence = {}) => ({
+      ...resolvedPrinciple(candidate, category, intent, triggered, rejected, {
+        plannerMode: PLANNER_MODES.PVPOKE_PARITY,
+        pvpokeRevision: "5e1e3d971369a47aaf3e7247f50710d80205d570",
+        chargedReadiness: readiness,
+        ...evidence
+      }),
+      principlesEvaluated: allPrinciples
+    });
+
+    if (!moves.length) {
+      triggered.push("AVAIL-001_NO_ACTIVE_CHARGED_MOVE");
+      return finish(fast || candidates[0] || null, "availability", "FAST_MOVE", { sourceBranch: "ActionLogic:15-18" });
+    }
+    rejected.push("AVAIL-001_NO_ACTIVE_CHARGED_MOVE");
+
+    const farmEnergy = context.farmEnergy === true
+      || actor.linePolicy === "farm-energy"
+      || actor.mechanicState?.farmEnergy === true;
+    if (numeric(actor.energy) < moves[0].energyCost || farmEnergy) {
+      triggered.push(numeric(actor.energy) < moves[0].energyCost
+        ? "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE"
+        : "POLICY-003_EXPLICIT_FARM_ENERGY_MODE");
+      return finish(fast || candidates[0] || null, "availability", "FAST_MOVE", {
+        sourceBranch: "ActionLogic:20-23",
+        cheapestChargedCost: moves[0].energyCost,
+        farmEnergy
+      });
+    }
+    rejected.push("AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE", "POLICY-003_EXPLICIT_FARM_ENERGY_MODE");
+
+    const pendingOwnFast = maximumPendingImpactDamage(state, opponentSide, side);
+    if (fast && pendingOwnFast >= numeric(opponent.hp) && numeric(opponent.hp) > 0) {
+      triggered.push("TACTICAL-009_DO_NOT_THROW_WHEN_FAST_ALREADY_KOS");
+      return finish(fast, "tactical", "FAST_MOVE", {
+        sourceBranch: "canonical pending Fast adaptation",
+        pendingOwnFast,
+        opponentHp: opponent.hp
+      });
+    }
+    rejected.push("TACTICAL-009_DO_NOT_THROW_WHEN_FAST_ALREADY_KOS");
+
+    const canonicalPendingLethal = nextPendingLethal(state, side);
+    if (canonicalPendingLethal && chargedCandidates.length) {
+      const forcedPending = pvpokeForcedThrow({
+        actor,
+        opponent,
+        moves,
+        chargedCandidates,
+        survival: {
+          turnsToLive: 0,
+          winsCmp: numeric(actor.attack) >= numeric(opponent.attack)
+        }
+      });
+      if (forcedPending?.candidate) {
+        triggered.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT");
+        if (forcedPending.twoCopies) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+        return finish(forcedPending.candidate, "tactical", "THROW_BEFORE_FAINT", {
+          sourceBranch: "Unified Turn Resolution pending-impact adaptation",
+          pendingEventId: canonicalPendingLethal.id,
+          resolveTurn: canonicalPendingLethal.resolveTurn,
+          forcedThrow: forcedPending.evidence
+        });
+      }
+    }
+
+    const survival = pvpokeSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context });
+    triggered.push("SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON");
+    const forced = pvpokeForcedThrow({ actor, opponent, moves, chargedCandidates, survival, context });
+    if (forced) {
+      triggered.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT");
+      if (forced.twoCopies) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+      else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+      return finish(forced.candidate, "tactical", "THROW_BEFORE_FAINT", {
+        sourceBranch: "ActionLogic:142-200",
+        survival,
+        forcedThrow: forced.evidence
+      });
+    }
+    rejected.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT", "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+
+    if ((context.canonicalOpponentLethalBeforeNextWindow === true
+      || context.opponentLethalBeforeNextWindow === true) && chargedCandidates.length) {
+      const urgent = [...chargedCandidates].sort((a, b) =>
+        damageFor(b, context) - damageFor(a, context)
+        || actionEnergyCost(a.action) - actionEnergyCost(b.action)
+        || stableCandidateOrder(a, b)
+      )[0];
+      triggered.push(
+        "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
+        "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"
+      );
+      return finish(urgent, "tactical", "THROW_BEFORE_OPPONENT_LETHAL", {
+        sourceBranch: "canonical survival-horizon adaptation",
+        survival
+      });
+    }
+
+    const lethal = pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context });
+    if (lethal) {
+      triggered.push("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL", "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
+      return finish(lethal.candidate, "tactical", "IMMEDIATE_LETHAL", {
+        sourceBranch: "ActionLogic:211-230",
+        damage: lethal.move.damage,
+        moveId: lethal.move.id
+      });
+    }
+    rejected.push("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL");
+
+    const protection = opponent.mechanicState?.chargedProtection;
+    if (numeric(opponent.shields) <= 0 && protection?.active === true) {
+      const breaker = moves.find(move => numeric(actor.energy) >= move.energyCost && !move.selfDebuffing);
+      if (breaker) {
+        triggered.push("SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER");
+        return finish(pvpokeCandidateForMove(breaker, chargedCandidates), "tactical", "BREAK_PROTECTION", {
+          sourceBranch: "ActionLogic:236-247",
+          mechanicCapability: protection.capability || "charged-damage-protection"
+        });
+      }
+    }
+    rejected.push("SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER");
+
+    const timing = pvpokeTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival });
+    triggered.push(...timing.triggered);
+    rejected.push(...timing.rejected);
+    if (timing.waitOneFast && fast) {
+      return finish(fast, "timing", PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST, {
+        sourceBranch: "ActionLogic:255-359",
+        timing: timing.evidence,
+        survival
+      });
+    }
+
+    const longMatch = pvpokeLongMatchDecision({
+      actor, opponent, moves, fast, chargedCandidates, context
+    });
+    triggered.push(...longMatch.triggered);
+    rejected.push(...longMatch.rejected);
+    if (longMatch.resolved) {
+      return finish(longMatch.candidate, longMatch.category, longMatch.intent, {
+        sourceBranch: "ActionLogic:365-412",
+        timing: timing.evidence,
+        longMatch: longMatch.evidence
+      });
+    }
+
+    const compact = pvpokeCompactDecision({
+      state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context
+    });
+    triggered.push(...compact.triggered);
+    rejected.push(...compact.rejected);
+    if (compact.candidate) {
+      return finish(compact.candidate, compact.category, compact.intent, {
+        sourceBranch: "ActionLogic:414-984",
+        timing: timing.evidence,
+        compact: compact.evidence,
+        compactRoute: compact.evidence?.bestRoute ? {
+          bestRoute: compact.evidence.bestRoute
+        } : null,
+        twoCheapRoute: compact.evidence?.twoCheapRoute || { retained: false }
+      });
+    }
+
+    const errorCandidate = fast || candidates[0] || null;
+    return finish(errorCandidate, "route", "PVPOKE_EXPLICIT_UNSUPPORTED_FAST", {
+      sourceBranch: "ActionLogic compact planner produced no guaranteed route",
+      unsupportedReason: compact.evidence?.reason || "NO_GUARANTEED_ROUTE"
+    });
+  }
+
+  function pvpokeActiveChargedMoves(actor, opponent, context, side, opponentPerspective = false) {
+    const moves = (actor.chargedMoves || []).filter(Boolean).map((move, index) => {
+      const action = { type: ACTION_TYPES.CHARGED_MOVE, side, moveId: move.id || move.moveId || null, move };
+      const damage = opponentPerspective && typeof context.estimateOpponentDamage === "function"
+        ? Math.max(0, numeric(context.estimateOpponentDamage(move)))
+        : typeof context.estimateDamage === "function"
+          ? Math.max(0, numeric(context.estimateDamage(action)))
+          : Math.max(0, numeric(move.damage ?? move.power));
+      const energyCost = Math.max(1, numeric(move.energyCost ?? move.energy, 1));
+      const flags = pvpokeMoveFlags(move);
+      return {
+        ...move,
+        original: move,
+        id: move.id || move.moveId || `charged-${index}`,
+        index,
+        damage,
+        energyCost,
+        dpe: damage / energyCost,
+        ...flags
+      };
+    });
+    return moves.sort((a, b) => a.energyCost - b.energyCost || a.index - b.index);
+  }
+
+  function pvpokeMoveFlags(move = {}) {
+    const own = move.buffTarget === "both" ? move.buffsSelf
+      : move.buffTarget === "opponent" ? null : move.buffs;
+    const selfDebuffing = hasHarmfulSelfEffect({ move });
+    const selfBuffing = numeric(move.buffApplyChance) > 0
+      && Array.isArray(own)
+      && own.some(value => numeric(value) > 0);
+    return {
+      selfDebuffing,
+      selfBuffing,
+      selfAttackDebuffing: selfDebuffing && numeric(own?.[0]) < 0,
+      selfDefenseDebuffing: selfDebuffing && numeric(own?.[1]) < 0,
+      guaranteedEffect: numeric(move.buffApplyChance) >= 1
+        && [move.buffs, move.buffsSelf, move.buffsOpponent].some(values =>
+          Array.isArray(values) && values.some(value => numeric(value) !== 0)
+        )
+    };
+  }
+
+  function pvpokeCandidateForMove(move, chargedCandidates) {
+    return chargedCandidates.find(candidate => candidate.action.moveId === move.id)
+      || chargedCandidates.find(candidate => candidate.action.move === move.original)
+      || null;
+  }
+
+  function pvpokeSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context }) {
+    const oppFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("opponent")
+        : opponent.fastMove?.damage
+    ));
+    const ownFastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const oppFastTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const winsCmp = numeric(actor.attack) >= numeric(opponent.attack);
+    const currentTurn = numeric(state.currentTurn);
+    const opponentCooldown = Math.max(0, numeric(opponent.readyTurn) - currentTurn);
+    const queue = [{
+      hp: numeric(actor.hp) - (opponentCooldown > 0 ? oppFastDamage : 0),
+      opEnergy: clamp(numeric(opponent.energy) + (opponentCooldown > 0 ? numeric(opponent.fastMove?.energyGain) : 0), 0, 100),
+      turn: opponentCooldown,
+      shields: numeric(actor.shields)
+    }];
+    let turnsToLive = Number.POSITIVE_INFINITY;
+    let states = 0;
+    while (queue.length && states < 128) {
+      states++;
+      const current = queue.shift();
+      if (current.hp > oppFastDamage) {
+        const actionBoundary = winsCmp ? ownFastTurns : ownFastTurns + 1;
+        if (current.turn > actionBoundary) continue;
+      }
+      if (current.shields > 0) {
+        const cheapest = opponentMoves[0];
+        if (cheapest && current.opEnergy >= cheapest.energyCost) {
+          queue.unshift({
+            hp: current.hp - 1,
+            opEnergy: current.opEnergy - cheapest.energyCost,
+            turn: current.turn + 1,
+            shields: current.shields - 1
+          });
+        }
+      } else {
+        for (const move of opponentMoves) {
+          if (current.opEnergy < move.energyCost) continue;
+          if (move.damage >= current.hp) {
+            turnsToLive = Math.min(current.turn, turnsToLive);
+            if (numeric(actor.attack) > numeric(opponent.attack)
+              && oppFastTurns % ownFastTurns === 0) turnsToLive++;
+            break;
+          }
+          queue.unshift({
+            hp: current.hp - move.damage,
+            opEnergy: current.opEnergy - move.energyCost,
+            turn: current.turn + 1,
+            shields: current.shields
+          });
+        }
+      }
+      if (current.hp - oppFastDamage <= 0) {
+        turnsToLive = Math.min(current.turn + oppFastTurns, turnsToLive);
+        break;
+      }
+      queue.unshift({
+        hp: current.hp - oppFastDamage,
+        opEnergy: clamp(current.opEnergy + numeric(opponent.fastMove?.energyGain), 0, 100),
+        turn: current.turn + oppFastTurns,
+        shields: current.shields
+      });
+    }
+    if (numeric(actor.hp) <= oppFastDamage * 2 && oppFastTurns === 1) turnsToLive--;
+    if (opponentCooldown > 0 && oppFastTurns > 1 && numeric(actor.hp) <= oppFastDamage) {
+      turnsToLive = opponentCooldown;
+      const ownFastDamage = typeof context.estimateFastDamage === "function"
+        ? numeric(context.estimateFastDamage("actor"))
+        : numeric(actor.fastMove?.damage);
+      if (numeric(opponent.hp) > ownFastDamage) turnsToLive--;
+    }
+    if (opponentCooldown === 0 && oppFastTurns <= ownFastTurns + 1 && numeric(actor.hp) <= oppFastDamage) {
+      const ownFastDamage = typeof context.estimateFastDamage === "function"
+        ? numeric(context.estimateFastDamage("actor"))
+        : numeric(actor.fastMove?.damage);
+      if (numeric(opponent.hp) > ownFastDamage) turnsToLive--;
+    }
+    return {
+      turnsToLive,
+      exploredStates: states,
+      actorFastTurns: ownFastTurns,
+      opponentFastTurns: oppFastTurns,
+      opponentFastDamage: oppFastDamage,
+      opponentCooldown,
+      winsCmp
+    };
+  }
+
+  function pvpokeForcedThrow({ actor, opponent, moves, chargedCandidates, survival }) {
+    const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const lethalWindow = survival.turnsToLive < fastTurns
+      || (survival.turnsToLive === fastTurns && !survival.winsCmp)
+      || (survival.turnsToLive === fastTurns
+        && numeric(actor.hp) <= numeric(survival.opponentFastDamage));
+    if (!lethalWindow) return null;
+    let selected = null;
+    let comparedDamage = -1;
+    let twoCopies = false;
+    for (let index = moves.length - 1; index >= 0; index--) {
+      const move = moves[index];
+      if (numeric(actor.energy) < move.energyCost) continue;
+      if (move.damage > comparedDamage) {
+        selected = move;
+        comparedDamage = move.damage;
+        twoCopies = false;
+      }
+      if (numeric(actor.energy) >= move.energyCost * 2
+        && numeric(actor.attack) > numeric(opponent.attack)
+        && move.damage * 2 > comparedDamage) {
+        selected = move;
+        comparedDamage = move.damage * 2;
+        twoCopies = true;
+      }
+    }
+    const candidate = selected ? pvpokeCandidateForMove(selected, chargedCandidates) : null;
+    return candidate ? {
+      candidate,
+      twoCopies,
+      evidence: { moveId: selected.id, comparedDamage, turnsToLive: survival.turnsToLive }
+    } : null;
+  }
+
+  function pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context }) {
+    if (numeric(opponent.shields) !== 0) return null;
+    const baitEnabled = normalizeBaitPolicy(actor.baiting) !== "off";
+    const ownFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("actor")
+        : actor.fastMove?.damage
+    ));
+    for (let index = 0; index < moves.length; index++) {
+      const move = moves[index];
+      if (numeric(actor.energy) < move.energyCost) continue;
+      if (numeric(opponent.hp) <= move.damage
+        && !move.selfDebuffing
+        && (index === 0 || (index === 1 && !baitEnabled))
+        && numeric(opponent.hp) > ownFastDamage) {
+        const candidate = pvpokeCandidateForMove(move, chargedCandidates);
+        if (candidate) return { candidate, move };
+      }
+    }
+    return null;
+  }
+
+  function pvpokeTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival }) {
+    const triggered = ["TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS"];
+    const rejected = [];
+    const ownTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const oppTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const currentTurn = numeric(state.currentTurn);
+    const opponentCooldown = Math.max(0, numeric(opponent.readyTurn) - currentTurn);
+    let targetCooldown = 1;
+    if (ownTurns >= 4) targetCooldown = 2;
+    if (ownTurns >= 3 && oppTurns === 5) targetCooldown = 2;
+    if (ownTurns === 2 && oppTurns === 4) targetCooldown = 2;
+    if (ownTurns === oppTurns) {
+      targetCooldown = 0;
+      triggered.push("TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION");
+    } else {
+      rejected.push("TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION");
+    }
+    if (ownTurns > oppTurns && ownTurns % oppTurns === 0) {
+      targetCooldown = 0;
+      triggered.push("TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION");
+    } else {
+      rejected.push("TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION");
+    }
+    const timingWindowOpen = (opponentCooldown === 0 || opponentCooldown > targetCooldown) && targetCooldown > 0;
+    const ownFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("actor")
+        : actor.fastMove?.damage
+    ));
+    const oppFastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("opponent")
+        : opponent.fastMove?.damage
+    ));
+    let optimize = timingWindowOpen && context.chargedTimingOptimization !== false && !!fast;
+    const actorFaints = numeric(actor.hp) <= oppFastDamage;
+    if (actorFaints) {
+      optimize = false;
+      triggered.push("TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS");
+    } else rejected.push("TIMING-015_DO_NOT_WAIT_IF_ACTOR_FAINTS");
+
+    const queuedFastMoves = (state.pendingEvents || []).filter(event =>
+      event?.status !== "denied"
+      && event?.sourceSide === side
+      && numeric(event?.metadata?.energyGain) > 0
+    ).length + 1;
+    const projectedEnergy = numeric(actor.energy) + numeric(actor.fastMove?.energyGain) * queuedFastMoves;
+    if (projectedEnergy > 100) {
+      optimize = false;
+      triggered.push("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS");
+    } else rejected.push("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS");
+
+    let turnsPlanned = ownTurns + Math.floor(numeric(actor.energy) / moves[0].energyCost);
+    if (numeric(actor.attack) < numeric(opponent.attack)) turnsPlanned++;
+    const resourcesBecomeUnusable = turnsPlanned > survival.turnsToLive;
+    if (resourcesBecomeUnusable) {
+      optimize = false;
+      triggered.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
+    } else rejected.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
+
+    const immediateLethal = numeric(opponent.shields) === 0 && moves.some(move =>
+      numeric(actor.energy) >= move.energyCost && move.damage >= numeric(opponent.hp)
+    );
+    if (immediateLethal) {
+      optimize = false;
+      triggered.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
+    } else rejected.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
+
+    let opponentChargedLethal = false;
+    for (const move of opponentMoves) {
+      const fastMovesFromCharged = Math.ceil((move.energyCost - numeric(opponent.energy))
+        / Math.max(1, numeric(opponent.fastMove?.energyGain, 1)));
+      const fastMovesInOwnFast = Math.floor(ownTurns / oppTurns);
+      const turnsFromMove = fastMovesFromCharged * oppTurns + 1;
+      const projectedDamage = (numeric(actor.shields) > 0 ? 1 : move.damage)
+        + oppFastDamage * fastMovesInOwnFast;
+      if (turnsFromMove <= ownTurns && projectedDamage >= numeric(actor.hp)) {
+        opponentChargedLethal = true;
+        break;
+      }
+    }
+    if (opponentChargedLethal) {
+      optimize = false;
+      triggered.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
+    } else rejected.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
+
+    const fittedFastCount = Math.floor((ownTurns + 1) / oppTurns);
+    const fittedFastLethal = numeric(actor.hp) <= oppFastDamage * fittedFastCount;
+    if (fittedFastLethal) {
+      optimize = false;
+      triggered.push("TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL");
+    } else rejected.push("TIMING-020_DO_NOT_WAIT_IF_FITTED_FAST_MOVES_ARE_LETHAL");
+
+    if (optimize) {
+      triggered.push("TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+    } else {
+      rejected.push("TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+    }
+    return {
+      waitOneFast: optimize,
+      triggered,
+      rejected,
+      evidence: {
+        targetCooldown,
+        opponentCooldown,
+        ownFastTurns: ownTurns,
+        opponentFastTurns: oppTurns,
+        timingWindowOpen,
+        queuedFastMoves,
+        projectedEnergy,
+        turnsPlanned,
+        turnsToLive: survival.turnsToLive,
+        actorFaints,
+        resourcesBecomeUnusable,
+        immediateLethal,
+        opponentChargedLethal,
+        fittedFastCount,
+        fittedFastDamage: oppFastDamage * fittedFastCount,
+        ownFastDamage
+      }
+    };
+  }
+
+  function pvpokeBestChargedMove(moves) {
+    if (!moves.length) return null;
+    let best = moves[0];
+    for (const move of moves) {
+      if ((move.dpe - best.dpe > .03 || move.dpe - best.dpe > .3)
+        && (!best.selfBuffing || move.dpe - best.dpe > .3)) {
+        best = move;
+      }
+      if (Math.abs(move.dpe - best.dpe) < .03
+        && best.guaranteedEffect
+        && move.guaranteedEffect
+        && numeric(move.buffApplyChance) > numeric(best.buffApplyChance)
+        && !move.selfDebuffing) {
+        best = move;
+      }
+    }
+    return best;
+  }
+
+  function pvpokeWouldShieldThreat(context, move) {
+    if (typeof context.willOpponentShield !== "function") return true;
+    return !!context.willOpponentShield({
+      type: ACTION_TYPES.CHARGED_MOVE,
+      moveId: move.id,
+      move: move.original
+    });
+  }
+
+  function pvpokeLongMatchDecision({ actor, opponent, moves, fast, chargedCandidates, context }) {
+    const triggered = [];
+    const rejected = [];
+    const best = pvpokeBestChargedMove(moves);
+    const fastest = moves[0];
+    const fastDamage = Math.max(0, numeric(
+      typeof context.estimateFastDamage === "function"
+        ? context.estimateFastDamage("actor")
+        : actor.fastMove?.damage
+    ));
+    const fastGain = Math.max(1, numeric(actor.fastMove?.energyGain, 1));
+    const bestCycleDamage = best.damage + fastDamage * Math.ceil(best.energyCost / fastGain);
+    let minimumCycleThreshold = 2;
+    if (best.selfDebuffing
+      && best.energyCost > fastest.energyCost
+      && best.dpe / Math.max(.0001, fastest.dpe) < 2) {
+      minimumCycleThreshold = 1.1;
+    }
+    const cycles = numeric(opponent.hp) / Math.max(1, bestCycleDamage);
+    if (!(cycles > minimumCycleThreshold)) {
+      rejected.push(
+        "PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS",
+        "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE",
+        "BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT",
+        "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE"
+      );
+      return { resolved: false, triggered, rejected, evidence: { cycles, minimumCycleThreshold, bestCycleDamage } };
+    }
+    triggered.push("PERF-022_DETECT_LONG_REPEATED_CYCLE_MATCHUPS", "LONG-023_LONG_MATCHUP_STARTS_FROM_BEST_CHARGED_CYCLE");
+    let selected = best;
+    const baitEnabled = normalizeBaitPolicy(actor.baiting) !== "off";
+    if (moves.length > 1
+      && baitEnabled
+      && numeric(opponent.shields) > 0
+      && !moves[0].selfDebuffing
+      && pvpokeWouldShieldThreat(context, moves[1])) {
+      selected = moves[0];
+      triggered.push("BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT", "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE");
+    } else rejected.push("BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT");
+    if (best.selfDebuffing) {
+      let replaced = false;
+      for (const move of moves) {
+        if (!move.selfDebuffing && selected.dpe / Math.max(.0001, move.dpe) < 2) {
+          selected = move;
+          replaced = true;
+        }
+      }
+      if (replaced) triggered.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
+      else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
+    } else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
+
+    if (numeric(actor.energy) < selected.energyCost) {
+      triggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE");
+      return {
+        resolved: true,
+        candidate: fast,
+        category: "route",
+        intent: "BUILD_TO_SELECTED_MOVE",
+        triggered,
+        rejected,
+        evidence: { cycles, minimumCycleThreshold, bestCycleDamage, selectedMoveId: selected.id }
+      };
+    }
+    if (selected.selfDebuffing) {
+      const energyToReach = numeric(actor.energy)
+        + Math.floor((100 - numeric(actor.energy)) / fastGain) * fastGain;
+      if (numeric(actor.energy) < energyToReach) {
+        triggered.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES", "ROUTE-026_BUILD_TO_SELECTED_MOVE");
+        return {
+          resolved: true,
+          candidate: fast,
+          category: "effects",
+          intent: "BUILD_TO_SELECTED_MOVE",
+          triggered,
+          rejected,
+          evidence: { cycles, minimumCycleThreshold, bestCycleDamage, selectedMoveId: selected.id, energyToReach }
+        };
+      }
+    } else rejected.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES");
+    return {
+      resolved: true,
+      candidate: pvpokeCandidateForMove(selected, chargedCandidates),
+      category: "route",
+      intent: "LONG_MATCH_SELECTED_MOVE",
+      triggered,
+      rejected,
+      evidence: { cycles, minimumCycleThreshold, bestCycleDamage, selectedMoveId: selected.id }
+    };
+  }
+
+  function pvpokeCompactDecision({ state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context }) {
+    const triggered = [
+      "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
+      "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
+      "FARM-033_FARM_DOWN_ROUTE_CANDIDATE",
+      "CHANCE-032_DO_NOT_EXPLODE_ORDINARY_SEARCH_ON_CHANCE_EFFECTS"
+    ];
+    const rejected = [];
+    const queue = [{
+      energy: clamp(numeric(actor.energy), 0, 100),
+      oppHealth: Math.max(0, numeric(opponent.hp)),
+      turn: 0,
+      oppShields: Math.max(0, numeric(opponent.shields)),
+      moves: [],
+      buffs: 0,
+      chance: 1
+    }];
+    const terminal = [];
+    let stateCount = 0;
+    let farmCandidates = 0;
+    let shieldBranches = 0;
+    let guaranteedEffectBranches = 0;
+    let prunedStates = 0;
+    let equivalentTieBreaks = 0;
+    let orderedInsertions = 0;
+    let capReached = false;
+
+    while (queue.length) {
+      if (stateCount >= 500) {
+        capReached = true;
+        break;
+      }
+      stateCount++;
+      const current = queue.shift();
+      current.buffs = clamp(numeric(current.buffs), -4, 4);
+      if (current.oppHealth <= 0) {
+        terminal.push(current);
+        if (current.chance === 1) break;
+        continue;
+      }
+
+      const fastDamage = pvpokeCompactDamage(context, actor.fastMove, actor, opponent, current.buffs, true);
+      if (fastDamage > 0) {
+        const movesToFarm = Math.ceil(current.oppHealth / fastDamage);
+        const farmState = {
+          ...current,
+          energy: current.energy + numeric(actor.fastMove?.energyGain) * movesToFarm,
+          oppHealth: 0,
+          turn: current.turn + movesToFarm * Math.max(1, numeric(actor.fastMove?.turns, 1)),
+          moves: [...current.moves]
+        };
+        pvpokeInsertByTurn(queue, farmState);
+        farmCandidates++;
+        orderedInsertions++;
+      }
+
+      for (const move of moves) {
+        const fastGain = Math.max(1, numeric(actor.fastMove?.energyGain, 1));
+        const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+        const missing = Math.max(0, move.energyCost - current.energy);
+        const fastCount = missing > 0 ? Math.ceil(missing / fastGain) : 0;
+        const readinessTurns = fastCount * fastTurns;
+        const moveDamage = pvpokeCompactDamage(context, move.original, actor, opponent, current.buffs, false);
+        let attackBuff = current.buffs;
+        if (numeric(move.buffApplyChance) >= 1) {
+          attackBuff = clamp(attackBuff + pvpokeOffensiveStageDelta(move.original), -4, 4);
+          if (pvpokeOffensiveStageDelta(move.original) !== 0) guaranteedEffectBranches++;
+        }
+
+        const newEnergy = current.energy + fastGain * fastCount - move.energyCost;
+        let newOppHealth = current.oppHealth - fastDamage * fastCount;
+        let newShields = current.oppShields;
+        if (newShields > 0) {
+          newOppHealth -= 1;
+          newShields--;
+          shieldBranches++;
+        } else {
+          newOppHealth -= moveDamage;
+        }
+        const next = {
+          energy: newEnergy,
+          oppHealth: newOppHealth,
+          turn: current.turn + readinessTurns + 1,
+          oppShields: newShields,
+          moves: [...current.moves, move],
+          buffs: attackBuff,
+          chance: current.chance
+        };
+        const inserted = pvpokeInsertCompactState(queue, next);
+        if (inserted.inserted) orderedInsertions++;
+        if (inserted.pruned) prunedStates++;
+        if (inserted.equivalentTieBreak) equivalentTieBreaks++;
+
+        if (move.selfAttackDebuffing && move.energyCost * 2 <= 100) {
+          const stackFastCount = Math.max(0, Math.ceil((move.energyCost * 2 - current.energy) / fastGain));
+          if (stackFastCount > 0) {
+            let stackHp = current.oppHealth - fastDamage * stackFastCount;
+            let stackShields = current.oppShields;
+            if (stackShields > 0) {
+              stackHp -= 1;
+              stackShields--;
+            } else {
+              stackHp -= moveDamage;
+            }
+            const stacked = {
+              energy: current.energy + fastGain * stackFastCount - move.energyCost,
+              oppHealth: stackHp,
+              turn: current.turn + stackFastCount * fastTurns + 1,
+              oppShields: stackShields,
+              moves: [...current.moves, move],
+              buffs: attackBuff,
+              chance: current.chance
+            };
+            const stackInserted = pvpokeInsertCompactState(queue, stacked);
+            if (stackInserted.inserted) orderedInsertions++;
+            if (stackInserted.pruned) prunedStates++;
+            if (stackInserted.equivalentTieBreak) equivalentTieBreaks++;
+          }
+        }
+      }
+    }
+
+    if (orderedInsertions > 0) triggered.push("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT");
+    else rejected.push("COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT");
+    if (shieldBranches > 0) triggered.push("SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD");
+    else rejected.push("SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD");
+    if (guaranteedEffectBranches > 0) triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
+    else rejected.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
+    if (prunedStates > 0) triggered.push("SEARCH-035_PRUNE_DOMINATED_STATES");
+    else rejected.push("SEARCH-035_PRUNE_DOMINATED_STATES");
+    if (equivalentTieBreaks > 0) triggered.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
+    else rejected.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
+    if (capReached || !terminal.length) {
+      return {
+        candidate: fast,
+        category: "route",
+        intent: "PVPOKE_COMPACT_ABORT_FAST",
+        triggered,
+        rejected,
+        evidence: {
+          reason: capReached ? "PVPOKE_500_STATE_CAP" : "NO_GUARANTEED_ROUTE",
+          stateCount,
+          farmCandidates,
+          shieldBranches,
+          guaranteedEffectBranches,
+          prunedStates,
+          equivalentTieBreaks
+        }
+      };
+    }
+
+    const finalState = terminal[terminal.length - 1];
+    const cheapestMove = moves[0] || null;
+    const twoCheapRetained = !!(cheapestMove
+      && finalState.moves.length >= 2
+      && finalState.moves[0].id === cheapestMove.id
+      && finalState.moves[1].id === cheapestMove.id);
+    if (twoCheapRetained) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+    else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
+    const post = pvpokePostProcessChargedSequence({
+      actor,
+      opponent,
+      opponentMoves,
+      moves,
+      plannedMoves: finalState.moves,
+      fast,
+      chargedCandidates,
+      context
+    });
+    triggered.push(...post.triggered);
+    rejected.push(...post.rejected);
+    return {
+      candidate: post.candidate,
+      category: post.category,
+      intent: post.intent,
+      triggered,
+      rejected,
+      evidence: {
+        reason: "PVPOKE_GUARANTEED_ROUTE",
+        stateCount,
+        farmCandidates,
+        shieldBranches,
+        guaranteedEffectBranches,
+        prunedStates,
+        equivalentTieBreaks,
+        terminalTurn: finalState.turn,
+        terminalEnergy: finalState.energy,
+        terminalSequence: finalState.moves.map(move => move.id),
+        bestRoute: {
+          sequence: finalState.moves.map(move => ({
+            type: ACTION_TYPES.CHARGED_MOVE,
+            moveId: move.id
+          }))
+        },
+        twoCheapRoute: {
+          retained: twoCheapRetained,
+          cheapMoveId: cheapestMove?.id || null
+        },
+        selectedMoveId: post.selectedMoveId,
+        postProcessing: post.evidence
+      }
+    };
+  }
+
+  function pvpokeCompactDamage(context, move, actor, opponent, attackBuff, fastMove) {
+    if (!move) return 0;
+    if (typeof context.compactDamage === "function") {
+      return Math.max(0, numeric(context.compactDamage("actor", move, {
+        actorAttackStage: clamp(numeric(actor.attackStage) + numeric(attackBuff), -4, 4),
+        actorDefenseStage: numeric(actor.defenseStage),
+        defenderAttackStage: numeric(opponent.attackStage),
+        defenderDefenseStage: numeric(opponent.defenseStage)
+      })));
+    }
+    if (fastMove && typeof context.estimateFastDamage === "function") {
+      return Math.max(0, numeric(context.estimateFastDamage("actor")));
+    }
+    if (typeof context.estimateDamage === "function") {
+      return Math.max(0, numeric(context.estimateDamage({
+        type: ACTION_TYPES.CHARGED_MOVE,
+        moveId: move.id || move.moveId || null,
+        move
+      })));
+    }
+    return Math.max(0, numeric(move.damage ?? move.power));
+  }
+
+  function pvpokeOffensiveStageDelta(move = {}) {
+    if (numeric(move.buffApplyChance) < 1) return 0;
+    if (move.buffTarget === "both") {
+      return numeric(move.buffsSelf?.[0]) - numeric(move.buffsOpponent?.[1]);
+    }
+    if (move.buffTarget === "opponent") return -numeric(move.buffs?.[1]);
+    return numeric(move.buffs?.[0]);
+  }
+
+  function pvpokeInsertByTurn(queue, state) {
+    let index = 0;
+    while (index < queue.length && numeric(queue[index].turn) <= numeric(state.turn)) index++;
+    queue.splice(index, 0, state);
+  }
+
+  function pvpokeInsertCompactState(queue, state) {
+    let equivalentTieBreak = false;
+    for (let index = 0; index < queue.length; index++) {
+      const existing = queue[index];
+      if (numeric(existing.turn) !== numeric(state.turn)) continue;
+      if (numeric(existing.oppHealth) === numeric(state.oppHealth)
+        && numeric(existing.buffs) === numeric(state.buffs)
+        && numeric(existing.energy) === numeric(state.energy)
+        && numeric(existing.oppShields) === numeric(state.oppShields)) {
+        equivalentTieBreak = true;
+        const existingValue = pvpokeMoveHistoryDebuffValue(existing.moves);
+        const candidateValue = pvpokeMoveHistoryDebuffValue(state.moves);
+        if (existingValue > candidateValue) {
+          queue.splice(index, 1);
+          break;
+        }
+        return { inserted: false, pruned: true, equivalentTieBreak };
+      }
+      if (numeric(existing.oppHealth) <= numeric(state.oppHealth)
+        && numeric(existing.energy) >= numeric(state.energy)
+        && numeric(existing.buffs) >= numeric(state.buffs)
+        && numeric(existing.oppShields) <= numeric(state.oppShields)) {
+        return { inserted: false, pruned: true, equivalentTieBreak };
+      }
+    }
+    pvpokeInsertByTurn(queue, state);
+    return { inserted: true, pruned: false, equivalentTieBreak };
+  }
+
+  function pvpokeMoveHistoryDebuffValue(moves) {
+    return (moves || []).reduce((score, move) => {
+      if (move.selfDebuffing) score++;
+      if (move.guaranteedEffect && move.selfBuffing) score--;
+      return score;
+    }, 0);
+  }
+
+  function pvpokePostProcessChargedSequence({
+    actor, opponent, opponentMoves, moves, plannedMoves, fast, chargedCandidates, context
+  }) {
+    const triggered = [];
+    const rejected = [];
+    const baitEnabled = normalizeBaitPolicy(actor.baiting) !== "off";
+    const sequence = [...(plannedMoves || [])];
+    if (!sequence.length) {
+      triggered.push("FARM-033_FARM_DOWN_ROUTE_CANDIDATE");
+      return {
+        candidate: fast,
+        category: "farm",
+        intent: "FARM_DOWN_ROUTE",
+        selectedMoveId: null,
+        triggered,
+        rejected,
+        evidence: { farmDown: true }
+      };
+    }
+    let selected = sequence[0];
+    const debuffingMove = sequence.some(move => move.selfDebuffing);
+    const mostExpensive = [...sequence].sort((a, b) => b.energyCost - a.energyCost)[0];
+
+    if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1
+      && numeric(actor.energy) < moves[1].energyCost
+      && moves[1].dpe > selected.dpe) {
+      const effectiveSelfBuff = moves[1].dpe / Math.max(.0001, moves[0].dpe) <= 1.5 && moves[0].selfBuffing;
+      if (!effectiveSelfBuff) {
+        triggered.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE", "ROUTE-026_BUILD_TO_SELECTED_MOVE");
+        return {
+          candidate: fast,
+          category: "bait",
+          intent: "BUILD_TO_CREDIBLE_NUKE",
+          selectedMoveId: selected.id,
+          triggered,
+          rejected,
+          evidence: { representedMoveId: moves[1].id, plannedMoveId: selected.id, mostExpensiveMoveId: mostExpensive.id }
+        };
+      }
+    }
+    rejected.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE");
+
+    if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1) {
+      const dpeRatio = moves[1].dpe / Math.max(.0001, selected.dpe);
+      if (numeric(actor.energy) >= moves[1].energyCost && dpeRatio > 1.5
+        && !pvpokeWouldShieldThreat(context, moves[1])) {
+        selected = moves[1];
+        triggered.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
+      } else rejected.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
+    } else rejected.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
+
+    if (!baitEnabled || (numeric(opponent.shields) === 0 && !debuffingMove)) {
+      selected = [...sequence].sort((a, b) => b.damage - a.damage)[0];
+      triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+    } else rejected.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+
+    if (numeric(opponent.shields) > 0 && moves.length > 1
+      && moves[0].energyCost <= selected.energyCost
+      && moves[0].dpe > selected.dpe
+      && !moves[0].selfDebuffing) {
+      selected = moves[0];
+      triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+
+    const healthy = numeric(actor.maxHp) > 0 && numeric(actor.hp) / numeric(actor.maxHp) > .5;
+    if (numeric(opponent.shields) === 0 && moves.length > 1
+      && selected.selfDebuffing
+      && selected.energyCost > 50
+      && healthy
+      && selected.damage / Math.max(1, numeric(opponent.hp)) < .8) {
+      selected = moves[0];
+      triggered.push("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY");
+    } else rejected.push("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY");
+
+    if (moves.length > 1 && moves[0].energyCost === selected.energyCost
+      && moves[0].dpe > selected.dpe && !moves[0].selfDebuffing) {
+      selected = moves[0];
+      triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+    if (moves.length > 1 && moves[0].energyCost - 10 <= selected.energyCost
+      && moves[0].dpe > selected.dpe && selected.selfDebuffing && !moves[0].selfDebuffing) {
+      selected = moves[0];
+      triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+    if (moves.length > 1 && moves[0].energyCost - selected.energyCost <= 5
+      && moves[0].dpe > selected.dpe && moves[0].selfBuffing) {
+      selected = moves[0];
+      triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+    if (!triggered.includes("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE")) {
+      rejected.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+
+    if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1
+      && numeric(actor.energy) >= moves[1].energyCost
+      && moves[1].dpe > selected.dpe
+      && selected.selfDebuffing
+      && !moves[1].selfDebuffing) {
+      selected = moves[1];
+      triggered.push("BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE");
+    } else rejected.push("BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE");
+
+    if (numeric(opponent.shields) > 0 && moves.length > 1
+      && moves[0].selfDebuffing && !moves[1].selfBuffing
+      && (baitEnabled || numeric(opponent.hp) - moves[0].damage > 10)
+      && moves[1].energyCost - moves[0].energyCost <= 10
+      && moves[1].dpe / Math.max(.0001, moves[0].dpe) > .7) {
+      selected = moves[1];
+      triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
+    }
+
+    const bestImmediateDamage = Math.max(...moves.map(move => move.damage), 0);
+    const approvedGuaranteedEffect = moves.find(move =>
+      move.guaranteedEffect
+      && !move.selfDebuffing
+      && move.damage >= bestImmediateDamage * (numeric(opponent.shields) > 0 ? .35 : .4)
+      && numeric(actor.energy) >= move.energyCost
+    );
+    if (approvedGuaranteedEffect) {
+      selected = approvedGuaranteedEffect;
+      triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
+    }
+
+    const opponentBest = pvpokeBestChargedMove(opponentMoves);
+    if (selected.selfDebuffing && numeric(actor.shields) === 0 && numeric(actor.energy) < 100 && opponentBest
+      && numeric(opponent.energy) >= opponentBest.energyCost
+      && !(typeof context.willActorShieldAgainstOpponent === "function"
+        ? context.willActorShieldAgainstOpponent(opponentBest.original)
+        : false)
+      && !moves[0].selfBuffing) {
+      triggered.push("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY");
+      return {
+        candidate: fast,
+        category: "effects",
+        intent: "DEFER_SELF_DEBUFF_UNTIL_AFTER_CHARGED",
+        selectedMoveId: selected.id,
+        triggered,
+        rejected,
+        evidence: { opponentMoveId: opponentBest.id }
+      };
+    }
+
+    if (selected.selfDebuffing) {
+      const targetEnergy = Math.floor(100 / selected.energyCost) * selected.energyCost;
+      const opponentFastDamage = Math.max(0, numeric(
+        typeof context.estimateFastDamage === "function"
+          ? context.estimateFastDamage("opponent")
+          : opponent.fastMove?.damage
+      ));
+      if (numeric(actor.energy) < targetEnergy
+        && (numeric(opponent.hp) > selected.damage || numeric(opponent.shields) !== 0)
+        && (numeric(actor.hp) > opponentFastDamage * 2
+          || Math.max(1, numeric(opponent.fastMove?.turns, 1)) - Math.max(1, numeric(actor.fastMove?.turns, 1)) > 1)) {
+        triggered.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES", "ROUTE-026_BUILD_TO_SELECTED_MOVE");
+        return {
+          candidate: fast,
+          category: "effects",
+          intent: "BUILD_TO_SELECTED_MOVE",
+          selectedMoveId: selected.id,
+          triggered,
+          rejected,
+          evidence: { targetEnergy }
+        };
+      }
+      triggered.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES");
+    } else rejected.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES");
+
+    if (numeric(actor.energy) < selected.energyCost) {
+      triggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE");
+      return {
+        candidate: fast,
+        category: "route",
+        intent: "BUILD_TO_SELECTED_MOVE",
+        selectedMoveId: selected.id,
+        triggered,
+        rejected,
+        evidence: { selectedCost: selected.energyCost, currentEnergy: actor.energy }
+      };
+    }
+    return {
+      candidate: pvpokeCandidateForMove(selected, chargedCandidates),
+      category: selected.guaranteedEffect ? "effects" : "route",
+      intent: "PVPOKE_CHARGED_SEQUENCE",
+      selectedMoveId: selected.id,
+      triggered,
+      rejected,
+      evidence: { finalSequence: sequence.map(move => move.id) }
+    };
   }
 
   function evaluateDirectStrategicPrinciples(input = {}) {
@@ -2307,13 +3435,15 @@ function createPvPeakBattleIntelligenceApi() {
       return result;
     }
 
-    const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|${legalActions.map(actionKey).join(",")}`;
+    const plannerMode = String(input.plannerMode || DEFAULT_PLANNER_MODE).toUpperCase();
+    const cacheKey = `${strategicStateKeyFromNormalized(state, policy)}|mode:${plannerMode}|${legalActions.map(actionKey).join(",")}`;
     const principleEvaluation = evaluatePrinciples({
       state,
       side,
       legalActions,
       candidates,
       policy,
+      plannerMode,
       context
     });
     if (principleEvaluation.resolved && principleEvaluation.candidate) {
@@ -2524,6 +3654,10 @@ function createPvPeakBattleIntelligenceApi() {
       ));
     }
 
+    if (policy === "smart" && input.parityThreat) {
+      return done(pvpokeWouldShieldDecision(input));
+    }
+
     if (counterfactual) {
       const withShield = outcomeRank(counterfactual.outcomeWithShield);
       const withoutShield = outcomeRank(counterfactual.outcomeWithoutShield);
@@ -2558,6 +3692,71 @@ function createPvPeakBattleIntelligenceApi() {
       return done(shieldResult(false, "SHIELD_SAVED_LOW_THREAT", "Smart shield calls low-impact bait.", .78));
     }
     return done(shieldResult(false, "SHIELD_SAVED_LOW_THREAT", "Smart shield saves shield for higher threat.", .72));
+  }
+
+  function pvpokeWouldShieldDecision(input = {}) {
+    const state = input.state || {};
+    const threat = input.threat || {};
+    const parity = input.parityThreat || {};
+    const attacker = parity.attacker || {};
+    const defender = parity.defender || state;
+    const move = parity.move || {};
+    const damage = Math.max(0, numeric(threat.damage ?? move.damage));
+    const defenderHp = Math.max(0, numeric(defender.hp ?? state.hp));
+    const defenderShields = Math.max(0, numeric(defender.shields ?? state.shields));
+    const fastDamage = Math.max(0, numeric(parity.fastDamageAfterMoveEffect ?? parity.fastDamage));
+    const fastTurns = Math.max(1, numeric(attacker.fastMove?.turns, 1));
+    const fastGain = Math.max(1, numeric(attacker.fastMove?.energyGain, 1));
+    const moveCost = Math.max(1, numeric(move.energyCost ?? threat.energyCost, 1));
+    const postMoveHp = defenderHp - damage;
+    const fastAttacks = Math.ceil((moveCost - Math.max(numeric(attacker.energy) - moveCost, 0)) / fastGain) + 1;
+    const fastAttackDamage = fastAttacks * fastDamage;
+    const cycleDamage = (fastAttackDamage + 1) * defenderShields;
+    let shield = false;
+    let shieldWeight = 1;
+    const noShieldWeight = 2;
+
+    if (postMoveHp <= cycleDamage) {
+      shield = true;
+      shieldWeight = 2;
+    }
+    const fastDpt = fastDamage / fastTurns;
+    for (const charged of parity.attackerChargedMoves || []) {
+      const chargedDamage = Math.max(0, numeric(charged.damage));
+      if (chargedDamage >= defenderHp / 1.4 && fastDpt > 1.5) {
+        shield = true;
+        shieldWeight = 4;
+      }
+      if (chargedDamage >= defenderHp - cycleDamage) {
+        shield = true;
+        shieldWeight = 4;
+      }
+      if (chargedDamage >= defenderHp / 2 && fastDpt > 2) shieldWeight = 12;
+    }
+    if (move.selfAttackDebuffing && damage / Math.max(1, defenderHp) > .55) {
+      shield = true;
+      shieldWeight = 4;
+    }
+    if (normalizeBaitPolicy(attacker.baiting) === "always") shield = true;
+    return shieldResult(
+      shield,
+      shield ? "PVPOKE_WOULD_SHIELD" : "PVPOKE_WOULD_NOT_SHIELD",
+      shield
+        ? "PvPoke wouldShield blocks this Charged Move from current and next-cycle pressure."
+        : "PvPoke wouldShield preserves the shield because current and next-cycle pressure stay below its gates.",
+      .99,
+      {
+        plannerMode: PLANNER_MODES.PVPOKE_PARITY,
+        sourceBranch: "ActionLogic:1116-1200",
+        postMoveHp,
+        fastAttacks,
+        fastAttackDamage,
+        cycleDamage,
+        fastDpt,
+        shieldWeight,
+        noShieldWeight
+      }
+    );
   }
 
   function finalizeShieldResult(result, input, policy) {
@@ -2694,7 +3893,8 @@ function createPvPeakBattleIntelligenceApi() {
       principleIds: [...(candidate?.principleIds || [])],
       reasonCodes: [...new Set(reasonCodes || [])],
       explanation: explanation || "",
-      evidence: candidate?.evidence || null
+      evidence: candidate?.evidence || null,
+      plannerMode: candidate?.evidence?.principleEngine?.plannerMode || DEFAULT_PLANNER_MODE
     };
     const audited = attachAudit(result, {
       source: "battle-intelligence",
@@ -2965,6 +4165,8 @@ function createPvPeakBattleIntelligenceApi() {
     STRATEGIC_STATE_SCHEMA_VERSION,
     PRIORITY_CLASSES,
     POLICIES,
+    PLANNER_MODES,
+    DEFAULT_PLANNER_MODE,
     PRINCIPLE_TIMING_INTENTS,
     MIGRATED_PRINCIPLE_CATEGORIES,
     PrincipleEngine: Object.freeze({
