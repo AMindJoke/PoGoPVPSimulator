@@ -12114,8 +12114,31 @@
         $(`${prefix}StartEnergy`)?.value,
         $(`${prefix}Baiting`)?.value,
         $(`${prefix}ShieldMode`)?.value,
-        $(`${prefix}Shields`)?.value
+        $(`${prefix}Shields`)?.value,
+        moveDataFingerprint($(`${prefix}Fast`)?.value),
+        moveDataFingerprint($(`${prefix}Charged1`)?.value),
+        moveDataFingerprint($(`${prefix}Charged2`)?.value)
       ].join("\u001f")).join("\u001e");
+    }
+
+    function moveDataFingerprint(moveId) {
+      const move = moveMap.get(moveId);
+      if (!move) return "missing";
+      return [
+        move.id,
+        move.power,
+        move.damage,
+        move.energyGain,
+        move.energyCost,
+        move.turns,
+        move.cooldown,
+        move.type,
+        move.buffApplyChance,
+        move.buffTarget,
+        Array.isArray(move.buffs) ? move.buffs.join(",") : "",
+        Array.isArray(move.buffsSelf) ? move.buffsSelf.join(",") : "",
+        Array.isArray(move.buffsOpponent) ? move.buffsOpponent.join(",") : ""
+      ].map(value => value ?? "").join(":");
     }
 
     function cloneMatrixCombatant(combatant) {

@@ -87,6 +87,22 @@
       "notes": "Equal-cost moves provide no bait-energy advantage; the strictly stronger no-effect move must be selected regardless of the opponent's charged-slot count."
     },
     {
+      "id": "lickilicky-abomasnow-straight-body-slam-1s",
+      "description": "Lickilicky should preserve its compact two-cheap route instead of throwing Shadow Ball into the shield.",
+      "category": ["charged-move-choice", "baiting", "energy-management"],
+      "league": "great",
+      "pokemonA": { "id": "lickilicky", "moves": { "fast": "ROLLOUT", "charged": ["BODY_SLAM", "SHADOW_BALL"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "pokemonB": { "id": "abomasnow", "moves": { "fast": "POWDER_SNOW", "charged": ["WEATHER_BALL_ICE", "ENERGY_BALL"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 1 },
+      "policy": { "baiting": "selective", "shieldMode": "always" },
+      "expectations": {
+        "winner": "A",
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "BODY_SLAM" },
+        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "SHADOW_BALL" },
+        "requiredReasonCodes": ["PROJECTED_CHARGED_SEQUENCE_VALUE"]
+      },
+      "notes": "Protects ROUTE-007/compact route ownership from post-processing that mistakes a repeated cheap route for a bait."
+    },
+    {
       "id": "bastiodon-altaria-0s-control",
       "description": "A straightforward hard-counter control without meaningful stat-effect complexity.",
       "category": ["charged-move-choice"],

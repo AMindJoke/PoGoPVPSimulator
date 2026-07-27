@@ -1893,9 +1893,16 @@ function createPvPeakBattleIntelligenceApi() {
     const debuffingMove = sequence.some(move => move.selfDebuffing);
     const mostExpensive = [...sequence].sort((a, b) => b.energyCost - a.energyCost)[0];
     const bestImmediateDamage = Math.max(0, ...(moves || []).map(move => numeric(move.damage)));
+    const higherCostPressureAvailable = (moves || []).some(move =>
+      numeric(move.energyCost) > numeric(selected.energyCost)
+      && numeric(move.damage) > numeric(selected.damage)
+    );
     const preserveGuaranteedEffectOpener = selected?.guaranteedEffect
       && selected.effectStrategicValue?.valuable !== false
       && numeric(selected.damage) >= bestImmediateDamage * .75;
+    const preserveRepeatedCheapRoute = sequence.length > 1
+      && sequence[0]?.id === sequence[1]?.id
+      && higherCostPressureAvailable;
 
     if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1
       && numeric(actor.energy) < moves[1].energyCost
@@ -1916,7 +1923,7 @@ function createPvPeakBattleIntelligenceApi() {
     }
     rejected.push("BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE");
 
-    if (baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1) {
+    if (!preserveRepeatedCheapRoute && baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1) {
       const dpeRatio = moves[1].dpe / Math.max(.0001, selected.dpe);
       if (numeric(actor.energy) >= moves[1].energyCost && dpeRatio > 1.5
         && !pvpokeWouldShieldThreat(context, moves[1])) {
@@ -1932,7 +1939,8 @@ function createPvPeakBattleIntelligenceApi() {
         || b.dpe - a.dpe
         || a.energyCost - b.energyCost
       )[0] || null;
-    if (baitEnabled
+    if (!preserveRepeatedCheapRoute
+      && baitEnabled
       && numeric(opponent.shields) > 0
       && highPressureAvailable
       && selected.energyCost < highPressureAvailable.energyCost
