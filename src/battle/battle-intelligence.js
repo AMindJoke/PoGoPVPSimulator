@@ -55,37 +55,6 @@ function createPvPeakBattleIntelligenceApi() {
     "long-match"
   ]);
 
-  const RULES = Object.freeze([
-    rule("BI_ONLY_LEGAL_ACTION", "Only legal action", PRIORITY_CLASSES.LEGALITY, "HEURISTIC_FALLBACK", false, ["AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE", "ROUTE-026_BUILD_TO_SELECTED_MOVE"]),
-    rule("BI_THROW_BEFORE_FAINT", "Throw before fainting", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
-    rule("BI_REACHABLE_CHARGED", "Use reachable charged move", PRIORITY_CLASSES.SURVIVAL_LETHAL, "PENDING_FAST_IMPACT", false, ["ROUTE-004_CHARGED_READINESS_CALCULATION", "TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT"]),
-    rule("BI_GUARANTEED_LETHAL", "Prefer guaranteed lethal", PRIORITY_CLASSES.SURVIVAL_LETHAL, "LETHAL_MOVE_AVAILABLE", false, ["TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL"]),
-    rule("BI_AVOID_LETHAL_OVERFARM", "Avoid lethal overfarm", PRIORITY_CLASSES.SURVIVAL_LETHAL, "FORCED_BY_OPPONENT_PRESSURE", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON", "TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE"]),
-    rule("BI_GUARANTEED_EFFECT", "Value guaranteed effects", PRIORITY_CLASSES.FALLBACK, "BETTER_PROJECTED_OUTCOME", true, ["EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"]),
-    rule("BI_CMP_AWARE", "Respect CMP order", PRIORITY_CLASSES.SURVIVAL_LETHAL, "CMP_WIN_SETUP", false, ["SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON"]),
-    rule("BI_MATCHUP_PLAN", "Execute the best matchup plan", PRIORITY_CLASSES.OUTCOME_EFFECT, "MATCHUP_PLAN_SELECTED", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "SEARCH-029_BOUND_PLANNER_STATE_COUNT"]),
-    rule("BI_PRINCIPLE_COMPACT_ROUTE", "Execute the principle-owned compact route", PRIORITY_CLASSES.OUTCOME_EFFECT, "COMPACT_ROUTE_GENERATED", false, ["ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE", "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"]),
-    rule("BI_HYBRID_BASELINE", "Use the bounded hybrid baseline", PRIORITY_CLASSES.OUTCOME_EFFECT, "BOUNDED_OFFENSIVE_ROUTE", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"]),
-    rule("BI_SELECTIVE_DEEP_SEARCH", "Verify an ambiguous hybrid decision", PRIORITY_CLASSES.CONTINUATION, "AMBIGUOUS_DEEP_SEARCH", true, ["SEARCH-029_BOUND_PLANNER_STATE_COUNT", "SEARCH-035_PRUNE_DOMINATED_STATES"]),
-    rule("BI_FARM_DOWN", "Use the best farm-down route", PRIORITY_CLASSES.RESOURCE, "FARM_DOWN_ROUTE", false, ["FARM-033_FARM_DOWN_ROUTE_CANDIDATE"]),
-    rule("BI_CONTINUATION", "Prefer strongest continuation", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME", false, ["COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE", "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS"]),
-    rule("BI_PCSV", "Prefer strongest projected charged sequence", PRIORITY_CLASSES.CONTINUATION, "PROJECTED_CHARGED_SEQUENCE_VALUE", false, ["ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE", "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE"]),
-    rule("BI_TIMING_CONTINUATION", "Compare throw timing continuations", PRIORITY_CLASSES.CONTINUATION, "OPTIMAL_CHARGE_TIMING", true, ["TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"]),
-    rule("BI_OVERFARM", "Preserve safe overfarm", PRIORITY_CLASSES.RESOURCE, "ENERGY_PRESERVATION", false, ["TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS", "TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"]),
-    rule("BI_BAIT_VALUE", "Value credible bait pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_PRESSURE", false, ["BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT", "BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE", "BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD"]),
-    rule("BI_TIMING_VALUE", "Improve charged move timing", PRIORITY_CLASSES.RESOURCE, "OPTIMAL_MOVE_TIMING", false, ["TIMING-011_OPTIMIZE_CHARGED_TIMING", "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS", "TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION", "TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION"]),
-    rule("BI_SELF_DEBUFF_RISK", "Delay unsafe self debuff", PRIORITY_CLASSES.RESOURCE, "SELF_DEBUFF_TIMING", false, ["EFFECT-027_STACK_SELF_DEBUFFING_MOVES", "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"]),
-    rule("BI_SELF_DEBUFF_AVOIDANCE", "Preserve stats before self debuff", PRIORITY_CLASSES.OUTCOME_EFFECT, "AVOID_EARLY_SELF_DEBUFF", false, ["MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE", "BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE", "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"]),
-    rule("BI_CANDIDATE_EVIDENCE", "Evaluate strategic evidence", PRIORITY_CLASSES.CONTINUATION, "BETTER_PROJECTED_OUTCOME", false, ["MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS", "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE", "TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES"]),
-    rule("BI_SHIELD_POLICY", "Respect explicit shield policy", PRIORITY_CLASSES.LEGALITY, "SHIELD_POLICY_ALWAYS", false, ["SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD", "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
-    rule("BI_SHIELD_PREVENTS_KO", "Shield to prevent knockout", PRIORITY_CLASSES.SURVIVAL_LETHAL, "SHIELD_PREVENTS_KO", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
-    rule("BI_SHIELD_PRESERVES_WIN", "Shield preserves winning continuation", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_PRESERVES_WIN_CONDITION", true, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
-    rule("BI_SHIELD_AVOIDS_FARM", "Shield avoids farm range", PRIORITY_CLASSES.OUTCOME_EFFECT, "SHIELD_AVOIDS_FARM_RANGE", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
-    rule("BI_SHIELD_HEAVY_PRESSURE", "Shield heavy pressure", PRIORITY_CLASSES.RESOURCE, "SHIELD_HEAVY_PRESSURE", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"]),
-    rule("BI_SAVE_SHIELD_LOW_THREAT", "Save shield against low threat", PRIORITY_CLASSES.RESOURCE, "SHIELD_SAVED_LOW_THREAT", false, ["SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"])
-  ]);
-
-  const ruleMap = new Map(RULES.map(item => [item.id, item]));
   const fastPathCache = new Map();
   const MAX_CACHE_ENTRIES = 2048;
   const MAX_DECISION_SAMPLES = 8192;
@@ -95,18 +64,6 @@ function createPvPeakBattleIntelligenceApi() {
   const strictByDefault = readStrictModeDefault();
   const auditConfiguration = { enabled: strictByDefault, strict: strictByDefault, retainEvents: strictByDefault };
   let audit = createAuditState();
-
-  function rule(id, name, priorityClass, reasonCode, requiresContinuationSearch = false, principleIds = []) {
-    return Object.freeze({
-      id,
-      name,
-      description: name,
-      priorityClass,
-      reasonCode,
-      requiresContinuationSearch,
-      principleIds: Object.freeze([...principleIds])
-    });
-  }
 
   function createStatistics() {
     return {
@@ -906,6 +863,9 @@ function createPvPeakBattleIntelligenceApi() {
             "SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD",
             "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE"
           );
+          if (cheap.guaranteedEffect) {
+            principlesTriggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
+          }
           return {
             candidate: cheap.candidate,
             category: "bait",
@@ -974,9 +934,11 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     const bestAvailableDamage = Math.max(0, ...selectableRoutes.map(route => route.damage));
+    const guaranteedEffectDamageFloor = numeric(opponent.shields) > 0 ? .35 : .4;
     const valuableGuaranteedEffects = guaranteedEffects.filter(route =>
       !route.selfDebuffing
-      && (numeric(opponent.shields) > 0 || route.damage >= bestAvailableDamage * .35)
+      && route.damage >= bestAvailableDamage * guaranteedEffectDamageFloor
+      && route.effectStrategicValue?.valuable !== false
       && numeric(opponent.hp) > bestAvailableDamage
     );
     const orderingRoutes = valuableGuaranteedEffects.length ? valuableGuaranteedEffects : selectableRoutes;
@@ -987,6 +949,9 @@ function createPvPeakBattleIntelligenceApi() {
       || stableCandidateOrder(a.candidate, b.candidate)
     )[0] || null;
     if (chosenRoute) {
+      const avoidedSelfDebuffAlternative = orderingRoutes.some(route =>
+        route !== chosenRoute && route.selfDebuffing && !chosenRoute.selfDebuffing
+      );
       const equivalentSelfDebuffAlternative = orderingRoutes.some(route =>
         route !== chosenRoute
         && comparePrincipleOutcomeVectors(route, chosenRoute, { stable: false }) === 0
@@ -996,6 +961,16 @@ function createPvPeakBattleIntelligenceApi() {
         principlesTriggered.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
       } else {
         principlesRejected.push("TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES");
+      }
+      if (avoidedSelfDebuffAlternative) {
+        principlesTriggered.push(
+          "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE",
+          "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+        );
+        removePrincipleIds(principlesRejected, [
+          "MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE",
+          "EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY"
+        ]);
       }
       principlesTriggered.push(
         numeric(opponent.shields) > 0
@@ -1080,6 +1055,13 @@ function createPvPeakBattleIntelligenceApi() {
     const guaranteedEffect = applyChance >= 1 && effectValues.length > 0;
     const chanceEffect = applyChance > 0 && applyChance < 1 && effectValues.length > 0;
     const certifiedOutcome = numeric(input.opponent?.shields) <= 0 && damage >= opponentHp ? "win" : null;
+    const rawEnergy = Math.max(0, numeric(input.actor?.energy) - energyCost);
+    const futureReachability = principleFutureCopiesBeforeFaint(energyCost, rawEnergy, input);
+    const minimumChargedCost = Math.min(
+      ...((input.actor?.chargedMoves || []).map(move => Math.max(1, numeric(move?.energyCost)))),
+      Number.POSITIVE_INFINITY
+    );
+    const actionableEnergy = rawEnergy >= minimumChargedCost ? rawEnergy : 0;
     return {
       candidate,
       action: candidate.action,
@@ -1092,19 +1074,106 @@ function createPvPeakBattleIntelligenceApi() {
       turns: 1,
       survivingHp: Math.max(0, numeric(input.actor?.hp)),
       shields: Math.max(0, numeric(input.actor?.shields)),
-      additionalChargedMoves: Math.floor(Math.max(0, numeric(input.actor?.energy) - energyCost) / energyCost),
-      rawEnergy: Math.max(0, numeric(input.actor?.energy) - energyCost),
-      actionableEnergy: 0,
-      strandedEnergy: Math.max(0, numeric(input.actor?.energy) - energyCost),
+      additionalChargedMoves: futureReachability.additionalCopies,
+      projectedChargedDamage: damage * (1 + futureReachability.additionalCopies),
+      rawEnergy,
+      actionableEnergy,
+      strandedEnergy: Math.max(0, rawEnergy - actionableEnergy),
       futureLethalAccess: damage >= opponentHp,
-      turnsToMeaningfulAction: 0,
+      turnsToMeaningfulAction: futureReachability.turnsToNextCopy,
       positionalValue: guaranteedEffect ? 1 : 0,
       robustness: selfDebuffing ? 0 : 1,
       tacticalEfficiency: damage / energyCost,
       selfDebuffing,
       guaranteedEffect,
+      effectStrategicValue: guaranteedEffect
+        ? principleGuaranteedEffectValue(candidate.action, input)
+        : null,
       chanceEffect,
       stableOrder: actionKey(candidate.action)
+    };
+  }
+
+  function principleFutureCopiesBeforeFaint(energyCost, startingEnergy, input = {}) {
+    const actor = input.actor || {};
+    const context = input.context || {};
+    const gain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const projection = typeof context.compactSurvivalProjection === "function"
+      ? context.compactSurvivalProjection({
+        turn: 0,
+        actorAttackStage: numeric(actor.attackStage),
+        actorDefenseStage: numeric(actor.defenseStage),
+        defenderAttackStage: numeric(input.opponent?.attackStage),
+        defenderDefenseStage: numeric(input.opponent?.defenseStage)
+      }) || {}
+      : {};
+    const turnsToFaint = numeric(projection.turnsToFaint, Number.POSITIVE_INFINITY);
+    let energy = startingEnergy;
+    let elapsedTurns = 0;
+    let additionalCopies = 0;
+    let turnsToNextCopy = Number.MAX_SAFE_INTEGER;
+    for (let copy = 0; copy < 4 && gain > 0; copy++) {
+      const fastCount = Math.ceil(Math.max(0, energyCost - energy) / gain);
+      const reachTurns = fastCount * fastTurns;
+      elapsedTurns += reachTurns;
+      if (copy === 0) turnsToNextCopy = elapsedTurns;
+      if (elapsedTurns >= turnsToFaint) break;
+      additionalCopies++;
+      energy = Math.max(0, Math.min(100, energy + fastCount * gain) - energyCost);
+      elapsedTurns += 1;
+    }
+    return {
+      additionalCopies,
+      turnsToNextCopy,
+      turnsToFaint
+    };
+  }
+
+  function principleGuaranteedEffectValue(action, input = {}) {
+    const move = action?.move || {};
+    const actor = input.actor || {};
+    const opponent = input.opponent || {};
+    const context = input.context || {};
+    const own = move.buffTarget === "both"
+      ? move.buffsSelf
+      : move.buffTarget === "opponent" ? null : move.buffs;
+    const opposing = move.buffTarget === "both"
+      ? move.buffsOpponent
+      : move.buffTarget === "opponent" ? move.buffs : null;
+    const offensive = numeric(own?.[0]) > 0 || numeric(opposing?.[1]) < 0;
+    const defensive = numeric(own?.[1]) > 0 || numeric(opposing?.[0]) < 0;
+    if (!defensive || typeof context.compactSurvivalProjection !== "function") {
+      return { valuable: offensive || defensive, offensive, defensive, projectionAvailable: false };
+    }
+    const baseStages = {
+      actorAttackStage: numeric(actor.attackStage),
+      actorDefenseStage: numeric(actor.defenseStage),
+      defenderAttackStage: numeric(opponent.attackStage),
+      defenderDefenseStage: numeric(opponent.defenseStage)
+    };
+    const effectStages = {
+      ...baseStages,
+      actorAttackStage: clamp(baseStages.actorAttackStage + numeric(own?.[0]), -4, 4),
+      actorDefenseStage: clamp(baseStages.actorDefenseStage + numeric(own?.[1]), -4, 4),
+      defenderAttackStage: clamp(baseStages.defenderAttackStage + numeric(opposing?.[0]), -4, 4),
+      defenderDefenseStage: clamp(baseStages.defenderDefenseStage + numeric(opposing?.[1]), -4, 4)
+    };
+    const base = context.compactSurvivalProjection({ turn: 0, ...baseStages }) || {};
+    const withEffect = context.compactSurvivalProjection({ turn: 0, ...effectStages }) || {};
+    const baseTurns = numeric(base.turnsToFaint, Number.POSITIVE_INFINITY);
+    const effectTurns = numeric(withEffect.turnsToFaint, Number.POSITIVE_INFINITY);
+    const meaningfulGain = Number.isFinite(effectTurns)
+      && (!Number.isFinite(baseTurns)
+        || effectTurns - baseTurns >= Math.max(1, numeric(opponent.fastMove?.turns, 1)));
+    return {
+      valuable: offensive || meaningfulGain,
+      offensive,
+      defensive,
+      projectionAvailable: true,
+      baseTurnsToFaint: baseTurns,
+      effectTurnsToFaint: effectTurns,
+      meaningfulGain
     };
   }
 
@@ -1305,7 +1374,7 @@ function createPvPeakBattleIntelligenceApi() {
           && effectValues.length > 0
           && !hasHarmfulSelfEffect(action);
         const strategicallyPreferred = guaranteedEffect && numeric(opponent.shields) > 0
-          || damage >= currentBestDamage * 1.5;
+          || damage >= currentBestDamage * 1.3;
         const opponentFastDamage = Math.max(0, numeric(
           typeof context.estimateFastDamage === "function"
             ? context.estimateFastDamage("opponent")
@@ -1325,6 +1394,9 @@ function createPvPeakBattleIntelligenceApi() {
           return numeric(incoming) >= numeric(actor.hp) - pendingDamage;
         });
         const survives = numeric(actor.hp) > pendingDamage + opponentFastCount * opponentFastDamage;
+        const maxPreferredFastCount = fastTurns === 1
+          ? 3
+          : damage >= currentBestDamage * 2 ? 2 : 1;
         return {
           moveId: action.moveId,
           energyCost,
@@ -1337,8 +1409,9 @@ function createPvPeakBattleIntelligenceApi() {
           pendingDamage,
           opponentImmediateLethal,
           survives,
+          maxPreferredFastCount,
           safe: fastCount > 0
-            && fastCount <= (fastTurns === 1 ? 2 : 1)
+            && fastCount <= maxPreferredFastCount
             && strategicallyPreferred
             && survives
             && !opponentImmediateLethal
@@ -1499,13 +1572,24 @@ function createPvPeakBattleIntelligenceApi() {
     if (outcomeA >= 0 || outcomeB >= 0) return comparePrincipleOutcomeRoutes(a, b);
     if (opponentShields > 0) {
       return Number(a?.selfDebuffing) - Number(b?.selfDebuffing)
-        || numeric(b?.damage) - numeric(a?.damage)
+        || compareProjectedChargedDamage(a, b)
+        || numeric(b?.additionalChargedMoves) - numeric(a?.additionalChargedMoves)
         || numeric(b?.damagePerEnergy) - numeric(a?.damagePerEnergy)
-        || numeric(a?.energyCost) - numeric(b?.energyCost);
+        || numeric(a?.energyCost) - numeric(b?.energyCost)
+        || numeric(b?.damage) - numeric(a?.damage);
     }
-    return numeric(b?.damage) - numeric(a?.damage)
-      || numeric(b?.damagePerEnergy) - numeric(a?.damagePerEnergy)
+    return numeric(b?.damagePerEnergy) - numeric(a?.damagePerEnergy)
+      || compareProjectedChargedDamage(a, b)
+      || numeric(b?.additionalChargedMoves) - numeric(a?.additionalChargedMoves)
+      || numeric(b?.damage) - numeric(a?.damage)
       || numeric(a?.energyCost) - numeric(b?.energyCost);
+  }
+
+  function compareProjectedChargedDamage(a, b) {
+    const damageA = numeric(a?.projectedChargedDamage);
+    const damageB = numeric(b?.projectedChargedDamage);
+    const tolerance = Math.max(damageA, damageB) * .05;
+    return Math.abs(damageA - damageB) <= tolerance ? 0 : damageB - damageA;
   }
 
   function principleRouteEvidence(route) {
@@ -1577,29 +1661,25 @@ function createPvPeakBattleIntelligenceApi() {
       );
       return unresolved({ reason: "COMPACT_ROUTE_INPUTS_INCOMPLETE" });
     }
-    if (numeric(opponent.shields) > 0) {
-      rejected.push(
-        "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
-        "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
-        "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"
-      );
-      return unresolved({ reason: "SHIELD_ROUTE_NOT_MIGRATED" });
-    }
     if (chargedMoves.some(compactMoveHasEffects)) {
       rejected.push(
         "ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE",
         "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
         "COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT"
       );
-      return unresolved({ reason: "EFFECT_ROUTE_NOT_MIGRATED" });
+      return unresolved({ reason: "EFFECT_ROUTES_USE_DIRECT_EFFECT_SEQUENCER" });
     }
-
     const policy = input.policy || POLICIES.FAST;
     const maxStates = Math.max(24, Math.min(384, numeric(policy.maxStates, 96)));
     const maxTurns = Math.max(24, Math.min(96, numeric(input.context.compactMaxTurns, 64)));
     const root = {
       energy: clamp(numeric(actor.energy), 0, 100),
       defenderHp: Math.max(0, numeric(opponent.hp)),
+      defenderShields: Math.max(0, numeric(opponent.shields)),
+      actorAttackStage: clamp(numeric(actor.attackStage), -4, 4),
+      actorDefenseStage: clamp(numeric(actor.defenseStage), -4, 4),
+      defenderAttackStage: clamp(numeric(opponent.attackStage), -4, 4),
+      defenderDefenseStage: clamp(numeric(opponent.defenseStage), -4, 4),
       turn: 0,
       sequence: [],
       firstAction: null,
@@ -1675,7 +1755,8 @@ function createPvPeakBattleIntelligenceApi() {
       .map(action => action.moveId));
     const buildsToUnreadyCharged = best?.firstAction?.type === ACTION_TYPES.FAST_MOVE
       && [...chargedIdsInBest].some(moveId => !legalChargedIds.has(moveId));
-    const routeAlternativeEstablished = twoCheapRoute.retained
+    const routeAlternativeEstablished = routes.length > 1
+      || twoCheapRoute.retained
       || (buildsToUnreadyCharged && best?.cmpBoundary === true);
     if (!complete || !selected || best?.outcome !== "win" || exactTie || !routeAlternativeEstablished) {
       return unresolved({
@@ -1734,16 +1815,51 @@ function createPvPeakBattleIntelligenceApi() {
   function applyCompactCharged(state, move, input) {
     const cost = compactEnergyCost(move);
     if (!cost || state.energy < cost) return null;
-    const action = { type: ACTION_TYPES.CHARGED_MOVE, moveId: move.id || move.moveId || null };
-    return {
+    const actionForShield = {
+      type: ACTION_TYPES.CHARGED_MOVE,
+      side: input.side,
+      moveId: move.id || move.moveId || null,
+      move
+    };
+    const shielded = state.defenderShields > 0
+      && (typeof input.context?.willOpponentShield !== "function"
+        || input.context.willOpponentShield(actionForShield));
+    const action = {
+      type: ACTION_TYPES.CHARGED_MOVE,
+      moveId: move.id || move.moveId || null,
+      shielded
+    };
+    const next = {
       ...state,
       energy: Math.max(0, state.energy - cost),
-      defenderHp: Math.max(0, state.defenderHp - compactDamage(input, ACTION_TYPES.CHARGED_MOVE, move, state)),
+      defenderHp: Math.max(0, state.defenderHp - (shielded
+        ? 1
+        : compactDamage(input, ACTION_TYPES.CHARGED_MOVE, move, state))),
+      defenderShields: Math.max(0, state.defenderShields - Number(shielded)),
       turn: state.turn + 1,
       sequence: [...state.sequence, action],
       firstAction: state.firstAction || action,
       chargedCount: state.chargedCount + 1
     };
+    applyCompactGuaranteedEffects(next, move);
+    return next;
+  }
+
+  function applyCompactGuaranteedEffects(state, move) {
+    if (numeric(move?.buffApplyChance) < 1) return;
+    const applyStages = (target, values) => {
+      if (!Array.isArray(values)) return;
+      const attackKey = target === "actor" ? "actorAttackStage" : "defenderAttackStage";
+      const defenseKey = target === "actor" ? "actorDefenseStage" : "defenderDefenseStage";
+      state[attackKey] = clamp(numeric(state[attackKey]) + numeric(values[0]), -4, 4);
+      state[defenseKey] = clamp(numeric(state[defenseKey]) + numeric(values[1]), -4, 4);
+    };
+    if (move.buffTarget === "both") {
+      applyStages("actor", move.buffsSelf);
+      applyStages("defender", move.buffsOpponent);
+      return;
+    }
+    applyStages(move.buffTarget === "opponent" ? "defender" : "actor", move.buffs);
   }
 
   function compactDamage(input, type, move, state) {
@@ -1751,7 +1867,11 @@ function createPvPeakBattleIntelligenceApi() {
       return Math.max(0, numeric(input.context.compactDamage("actor", move, {
         turn: state.turn,
         energy: state.energy,
-        defenderHp: state.defenderHp
+        defenderHp: state.defenderHp,
+        actorAttackStage: state.actorAttackStage,
+        actorDefenseStage: state.actorDefenseStage,
+        defenderAttackStage: state.defenderAttackStage,
+        defenderDefenseStage: state.defenderDefenseStage
       })));
     }
     if (type === ACTION_TYPES.FAST_MOVE && typeof input.context?.estimateFastDamage === "function") {
@@ -1774,7 +1894,11 @@ function createPvPeakBattleIntelligenceApi() {
       turn: state.turn,
       sequence: state.sequence,
       fastCount: state.fastCount,
-      chargedCount: state.chargedCount
+      chargedCount: state.chargedCount,
+      actorAttackStage: state.actorAttackStage,
+      actorDefenseStage: state.actorDefenseStage,
+      defenderAttackStage: state.defenderAttackStage,
+      defenderDefenseStage: state.defenderDefenseStage
     }) || {};
     return {
       turnsToFaint: Number.isFinite(Number(projected.turnsToFaint))
@@ -1800,6 +1924,7 @@ function createPvPeakBattleIntelligenceApi() {
       turn: state.turn,
       hpRemaining,
       energyAfter: state.energy,
+      opponentShieldsAfter: state.defenderShields,
       chargedCount: state.chargedCount,
       fastCount: state.fastCount,
       cmpBoundary: state.turn === survival.turnsToFaint,
@@ -1829,7 +1954,15 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function compactRouteDominated(state, dominance) {
-    const key = `${state.defenderHp}:${state.turn}`;
+    const key = [
+      state.defenderHp,
+      state.defenderShields,
+      state.actorAttackStage,
+      state.actorDefenseStage,
+      state.defenderAttackStage,
+      state.defenderDefenseStage,
+      state.turn
+    ].join(":");
     const previous = dominance.get(key);
     return !!previous && previous.energy >= state.energy
       && previous.chargedCount <= state.chargedCount
@@ -1837,7 +1970,15 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function rememberCompactDominance(state, dominance) {
-    const key = `${state.defenderHp}:${state.turn}`;
+    const key = [
+      state.defenderHp,
+      state.defenderShields,
+      state.actorAttackStage,
+      state.actorDefenseStage,
+      state.defenderAttackStage,
+      state.defenderDefenseStage,
+      state.turn
+    ].join(":");
     const previous = dominance.get(key);
     if (!previous || state.energy > previous.energy
       || state.chargedCount < previous.chargedCount
@@ -1867,17 +2008,21 @@ function createPvPeakBattleIntelligenceApi() {
     const oneNuke = routes.find(route =>
       route.sequence.some(action => action.type === ACTION_TYPES.CHARGED_MOVE && action.moveId === nukeId)
     ) || null;
+    const denseTwoCheapRoute = !!twoCheap
+      && !oneNuke
+      && numeric(twoCheap.fastCount) <= Math.max(1, numeric(twoCheap.chargedCount)) * 2;
     const retained = cheapId !== nukeId
       && compactEnergyCost(cheap) > 0
-      && root.energy >= compactEnergyCost(cheap) * 2
       && !!twoCheap
+      && (root.energy >= compactEnergyCost(cheap) * 2 || denseTwoCheapRoute)
       && (!oneNuke || compareCompactRouteValue(twoCheap, oneNuke) < 0);
     return {
       retained,
       cheapMoveId: cheapId,
       nukeMoveId: nukeId,
       twoCheapRoute: twoCheap,
-      oneNukeRoute: oneNuke
+      oneNukeRoute: oneNuke,
+      denseTwoCheapRoute
     };
   }
 
@@ -2189,7 +2334,8 @@ function createPvPeakBattleIntelligenceApi() {
       chosen.reasonCodes = [...new Set([
         primaryPrincipleReasonCode(principleEvaluation, chosen.action),
         ...chosen.reasonCodes,
-        ...principleReasonCodes(principleEvaluation.principlesTriggered)
+        ...principleReasonCodes(principleEvaluation.principlesTriggered),
+        ...principleEvidenceReasonCodes(principleEvaluation)
       ].filter(Boolean))];
       for (const principleId of principleEvaluation.principleIds) {
         if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
@@ -2265,8 +2411,8 @@ function createPvPeakBattleIntelligenceApi() {
     if (evaluation.intent === "THROW_BEFORE_OPPONENT_LETHAL") return "LETHAL_CHARGED_CONCEDED";
     if (evaluation.intent === PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST) return "SAFE_EXTRA_FAST";
     if (evaluation.intent === "FARM_DOWN_ROUTE") return "FARM_DOWN_ROUTE";
-    if (evaluation.intent === "COMPACT_ROUTE"
-      && evaluation.principlesTriggered?.includes("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE")) {
+    if (evaluation.evidence?.directStrategy?.buildToPreferred?.safe === true) return "SAFE_EXTRA_FAST";
+    if (evaluation.principlesTriggered?.includes("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE")) {
       return "PROJECTED_CHARGED_SEQUENCE_VALUE";
     }
     if (evaluation.intent === "COMPACT_ROUTE") return "COMPACT_ROUTE_GENERATED";
@@ -2274,12 +2420,35 @@ function createPvPeakBattleIntelligenceApi() {
       || evaluation.intent === "ALWAYS_BAIT"
       || evaluation.intent === "SELECTIVE_CREDIBLE_BAIT") return "BAIT_REQUIRED";
     if (evaluation.intent === "BUILD_TO_SELECTED_MOVE") return "BUILD_TO_SELECTED_MOVE";
+    if (evaluation.principlesTriggered?.includes("EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY")
+      || evaluation.principlesTriggered?.includes("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE")) {
+      return "AVOID_EARLY_SELF_DEBUFF";
+    }
     if (evaluation.category === "effects") return guaranteedEffectReasonCode(action);
     if (evaluation.category === "route") return "BEST_IMMEDIATE_DAMAGE";
     if (evaluation.category === "availability") return evaluation.principlesTriggered?.includes("AVAIL-001_NO_ACTIVE_CHARGED_MOVE")
       ? "NO_ACTIVE_CHARGED_MOVE"
       : "CHEAPEST_CHARGED_NOT_AFFORDABLE";
     return principleReasonCodes(evaluation.principlesTriggered)[0] || null;
+  }
+
+  function principleEvidenceReasonCodes(evaluation = {}) {
+    const reasons = [];
+    const build = evaluation.evidence?.directStrategy?.buildToPreferred;
+    if (build?.safe === true && numeric(build.fastCount) > 0) {
+      reasons.push("SAFE_EXTRA_FAST", "OPTIMAL_CHARGE_TIMING");
+    }
+    if (evaluation.principlesTriggered?.includes("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE")) {
+      reasons.push("PROJECTED_CHARGED_SEQUENCE_VALUE");
+    }
+    return reasons;
+  }
+
+  function removePrincipleIds(target, principleIds) {
+    const blocked = new Set(principleIds || []);
+    for (let index = target.length - 1; index >= 0; index--) {
+      if (blocked.has(target[index])) target.splice(index, 1);
+    }
   }
 
   function guaranteedEffectReasonCode(action) {
@@ -2527,10 +2696,8 @@ function createPvPeakBattleIntelligenceApi() {
       explanation: explanation || "",
       evidence: candidate?.evidence || null
     };
-    const forcedPolicy = candidate?.sourceRuleIds?.includes("BI_ONLY_LEGAL_ACTION");
-    const source = forcedPolicy ? "forced-policy" : "battle-intelligence";
     const audited = attachAudit(result, {
-      source,
+      source: "battle-intelligence",
       action: result.action,
       ruleIds: result.sourceRuleIds,
       principleIds: result.principleIds,
@@ -2599,16 +2766,15 @@ function createPvPeakBattleIntelligenceApi() {
   function decisionCategories(candidate) {
     const categories = new Set(["fast-vs-charged"]);
     const action = candidate?.action || {};
-    const rules = candidate?.sourceRuleIds || [];
     const principles = candidate?.principleIds || [];
     const reasons = (candidate?.evidence?.candidateEvaluation?.reasons || []).join(" ").toLowerCase();
     if (action.type === ACTION_TYPES.CHARGED_MOVE) categories.add("charged-selection");
-    if (principles.includes("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT") || rules.includes("BI_THROW_BEFORE_FAINT")) categories.add("throw-before-faint");
-    if (principles.includes("ROUTE-004_CHARGED_READINESS_CALCULATION") || rules.includes("BI_REACHABLE_CHARGED")) categories.add("cheaper-reachable-charged");
-    if (principles.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL") || rules.includes("BI_GUARANTEED_LETHAL")) categories.add("guaranteed-lethal");
+    if (principles.includes("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT")) categories.add("throw-before-faint");
+    if (principles.includes("ROUTE-004_CHARGED_READINESS_CALCULATION")) categories.add("cheaper-reachable-charged");
+    if (principles.includes("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL")) categories.add("guaranteed-lethal");
     if (principles.includes("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE")
-      || rules.includes("BI_AVOID_LETHAL_OVERFARM") || reasons.includes("overfarm")) categories.add("overfarm");
-    if (principles.includes("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS") || rules.includes("BI_GUARANTEED_EFFECT")) categories.add("guaranteed-effect");
+      || reasons.includes("overfarm")) categories.add("overfarm");
+    if (principles.includes("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS")) categories.add("guaranteed-effect");
     if (candidate?.auditMeta?.cmp) categories.add("cmp-ordering");
     if (principles.some(id => id.startsWith("BAIT-")) || reasons.includes("bait")) categories.add("baiting");
     if (principles.some(id => id === "EFFECT-027_STACK_SELF_DEBUFFING_MOVES"
@@ -2801,7 +2967,6 @@ function createPvPeakBattleIntelligenceApi() {
     POLICIES,
     PRINCIPLE_TIMING_INTENTS,
     MIGRATED_PRINCIPLE_CATEGORIES,
-    RULES,
     PrincipleEngine: Object.freeze({
       evaluate: evaluatePrincipleEngine,
       getStatistics: getPrincipleStatistics

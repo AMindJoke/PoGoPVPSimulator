@@ -231,7 +231,7 @@
       const directPrincipleEvidence = decisionHasPrinciple(
         decision,
         "EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS"
-      ) && decision.reasonCode === config.reasonCode;
+      );
       if ((!projectedComparison.measurable || !projectedComparison.meaningful) && !directPrincipleEvidence) return;
       const comparison = directPrincipleEvidence
         ? principleOwnedComparison(projectedComparison, "guaranteed-effect")
@@ -344,6 +344,7 @@
       ...projectedComparison,
       measurable: true,
       meaningful: true,
+      principleOwned: true,
       relevance: projectedComparison.relevance || `principle-owned:${relevance}`,
       changesOutcome: projectedComparison.changesOutcome === true
     };
@@ -565,6 +566,9 @@
 
   function confidenceForComparison(context, comparison) {
     if (context.stale) return { level: "low", reasons: ["source result is stale"] };
+    if (comparison.principleOwned) {
+      return { level: "high", reasons: ["deterministic effect is owned and evidenced directly by the Principle Engine"] };
+    }
     if (comparison.changesOutcome || comparison.ratingDelta !== null) {
       return { level: "high", reasons: ["deterministic effect compared across complete projected continuations"] };
     }

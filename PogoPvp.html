@@ -9438,13 +9438,13 @@
         battleIntelligencePolicy,
         battleIntelligenceCallerContext,
         recordExternalIntelligenceDecision,
-        hybridDamageAtStages,
-        hybridSurvivalProjection,
+        principleDamageAtStages,
+        principleSurvivalProjection,
         compactRouteSurvivalProjection,
         selectBattleIntelligenceAction,
-        battleIntelligenceCandidateEvidence,
         recordBattleIntelligenceDecision,
         recordBattleIntelligenceTimingDecision,
+        isPrincipleTimingSelection,
         diagnosticPlannedAction,
         autoAction,
         automaticBattleStep,
@@ -13879,7 +13879,7 @@
       });
     }
 
-    function hybridDamageAtStages(attacker, defender, move, side, stages = {}) {
+    function principleDamageAtStages(attacker, defender, move, side, stages = {}) {
       if (!attacker || !defender || !move) return 0;
       const source = side === "opponent" ? defender : attacker;
       const target = side === "opponent" ? attacker : defender;
@@ -13910,7 +13910,7 @@
       }
     }
 
-    function hybridSurvivalProjection(attacker, defender, routeState = {}) {
+    function principleSurvivalProjection(attacker, defender, routeState = {}) {
       if (!attacker || !defender || !defender.fast) {
         return { turnsToFaint: Infinity, damageTaken: 0, opponentChargedCount: 0 };
       }
@@ -13930,15 +13930,15 @@
         const readyCharged = validChargedMoves(defender)
           .filter(move => energy >= Number(move.energyCost || 0))
           .sort((a, b) =>
-            hybridDamageAtStages(attacker, defender, b, "opponent", stages)
-              - hybridDamageAtStages(attacker, defender, a, "opponent", stages)
+            principleDamageAtStages(attacker, defender, b, "opponent", stages)
+              - principleDamageAtStages(attacker, defender, a, "opponent", stages)
             || Number(a.energyCost || 0) - Number(b.energyCost || 0)
             || String(a.id || "").localeCompare(String(b.id || ""))
           )[0] || null;
         if (readyCharged) {
           const damage = shields > 0
             ? 1
-            : hybridDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+            : principleDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
           if (shields > 0) shields--;
           energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
           hp = Math.max(0, hp - damage);
@@ -13947,7 +13947,7 @@
           turn += 1;
           continue;
         }
-        const damage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        const damage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
         hp = Math.max(0, hp - damage);
         damageTaken += damage;
         energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
@@ -13975,7 +13975,7 @@
         defenderDefenseStage: Number(routeState.defenderDefenseStage ?? defender.defenseStage ?? 0)
       };
       if (turn > 0) {
-        const pendingFastDamage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        const pendingFastDamage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
         hp = Math.max(0, hp - pendingFastDamage);
         damageTaken += pendingFastDamage;
         energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
@@ -13984,15 +13984,15 @@
         const readyCharged = validChargedMoves(defender)
           .filter(move => energy >= Number(move.energyCost || 0))
           .sort((a, b) =>
-            hybridDamageAtStages(attacker, defender, b, "opponent", stages)
-              - hybridDamageAtStages(attacker, defender, a, "opponent", stages)
+            principleDamageAtStages(attacker, defender, b, "opponent", stages)
+              - principleDamageAtStages(attacker, defender, a, "opponent", stages)
             || Number(a.energyCost || 0) - Number(b.energyCost || 0)
             || String(a.id || "").localeCompare(String(b.id || ""))
           )[0] || null;
         if (readyCharged) {
           const damage = shields > 0
             ? 1
-            : hybridDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
+            : principleDamageAtStages(attacker, defender, readyCharged, "opponent", stages);
           if (shields > 0) shields--;
           energy = Math.max(0, energy - Number(readyCharged.energyCost || 0));
           hp = Math.max(0, hp - damage);
@@ -14001,7 +14001,7 @@
           turn += 1;
           continue;
         }
-        const damage = hybridDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
+        const damage = principleDamageAtStages(attacker, defender, defender.fast, "opponent", stages);
         hp = Math.max(0, hp - damage);
         damageTaken += damage;
         energy = Math.min(100, energy + Number(defender.fast.energyGain || 0));
@@ -14042,7 +14042,7 @@
             return estimate(defender, attacker, move);
           },
           compactDamage(side, move, stages) {
-            return hybridDamageAtStages(attacker, defender, move, side, stages);
+            return principleDamageAtStages(attacker, defender, move, side, stages);
           },
           compactSurvivalProjection(routeState) {
             return compactRouteSurvivalProjection(attacker, defender, routeState);
@@ -14462,8 +14462,7 @@
 
     function recordBattleIntelligenceTimingDecision(attacker, defender, selection) {
       if (!battleDecisionTraceEnabled || chargedContinuationDepth !== 0 || !selection?.action) return;
-      if (!selection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")
-        && !selection.sourceRuleIds?.includes("BI_TIMING_VALUE")) return;
+      if (!isPrincipleTimingSelection(selection)) return;
       const candidates = (selection.candidates || []).map(candidate => {
         const continuation = candidate?.evidence?.continuation || null;
         const action = candidate?.action || {};
@@ -14507,6 +14506,15 @@
         explanation: selection.explanation,
         confidence: selection.chosenCandidate?.confidence || .9
       });
+    }
+
+    function isPrincipleTimingSelection(selection) {
+      const principleIds = selection?.principleIds || [];
+      const reasonCodes = selection?.reasonCodes || [];
+      return principleIds.includes("TIMING-011_OPTIMIZE_CHARGED_TIMING")
+        || principleIds.includes("TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN")
+        || reasonCodes.includes("SAFE_EXTRA_FAST")
+        || reasonCodes.includes("OPTIMAL_CHARGE_TIMING");
     }
 
     function autoAction(attacker, defender) {
@@ -14573,17 +14581,10 @@
       }
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.explanation;
-        if (intelligenceSelection.sourceRuleIds?.includes("BI_TIMING_CONTINUATION")) {
-          const timingPlan = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan || null;
+        if (isPrincipleTimingSelection(intelligenceSelection)) {
           attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-          // Persist only the small, fully simulated timing micro-plan. A
-          // one-Fast line is re-evaluated immediately; a two-Fast line keeps
-          // its final Fast and intended Charged Move across an intervening
-          // opponent action.
-          attacker.timingPlanFastMovesRemaining = Math.max(0, Number(timingPlan?.fastCount || 1) - 1);
-          attacker.timingPlanMoveId = attacker.timingPlanFastMovesRemaining > 0
-            ? timingPlan?.moveId || null
-            : null;
+          attacker.timingPlanFastMovesRemaining = 0;
+          attacker.timingPlanMoveId = null;
           recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
         }
         if (available.length && waitReason) {
