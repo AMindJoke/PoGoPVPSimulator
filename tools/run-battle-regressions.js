@@ -126,7 +126,8 @@ function runRegressionCase(testCase, runtime, sequence = 1, options = {}) {
     debugChargedDecisions: false,
     debugTimeline: true,
     trace: options.trace !== false,
-    config
+    config,
+    preFastAdvantage: testCase.preFastAdvantage || null
   });
   const durationMs = performance.now() - startedAt;
   const tacticalSummary = buildTacticalPatternSummary({

@@ -816,6 +816,27 @@ function createPvPeakBattleIntelligenceApi() {
     triggered.push("SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON");
     const forced = pvpokeForcedThrow({ actor, opponent, moves, chargedCandidates, survival, context });
     if (forced) {
+      const primaryBuild = pvpokeOneFastBuildToPrimaryCharged({
+        state,
+        side,
+        actor,
+        opponent,
+        moves,
+        fast
+      });
+      if (primaryBuild?.candidate) {
+        triggered.push(
+          "ROUTE-026_BUILD_TO_SELECTED_MOVE",
+          "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"
+        );
+        rejected.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT");
+        return finish(primaryBuild.candidate, "route", "BUILD_TO_SELECTED_MOVE", {
+          sourceBranch: "ActionLogic:414-984; primary charged route build before forced cheap throw",
+          survival,
+          forcedThrow: forced.evidence,
+          primaryBuild: primaryBuild.evidence
+        });
+      }
       triggered.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT");
       if (forced.twoCopies) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
       else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
@@ -1146,6 +1167,51 @@ function createPvPeakBattleIntelligenceApi() {
       twoCopies,
       evidence: { moveId: selected.id, comparedDamage, turnsToLive: survival.turnsToLive }
     } : null;
+  }
+
+  function pvpokeOneFastBuildToPrimaryCharged({ state, actor, opponent, moves, fast }) {
+    if (!fast || !moves?.length || !actor?.chargedMoves?.length) return null;
+    const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
+    const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
+    const fastGain = Math.max(0, numeric(actor.fastMove?.energyGain));
+    if (fastGain <= 0) return null;
+    const primaryId = actor.chargedMoves[0]?.id || actor.chargedMoves[0]?.moveId || null;
+    if (!primaryId) return null;
+    const primary = moves.find(move => move.id === primaryId) || null;
+    if (!primary) return null;
+    const currentEnergy = numeric(actor.energy);
+    if (currentEnergy >= primary.energyCost) return null;
+    const projectedEnergy = Math.min(100, currentEnergy + fastGain);
+    if (projectedEnergy < primary.energyCost) return null;
+    const readyNow = moves.filter(move => currentEnergy >= move.energyCost);
+    if (!readyNow.length) return null;
+    const bestReadyDamage = Math.max(...readyNow.map(move => numeric(move.damage)));
+    if (numeric(primary.damage) <= bestReadyDamage) return null;
+
+    const opponentFastTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const opponentReadyTurn = Math.max(0, numeric(opponent.readyTurn));
+    const opponentNextImpact = opponentReadyTurn > currentTurn
+      ? opponentReadyTurn
+      : currentTurn + opponentFastTurns;
+    const ownReadyTurn = currentTurn + fastTurns;
+    const cmpSafe = ownReadyTurn < opponentNextImpact
+      || (ownReadyTurn === opponentNextImpact && numeric(actor.attack) >= numeric(opponent.attack));
+    if (!cmpSafe) return null;
+    return {
+      candidate: fast,
+      evidence: {
+        moveId: primary.id,
+        currentEnergy,
+        projectedEnergy,
+        energyCost: primary.energyCost,
+        readyNow: readyNow.map(move => move.id),
+        primaryDamage: primary.damage,
+        bestReadyDamage,
+        ownReadyTurn,
+        opponentNextImpact,
+        cmpSafe
+      }
+    };
   }
 
   function pvpokeImmediateOpponentChargedThreat({ state, actor, opponent, opponentMoves, context }) {

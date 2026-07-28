@@ -4,6 +4,38 @@
   "description": "Small, reviewed battle-planner regression corpus.",
   "cases": [
     {
+      "id": "kingdra-shadow-tinkaton-primary-build-0s-adv3",
+      "description": "Kingdra Shadow should preserve the primary charged route after three completed Dragon Breath advantages instead of dumping the ready cheaper move.",
+      "category": ["charged-move-choice", "timing", "energy-management"],
+      "league": "great",
+      "pokemonA": {
+        "id": "kingdra_shadow",
+        "moves": { "fast": "DRAGON_BREATH", "charged": ["SURF", "SWIFT"] },
+        "ivPreset": "default",
+        "hp": "full",
+        "energy": 0,
+        "shields": 0
+      },
+      "pokemonB": {
+        "id": "tinkaton",
+        "moves": { "fast": "FAIRY_WIND", "charged": ["GIGATON_HAMMER", "BULLDOZE"] },
+        "ivPreset": "rank1",
+        "hp": "full",
+        "energy": 0,
+        "shields": 0
+      },
+      "preFastAdvantage": { "side": "A", "fastMoves": 3, "applyDamage": true },
+      "policy": { "baiting": "selective", "shieldMode": "smart" },
+      "expectations": {
+        "winner": "A",
+        "chargedMoveSequence": { "side": "A", "moves": ["SURF", "SURF"] },
+        "selectedMoveAtDecision": { "side": "A", "occurrence": 1, "moveId": "SURF" },
+        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 1, "moveId": "SWIFT" },
+        "requiredReasonCodes": ["BUILD_TO_SELECTED_MOVE"]
+      },
+      "notes": "Reviewed against pinned PvPoke runtime at the exact turn-20 decision state; protects the generic primary charged build rule, not the species pair."
+    },
+    {
       "id": "sableye-empoleon-1s",
       "description": "Sableye should value the guaranteed defense boost before its closing Foul Play.",
       "category": ["charged-move-choice", "buff-debuff-valuation", "shielding"],

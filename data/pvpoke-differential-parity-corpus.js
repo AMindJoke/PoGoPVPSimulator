@@ -15,8 +15,9 @@ function buildDifferentialCorpus() {
   const pokemon = data.rankings
     .filter(row => data.pokemonById.has(row.speciesId))
     .slice(0, 80);
-  const fixtures = [];
+  const fixtures = buildReviewedFixtures(data);
   const seen = new Set();
+  for (const fixture of fixtures) seen.add(Translator.hashCanonicalState(fixture.state));
   let cursor = 0;
 
   while (fixtures.length < TARGET_STATE_COUNT && cursor < 5000) {
@@ -33,6 +34,95 @@ function buildDifferentialCorpus() {
   }
 
   return fixtures;
+}
+
+function buildReviewedFixtures(data) {
+  return [
+    buildKingdraTinkatonPrimaryBuildFixture(data)
+  ];
+}
+
+function buildKingdraTinkatonPrimaryBuildFixture(data) {
+  const kingdra = data.pokemonById.get("kingdra_shadow");
+  const tinkaton = data.pokemonById.get("tinkaton");
+  if (!kingdra || !tinkaton) throw new Error("Reviewed fixture requires kingdra_shadow and tinkaton data.");
+  const a = {
+    id: "kingdra_shadow",
+    speciesId: "kingdra_shadow",
+    name: "Kingdra (Shadow)",
+    types: kingdra.types || ["water", "dragon"],
+    level: 21,
+    ivAtk: 5,
+    ivDef: 15,
+    ivHp: 12,
+    cp: 1496,
+    hp: 5,
+    maxHp: 118,
+    energy: 43,
+    shields: 0,
+    attack: 121.81930071,
+    defense: 127.94087361,
+    attackStage: 0,
+    defenseStage: 0,
+    readyTurn: 20,
+    priority: 1,
+    shadow: true,
+    fastMove: normalizeMove(data.moveById.get("DRAGON_BREATH"), true),
+    chargedMoves: ["SURF", "SWIFT"].map(id => normalizeMove(data.moveById.get(id), false)),
+    baiting: "smart",
+    shieldMode: "smart",
+    optimizeMoveTiming: true,
+    mechanicState: {}
+  };
+  const b = {
+    id: "tinkaton",
+    speciesId: "tinkaton",
+    name: "Tinkaton",
+    types: tinkaton.types || ["fairy", "steel"],
+    level: 26,
+    ivAtk: 0,
+    ivDef: 10,
+    ivHp: 14,
+    cp: 1500,
+    hp: 61,
+    maxHp: 144,
+    energy: 30,
+    shields: 0,
+    attack: 105.5805626,
+    defense: 140.31997352,
+    attackStage: 0,
+    defenseStage: 0,
+    readyTurn: 21,
+    priority: 0,
+    shadow: false,
+    fastMove: normalizeMove(data.moveById.get("FAIRY_WIND"), true),
+    chargedMoves: ["GIGATON_HAMMER", "BULLDOZE"].map(id => normalizeMove(data.moveById.get(id), false)),
+    baiting: "smart",
+    shieldMode: "smart",
+    optimizeMoveTiming: true,
+    mechanicState: {}
+  };
+  return {
+    id: "reviewed-kingdra-shadow-tinkaton-primary-build-0s-adv3-turn20",
+    suite: "PVPOKE_DIFFERENTIAL_PARITY",
+    pvpokeRevision: PVPOKE_REVISION,
+    source: "actual-pinned-pvpoke-runtime-reviewed-state",
+    family: "primary-charged-build-before-forced-cheap-throw",
+    categories: ["reviewed", "shields-down", "forced-throw", "primary-charged-build", "cmp-safe"],
+    matchup: "kingdra_shadow_vs_tinkaton",
+    options: {
+      mode: "simulate",
+      baiting: "smart",
+      optimizeMoveTiming: true,
+      farmEnergy: false
+    },
+    state: {
+      currentTurn: 20,
+      sides: { A: a, B: b },
+      pendingEvents: [],
+      cmpState: { readySides: ["A", "B"] }
+    }
+  };
 }
 
 function buildFixture(index, leftRanking, rightRanking, data, rng) {
