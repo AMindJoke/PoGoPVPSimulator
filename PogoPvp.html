@@ -30,6 +30,7 @@
   <script src="src/battle/manual-timeline.js"></script>
   <script src="src/battle/manual-branches.js"></script>
   <script src="src/battle/manual-scenario-io.js"></script>
+  <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
@@ -8914,6 +8915,7 @@
     let manualModeState = window.PvPeakManualMode?.createState?.() || null;
     let manualBattleRuntime = null;
     let manualBattleTrace = [];
+    let manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
     let displayedResources = {};
     // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
     const startingFastAdvantages = { p1: null, p2: null };
@@ -11650,6 +11652,7 @@
       manualBattleRuntime = null;
       manualBattleTrace = [];
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
+      manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
@@ -12588,6 +12591,9 @@
 
     function useFast(attacker, defender, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
+        ? captureManualRuntimeSnapshot()
+        : null;
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       const dreFastOrdinal = typeof nextTechnicalDreFastOrdinal === "function" ? nextTechnicalDreFastOrdinal(attacker) : 0;
       const energyBefore = attacker.energy;
@@ -12616,6 +12622,7 @@
         queueTechnicalFastImpact("one-turn-lag", attacker, defender, event, damage);
       }
       attacker.lastFastStart = event.start;
+      if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(event, manualRuntimeBefore);
       const energyText = energyGained === attacker.fast.energyGain
         ? `+${energyGained} energy`
         : `+${energyGained} energy (${attacker.energy}/100)`;
@@ -12862,6 +12869,9 @@
         render();
         return false;
       }
+      const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
+        ? captureManualRuntimeSnapshot()
+        : null;
       attacker.timingPlanMoveId = null;
       attacker.timingPlanFastMovesRemaining = 0;
       attacker.timingContinuationCount = 0;
@@ -13013,6 +13023,7 @@
       if (typeof resolveTechnicalPendingFastAfterCharge === "function") {
         resolveTechnicalPendingFastAfterCharge(attacker, defender, move);
       }
+      if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(chargeEvent, manualRuntimeBefore);
       if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
     }
@@ -13271,7 +13282,8 @@
         hpAfter: Number(traceContext.hpAfter ?? 0),
         registrationTurn: start,
         resolutionTurn: start,
-        timelineEventId: null,
+        timelineEventId: traceContext.actionLifecycle?.timelineEventId
+          || `battle-event-${String(timeline.length).padStart(4, "0")}-${attacker.trainer}-${kind}-${start}`,
         decisionId: traceContext.actionLifecycle?.decisionId || null,
         actionIntentId: traceContext.actionLifecycle?.actionIntentId || null,
         queuedActionId: traceContext.actionLifecycle?.queuedActionId || null,
@@ -13289,6 +13301,43 @@
       if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
       if (kind === "charge") battleTurns[attacker.trainer] = start + 1;
       return event;
+    }
+
+    function captureManualRuntimeSnapshot() {
+      if (!left || !right) return null;
+      return cloneTechnicalValue({
+        left,
+        right,
+        battleTurns,
+        initialTimelineState,
+        p1Shields: $("p1Shields")?.value,
+        p2Shields: $("p2Shields")?.value,
+        p1StartEnergy: $("p1StartEnergy")?.value,
+        p2StartEnergy: $("p2StartEnergy")?.value
+      });
+    }
+
+    function shouldCaptureManualEventSnapshots() {
+      return !!(
+        manualSnapshotStore
+        && chargedContinuationDepth === 0
+        && (battleDecisionTraceEnabled || manualModeState?.enabled)
+        && battleIntelligenceRuntimeContext !== "matrix"
+        && battleIntelligenceRuntimeContext !== "offline"
+      );
+    }
+
+    function captureManualEventSnapshots(event, beforeState) {
+      if (!event || !beforeState || !shouldCaptureManualEventSnapshots()) return;
+      const snapshots = window.PvPeakManualSnapshots;
+      manualSnapshotStore.capture(event.timelineEventId, snapshots.BOUNDARY.BEFORE, beforeState, {
+        turn: event.start,
+        timelineIndex: event.timelineIndex
+      });
+      manualSnapshotStore.capture(event.timelineEventId, snapshots.BOUNDARY.AFTER, captureManualRuntimeSnapshot(), {
+        turn: Number(event.start || 0) + Math.max(1, Number(event.duration || 1)),
+        timelineIndex: event.timelineIndex
+      });
     }
 
     function recordShield(defender, move, chargeEvent) {
@@ -13559,6 +13608,7 @@
           invalidationReason: null
         };
         currentBattleDecisionTrace.actions.push(action);
+        action.timelineEventId = event.timelineEventId || action.timelineEventId;
         event.timelineEventId = action.timelineEventId;
         event.decisionId = action.decisionId;
         event.actionIntentId = action.actionIntentId;
@@ -16651,6 +16701,10 @@
       applyMatrixSimulationPolicy(options.policy);
       log = [];
       timeline = [];
+      manualBattleRuntime = null;
+      manualBattleTrace = [];
+      manualModeState = window.PvPeakManualMode?.createState?.() || null;
+      manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
