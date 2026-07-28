@@ -40,6 +40,32 @@ assert.equal(afterPlan.prefixEnd, 3, "After-Charged restore must retain its depe
 assert.deepEqual(afterPlan.discardedEvents.map(event => event.timelineEventId), ["fast-2"]);
 assert.equal(afterPlan.runtimeState.right.shields, 0);
 
+const fastStore = Snapshots.createStore();
+const fastBefore = {
+  left: { hp: 100, energy: 10, shields: 0 },
+  right: { hp: 80, energy: 20, shields: 0 },
+  battleTurns: { A: 4, B: 4 }
+};
+const fastAfter = {
+  left: { hp: 100, energy: 18, shields: 0 },
+  right: { hp: 75, energy: 20, shields: 0 },
+  battleTurns: { A: 5, B: 4 }
+};
+fastStore.capture("fast-1", Snapshots.BOUNDARY.BEFORE, fastBefore, { turn: 4, timelineIndex: 0 });
+fastStore.capture("fast-1", Snapshots.BOUNDARY.AFTER, fastAfter, { turn: 5, timelineIndex: 0 });
+const fastBeforePlan = Snapshots.createRestorePlan({
+  timeline, store: fastStore, eventId: "fast-1", boundary: Snapshots.BOUNDARY.BEFORE
+});
+assert.equal(fastBeforePlan.prefixEnd, 0);
+assert.deepEqual(fastBeforePlan.immutablePrefix, []);
+assert.equal(fastBeforePlan.runtimeState.left.energy, 10);
+const fastAfterPlan = Snapshots.createRestorePlan({
+  timeline, store: fastStore, eventId: "fast-1", boundary: Snapshots.BOUNDARY.AFTER
+});
+assert.equal(fastAfterPlan.prefixEnd, 1);
+assert.deepEqual(fastAfterPlan.immutablePrefix.map(event => event.timelineEventId), ["fast-1"]);
+assert.equal(fastAfterPlan.runtimeState.right.hp, 75);
+
 const exported = store.exportEntries();
 const importedStore = Snapshots.createStore();
 importedStore.importEntries(exported);

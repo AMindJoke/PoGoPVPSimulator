@@ -3170,6 +3170,28 @@
       min-height: 34px;
     }
     .manual-session-bar button[hidden] { display: none; }
+    .manual-selection-hint {
+      grid-column: 1 / -1;
+      min-height: 32px;
+      padding: 7px 9px;
+      border: 1px dashed rgba(0, 125, 120, .55);
+      border-radius: 8px;
+      background: rgba(0, 184, 169, .09);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 750;
+    }
+    .manual-selection-hint[hidden] { display: none; }
+    body.manual-branch-selection-active #timelineScroll {
+      outline: 2px solid rgba(0, 184, 169, .45);
+      outline-offset: 3px;
+    }
+    body.manual-branch-selection-active #timelineScroll [data-event-index] {
+      cursor: crosshair;
+    }
+    body.manual-branch-selection-active #timelineScroll [data-event-index].selected {
+      box-shadow: 0 0 0 3px rgba(0, 184, 169, .35), 0 0 0 1px #007d78;
+    }
     .manual-mode-status {
       display: block;
       color: var(--muted);
@@ -8778,6 +8800,7 @@
                 <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
                 <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
                 <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
+                <div id="manualSelectionHint" class="manual-selection-hint" role="status" aria-live="polite" hidden></div>
               </div>
               <div class="actions" data-label="Pokemon A">
                 <button id="p1UseFast">Fast</button>
@@ -9385,6 +9408,7 @@
         if (handleTechnicalTimelineSelection(index)) return;
         selectedTimelineIndex = index;
         highlightTimelineIndex(selectedTimelineIndex);
+        updateManualBranchSelectionUi();
       });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
@@ -9437,6 +9461,7 @@
       $("manualRedo").onclick = redoLiveManualCommand;
       $("manualBranchSelect").onchange = switchLiveManualBranch;
       $("manualControlMode").onchange = changeLiveManualControlMode;
+      $("manualStartPoint").onchange = updateManualBranchSelectionUi;
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -13189,12 +13214,9 @@
         else startBattle({ skipRender: true });
         branchPoint = { boundary: "BATTLE_START", eventId: null };
       } else if (startMode === "selected-before" || startMode === "selected-after") {
-        const selectedEvent = Number.isInteger(selectedTimelineIndex) ? originalTimeline[selectedTimelineIndex] : null;
-        const sourceEvent = selectedEvent?.kind === "shield" || selectedEvent?.kind === "form-protect"
-          ? selectedEvent.chargeEvent
-          : selectedEvent;
+        const sourceEvent = selectedManualTimelineSourceEvent(originalTimeline);
         const eventId = sourceEvent?.timelineEventId || null;
-        if (!eventId) {
+        if (!sourceEvent || !["fast", "charge"].includes(sourceEvent.kind) || !eventId) {
           add("Select a Fast or Charged timeline event before entering Manual Mode.", "info");
           manualOriginalRuntimeState = null;
           render();
@@ -13248,6 +13270,7 @@
         manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, selectedControlMode);
       }
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
+      updateManualBranchSelectionUi();
       render();
       return true;
     }
@@ -13281,6 +13304,35 @@
           : "both sides manual"}.`, "info");
       render();
       return true;
+    }
+
+    function selectedManualTimelineSourceEvent(sourceTimeline = timeline) {
+      const selectedEvent = Number.isInteger(selectedTimelineIndex) ? sourceTimeline[selectedTimelineIndex] : null;
+      if (selectedEvent?.kind === "shield" || selectedEvent?.kind === "form-protect") {
+        return selectedEvent.chargeEvent || null;
+      }
+      return selectedEvent;
+    }
+
+    function updateManualBranchSelectionUi() {
+      const hint = $("manualSelectionHint");
+      const startMode = $("manualStartPoint")?.value || "battle-start";
+      const selecting = !manualModeState?.enabled
+        && (startMode === "selected-before" || startMode === "selected-after");
+      document.body.classList.toggle("manual-branch-selection-active", selecting);
+      if (!hint) return;
+      hint.hidden = !selecting;
+      if (!selecting) {
+        hint.textContent = "";
+        return;
+      }
+      const sourceEvent = selectedManualTimelineSourceEvent();
+      const valid = sourceEvent && (sourceEvent.kind === "fast" || sourceEvent.kind === "charge");
+      if (!valid) {
+        hint.textContent = `Selection mode active: click a Fast or Charged Move in the timeline, then press Manual Mode to start ${startMode === "selected-before" ? "before" : "after"} it.`;
+        return;
+      }
+      hint.textContent = `Selected ${sourceEvent.kind === "fast" ? "Fast" : "Charged"}: ${sourceEvent.move?.name || "move"} at turn ${sourceEvent.start}. Manual Mode will start ${startMode === "selected-before" ? "before" : "after"} this event.`;
     }
 
     function syncManualBranchAfterAction(action) {
@@ -13411,6 +13463,7 @@
           ["p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
         }
       }
+      updateManualBranchSelectionUi();
     }
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
@@ -15765,6 +15818,9 @@
         A: { hp: left.hp, energy: left.energy },
         B: { hp: right.hp, energy: right.energy }
       };
+      const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
+        ? captureManualRuntimeSnapshot()
+        : null;
       const pendingEvents = entries.map((plan, index) => {
         if (typeof plan.beforeExecute === "function") plan.beforeExecute();
         plan.hybridLifecycle = manualActionsBySide[plan.attacker.trainer]
@@ -15816,6 +15872,7 @@
       left.hp = phase.state.sides.A.hp;
       right.hp = phase.state.sides.B.hp;
 
+      const recordedEvents = [];
       entries.forEach((plan, index) => {
         const attacker = plan.attacker;
         const defender = plan.defender;
@@ -15834,6 +15891,7 @@
         });
         event.resolveTurn = impactTurns[index];
         event.simultaneousFastPhase = true;
+        recordedEvents.push(event);
         completeAutomaticActionLifecycle(plan.hybridLifecycle, event, attacker, defender, {
           registrationTurn: startTurn,
           resolutionTurn: impactTurns[index]
@@ -15841,6 +15899,9 @@
         attacker.lastFastStart = event.start;
         add(`T${event.start}-${event.start + event.duration} - ${side}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, +${attacker.energy - energyBefore} energy.`, "fast");
       });
+      if (typeof captureManualEventSnapshots === "function") {
+        recordedEvents.forEach(event => captureManualEventSnapshots(event, manualRuntimeBefore));
+      }
       return true;
     }
 
@@ -15957,6 +16018,9 @@
         if (!source || !target || !source.fast || target.hp <= 0) continue;
         const duration = Math.max(1, Number(source.fast.turns || 1));
         if (duration !== 1) continue;
+        const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
+          ? captureManualRuntimeSnapshot()
+          : null;
         const energyBefore = Number(source.energy || 0);
         const hpBefore = Number(target.hp || 0);
         const damage = estimate(source, target, source.fast);
@@ -15972,6 +16036,9 @@
         event.sneakChargeIndex = chargeEvent.timelineIndex;
         event.registeredBeforeChargedKo = true;
         event.actionLifecycleStatus = "FAST_IMPACT_RESOLVED";
+        if (typeof captureManualEventSnapshots === "function") {
+          captureManualEventSnapshots(event, manualRuntimeBefore);
+        }
         add(`T${turn} - ${source.trainer}: ${source.p.name}'s registered ${source.fast.name} resolves through ${chargeEvent.move?.name || "the Charged Move"}: ${damage} damage.`, "fast");
         context?.acted?.add(fastSide);
         resolved = true;

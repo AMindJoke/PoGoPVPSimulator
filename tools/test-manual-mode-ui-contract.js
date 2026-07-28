@@ -13,6 +13,7 @@ for (const id of [
   "manualBranchSelect",
   "manualUndo",
   "manualRedo",
+  "manualSelectionHint",
   "p1UseFast",
   "p1UseCharge1",
   "p2UseFast",
@@ -27,11 +28,17 @@ for (const value of ["battle-start", "selected-before", "selected-after", "curre
 
 assert.match(html, /manualModeToggle"\)\.onclick = toggleLiveManualMode/);
 assert.match(html, /manualControlMode"\)\.onchange = changeLiveManualControlMode/);
+assert.match(html, /manualStartPoint"\)\.onchange = updateManualBranchSelectionUi/);
+assert.match(html, /manual-branch-selection-active/);
+assert.match(html, /selectedManualTimelineSourceEvent/);
+assert.match(html, /Selection mode active/);
 assert.match(html, /PvPeakManualHybrid\.coordinateDecision/);
 assert.match(html, /PvPeakManualHybrid\.executeCoordinatedDecision/);
 assert.match(html, /runtime\.prepare\(/);
 assert.match(html, /runtime\.executePrepared\(/);
 assert.match(html, /resolveSimultaneousFastActionPlans/);
+assert.match(html, /recordedEvents\.forEach\(event => captureManualEventSnapshots\(event, manualRuntimeBefore\)\)/);
+assert.match(html, /event\.registeredBeforeChargedKo = true;[\s\S]{0,300}captureManualEventSnapshots\(event, manualRuntimeBefore\)/);
 assert.match(html, /runtime\.completePreparedExternal\(/);
 assert.doesNotMatch(html, /SIMULTANEOUS_FAST_FAINT_REQUIRES_CANONICAL_PHASE_RESOLUTION/);
 assert.match(html, /PvPeakManualSnapshots\.applyStartingShields/);
