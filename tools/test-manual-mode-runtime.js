@@ -84,6 +84,19 @@ assert.equal(traces.at(-1).delta.A.energy, 3);
 assert.equal(traces.at(-1).delta.B.hp, -4);
 assert.notEqual(traces.at(-1).stateHashBefore, traces.at(-1).stateHashAfter);
 
+const energyBeforeQueuedBuild = state.sides.A.energy;
+const queuedBuild = runtime.request({
+  side: "A",
+  actionType: ManualAction.ACTION_TYPE.CHARGED_MOVE,
+  moveId: "SURF",
+  insertionPolicy: ManualAction.INSERTION_POLICY.NEXT_LEGAL_TURN
+});
+assert.equal(queuedBuild.ok, true);
+assert.equal(queuedBuild.queued, true);
+assert.equal(queuedBuild.validation.pendingDecisionType, "BUILD_TO_CHARGED");
+assert.equal(state.sides.A.energy, energyBeforeQueuedBuild, "Queuing a build intent must not mutate battle state.");
+assert.equal(runtime.getTrace().at(-1).traceState, Runtime.TRACE_STATE.QUEUED);
+
 const staleOutcome = runtime.request({
   side: "A",
   actionType: ManualAction.ACTION_TYPE.FAST_MOVE,

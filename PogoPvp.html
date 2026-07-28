@@ -3518,6 +3518,7 @@
       text-transform: uppercase;
     }
     .actions button {
+      position: relative;
       width: 100%;
       min-width: 0;
       min-height: 34px;
@@ -3537,6 +3538,24 @@
     }
     .actions button.ready {
       box-shadow: 0 0 0 3px rgba(214, 173, 57, .30);
+    }
+    .actions button.build-available {
+      opacity: .78;
+      border-style: dashed;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--warn) 26%, transparent);
+    }
+    .actions button.build-available::after {
+      content: "Build";
+      position: absolute;
+      right: 3px;
+      top: 2px;
+      padding: 1px 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .88);
+      color: #7a5300;
+      font-size: 7px;
+      font-weight: 950;
+      text-shadow: none;
     }
     .move-button-label {
       display: grid;
@@ -9285,7 +9304,7 @@
           <div id="manualDecisionBanner" class="manual-decision-banner">
             <div class="manual-decision-primary">
               <span class="manual-editor-kicker">Current decision</span>
-              <strong id="manualDecisionTitle">Choose an action</strong>
+              <strong id="manualCurrentDecisionTitle">Choose an action</strong>
               <span id="manualDecisionWhy">Automatic simulation is paused.</span>
             </div>
             <div class="manual-decision-facts">
@@ -13773,6 +13792,9 @@
       if (!ensureLiveManualSession(side)) return false;
       const attacker = side === "A" ? left : right;
       const move = attacker.charged?.[index];
+      if (move && attacker.energy < move.energyCost) {
+        return offerManualBuildToCharged(side, index);
+      }
       if (manualModeState.controlledSides.length === 1) {
         return executeLiveHybridAction(
           side,
@@ -13808,6 +13830,85 @@
       syncManualBranchAfterAction(result.action);
       render();
       return true;
+    }
+
+    async function offerManualBuildToCharged(side, index) {
+      const attacker = side === "A" ? left : right;
+      const defender = side === "A" ? right : left;
+      const move = attacker?.charged?.[index];
+      const gain = Math.max(0, Number(attacker?.fast?.energyGain || 0));
+      if (!attacker || !defender || !move || gain <= 0) return false;
+      if (manualModeState.controlledSides.length !== 1) {
+        add(`Build to ${move.name} requires one manually controlled side so the opponent can be re-evaluated automatically after every Fast Move.`, "info");
+        render();
+        return false;
+      }
+      const requiredFastMoves = Math.max(1, Math.ceil((move.energyCost - attacker.energy) / gain));
+      const accepted = await manualDecision(
+        `Build to ${move.name}`,
+        `<strong>${escapeHtml(attacker.p.name)}</strong> needs <strong>${move.energyCost - attacker.energy}</strong> more energy.<br>Build with up to <strong>${requiredFastMoves} ${escapeHtml(attacker.fast.name)}</strong>?<br><small>The action will be revalidated after every Fast Move and will stop if the battle state no longer permits the line.</small>`,
+        "Build and revalidate",
+        "Cancel"
+      );
+      if (!accepted) return false;
+      const queued = liveManualRuntime().request({
+        side,
+        actionType: window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE,
+        moveId: move.id,
+        insertionPolicy: window.PvPeakManualAction.INSERTION_POLICY.NEXT_LEGAL_TURN
+      });
+      if (!queued.ok || !queued.queued || queued.validation?.pendingDecisionType !== "BUILD_TO_CHARGED") {
+        add(`Cannot build to ${move.name} (${queued.validation?.reasonCode || "ACTION_NOT_QUEUEABLE"}).`, "info");
+        render();
+        return false;
+      }
+      const pokemonId = attacker.p?.id;
+      let fastMovesUsed = 0;
+      while (fastMovesUsed < requiredFastMoves && !battleEnded()) {
+        const currentAttacker = side === "A" ? left : right;
+        const currentDefender = side === "A" ? right : left;
+        const currentMove = currentAttacker?.charged?.[index];
+        if (
+          !currentAttacker
+          || !currentDefender
+          || currentAttacker.hp <= 0
+          || currentDefender.hp <= 0
+          || currentAttacker.p?.id !== pokemonId
+          || currentMove?.id !== move.id
+        ) {
+          add(`Build to ${move.name} stopped: the acting Pokemon or target changed.`, "info");
+          render();
+          return false;
+        }
+        if (currentAttacker.energy >= currentMove.energyCost) break;
+        const legalFast = legalBattleActions(currentAttacker, manualCanonicalState()?.currentTurn)
+          .some(action => ["fast", "fast_move"].includes(action.type));
+        if (!legalFast || manualModeState.status !== window.PvPeakManualMode.STATUS.AWAITING_ACTION) {
+          add(`Build to ${move.name} stopped: ${manualActionUnavailableReason(currentAttacker, currentAttacker.fast, "fast")}.`, "info");
+          render();
+          return false;
+        }
+        const progressed = await executeLiveManualFast(side);
+        if (!progressed) {
+          add(`Build to ${move.name} stopped because the Fast Move could not resolve.`, "info");
+          render();
+          return false;
+        }
+        fastMovesUsed++;
+      }
+      const finalAttacker = side === "A" ? left : right;
+      const finalMove = finalAttacker?.charged?.[index];
+      const chargedLegal = finalMove
+        && finalAttacker.energy >= finalMove.energyCost
+        && legalBattleActions(finalAttacker, manualCanonicalState()?.currentTurn)
+          .some(action => ["charged", "charged_move"].includes(action.type) && action.moveId === finalMove.id);
+      if (!chargedLegal) {
+        add(`Build to ${move.name} stopped: the Charged Move is not legal in the updated battle state.`, "info");
+        render();
+        return false;
+      }
+      add(`${move.name} is ready after ${fastMovesUsed} ${attacker.fast.name}${fastMovesUsed === 1 ? "" : "s"}; executing the revalidated action.`, "info");
+      return executeLiveManualCharge(side, index);
     }
 
     function currentManualTerminalResult() {
@@ -14419,7 +14520,7 @@
             })
           : [];
       const actorName = actor?.p?.name || null;
-      $("manualDecisionTitle").textContent = shieldDecision
+      $("manualCurrentDecisionTitle").textContent = shieldDecision
         ? `${actorName || `Pokemon ${activeSide || ""}`} shield decision`
         : actorName
           ? `${actorName} to act`
@@ -14598,8 +14699,18 @@
             const button = $(id);
             const move = index === 0 ? combatant.fast : combatant.charged?.[index - 1];
             const legal = index === 0 ? legalFast : !!move && legalChargedIds.has(move.id);
-            button.disabled = !legal;
-            if (!legal) {
+            const canBuild = index > 0
+              && !!move
+              && combatant.energy < move.energyCost
+              && legalFast
+              && manualModeState.controlledSides.length === 1
+              && manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_ACTION;
+            button.disabled = !legal && !canBuild;
+            button.classList.toggle("build-available", canBuild);
+            if (canBuild) {
+              const fastMoves = Math.ceil((move.energyCost - combatant.energy) / Math.max(1, Number(combatant.fast?.energyGain || 1)));
+              button.title = `${button.title || move.name}\nBuild available: ${fastMoves} ${combatant.fast.name}${fastMoves === 1 ? "" : "s"}, revalidated after each.`;
+            } else if (!legal) {
               button.title = `${button.title || move?.name || "Action"}\nUnavailable: ${manualActionUnavailableReason(combatant, move, index === 0 ? "fast" : "charged")}`;
             }
           });

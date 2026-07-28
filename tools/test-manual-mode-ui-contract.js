@@ -5,6 +5,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
+const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
+assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [
   "manualModeStatus",
   "manualSetup",
@@ -14,7 +16,7 @@ for (const id of [
   "manualRuntimeTurn",
   "manualEditorWorkspace",
   "manualDecisionBanner",
-  "manualDecisionTitle",
+  "manualCurrentDecisionTitle",
   "manualDecisionWhy",
   "manualDecisionTurn",
   "manualDecisionEnergy",
@@ -103,6 +105,10 @@ assert.match(html, /function renameActiveManualTimeline/);
 assert.match(html, /function duplicateActiveManualTimeline/);
 assert.match(html, /function deleteActiveManualTimeline/);
 assert.match(html, /Restore the last undone edit/);
+assert.match(html, /function offerManualBuildToCharged/);
+assert.match(html, /INSERTION_POLICY\.NEXT_LEGAL_TURN/);
+assert.match(html, /pendingDecisionType !== "BUILD_TO_CHARGED"/);
+assert.match(html, /revalidated after each/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
 assert.match(html, /function renderManualSelectedEventSummary/);
 assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);
