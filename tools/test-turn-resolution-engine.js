@@ -56,6 +56,13 @@ assert.deepEqual(
   ]).map(intent => intent.type),
   ["charged", "fast"]
 );
+assert.deepEqual(
+  TurnEngine.orderActionIntents(cmpState, [
+    { side: "A", type: "wait", metadata: { timingWindow: { waitTurns: 1 } } },
+    { side: "B", type: "fast", moveId: "ROLLOUT" }
+  ]).map(intent => intent.type),
+  ["fast", "wait"]
+);
 assert.equal(
   TurnEngine.orderActionIntents(cmpState, [{ side: "B", type: "charged", moveId: "NOT_A_MOVE" }]).length,
   0

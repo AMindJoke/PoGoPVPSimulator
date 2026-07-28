@@ -87,6 +87,22 @@ assert.equal(decision.collision, "FAST_VS_FAST");
 assert.deepEqual(decision.registrations.map(item => item.sideId), ["A", "B"]);
 
 decision = Hybrid.coordinateDecision({
+  turnState: state(),
+  controlledSides: ["A"],
+  manualIntent: { side: "A", type: "fast", moveId: "FAST_A" },
+  automaticIntent: {
+    side: "B",
+    type: "wait",
+    metadata: { timingWindow: { waitTurns: 1 } }
+  }
+});
+assert.equal(decision.status, Hybrid.STATUS.JOINT_REGISTERED);
+assert.deepEqual(decision.registrations.map(item => [item.sideId, item.type]), [
+  ["A", "fast"],
+  ["B", "wait"]
+]);
+
+decision = Hybrid.coordinateDecision({
   turnState: state({
     sides: {
       ...state().sides,

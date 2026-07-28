@@ -7,6 +7,7 @@ const path = require("node:path");
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 for (const id of [
   "manualModeStatus",
+  "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
   "manualBranchSelect",
@@ -25,6 +26,11 @@ for (const value of ["battle-start", "selected-before", "selected-after", "curre
 }
 
 assert.match(html, /manualModeToggle"\)\.onclick = toggleLiveManualMode/);
+assert.match(html, /manualControlMode"\)\.onchange = changeLiveManualControlMode/);
+assert.match(html, /PvPeakManualHybrid\.coordinateDecision/);
+assert.match(html, /PvPeakManualHybrid\.executeCoordinatedDecision/);
+assert.match(html, /runtime\.prepare\(/);
+assert.match(html, /runtime\.executePrepared\(/);
 assert.match(html, /manualUndo"\)\.onclick = undoLiveManualCommand/);
 assert.match(html, /manualRedo"\)\.onclick = redoLiveManualCommand/);
 assert.match(html, /manualBranchSelect"\)\.onchange = switchLiveManualBranch/);

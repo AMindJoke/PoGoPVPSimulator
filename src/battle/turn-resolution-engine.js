@@ -97,7 +97,24 @@ function createPvPeakTurnEngineApi() {
       : intent.type === "fast_move"
         ? "fast"
         : intent.type;
-    const legalAction = getLegalActions(state, sideId).find(action =>
+    const legalActions = getLegalActions(state, sideId);
+    if (
+      type === "wait"
+      && legalActions.length
+      && intent.metadata?.timingWindow
+    ) {
+      return {
+        ...intent,
+        sideId,
+        type,
+        moveId: null,
+        move: null,
+        requestTurn: Math.max(0, numeric(intent.requestTurn, state.currentTurn)),
+        queueTurn: Math.max(0, numeric(intent.queueTurn, state.currentTurn)),
+        registrationTurn: state.currentTurn
+      };
+    }
+    const legalAction = legalActions.find(action =>
       action.type === type
       && (!intent.moveId || action.moveId === intent.moveId)
     );
@@ -119,10 +136,10 @@ function createPvPeakTurnEngineApi() {
       .map(intent => normalizeActionIntent(state, intent))
       .filter(Boolean)
       .sort((a, b) => {
-        const aCharged = a.type === "charged";
-        const bCharged = b.type === "charged";
-        if (aCharged !== bCharged) return aCharged ? -1 : 1;
-        if (aCharged && bCharged) {
+        const priority = type => type === "charged" ? 0 : type === "fast" ? 1 : 2;
+        const priorityDifference = priority(a.type) - priority(b.type);
+        if (priorityDifference) return priorityDifference;
+        if (a.type === "charged" && b.type === "charged") {
           const attackDifference = numeric(state.sides[b.sideId].attack) - numeric(state.sides[a.sideId].attack);
           if (attackDifference) return attackDifference;
         }

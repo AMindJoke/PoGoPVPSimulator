@@ -27,6 +27,7 @@
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js"></script>
   <script src="src/battle/manual-runtime.js"></script>
+  <script src="src/battle/manual-hybrid.js"></script>
   <script src="src/battle/manual-timeline.js"></script>
   <script src="src/battle/manual-branches.js"></script>
   <script src="src/battle/manual-scenario-io.js"></script>
@@ -3159,7 +3160,7 @@
     .manual-session-bar {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: minmax(150px, 1fr) auto minmax(120px, auto) auto auto;
+      grid-template-columns: minmax(140px, 1fr) minmax(150px, 1fr) auto minmax(120px, auto) auto auto;
       gap: 6px;
       align-items: center;
       padding-top: 10px;
@@ -8768,6 +8769,11 @@
                   <option value="selected-after">After selected event</option>
                   <option value="current">Current state</option>
                 </select>
+                <select id="manualControlMode" aria-label="Manual Mode control configuration">
+                  <option value="BOTH_MANUAL">A manual · B manual</option>
+                  <option value="PLAYER_A_MANUAL">A manual · B auto</option>
+                  <option value="PLAYER_B_MANUAL">A auto · B manual</option>
+                </select>
                 <button id="manualModeToggle" type="button">Manual Mode</button>
                 <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
                 <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
@@ -9430,6 +9436,7 @@
       $("manualUndo").onclick = undoLiveManualCommand;
       $("manualRedo").onclick = redoLiveManualCommand;
       $("manualBranchSelect").onchange = switchLiveManualBranch;
+      $("manualControlMode").onchange = changeLiveManualControlMode;
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -12769,6 +12776,9 @@
           const attacker = attackerSide === "A" ? left : right;
           const defender = defenderSide === "A" ? left : right;
           const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId);
+          if (!manualModeState?.controlledSides?.includes(defenderSide)) {
+            return shouldShield(defender, move, estimate(attacker, defender, move), attacker);
+          }
           return askManualShieldDecision(attacker, defender, move, estimate(attacker, defender, move));
         },
         onDecisionPhase: ({ phase, decisionPoint }) => {
@@ -12803,9 +12813,198 @@
       return manualBattleRuntime;
     }
 
-    function executeLiveManualFast(side) {
+    function normalizedHybridIntent(side, action) {
+      if (!action) return null;
+      return {
+        side,
+        type: action.type === "charged_move"
+          ? "charged"
+          : action.type === "fast_move"
+            ? "fast"
+            : action.type,
+        moveId: action.moveId || action.move?.id || null,
+        move: action.move || null,
+        metadata: action.metadata || null
+      };
+    }
+
+    async function executePreparedHybridAutomatic(plan) {
+      if (!plan?.action) return false;
+      const type = plan.action.type === "charged" ? "charged_move" : plan.action.type;
+      if (type !== "charged_move") return executePreparedAutomaticBattleAction(plan);
+      const defenderSide = plan.defender.trainer;
+      if (!manualModeState?.controlledSides?.includes(defenderSide) || plan.defender.shields <= 0) {
+        return executePreparedAutomaticBattleAction(plan);
+      }
+      const move = plan.action.move || validChargedMoves(plan.attacker).find(candidate => candidate.id === plan.action.moveId);
+      const decisionPoint = window.PvPeakManualAction.createDecisionPoint({
+        state: manualCanonicalState(),
+        eventId: timeline.at(-1)?.timelineEventId || null,
+        phase: window.PvPeakManualAction.DECISION_PHASE.SHIELD_DECISION,
+        activeSide: defenderSide,
+        shieldDecision: {
+          attackerSide: plan.attacker.trainer,
+          defenderSide,
+          moveId: move?.id || null
+        }
+      });
+      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: decisionPoint.turn,
+        cursorEventId: decisionPoint.eventId,
+        pendingDecision: decisionPoint
+      });
+      render();
+      const shielded = await askManualShieldDecision(
+        plan.attacker,
+        plan.defender,
+        move,
+        estimate(plan.attacker, plan.defender, move)
+      );
+      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      return executePreparedAutomaticBattleAction(plan, { shielded });
+    }
+
+    async function advanceHybridAutomaticUntilManualDecision(maxSteps = 1000) {
+      if (!manualModeState?.enabled || manualModeState.controlledSides.length !== 1) return 0;
+      const manualSide = manualModeState.controlledSides[0];
+      const automaticSide = manualSide === "A" ? "B" : "A";
+      let steps = 0;
+      while (!battleEnded() && steps < maxSteps) {
+        const state = manualCanonicalState();
+        if (!state || legalBattleActions(manualSide === "A" ? left : right, state.currentTurn).length) break;
+        const automatic = automaticSide === "A" ? left : right;
+        const defender = automaticSide === "A" ? right : left;
+        if (!legalBattleActions(automatic, state.currentTurn).length) break;
+        const plan = prepareAutomaticBattleAction(automatic, defender);
+        if (!plan) break;
+        const timelineStart = timeline.length;
+        const previousContext = activeAutoTurnContext;
+        activeAutoTurnContext = {
+          currentTurn: state.currentTurn,
+          timelineStart,
+          actorOrder: [automaticSide],
+          acted: new Set([automaticSide]),
+          deferTerminalFinalization: true
+        };
+        try {
+          if (!await executePreparedHybridAutomatic(plan)) break;
+          resetCooldownsAfterChargedTurn(state.currentTurn, timelineStart);
+          finish();
+        } finally {
+          activeAutoTurnContext = previousContext;
+        }
+        steps++;
+      }
+      return steps;
+    }
+
+    async function executeLiveHybridAction(side, actionType, moveId) {
+      const runtime = liveManualRuntime();
+      const preparedManual = runtime.prepare({ side, actionType, moveId });
+      if (!preparedManual.ok) {
+        add(`${side}: manual action rejected (${preparedManual.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
+        render();
+        return false;
+      }
+      const state = manualCanonicalState();
+      const automaticSide = side === "A" ? "B" : "A";
+      const automatic = automaticSide === "A" ? left : right;
+      const automaticDefender = automaticSide === "A" ? right : left;
+      const automaticReady = legalBattleActions(automatic, state.currentTurn).length > 0;
+      const automaticPlan = automaticReady ? prepareAutomaticBattleAction(automatic, automaticDefender) : null;
+      const decision = window.PvPeakManualHybrid.coordinateDecision({
+        turnState: state,
+        controlledSides: manualModeState.controlledSides,
+        manualIntent: normalizedHybridIntent(side, {
+          type: actionType === window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE ? "charged_move" : "fast_move",
+          moveId
+        }),
+        automaticIntent: automaticPlan ? normalizedHybridIntent(automaticSide, automaticPlan.action) : null,
+        pendingDecision: manualModeState.pendingDecision,
+        resolving: manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING
+      });
+      if (![window.PvPeakManualHybrid.STATUS.MANUAL_REGISTERED, window.PvPeakManualHybrid.STATUS.JOINT_REGISTERED].includes(decision.status)) {
+        add(`Hybrid turn rejected (${decision.reason || decision.status}).`, "info");
+        render();
+        return false;
+      }
+      if (
+        decision.collision === "FAST_VS_FAST"
+        && estimate(left, right, left.fast) >= right.hp
+        && estimate(right, left, right.fast) >= left.hp
+      ) {
+        add("Hybrid turn rejected (SIMULTANEOUS_FAST_FAINT_REQUIRES_CANONICAL_PHASE_RESOLUTION).", "info");
+        render();
+        return false;
+      }
+
+      const timelineStart = timeline.length;
+      const currentTurn = state.currentTurn;
+      const previousContext = activeAutoTurnContext;
+      const context = {
+        currentTurn,
+        timelineStart,
+        actorOrder: decision.registrations.map(item => item.sideId),
+        acted: new Set(),
+        deferTerminalFinalization: true
+      };
+      const startFastEligibility = new Map(decision.registrations.map(registration => [
+        registration.sideId,
+        registration.type === "fast"
+      ]));
+      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      activeAutoTurnContext = context;
+      let execution;
+      try {
+        execution = await window.PvPeakManualHybrid.executeCoordinatedDecision(decision, {
+          executeManual: async registration => {
+            context.acted.add(registration.sideId);
+            return runtime.executePrepared(preparedManual);
+          },
+          executeAutomatic: async registration => {
+            context.acted.add(registration.sideId);
+            return executePreparedHybridAutomatic(automaticPlan);
+          },
+          isTerminal: () => battleEnded(),
+          resolveRegisteredFastAfterCharged: () =>
+            resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility),
+          finalizeTurn: () => {
+            resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+            return finish();
+          }
+        });
+      } finally {
+        activeAutoTurnContext = previousContext;
+      }
+      if (!execution?.ok) {
+        add(`Hybrid turn could not complete (${execution?.reason || "ACTION_INVALIDATED"}).`, "info");
+      }
+      if (!battleEnded()) await advanceHybridAutomaticUntilManualDecision();
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: manualCanonicalState()?.currentTurn || 0,
+        cursorEventId: timeline.at(-1)?.timelineEventId || null,
+        terminal: battleEnded(),
+        terminalResult: currentManualTerminalResult(),
+        pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+      });
+      syncManualBranchAfterAction(preparedManual.action);
+      render();
+      return !!execution?.ok;
+    }
+
+    async function executeLiveManualFast(side) {
       if (!ensureLiveManualSession(side)) return false;
       const attacker = side === "A" ? left : right;
+      if (manualModeState.controlledSides.length === 1) {
+        return executeLiveHybridAction(
+          side,
+          window.PvPeakManualAction.ACTION_TYPE.FAST_MOVE,
+          attacker.fast?.id || null
+        );
+      }
       const result = liveManualRuntime().request({
         side,
         actionType: window.PvPeakManualAction.ACTION_TYPE.FAST_MOVE,
@@ -12833,6 +13032,13 @@
       if (!ensureLiveManualSession(side)) return false;
       const attacker = side === "A" ? left : right;
       const move = attacker.charged?.[index];
+      if (manualModeState.controlledSides.length === 1) {
+        return executeLiveHybridAction(
+          side,
+          window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE,
+          move?.id || null
+        );
+      }
       const result = await liveManualRuntime().request({
         side,
         actionType: window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE,
@@ -13002,6 +13208,10 @@
         }
       });
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      const selectedControlMode = $("manualControlMode")?.value;
+      if (Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(selectedControlMode)) {
+        manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, selectedControlMode);
+      }
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       render();
       return true;
@@ -13021,6 +13231,21 @@
 
     function toggleLiveManualMode() {
       return manualModeState?.enabled ? exitLiveManualMode() : enterLiveManualMode();
+    }
+
+    function changeLiveManualControlMode() {
+      const controlMode = $("manualControlMode")?.value;
+      if (!manualModeState?.enabled || !Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(controlMode)) {
+        return false;
+      }
+      manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, controlMode);
+      add(`Manual control changed to ${controlMode === "PLAYER_A_MANUAL"
+        ? "A manual / B automatic"
+        : controlMode === "PLAYER_B_MANUAL"
+          ? "A automatic / B manual"
+          : "both sides manual"}.`, "info");
+      render();
+      return true;
     }
 
     function syncManualBranchAfterAction(action) {
@@ -13101,9 +13326,12 @@
       const undo = $("manualUndo");
       const redo = $("manualRedo");
       const branchSelect = $("manualBranchSelect");
-      if (!toggle || !status || !startPoint || !branchSelect || !undo || !redo) return;
+      const controlMode = $("manualControlMode");
+      if (!toggle || !status || !startPoint || !controlMode || !branchSelect || !undo || !redo) return;
       toggle.textContent = enabled ? "Exit Manual" : "Manual Mode";
       startPoint.disabled = enabled;
+      controlMode.disabled = !left || !right;
+      if (enabled) controlMode.value = manualModeState.controlMode;
       undo.hidden = !enabled;
       redo.hidden = !enabled;
       branchSelect.hidden = !enabled;
@@ -13119,9 +13347,19 @@
         branchSelect.innerHTML = "";
       }
       status.textContent = enabled
-        ? `${active?.label || "Manual"} · ${manualModeState.status.replaceAll("_", " ").toLowerCase()}`
+        ? `${active?.label || "Manual"} · ${manualModeState.controlMode === "PLAYER_A_MANUAL"
+          ? "A manual / B auto"
+          : manualModeState.controlMode === "PLAYER_B_MANUAL"
+            ? "A auto / B manual"
+            : "both manual"} · ${manualModeState.status.replaceAll("_", " ").toLowerCase()}`
         : "Automatic timeline";
       if (enabled) {
+        if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
+        if ($("p2UseFast")) $("p2UseFast").disabled = !right?.fast;
+        if ($("p1UseCharge1")) $("p1UseCharge1").disabled = !left?.charged?.[0];
+        if ($("p1UseCharge2")) $("p1UseCharge2").disabled = !left?.charged?.[1];
+        if ($("p2UseCharge1")) $("p2UseCharge1").disabled = !right?.charged?.[0];
+        if ($("p2UseCharge2")) $("p2UseCharge2").disabled = !right?.charged?.[1];
         const locked = [
           window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION,
           window.PvPeakManualMode.STATUS.RESOLVING,
@@ -13131,6 +13369,12 @@
           const button = $(id);
           if (button && locked) button.disabled = true;
         });
+        if (!manualModeState.controlledSides.includes("A")) {
+          ["p1UseFast", "p1UseCharge1", "p1UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
+        }
+        if (!manualModeState.controlledSides.includes("B")) {
+          ["p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
+        }
       }
     }
 
