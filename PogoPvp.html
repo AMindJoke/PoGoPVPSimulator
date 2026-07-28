@@ -9643,6 +9643,8 @@
         recordBattleIntelligenceTimingDecision,
         isPrincipleTimingSelection,
         diagnosticPlannedAction,
+        prepareAutomaticBattleAction,
+        executePreparedAutomaticBattleAction,
         autoAction,
         automaticBattleStep,
         runAutomaticBattleToEnd,
@@ -15301,17 +15303,22 @@
         || reasonCodes.includes("OPTIMAL_CHARGE_TIMING");
     }
 
-    function autoAction(attacker, defender) {
+    function prepareAutomaticBattleAction(attacker, defender) {
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const legalActions = legalBattleActions(attacker, Number(battleTurns[attacker.trainer] || 0));
       if (!legalActions.length) return false;
       const diagnosticAction = diagnosticPlannedAction(attacker, legalActions);
       if (diagnosticAction) {
-        return executeAutomaticBattleAction(attacker, defender, diagnosticAction, {
-          source: "diagnostic-plan",
-          aiReason: "deterministic matchup-planner fixture",
-          deferCooldownReset: true
-        });
+        return {
+          attacker,
+          defender,
+          action: diagnosticAction,
+          options: {
+            source: "diagnostic-plan",
+            aiReason: "deterministic matchup-planner fixture",
+            deferCooldownReset: true
+          }
+        };
       }
       if (Number(attacker.timingPlanFastMovesRemaining || 0) > 0) {
         const plannedFast = legalActions.find(action => action.type === "fast" || action.type === "fast_move");
@@ -15320,10 +15327,15 @@
           && attacker.energy + gain <= 100
           && estimate(defender, attacker, defender.fast) < attacker.hp;
         if (safeToContinue) {
-          attacker.timingPlanFastMovesRemaining = Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1);
-          return executeAutomaticBattleAction(attacker, defender, plannedFast, {
-            source: "persisted-timing-plan"
-          });
+          return {
+            attacker,
+            defender,
+            action: plannedFast,
+            options: { source: "persisted-timing-plan" },
+            beforeExecute() {
+              attacker.timingPlanFastMovesRemaining = Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1);
+            }
+          };
         }
         attacker.timingPlanFastMovesRemaining = 0;
         attacker.timingPlanMoveId = null;
@@ -15345,75 +15357,116 @@
           ? intelligenceSelection.action.moveId || null
           : null;
         if (plannedMove && selectedMoveId === plannedMove.id) {
-          recordBattleIntelligenceDecision(attacker, defender, {
+          const verifiedSelection = {
             ...intelligenceSelection,
             action: { type: "charged_move", moveId: plannedMove.id, move: plannedMove },
             explanation: `executes the verified ${plannedMove.name} timing line`,
             reasonCodes: ["OPTIMAL_CHARGE_TIMING"]
-          });
-          return executeAutomaticBattleAction(attacker, defender, {
-            type: "charged_move",
-            moveId: plannedMove.id,
-            move: plannedMove
-          }, {
-            source: "verified-timing-line",
-            aiReason: `executes the verified ${plannedMove.name} timing line`,
-            deferCooldownReset: true
-          });
+          };
+          return {
+            attacker,
+            defender,
+            action: verifiedSelection.action,
+            options: {
+              source: "verified-timing-line",
+              aiReason: verifiedSelection.explanation,
+              deferCooldownReset: true
+            },
+            beforeExecute() {
+              recordBattleIntelligenceDecision(attacker, defender, verifiedSelection);
+            }
+          };
         }
         attacker.timingPlanMoveId = null;
       }
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.explanation;
-        if (isPrincipleTimingSelection(intelligenceSelection)) {
-          attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-          attacker.timingPlanFastMovesRemaining = 0;
-          attacker.timingPlanMoveId = null;
-          recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
-        }
-        if (available.length && waitReason) {
-          add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
-        }
-        return executeAutomaticBattleAction(attacker, defender, intelligenceSelection.action, {
-          source: "battle-intelligence"
-        });
+        return {
+          attacker,
+          defender,
+          action: intelligenceSelection.action,
+          options: { source: "battle-intelligence" },
+          beforeExecute() {
+            if (isPrincipleTimingSelection(intelligenceSelection)) {
+              attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
+              attacker.timingPlanFastMovesRemaining = 0;
+              attacker.timingPlanMoveId = null;
+              recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
+            }
+            if (available.length && waitReason) {
+              add(`T${battleTurns[attacker.trainer] || 0} - ${attacker.trainer}: ${attacker.p.name} waits. Reasoning: ${waitReason}.`, "info");
+            }
+          }
+        };
       }
       if (intelligenceSelection.action.type === "wait") {
         const timingWindow = intelligenceSelection.action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
         if (!timingWindow) return false;
         const timingPlan = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan || null;
-        attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-        attacker.timingPlanMoveId = timingPlan?.moveId || null;
-        recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
-        return executeAutomaticBattleAction(attacker, defender, {
-          ...intelligenceSelection.action,
-          metadata: { ...(intelligenceSelection.action.metadata || {}), timingWindow }
-        }, {
-          source: "timing-evaluator",
-          moveId: timingPlan?.moveId || null
-        });
+        return {
+          attacker,
+          defender,
+          action: {
+            ...intelligenceSelection.action,
+            metadata: { ...(intelligenceSelection.action.metadata || {}), timingWindow }
+          },
+          options: {
+            source: "timing-evaluator",
+            moveId: timingPlan?.moveId || null
+          },
+          beforeExecute() {
+            attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
+            attacker.timingPlanMoveId = timingPlan?.moveId || null;
+            recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
+          }
+        };
       }
       if (intelligenceSelection.action.type !== "charged_move") return false;
 
       const move = available.find(candidate => candidate.id === intelligenceSelection.action.moveId);
       if (!move) {
         const fallbackFast = legalActions.find(action => action.type === "fast" || action.type === "fast_move");
-        return fallbackFast
-          ? executeAutomaticBattleAction(attacker, defender, fallbackFast, { source: "legal-fast-fallback" })
-          : false;
+        return fallbackFast ? {
+          attacker,
+          defender,
+          action: fallbackFast,
+          options: { source: "legal-fast-fallback" }
+        } : false;
       }
-      recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
-      recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
       const aiReason = intelligenceSelection.explanation;
-      return executeAutomaticBattleAction(attacker, defender, {
-        ...intelligenceSelection.action,
-        move,
-        moveId: move.id
-      }, {
-        source: "battle-intelligence",
-        aiReason,
-        deferCooldownReset: true
-      });
+      return {
+        attacker,
+        defender,
+        action: {
+          ...intelligenceSelection.action,
+          move,
+          moveId: move.id
+        },
+        options: {
+          source: "battle-intelligence",
+          aiReason,
+          deferCooldownReset: true
+        },
+        beforeExecute() {
+          recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
+          recordBattleIntelligenceDecision(attacker, defender, intelligenceSelection);
+        }
+      };
+    }
+
+    function executePreparedAutomaticBattleAction(plan, optionOverrides = {}) {
+      if (!plan?.action || !plan.attacker || !plan.defender) return false;
+      if (typeof plan.beforeExecute === "function") plan.beforeExecute();
+      return executeAutomaticBattleAction(
+        plan.attacker,
+        plan.defender,
+        plan.action,
+        { ...(plan.options || {}), ...optionOverrides }
+      );
+    }
+
+    function autoAction(attacker, defender) {
+      return executePreparedAutomaticBattleAction(prepareAutomaticBattleAction(attacker, defender));
     }
 
     function diagnosticPlannedAction(attacker, legalActions) {
