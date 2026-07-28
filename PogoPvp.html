@@ -9318,13 +9318,13 @@
               <button id="p1UseFast">Fast</button>
               <button id="p1UseCharge1">Charged 1</button>
               <button id="p1UseCharge2">Charged 2</button>
-              <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
+              <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
             </div>
             <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
               <button id="p2UseFast">Fast</button>
               <button id="p2UseCharge1">Charged 1</button>
               <button id="p2UseCharge2">Charged 2</button>
-              <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
+              <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
             </div>
           </div>
           <details id="manualStateInspector" class="manual-state-inspector" open>
@@ -9481,8 +9481,8 @@
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
                 <div id="manualVersionPanel" class="manual-version-panel">
                   <div class="manual-version-head">
-                    <span><strong>Timeline versions</strong><small>Original battle and manual alternatives</small></span>
-                    <button id="manualReturnOriginal" class="secondary" type="button">Return to original</button>
+                    <span><strong>Timeline versions</strong><small>Choose which version of the battle you are viewing or editing</small></span>
+                    <button id="manualReturnOriginal" class="secondary" type="button">View original result</button>
                   </div>
                   <div id="manualVersionTree" class="manual-version-tree" role="tree" aria-label="Timeline versions"></div>
                   <div class="manual-version-actions">
@@ -14043,6 +14043,7 @@
         { turn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)), timelineIndex: timeline.length }
       );
       manualBranchRegistry = window.PvPeakManualBranches.createRegistry({
+        label: "Original simulation",
         timelineModel: originalModel,
         terminalResult: originalTerminal
       });
@@ -14050,7 +14051,7 @@
         type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
         payload: {
           branchId: "MANUAL-1",
-          label: "Manual playthrough",
+          label: "Current manual edit",
           branchPoint,
           timelineModel: currentManualTimelineModel(),
           terminalResult: currentManualTerminalResult()
@@ -14269,7 +14270,7 @@
           type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
           payload: {
             parentBranchId,
-            label: `Manual alternative ${alternativeNumber}`,
+            label: `Alternative ${alternativeNumber}`,
             branchPoint: { boundary, eventId: event.timelineEventId, stateHash: plan.stateHash },
             timelineModel: currentManualTimelineModel(),
             terminalResult: currentManualTerminalResult()
@@ -14647,11 +14648,11 @@
       if ($("manualActionsB")) $("manualActionsB").dataset.label = `Pokemon B${right?.p?.name ? ` · ${right.p.name}` : ""}`;
       if ($("manualAutoA")) {
         $("manualAutoA").querySelector("strong").textContent = `${left?.p?.name || "Pokemon A"} responds automatically`;
-        $("manualAutoA").querySelector("small").textContent = "The simulator chooses this side after your action.";
+        $("manualAutoA").querySelector("small").textContent = "This side continues automatically after your move.";
       }
       if ($("manualAutoB")) {
         $("manualAutoB").querySelector("strong").textContent = `${right?.p?.name || "Pokemon B"} responds automatically`;
-        $("manualAutoB").querySelector("small").textContent = "The simulator chooses this side after your action.";
+        $("manualAutoB").querySelector("small").textContent = "This side continues automatically after your move.";
       }
       if (enabled) {
         if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
@@ -14760,7 +14761,18 @@
       tree.innerHTML = ordered.map(branch => {
         const active = branch.branchId === manualBranchRegistry.activeBranchId;
         const original = branch.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
-        return `<button type="button" role="treeitem" aria-selected="${active}" class="manual-version-node${active ? " active" : ""}" data-manual-version-id="${escapeHtml(branch.branchId)}" style="--branch-depth:${depthOf(branch)}">${escapeHtml(branch.label)}<small>${original ? "unchanged" : `${branch.edits?.length || 0} edit${branch.edits?.length === 1 ? "" : "s"}`}</small></button>`;
+        const boundary = branch.branchPoint?.boundary;
+        const origin = boundary === "BATTLE_START"
+          ? "from battle start"
+          : boundary === "BEFORE"
+            ? "from before the selected action"
+            : boundary === "AFTER"
+              ? "from after the selected action"
+              : "from the current state";
+        const detail = original
+          ? "Read-only automatic result"
+          : `${branch.edits?.length || 0} manual action${branch.edits?.length === 1 ? "" : "s"} · ${origin}`;
+        return `<button type="button" role="treeitem" aria-selected="${active}" class="manual-version-node${active ? " active" : ""}" data-manual-version-id="${escapeHtml(branch.branchId)}" style="--branch-depth:${depthOf(branch)}">${escapeHtml(branch.label)}<small>${escapeHtml(detail)}</small></button>`;
       }).join("");
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       const originalActive = active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
