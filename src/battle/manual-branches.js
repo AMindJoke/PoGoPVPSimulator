@@ -39,7 +39,7 @@
   function createRegistry(input = {}) {
     const original = branch({
       branchId: ORIGINAL_BRANCH_ID,
-      label: input.label || "Automatic original",
+      label: input.label || "Original battle",
       createdAt: input.createdAt,
       timelineModel: input.timelineModel,
       terminalResult: input.terminalResult,

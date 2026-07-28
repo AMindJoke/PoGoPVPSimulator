@@ -58,7 +58,11 @@ assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshot
 assert.match(html, /manualEventMetric\("HP"/);
 assert.match(html, /manualEventMetric\("Energy"/);
 assert.match(html, /manualEventMetric\("Shields"/);
-assert.match(html, /PvPoke policy chooses this side after your action/);
+assert.match(html, /The simulator chooses this side after your action/);
+assert.match(html, />Timeline<\/span><select id="manualBranchSelect"/);
+assert.match(html, /label: "Manual playthrough"/);
+assert.match(html, /\? "unchanged"[\s\S]{0,80}: "your changes"/);
+assert.doesNotMatch(html, /moves from PvPoke|PvPoke policy/i);
 assert.match(html, /Need \$\{missingEnergy\} more energy/);
 assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);
 assert.match(html, /Charged · \$\{c\.charged\[0\]\.energyCost\} energy/);

@@ -11,6 +11,7 @@ const originalTimeline = {
 let registry = Branches.createRegistry({ timelineModel: originalTimeline, createdAt: "2026-01-01T00:00:00.000Z" });
 assert.deepEqual(Branches.validateRegistry(registry), []);
 assert.equal(registry.activeBranchId, Branches.ORIGINAL_BRANCH_ID);
+assert.equal(registry.branches[Branches.ORIGINAL_BRANCH_ID].label, "Original battle");
 
 registry = Branches.execute(registry, {
   id: "create-1",

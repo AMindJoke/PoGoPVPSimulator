@@ -9118,7 +9118,7 @@
                   </span>
                   <span id="manualRuntimeTurn">Turn 0</span>
                 </div>
-                <label class="manual-branch-control"><span>Branch</span><select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select></label>
+                <label class="manual-branch-control" title="Switch between the untouched battle and your manual playthrough."><span>Timeline</span><select id="manualBranchSelect" aria-label="Timeline version" hidden></select></label>
                 <div class="manual-history-actions" role="group" aria-label="Manual branch history">
                   <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
                   <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
@@ -9129,13 +9129,13 @@
                 <button id="p1UseFast">Fast</button>
                 <button id="p1UseCharge1">Charged 1</button>
                 <button id="p1UseCharge2">Charged 2</button>
-                <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>PvPoke policy will choose this side's action.</small></span>
+                <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
               </div>
               <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
                 <button id="p2UseFast">Fast</button>
                 <button id="p2UseCharge1">Charged 1</button>
                 <button id="p2UseCharge2">Charged 2</button>
-                <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>PvPoke policy will choose this side's action.</small></span>
+                <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
               </div>
             </div>
           </section>
@@ -11613,7 +11613,7 @@
 
     function refreshPokemonLists() {
       visiblePokemon = filteredBaseList();
-      $("counts").textContent = `${visiblePokemon.length} selectable Pokemon, ${moveMap.size} moves from PvPoke`;
+      $("counts").textContent = `${visiblePokemon.length} selectable Pokemon, ${moveMap.size} moves loaded`;
       refreshOnePokemonList("p1", null);
       refreshOnePokemonList("p2", null);
       updateBattleAvailability();
@@ -13600,7 +13600,7 @@
         type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
         payload: {
           branchId: "MANUAL-1",
-          label: "Manual 1",
+          label: "Manual playthrough",
           branchPoint,
           timelineModel: currentManualTimelineModel(),
           terminalResult: currentManualTerminalResult()
@@ -13929,7 +13929,7 @@
                   ? `Waiting for Pokemon ${controlled[0]}`
                   : "Waiting for manual actions",
             detail: controlled.length === 1
-              ? `The other side follows the PvPoke policy automatically.`
+              ? "The simulator controls the other side automatically."
               : "Choose a legal Fast or Charged Move for the highlighted side.",
             tone: "active",
             waitingSides: pendingSides.length ? pendingSides : controlled
@@ -13963,7 +13963,12 @@
       const active = manualBranchRegistry ? window.PvPeakManualBranches.activeBranch(manualBranchRegistry) : null;
       if (enabled && manualBranchRegistry) {
         branchSelect.innerHTML = Object.values(manualBranchRegistry.branches)
-          .map(branch => `<option value="${escapeHtml(branch.branchId)}">${escapeHtml(branch.label)}</option>`)
+          .map(branch => {
+            const context = branch.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID
+              ? "unchanged"
+              : "your changes";
+            return `<option value="${escapeHtml(branch.branchId)}">${escapeHtml(branch.label)} \u00b7 ${context}</option>`;
+          })
           .join("");
         branchSelect.value = manualBranchRegistry.activeBranchId;
       } else {
@@ -13992,11 +13997,11 @@
       if ($("manualActionsB")) $("manualActionsB").dataset.label = `Pokemon B${right?.p?.name ? ` · ${right.p.name}` : ""}`;
       if ($("manualAutoA")) {
         $("manualAutoA").querySelector("strong").textContent = `${left?.p?.name || "Pokemon A"} responds automatically`;
-        $("manualAutoA").querySelector("small").textContent = "PvPoke policy chooses this side after your action.";
+        $("manualAutoA").querySelector("small").textContent = "The simulator chooses this side after your action.";
       }
       if ($("manualAutoB")) {
         $("manualAutoB").querySelector("strong").textContent = `${right?.p?.name || "Pokemon B"} responds automatically`;
-        $("manualAutoB").querySelector("small").textContent = "PvPoke policy chooses this side after your action.";
+        $("manualAutoB").querySelector("small").textContent = "The simulator chooses this side after your action.";
       }
       if (enabled) {
         if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
