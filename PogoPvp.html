@@ -5326,6 +5326,45 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .manual-timeline-event-menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+      border-radius: 9px;
+      background: var(--panel);
+      box-shadow: 0 5px 14px rgba(23, 33, 47, .09);
+    }
+    .manual-timeline-event-menu[hidden] { display: none; }
+    .manual-event-menu-copy {
+      display: grid;
+      min-width: 0;
+    }
+    .manual-event-menu-copy strong {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-event-menu-copy small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .manual-event-menu-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+    .manual-event-menu-actions button {
+      min-height: 29px;
+      padding: 4px 8px;
+      font-size: 9px;
+    }
     body.manual-mode-active #battleTimeline {
       border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent), 0 14px 32px rgba(23, 33, 47, .14);
@@ -7599,6 +7638,14 @@
       .manual-inspector-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .manual-timeline-event-menu {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .manual-event-menu-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .manual-runtime-toolbar {
         grid-template-columns: minmax(0, 1fr) auto auto;
       }
@@ -9195,6 +9242,18 @@
             <summary><span>Battle state inspector</span><small id="manualInspectorPhase">Waiting</small></summary>
             <div id="manualInspectorGrid" class="manual-inspector-grid"></div>
           </details>
+          <div id="manualTimelineEventMenu" class="manual-timeline-event-menu" hidden>
+            <span class="manual-event-menu-copy">
+              <strong id="manualEventMenuTitle">Selected event</strong>
+              <small id="manualEventMenuDetail">Choose an editing action.</small>
+            </span>
+            <span class="manual-event-menu-actions">
+              <button id="manualEventInspect" class="secondary" type="button">Inspect after</button>
+              <button id="manualEventBranchBefore" class="secondary" type="button">Branch before</button>
+              <button id="manualEventBranchAfter" class="secondary" type="button">Branch after</button>
+              <button id="manualEventReturnLive" class="secondary" type="button">Return live</button>
+            </span>
+          </div>
         </section>
         <div class="timeline-grid">
           <div class="timeline-label" id="p1TimelineLabel">A</div>
@@ -9929,6 +9988,7 @@
         selectedTimelineIndex = index;
         highlightTimelineIndex(selectedTimelineIndex);
         updateManualBranchSelectionUi();
+        updateManualTimelineEventMenu();
       });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
@@ -9993,6 +10053,10 @@
       });
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
       $("manualModeExit").onclick = exitLiveManualMode;
+      $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
+      $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
+      $("manualEventBranchAfter").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.AFTER);
+      $("manualEventReturnLive").onclick = returnManualEditorToLiveState;
       document.addEventListener("keydown", event => {
         if (event.key === "Escape" && document.body.classList.contains("manual-branch-selection-active")) {
           event.preventDefault();
@@ -13965,6 +14029,76 @@
         + `<div class="manual-event-state-grid">${sideCard("A", before.left, after.left)}${sideCard("B", before.right, after.right)}</div>`;
     }
 
+    function updateManualTimelineEventMenu() {
+      const menu = $("manualTimelineEventMenu");
+      if (!menu) return;
+      const event = selectedManualTimelineSourceEvent();
+      const visible = !!manualModeState?.enabled && isSelectableManualTimelineEvent(event);
+      menu.hidden = !visible;
+      if (!visible) return;
+      $("manualEventMenuTitle").textContent = `${event.trainer} · ${event.move?.name || "Move"}`;
+      $("manualEventMenuDetail").textContent = `${event.kind === "fast" ? "Fast" : "Charged"} · Turn ${Number(event.start || 0)} · choose where the new timeline diverges`;
+      const snapshots = window.PvPeakManualSnapshots;
+      $("manualEventBranchBefore").disabled = !manualSnapshotStore?.get(event.timelineEventId, snapshots.BOUNDARY.BEFORE);
+      $("manualEventBranchAfter").disabled = !manualSnapshotStore?.get(event.timelineEventId, snapshots.BOUNDARY.AFTER);
+      $("manualEventReturnLive").disabled = !previewingTimeline;
+    }
+
+    function inspectSelectedManualTimelineEvent() {
+      if (!manualModeState?.enabled || !Number.isInteger(selectedTimelineIndex) || !timeline[selectedTimelineIndex]) return false;
+      previewTimelineState(selectedTimelineIndex);
+      highlightTimelineIndex(selectedTimelineIndex);
+      updateManualTimelineEventMenu();
+      return true;
+    }
+
+    function returnManualEditorToLiveState() {
+      if (!manualModeState?.enabled) return false;
+      clearTimelinePreview();
+      updateManualTimelineEventMenu();
+      return true;
+    }
+
+    function createManualAlternativeFromSelected(boundary) {
+      const event = selectedManualTimelineSourceEvent();
+      if (!manualModeState?.enabled || !manualBranchRegistry || !isSelectableManualTimelineEvent(event)) return false;
+      try {
+        const plan = window.PvPeakManualSnapshots.createRestorePlan({
+          timeline,
+          store: manualSnapshotStore,
+          eventId: event.timelineEventId,
+          boundary
+        });
+        const parentBranchId = manualBranchRegistry.activeBranchId;
+        const controlMode = manualModeState.controlMode;
+        restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix);
+        const alternativeNumber = Object.keys(manualBranchRegistry.branches)
+          .filter(id => id !== window.PvPeakManualBranches.ORIGINAL_BRANCH_ID).length + 1;
+        manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+          type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
+          payload: {
+            parentBranchId,
+            label: `Manual alternative ${alternativeNumber}`,
+            branchPoint: { boundary, eventId: event.timelineEventId, stateHash: plan.stateHash },
+            timelineModel: currentManualTimelineModel(),
+            terminalResult: currentManualTerminalResult()
+          }
+        });
+        rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+        manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, controlMode);
+        selectedTimelineIndex = null;
+        previewTimelineIndex = null;
+        previewingTimeline = false;
+        add(`Created ${window.PvPeakManualBranches.activeBranch(manualBranchRegistry).label} ${boundary === window.PvPeakManualSnapshots.BOUNDARY.BEFORE ? "before" : "after"} ${event.move?.name || "the selected event"}.`, "info");
+        render();
+        return true;
+      } catch (error) {
+        add(`Cannot create a timeline alternative here (${error.message}).`, "info");
+        render();
+        return false;
+      }
+    }
+
     function cancelManualBranchSelection() {
       const startControl = $("manualStartPoint");
       if (startControl) startControl.value = "battle-start";
@@ -14172,6 +14306,7 @@
       $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
       $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
       renderManualStateInspector(runtimeStatus);
+      updateManualTimelineEventMenu();
     }
 
     function renderManualStateInspector(runtimeStatus) {

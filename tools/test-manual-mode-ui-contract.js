@@ -22,6 +22,12 @@ for (const id of [
   "manualStateInspector",
   "manualInspectorPhase",
   "manualInspectorGrid",
+  "manualTimelineEventMenu",
+  "manualEventMenuTitle",
+  "manualEventInspect",
+  "manualEventBranchBefore",
+  "manualEventBranchAfter",
+  "manualEventReturnLive",
   "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
@@ -81,6 +87,11 @@ assert.match(html, /Registration Turn:/);
 assert.match(html, /Resolution Turn:/);
 assert.match(html, /Pending Events:/);
 assert.match(html, /HP: \$\{Number\(event\.hpBefore\)\}/);
+assert.match(html, /function updateManualTimelineEventMenu/);
+assert.match(html, /function createManualAlternativeFromSelected/);
+assert.match(html, /COMMAND_TYPE\.CREATE_BRANCH/);
+assert.match(html, /label: `Manual alternative \$\{alternativeNumber\}`/);
+assert.match(html, /manualEventInspect"\)\.onclick = inspectSelectedManualTimelineEvent/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
 assert.match(html, /function renderManualSelectedEventSummary/);
 assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);
