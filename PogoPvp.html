@@ -13163,6 +13163,10 @@
       if (!left || !right) startBattle();
       if (!left || !right) return false;
       const startMode = $("manualStartPoint")?.value || "battle-start";
+      const selectedStartingShields = {
+        A: Math.max(0, Math.min(2, Number($("p1Shields")?.value || 0))),
+        B: Math.max(0, Math.min(2, Number($("p2Shields")?.value || 0)))
+      };
       const originalTimeline = cloneTechnicalValue(timeline);
       const originalInitialState = cloneTechnicalValue(initialTimelineState);
       const originalTerminal = currentManualTerminalResult();
@@ -13175,7 +13179,13 @@
 
       let branchPoint = { boundary: "CURRENT_STATE", eventId: null };
       if (startMode === "battle-start") {
-        if (lastBattleInitialSimulatorState) restoreFullSimulatorState(cloneTechnicalValue(lastBattleInitialSimulatorState));
+        if (lastBattleInitialSimulatorState) {
+          const selectedStartState = window.PvPeakManualSnapshots.applyStartingShields(
+            lastBattleInitialSimulatorState,
+            selectedStartingShields
+          );
+          restoreFullSimulatorState(selectedStartState);
+        }
         else startBattle({ skipRender: true });
         branchPoint = { boundary: "BATTLE_START", eventId: null };
       } else if (startMode === "selected-before" || startMode === "selected-after") {

@@ -34,6 +34,7 @@ assert.match(html, /runtime\.executePrepared\(/);
 assert.match(html, /resolveSimultaneousFastActionPlans/);
 assert.match(html, /runtime\.completePreparedExternal\(/);
 assert.doesNotMatch(html, /SIMULTANEOUS_FAST_FAINT_REQUIRES_CANONICAL_PHASE_RESOLUTION/);
+assert.match(html, /PvPeakManualSnapshots\.applyStartingShields/);
 assert.match(html, /manualUndo"\)\.onclick = undoLiveManualCommand/);
 assert.match(html, /manualRedo"\)\.onclick = redoLiveManualCommand/);
 assert.match(html, /manualBranchSelect"\)\.onchange = switchLiveManualBranch/);

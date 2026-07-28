@@ -98,5 +98,29 @@
     };
   }
 
-  return Object.freeze({ BOUNDARY, createStore, createRestorePlan });
+  function applyStartingShields(runtimeState, shields = {}) {
+    const next = clone(runtimeState);
+    if (!next) return next;
+    const normalized = {
+      A: Math.max(0, Math.min(2, Number(shields.A ?? 0))),
+      B: Math.max(0, Math.min(2, Number(shields.B ?? 0)))
+    };
+    if (next.controls) {
+      next.controls.p1Shields = String(normalized.A);
+      next.controls.p2Shields = String(normalized.B);
+    }
+    if (next.battle) {
+      next.battle.p1Shields = String(normalized.A);
+      next.battle.p2Shields = String(normalized.B);
+      if (next.battle.left) next.battle.left.shields = normalized.A;
+      if (next.battle.right) next.battle.right.shields = normalized.B;
+    }
+    if (next.left) next.left.shields = normalized.A;
+    if (next.right) next.right.shields = normalized.B;
+    if (Object.prototype.hasOwnProperty.call(next, "p1Shields")) next.p1Shields = String(normalized.A);
+    if (Object.prototype.hasOwnProperty.call(next, "p2Shields")) next.p2Shields = String(normalized.B);
+    return next;
+  }
+
+  return Object.freeze({ BOUNDARY, createStore, createRestorePlan, applyStartingShields });
 });

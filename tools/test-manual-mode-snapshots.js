@@ -46,4 +46,25 @@ importedStore.importEntries(exported);
 assert.deepEqual(importedStore.get("charge-1", Snapshots.BOUNDARY.AFTER).state, after);
 assert.throws(() => importedStore.importEntries([{ ...exported[0], stateHash: "stale" }]), /STALE_STATE_HASH/);
 
+const initialRuntime = {
+  controls: { p1Shields: "1", p2Shields: "1" },
+  battle: {
+    p1Shields: "1",
+    p2Shields: "1",
+    left: { hp: 120, shields: 1 },
+    right: { hp: 115, shields: 1 }
+  }
+};
+for (const [aShields, bShields] of [[0, 0], [1, 1], [2, 0], [0, 2], [1, 2]]) {
+  const selected = Snapshots.applyStartingShields(initialRuntime, { A: aShields, B: bShields });
+  assert.equal(selected.controls.p1Shields, String(aShields));
+  assert.equal(selected.controls.p2Shields, String(bShields));
+  assert.equal(selected.battle.p1Shields, String(aShields));
+  assert.equal(selected.battle.p2Shields, String(bShields));
+  assert.equal(selected.battle.left.shields, aShields);
+  assert.equal(selected.battle.right.shields, bShields);
+}
+assert.equal(initialRuntime.battle.left.shields, 1, "Applying a selected shield state must not mutate the automatic branch snapshot.");
+assert.equal(initialRuntime.battle.right.shields, 1);
+
 console.log("Manual Mode runtime snapshot tests passed.");
