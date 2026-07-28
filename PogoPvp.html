@@ -8997,7 +8997,7 @@
     const hpSwingAnalysisCache = new Map();
     const hpSwingAnalysisPending = new Set();
     const shieldMatrixCacheLimit = 900;
-    const shieldMatrixCacheVersion = `matrix-v15:${battleEngineVersion}`;
+    const shieldMatrixCacheVersion = `matrix-v16:${battleEngineVersion}`;
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
@@ -19826,6 +19826,7 @@
     const DECISIVE_WIN_EDGE = 171;
 
     function scoreShieldMatrixResult(a, b, options = {}) {
+      const simultaneousFaint = a.hp <= 0 && b.hp <= 0;
       const aHp = a.maxHp ? a.hp / a.maxHp : 0;
       const bHp = b.maxHp ? b.hp / b.maxHp : 0;
       const aChargeProgress = chargedReadiness(a, b);
@@ -19839,9 +19840,10 @@
       const closingCostEdge = closingCostPressure(b, a) - closingCostPressure(a, b);
       const farmPressureEdge = farmDownPressure(a, b) - farmDownPressure(b, a);
       const outpacePressureEdge = outpacePressure(a, b) - outpacePressure(b, a);
-      const total = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
+      const resourceTotal = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
+      const total = simultaneousFaint ? 500 : resourceTotal;
       const score = Math.max(0, Math.min(1000, Math.round(total)));
-      const winner = score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
+      const winner = simultaneousFaint ? "Draw" : score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
       const flipPotential = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
       const swing = flipPotential && flipPotential.visible ? flipPotential.best : null;
       const parts = [
@@ -19865,6 +19867,8 @@
           bHp,
           aChargeProgress,
           bChargeProgress,
+          outcome: simultaneousFaint ? "draw" : winnerEdge > 0 ? "A" : winnerEdge < 0 ? "B" : "close",
+          simultaneousFaint,
           winnerEdge,
           hpEdge,
           energyEdge,
