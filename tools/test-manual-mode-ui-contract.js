@@ -12,6 +12,13 @@ for (const id of [
   "manualRuntimeState",
   "manualRuntimeDetail",
   "manualRuntimeTurn",
+  "manualEditorWorkspace",
+  "manualDecisionBanner",
+  "manualDecisionTitle",
+  "manualDecisionWhy",
+  "manualDecisionTurn",
+  "manualDecisionEnergy",
+  "manualDecisionLegal",
   "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
@@ -52,6 +59,10 @@ assert.match(html, /manualActionsA"\)\.hidden = !enabled/);
 assert.match(html, /class="manual-auto-response"><strong>Automatic response/);
 assert.match(html, /shield decision/);
 assert.match(html, /function manualRuntimeStatusPresentation/);
+assert.match(html, /function renderManualDecisionBanner/);
+assert.match(html, /manual-mode-active/);
+assert.match(html, /actorName} to act/);
+assert.match(html, /legalBattleActions\(actor/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
 assert.match(html, /function renderManualSelectedEventSummary/);
 assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);

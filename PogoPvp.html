@@ -5198,6 +5198,89 @@
       margin-bottom: 8px;
     }
     .timeline-head h2 { margin: 0; }
+    .manual-editor-workspace {
+      display: grid;
+      gap: 9px;
+      margin: 0 0 10px;
+      padding: 10px;
+      border: 1px solid color-mix(in srgb, var(--accent) 52%, var(--line));
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--accent) 5%, var(--soft));
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .manual-editor-workspace[hidden] { display: none; }
+    .manual-decision-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+    }
+    .manual-decision-primary {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+    .manual-editor-kicker {
+      color: var(--accent-strong);
+      font-size: 9px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .manual-decision-primary strong {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-decision-primary > span:last-child {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .manual-decision-facts {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(56px, auto);
+      gap: 6px;
+    }
+    .manual-decision-facts > span {
+      display: grid;
+      gap: 1px;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      text-align: center;
+    }
+    .manual-decision-facts small {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+    .manual-decision-facts strong {
+      color: var(--text);
+      font-size: 11px;
+    }
+    .manual-editor-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    }
+    .manual-editor-actions .actions {
+      margin-top: 7px;
+    }
+    body.manual-mode-active #battleTimeline {
+      border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent), 0 14px 32px rgba(23, 33, 47, .14);
+    }
+    body.manual-mode-active #timelineScroll {
+      min-height: 116px;
+    }
     .timeline-tools {
       display: flex;
       align-items: center;
@@ -7424,6 +7507,14 @@
       .manual-config-fields {
         grid-template-columns: 1fr;
       }
+      .manual-decision-banner,
+      .manual-editor-actions {
+        grid-template-columns: 1fr;
+      }
+      .manual-decision-facts {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+      }
       .manual-runtime-toolbar {
         grid-template-columns: minmax(0, 1fr) auto auto;
       }
@@ -8989,6 +9080,34 @@
             <input id="timelineZoom" type="hidden" value="100">
           </div>
         </div>
+        <section id="manualEditorWorkspace" class="manual-editor-workspace" aria-live="polite" hidden>
+          <div id="manualDecisionBanner" class="manual-decision-banner">
+            <div class="manual-decision-primary">
+              <span class="manual-editor-kicker">Current decision</span>
+              <strong id="manualDecisionTitle">Choose an action</strong>
+              <span id="manualDecisionWhy">Automatic simulation is paused.</span>
+            </div>
+            <div class="manual-decision-facts">
+              <span><small>Turn</small><strong id="manualDecisionTurn">0</strong></span>
+              <span><small>Energy</small><strong id="manualDecisionEnergy">0</strong></span>
+              <span><small>Legal</small><strong id="manualDecisionLegal">-</strong></span>
+            </div>
+          </div>
+          <div id="manualEditorActions" class="manual-editor-actions">
+            <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
+              <button id="p1UseFast">Fast</button>
+              <button id="p1UseCharge1">Charged 1</button>
+              <button id="p1UseCharge2">Charged 2</button>
+              <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
+            </div>
+            <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
+              <button id="p2UseFast">Fast</button>
+              <button id="p2UseCharge1">Charged 1</button>
+              <button id="p2UseCharge2">Charged 2</button>
+              <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
+            </div>
+          </div>
+        </section>
         <div class="timeline-grid">
           <div class="timeline-label" id="p1TimelineLabel">A</div>
           <div class="timeline-label" id="p2TimelineLabel">B</div>
@@ -9124,18 +9243,6 @@
                   <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
                 </div>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
-              </div>
-              <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
-                <button id="p1UseFast">Fast</button>
-                <button id="p1UseCharge1">Charged 1</button>
-                <button id="p1UseCharge2">Charged 2</button>
-                <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
-              </div>
-              <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
-                <button id="p2UseFast">Fast</button>
-                <button id="p2UseCharge1">Charged 1</button>
-                <button id="p2UseCharge2">Charged 2</button>
-                <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
               </div>
             </div>
           </section>
@@ -13937,6 +14044,47 @@
       }
     }
 
+    function renderManualDecisionBanner(runtimeStatus) {
+      const workspace = $("manualEditorWorkspace");
+      if (!workspace) return;
+      const enabled = !!manualModeState?.enabled;
+      workspace.hidden = !enabled;
+      document.body.classList.toggle("manual-mode-active", enabled);
+      if (!enabled) return;
+      const pending = manualModeState.pendingDecision || {};
+      const waitingSides = runtimeStatus.waitingSides || [];
+      const activeSide = pending.activeSide
+        || (waitingSides.length === 1 ? waitingSides[0] : null)
+        || (manualModeState.controlledSides?.length === 1 ? manualModeState.controlledSides[0] : null);
+      const actor = activeSide === "A" ? left : activeSide === "B" ? right : null;
+      const shieldDecision = manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION;
+      const legal = shieldDecision
+        ? ["Shield", "No Shield"]
+        : actor
+          ? legalBattleActions(actor, Number(battleTurns[actor.trainer] || 0)).map(action => {
+              const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
+              if (type === "fast_move") return actor.fast?.name || "Fast Move";
+              if (type === "charged_move") return validChargedMoves(actor).find(move => move.id === action.moveId)?.name || "Charged Move";
+              return type === "wait" ? "Wait" : title(String(type || "Action").replaceAll("_", " "));
+            })
+          : [];
+      const actorName = actor?.p?.name || null;
+      $("manualDecisionTitle").textContent = shieldDecision
+        ? `${actorName || `Pokemon ${activeSide || ""}`} shield decision`
+        : actorName
+          ? `${actorName} to act`
+          : waitingSides.length > 1
+            ? `Choose Pokemon ${waitingSides.join(" or ")}`
+            : runtimeStatus.text;
+      $("manualDecisionWhy").textContent = runtimeStatus.detail;
+      $("manualDecisionTurn").textContent = String(manualModeState.cursorTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
+      $("manualDecisionEnergy").textContent = actor
+        ? String(actor.energy)
+        : `${left?.energy ?? 0} / ${right?.energy ?? 0}`;
+      $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
+      $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
+    }
+
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
       const toggle = $("manualModeToggle");
@@ -13975,6 +14123,7 @@
         branchSelect.innerHTML = "";
       }
       const runtimeStatus = manualRuntimeStatusPresentation();
+      renderManualDecisionBanner(runtimeStatus);
       status.textContent = enabled ? runtimeStatus.text : "Configure a manual branch";
       if ($("manualRuntimeState")) {
         $("manualRuntimeState").textContent = `${active?.label || "Manual"} · ${runtimeStatus.text}`;
