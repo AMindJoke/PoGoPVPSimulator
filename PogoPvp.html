@@ -5363,6 +5363,16 @@
     .manual-editor-actions .actions {
       margin-top: 7px;
     }
+    .manual-editor-command-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 7px;
+      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    }
+    .manual-editor-command-bar button {
+      min-width: 126px;
+    }
     .manual-state-inspector {
       border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       padding-top: 7px;
@@ -9326,6 +9336,9 @@
               <button id="p2UseCharge2">Charged 2</button>
               <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
             </div>
+            <div class="manual-editor-command-bar">
+              <button id="manualResumeAuto" class="secondary" type="button" title="Continue this timeline version using automatic decisions.">Resume Auto</button>
+            </div>
           </div>
           <details id="manualStateInspector" class="manual-state-inspector" open>
             <summary><span>Battle state inspector</span><small id="manualInspectorPhase">Waiting</small></summary>
@@ -10154,6 +10167,7 @@
       });
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
       $("manualModeExit").onclick = exitLiveManualMode;
+      $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
       $("manualEventBranchAfter").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.AFTER);
@@ -14356,6 +14370,61 @@
       });
     }
 
+    async function resumeAutomaticFromManualTimeline() {
+      const originalId = window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID;
+      if (
+        !manualModeState?.enabled
+        || !manualBranchRegistry
+        || manualBranchRegistry.activeBranchId === originalId
+        || battleEnded()
+        || manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING
+      ) {
+        return false;
+      }
+      const accepted = await manualDecision(
+        "Resume automatic battle",
+        "Continue <strong>this timeline version</strong> from the current state using automatic decisions?<br><small>The original simulation remains unchanged.</small>",
+        "Resume automatic",
+        "Cancel"
+      );
+      if (!accepted) return false;
+      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      const previousSuppressRender = suppressRender;
+      const timelineStart = timeline.length;
+      let steps = 0;
+      try {
+        suppressRender = true;
+        steps = runAutomaticBattleToEnd(1000);
+      } finally {
+        suppressRender = previousSuppressRender;
+      }
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: manualCanonicalState()?.currentTurn || 0,
+        cursorEventId: timeline.at(-1)?.timelineEventId || null,
+        terminal: battleEnded(),
+        terminalResult: currentManualTerminalResult(),
+        pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+      });
+      if (steps > 0) {
+        syncManualBranchAfterAction({
+          id: `resume-auto-${Date.now()}`,
+          actionType: "RESUME_AUTO",
+          side: null,
+          moveId: null
+        });
+      }
+      const addedEvents = Math.max(0, timeline.length - timelineStart);
+      add(
+        battleEnded()
+          ? `Automatic play completed this timeline version in ${steps} decision${steps === 1 ? "" : "s"} (${addedEvents} new event${addedEvents === 1 ? "" : "s"}).`
+          : `Automatic play paused after ${steps} decision${steps === 1 ? "" : "s"} because no further automatic action was available.`,
+        "info"
+      );
+      render();
+      return steps > 0;
+    }
+
     function restoreActiveManualBranch() {
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       if (!active) return false;
@@ -14638,6 +14707,19 @@
       }
       if ($("manualRuntimeTurn")) {
         $("manualRuntimeTurn").textContent = `Turn ${Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))}`;
+      }
+      if ($("manualResumeAuto")) {
+        const originalActive = active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
+        const unavailable = !enabled
+          || originalActive
+          || battleEnded()
+          || manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING;
+        $("manualResumeAuto").disabled = unavailable;
+        $("manualResumeAuto").title = originalActive
+          ? "The original result is read-only. Select an editable timeline version first."
+          : battleEnded()
+            ? "This timeline version has already reached the end of the battle."
+            : "Continue this timeline version from the current state using automatic decisions.";
       }
       const controlledSides = enabled ? manualModeState.controlledSides : [];
       $("manualActionsA")?.classList.toggle("is-automatic", enabled && !controlledSides.includes("A"));
