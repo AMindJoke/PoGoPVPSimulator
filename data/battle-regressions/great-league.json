@@ -208,6 +208,20 @@
         "chargedMoveSequence": { "side": "A", "moves": ["MUD_BOMB", "AQUA_TAIL", "AQUA_TAIL"] }
       },
       "notes": "Regression for local timing pressure overriding a later full charged-sequence win."
+    },
+    {
+      "id": "shadow-sableye-mirror-simultaneous-fast-ko-0s",
+      "description": "Identical Shadow Claw impact turns in the Shadow Sableye mirror must resolve from the same phase-start state and produce a simultaneous faint.",
+      "category": ["timing", "ui-engine-mismatch"],
+      "league": "great",
+      "pokemonA": { "id": "sableye_shadow", "moves": { "fast": "SHADOW_CLAW", "charged": ["FOUL_PLAY", "DRAIN_PUNCH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "pokemonB": { "id": "sableye_shadow", "moves": { "fast": "SHADOW_CLAW", "charged": ["FOUL_PLAY", "DRAIN_PUNCH"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
+      "policy": { "baiting": "selective", "shieldMode": "smart" },
+      "expectations": {
+        "winner": "draw",
+        "finalHp": { "A": 0, "B": 0 }
+      },
+      "notes": "Protects simultaneous Fast resolution from actor-order farming artifacts without species-specific planner logic."
     }
   ]
 }

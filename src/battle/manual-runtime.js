@@ -278,9 +278,29 @@
       return executePrepared(prepared);
     }
 
+    function completePreparedExternal(prepared = {}, resolution = true) {
+      if (!prepared.ok || !prepared.prepared || !prepared.action || !prepared.validation) {
+        return {
+          ok: false,
+          action: prepared.action || null,
+          validation: prepared.validation || { reasonCode: "ACTION_NOT_PREPARED" },
+          trace: clone(trace)
+        };
+      }
+      const before = clone(prepared.before);
+      append(TRACE_STATE.REGISTERED, prepared.action, {
+        registeredTurn: Number(before.currentTurn || 0),
+        queuedAction: clone(prepared.validation.normalizedAction),
+        stateHashBefore: ManualAction.stateHash(before),
+        externalCanonicalPhase: true
+      });
+      return finishResolution(prepared.action, prepared.validation, before, resolution);
+    }
+
     return Object.freeze({
       prepare,
       executePrepared,
+      completePreparedExternal,
       request,
       getTrace: () => clone(trace)
     });

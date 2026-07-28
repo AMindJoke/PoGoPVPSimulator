@@ -9652,6 +9652,7 @@
         diagnosticPlannedAction,
         prepareAutomaticBattleAction,
         executePreparedAutomaticBattleAction,
+        resolveSimultaneousFastActionPlans,
         autoAction,
         automaticBattleStep,
         runAutomaticBattleToEnd,
@@ -12930,16 +12931,6 @@
         render();
         return false;
       }
-      if (
-        decision.collision === "FAST_VS_FAST"
-        && estimate(left, right, left.fast) >= right.hp
-        && estimate(right, left, right.fast) >= left.hp
-      ) {
-        add("Hybrid turn rejected (SIMULTANEOUS_FAST_FAINT_REQUIRES_CANONICAL_PHASE_RESOLUTION).", "info");
-        render();
-        return false;
-      }
-
       const timelineStart = timeline.length;
       const currentTurn = state.currentTurn;
       const previousContext = activeAutoTurnContext;
@@ -12958,23 +12949,57 @@
       activeAutoTurnContext = context;
       let execution;
       try {
-        execution = await window.PvPeakManualHybrid.executeCoordinatedDecision(decision, {
-          executeManual: async registration => {
-            context.acted.add(registration.sideId);
-            return runtime.executePrepared(preparedManual);
-          },
-          executeAutomatic: async registration => {
-            context.acted.add(registration.sideId);
-            return executePreparedHybridAutomatic(automaticPlan);
-          },
-          isTerminal: () => battleEnded(),
-          resolveRegisteredFastAfterCharged: () =>
-            resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility),
-          finalizeTurn: () => {
-            resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
-            return finish();
+        if (decision.collision === "FAST_VS_FAST") {
+          const manualAttacker = side === "A" ? left : right;
+          const manualDefender = side === "A" ? right : left;
+          const manualPlan = {
+            attacker: manualAttacker,
+            defender: manualDefender,
+            action: {
+              type: "fast_move",
+              moveId: manualAttacker.fast?.id || null,
+              move: manualAttacker.fast
+            },
+            options: { source: "manual-mode" }
+          };
+          if (resolveSimultaneousFastActionPlans(
+            [manualPlan, automaticPlan],
+            { [side]: preparedManual.action }
+          )) {
+            context.acted.add(side);
+            context.acted.add(automaticSide);
+            runtime.completePreparedExternal(preparedManual, true);
+            finish();
+            execution = {
+              ok: true,
+              status: decision.status,
+              executions: decision.registrations.map(registration => ({
+                registration,
+                executor: registration.sideId === side ? "manual-fast-phase" : "automatic-fast-phase",
+                ok: true
+              }))
+            };
           }
-        });
+        }
+        if (!execution) {
+          execution = await window.PvPeakManualHybrid.executeCoordinatedDecision(decision, {
+            executeManual: async registration => {
+              context.acted.add(registration.sideId);
+              return runtime.executePrepared(preparedManual);
+            },
+            executeAutomatic: async registration => {
+              context.acted.add(registration.sideId);
+              return executePreparedHybridAutomatic(automaticPlan);
+            },
+            isTerminal: () => battleEnded(),
+            resolveRegisteredFastAfterCharged: () =>
+              resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility),
+            finalizeTurn: () => {
+              resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+              return finish();
+            }
+          });
+        }
       } finally {
         activeAutoTurnContext = previousContext;
       }
@@ -15713,6 +15738,102 @@
       return executePreparedAutomaticBattleAction(prepareAutomaticBattleAction(attacker, defender));
     }
 
+    function resolveSimultaneousFastActionPlans(plans, manualActionsBySide = {}) {
+      const turnApi = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      const entries = (plans || []).filter(plan => {
+        const type = plan?.action?.type === "fast" ? "fast_move" : plan?.action?.type;
+        return type === "fast_move" && plan.attacker?.fast && plan.defender;
+      });
+      if (entries.length < 2) return false;
+      const startTurn = Number(battleTurns[entries[0].attacker.trainer] || 0);
+      const impactTurns = entries.map(plan =>
+        startTurn + Math.max(1, Number(plan.attacker.fast.turns || 1)) - 1
+      );
+      if (!impactTurns.every(turn => turn === impactTurns[0])) return false;
+
+      const phaseBefore = {
+        A: { hp: left.hp, energy: left.energy },
+        B: { hp: right.hp, energy: right.energy }
+      };
+      const pendingEvents = entries.map((plan, index) => {
+        if (typeof plan.beforeExecute === "function") plan.beforeExecute();
+        plan.hybridLifecycle = manualActionsBySide[plan.attacker.trainer]
+          ? null
+          : beginAutomaticActionLifecycle(
+            plan.attacker,
+            plan.defender,
+            { ...plan.action, type: "fast_move", move: plan.attacker.fast },
+            plan.options?.source || "battle-intelligence"
+          );
+        return turnApi.createFastImpactEvent({
+          id: `registered-fast-${plan.attacker.trainer}-${startTurn}-${index}`,
+          sourceSide: plan.attacker.trainer,
+          targetSide: plan.defender.trainer,
+          moveId: plan.attacker.fast.id,
+          moveName: plan.attacker.fast.name,
+          damage: estimate(plan.attacker, plan.defender, plan.attacker.fast),
+          startTurn,
+          duration: Math.max(1, Number(plan.attacker.fast.turns || 1)),
+          timelineIndex: timeline.length + index,
+          source: manualActionsBySide[plan.attacker.trainer] ? "manual-mode" : "battle"
+        });
+      });
+      const phaseState = turnApi.createState({
+        currentTurn: impactTurns[0],
+        sides: {
+          A: {
+            id: left.p?.id || "A",
+            hp: phaseBefore.A.hp,
+            energy: phaseBefore.A.energy,
+            attack: left.attack,
+            readyTurn: battleTurns.A,
+            fastMove: left.fast,
+            chargedMoves: validChargedMoves(left)
+          },
+          B: {
+            id: right.p?.id || "B",
+            hp: phaseBefore.B.hp,
+            energy: phaseBefore.B.energy,
+            attack: right.attack,
+            readyTurn: battleTurns.B,
+            fastMove: right.fast,
+            chargedMoves: validChargedMoves(right)
+          }
+        },
+        pendingEvents
+      });
+      const phase = turnApi.resolveDueFastImpacts(phaseState, impactTurns[0]);
+      left.hp = phase.state.sides.A.hp;
+      right.hp = phase.state.sides.B.hp;
+
+      entries.forEach((plan, index) => {
+        const attacker = plan.attacker;
+        const defender = plan.defender;
+        const side = attacker.trainer;
+        const targetSide = defender.trainer;
+        const energyBefore = phaseBefore[side].energy;
+        attacker.energy = Math.max(0, Math.min(100, energyBefore + Math.max(0, Number(attacker.fast.energyGain || 0))));
+        const resolvedImpact = phase.events.find(event => event.id === pendingEvents[index].id);
+        const damage = resolvedImpact?.status === "resolved" ? pendingEvents[index].damage : 0;
+        const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
+          actionLifecycle: plan.hybridLifecycle,
+          manualAction: manualActionsBySide[side] || null,
+          energyAfter: attacker.energy,
+          hpBefore: phaseBefore[targetSide].hp,
+          hpAfter: targetSide === "A" ? left.hp : right.hp
+        });
+        event.resolveTurn = impactTurns[index];
+        event.simultaneousFastPhase = true;
+        completeAutomaticActionLifecycle(plan.hybridLifecycle, event, attacker, defender, {
+          registrationTurn: startTurn,
+          resolutionTurn: impactTurns[index]
+        });
+        attacker.lastFastStart = event.start;
+        add(`T${event.start}-${event.start + event.duration} - ${side}: ${attacker.p.name} uses ${attacker.fast.name}: ${damage} damage, +${attacker.energy - energyBefore} energy.`, "fast");
+      });
+      return true;
+    }
+
     function diagnosticPlannedAction(attacker, legalActions) {
       if (typeof forcedMatchupPlan === "undefined" || !forcedMatchupPlan || chargedContinuationDepth !== 0) return null;
       const steps = Array.isArray(forcedMatchupPlan.steps) ? forcedMatchupPlan.steps : [];
@@ -15775,13 +15896,28 @@
       activeAutoTurnContext = context;
       let progressed = false;
       try {
-        for (const [attacker, defender] of actors) {
+        const preparedActors = actors.map(([attacker, defender]) => ({
+          attacker,
+          defender,
+          plan: prepareAutomaticBattleAction(attacker, defender)
+        }));
+        const simultaneousFastPlans = preparedActors.map(item => item.plan).filter(Boolean);
+        if (
+          simultaneousFastPlans.length === 2
+          && resolveSimultaneousFastActionPlans(simultaneousFastPlans)
+        ) {
+          simultaneousFastPlans.forEach(plan => context.acted.add(plan.attacker.trainer));
+          progressed = true;
+          finish();
+          return progressed;
+        }
+        for (const { attacker, defender, plan } of preparedActors) {
           if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) {
             resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility);
             break;
           }
           context.acted.add(attacker.trainer);
-          progressed = autoAction(attacker, defender) || progressed;
+          progressed = executePreparedAutomaticBattleAction(plan) || progressed;
           if (battleEnded()) {
             progressed = resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility) || progressed;
             break;
