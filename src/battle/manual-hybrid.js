@@ -162,10 +162,73 @@
     });
   }
 
+  async function executeCoordinatedDecision(decision, callbacks = {}) {
+    if (!decision || ![
+      STATUS.MANUAL_REGISTERED,
+      STATUS.AUTO_ADVANCE,
+      STATUS.JOINT_REGISTERED
+    ].includes(decision.status)) {
+      return {
+        ok: false,
+        reason: decision?.reason || "DECISION_NOT_EXECUTABLE",
+        status: decision?.status || STATUS.BLOCKED,
+        executions: []
+      };
+    }
+    if (typeof callbacks.executeManual !== "function" || typeof callbacks.executeAutomatic !== "function") {
+      return {
+        ok: false,
+        reason: "MISSING_EXECUTION_CALLBACK",
+        status: STATUS.BLOCKED,
+        executions: []
+      };
+    }
+
+    const manualSides = new Set((decision.manualRegistrations || []).map(item => item.sideId));
+    const executions = [];
+    for (const registration of decision.registrations) {
+      const terminal = typeof callbacks.isTerminal === "function" && callbacks.isTerminal();
+      if (terminal) {
+        const canResolveRegisteredFast = registration.type === "fast"
+          && decision.collision === "CHARGED_VS_FAST"
+          && typeof callbacks.resolveRegisteredFastAfterCharged === "function";
+        if (canResolveRegisteredFast) {
+          const value = await callbacks.resolveRegisteredFastAfterCharged(registration, decision);
+          executions.push({ registration, executor: "registered-fast", ok: value !== false, value });
+        } else {
+          executions.push({ registration, executor: "skipped", ok: false, reason: "TERMINAL_BEFORE_RESOLUTION" });
+        }
+        continue;
+      }
+
+      const manual = manualSides.has(registration.sideId);
+      const executor = manual ? callbacks.executeManual : callbacks.executeAutomatic;
+      const value = await executor(registration, decision);
+      executions.push({
+        registration,
+        executor: manual ? "manual" : "automatic",
+        ok: value !== false && value?.ok !== false,
+        value
+      });
+      if (value === false || value?.ok === false) break;
+    }
+
+    const finalized = typeof callbacks.finalizeTurn === "function"
+      ? await callbacks.finalizeTurn(decision, executions)
+      : null;
+    return {
+      ok: executions.length === decision.registrations.length && executions.every(item => item.ok),
+      status: decision.status,
+      executions,
+      finalized
+    };
+  }
+
   return Object.freeze({
     STATUS,
     BLOCK_REASON,
     oppositeSide,
-    coordinateDecision
+    coordinateDecision,
+    executeCoordinatedDecision
   });
 });

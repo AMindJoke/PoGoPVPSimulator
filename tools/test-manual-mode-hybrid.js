@@ -119,4 +119,98 @@ decision = Hybrid.coordinateDecision({
 assert.equal(decision.status, Hybrid.STATUS.BLOCKED);
 assert.equal(decision.reason, Hybrid.BLOCK_REASON.INVALID_STATE);
 
-console.log("Manual Mode hybrid coordinator tests passed.");
+async function testExecution() {
+  const calls = [];
+  const cmpDecision = Hybrid.coordinateDecision({
+    turnState: state(),
+    controlledSides: ["A"],
+    manualIntent: { side: "A", type: "charged", moveId: "CHARGE_A" },
+    automaticIntent: { side: "B", type: "charged", moveId: "CHARGE_B" }
+  });
+  let finalized = 0;
+  let execution = await Hybrid.executeCoordinatedDecision(cmpDecision, {
+    executeManual: async registration => {
+      calls.push(`manual:${registration.sideId}`);
+      return { ok: true };
+    },
+    executeAutomatic: async registration => {
+      calls.push(`auto:${registration.sideId}`);
+      return { ok: true };
+    },
+    isTerminal: () => false,
+    finalizeTurn: () => {
+      finalized++;
+      return "finalized";
+    }
+  });
+  assert.equal(execution.ok, true);
+  assert.deepEqual(calls, ["manual:A", "auto:B"]);
+  assert.equal(finalized, 1, "A joint turn must be finalized exactly once.");
+  assert.equal(execution.finalized, "finalized");
+
+  const fastVsCharge = Hybrid.coordinateDecision({
+    turnState: state(),
+    controlledSides: ["A"],
+    manualIntent: { side: "A", type: "fast", moveId: "FAST_A" },
+    automaticIntent: { side: "B", type: "charged", moveId: "CHARGE_B" }
+  });
+  let terminal = false;
+  const collisionCalls = [];
+  execution = await Hybrid.executeCoordinatedDecision(fastVsCharge, {
+    executeManual: () => {
+      throw new Error("The ordinary Fast executor must not run after the preceding Charged caused a faint.");
+    },
+    executeAutomatic: async registration => {
+      collisionCalls.push(`auto:${registration.type}`);
+      terminal = true;
+      return true;
+    },
+    isTerminal: () => terminal,
+    resolveRegisteredFastAfterCharged: async registration => {
+      collisionCalls.push(`registered:${registration.type}`);
+      return true;
+    },
+    finalizeTurn: () => true
+  });
+  assert.equal(execution.ok, true);
+  assert.deepEqual(collisionCalls, ["auto:charged", "registered:fast"]);
+
+  const pausedShieldCalls = [];
+  execution = await Hybrid.executeCoordinatedDecision(cmpDecision, {
+    executeManual: async registration => {
+      pausedShieldCalls.push(`manual-start:${registration.sideId}`);
+      await Promise.resolve();
+      pausedShieldCalls.push(`manual-shield-complete:${registration.sideId}`);
+      return true;
+    },
+    executeAutomatic: registration => {
+      pausedShieldCalls.push(`auto:${registration.sideId}`);
+      return true;
+    },
+    isTerminal: () => false,
+    finalizeTurn: () => true
+  });
+  assert.equal(execution.ok, true);
+  assert.deepEqual(pausedShieldCalls, [
+    "manual-start:A",
+    "manual-shield-complete:A",
+    "auto:B"
+  ], "The registered automatic intent must wait for the shield decision without being replanned.");
+
+  execution = await Hybrid.executeCoordinatedDecision(
+    { status: Hybrid.STATUS.AWAITING_MANUAL, registrations: [] },
+    {
+      executeManual: () => true,
+      executeAutomatic: () => true
+    }
+  );
+  assert.equal(execution.ok, false);
+  assert.equal(execution.reason, "DECISION_NOT_EXECUTABLE");
+}
+
+testExecution()
+  .then(() => console.log("Manual Mode hybrid coordinator and executor tests passed."))
+  .catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
