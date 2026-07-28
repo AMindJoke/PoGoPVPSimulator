@@ -3156,6 +3156,25 @@
       padding: 0 10px 10px;
       border-top: 1px solid var(--line);
     }
+    .manual-session-bar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(150px, 1fr) auto minmax(120px, auto) auto auto;
+      gap: 6px;
+      align-items: center;
+      padding-top: 10px;
+    }
+    .manual-session-bar select,
+    .manual-session-bar button {
+      min-height: 34px;
+    }
+    .manual-session-bar button[hidden] { display: none; }
+    .manual-mode-status {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
     .actions {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7119,6 +7138,9 @@
         gap: 7px;
         padding: 0 8px 8px;
       }
+      .manual-session-bar {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
       .manual-head span {
         display: none;
       }
@@ -8736,9 +8758,21 @@
           <section class="manual-panel">
             <div class="manual-head">
               <h2>Manual controls</h2>
-              <span>Optional testing</span>
+              <span id="manualModeStatus" class="manual-mode-status">Automatic timeline</span>
             </div>
             <div class="manual-grid">
+              <div class="manual-session-bar">
+                <select id="manualStartPoint" aria-label="Manual Mode starting point">
+                  <option value="battle-start">Battle start</option>
+                  <option value="selected-before">Before selected event</option>
+                  <option value="selected-after">After selected event</option>
+                  <option value="current">Current state</option>
+                </select>
+                <button id="manualModeToggle" type="button">Manual Mode</button>
+                <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
+                <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
+                <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
+              </div>
               <div class="actions" data-label="Pokemon A">
                 <button id="p1UseFast">Fast</button>
                 <button id="p1UseCharge1">Charged 1</button>
@@ -8916,6 +8950,9 @@
     let manualBattleRuntime = null;
     let manualBattleTrace = [];
     let manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
+    let manualBranchRegistry = null;
+    let manualOriginalRuntimeState = null;
+    let manualRootSnapshotId = null;
     let displayedResources = {};
     // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
     const startingFastAdvantages = { p1: null, p2: null };
@@ -9389,6 +9426,10 @@
       $("p2UseFast").onclick = () => executeLiveManualFast("B");
       $("p2UseCharge1").onclick = () => executeLiveManualCharge("B", 0);
       $("p2UseCharge2").onclick = () => executeLiveManualCharge("B", 1);
+      $("manualModeToggle").onclick = toggleLiveManualMode;
+      $("manualUndo").onclick = undoLiveManualCommand;
+      $("manualRedo").onclick = redoLiveManualCommand;
+      $("manualBranchSelect").onchange = switchLiveManualBranch;
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -11653,6 +11694,9 @@
       manualBattleTrace = [];
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
+      manualBranchRegistry = null;
+      manualOriginalRuntimeState = null;
+      manualRootSnapshotId = null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
@@ -12680,19 +12724,7 @@
       if (!left || !right) startBattle();
       if (!left || !right || !manualModeState || !window.PvPeakManualMode) return false;
       if (!manualModeState.enabled) {
-        const point = currentManualDecisionPoint();
-        manualModeState = window.PvPeakManualMode.enable(manualModeState, {
-          originalTimeline: timeline,
-          originalTerminalResult: null
-        });
-        manualModeState = window.PvPeakManualMode.selectBranchPoint(manualModeState, {
-          branchId: "MANUAL-1",
-          parentBranchId: "AUTO-ORIGINAL",
-          turn: point.turn,
-          eventId: point.eventId,
-          stateHash: point.stateHash,
-          decisionPoint: point
-        });
+        if (!enterLiveManualMode()) return false;
       }
       if (!manualModeState.controlledSides.includes(side)) {
         manualModeState = window.PvPeakManualMode.setControlMode(
@@ -12791,6 +12823,7 @@
         terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
+      syncManualBranchAfterAction(result.action);
       return true;
     }
 
@@ -12823,8 +12856,280 @@
         terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
+      syncManualBranchAfterAction(result.action);
       render();
       return true;
+    }
+
+    function currentManualTerminalResult() {
+      if (!left || !right || !battleEnded()) return null;
+      return {
+        winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie",
+        hp: { A: left.hp, B: right.hp },
+        energy: { A: left.energy, B: right.energy },
+        shields: { A: left.shields, B: right.shields }
+      };
+    }
+
+    function currentManualTimelineModel(sourceTimeline = timeline, terminalResult = currentManualTerminalResult()) {
+      return window.PvPeakManualTimeline.createModel({
+        initialState: initialTimelineState,
+        timeline: sourceTimeline,
+        terminalResult
+      });
+    }
+
+    function restoreManualRuntimePayload(payload, restoredTimeline) {
+      if (!payload) throw new Error("SNAPSHOT_NOT_FOUND");
+      const restored = cloneTechnicalValue(payload);
+      left = restored.left;
+      right = restored.right;
+      battleTurns = restored.battleTurns || { A: 0, B: 0 };
+      initialTimelineState = restored.initialTimelineState || initialTimelineState;
+      timeline = cloneTechnicalValue(restoredTimeline || []);
+      log = [];
+      selectedTimelineIndex = null;
+      previewTimelineIndex = null;
+      previewingTimeline = false;
+      if ($("p1Shields")) $("p1Shields").value = restored.p1Shields ?? left?.shields ?? 0;
+      if ($("p2Shields")) $("p2Shields").value = restored.p2Shields ?? right?.shields ?? 0;
+      if ($("p1StartEnergy")) $("p1StartEnergy").value = restored.p1StartEnergy ?? left?.energy ?? 0;
+      if ($("p2StartEnergy")) $("p2StartEnergy").value = restored.p2StartEnergy ?? right?.energy ?? 0;
+      manualBattleRuntime = null;
+      add(`Manual branch restored at turn ${Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))}.`, "info");
+    }
+
+    function manualRootSnapshot() {
+      return manualRootSnapshotId
+        ? manualSnapshotStore?.get(manualRootSnapshotId, window.PvPeakManualSnapshots.BOUNDARY.AFTER)
+        : null;
+    }
+
+    function rebuildManualModeStateForBranch(activeBranch) {
+      const point = currentManualDecisionPoint();
+      manualModeState = window.PvPeakManualMode.createState({
+        originalTimeline: manualBranchRegistry?.branches?.["AUTO-ORIGINAL"]?.timelineModel?.events || []
+      });
+      manualModeState = window.PvPeakManualMode.enable(manualModeState, {
+        originalTimeline: manualModeState.originalTimeline,
+        originalTerminalResult: manualBranchRegistry?.branches?.["AUTO-ORIGINAL"]?.terminalResult || null
+      });
+      manualModeState = window.PvPeakManualMode.selectBranchPoint(manualModeState, {
+        branchId: activeBranch.branchId,
+        parentBranchId: activeBranch.parentBranchId,
+        turn: point?.turn || 0,
+        eventId: point?.eventId || null,
+        stateHash: point?.stateHash || window.PvPeakManualAction.stateHash(manualCanonicalState()),
+        decisionPoint: point,
+        terminal: battleEnded(),
+        terminalResult: currentManualTerminalResult()
+      });
+    }
+
+    function enterLiveManualMode() {
+      if (!left || !right) startBattle();
+      if (!left || !right) return false;
+      const startMode = $("manualStartPoint")?.value || "battle-start";
+      const originalTimeline = cloneTechnicalValue(timeline);
+      const originalInitialState = cloneTechnicalValue(initialTimelineState);
+      const originalTerminal = currentManualTerminalResult();
+      manualOriginalRuntimeState = cloneTechnicalValue(snapshotFullSimulatorState());
+      const originalModel = window.PvPeakManualTimeline.createModel({
+        initialState: originalInitialState,
+        timeline: originalTimeline,
+        terminalResult: originalTerminal
+      });
+
+      let branchPoint = { boundary: "CURRENT_STATE", eventId: null };
+      if (startMode === "battle-start") {
+        if (lastBattleInitialSimulatorState) restoreFullSimulatorState(cloneTechnicalValue(lastBattleInitialSimulatorState));
+        else startBattle({ skipRender: true });
+        branchPoint = { boundary: "BATTLE_START", eventId: null };
+      } else if (startMode === "selected-before" || startMode === "selected-after") {
+        const selectedEvent = Number.isInteger(selectedTimelineIndex) ? originalTimeline[selectedTimelineIndex] : null;
+        const sourceEvent = selectedEvent?.kind === "shield" || selectedEvent?.kind === "form-protect"
+          ? selectedEvent.chargeEvent
+          : selectedEvent;
+        const eventId = sourceEvent?.timelineEventId || null;
+        if (!eventId) {
+          add("Select a Fast or Charged timeline event before entering Manual Mode.", "info");
+          manualOriginalRuntimeState = null;
+          render();
+          return false;
+        }
+        const boundary = startMode === "selected-before"
+          ? window.PvPeakManualSnapshots.BOUNDARY.BEFORE
+          : window.PvPeakManualSnapshots.BOUNDARY.AFTER;
+        try {
+          const plan = window.PvPeakManualSnapshots.createRestorePlan({
+            timeline: originalTimeline,
+            store: manualSnapshotStore,
+            eventId,
+            boundary
+          });
+          restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix);
+          branchPoint = { boundary, eventId, stateHash: plan.stateHash };
+        } catch (error) {
+          add(`Manual branch point unavailable (${error.message}). Run Battle again to create canonical snapshots.`, "info");
+          manualOriginalRuntimeState = null;
+          render();
+          return false;
+        }
+      }
+
+      manualRootSnapshotId = `manual-root-${Date.now()}`;
+      const rootPayload = captureManualRuntimeSnapshot();
+      manualSnapshotStore.capture(
+        manualRootSnapshotId,
+        window.PvPeakManualSnapshots.BOUNDARY.AFTER,
+        rootPayload,
+        { turn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)), timelineIndex: timeline.length }
+      );
+      manualBranchRegistry = window.PvPeakManualBranches.createRegistry({
+        timelineModel: originalModel,
+        terminalResult: originalTerminal
+      });
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
+        payload: {
+          branchId: "MANUAL-1",
+          label: "Manual 1",
+          branchPoint,
+          timelineModel: currentManualTimelineModel(),
+          terminalResult: currentManualTerminalResult()
+        }
+      });
+      rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
+      render();
+      return true;
+    }
+
+    function exitLiveManualMode() {
+      if (manualOriginalRuntimeState) restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
+      manualModeState = window.PvPeakManualMode?.createState?.() || null;
+      manualBattleRuntime = null;
+      manualBattleTrace = [];
+      manualBranchRegistry = null;
+      manualOriginalRuntimeState = null;
+      manualRootSnapshotId = null;
+      add("Returned to the immutable automatic timeline.", "info");
+      render();
+    }
+
+    function toggleLiveManualMode() {
+      return manualModeState?.enabled ? exitLiveManualMode() : enterLiveManualMode();
+    }
+
+    function syncManualBranchAfterAction(action) {
+      if (!manualBranchRegistry || !manualModeState?.enabled) return;
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.UPDATE_BRANCH,
+        payload: {
+          branchId: manualBranchRegistry.activeBranchId,
+          timelineModel: currentManualTimelineModel(),
+          terminalResult: currentManualTerminalResult(),
+          edit: {
+            type: action?.actionType || "MANUAL_ACTION",
+            manualActionId: action?.id || null,
+            moveId: action?.moveId || null,
+            side: action?.side || null
+          }
+        }
+      });
+    }
+
+    function restoreActiveManualBranch() {
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      if (!active) return false;
+      if (active.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) {
+        restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
+      } else {
+        const events = active.timelineModel?.events || [];
+        const lastSnapshottedEvent = [...events].reverse().find(event =>
+          manualSnapshotStore.get(
+            event.timelineEventId || event.id,
+            window.PvPeakManualSnapshots.BOUNDARY.AFTER
+          )
+        );
+        const snapshot = lastSnapshottedEvent
+          ? manualSnapshotStore.get(
+            lastSnapshottedEvent.timelineEventId || lastSnapshottedEvent.id,
+            window.PvPeakManualSnapshots.BOUNDARY.AFTER
+          )
+          : manualRootSnapshot();
+        if (!snapshot) {
+          add("Cannot restore this branch: canonical runtime snapshot is missing.", "info");
+          return false;
+        }
+        restoreManualRuntimePayload(snapshot.state, events);
+      }
+      rebuildManualModeStateForBranch(active);
+      render();
+      return true;
+    }
+
+    function undoLiveManualCommand() {
+      if (!manualBranchRegistry || manualBranchRegistry.history.length <= 1) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.undo(manualBranchRegistry);
+      return restoreActiveManualBranch();
+    }
+
+    function redoLiveManualCommand() {
+      if (!manualBranchRegistry || !manualBranchRegistry.redoStack.length) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.redo(manualBranchRegistry);
+      return restoreActiveManualBranch();
+    }
+
+    function switchLiveManualBranch() {
+      const branchId = $("manualBranchSelect")?.value;
+      if (!manualBranchRegistry || !manualBranchRegistry.branches[branchId]) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.SWITCH_BRANCH,
+        payload: { branchId }
+      });
+      return restoreActiveManualBranch();
+    }
+
+    function renderManualModeControls() {
+      const enabled = !!manualModeState?.enabled;
+      const toggle = $("manualModeToggle");
+      const status = $("manualModeStatus");
+      const startPoint = $("manualStartPoint");
+      const undo = $("manualUndo");
+      const redo = $("manualRedo");
+      const branchSelect = $("manualBranchSelect");
+      if (!toggle || !status || !startPoint || !branchSelect || !undo || !redo) return;
+      toggle.textContent = enabled ? "Exit Manual" : "Manual Mode";
+      startPoint.disabled = enabled;
+      undo.hidden = !enabled;
+      redo.hidden = !enabled;
+      branchSelect.hidden = !enabled;
+      undo.disabled = !manualBranchRegistry || manualBranchRegistry.history.length <= 1;
+      redo.disabled = !manualBranchRegistry || !manualBranchRegistry.redoStack.length;
+      const active = manualBranchRegistry ? window.PvPeakManualBranches.activeBranch(manualBranchRegistry) : null;
+      if (enabled && manualBranchRegistry) {
+        branchSelect.innerHTML = Object.values(manualBranchRegistry.branches)
+          .map(branch => `<option value="${escapeHtml(branch.branchId)}">${escapeHtml(branch.label)}</option>`)
+          .join("");
+        branchSelect.value = manualBranchRegistry.activeBranchId;
+      } else {
+        branchSelect.innerHTML = "";
+      }
+      status.textContent = enabled
+        ? `${active?.label || "Manual"} · ${manualModeState.status.replaceAll("_", " ").toLowerCase()}`
+        : "Automatic timeline";
+      if (enabled) {
+        const locked = [
+          window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION,
+          window.PvPeakManualMode.STATUS.RESOLVING,
+          window.PvPeakManualMode.STATUS.TERMINAL
+        ].includes(manualModeState.status);
+        ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
+          const button = $(id);
+          if (button && locked) button.disabled = true;
+        });
+      }
     }
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
@@ -16705,6 +17010,9 @@
       manualBattleTrace = [];
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
+      manualBranchRegistry = null;
+      manualOriginalRuntimeState = null;
+      manualRootSnapshotId = null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
@@ -16713,7 +17021,7 @@
       initialTimelineState = battleSnapshot();
       battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
-      lastBattleInitialSimulatorState = snapshotFullSimulatorState();
+      lastBattleInitialSimulatorState = cloneTechnicalValue(snapshotFullSimulatorState());
       if (!options.skipRender) render();
       if (stateSpan) perfDebug.endSpan(stateSpan);
     }
@@ -17066,6 +17374,7 @@
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
       renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
       renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
+      renderManualModeControls();
       if (!scenarioWorkspace) renderKeyNumbers();
       renderTimeline();
       if (scenarioState || scenarioWorkspace) {
