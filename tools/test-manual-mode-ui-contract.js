@@ -59,6 +59,12 @@ for (const id of [
   assert.match(html, new RegExp(`id=["']${id}["']`), `Missing Manual Mode UI control ${id}.`);
 }
 
+assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,220}grid-template-columns: minmax\(0, 1\.65fr\) minmax\(300px, \.85fr\)/);
+assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,320}width: 100%;[\s\S]{0,80}max-width: none/);
+assert.match(html, /\.manual-state-inspector\s*\{[\s\S]{0,180}grid-column: 2/);
+assert.match(html, /\.manual-inspector-grid\s*\{[\s\S]{0,120}grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
+
 for (const value of ["battle-start", "selected-before", "selected-after", "current"]) {
   assert.match(html, new RegExp(`value=["']${value}["']`), `Missing branch-point option ${value}.`);
 }

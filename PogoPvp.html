@@ -5289,9 +5289,12 @@
     .timeline-head h2 { margin: 0; }
     .manual-editor-workspace {
       display: grid;
-      gap: 9px;
+      grid-template-columns: minmax(0, 1.65fr) minmax(300px, .85fr);
+      gap: 12px;
+      width: 100%;
+      max-width: none;
       margin: 0 0 10px;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid color-mix(in srgb, var(--accent) 52%, var(--line));
       border-radius: 10px;
       background: color-mix(in srgb, var(--accent) 5%, var(--soft));
@@ -5299,10 +5302,15 @@
     }
     .manual-editor-workspace[hidden] { display: none; }
     .manual-decision-banner {
+      grid-column: 1 / -1;
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: 14px;
+      padding: 11px 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      border-radius: 9px;
+      background: var(--panel);
     }
     .manual-decision-primary {
       display: grid;
@@ -5355,13 +5363,24 @@
       font-size: 11px;
     }
     .manual-editor-actions {
+      grid-column: 1;
+      grid-row: 2;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
-      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      align-content: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--panel) 82%, transparent);
     }
     .manual-editor-actions .actions {
-      margin-top: 7px;
+      align-content: start;
+      margin: 0;
+      padding: 9px;
+      border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+      border-radius: 8px;
+      background: var(--soft);
     }
     .manual-editor-command-bar {
       grid-column: 1 / -1;
@@ -5374,8 +5393,14 @@
       min-width: 126px;
     }
     .manual-state-inspector {
-      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-      padding-top: 7px;
+      grid-column: 2;
+      grid-row: 2;
+      align-self: stretch;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--panel) 82%, transparent);
     }
     .manual-state-inspector summary {
       display: flex;
@@ -5396,7 +5421,7 @@
     }
     .manual-inspector-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 5px;
       margin-top: 7px;
     }
@@ -5426,6 +5451,7 @@
       white-space: nowrap;
     }
     .manual-timeline-event-menu {
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -7729,6 +7755,19 @@
       .manual-decision-banner,
       .manual-editor-actions {
         grid-template-columns: 1fr;
+      }
+      .manual-editor-workspace {
+        grid-template-columns: 1fr;
+      }
+      .manual-decision-banner,
+      .manual-editor-actions,
+      .manual-state-inspector,
+      .manual-timeline-event-menu {
+        grid-column: 1;
+        grid-row: auto;
+      }
+      .manual-state-inspector {
+        padding-top: 9px;
       }
       .manual-decision-facts {
         grid-auto-flow: column;
@@ -14579,16 +14618,23 @@
         || (manualModeState.controlledSides?.length === 1 ? manualModeState.controlledSides[0] : null);
       const actor = activeSide === "A" ? left : activeSide === "B" ? right : null;
       const shieldDecision = manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION;
+      const actionLabels = (combatant, side = null) =>
+        legalBattleActions(combatant, manualCanonicalState()?.currentTurn).map(action => {
+          const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
+          const label = type === "fast_move"
+            ? combatant.fast?.name || "Fast Move"
+            : type === "charged_move"
+              ? validChargedMoves(combatant).find(move => move.id === action.moveId)?.name || "Charged Move"
+              : type === "wait"
+                ? "Wait"
+                : title(String(type || "Action").replaceAll("_", " "));
+          return side ? `${side}: ${label}` : label;
+        });
       const legal = shieldDecision
         ? ["Shield", "No Shield"]
         : actor
-          ? legalBattleActions(actor, manualCanonicalState()?.currentTurn).map(action => {
-              const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
-              if (type === "fast_move") return actor.fast?.name || "Fast Move";
-              if (type === "charged_move") return validChargedMoves(actor).find(move => move.id === action.moveId)?.name || "Charged Move";
-              return type === "wait" ? "Wait" : title(String(type || "Action").replaceAll("_", " "));
-            })
-          : [];
+          ? actionLabels(actor)
+          : waitingSides.flatMap(side => actionLabels(side === "A" ? left : right, side));
       const actorName = actor?.p?.name || null;
       $("manualCurrentDecisionTitle").textContent = shieldDecision
         ? `${actorName || `Pokemon ${activeSide || ""}`} shield decision`
