@@ -5274,6 +5274,58 @@
     .manual-editor-actions .actions {
       margin-top: 7px;
     }
+    .manual-state-inspector {
+      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      padding-top: 7px;
+    }
+    .manual-state-inspector summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 900;
+      list-style: none;
+    }
+    .manual-state-inspector summary::-webkit-details-marker { display: none; }
+    .manual-state-inspector summary small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+    }
+    .manual-inspector-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+      margin-top: 7px;
+    }
+    .manual-inspector-item {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      padding: 6px 7px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+    }
+    .manual-inspector-item small {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 850;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .manual-inspector-item strong {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     body.manual-mode-active #battleTimeline {
       border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent), 0 14px 32px rgba(23, 33, 47, .14);
@@ -7515,6 +7567,9 @@
         grid-auto-flow: column;
         grid-auto-columns: minmax(0, 1fr);
       }
+      .manual-inspector-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .manual-runtime-toolbar {
         grid-template-columns: minmax(0, 1fr) auto auto;
       }
@@ -9107,6 +9162,10 @@
               <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>The simulator will choose this side's action.</small></span>
             </div>
           </div>
+          <details id="manualStateInspector" class="manual-state-inspector" open>
+            <summary><span>Battle state inspector</span><small id="manualInspectorPhase">Waiting</small></summary>
+            <div id="manualInspectorGrid" class="manual-inspector-grid"></div>
+          </details>
         </section>
         <div class="timeline-grid">
           <div class="timeline-label" id="p1TimelineLabel">A</div>
@@ -14061,7 +14120,7 @@
       const legal = shieldDecision
         ? ["Shield", "No Shield"]
         : actor
-          ? legalBattleActions(actor, Number(battleTurns[actor.trainer] || 0)).map(action => {
+          ? legalBattleActions(actor, manualCanonicalState()?.currentTurn).map(action => {
               const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
               if (type === "fast_move") return actor.fast?.name || "Fast Move";
               if (type === "charged_move") return validChargedMoves(actor).find(move => move.id === action.moveId)?.name || "Charged Move";
@@ -14083,6 +14142,54 @@
         : `${left?.energy ?? 0} / ${right?.energy ?? 0}`;
       $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
       $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
+      renderManualStateInspector(runtimeStatus);
+    }
+
+    function renderManualStateInspector(runtimeStatus) {
+      const grid = $("manualInspectorGrid");
+      if (!grid || !manualModeState?.enabled || !left || !right) return;
+      const state = turnEngineState();
+      const pending = state?.pendingEvents || [];
+      const phase = manualModeState.pendingDecision?.phase
+        || manualModeState.status.replaceAll("_", " ");
+      const currentTurn = Number(state?.currentTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
+      const readySides = ["A", "B"].filter(side =>
+        Number(state?.sides?.[side]?.readyTurn ?? Infinity) <= currentTurn
+        && Number(state?.sides?.[side]?.hp || 0) > 0
+      );
+      const cmp = left.attack > right.attack
+        ? `A · ${left.p.name}`
+        : right.attack > left.attack
+          ? `B · ${right.p.name}`
+          : "Tie";
+      const item = (label, value, titleText = value) =>
+        `<span class="manual-inspector-item" title="${escapeHtml(String(titleText))}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(String(value))}</strong></span>`;
+      const signedStage = value => {
+        const stage = Number(value || 0);
+        return `${stage > 0 ? "+" : ""}${stage}`;
+      };
+      const stages = combatant => `Atk ${signedStage(combatant.attackStage)} · Def ${signedStage(combatant.defenseStage)}`;
+      const cooldown = side => Math.max(0, Number(state?.sides?.[side]?.readyTurn || 0) - currentTurn);
+      const pendingFast = pending.filter(event => event.type === "fast-impact");
+      if ($("manualInspectorPhase")) $("manualInspectorPhase").textContent = runtimeStatus.text;
+      grid.innerHTML = [
+        item("Turn", currentTurn),
+        item("Phase", title(String(phase).toLowerCase().replaceAll("_", " "))),
+        item("Ready side", readySides.join(" + ") || "None"),
+        item("CMP", cmp),
+        item("A · HP", `${left.hp}/${left.maxHp}`),
+        item("A · Energy", left.energy),
+        item("A · Shields", left.shields),
+        item("A · Cooldown", `${cooldown("A")}t`),
+        item("A · Stages", stages(left)),
+        item("B · HP", `${right.hp}/${right.maxHp}`),
+        item("B · Energy", right.energy),
+        item("B · Shields", right.shields),
+        item("B · Cooldown", `${cooldown("B")}t`),
+        item("B · Stages", stages(right)),
+        item("Pending Fast", pendingFast.length, pendingFast.map(event => event.moveName || event.moveId || event.id).join(", ") || "None"),
+        item("Pending events", pending.length, pending.map(event => `${event.type || "event"} @ T${event.resolveTurn ?? event.turn ?? "?"}`).join(", ") || "None")
+      ].join("");
     }
 
     function renderManualModeControls() {
@@ -14184,8 +14291,45 @@
         if (!manualModeState.controlledSides.includes("B")) {
           ["p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
         }
+        [
+          { side: "A", combatant: left, ids: ["p1UseFast", "p1UseCharge1", "p1UseCharge2"] },
+          { side: "B", combatant: right, ids: ["p2UseFast", "p2UseCharge1", "p2UseCharge2"] }
+        ].forEach(({ side, combatant, ids }) => {
+          if (!manualModeState.controlledSides.includes(side) || !combatant) return;
+          const legalActions = legalBattleActions(combatant, manualCanonicalState()?.currentTurn);
+          const legalFast = legalActions.some(action => ["fast", "fast_move"].includes(action.type));
+          const legalChargedIds = new Set(legalActions
+            .filter(action => ["charged", "charged_move"].includes(action.type))
+            .map(action => action.moveId));
+          ids.forEach((id, index) => {
+            const button = $(id);
+            const move = index === 0 ? combatant.fast : combatant.charged?.[index - 1];
+            const legal = index === 0 ? legalFast : !!move && legalChargedIds.has(move.id);
+            button.disabled = !legal;
+            if (!legal) {
+              button.title = `${button.title || move?.name || "Action"}\nUnavailable: ${manualActionUnavailableReason(combatant, move, index === 0 ? "fast" : "charged")}`;
+            }
+          });
+        });
       }
       updateManualBranchSelectionUi();
+    }
+
+    function manualActionUnavailableReason(combatant, move, actionType) {
+      if (!combatant || combatant.hp <= 0) return "no valid acting Pokemon";
+      const opponent = combatant.trainer === "A" ? right : left;
+      if (!opponent || opponent.hp <= 0 || battleEnded()) return "the battle has already ended";
+      if (manualModeState?.status === window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION) {
+        return "a shield decision is pending";
+      }
+      if (manualModeState?.status === window.PvPeakManualMode.STATUS.RESOLVING) return "the current turn is resolving";
+      const currentTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      const cooldown = Math.max(0, Number(battleTurns[combatant.trainer] || 0) - currentTurn);
+      if (cooldown > 0) return `cooldown active for ${cooldown} more turn${cooldown === 1 ? "" : "s"}`;
+      if (actionType === "charged" && move && combatant.energy < move.energyCost) {
+        return `not enough energy (${combatant.energy}/${move.energyCost})`;
+      }
+      return "not legal at the current decision point";
     }
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {

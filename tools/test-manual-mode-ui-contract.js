@@ -19,6 +19,9 @@ for (const id of [
   "manualDecisionTurn",
   "manualDecisionEnergy",
   "manualDecisionLegal",
+  "manualStateInspector",
+  "manualInspectorPhase",
+  "manualInspectorGrid",
   "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
@@ -63,6 +66,15 @@ assert.match(html, /function renderManualDecisionBanner/);
 assert.match(html, /manual-mode-active/);
 assert.match(html, /actorName} to act/);
 assert.match(html, /legalBattleActions\(actor/);
+assert.match(html, /function renderManualStateInspector/);
+assert.match(html, /Pending Fast/);
+assert.match(html, /Pending events/);
+assert.match(html, /A · Cooldown/);
+assert.match(html, /B · Stages/);
+assert.match(html, /function manualActionUnavailableReason/);
+assert.match(html, /a shield decision is pending/);
+assert.match(html, /cooldown active for/);
+assert.match(html, /not enough energy/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
 assert.match(html, /function renderManualSelectedEventSummary/);
 assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);
