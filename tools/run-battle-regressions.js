@@ -184,6 +184,20 @@ function evaluateExpectations(testCase, result, tacticalSummary = null) {
       failures.push(`Expected ${expectations.chargedMoveSequence.side} Charged sequence ${expectedSequence.join(" -> ")}; actual ${actualSequence.join(" -> ") || "none"}.`);
     }
   }
+  for (const [side, expectedHp] of Object.entries(expectations.finalHp || {})) {
+    const actualHp = finalHp(result, side);
+    if (actualHp !== Number(expectedHp)) failures.push(`Expected ${side} final HP ${expectedHp}; actual ${actualHp}.`);
+  }
+  for (const [side, expectedCount] of Object.entries(expectations.fastMoveCount || {})) {
+    const actualCount = fastMoveCount(result, side);
+    if (actualCount !== Number(expectedCount)) failures.push(`Expected ${side} Fast Move count ${expectedCount}; actual ${actualCount}.`);
+  }
+  if (expectations.registeredFastBeforeChargedKo) {
+    const actualEvent = registeredFastBeforeChargedKoEvent(result, expectations.registeredFastBeforeChargedKo);
+    if (!actualEvent) {
+      failures.push(`Expected ${expectations.registeredFastBeforeChargedKo.side} ${expectations.registeredFastBeforeChargedKo.moveId || "Fast Move"} to resolve after same-turn Charged KO.`);
+    }
+  }
   if (expectations.forbiddenMoveAtDecision) {
     const actualMove = selectedMoveAtDecision(trace, expectations.forbiddenMoveAtDecision);
     if (actualMove === expectations.forbiddenMoveAtDecision.moveId) {
@@ -246,6 +260,30 @@ function chargedMoveSequence(result, side) {
     .filter(event => event.trainer === side && event.kind === "charge")
     .map(event => event.moveId)
     .filter(Boolean);
+}
+
+function fastMoveCount(result, side) {
+  return (result?.timelineTrace || [])
+    .filter(event => event.trainer === side && event.kind === "fast")
+    .length;
+}
+
+function finalHp(result, side) {
+  const key = side === "A" ? "aHp" : "bHp";
+  const ratio = Number(result?.details?.[key]);
+  const lastEvent = [...(result?.timelineTrace || [])].reverse().find(event => event.trainer !== side && Number.isFinite(Number(event.hpAfter)));
+  if (lastEvent) return Number(lastEvent.hpAfter);
+  return Number.isFinite(ratio) ? Math.round(ratio * 1000) / 1000 : null;
+}
+
+function registeredFastBeforeChargedKoEvent(result, expected) {
+  return (result?.timelineTrace || []).find(event =>
+    event.trainer === expected.side
+    && event.kind === "fast"
+    && (!expected.moveId || event.moveId === expected.moveId)
+    && event.registeredBeforeChargedKo === true
+    && (!Number.isFinite(Number(expected.turn)) || Number(event.start) === Number(expected.turn))
+  ) || null;
 }
 
 function shieldDecisionLabel(expected) {

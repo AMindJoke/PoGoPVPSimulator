@@ -9538,6 +9538,7 @@
         turnsToNextMeaningfulCharged,
         finish,
         resetCooldownsAfterChargedTurn,
+        resolveSameTurnRegisteredFastAfterChargedKo,
         fastMoveImpactTurn,
         timelineFastImpactTurn,
         recordTimeline,
@@ -9899,7 +9900,9 @@
                energyAfter: Number(event.energyAfter || 0),
                hpBefore: Number(event.hpBefore || 0),
                hpAfter: Number(event.hpAfter || 0),
-               damage: Number(event.damage || 0)
+               damage: Number(event.damage || 0),
+               registeredBeforeChargedKo: !!event.registeredBeforeChargedKo,
+               actionLifecycleStatus: event.actionLifecycleStatus || null
              }));
           }
           chargedDecisionDiagnosticsEnabled = false;
@@ -12609,6 +12612,7 @@
       if (typeof markTechnicalDreEnergyReady === "function") markTechnicalDreEnergyReady(attacker, defender, dreFastOrdinal);
       const dreResult = typeof resolveTechnicalDreIfNeeded === "function" ? resolveTechnicalDreIfNeeded() : null;
       if (dreResult !== null) return dreResult;
+      if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
     }
 
@@ -12804,6 +12808,7 @@
       if (typeof resolveTechnicalPendingFastAfterCharge === "function") {
         resolveTechnicalPendingFastAfterCharge(attacker, defender, move);
       }
+      if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
     }
 
@@ -14893,26 +14898,77 @@
       const timelineStart = timeline.length;
       const actors = orderedBattleActors(currentTurn);
       if (!actors.length) return false;
+      const startFastEligibility = new Map(actors.map(([actor]) => [
+        actor.trainer,
+        legalBattleActions(actor, currentTurn).some(action => action.type === "fast" || action.type === "fast_move")
+      ]));
       const previousContext = activeAutoTurnContext;
       const context = {
         currentTurn,
         timelineStart,
         actorOrder: actors.map(([actor]) => actor.trainer),
-        acted: new Set()
+        acted: new Set(),
+        deferTerminalFinalization: true
       };
       activeAutoTurnContext = context;
       let progressed = false;
       try {
         for (const [attacker, defender] of actors) {
-          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) break;
+          if (battleEnded() || attacker.hp <= 0 || defender.hp <= 0) {
+            resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility);
+            break;
+          }
           context.acted.add(attacker.trainer);
           progressed = autoAction(attacker, defender) || progressed;
+          if (battleEnded()) {
+            progressed = resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility) || progressed;
+            break;
+          }
         }
         resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        finish();
       } finally {
         activeAutoTurnContext = previousContext;
       }
       return progressed;
+    }
+
+    function resolveSameTurnRegisteredFastAfterChargedKo(currentTurn, timelineStart, context, startFastEligibility) {
+      const turn = Number(currentTurn || 0);
+      const chargedEvents = timeline.slice(timelineStart).filter(event =>
+        event?.kind === "charge" && Number(event.start || 0) === turn
+      );
+      if (!chargedEvents.length) return false;
+      let resolved = false;
+      for (const chargeEvent of chargedEvents) {
+        const fastSide = chargeEvent.trainer === "A" ? "B" : "A";
+        if (context?.acted?.has(fastSide)) continue;
+        if (!startFastEligibility?.get(fastSide)) continue;
+        const source = fastSide === "A" ? left : right;
+        const target = fastSide === "A" ? right : left;
+        if (!source || !target || !source.fast || target.hp <= 0) continue;
+        const duration = Math.max(1, Number(source.fast.turns || 1));
+        if (duration !== 1) continue;
+        const energyBefore = Number(source.energy || 0);
+        const hpBefore = Number(target.hp || 0);
+        const damage = estimate(source, target, source.fast);
+        target.hp = Math.max(0, target.hp - damage);
+        source.energy = clampEnergy(source.energy + Math.max(0, Number(source.fast.energyGain || 0)));
+        const event = recordTimeline(source, source.fast, "fast", damage, false, energyBefore, {
+          energyAfter: source.energy,
+          hpBefore,
+          hpAfter: target.hp
+        });
+        event.sneaked = true;
+        event.sneakChargeName = chargeEvent.move?.name || "charged move";
+        event.sneakChargeIndex = chargeEvent.timelineIndex;
+        event.registeredBeforeChargedKo = true;
+        event.actionLifecycleStatus = "FAST_IMPACT_RESOLVED";
+        add(`T${turn} - ${source.trainer}: ${source.p.name}'s registered ${source.fast.name} resolves through ${chargeEvent.move?.name || "the Charged Move"}: ${damage} damage.`, "fast");
+        context?.acted?.add(fastSide);
+        resolved = true;
+      }
+      return resolved;
     }
 
     function runAutomaticBattleToEnd(maxSteps = 1000) {

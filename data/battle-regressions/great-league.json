@@ -4,6 +4,37 @@
   "description": "Small, reviewed battle-planner regression corpus.",
   "cases": [
     {
+      "id": "kingdra-shadow-dunsparce-registered-fast-through-ko-0s-b-adv1",
+      "description": "A one-turn Fast Move that is legally available at the same turn as an opposing Charged KO must still resolve before terminal finalization.",
+      "category": ["timing", "ui-engine-mismatch"],
+      "league": "great",
+      "pokemonA": {
+        "id": "kingdra_shadow",
+        "moves": { "fast": "DRAGON_BREATH", "charged": ["SURF", "SWIFT"] },
+        "ivPreset": "default",
+        "hp": "full",
+        "energy": 0,
+        "shields": 0
+      },
+      "pokemonB": {
+        "id": "dunsparce",
+        "moves": { "fast": "ROLLOUT", "charged": ["DRILL_RUN", "ROCK_SLIDE"] },
+        "ivPreset": "default",
+        "hp": "full",
+        "energy": 0,
+        "shields": 0
+      },
+      "preFastAdvantage": { "side": "B", "fastMoves": 1, "applyDamage": true },
+      "policy": { "baiting": "selective", "shieldMode": "smart" },
+      "expectations": {
+        "winner": "B",
+        "finalHp": { "B": 30 },
+        "fastMoveCount": { "A": 19 },
+        "registeredFastBeforeChargedKo": { "side": "A", "moveId": "DRAGON_BREATH", "turn": 19 }
+      },
+      "notes": "Reviewed against the pinned PvPoke turn-order model: same-turn one-turn Fast availability is collected before Charged terminal finalization."
+    },
+    {
       "id": "kingdra-shadow-tinkaton-primary-build-0s-adv3",
       "description": "Kingdra Shadow should preserve the primary charged route after three completed Dragon Breath advantages instead of dumping the ready cheaper move.",
       "category": ["charged-move-choice", "timing", "energy-management"],
