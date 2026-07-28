@@ -5762,6 +5762,35 @@
       box-shadow: 0 0 0 3px rgba(21, 111, 143, .24), 0 0 8px rgba(21, 111, 143, .26);
       z-index: 5;
     }
+    .timeline-token-label {
+      display: none;
+      overflow: hidden;
+      font-size: 9px;
+      font-weight: 950;
+      line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.manual-mode-active .timeline-token-label {
+      display: inline;
+    }
+    body.manual-mode-active .timeline-block.fast {
+      height: 18px !important;
+      border-radius: 5px;
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .35);
+    }
+    body.manual-mode-active .timeline-block.charge {
+      height: 28px;
+      border-radius: 7px;
+      padding: 0 5px;
+      gap: 3px;
+    }
+    body.manual-mode-active .timeline-block.charge .move-icon {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+    }
     .timeline-scroll.replay-active .timeline-block,
     .timeline-scroll.replay-active .charge-trail,
     .timeline-scroll.replay-active .timeline-marker {
@@ -21914,7 +21943,10 @@
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
-        const width = isCharge ? timelineChargeWidth(turnPx) : timelineShieldWidth(turnPx);
+        const editorLabel = isCharge ? timelineEditorMoveLabel(event.move) : "";
+        const width = isCharge && manualModeState?.enabled
+          ? Math.max(timelineChargeWidth(turnPx), Math.min(72, editorLabel.length * 6 + 20))
+          : isCharge ? timelineChargeWidth(turnPx) : timelineShieldWidth(turnPx);
         const baseTurn = isCharge
           ? chargeVisualTurn(event, index, chargeSlots)
           : event.chargeEvent
@@ -21926,7 +21958,7 @@
           ? event.kind === "form-protect"
             ? `<span class="timeline-shield-icon timeline-disguise-icon">${disguiseSvg()}</span>`
             : `<span class="timeline-shield-icon">${shieldSvg()}</span>`
-          : moveTypeIcon(event.move);
+          : `${moveTypeIcon(event.move)}<span class="timeline-token-label">${escapeHtml(editorLabel)}</span>`;
         const effectClass = isCharge ? timelineStageEffectClass(event) : "";
         const trainerClass = isCharge ? ` trainer-${trainer.toLowerCase()}` : "";
         const cls = (isShield ? `timeline-block shield${event.kind === "form-protect" ? " form-protect" : ""}` : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + (selectedTimelineIndex === index ? " selected" : "");
@@ -21981,14 +22013,22 @@
       const borderColor = darken(color, .18);
       const visualStart = timelineFastVisualTurn(event, chargeSlots);
       const size = timelineFastSize(turnPx);
+      const editorLabel = timelineEditorMoveLabel(event.move);
+      const tokenWidth = manualModeState?.enabled ? Math.max(22, Math.min(54, editorLabel.length * 6 + 8)) : size;
       const pairedShield = event.sneaked && Number.isInteger(event.sneakChargeIndex)
         ? timeline.find(candidate => (candidate.kind === "shield" || candidate.kind === "form-protect") && candidate.trainer === event.trainer && candidate.chargeIndex === event.sneakChargeIndex)
         : null;
       const pairedOffset = pairedShield ? timelineShieldWidth(turnPx) / 2 + size / 2 + 3 : 0;
-      const left = visualStart * turnPx - size / 2 - pairedOffset;
+      const left = visualStart * turnPx - tokenWidth / 2 - pairedOffset;
       const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${pairedShield ? " shield-paired" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
       const top = Math.max(2, (22 - size) / 2);
-      return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${size}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${timelineMarkers(event, eventIndex, left + size + 8)}`;
+      return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${tokenWidth}px;height:${size}px;background:${color};border-color:${borderColor}"><span class="timeline-token-label">${escapeHtml(editorLabel)}</span></div>${timelineMarkers(event, eventIndex, left + tokenWidth + 8)}`;
+    }
+
+    function timelineEditorMoveLabel(move) {
+      if (!move) return "?";
+      const name = String(move.name || "");
+      return name.length <= 8 ? name : (move.abbreviation || moveShortLabel(move));
     }
 
     function fastMoveImpactTurn(start, end) {
@@ -22018,20 +22058,55 @@
 
     function timelineMoveTitle(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
-      if (event.kind === "shield") return `Shielded\n${event.absorbedDamage || 0} Absorbed`;
-      if (event.kind === "form-protect") return `Disguise broken\n${event.absorbedDamage || 0} Absorbed${event.formChange?.defenseStageDelta ? `\nDefense ${event.formChange.defenseStageDelta} stage` : ""}`;
+      const registrationTurn = Number(event.registrationTurn ?? event.start ?? 0);
+      const resolutionTurn = Number(event.resolutionTurn ?? event.resolveTurn ?? event.start ?? 0);
+      const pendingLabels = [
+        event.drePending ? "DRE" : null,
+        event.technicalLagPending ? "Lag" : null,
+        event.registeredBeforeChargedKo ? "Registered Fast impact" : null,
+        event.simultaneousFastPhase ? "Simultaneous Fast phase" : null
+      ].filter(Boolean);
+      const technicalLines = [
+        `Turn: ${Number(event.start || 0)}`,
+        `Registration Turn: ${registrationTurn}`,
+        `Resolution Turn: ${resolutionTurn}`,
+        `Pending Events: ${pendingLabels.join(", ") || "None"}`
+      ];
+      if (event.kind === "shield") return [`Shielded`, `${event.absorbedDamage || 0} Absorbed`, ...technicalLines].join("\n");
+      if (event.kind === "form-protect") return [
+        `Disguise broken`,
+        `${event.absorbedDamage || 0} Absorbed`,
+        event.formChange?.defenseStageDelta ? `Defense ${event.formChange.defenseStageDelta} stage` : null,
+        ...technicalLines
+      ].filter(Boolean).join("\n");
       const state = event.state || {};
       const targetState = event.trainer === "A" ? state.B : state.A;
       const maxHp = targetState && targetState.maxHp ? targetState.maxHp : null;
       const damagePct = maxHp ? ` (${(event.damage / maxHp * 100).toFixed(1)}%)` : "";
       const energy = event.kind === "fast" ? event.move.energyGain || 0 : event.move.energyCost || 0;
+      const deltaLines = [
+        Number.isFinite(Number(event.hpBefore)) && Number.isFinite(Number(event.hpAfter))
+          ? `HP: ${Number(event.hpBefore)} \u2192 ${Number(event.hpAfter)} (\u0394${Number(event.hpAfter) - Number(event.hpBefore)})`
+          : null,
+        Number.isFinite(Number(event.energyBefore)) && Number.isFinite(Number(event.energyAfter))
+          ? `Energy: ${Number(event.energyBefore)} \u2192 ${Number(event.energyAfter)} (\u0394${Number(event.energyAfter) - Number(event.energyBefore)})`
+          : null
+      ].filter(Boolean);
       if (event.kind === "charge") {
         const effectLines = timelineStageEffectLines(event);
-        return [`${event.move.name}`, `${event.damage} damage${damagePct}`, `${energy} energy`, ...effectLines].join("\n");
+        return [`${event.move.name}`, `${event.damage} damage${damagePct}`, `${energy} energy`, ...deltaLines, ...effectLines, ...technicalLines].join("\n");
       }
-      const sneak = event.kind === "fast" && event.sneaked ? `\nSneak during ${event.sneakChargeName}` : "";
-      const aiReason = event.aiReason ? `\nReasoning: ${event.aiReason}` : "";
-      return `${event.move.name}\n${event.damage} damage${damagePct}\n${energy} energy${sneak}${aiReason}`;
+      const sneak = event.kind === "fast" && event.sneaked ? `Sneak during ${event.sneakChargeName}` : null;
+      const aiReason = event.aiReason ? `Reasoning: ${event.aiReason}` : null;
+      return [
+        event.move.name,
+        `${event.damage} damage${damagePct}`,
+        `${energy} energy`,
+        ...deltaLines,
+        sneak,
+        aiReason,
+        ...technicalLines
+      ].filter(Boolean).join("\n");
     }
 
     function timelineFastSize(turnPx) {
