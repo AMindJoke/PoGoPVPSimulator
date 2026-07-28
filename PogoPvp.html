@@ -26,6 +26,7 @@
   <script src="src/battle/turn-resolution-engine.js"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js"></script>
+  <script src="src/battle/manual-runtime.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
@@ -8907,6 +8908,9 @@
     let timeline = [];
     let initialTimelineState = null;
     let battleTurns = { A: 0, B: 0 };
+    let manualModeState = window.PvPeakManualMode?.createState?.() || null;
+    let manualBattleRuntime = null;
+    let manualBattleTrace = [];
     let displayedResources = {};
     // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
     const startingFastAdvantages = { p1: null, p2: null };
@@ -9374,10 +9378,10 @@
       document.addEventListener("pointerover", handleChargeInfoPointerOver);
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
-      $("p1UseFast").onclick = () => { recordManualIntelligenceDecision(left, "fast_move"); useFast(left, right); };
+      $("p1UseFast").onclick = () => executeLiveManualFast("A");
       $("p1UseCharge1").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[0]); useManualCharge(left, right, 0); };
       $("p1UseCharge2").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[1]); useManualCharge(left, right, 1); };
-      $("p2UseFast").onclick = () => { recordManualIntelligenceDecision(right, "fast_move"); useFast(right, left); };
+      $("p2UseFast").onclick = () => executeLiveManualFast("B");
       $("p2UseCharge1").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[0]); useManualCharge(right, left, 0); };
       $("p2UseCharge2").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[1]); useManualCharge(right, left, 1); };
 
@@ -11640,6 +11644,9 @@
       right = create("p2", "B");
       log = [];
       timeline = [];
+      manualBattleRuntime = null;
+      manualBattleTrace = [];
+      manualModeState = window.PvPeakManualMode?.createState?.() || null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
@@ -12589,6 +12596,7 @@
       const energyGained = attacker.energy - energyBefore;
       const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
         actionLifecycle: options.actionLifecycle || null,
+        manualAction: options.manualAction || null,
         energyAfter: attacker.energy,
         hpBefore,
         hpAfter: defender.hp
@@ -12616,6 +12624,111 @@
       if (dreResult !== null) return dreResult;
       if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
+    }
+
+    function manualCanonicalState(currentTurn = null) {
+      const state = turnEngineState(currentTurn);
+      if (!state || !left || !right) return state;
+      state.sides.A = {
+        ...state.sides.A,
+        maxHp: left.maxHp,
+        shields: left.shields,
+        attackStage: left.attackStage || 0,
+        defenseStage: left.defenseStage || 0
+      };
+      state.sides.B = {
+        ...state.sides.B,
+        maxHp: right.maxHp,
+        shields: right.shields,
+        attackStage: right.attackStage || 0,
+        defenseStage: right.defenseStage || 0
+      };
+      return state;
+    }
+
+    function currentManualDecisionPoint() {
+      const state = manualCanonicalState();
+      if (!state) return null;
+      const actionApi = window.PvPeakManualAction;
+      return actionApi.createDecisionPoint({
+        state,
+        eventId: timeline.at(-1)?.timelineEventId || null,
+        legalActionsBySide: {
+          A: legalBattleActions(left, state.currentTurn),
+          B: legalBattleActions(right, state.currentTurn)
+        }
+      });
+    }
+
+    function ensureLiveManualSession(side) {
+      if (!left || !right) startBattle();
+      if (!left || !right || !manualModeState || !window.PvPeakManualMode) return false;
+      if (!manualModeState.enabled) {
+        const point = currentManualDecisionPoint();
+        manualModeState = window.PvPeakManualMode.enable(manualModeState, {
+          originalTimeline: timeline,
+          originalTerminalResult: null
+        });
+        manualModeState = window.PvPeakManualMode.selectBranchPoint(manualModeState, {
+          branchId: "MANUAL-1",
+          parentBranchId: "AUTO-ORIGINAL",
+          turn: point.turn,
+          eventId: point.eventId,
+          stateHash: point.stateHash,
+          decisionPoint: point
+        });
+      }
+      if (!manualModeState.controlledSides.includes(side)) {
+        manualModeState = window.PvPeakManualMode.setControlMode(
+          manualModeState,
+          window.PvPeakManualMode.CONTROL_MODE.BOTH_MANUAL
+        );
+      }
+      manualModeState = window.PvPeakManualMode.setSelectedSide(manualModeState, side);
+      return true;
+    }
+
+    function liveManualRuntime() {
+      if (manualBattleRuntime) return manualBattleRuntime;
+      manualBattleRuntime = window.PvPeakManualRuntime.createRuntime({
+        getState: () => manualCanonicalState(),
+        getBranchId: () => manualModeState?.branchId || null,
+        getDecisionPoint: () => currentManualDecisionPoint(),
+        getLegalActions: side => legalBattleActions(side === "A" ? left : right),
+        resolveFast: ({ side, manualAction }) => {
+          const attacker = side === "A" ? left : right;
+          const defender = side === "A" ? right : left;
+          recordManualIntelligenceDecision(attacker, "fast_move");
+          return useFast(attacker, defender, { manualAction });
+        },
+        onTrace: entry => manualBattleTrace.push(entry)
+      });
+      return manualBattleRuntime;
+    }
+
+    function executeLiveManualFast(side) {
+      if (!ensureLiveManualSession(side)) return false;
+      const attacker = side === "A" ? left : right;
+      const result = liveManualRuntime().request({
+        side,
+        actionType: window.PvPeakManualAction.ACTION_TYPE.FAST_MOVE,
+        moveId: attacker.fast?.id || null
+      });
+      if (!result.ok) {
+        add(`${side}: manual Fast rejected (${result.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
+        render();
+        return false;
+      }
+      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: manualCanonicalState()?.currentTurn || 0,
+        cursorEventId: timeline.at(-1)?.timelineEventId || null,
+        terminal: battleEnded(),
+        terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
+        pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+      });
+      return true;
     }
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
@@ -13075,6 +13188,11 @@
         registeredActionId: traceContext.actionLifecycle?.registeredActionId || null,
         resolvedActionId: traceContext.actionLifecycle?.resolvedActionId || null
       };
+      if (traceContext.manualAction) {
+        event.manualActionId = traceContext.manualAction.id || null;
+        event.branchId = manualModeState?.branchId || null;
+        event.source = "manual-mode";
+      }
       event.timelineIndex = timeline.length;
       event.state = battleSnapshot();
       timeline.push(event);
