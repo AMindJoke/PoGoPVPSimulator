@@ -28,6 +28,12 @@ for (const id of [
   "manualEventBranchBefore",
   "manualEventBranchAfter",
   "manualEventReturnLive",
+  "manualVersionPanel",
+  "manualVersionTree",
+  "manualReturnOriginal",
+  "manualRenameVersion",
+  "manualDuplicateVersion",
+  "manualDeleteVersion",
   "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
@@ -92,6 +98,11 @@ assert.match(html, /function createManualAlternativeFromSelected/);
 assert.match(html, /COMMAND_TYPE\.CREATE_BRANCH/);
 assert.match(html, /label: `Manual alternative \$\{alternativeNumber\}`/);
 assert.match(html, /manualEventInspect"\)\.onclick = inspectSelectedManualTimelineEvent/);
+assert.match(html, /function renderManualVersionTree/);
+assert.match(html, /function renameActiveManualTimeline/);
+assert.match(html, /function duplicateActiveManualTimeline/);
+assert.match(html, /function deleteActiveManualTimeline/);
+assert.match(html, /Restore the last undone edit/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
 assert.match(html, /function renderManualSelectedEventSummary/);
 assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);
@@ -99,7 +110,7 @@ assert.match(html, /manualEventMetric\("HP"/);
 assert.match(html, /manualEventMetric\("Energy"/);
 assert.match(html, /manualEventMetric\("Shields"/);
 assert.match(html, /The simulator chooses this side after your action/);
-assert.match(html, />Timeline<\/span><select id="manualBranchSelect"/);
+assert.match(html, /<strong>Timeline versions<\/strong>/);
 assert.match(html, /label: "Manual playthrough"/);
 assert.match(html, /\? "unchanged"[\s\S]{0,80}: "your changes"/);
 assert.doesNotMatch(html, /moves from PvPoke|PvPoke policy/i);

@@ -3368,6 +3368,76 @@
       display: flex;
       gap: 5px;
     }
+    .manual-version-panel {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--soft);
+    }
+    .manual-version-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .manual-version-head > span {
+      display: grid;
+    }
+    .manual-version-head strong {
+      color: var(--text);
+      font-size: 10px;
+    }
+    .manual-version-head small {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 700;
+    }
+    .manual-version-tree {
+      display: grid;
+      gap: 3px;
+    }
+    .manual-version-node {
+      width: 100%;
+      min-height: 30px;
+      padding: 5px 8px 5px calc(8px + var(--branch-depth, 0) * 16px);
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      box-shadow: none;
+      text-align: left;
+    }
+    .manual-version-node::before {
+      content: var(--branch-prefix, "•");
+      display: inline-block;
+      width: 16px;
+      color: var(--muted);
+    }
+    .manual-version-node.active {
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+      background: var(--panel);
+      color: var(--accent-strong);
+      box-shadow: 0 2px 7px rgba(23, 33, 47, .08);
+    }
+    .manual-version-node small {
+      margin-left: 5px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+    .manual-version-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+    .manual-version-actions button,
+    .manual-version-head button {
+      min-height: 28px;
+      padding: 4px 8px;
+      font-size: 9px;
+    }
     .manual-runtime-toolbar select,
     .manual-runtime-toolbar button {
       min-height: 34px;
@@ -9384,12 +9454,24 @@
                   </span>
                   <span id="manualRuntimeTurn">Turn 0</span>
                 </div>
-                <label class="manual-branch-control" title="Switch between the untouched battle and your manual playthrough."><span>Timeline</span><select id="manualBranchSelect" aria-label="Timeline version" hidden></select></label>
+                <select id="manualBranchSelect" class="manual-native-select" aria-label="Timeline version" hidden></select>
                 <div class="manual-history-actions" role="group" aria-label="Manual branch history">
-                  <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
-                  <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
+                  <button id="manualUndo" class="secondary" type="button" title="Undo the last manual edit." hidden disabled>↶ Undo</button>
+                  <button id="manualRedo" class="secondary" type="button" title="Restore the last undone edit." hidden disabled>↷ Redo</button>
                 </div>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
+                <div id="manualVersionPanel" class="manual-version-panel">
+                  <div class="manual-version-head">
+                    <span><strong>Timeline versions</strong><small>Original battle and manual alternatives</small></span>
+                    <button id="manualReturnOriginal" class="secondary" type="button">Return to original</button>
+                  </div>
+                  <div id="manualVersionTree" class="manual-version-tree" role="tree" aria-label="Timeline versions"></div>
+                  <div class="manual-version-actions">
+                    <button id="manualRenameVersion" class="secondary" type="button">Rename</button>
+                    <button id="manualDuplicateVersion" class="secondary" type="button">Duplicate</button>
+                    <button id="manualDeleteVersion" class="secondary" type="button">Delete</button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -10057,6 +10139,14 @@
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
       $("manualEventBranchAfter").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.AFTER);
       $("manualEventReturnLive").onclick = returnManualEditorToLiveState;
+      $("manualVersionTree").onclick = event => {
+        const node = event.target.closest("[data-manual-version-id]");
+        if (node) switchLiveManualBranch(node.dataset.manualVersionId);
+      };
+      $("manualReturnOriginal").onclick = returnToOriginalManualTimeline;
+      $("manualRenameVersion").onclick = renameActiveManualTimeline;
+      $("manualDuplicateVersion").onclick = duplicateActiveManualTimeline;
+      $("manualDeleteVersion").onclick = deleteActiveManualTimeline;
       document.addEventListener("keydown", event => {
         if (event.key === "Escape" && document.body.classList.contains("manual-branch-selection-active")) {
           event.preventDefault();
@@ -14206,12 +14296,50 @@
       return restoreActiveManualBranch();
     }
 
-    function switchLiveManualBranch() {
-      const branchId = $("manualBranchSelect")?.value;
+    function switchLiveManualBranch(requestedBranchId = null) {
+      const branchId = typeof requestedBranchId === "string" ? requestedBranchId : $("manualBranchSelect")?.value;
       if (!manualBranchRegistry || !manualBranchRegistry.branches[branchId]) return false;
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.SWITCH_BRANCH,
         payload: { branchId }
+      });
+      return restoreActiveManualBranch();
+    }
+
+    function returnToOriginalManualTimeline() {
+      return switchLiveManualBranch(window.PvPeakManualBranches.ORIGINAL_BRANCH_ID);
+    }
+
+    function renameActiveManualTimeline() {
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      if (!active || active.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) return false;
+      const label = window.prompt("Name this manual timeline:", active.label);
+      if (!label?.trim()) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.RENAME_BRANCH,
+        payload: { branchId: active.branchId, label: label.trim() }
+      });
+      render();
+      return true;
+    }
+
+    function duplicateActiveManualTimeline() {
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      if (!active) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.DUPLICATE_BRANCH,
+        payload: { branchId: active.branchId, label: `${active.label} copy` }
+      });
+      return restoreActiveManualBranch();
+    }
+
+    function deleteActiveManualTimeline() {
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      if (!active || active.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) return false;
+      if (!window.confirm(`Delete "${active.label}"? This timeline version will be removed.`)) return false;
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.DELETE_BRANCH,
+        payload: { branchId: active.branchId }
       });
       return restoreActiveManualBranch();
     }
@@ -14393,6 +14521,7 @@
       } else {
         branchSelect.innerHTML = "";
       }
+      renderManualVersionTree();
       const runtimeStatus = manualRuntimeStatusPresentation();
       renderManualDecisionBanner(runtimeStatus);
       status.textContent = enabled ? runtimeStatus.text : "Configure a manual branch";
@@ -14494,6 +14623,40 @@
         return `not enough energy (${combatant.energy}/${move.energyCost})`;
       }
       return "not legal at the current decision point";
+    }
+
+    function renderManualVersionTree() {
+      const tree = $("manualVersionTree");
+      if (!tree || !manualBranchRegistry || !manualModeState?.enabled) {
+        if (tree) tree.innerHTML = "";
+        return;
+      }
+      const branches = manualBranchRegistry.branches;
+      const depthOf = branch => {
+        let depth = 0;
+        let parentId = branch.parentBranchId;
+        const visited = new Set([branch.branchId]);
+        while (parentId && branches[parentId] && !visited.has(parentId)) {
+          visited.add(parentId);
+          depth++;
+          parentId = branches[parentId].parentBranchId;
+        }
+        return depth;
+      };
+      const ordered = Object.values(branches).sort((a, b) =>
+        depthOf(a) - depthOf(b) || String(a.createdAt).localeCompare(String(b.createdAt))
+      );
+      tree.innerHTML = ordered.map(branch => {
+        const active = branch.branchId === manualBranchRegistry.activeBranchId;
+        const original = branch.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
+        return `<button type="button" role="treeitem" aria-selected="${active}" class="manual-version-node${active ? " active" : ""}" data-manual-version-id="${escapeHtml(branch.branchId)}" style="--branch-depth:${depthOf(branch)}">${escapeHtml(branch.label)}<small>${original ? "unchanged" : `${branch.edits?.length || 0} edit${branch.edits?.length === 1 ? "" : "s"}`}</small></button>`;
+      }).join("");
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      const originalActive = active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
+      $("manualReturnOriginal").disabled = originalActive;
+      $("manualRenameVersion").disabled = !active || originalActive;
+      $("manualDeleteVersion").disabled = !active || originalActive;
+      $("manualDuplicateVersion").disabled = !active;
     }
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
