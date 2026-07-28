@@ -7,6 +7,10 @@ const path = require("node:path");
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 for (const id of [
   "manualModeStatus",
+  "manualSetup",
+  "manualRuntimeToolbar",
+  "manualRuntimeState",
+  "manualRuntimeTurn",
   "manualControlMode",
   "manualStartPoint",
   "manualModeToggle",
@@ -16,6 +20,9 @@ for (const id of [
   "manualSelectionHint",
   "manualSelectionHintText",
   "manualSelectionCancel",
+  "manualModeExit",
+  "manualActionsA",
+  "manualActionsB",
   "p1UseFast",
   "p1UseCharge1",
   "p2UseFast",
@@ -29,7 +36,20 @@ for (const value of ["battle-start", "selected-before", "selected-after", "curre
 }
 
 assert.match(html, /manualModeToggle"\)\.onclick = toggleLiveManualMode/);
+assert.match(html, /manualModeExit"\)\.onclick = exitLiveManualMode/);
 assert.match(html, /manualControlMode"\)\.onchange = changeLiveManualControlMode/);
+assert.match(html, /data-manual-start-anchor="selected"/);
+assert.match(html, /data-manual-boundary="selected-before"/);
+assert.match(html, /data-manual-control-mode="BOTH_MANUAL"/);
+assert.match(html, /function syncManualSegmentedControls/);
+assert.match(html, /manualSetup"\)\.hidden = enabled/);
+assert.match(html, /manualRuntimeToolbar"\)\.hidden = !enabled/);
+assert.match(html, /manualActionsA"\)\.hidden = !enabled/);
+assert.match(html, /class="manual-auto-response">Automatic response/);
+assert.match(html, /Waiting for shield decision/);
+assert.match(html, /Need \$\{missingEnergy\} more energy/);
+assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);
+assert.match(html, /Charged · \$\{c\.charged\[0\]\.energyCost\} energy/);
 assert.match(html, /manualStartPoint"\)\.onchange = updateManualBranchSelectionUi/);
 assert.match(html, /manualSelectionCancel"\)\.onclick = cancelManualBranchSelection/);
 assert.match(html, /event\.key === "Escape"[\s\S]{0,200}cancelManualBranchSelection/);

@@ -3157,19 +3157,112 @@
       padding: 0 10px 10px;
       border-top: 1px solid var(--line);
     }
-    .manual-session-bar {
+    .manual-setup,
+    .manual-runtime-toolbar {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: minmax(140px, 1fr) minmax(150px, 1fr) auto minmax(120px, auto) auto auto;
-      gap: 6px;
+      gap: 10px;
       align-items: center;
       padding-top: 10px;
     }
-    .manual-session-bar select,
-    .manual-session-bar button {
+    .manual-setup[hidden],
+    .manual-runtime-toolbar[hidden],
+    .manual-grid > .actions[hidden] {
+      display: none;
+    }
+    .manual-config-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+    .manual-config-group {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+    .manual-config-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .manual-native-select {
+      display: none;
+    }
+    .manual-segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--soft) 76%, transparent);
+    }
+    .manual-segmented button {
+      min-width: 0;
+      min-height: 31px;
+      padding: 4px 7px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      box-shadow: none;
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .manual-segmented button.active {
+      background: var(--panel);
+      color: var(--accent-strong);
+      box-shadow: 0 1px 4px rgba(23, 33, 47, .14), inset 0 0 0 1px color-mix(in srgb, var(--accent) 42%, var(--line));
+    }
+    .manual-segmented button:disabled {
+      opacity: .38;
+    }
+    .manual-boundary-controls {
+      display: grid;
+      grid-template-columns: auto minmax(0, 240px);
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px dashed color-mix(in srgb, var(--accent) 48%, var(--line));
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--accent) 7%, transparent);
+    }
+    .manual-boundary-controls[hidden] { display: none; }
+    .manual-start-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+    #manualModeToggle {
+      min-width: 170px;
+      min-height: 38px;
+    }
+    .manual-runtime-toolbar {
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      gap: 6px;
+    }
+    .manual-runtime-summary {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 8%, var(--soft));
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .manual-runtime-toolbar select,
+    .manual-runtime-toolbar button {
       min-height: 34px;
     }
-    .manual-session-bar button[hidden] { display: none; }
+    #manualModeExit {
+      border-color: color-mix(in srgb, var(--danger) 50%, var(--line));
+      color: var(--danger);
+    }
     .manual-selection-hint {
       grid-column: 1 / -1;
       min-height: 32px;
@@ -3303,6 +3396,20 @@
       padding: 8px;
       overflow: hidden;
     }
+    .manual-auto-response {
+      display: none;
+      grid-column: 1 / -1;
+      min-height: 34px;
+      place-items: center;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .actions.is-automatic > button { display: none; }
+    .actions.is-automatic .manual-auto-response { display: grid; }
     .matrix-left {
       min-width: 0;
     }
@@ -7190,8 +7297,14 @@
         gap: 7px;
         padding: 0 8px 8px;
       }
-      .manual-session-bar {
-        grid-template-columns: minmax(0, 1fr) auto;
+      .manual-config-fields {
+        grid-template-columns: 1fr;
+      }
+      .manual-runtime-toolbar {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+      }
+      #manualModeExit {
+        grid-column: 1 / -1;
       }
       .manual-head span {
         display: none;
@@ -8824,36 +8937,72 @@
               <span id="manualModeStatus" class="manual-mode-status">Automatic timeline</span>
             </div>
             <div class="manual-grid">
-              <div class="manual-session-bar">
-                <select id="manualStartPoint" aria-label="Manual Mode starting point">
-                  <option value="battle-start">Battle start</option>
-                  <option value="selected-before">Before selected event</option>
-                  <option value="selected-after">After selected event</option>
-                  <option value="current">Current state</option>
-                </select>
-                <select id="manualControlMode" aria-label="Manual Mode control configuration">
-                  <option value="BOTH_MANUAL">A manual · B manual</option>
-                  <option value="PLAYER_A_MANUAL">A manual · B auto</option>
-                  <option value="PLAYER_B_MANUAL">A auto · B manual</option>
-                </select>
-                <button id="manualModeToggle" type="button">Manual Mode</button>
+              <div id="manualSetup" class="manual-setup">
+                <div class="manual-config-fields">
+                  <div class="manual-config-group">
+                    <span class="manual-config-label">Start from</span>
+                    <div class="manual-segmented" role="group" aria-label="Manual Mode starting point">
+                      <button type="button" data-manual-start-anchor="battle-start">Battle start</button>
+                      <button type="button" data-manual-start-anchor="current">Current state</button>
+                      <button type="button" data-manual-start-anchor="selected">Select event</button>
+                    </div>
+                    <select id="manualStartPoint" class="manual-native-select" aria-hidden="true" tabindex="-1">
+                      <option value="battle-start">Battle start</option>
+                      <option value="selected-before">Before selected event</option>
+                      <option value="selected-after">After selected event</option>
+                      <option value="current">Current state</option>
+                    </select>
+                  </div>
+                  <div class="manual-config-group">
+                    <span class="manual-config-label">Control</span>
+                    <div class="manual-segmented" role="group" aria-label="Manual Mode control configuration">
+                      <button type="button" data-manual-control-mode="BOTH_MANUAL">Both</button>
+                      <button type="button" data-manual-control-mode="PLAYER_A_MANUAL">Pokemon A</button>
+                      <button type="button" data-manual-control-mode="PLAYER_B_MANUAL">Pokemon B</button>
+                    </div>
+                    <select id="manualControlMode" class="manual-native-select" aria-hidden="true" tabindex="-1">
+                      <option value="BOTH_MANUAL">A manual · B manual</option>
+                      <option value="PLAYER_A_MANUAL">A manual · B auto</option>
+                      <option value="PLAYER_B_MANUAL">A auto · B manual</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="manualBoundaryControls" class="manual-boundary-controls" hidden>
+                  <span class="manual-config-label">Boundary</span>
+                  <div class="manual-segmented" role="group" aria-label="Selected event boundary">
+                    <button type="button" data-manual-boundary="selected-before">Before</button>
+                    <button type="button" data-manual-boundary="selected-after">After</button>
+                  </div>
+                </div>
+                <div class="manual-start-row">
+                  <button id="manualModeToggle" type="button">Start Manual Mode</button>
+                </div>
+                <div id="manualSelectionHint" class="manual-selection-hint" role="status" aria-live="polite" hidden>
+                  <span id="manualSelectionHintText"></span>
+                  <button id="manualSelectionCancel" class="secondary" type="button">Cancel selection</button>
+                </div>
+              </div>
+              <div id="manualRuntimeToolbar" class="manual-runtime-toolbar" hidden>
+                <div class="manual-runtime-summary">
+                  <span id="manualRuntimeState">Manual session active</span>
+                  <span id="manualRuntimeTurn">Turn 0</span>
+                </div>
                 <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
                 <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
                 <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
-                <div id="manualSelectionHint" class="manual-selection-hint" role="status" aria-live="polite" hidden>
-                  <span id="manualSelectionHintText"></span>
-                  <button id="manualSelectionCancel" class="secondary" type="button">Cancel</button>
-                </div>
+                <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
               </div>
-              <div class="actions" data-label="Pokemon A">
+              <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
                 <button id="p1UseFast">Fast</button>
                 <button id="p1UseCharge1">Charged 1</button>
                 <button id="p1UseCharge2">Charged 2</button>
+                <span class="manual-auto-response">Automatic response</span>
               </div>
-              <div class="actions" data-label="Pokemon B">
+              <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
                 <button id="p2UseFast">Fast</button>
                 <button id="p2UseCharge1">Charged 1</button>
                 <button id="p2UseCharge2">Charged 2</button>
+                <span class="manual-auto-response">Automatic response</span>
               </div>
             </div>
           </section>
@@ -9505,7 +9654,17 @@
       $("manualBranchSelect").onchange = switchLiveManualBranch;
       $("manualControlMode").onchange = changeLiveManualControlMode;
       $("manualStartPoint").onchange = updateManualBranchSelectionUi;
+      document.querySelectorAll("[data-manual-start-anchor]").forEach(button => {
+        button.onclick = () => selectManualStartAnchor(button.dataset.manualStartAnchor);
+      });
+      document.querySelectorAll("[data-manual-boundary]").forEach(button => {
+        button.onclick = () => selectManualEventBoundary(button.dataset.manualBoundary);
+      });
+      document.querySelectorAll("[data-manual-control-mode]").forEach(button => {
+        button.onclick = () => selectManualControlMode(button.dataset.manualControlMode);
+      });
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
+      $("manualModeExit").onclick = exitLiveManualMode;
       document.addEventListener("keydown", event => {
         if (event.key === "Escape" && document.body.classList.contains("manual-branch-selection-active")) {
           event.preventDefault();
@@ -13333,6 +13492,8 @@
       manualBranchRegistry = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
+      if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
+      selectedTimelineIndex = null;
       add("Returned to the immutable automatic timeline.", "info");
       render();
     }
@@ -13378,6 +13539,66 @@
       );
     }
 
+    function selectManualStartAnchor(anchor) {
+      const startControl = $("manualStartPoint");
+      if (!startControl) return false;
+      if (anchor === "selected") {
+        if (!hasSelectableManualTimelineEvent()) return false;
+        if (!["selected-before", "selected-after"].includes(startControl.value)) {
+          startControl.value = "selected-before";
+        }
+      } else if (anchor === "battle-start" || anchor === "current") {
+        startControl.value = anchor;
+      } else {
+        return false;
+      }
+      updateManualBranchSelectionUi();
+      return true;
+    }
+
+    function selectManualEventBoundary(boundary) {
+      if (!["selected-before", "selected-after"].includes(boundary) || !hasSelectableManualTimelineEvent()) {
+        return false;
+      }
+      $("manualStartPoint").value = boundary;
+      updateManualBranchSelectionUi();
+      return true;
+    }
+
+    function selectManualControlMode(controlMode) {
+      if (!Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(controlMode)) return false;
+      $("manualControlMode").value = controlMode;
+      if (manualModeState?.enabled) return changeLiveManualControlMode();
+      syncManualSegmentedControls();
+      return true;
+    }
+
+    function syncManualSegmentedControls() {
+      const startMode = $("manualStartPoint")?.value || "battle-start";
+      const startAnchor = ["selected-before", "selected-after"].includes(startMode) ? "selected" : startMode;
+      document.querySelectorAll("[data-manual-start-anchor]").forEach(button => {
+        const active = button.dataset.manualStartAnchor === startAnchor;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+        if (button.dataset.manualStartAnchor === "selected") {
+          button.disabled = !hasSelectableManualTimelineEvent();
+          button.title = button.disabled ? "Run a battle first to select an event." : "Choose a Fast or Charged Move from the timeline.";
+        }
+      });
+      document.querySelectorAll("[data-manual-boundary]").forEach(button => {
+        const active = button.dataset.manualBoundary === startMode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      const controlMode = $("manualControlMode")?.value || "BOTH_MANUAL";
+      document.querySelectorAll("[data-manual-control-mode]").forEach(button => {
+        const active = button.dataset.manualControlMode === controlMode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      if ($("manualBoundaryControls")) $("manualBoundaryControls").hidden = startAnchor !== "selected";
+    }
+
     function cancelManualBranchSelection() {
       const startControl = $("manualStartPoint");
       if (startControl) startControl.value = "battle-start";
@@ -13407,6 +13628,7 @@
       const startMode = startControl?.value || "battle-start";
       const selecting = selectableTimeline && !manualModeState?.enabled
         && (startMode === "selected-before" || startMode === "selected-after");
+      syncManualSegmentedControls();
       document.body.classList.toggle("manual-branch-selection-active", selecting);
       if (!hint) return;
       hint.hidden = !selecting;
@@ -13493,6 +13715,28 @@
       return restoreActiveManualBranch();
     }
 
+    function manualRuntimeStatusText() {
+      if (!manualModeState?.enabled) return "Automatic timeline";
+      const statuses = window.PvPeakManualMode.STATUS;
+      switch (manualModeState.status) {
+        case statuses.AWAITING_SHIELD_DECISION:
+          return "Waiting for shield decision";
+        case statuses.RESOLVING:
+          return "Resolving actions";
+        case statuses.REPLAYING:
+          return "Replaying branch";
+        case statuses.TERMINAL:
+          return "Battle ended";
+        case statuses.ERROR:
+          return "Manual session error";
+        default: {
+          const controlled = manualModeState.controlledSides || [];
+          if (controlled.length === 1) return `Waiting for Pokemon ${controlled[0]}`;
+          return "Waiting for manual actions";
+        }
+      }
+    }
+
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
       const toggle = $("manualModeToggle");
@@ -13503,7 +13747,11 @@
       const branchSelect = $("manualBranchSelect");
       const controlMode = $("manualControlMode");
       if (!toggle || !status || !startPoint || !controlMode || !branchSelect || !undo || !redo) return;
-      toggle.textContent = enabled ? "Exit Manual" : "Manual Mode";
+      toggle.textContent = "Start Manual Mode";
+      if ($("manualSetup")) $("manualSetup").hidden = enabled;
+      if ($("manualRuntimeToolbar")) $("manualRuntimeToolbar").hidden = !enabled;
+      if ($("manualActionsA")) $("manualActionsA").hidden = !enabled;
+      if ($("manualActionsB")) $("manualActionsB").hidden = !enabled;
       startPoint.disabled = enabled;
       controlMode.disabled = !left || !right;
       if (enabled) controlMode.value = manualModeState.controlMode;
@@ -13521,20 +13769,34 @@
       } else {
         branchSelect.innerHTML = "";
       }
-      status.textContent = enabled
-        ? `${active?.label || "Manual"} · ${manualModeState.controlMode === "PLAYER_A_MANUAL"
-          ? "A manual / B auto"
-          : manualModeState.controlMode === "PLAYER_B_MANUAL"
-            ? "A auto / B manual"
-            : "both manual"} · ${manualModeState.status.replaceAll("_", " ").toLowerCase()}`
-        : "Automatic timeline";
+      const runtimeText = manualRuntimeStatusText();
+      status.textContent = enabled ? runtimeText : "Configure a manual branch";
+      if ($("manualRuntimeState")) {
+        $("manualRuntimeState").textContent = `${active?.label || "Manual"} · ${runtimeText}`;
+      }
+      if ($("manualRuntimeTurn")) {
+        $("manualRuntimeTurn").textContent = `Turn ${Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))}`;
+      }
+      const controlledSides = enabled ? manualModeState.controlledSides : [];
+      $("manualActionsA")?.classList.toggle("is-automatic", enabled && !controlledSides.includes("A"));
+      $("manualActionsB")?.classList.toggle("is-automatic", enabled && !controlledSides.includes("B"));
       if (enabled) {
         if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
         if ($("p2UseFast")) $("p2UseFast").disabled = !right?.fast;
-        if ($("p1UseCharge1")) $("p1UseCharge1").disabled = !left?.charged?.[0];
-        if ($("p1UseCharge2")) $("p1UseCharge2").disabled = !left?.charged?.[1];
-        if ($("p2UseCharge1")) $("p2UseCharge1").disabled = !right?.charged?.[0];
-        if ($("p2UseCharge2")) $("p2UseCharge2").disabled = !right?.charged?.[1];
+        [
+          { id: "p1UseCharge1", combatant: left, move: left?.charged?.[0] },
+          { id: "p1UseCharge2", combatant: left, move: left?.charged?.[1] },
+          { id: "p2UseCharge1", combatant: right, move: right?.charged?.[0] },
+          { id: "p2UseCharge2", combatant: right, move: right?.charged?.[1] }
+        ].forEach(({ id, combatant, move }) => {
+          const button = $(id);
+          if (!button) return;
+          const missingEnergy = move ? Math.max(0, Number(move.energyCost || 0) - Number(combatant?.energy || 0)) : 0;
+          button.disabled = !move || missingEnergy > 0;
+          if (move && missingEnergy > 0) {
+            button.title = `${button.title}\nNeed ${missingEnergy} more energy.`;
+          }
+        });
         const locked = [
           window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION,
           window.PvPeakManualMode.STATUS.RESOLVING,
@@ -17688,9 +17950,9 @@
       renderIvImpact(prefix, c, opponent);
       renderShields(prefix);
       renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
-      setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, "Fast", opponent);
-      setMoveButton(c1Id, c.charged[0], c.charged[0]?.name || "None", "Charged", opponent);
-      setMoveButton(c2Id, c.charged[1], c.charged[1]?.name || "None", "Charged", opponent);
+      setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, `Fast · +${c.fast.energyGain} energy · ${c.fast.turns}t`, opponent);
+      setMoveButton(c1Id, c.charged[0], c.charged[0]?.name || "None", c.charged[0] ? `Charged · ${c.charged[0].energyCost} energy` : "Charged", opponent);
+      setMoveButton(c2Id, c.charged[1], c.charged[1]?.name || "None", c.charged[1] ? `Charged · ${c.charged[1].energyCost} energy` : "Charged", opponent);
       $(c1Id).classList.toggle("ready", !!c.charged[0] && c.energy >= c.charged[0].energyCost);
       $(c2Id).classList.toggle("ready", !!c.charged[1] && c.energy >= c.charged[1].energyCost);
       $(c1Id).disabled = !c.charged[0];
@@ -21394,7 +21656,7 @@
 
     function moveTooltip(move, kind, opponent, effect) {
       const lines = [`${move.name} (${title(move.type)})`, kind];
-      if (kind === "Fast") {
+      if (kind.startsWith("Fast")) {
         lines.push(`Power ${move.power}`);
         lines.push(`Energy +${move.energyGain}`);
         lines.push(`${move.turns} turn${move.turns === 1 ? "" : "s"}`);
