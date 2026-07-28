@@ -3230,6 +3230,70 @@
       background: color-mix(in srgb, var(--accent) 7%, transparent);
     }
     .manual-boundary-controls[hidden] { display: none; }
+    .manual-event-summary {
+      display: grid;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+      border-radius: 9px;
+      background: var(--panel);
+      box-shadow: 0 4px 12px rgba(23, 33, 47, .07);
+    }
+    .manual-event-summary[hidden] { display: none; }
+    .manual-event-summary-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .manual-event-summary-head strong {
+      color: var(--text);
+      font-size: 12px;
+    }
+    .manual-event-summary-head span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .manual-event-state-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .manual-event-side {
+      display: grid;
+      gap: 4px;
+      padding: 7px;
+      border-radius: 7px;
+      background: var(--soft);
+    }
+    .manual-event-side > strong {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-event-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .manual-event-metric {
+      display: grid;
+      gap: 2px;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .manual-event-metric strong {
+      color: var(--text);
+      font-size: 10px;
+      text-transform: none;
+      white-space: nowrap;
+    }
+    .manual-event-metric.changed strong { color: var(--accent-strong); }
     .manual-start-row {
       display: flex;
       justify-content: flex-end;
@@ -3239,7 +3303,7 @@
       min-height: 38px;
     }
     .manual-runtime-toolbar {
-      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      grid-template-columns: minmax(130px, 1fr) auto auto;
       gap: 6px;
     }
     .manual-runtime-summary {
@@ -3254,6 +3318,55 @@
       color: var(--text);
       font-size: 11px;
       font-weight: 850;
+    }
+    .manual-runtime-status-lockup {
+      display: grid;
+      grid-template-columns: 8px minmax(0, 1fr);
+      gap: 7px;
+      align-items: center;
+      min-width: 0;
+    }
+    .manual-runtime-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .manual-runtime-status-copy {
+      display: grid;
+      min-width: 0;
+    }
+    .manual-runtime-status-copy small {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-runtime-toolbar[data-status-tone="warning"] .manual-runtime-status-dot {
+      background: var(--warn);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 18%, transparent);
+    }
+    .manual-runtime-toolbar[data-status-tone="terminal"] .manual-runtime-status-dot {
+      background: var(--muted);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--muted) 18%, transparent);
+    }
+    .manual-branch-control {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .manual-history-actions {
+      display: flex;
+      gap: 5px;
     }
     .manual-runtime-toolbar select,
     .manual-runtime-toolbar button {
@@ -3400,7 +3513,10 @@
       display: none;
       grid-column: 1 / -1;
       min-height: 34px;
-      place-items: center;
+      align-content: center;
+      justify-items: start;
+      gap: 2px;
+      padding: 7px 9px;
       border: 1px dashed var(--line);
       border-radius: 8px;
       background: var(--soft);
@@ -3408,8 +3524,16 @@
       font-size: 11px;
       font-weight: 800;
     }
+    .manual-auto-response strong { color: var(--text); }
+    .manual-auto-response small { font-size: 9px; font-weight: 700; }
     .actions.is-automatic > button { display: none; }
     .actions.is-automatic .manual-auto-response { display: grid; }
+    .actions.is-awaiting {
+      padding: 7px;
+      border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--accent) 5%, transparent);
+    }
     .matrix-left {
       min-width: 0;
     }
@@ -8974,6 +9098,7 @@
                     <button type="button" data-manual-boundary="selected-after">After</button>
                   </div>
                 </div>
+                <div id="manualEventSummary" class="manual-event-summary" aria-live="polite" hidden></div>
                 <div class="manual-start-row">
                   <button id="manualModeToggle" type="button">Start Manual Mode</button>
                 </div>
@@ -8984,25 +9109,33 @@
               </div>
               <div id="manualRuntimeToolbar" class="manual-runtime-toolbar" hidden>
                 <div class="manual-runtime-summary">
-                  <span id="manualRuntimeState">Manual session active</span>
+                  <span class="manual-runtime-status-lockup">
+                    <i class="manual-runtime-status-dot" aria-hidden="true"></i>
+                    <span class="manual-runtime-status-copy">
+                      <strong id="manualRuntimeState">Manual session active</strong>
+                      <small id="manualRuntimeDetail">Waiting for an action</small>
+                    </span>
+                  </span>
                   <span id="manualRuntimeTurn">Turn 0</span>
                 </div>
-                <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
-                <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
-                <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
+                <label class="manual-branch-control"><span>Branch</span><select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select></label>
+                <div class="manual-history-actions" role="group" aria-label="Manual branch history">
+                  <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
+                  <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
+                </div>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
               </div>
               <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
                 <button id="p1UseFast">Fast</button>
                 <button id="p1UseCharge1">Charged 1</button>
                 <button id="p1UseCharge2">Charged 2</button>
-                <span class="manual-auto-response">Automatic response</span>
+                <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>PvPoke policy will choose this side's action.</small></span>
               </div>
               <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
                 <button id="p2UseFast">Fast</button>
                 <button id="p2UseCharge1">Charged 1</button>
                 <button id="p2UseCharge2">Charged 2</button>
-                <span class="manual-auto-response">Automatic response</span>
+                <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>PvPoke policy will choose this side's action.</small></span>
               </div>
             </div>
           </section>
@@ -13599,6 +13732,44 @@
       if ($("manualBoundaryControls")) $("manualBoundaryControls").hidden = startAnchor !== "selected";
     }
 
+    function manualEventMetric(label, beforeValue, afterValue) {
+      const before = Number(beforeValue ?? 0);
+      const after = Number(afterValue ?? 0);
+      const changed = before !== after;
+      return `<span class="manual-event-metric${changed ? " changed" : ""}"><span>${escapeHtml(label)}</span><strong>${before}${changed ? ` \u2192 ${after}` : ""}</strong></span>`;
+    }
+
+    function renderManualSelectedEventSummary() {
+      const summary = $("manualEventSummary");
+      if (!summary) return;
+      const startMode = $("manualStartPoint")?.value || "battle-start";
+      const event = selectedManualTimelineSourceEvent();
+      if (!["selected-before", "selected-after"].includes(startMode) || !isSelectableManualTimelineEvent(event)) {
+        summary.hidden = true;
+        summary.innerHTML = "";
+        return;
+      }
+      const snapshots = window.PvPeakManualSnapshots;
+      const before = manualSnapshotStore?.get(event.timelineEventId, snapshots.BOUNDARY.BEFORE)?.state || null;
+      const after = manualSnapshotStore?.get(event.timelineEventId, snapshots.BOUNDARY.AFTER)?.state || null;
+      if (!before || !after) {
+        summary.hidden = false;
+        summary.innerHTML = `<div class="manual-event-summary-head"><strong>${escapeHtml(event.move?.name || "Selected event")}</strong><span>Turn ${Number(event.start || 0)}</span></div><span class="manual-mode-status">State comparison unavailable. Run Battle again to rebuild snapshots.</span>`;
+        return;
+      }
+      const sideCard = (side, beforeCombatant, afterCombatant) => {
+        const name = beforeCombatant?.p?.name || afterCombatant?.p?.name || `Pokemon ${side}`;
+        return `<div class="manual-event-side"><strong>${escapeHtml(side)} · ${escapeHtml(name)}</strong><div class="manual-event-metrics">`
+          + manualEventMetric("HP", beforeCombatant?.hp, afterCombatant?.hp)
+          + manualEventMetric("Energy", beforeCombatant?.energy, afterCombatant?.energy)
+          + manualEventMetric("Shields", beforeCombatant?.shields, afterCombatant?.shields)
+          + `</div></div>`;
+      };
+      summary.hidden = false;
+      summary.innerHTML = `<div class="manual-event-summary-head"><strong>${escapeHtml(event.trainer)} · ${escapeHtml(event.move?.name || "Move")}</strong><span>${event.kind === "fast" ? "Fast" : "Charged"} · Turn ${Number(event.start || 0)} · Start ${startMode === "selected-before" ? "before" : "after"}</span></div>`
+        + `<div class="manual-event-state-grid">${sideCard("A", before.left, after.left)}${sideCard("B", before.right, after.right)}</div>`;
+    }
+
     function cancelManualBranchSelection() {
       const startControl = $("manualStartPoint");
       if (startControl) startControl.value = "battle-start";
@@ -13629,6 +13800,7 @@
       const selecting = selectableTimeline && !manualModeState?.enabled
         && (startMode === "selected-before" || startMode === "selected-after");
       syncManualSegmentedControls();
+      renderManualSelectedEventSummary();
       document.body.classList.toggle("manual-branch-selection-active", selecting);
       if (!hint) return;
       hint.hidden = !selecting;
@@ -13715,25 +13887,53 @@
       return restoreActiveManualBranch();
     }
 
-    function manualRuntimeStatusText() {
-      if (!manualModeState?.enabled) return "Automatic timeline";
+    function manualRuntimeStatusPresentation() {
+      if (!manualModeState?.enabled) {
+        return { text: "Automatic timeline", detail: "Configure a manual branch to continue.", tone: "idle", waitingSides: [] };
+      }
       const statuses = window.PvPeakManualMode.STATUS;
+      const pending = manualModeState.pendingDecision || null;
+      const controlled = manualModeState.controlledSides || [];
+      const pendingSides = (pending?.activeSide ? [pending.activeSide] : pending?.readySides || [])
+        .filter(side => controlled.includes(side));
       switch (manualModeState.status) {
         case statuses.AWAITING_SHIELD_DECISION:
-          return "Waiting for shield decision";
+          return {
+            text: `Pokemon ${pending?.activeSide || manualModeState.selectedSide || ""} shield decision`,
+            detail: "Choose whether to protect against the incoming Charged Move.",
+            tone: "warning",
+            waitingSides: pending?.activeSide ? [pending.activeSide] : []
+          };
         case statuses.RESOLVING:
-          return "Resolving actions";
+          return { text: "Resolving actions", detail: "Applying the registered turn before the next decision.", tone: "warning", waitingSides: [] };
         case statuses.REPLAYING:
-          return "Replaying branch";
+          return { text: "Replaying branch", detail: "Restoring the selected branch history.", tone: "warning", waitingSides: [] };
         case statuses.TERMINAL:
-          return "Battle ended";
+          return {
+            text: "Battle ended",
+            detail: currentManualTerminalResult()?.winner === "tie"
+              ? "The branch ends in a draw."
+              : `Pokemon ${currentManualTerminalResult()?.winner || "-"} wins this branch.`,
+            tone: "terminal",
+            waitingSides: []
+          };
         case statuses.ERROR:
-          return "Manual session error";
-        default: {
-          const controlled = manualModeState.controlledSides || [];
-          if (controlled.length === 1) return `Waiting for Pokemon ${controlled[0]}`;
-          return "Waiting for manual actions";
-        }
+          return { text: "Manual session error", detail: "Exit Manual Mode or restore another branch.", tone: "warning", waitingSides: [] };
+        default:
+          return {
+            text: pendingSides.length === 1
+              ? `Waiting for Pokemon ${pendingSides[0]}`
+              : pendingSides.length > 1
+                ? `Waiting for Pokemon ${pendingSides.join(" and ")}`
+                : controlled.length === 1
+                  ? `Waiting for Pokemon ${controlled[0]}`
+                  : "Waiting for manual actions",
+            detail: controlled.length === 1
+              ? `The other side follows the PvPoke policy automatically.`
+              : "Choose a legal Fast or Charged Move for the highlighted side.",
+            tone: "active",
+            waitingSides: pendingSides.length ? pendingSides : controlled
+          };
       }
     }
 
@@ -13769,10 +13969,16 @@
       } else {
         branchSelect.innerHTML = "";
       }
-      const runtimeText = manualRuntimeStatusText();
-      status.textContent = enabled ? runtimeText : "Configure a manual branch";
+      const runtimeStatus = manualRuntimeStatusPresentation();
+      status.textContent = enabled ? runtimeStatus.text : "Configure a manual branch";
       if ($("manualRuntimeState")) {
-        $("manualRuntimeState").textContent = `${active?.label || "Manual"} · ${runtimeText}`;
+        $("manualRuntimeState").textContent = `${active?.label || "Manual"} · ${runtimeStatus.text}`;
+      }
+      if ($("manualRuntimeDetail")) {
+        $("manualRuntimeDetail").textContent = runtimeStatus.detail;
+      }
+      if ($("manualRuntimeToolbar")) {
+        $("manualRuntimeToolbar").dataset.statusTone = runtimeStatus.tone;
       }
       if ($("manualRuntimeTurn")) {
         $("manualRuntimeTurn").textContent = `Turn ${Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))}`;
@@ -13780,6 +13986,18 @@
       const controlledSides = enabled ? manualModeState.controlledSides : [];
       $("manualActionsA")?.classList.toggle("is-automatic", enabled && !controlledSides.includes("A"));
       $("manualActionsB")?.classList.toggle("is-automatic", enabled && !controlledSides.includes("B"));
+      $("manualActionsA")?.classList.toggle("is-awaiting", enabled && runtimeStatus.waitingSides.includes("A"));
+      $("manualActionsB")?.classList.toggle("is-awaiting", enabled && runtimeStatus.waitingSides.includes("B"));
+      if ($("manualActionsA")) $("manualActionsA").dataset.label = `Pokemon A${left?.p?.name ? ` · ${left.p.name}` : ""}`;
+      if ($("manualActionsB")) $("manualActionsB").dataset.label = `Pokemon B${right?.p?.name ? ` · ${right.p.name}` : ""}`;
+      if ($("manualAutoA")) {
+        $("manualAutoA").querySelector("strong").textContent = `${left?.p?.name || "Pokemon A"} responds automatically`;
+        $("manualAutoA").querySelector("small").textContent = "PvPoke policy chooses this side after your action.";
+      }
+      if ($("manualAutoB")) {
+        $("manualAutoB").querySelector("strong").textContent = `${right?.p?.name || "Pokemon B"} responds automatically`;
+        $("manualAutoB").querySelector("small").textContent = "PvPoke policy chooses this side after your action.";
+      }
       if (enabled) {
         if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
         if ($("p2UseFast")) $("p2UseFast").disabled = !right?.fast;

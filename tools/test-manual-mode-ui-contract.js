@@ -10,6 +10,7 @@ for (const id of [
   "manualSetup",
   "manualRuntimeToolbar",
   "manualRuntimeState",
+  "manualRuntimeDetail",
   "manualRuntimeTurn",
   "manualControlMode",
   "manualStartPoint",
@@ -20,9 +21,12 @@ for (const id of [
   "manualSelectionHint",
   "manualSelectionHintText",
   "manualSelectionCancel",
+  "manualEventSummary",
   "manualModeExit",
   "manualActionsA",
   "manualActionsB",
+  "manualAutoA",
+  "manualAutoB",
   "p1UseFast",
   "p1UseCharge1",
   "p2UseFast",
@@ -45,8 +49,16 @@ assert.match(html, /function syncManualSegmentedControls/);
 assert.match(html, /manualSetup"\)\.hidden = enabled/);
 assert.match(html, /manualRuntimeToolbar"\)\.hidden = !enabled/);
 assert.match(html, /manualActionsA"\)\.hidden = !enabled/);
-assert.match(html, /class="manual-auto-response">Automatic response/);
-assert.match(html, /Waiting for shield decision/);
+assert.match(html, /class="manual-auto-response"><strong>Automatic response/);
+assert.match(html, /shield decision/);
+assert.match(html, /function manualRuntimeStatusPresentation/);
+assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
+assert.match(html, /function renderManualSelectedEventSummary/);
+assert.match(html, /manualSnapshotStore\?\.get\(event\.timelineEventId, snapshots\.BOUNDARY\.BEFORE\)/);
+assert.match(html, /manualEventMetric\("HP"/);
+assert.match(html, /manualEventMetric\("Energy"/);
+assert.match(html, /manualEventMetric\("Shields"/);
+assert.match(html, /PvPoke policy chooses this side after your action/);
 assert.match(html, /Need \$\{missingEnergy\} more energy/);
 assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);
 assert.match(html, /Charged · \$\{c\.charged\[0\]\.energyCost\} energy/);
