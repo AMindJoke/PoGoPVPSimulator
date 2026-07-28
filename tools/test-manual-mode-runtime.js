@@ -94,4 +94,81 @@ assert.equal(staleOutcome.ok, false);
 assert.equal(staleOutcome.validation.reasonCode, ManualAction.REASON_CODE.STALE_STATE_HASH);
 assert.equal(runtime.getTrace().at(-1).traceState, Runtime.TRACE_STATE.REJECTED);
 
+let registeredState = Turn.createState({
+  currentTurn: 7,
+  sides: {
+    A: {
+      id: "A",
+      hp: 40,
+      energy: 20,
+      attack: 100,
+      readyTurn: 7,
+      fastMove: { id: "FAST_A", energyGain: 8, turns: 1 },
+      chargedMoves: []
+    },
+    B: {
+      id: "B",
+      hp: 50,
+      energy: 20,
+      attack: 110,
+      readyTurn: 7,
+      fastMove: { id: "FAST_B", energyGain: 8, turns: 1 },
+      chargedMoves: []
+    }
+  }
+});
+const registeredTrace = [];
+const registeredRuntime = Runtime.createRuntime({
+  getState: () => registeredState,
+  getBranchId: () => "MANUAL-CMP",
+  getDecisionPoint: () => ManualAction.createDecisionPoint({
+    state: registeredState,
+    legalActionsBySide: {
+      A: Turn.getLegalActions(registeredState, "A"),
+      B: Turn.getLegalActions(registeredState, "B")
+    }
+  }),
+  getLegalActions: side => Turn.getLegalActions(registeredState, side),
+  resolveFast: () => {
+    registeredState = Turn.createState({
+      ...registeredState,
+      sides: {
+        ...registeredState.sides,
+        A: { ...registeredState.sides.A, energy: registeredState.sides.A.energy + 8, readyTurn: 8 },
+        B: { ...registeredState.sides.B, hp: registeredState.sides.B.hp - 5 }
+      }
+    });
+    return true;
+  },
+  onTrace: entry => registeredTrace.push(entry)
+});
+const prepared = registeredRuntime.prepare({
+  side: "A",
+  actionType: ManualAction.ACTION_TYPE.FAST_MOVE,
+  moveId: "FAST_A"
+});
+assert.equal(prepared.ok, true);
+assert.equal(prepared.prepared, true);
+assert.deepEqual(
+  registeredTrace.map(entry => entry.traceState),
+  [Runtime.TRACE_STATE.REQUESTED, Runtime.TRACE_STATE.VALIDATED]
+);
+
+registeredState = Turn.createState({
+  ...registeredState,
+  sides: {
+    ...registeredState.sides,
+    B: { ...registeredState.sides.B, hp: 43 }
+  }
+});
+const registeredOutcome = registeredRuntime.executePrepared(prepared);
+assert.equal(registeredOutcome.ok, true);
+assert.equal(registeredState.sides.B.hp, 38);
+assert.equal(
+  registeredTrace.filter(entry => entry.traceState === Runtime.TRACE_STATE.VALIDATED).length,
+  1,
+  "A registered manual intent must not be revalidated after the preceding action changes state."
+);
+assert.equal(registeredTrace.at(-1).delta.B.hp, -5);
+
 console.log("Manual Mode runtime tests passed.");

@@ -178,7 +178,7 @@
       return finishResolution(action, validation, before, resolution);
     }
 
-    function request(input = {}) {
+    function prepare(input = {}) {
       const before = clone(dependencies.getState());
       const decisionPoint = clone(dependencies.getDecisionPoint());
       const action = ManualAction.createManualAction({
@@ -209,25 +209,45 @@
         validationResult: clone(validation),
         stateHashBefore: hashBefore
       });
-      if (!validation.legal) return { ok: false, action, validation, trace: clone(trace) };
+      return {
+        ok: validation.legal,
+        prepared: validation.legal,
+        action,
+        validation,
+        before,
+        decisionPoint,
+        trace: clone(trace)
+      };
+    }
 
+    function executePrepared(prepared = {}) {
+      if (!prepared.ok || !prepared.prepared || !prepared.action || !prepared.validation) {
+        return {
+          ok: false,
+          action: prepared.action || null,
+          validation: prepared.validation || { reasonCode: "ACTION_NOT_PREPARED" },
+          trace: clone(trace)
+        };
+      }
+      const { action, validation } = prepared;
+      const registeredBefore = clone(prepared.before);
       if (validation.pendingDecisionType === "BUILD_TO_CHARGED") {
         append(TRACE_STATE.QUEUED, action, {
           validationResult: clone(validation),
           queuedAction: clone(validation.normalizedAction),
-          stateHashBefore: hashBefore
+          stateHashBefore: ManualAction.stateHash(registeredBefore)
         });
         return { ok: true, queued: true, action, validation, trace: clone(trace) };
       }
 
       if (action.actionType === ManualAction.ACTION_TYPE.CHARGED_MOVE) {
-        return resolveChargedAction(action, validation, before);
+        return resolveChargedAction(action, validation, clone(dependencies.getState()));
       }
 
       if (action.actionType !== ManualAction.ACTION_TYPE.FAST_MOVE) {
         append(TRACE_STATE.INVALIDATED, action, {
           invalidationReason: "ACTION_RESOLVER_NOT_CONNECTED",
-          stateHashBefore: hashBefore
+          stateHashBefore: ManualAction.stateHash(registeredBefore)
         });
         return {
           ok: false,
@@ -238,20 +258,29 @@
       }
 
       append(TRACE_STATE.REGISTERED, action, {
-        registeredTurn: Number(before.currentTurn || 0),
+        registeredTurn: Number(registeredBefore.currentTurn || 0),
         queuedAction: clone(validation.normalizedAction),
-        stateHashBefore: hashBefore
+        stateHashBefore: ManualAction.stateHash(registeredBefore)
       });
+      const resolutionBefore = clone(dependencies.getState());
       const resolution = dependencies.resolveFast({
         side: action.side,
         moveId: action.moveId,
         manualAction: clone(action),
         validation: clone(validation)
       });
-      return finishResolution(action, validation, before, resolution);
+      return finishResolution(action, validation, resolutionBefore, resolution);
+    }
+
+    function request(input = {}) {
+      const prepared = prepare(input);
+      if (!prepared.ok) return prepared;
+      return executePrepared(prepared);
     }
 
     return Object.freeze({
+      prepare,
+      executePrepared,
       request,
       getTrace: () => clone(trace)
     });
