@@ -3180,8 +3180,18 @@
       color: var(--text);
       font-size: 11px;
       font-weight: 750;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
     .manual-selection-hint[hidden] { display: none; }
+    .manual-selection-hint button {
+      flex: 0 0 auto;
+      min-height: 26px;
+      padding: 3px 9px;
+      font-size: 10px;
+    }
     body.manual-branch-selection-active header,
     body.manual-branch-selection-active #simulatorView > :not(.analysis-grid),
     body.manual-branch-selection-active .analysis-grid > :not(#battleTimeline):not(.matrix-panel),
@@ -8830,7 +8840,10 @@
                 <select id="manualBranchSelect" aria-label="Manual timeline branch" hidden></select>
                 <button id="manualUndo" class="secondary" type="button" hidden disabled>Undo</button>
                 <button id="manualRedo" class="secondary" type="button" hidden disabled>Redo</button>
-                <div id="manualSelectionHint" class="manual-selection-hint" role="status" aria-live="polite" hidden></div>
+                <div id="manualSelectionHint" class="manual-selection-hint" role="status" aria-live="polite" hidden>
+                  <span id="manualSelectionHintText"></span>
+                  <button id="manualSelectionCancel" class="secondary" type="button">Cancel</button>
+                </div>
               </div>
               <div class="actions" data-label="Pokemon A">
                 <button id="p1UseFast">Fast</button>
@@ -9492,6 +9505,13 @@
       $("manualBranchSelect").onchange = switchLiveManualBranch;
       $("manualControlMode").onchange = changeLiveManualControlMode;
       $("manualStartPoint").onchange = updateManualBranchSelectionUi;
+      $("manualSelectionCancel").onclick = cancelManualBranchSelection;
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && document.body.classList.contains("manual-branch-selection-active")) {
+          event.preventDefault();
+          cancelManualBranchSelection();
+        }
+      });
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -13336,33 +13356,71 @@
       return true;
     }
 
-    function selectedManualTimelineSourceEvent(sourceTimeline = timeline) {
-      const selectedEvent = Number.isInteger(selectedTimelineIndex) ? sourceTimeline[selectedTimelineIndex] : null;
+    function manualTimelineSourceEventAt(index, sourceTimeline = timeline) {
+      const selectedEvent = Number.isInteger(index) ? sourceTimeline[index] : null;
       if (selectedEvent?.kind === "shield" || selectedEvent?.kind === "form-protect") {
         return selectedEvent.chargeEvent || null;
       }
       return selectedEvent;
     }
 
+    function selectedManualTimelineSourceEvent(sourceTimeline = timeline) {
+      return manualTimelineSourceEventAt(selectedTimelineIndex, sourceTimeline);
+    }
+
+    function isSelectableManualTimelineEvent(event) {
+      return !!(event && ["fast", "charge"].includes(event.kind) && event.timelineEventId);
+    }
+
+    function hasSelectableManualTimelineEvent(sourceTimeline = timeline) {
+      return sourceTimeline.some((event, index) =>
+        isSelectableManualTimelineEvent(manualTimelineSourceEventAt(index, sourceTimeline))
+      );
+    }
+
+    function cancelManualBranchSelection() {
+      const startControl = $("manualStartPoint");
+      if (startControl) startControl.value = "battle-start";
+      selectedTimelineIndex = null;
+      highlightTimelineIndex(null);
+      updateManualBranchSelectionUi();
+    }
+
     function updateManualBranchSelectionUi() {
       const hint = $("manualSelectionHint");
-      const startMode = $("manualStartPoint")?.value || "battle-start";
-      const selecting = !manualModeState?.enabled
+      const hintText = $("manualSelectionHintText");
+      const startControl = $("manualStartPoint");
+      const selectableTimeline = hasSelectableManualTimelineEvent();
+      ["selected-before", "selected-after"].forEach(value => {
+        const option = startControl?.querySelector(`option[value="${value}"]`);
+        if (option) option.disabled = !selectableTimeline;
+      });
+      if (!selectableTimeline && ["selected-before", "selected-after"].includes(startControl?.value)) {
+        startControl.value = "battle-start";
+        selectedTimelineIndex = null;
+      }
+      if (startControl) {
+        startControl.title = selectableTimeline
+          ? "Choose where Manual Mode starts."
+          : "Run a battle first to select a timeline event.";
+      }
+      const startMode = startControl?.value || "battle-start";
+      const selecting = selectableTimeline && !manualModeState?.enabled
         && (startMode === "selected-before" || startMode === "selected-after");
       document.body.classList.toggle("manual-branch-selection-active", selecting);
       if (!hint) return;
       hint.hidden = !selecting;
       if (!selecting) {
-        hint.textContent = "";
+        if (hintText) hintText.textContent = "";
         return;
       }
       const sourceEvent = selectedManualTimelineSourceEvent();
-      const valid = sourceEvent && (sourceEvent.kind === "fast" || sourceEvent.kind === "charge");
+      const valid = isSelectableManualTimelineEvent(sourceEvent);
       if (!valid) {
-        hint.textContent = `Selection mode active: click a Fast or Charged Move in the timeline, then press Manual Mode to start ${startMode === "selected-before" ? "before" : "after"} it.`;
+        if (hintText) hintText.textContent = `Selection mode active: click a Fast or Charged Move in the timeline, then press Manual Mode to start ${startMode === "selected-before" ? "before" : "after"} it.`;
         return;
       }
-      hint.textContent = `Selected ${sourceEvent.kind === "fast" ? "Fast" : "Charged"}: ${sourceEvent.move?.name || "move"} at turn ${sourceEvent.start}. Manual Mode will start ${startMode === "selected-before" ? "before" : "after"} this event.`;
+      if (hintText) hintText.textContent = `Selected ${sourceEvent.kind === "fast" ? "Fast" : "Charged"}: ${sourceEvent.move?.name || "move"} at turn ${sourceEvent.start}. Manual Mode will start ${startMode === "selected-before" ? "before" : "after"} this event.`;
     }
 
     function syncManualBranchAfterAction(action) {

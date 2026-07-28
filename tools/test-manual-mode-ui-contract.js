@@ -14,6 +14,8 @@ for (const id of [
   "manualUndo",
   "manualRedo",
   "manualSelectionHint",
+  "manualSelectionHintText",
+  "manualSelectionCancel",
   "p1UseFast",
   "p1UseCharge1",
   "p2UseFast",
@@ -29,11 +31,15 @@ for (const value of ["battle-start", "selected-before", "selected-after", "curre
 assert.match(html, /manualModeToggle"\)\.onclick = toggleLiveManualMode/);
 assert.match(html, /manualControlMode"\)\.onchange = changeLiveManualControlMode/);
 assert.match(html, /manualStartPoint"\)\.onchange = updateManualBranchSelectionUi/);
+assert.match(html, /manualSelectionCancel"\)\.onclick = cancelManualBranchSelection/);
+assert.match(html, /event\.key === "Escape"[\s\S]{0,200}cancelManualBranchSelection/);
 assert.match(html, /manual-branch-selection-active/);
 assert.match(html, /manual-branch-selection-active #simulatorView > :not\(\.analysis-grid\)/);
 assert.match(html, /manual-branch-selection-active \.matrix-overview > :not\(\.manual-panel\)/);
 assert.match(html, /manual-branch-selection-active #battleTimeline/);
 assert.match(html, /selectedManualTimelineSourceEvent/);
+assert.match(html, /option\.disabled = !selectableTimeline/);
+assert.match(html, /startControl\.value = "battle-start"/);
 assert.match(html, /Selection mode active/);
 assert.match(html, /PvPeakManualHybrid\.coordinateDecision/);
 assert.match(html, /PvPeakManualHybrid\.executeCoordinatedDecision/);
