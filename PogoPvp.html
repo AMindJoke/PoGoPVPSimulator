@@ -3182,6 +3182,25 @@
       font-weight: 750;
     }
     .manual-selection-hint[hidden] { display: none; }
+    body.manual-branch-selection-active header,
+    body.manual-branch-selection-active #simulatorView > :not(.analysis-grid),
+    body.manual-branch-selection-active .analysis-grid > :not(#battleTimeline):not(.matrix-panel),
+    body.manual-branch-selection-active .matrix-panel > :not(.matrix-overview),
+    body.manual-branch-selection-active .matrix-overview > :not(.manual-panel) {
+      filter: blur(1.8px);
+      opacity: .38;
+      pointer-events: none;
+      user-select: none;
+      transition: filter .16s ease, opacity .16s ease;
+    }
+    body.manual-branch-selection-active #battleTimeline,
+    body.manual-branch-selection-active .manual-panel {
+      position: relative;
+      z-index: 24;
+      border-color: rgba(0, 125, 120, .62);
+      box-shadow: 0 0 0 3px rgba(0, 184, 169, .16), 0 14px 32px rgba(23, 33, 47, .16);
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
     body.manual-branch-selection-active #timelineScroll {
       outline: 2px solid rgba(0, 184, 169, .45);
       outline-offset: 3px;
@@ -8422,6 +8441,17 @@
       .analysis-view *,
       .analysis-view *::before,
       .analysis-view *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      body.manual-branch-selection-active * { transition-duration: .01ms !important; }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      body.manual-branch-selection-active header,
+      body.manual-branch-selection-active #simulatorView > :not(.analysis-grid),
+      body.manual-branch-selection-active .analysis-grid > :not(#battleTimeline):not(.matrix-panel),
+      body.manual-branch-selection-active .matrix-panel > :not(.matrix-overview),
+      body.manual-branch-selection-active .matrix-overview > :not(.manual-panel) {
+        filter: none;
+        opacity: .62;
+      }
     }
   </style>
 </head>
