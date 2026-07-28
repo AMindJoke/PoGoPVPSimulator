@@ -9379,11 +9379,11 @@
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
       $("p1UseFast").onclick = () => executeLiveManualFast("A");
-      $("p1UseCharge1").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[0]); useManualCharge(left, right, 0); };
-      $("p1UseCharge2").onclick = () => { recordManualIntelligenceDecision(left, "charged_move", left?.charged?.[1]); useManualCharge(left, right, 1); };
+      $("p1UseCharge1").onclick = () => executeLiveManualCharge("A", 0);
+      $("p1UseCharge2").onclick = () => executeLiveManualCharge("A", 1);
       $("p2UseFast").onclick = () => executeLiveManualFast("B");
-      $("p2UseCharge1").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[0]); useManualCharge(right, left, 0); };
-      $("p2UseCharge2").onclick = () => { recordManualIntelligenceDecision(right, "charged_move", right?.charged?.[1]); useManualCharge(right, left, 1); };
+      $("p2UseCharge1").onclick = () => executeLiveManualCharge("B", 0);
+      $("p2UseCharge2").onclick = () => executeLiveManualCharge("B", 1);
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
@@ -12647,6 +12647,12 @@
     }
 
     function currentManualDecisionPoint() {
+      if (
+        manualModeState?.status === window.PvPeakManualMode?.STATUS?.AWAITING_SHIELD_DECISION
+        && manualModeState.pendingDecision
+      ) {
+        return manualModeState.pendingDecision;
+      }
       const state = manualCanonicalState();
       if (!state) return null;
       const actionApi = window.PvPeakManualAction;
@@ -12701,6 +12707,53 @@
           recordManualIntelligenceDecision(attacker, "fast_move");
           return useFast(attacker, defender, { manualAction });
         },
+        getShieldDecisionPoint: ({ action, attackerSide, defenderSide }) => {
+          const state = manualCanonicalState();
+          return window.PvPeakManualAction.createDecisionPoint({
+            state,
+            eventId: timeline.at(-1)?.timelineEventId || null,
+            phase: window.PvPeakManualAction.DECISION_PHASE.SHIELD_DECISION,
+            activeSide: defenderSide,
+            shieldDecision: {
+              attackerSide,
+              defenderSide,
+              moveId: action.moveId
+            }
+          });
+        },
+        requestShieldDecision: async ({ action, attackerSide, defenderSide }) => {
+          const attacker = attackerSide === "A" ? left : right;
+          const defender = defenderSide === "A" ? left : right;
+          const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId);
+          return askManualShieldDecision(attacker, defender, move, estimate(attacker, defender, move));
+        },
+        onDecisionPhase: ({ phase, decisionPoint }) => {
+          if (phase === "SHIELD_DECISION") {
+            manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+            manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+              timeline,
+              cursorTurn: decisionPoint.turn,
+              cursorEventId: decisionPoint.eventId,
+              pendingDecision: decisionPoint
+            });
+          } else if (phase === "RESOLVING_CHARGED") {
+            manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+          } else if (
+            phase === "INVALIDATED"
+            && manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION
+          ) {
+            manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+          }
+        },
+        resolveCharged: async ({ side, moveId, manualAction, shielded }) => {
+          const attacker = side === "A" ? left : right;
+          const defender = side === "A" ? right : left;
+          const moveIndex = attacker.charged.findIndex(candidate => candidate?.id === moveId);
+          if (moveIndex < 0) return false;
+          recordManualIntelligenceDecision(attacker, "charged_move", attacker.charged[moveIndex]);
+          const forceBuffs = await askManualBuffDecision(attacker.charged[moveIndex]);
+          return useCharge(attacker, defender, moveIndex, { shielded, forceBuffs, manualAction });
+        },
         onTrace: entry => manualBattleTrace.push(entry)
       });
       return manualBattleRuntime;
@@ -12728,6 +12781,39 @@
         terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
+      return true;
+    }
+
+    async function executeLiveManualCharge(side, index) {
+      if (!ensureLiveManualSession(side)) return false;
+      const attacker = side === "A" ? left : right;
+      const move = attacker.charged?.[index];
+      const result = await liveManualRuntime().request({
+        side,
+        actionType: window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE,
+        moveId: move?.id || null
+      });
+      if (!result.ok) {
+        add(`${side}: manual Charged rejected (${result.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
+        if (manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING) {
+          manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+            timeline,
+            cursorTurn: manualCanonicalState()?.currentTurn || 0,
+            pendingDecision: currentManualDecisionPoint()
+          });
+        }
+        render();
+        return false;
+      }
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: manualCanonicalState()?.currentTurn || 0,
+        cursorEventId: timeline.at(-1)?.timelineEventId || null,
+        terminal: battleEnded(),
+        terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
+        pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+      });
+      render();
       return true;
     }
 
@@ -12893,6 +12979,7 @@
       if (chargedCompletionChange) formChanges.push(chargedCompletionChange);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded, energyBefore, {
         actionLifecycle: options.actionLifecycle || null,
+        manualAction: options.manualAction || null,
         energyAfter: attacker.energy,
         hpBefore,
         hpAfter: defender.hp

@@ -65,6 +65,119 @@
       return entry;
     }
 
+    function finishResolution(action, validation, before, resolution) {
+      const hashBefore = ManualAction.stateHash(before);
+      if (!resolution) {
+        append(TRACE_STATE.INVALIDATED, action, {
+          invalidationReason: "MECHANICS_REJECTED_ACTION",
+          stateHashBefore: hashBefore
+        });
+        return { ok: false, action, validation, trace: clone(trace) };
+      }
+      const after = clone(dependencies.getState());
+      const hashAfter = ManualAction.stateHash(after);
+      append(TRACE_STATE.RESOLVED, action, {
+        registeredTurn: Number(before.currentTurn || 0),
+        resolvedTurn: Number(after.currentTurn || before.currentTurn || 0),
+        resolvedAction: { side: action.side, actionType: action.actionType, moveId: action.moveId },
+        stateHashBefore: hashBefore,
+        stateHashAfter: hashAfter,
+        delta: stateDelta(before, after),
+        pendingEventChanges: {
+          before: clone(before.pendingEvents || []),
+          after: clone(after.pendingEvents || [])
+        }
+      });
+      return { ok: true, action, validation, before, after, trace: clone(trace) };
+    }
+
+    async function resolveChargedAction(action, validation, before) {
+      const hashBefore = ManualAction.stateHash(before);
+      if (typeof dependencies.resolveCharged !== "function") {
+        append(TRACE_STATE.INVALIDATED, action, {
+          invalidationReason: "ACTION_RESOLVER_NOT_CONNECTED",
+          stateHashBefore: hashBefore
+        });
+        return { ok: false, action, validation: { ...validation, reasonCode: "ACTION_RESOLVER_NOT_CONNECTED" }, trace: clone(trace) };
+      }
+      append(TRACE_STATE.REGISTERED, action, {
+        registeredTurn: Number(before.currentTurn || 0),
+        queuedAction: clone(validation.normalizedAction),
+        stateHashBefore: hashBefore
+      });
+
+      const defenderSide = action.side === "A" ? "B" : "A";
+      const defender = before?.sides?.[defenderSide];
+      let shielded = false;
+      if (Number(defender?.shields || 0) > 0) {
+        const shieldPoint = dependencies.getShieldDecisionPoint?.({
+          action: clone(action),
+          attackerSide: action.side,
+          defenderSide
+        }) || ManualAction.createDecisionPoint({
+          state: before,
+          phase: ManualAction.DECISION_PHASE.SHIELD_DECISION,
+          shieldDecision: { attackerSide: action.side, defenderSide, moveId: action.moveId }
+        });
+        dependencies.onDecisionPhase?.({ phase: "SHIELD_DECISION", decisionPoint: clone(shieldPoint), action: clone(action) });
+        shielded = !!(await dependencies.requestShieldDecision?.({
+          action: clone(action),
+          attackerSide: action.side,
+          defenderSide,
+          decisionPoint: clone(shieldPoint)
+        }));
+        const shieldAction = ManualAction.createManualAction({
+          side: defenderSide,
+          actionType: shielded ? ManualAction.ACTION_TYPE.SHIELD : ManualAction.ACTION_TYPE.NO_SHIELD,
+          requestedAtTurn: before.currentTurn,
+          requestedAtEventId: shieldPoint.eventId,
+          metadata: { expectedStateHash: shieldPoint.stateHash }
+        });
+        append(TRACE_STATE.REQUESTED, shieldAction, {
+          stateHashBefore: hashBefore,
+          legalActions: []
+        });
+        const shieldValidation = ManualAction.validateManualAction({
+          state: before,
+          side: defenderSide,
+          manualAction: shieldAction,
+          decisionPoint: shieldPoint,
+          legalActions: [],
+          stateHash: shieldPoint.stateHash
+        });
+        append(shieldValidation.legal ? TRACE_STATE.VALIDATED : TRACE_STATE.REJECTED, shieldAction, {
+          validationResult: clone(shieldValidation),
+          stateHashBefore: hashBefore
+        });
+        if (!shieldValidation.legal) {
+          dependencies.onDecisionPhase?.({ phase: "INVALIDATED", decisionPoint: clone(shieldPoint), action: clone(action) });
+          return { ok: false, action, validation: shieldValidation, trace: clone(trace) };
+        }
+        append(TRACE_STATE.REGISTERED, shieldAction, {
+          registeredTurn: Number(before.currentTurn || 0),
+          stateHashBefore: hashBefore
+        });
+        append(TRACE_STATE.RESOLVED, shieldAction, {
+          registeredTurn: Number(before.currentTurn || 0),
+          resolvedTurn: Number(before.currentTurn || 0),
+          resolvedAction: { side: defenderSide, actionType: shieldAction.actionType },
+          stateHashBefore: hashBefore,
+          stateHashAfter: hashBefore,
+          delta: stateDelta(before, before),
+          pendingEventChanges: { before: clone(before.pendingEvents || []), after: clone(before.pendingEvents || []) }
+        });
+      }
+      dependencies.onDecisionPhase?.({ phase: "RESOLVING_CHARGED", action: clone(action), shielded });
+      const resolution = await dependencies.resolveCharged({
+        side: action.side,
+        moveId: action.moveId,
+        manualAction: clone(action),
+        validation: clone(validation),
+        shielded
+      });
+      return finishResolution(action, validation, before, resolution);
+    }
+
     function request(input = {}) {
       const before = clone(dependencies.getState());
       const decisionPoint = clone(dependencies.getDecisionPoint());
@@ -107,6 +220,10 @@
         return { ok: true, queued: true, action, validation, trace: clone(trace) };
       }
 
+      if (action.actionType === ManualAction.ACTION_TYPE.CHARGED_MOVE) {
+        return resolveChargedAction(action, validation, before);
+      }
+
       if (action.actionType !== ManualAction.ACTION_TYPE.FAST_MOVE) {
         append(TRACE_STATE.INVALIDATED, action, {
           invalidationReason: "ACTION_RESOLVER_NOT_CONNECTED",
@@ -131,29 +248,7 @@
         manualAction: clone(action),
         validation: clone(validation)
       });
-      if (!resolution) {
-        append(TRACE_STATE.INVALIDATED, action, {
-          invalidationReason: "MECHANICS_REJECTED_ACTION",
-          stateHashBefore: hashBefore
-        });
-        return { ok: false, action, validation, trace: clone(trace) };
-      }
-
-      const after = clone(dependencies.getState());
-      const hashAfter = ManualAction.stateHash(after);
-      append(TRACE_STATE.RESOLVED, action, {
-        registeredTurn: Number(before.currentTurn || 0),
-        resolvedTurn: Number(after.currentTurn || before.currentTurn || 0),
-        resolvedAction: { side: action.side, actionType: action.actionType, moveId: action.moveId },
-        stateHashBefore: hashBefore,
-        stateHashAfter: hashAfter,
-        delta: stateDelta(before, after),
-        pendingEventChanges: {
-          before: clone(before.pendingEvents || []),
-          after: clone(after.pendingEvents || [])
-        }
-      });
-      return { ok: true, action, validation, before, after, trace: clone(trace) };
+      return finishResolution(action, validation, before, resolution);
     }
 
     return Object.freeze({
