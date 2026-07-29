@@ -5049,7 +5049,7 @@
     .effect-chip.resisted { color: #8b2d2d; background: #fde9e9; border-color: #efb7b7; }
     .effect-chip.neutral { color: #526171; background: #edf2f7; border-color: #d5dde7; }
     .key-numbers {
-      width: min(100%, 820px);
+      width: min(100%, var(--battle-layout-width));
       max-width: calc(100vw - 32px);
       justify-self: center;
       display: grid;
@@ -5689,7 +5689,7 @@
       body.manual-mode-active #battleTimeline {
         --timeline-track-height: 58px;
         --timeline-lane-height: 38px;
-        --timeline-side-zone-width: 100px;
+        --timeline-side-zone-width: 92px;
         position: fixed;
         inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
         z-index: 500;
@@ -6033,7 +6033,7 @@
         overflow: visible;
       }
       body.manual-mode-active .timeline-pokemon-flow {
-        transform: translateX(-5px);
+        transform: translateX(-8px);
       }
     }
     .timeline-tools {
@@ -6737,7 +6737,7 @@
       padding: 5px 8px;
     }
     .log-panel {
-      width: min(100%, 820px);
+      width: min(100%, var(--battle-layout-width));
       max-width: none;
       justify-self: center;
       background: var(--panel);
