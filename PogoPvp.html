@@ -5900,7 +5900,7 @@
       body.manual-mode-active .manual-duel-hud {
         grid-area: battle;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 164px minmax(0, 1fr);
         align-items: stretch;
         padding: 10px;
         border: 1px solid var(--line);
@@ -5960,10 +5960,12 @@
         font-size: 17px;
       }
       body.manual-mode-active .manual-hud-hp {
-        height: 18px;
+        width: min(100%, 290px);
+        height: 22px;
         box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
       }
-      body.manual-mode-active .manual-hud-hp-text { font-size: 11px; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: auto; }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 13px; }
       body.manual-mode-active .manual-hud-energy strong {
         font-size: 20px;
       }
@@ -5987,13 +5989,13 @@
         font-size: 14px;
       }
       body.manual-mode-active .manual-hud-shield-control button {
-        width: 44px;
-        min-width: 44px;
-        min-height: 36px;
+        width: 48px;
+        min-width: 48px;
+        min-height: 40px;
         gap: 3px;
       }
-      body.manual-mode-active .manual-hud-shield-control svg { width: 20px; height: 20px; }
-      body.manual-mode-active .manual-hud-shield-control strong { font-size: 12px; }
+      body.manual-mode-active .manual-hud-shield-control svg { width: 22px; height: 22px; }
+      body.manual-mode-active .manual-hud-shield-control strong { font-size: 13px; }
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
@@ -8733,7 +8735,8 @@
       body.manual-mode-active .manual-hud-shield-setup { display: none; }
       body.manual-mode-active .manual-mobile-shield-setup {
         grid-column: 1 / -1;
-        padding-top: 4px;
+        padding-top: 2px;
+        border-top: 0;
       }
       body.manual-mode-active .manual-hud-energy {
         justify-content: center;
@@ -8874,7 +8877,7 @@
       body.manual-mode-active .manual-mobile-shield-setup label {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         gap: 4px;
         min-width: 0;
       }
@@ -10679,8 +10682,8 @@
               </div>
             </article>
             <div id="manualMobileShieldSetup" class="manual-mobile-shield-setup" aria-label="Manual shield settings">
-              <label>Pokémon A <span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
-              <label>Pokémon B <span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
+              <label aria-label="Pokemon A shields"><span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
+              <label aria-label="Pokemon B shields"><span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
             </div>
           </div>
           <div id="manualDecisionPanel" class="manual-decision-panel">
