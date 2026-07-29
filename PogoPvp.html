@@ -5287,6 +5287,9 @@
       margin-bottom: 8px;
     }
     .timeline-head h2 { margin: 0; }
+    .manual-workspace-header { display: none; }
+    .manual-timeline-stage,
+    .manual-decision-panel { display: contents; }
     .manual-editor-workspace {
       display: grid;
       grid-template-columns: minmax(0, 1.65fr) minmax(300px, .85fr);
@@ -5516,6 +5519,28 @@
       border-radius: 9px;
       background: color-mix(in srgb, var(--panel) 82%, transparent);
     }
+    .manual-state-inspector-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .manual-state-inspector-head strong {
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .manual-state-inspector-head small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+    }
+    .manual-inspector-advanced[hidden] { display: none; }
+    #manualInspectorDetailsToggle {
+      width: 100%;
+      margin-top: 8px;
+    }
     .manual-state-inspector summary {
       display: flex;
       align-items: center;
@@ -5619,67 +5644,174 @@
         z-index: 600;
       }
       body.manual-mode-active #battleTimeline {
+        --timeline-track-height: 58px;
+        --timeline-lane-height: 38px;
+        --timeline-side-zone-width: 116px;
         position: fixed;
         inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
         z-index: 500;
         display: grid;
-        grid-template-rows: auto auto minmax(124px, 1fr) auto;
-        align-content: start;
+        grid-template-columns: minmax(0, 1fr) minmax(250px, 290px);
+        grid-template-rows: auto auto minmax(190px, 1fr) auto auto;
+        grid-template-areas:
+          "header header"
+          "battle sidebar"
+          "timeline sidebar"
+          "decision sidebar"
+          "event sidebar";
+        gap: 10px 12px;
         width: auto;
         max-width: none;
         max-height: none;
-        padding: 14px;
+        padding: 0 14px 14px;
         overflow: auto;
         box-shadow:
           0 0 0 100vmax rgba(15, 23, 42, .62),
           0 20px 60px rgba(15, 23, 42, .34);
       }
-      body.manual-mode-active #battleTimeline .timeline-head {
-        margin-bottom: 7px;
+      body.manual-mode-active .manual-workspace-header {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 58px;
+        margin: 0 -14px;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-workspace-brand {
+        display: grid;
+        color: var(--accent-dark);
+        font-size: 19px;
+        font-weight: 950;
+        line-height: .82;
+      }
+      body.manual-mode-active .manual-workspace-brand small {
+        font-size: 7px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-workspace-badge {
+        padding: 8px 13px;
+        border-radius: 6px;
+        background: #cf2932;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 950;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+        box-shadow: 0 3px 8px rgba(207, 41, 50, .22);
+      }
+      body.manual-mode-active .manual-workspace-scenario {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 850;
+      }
+      body.manual-mode-active .manual-workspace-scenario select {
+        width: auto;
+        min-width: 140px;
+        min-height: 30px;
+        padding: 3px 28px 3px 7px;
+        border: 0;
+        background-color: transparent;
+        font-size: 11px;
+        font-weight: 850;
+      }
+      body.manual-mode-active .manual-workspace-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+      }
+      body.manual-mode-active .manual-workspace-nav > button,
+      body.manual-mode-active .manual-guide summary {
+        min-height: 31px;
+        padding: 5px 9px;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 10px;
+        font-weight: 850;
+        box-shadow: none;
+        cursor: pointer;
+      }
+      body.manual-mode-active .manual-guide {
+        position: relative;
+      }
+      body.manual-mode-active .manual-guide summary {
+        display: grid;
+        place-items: center;
+        list-style: none;
+      }
+      body.manual-mode-active .manual-guide summary::-webkit-details-marker { display: none; }
+      body.manual-mode-active .manual-guide > span {
+        position: absolute;
+        top: calc(100% + 7px);
+        right: 0;
+        z-index: 10;
+        width: 250px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--text);
+        box-shadow: 0 10px 24px rgba(23, 33, 47, .18);
+        font-size: 10px;
+        line-height: 1.4;
       }
       body.manual-mode-active .manual-editor-workspace {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 8px;
-        padding: 9px;
-      }
-      body.manual-mode-active .manual-decision-banner,
-      body.manual-mode-active .manual-duel-hud,
-      body.manual-mode-active .manual-editor-actions,
-      body.manual-mode-active .manual-timeline-event-menu {
-        grid-column: 1;
-        grid-row: auto;
-      }
-      body.manual-mode-active .manual-decision-banner {
-        grid-template-columns: minmax(0, 1fr) auto auto;
-        padding: 7px 9px;
-      }
-      body.manual-mode-active .manual-decision-primary {
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: baseline;
-        gap: 4px 10px;
-      }
-      body.manual-mode-active .manual-editor-kicker {
-        grid-column: 1;
-      }
-      body.manual-mode-active .manual-decision-primary strong {
-        grid-column: 2;
-        grid-row: 1;
-        font-size: 15px;
-      }
-      body.manual-mode-active .manual-decision-primary > span:last-child {
-        grid-column: 1 / -1;
-        font-size: 9px;
-      }
-      body.manual-mode-active .manual-decision-facts > span:nth-child(2) {
-        display: none;
-      }
-      body.manual-mode-active .manual-overlay-controls,
-      body.manual-mode-active .manual-duel-hud {
-        display: flex;
+        display: contents;
       }
       body.manual-mode-active .manual-duel-hud {
+        grid-area: battle;
         display: grid;
+        grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+        align-items: stretch;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-hud-center {
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 3px;
+        color: var(--text);
+        text-align: center;
+      }
+      body.manual-mode-active .manual-hud-center > strong {
+        display: grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        font-size: 22px;
+      }
+      body.manual-mode-active .manual-hud-center span {
+        font-size: 13px;
+        font-weight: 900;
+      }
+      body.manual-mode-active .manual-hud-center small {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 750;
+      }
+      body.manual-mode-active .manual-hud-center em {
+        margin-top: 3px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent) 11%, var(--soft));
+        color: var(--accent-dark);
+        font-size: 9px;
+        font-style: normal;
+        font-weight: 950;
+        text-transform: uppercase;
       }
       body.manual-mode-active .manual-hud-side {
         grid-template-columns: 78px minmax(0, 1fr);
@@ -5710,8 +5842,13 @@
         font-size: 11px;
       }
       body.manual-mode-active .manual-hud-charges {
+        display: grid;
+        grid-template-columns: 46px minmax(66px, auto) 46px;
+        align-items: center;
+        justify-content: start;
         gap: 8px;
       }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: end; }
       body.manual-mode-active .manual-hud-charges .energy-orb {
         width: 46px;
         height: 46px;
@@ -5719,6 +5856,56 @@
       }
       body.manual-mode-active .manual-hud-charges .energy-orb-label {
         font-size: 14px;
+      }
+      body.manual-mode-active .manual-timeline-stage {
+        grid-area: timeline;
+        display: grid;
+        grid-template-rows: auto minmax(168px, 1fr) auto;
+        min-width: 0;
+        min-height: 0;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-head {
+        margin-bottom: 8px;
+      }
+      body.manual-mode-active .manual-decision-panel {
+        grid-area: decision;
+        display: grid;
+        gap: 7px;
+        padding: 9px;
+        border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-decision-banner {
+        grid-template-columns: minmax(180px, .85fr) minmax(0, 1.4fr) auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      body.manual-mode-active .manual-decision-primary {
+        gap: 1px;
+        text-align: center;
+      }
+      body.manual-mode-active .manual-decision-primary strong {
+        font-size: 15px;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-decision-primary > span:last-child {
+        font-size: 9px;
+      }
+      body.manual-mode-active .manual-decision-facts {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(62px, 1fr);
+      }
+      body.manual-mode-active .manual-decision-facts > span {
+        padding: 5px 7px;
+      }
+      body.manual-mode-active .manual-overlay-controls {
+        display: flex;
       }
       body.manual-mode-active .manual-editor-actions {
         grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
@@ -5731,6 +5918,9 @@
       body.manual-mode-active .manual-editor-actions .actions button {
         min-height: 46px;
         padding: 7px 8px;
+      }
+      body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
+        display: none;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
         font-size: 13px;
@@ -5746,10 +5936,43 @@
         border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       }
       body.manual-mode-active .manual-editor-command-bar button {
-        min-width: 104px;
+        min-width: 132px;
       }
       body.manual-mode-active .manual-state-inspector {
-        display: none;
+        grid-area: sidebar;
+        display: grid;
+        align-content: start;
+        min-height: 0;
+        padding: 13px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-inspector-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-top: 10px;
+      }
+      body.manual-mode-active .manual-inspector-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 4px;
+        border: 0;
+        border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+        border-radius: 0;
+        background: transparent;
+      }
+      body.manual-mode-active .manual-inspector-item small {
+        font-size: 9px;
+      }
+      body.manual-mode-active .manual-inspector-item strong {
+        font-size: 10px;
+        text-align: right;
+      }
+      body.manual-mode-active .manual-timeline-event-menu {
+        grid-area: event;
       }
       body.manual-mode-active .timeline-grid {
         min-height: 168px;
@@ -5757,11 +5980,6 @@
       body.manual-mode-active .timeline-scroll {
         height: 100%;
         min-height: 168px;
-      }
-      body.manual-mode-active #battleTimeline {
-        --timeline-track-height: 58px;
-        --timeline-lane-height: 38px;
-        --timeline-side-zone-width: 116px;
       }
       body.manual-mode-active .timeline-label img {
         width: 44px;
@@ -9635,35 +9853,52 @@
 
     <div class="analysis-grid">
       <section class="timeline" id="battleTimeline">
-        <div class="timeline-head">
-          <h2>Turn Timeline</h2>
-          <div class="timeline-tools">
-            <span class="timeline-legend">
-              <span><i class="legend-fast"></i>Fast</span>
-              <span><i class="legend-charge"></i>Charged</span>
-              <span><i class="legend-shield"></i>Shield</span>
-            </span>
-            <input id="timelineZoom" type="hidden" value="100">
+        <div id="manualWorkspaceHeader" class="manual-workspace-header">
+          <span class="manual-workspace-brand">PvP <small>Simulator</small></span>
+          <strong class="manual-workspace-badge">Manual Mode</strong>
+          <label class="manual-workspace-scenario">Scenario:
+            <select id="manualOverlayScenario" aria-label="Manual Mode scenario"></select>
+          </label>
+          <span class="manual-workspace-nav">
+            <button id="manualBackToSimulation" class="secondary" type="button">← Back to Simulation</button>
+            <details class="manual-guide">
+              <summary>Guide</summary>
+              <span>Choose a legal action, inspect the resulting timeline, or resume automatic play from the current state.</span>
+            </details>
+            <button id="manualWorkspaceExit" class="secondary" type="button">Exit</button>
+          </span>
+        </div>
+        <div class="manual-timeline-stage">
+          <div class="timeline-head">
+            <h2>Timeline</h2>
+            <div class="timeline-tools">
+              <span class="timeline-legend">
+                <span><i class="legend-fast"></i>Fast</span>
+                <span><i class="legend-charge"></i>Charged</span>
+                <span><i class="legend-shield"></i>Shield</span>
+              </span>
+              <input id="timelineZoom" type="hidden" value="100">
+            </div>
+          </div>
+          <div class="timeline-grid">
+            <div class="timeline-label" id="p1TimelineLabel">A</div>
+            <div class="timeline-label" id="p2TimelineLabel">B</div>
+            <div class="timeline-scroll" id="timelineScroll">
+              <div class="timeline-hover-line" id="timelineHoverLine"></div>
+              <div class="timeline-hover-label" id="timelineHoverLabel"></div>
+              <div class="timeline-move-tooltip" id="timelineMoveTooltip"></div>
+              <div class="timeline-ruler" id="timelineRuler"></div>
+              <div class="timeline-track" id="p1Timeline"></div>
+              <div class="timeline-track" id="p2Timeline"></div>
+            </div>
+          </div>
+          <div class="timeline-zoom-control" role="group" aria-label="Timeline zoom">
+            <button id="timelineZoomOut" type="button" aria-label="Zoom timeline out">-</button>
+            <output id="timelineZoomValue" aria-live="polite">100%</output>
+            <button id="timelineZoomIn" type="button" aria-label="Zoom timeline in">+</button>
           </div>
         </div>
         <section id="manualEditorWorkspace" class="manual-editor-workspace" aria-live="polite" hidden>
-          <div id="manualDecisionBanner" class="manual-decision-banner">
-            <div class="manual-decision-primary">
-              <span class="manual-editor-kicker">Current decision</span>
-              <strong id="manualCurrentDecisionTitle">Choose an action</strong>
-              <span id="manualDecisionWhy">Automatic simulation is paused.</span>
-            </div>
-            <div class="manual-decision-facts">
-              <span><small>Turn</small><strong id="manualDecisionTurn">0</strong></span>
-              <span><small>Energy</small><strong id="manualDecisionEnergy">0</strong></span>
-              <span><small>Legal</small><strong id="manualDecisionLegal">-</strong></span>
-            </div>
-            <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
-              <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
-              <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
-              <button id="manualOverlayExit" class="secondary manual-overlay-exit" type="button" title="Exit Manual Mode" aria-label="Exit Manual Mode">×</button>
-            </div>
-          </div>
           <div id="manualDuelHud" class="manual-duel-hud" aria-label="Current battle state">
             <article class="manual-hud-side" data-side="A">
               <img id="manualHudSpriteA" class="manual-hud-sprite" alt="">
@@ -9674,11 +9909,20 @@
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpA"></i></div>
                 <div class="manual-hud-resource-row">
-                  <span id="manualHudEnergyA" class="manual-hud-energy">0 energy</span>
-                  <span id="manualHudChargesA" class="manual-hud-charges"></span>
+                  <span id="manualHudChargesA" class="manual-hud-charges">
+                    <span data-manual-charge-slot="A-0"></span>
+                    <span id="manualHudEnergyA" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
+                    <span data-manual-charge-slot="A-1"></span>
+                  </span>
                 </div>
               </div>
             </article>
+            <div class="manual-hud-center">
+              <strong>VS</strong>
+              <span>Turn <b id="manualHudTurn">0</b></span>
+              <small id="manualHudPhase">Before action</small>
+              <em id="manualHudActor">Choose an action</em>
+            </div>
             <article class="manual-hud-side" data-side="B">
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
@@ -9688,33 +9932,59 @@
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpB"></i></div>
                 <div class="manual-hud-resource-row">
-                  <span id="manualHudEnergyB" class="manual-hud-energy">0 energy</span>
-                  <span id="manualHudChargesB" class="manual-hud-charges"></span>
+                  <span id="manualHudChargesB" class="manual-hud-charges">
+                    <span data-manual-charge-slot="B-0"></span>
+                    <span id="manualHudEnergyB" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
+                    <span data-manual-charge-slot="B-1"></span>
+                  </span>
                 </div>
               </div>
             </article>
           </div>
-          <div id="manualEditorActions" class="manual-editor-actions">
-            <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
-              <button id="p1UseFast">Fast</button>
-              <button id="p1UseCharge1">Charged 1</button>
-              <button id="p1UseCharge2">Charged 2</button>
-              <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
+          <div id="manualDecisionPanel" class="manual-decision-panel">
+            <div id="manualDecisionBanner" class="manual-decision-banner">
+              <div class="manual-decision-primary">
+                <span class="manual-editor-kicker">Current decision</span>
+                <strong id="manualCurrentDecisionTitle">Choose an action</strong>
+                <span id="manualDecisionWhy">Automatic simulation is paused.</span>
+              </div>
+              <div class="manual-decision-facts">
+                <span><small>HP</small><strong id="manualDecisionHp">-</strong></span>
+                <span><small>Energy</small><strong id="manualDecisionEnergy">0</strong></span>
+                <span><small>Shields</small><strong id="manualDecisionShields">-</strong></span>
+                <span><small>Legal actions</small><strong id="manualDecisionLegal">-</strong></span>
+                <span hidden><small>Turn</small><strong id="manualDecisionTurn">0</strong></span>
+              </div>
+              <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
+                <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
+                <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
+                <button id="manualOverlayExit" class="secondary manual-overlay-exit" type="button" title="Exit Manual Mode" aria-label="Exit Manual Mode">×</button>
+              </div>
             </div>
-            <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
-              <button id="p2UseFast">Fast</button>
-              <button id="p2UseCharge1">Charged 1</button>
-              <button id="p2UseCharge2">Charged 2</button>
-              <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
-            </div>
-            <div class="manual-editor-command-bar">
-              <button id="manualResumeAuto" class="secondary" type="button" title="Continue this timeline version using automatic decisions.">Resume Auto</button>
+            <div id="manualEditorActions" class="manual-editor-actions">
+              <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
+                <button id="p1UseFast">Fast</button>
+                <button id="p1UseCharge1">Charged 1</button>
+                <button id="p1UseCharge2">Charged 2</button>
+                <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
+              </div>
+              <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
+                <button id="p2UseFast">Fast</button>
+                <button id="p2UseCharge1">Charged 1</button>
+                <button id="p2UseCharge2">Charged 2</button>
+                <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
+              </div>
+              <div class="manual-editor-command-bar">
+                <button id="manualResumeAuto" class="secondary" type="button" title="Continue this timeline version using automatic decisions.">Resume Automatically</button>
+              </div>
             </div>
           </div>
-          <details id="manualStateInspector" class="manual-state-inspector" open>
-            <summary><span>Battle state inspector</span><small id="manualInspectorPhase">Waiting</small></summary>
+          <aside id="manualStateInspector" class="manual-state-inspector">
+            <div class="manual-state-inspector-head"><strong>Current State</strong><small id="manualInspectorPhase">Waiting</small></div>
             <div id="manualInspectorGrid" class="manual-inspector-grid"></div>
-          </details>
+            <div id="manualInspectorAdvancedGrid" class="manual-inspector-grid manual-inspector-advanced" hidden></div>
+            <button id="manualInspectorDetailsToggle" class="secondary" type="button" aria-expanded="false">View Full Details</button>
+          </aside>
           <div id="manualTimelineEventMenu" class="manual-timeline-event-menu" hidden>
             <span class="manual-event-menu-copy">
               <strong id="manualEventMenuTitle">Selected event</strong>
@@ -9728,23 +9998,6 @@
             </span>
           </div>
         </section>
-        <div class="timeline-grid">
-          <div class="timeline-label" id="p1TimelineLabel">A</div>
-          <div class="timeline-label" id="p2TimelineLabel">B</div>
-          <div class="timeline-scroll" id="timelineScroll">
-            <div class="timeline-hover-line" id="timelineHoverLine"></div>
-            <div class="timeline-hover-label" id="timelineHoverLabel"></div>
-            <div class="timeline-move-tooltip" id="timelineMoveTooltip"></div>
-            <div class="timeline-ruler" id="timelineRuler"></div>
-            <div class="timeline-track" id="p1Timeline"></div>
-            <div class="timeline-track" id="p2Timeline"></div>
-          </div>
-        </div>
-        <div class="timeline-zoom-control" role="group" aria-label="Timeline zoom">
-          <button id="timelineZoomOut" type="button" aria-label="Zoom timeline out">-</button>
-          <output id="timelineZoomValue" aria-live="polite">100%</output>
-          <button id="timelineZoomIn" type="button" aria-label="Zoom timeline in">+</button>
-        </div>
       </section>
 
       <section id="scenarioReview" class="scenario-review" aria-live="polite" hidden>
@@ -10541,8 +10794,12 @@
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
       $("manualModeExit").onclick = exitLiveManualMode;
       $("manualOverlayExit").onclick = exitLiveManualMode;
+      $("manualBackToSimulation").onclick = exitLiveManualMode;
+      $("manualWorkspaceExit").onclick = exitLiveManualMode;
       $("manualOverlayUndo").onclick = undoLiveManualCommand;
       $("manualOverlayRedo").onclick = redoLiveManualCommand;
+      $("manualOverlayScenario").onchange = event => switchLiveManualBranch(event.target.value);
+      $("manualInspectorDetailsToggle").onclick = toggleManualInspectorDetails;
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
@@ -14985,6 +15242,12 @@
       $("manualDecisionEnergy").textContent = actor
         ? String(actor.energy)
         : `${left?.energy ?? 0} / ${right?.energy ?? 0}`;
+      $("manualDecisionHp").textContent = actor
+        ? `${actor.hp}/${actor.maxHp}`
+        : `${left?.hp ?? 0}/${left?.maxHp ?? 0} · ${right?.hp ?? 0}/${right?.maxHp ?? 0}`;
+      $("manualDecisionShields").textContent = actor
+        ? String(actor.shields)
+        : `${left?.shields ?? 0} / ${right?.shields ?? 0}`;
       $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
       $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
       renderManualDuelHud();
@@ -15008,20 +15271,26 @@
         if ($(`manualHudEnergy${side}`)) {
           $(`manualHudEnergy${side}`).innerHTML = `<strong>${combatant.energy}</strong><small>energy</small>`;
         }
-        if ($(`manualHudCharges${side}`)) {
-          const prefix = side === "A" ? "p1" : "p2";
-          $(`manualHudCharges${side}`).innerHTML = combatant.charged.slice(0, 2)
-            .map((move, index) => energyMoveOrb(move, combatant.energy, prefix, index))
-            .join("");
-        }
+        const prefix = side === "A" ? "p1" : "p2";
+        combatant.charged.slice(0, 2).forEach((move, index) => {
+          const slot = document.querySelector(`[data-manual-charge-slot="${side}-${index}"]`);
+          if (slot) slot.innerHTML = energyMoveOrb(move, combatant.energy, prefix, index);
+        });
       };
       renderSide("A", left);
       renderSide("B", right);
+      const currentTurn = manualModeState.cursorTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      if ($("manualHudTurn")) $("manualHudTurn").textContent = String(currentTurn);
+      if ($("manualHudPhase")) {
+        $("manualHudPhase").textContent = title(String(manualModeState.pendingDecision?.phase || "before action").toLowerCase().replaceAll("_", " "));
+      }
+      if ($("manualHudActor")) $("manualHudActor").textContent = $("manualCurrentDecisionTitle")?.textContent || "Choose an action";
     }
 
     function renderManualStateInspector(runtimeStatus) {
       const grid = $("manualInspectorGrid");
-      if (!grid || !manualModeState?.enabled || !left || !right) return;
+      const advancedGrid = $("manualInspectorAdvancedGrid");
+      if (!grid || !advancedGrid || !manualModeState?.enabled || !left || !right) return;
       const state = turnEngineState();
       const pending = state?.pendingEvents || [];
       const phase = manualModeState.pendingDecision?.phase
@@ -15045,25 +15314,41 @@
       const stages = combatant => `Atk ${signedStage(combatant.attackStage)} · Def ${signedStage(combatant.defenseStage)}`;
       const cooldown = side => Math.max(0, Number(state?.sides?.[side]?.readyTurn || 0) - currentTurn);
       const pendingFast = pending.filter(event => event.type === "fast-impact");
+      const pendingEventText = pending.length
+        ? pending.map(event => `${event.moveName || event.moveId || event.type || "Event"} · T${event.resolveTurn ?? event.turn ?? "?"}`).join(", ")
+        : "None";
       if ($("manualInspectorPhase")) $("manualInspectorPhase").textContent = runtimeStatus.text;
       grid.innerHTML = [
         item("Turn", currentTurn),
         item("Phase", title(String(phase).toLowerCase().replaceAll("_", " "))),
+        item(`${left.p.name} · HP`, `${left.hp}/${left.maxHp}`),
+        item(`${left.p.name} · Energy`, left.energy),
+        item(`${left.p.name} · Shields`, left.shields),
+        item(`${left.p.name} · Cooldown`, `${cooldown("A")}t`),
+        item(`${right.p.name} · HP`, `${right.hp}/${right.maxHp}`),
+        item(`${right.p.name} · Energy`, right.energy),
+        item(`${right.p.name} · Shields`, right.shields),
+        item(`${right.p.name} · Cooldown`, `${cooldown("B")}t`),
+        item("Pending events", pendingEventText)
+      ].join("");
+      advancedGrid.innerHTML = [
         item("Ready side", readySides.join(" + ") || "None"),
         item("CMP", cmp),
-        item("A · HP", `${left.hp}/${left.maxHp}`),
-        item("A · Energy", left.energy),
-        item("A · Shields", left.shields),
-        item("A · Cooldown", `${cooldown("A")}t`),
-        item("A · Stages", stages(left)),
-        item("B · HP", `${right.hp}/${right.maxHp}`),
-        item("B · Energy", right.energy),
-        item("B · Shields", right.shields),
-        item("B · Cooldown", `${cooldown("B")}t`),
-        item("B · Stages", stages(right)),
-        item("Pending Fast", pendingFast.length, pendingFast.map(event => event.moveName || event.moveId || event.id).join(", ") || "None"),
-        item("Pending events", pending.length, pending.map(event => `${event.type || "event"} @ T${event.resolveTurn ?? event.turn ?? "?"}`).join(", ") || "None")
+        item(`${left.p.name} · Stages`, stages(left)),
+        item(`${right.p.name} · Stages`, stages(right)),
+        item("Pending Fast", pendingFast.length, pendingFast.map(event => event.moveName || event.moveId || event.id).join(", ") || "None")
       ].join("");
+    }
+
+    function toggleManualInspectorDetails() {
+      const advanced = $("manualInspectorAdvancedGrid");
+      const toggle = $("manualInspectorDetailsToggle");
+      if (!advanced || !toggle) return false;
+      const opening = advanced.hidden;
+      advanced.hidden = !opening;
+      toggle.setAttribute("aria-expanded", String(opening));
+      toggle.textContent = opening ? "Hide Full Details" : "View Full Details";
+      return true;
     }
 
     function renderManualModeControls() {
@@ -15075,6 +15360,7 @@
       const undo = $("manualUndo");
       const redo = $("manualRedo");
       const branchSelect = $("manualBranchSelect");
+      const overlayScenario = $("manualOverlayScenario");
       const controlMode = $("manualControlMode");
       if (!toggle || !status || !startPoint || !controlMode || !branchSelect || !undo || !redo) return;
       toggle.textContent = "Start Manual Mode";
@@ -15103,8 +15389,15 @@
           })
           .join("");
         branchSelect.value = manualBranchRegistry.activeBranchId;
+        if (overlayScenario) {
+          overlayScenario.innerHTML = Object.values(manualBranchRegistry.branches)
+            .map(branch => `<option value="${escapeHtml(branch.branchId)}">${escapeHtml(branch.label)}</option>`)
+            .join("");
+          overlayScenario.value = manualBranchRegistry.activeBranchId;
+        }
       } else {
         branchSelect.innerHTML = "";
+        if (overlayScenario) overlayScenario.innerHTML = "";
       }
       renderManualVersionTree();
       const runtimeStatus = manualRuntimeStatusPresentation();
@@ -15212,6 +15505,15 @@
             }
           });
         });
+        if (active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) {
+          ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
+            const button = $(id);
+            if (!button) return;
+            button.disabled = true;
+            button.classList.remove("build-available");
+            button.title = "The original simulation is read-only. Select an editable scenario to act.";
+          });
+        }
       }
       updateManualBranchSelectionUi();
     }
@@ -15221,7 +15523,8 @@
       const workspace = $("manualEditorWorkspace");
       const mobileMount = $("manualMobileActionMount");
       const inspector = $("manualStateInspector");
-      if (!actions || !workspace || !mobileMount || !inspector) return;
+      const decisionPanel = $("manualDecisionPanel");
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
       if (mobile) {
         if (actions.parentElement !== mobileMount) mobileMount.append(actions);
@@ -15229,7 +15532,7 @@
         return;
       }
       mobileMount.hidden = true;
-      if (actions.parentElement !== workspace) workspace.insertBefore(actions, inspector);
+      if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
     }
 
     function manualActionUnavailableReason(combatant, move, actionType) {

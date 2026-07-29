@@ -15,12 +15,19 @@ for (const id of [
   "manualRuntimeDetail",
   "manualRuntimeTurn",
   "manualMobileActionMount",
+  "manualWorkspaceHeader",
+  "manualOverlayScenario",
+  "manualBackToSimulation",
+  "manualWorkspaceExit",
+  "manualDecisionPanel",
   "manualEditorWorkspace",
   "manualDecisionBanner",
   "manualCurrentDecisionTitle",
   "manualDecisionWhy",
   "manualDecisionTurn",
   "manualDecisionEnergy",
+  "manualDecisionHp",
+  "manualDecisionShields",
   "manualDecisionLegal",
   "manualDuelHud",
   "manualHudSpriteA",
@@ -35,6 +42,8 @@ for (const id of [
   "manualStateInspector",
   "manualInspectorPhase",
   "manualInspectorGrid",
+  "manualInspectorAdvancedGrid",
+  "manualInspectorDetailsToggle",
   "manualTimelineEventMenu",
   "manualEventMenuTitle",
   "manualEventInspect",
@@ -78,17 +87,21 @@ assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
 assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,400}body\.manual-mode-active #battleTimeline/);
 assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
 assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
-assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{\s*display: none/);
+assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{[\s\S]{0,80}grid-area: sidebar/);
 assert.match(html, /function renderManualDuelHud/);
 assert.match(html, /setPokemonImage\(sprite, combatant\.p\)/);
 assert.match(html, /energyMoveOrb\(move, combatant\.energy, prefix, index\)/);
 assert.match(html, /function syncManualEditorPlacement/);
 assert.match(html, /window\.matchMedia\("\(max-width: 900px\)"\)\.matches/);
 assert.match(html, /mobileMount\.append\(actions\)/);
-assert.match(html, /workspace\.insertBefore\(actions, inspector\)/);
+assert.match(html, /decisionPanel\.append\(actions\)/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-workspace\s*\{\s*display: none/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 46px/);
 assert.match(html, /--timeline-track-height: 58px/);
+assert.match(html, /grid-template-areas:[\s\S]{0,160}"header header"[\s\S]{0,160}"decision sidebar"/);
+assert.match(html, /Resume Automatically/);
+assert.match(html, /function toggleManualInspectorDetails/);
+assert.match(html, /manualOverlayScenario"\)\.onchange/);
 assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 
 for (const value of ["battle-start", "selected-before", "selected-after", "current"]) {
@@ -115,8 +128,8 @@ assert.match(html, /legalBattleActions\(actor/);
 assert.match(html, /function renderManualStateInspector/);
 assert.match(html, /Pending Fast/);
 assert.match(html, /Pending events/);
-assert.match(html, /A · Cooldown/);
-assert.match(html, /B · Stages/);
+assert.match(html, /\$\{left\.p\.name\} · Cooldown/);
+assert.match(html, /\$\{right\.p\.name\} · Stages/);
 assert.match(html, /function manualActionUnavailableReason/);
 assert.match(html, /a shield decision is pending/);
 assert.match(html, /cooldown active for/);
