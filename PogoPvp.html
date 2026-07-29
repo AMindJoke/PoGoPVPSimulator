@@ -5312,6 +5312,118 @@
       border-radius: 9px;
       background: var(--panel);
     }
+    .manual-overlay-controls {
+      display: none;
+      align-items: center;
+      gap: 5px;
+    }
+    .manual-overlay-controls button {
+      min-width: 0;
+      min-height: 30px;
+      padding: 4px 9px;
+      font-size: 10px;
+    }
+    .manual-overlay-controls .manual-overlay-exit {
+      width: 32px;
+      padding: 0;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .manual-duel-hud {
+      display: none;
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .manual-hud-side {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel);
+    }
+    .manual-hud-side[data-side="B"] {
+      grid-template-columns: minmax(0, 1fr) 54px;
+      text-align: right;
+    }
+    .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 2; grid-row: 1; }
+    .manual-hud-side[data-side="B"] .manual-hud-copy { grid-column: 1; grid-row: 1; }
+    .manual-hud-sprite {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 5px rgba(23, 33, 47, .16));
+    }
+    .manual-hud-copy {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+    .manual-hud-name-row,
+    .manual-hud-resource-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+    .manual-hud-side[data-side="B"] .manual-hud-name-row,
+    .manual-hud-side[data-side="B"] .manual-hud-resource-row {
+      flex-direction: row-reverse;
+    }
+    .manual-hud-name {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 950;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-hud-hp-text,
+    .manual-hud-energy {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .manual-hud-hp {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 72%, transparent);
+    }
+    .manual-hud-hp > i {
+      display: block;
+      width: var(--hp-percent, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--hp-color, var(--good));
+      transition: width .18s ease, background .18s ease;
+    }
+    .manual-hud-charges {
+      display: inline-flex;
+      gap: 5px;
+    }
+    .manual-hud-side[data-side="B"] .manual-hud-charges { flex-direction: row-reverse; }
+    .manual-hud-charge {
+      display: inline-grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      border: 3px solid color-mix(in srgb, var(--move-color) 75%, var(--line));
+      border-radius: 50%;
+      background:
+        linear-gradient(to top, color-mix(in srgb, var(--move-color) 78%, var(--panel)) 0 var(--charge-fill), var(--panel) var(--charge-fill) 100%);
+      color: var(--text);
+      font-size: 8px;
+      font-weight: 950;
+      letter-spacing: -.02em;
+      text-transform: uppercase;
+    }
     .manual-decision-primary {
       display: grid;
       gap: 2px;
@@ -5496,6 +5608,105 @@
     }
     body.manual-mode-active #timelineScroll {
       min-height: 116px;
+    }
+    @media (min-width: 901px) {
+      body.manual-mode-active {
+        overflow: hidden;
+      }
+      body.manual-mode-active .modal {
+        z-index: 600;
+      }
+      body.manual-mode-active #battleTimeline {
+        position: fixed;
+        inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
+        z-index: 500;
+        display: grid;
+        grid-template-rows: auto auto minmax(124px, 1fr) auto;
+        align-content: start;
+        width: auto;
+        max-width: none;
+        max-height: none;
+        padding: 14px;
+        overflow: auto;
+        box-shadow:
+          0 0 0 100vmax rgba(15, 23, 42, .62),
+          0 20px 60px rgba(15, 23, 42, .34);
+      }
+      body.manual-mode-active #battleTimeline .timeline-head {
+        margin-bottom: 7px;
+      }
+      body.manual-mode-active .manual-editor-workspace {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding: 9px;
+      }
+      body.manual-mode-active .manual-decision-banner,
+      body.manual-mode-active .manual-duel-hud,
+      body.manual-mode-active .manual-editor-actions,
+      body.manual-mode-active .manual-timeline-event-menu {
+        grid-column: 1;
+        grid-row: auto;
+      }
+      body.manual-mode-active .manual-decision-banner {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        padding: 7px 9px;
+      }
+      body.manual-mode-active .manual-decision-primary {
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: baseline;
+        gap: 4px 10px;
+      }
+      body.manual-mode-active .manual-editor-kicker {
+        grid-column: 1;
+      }
+      body.manual-mode-active .manual-decision-primary strong {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 15px;
+      }
+      body.manual-mode-active .manual-decision-primary > span:last-child {
+        grid-column: 1 / -1;
+        font-size: 9px;
+      }
+      body.manual-mode-active .manual-decision-facts > span:nth-child(2) {
+        display: none;
+      }
+      body.manual-mode-active .manual-overlay-controls,
+      body.manual-mode-active .manual-duel-hud {
+        display: flex;
+      }
+      body.manual-mode-active .manual-duel-hud {
+        display: grid;
+      }
+      body.manual-mode-active .manual-editor-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+        align-items: stretch;
+        padding: 7px;
+      }
+      body.manual-mode-active .manual-editor-actions .actions {
+        padding: 7px;
+      }
+      body.manual-mode-active .manual-editor-command-bar {
+        grid-column: 3;
+        align-items: stretch;
+        padding: 0 0 0 7px;
+        border-top: 0;
+        border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      }
+      body.manual-mode-active .manual-editor-command-bar button {
+        min-width: 104px;
+      }
+      body.manual-mode-active .manual-state-inspector {
+        display: none;
+      }
+      body.manual-mode-active .timeline-grid {
+        min-height: 124px;
+      }
+      body.manual-mode-active .timeline-scroll {
+        height: 100%;
+        min-height: 124px;
+      }
     }
     .timeline-tools {
       display: flex;
@@ -9361,6 +9572,41 @@
               <span><small>Energy</small><strong id="manualDecisionEnergy">0</strong></span>
               <span><small>Legal</small><strong id="manualDecisionLegal">-</strong></span>
             </div>
+            <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
+              <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
+              <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
+              <button id="manualOverlayExit" class="secondary manual-overlay-exit" type="button" title="Exit Manual Mode" aria-label="Exit Manual Mode">×</button>
+            </div>
+          </div>
+          <div id="manualDuelHud" class="manual-duel-hud" aria-label="Current battle state">
+            <article class="manual-hud-side" data-side="A">
+              <img id="manualHudSpriteA" class="manual-hud-sprite" alt="">
+              <div class="manual-hud-copy">
+                <div class="manual-hud-name-row">
+                  <strong id="manualHudNameA" class="manual-hud-name">Pokemon A</strong>
+                  <span id="manualHudHpTextA" class="manual-hud-hp-text">0/0 HP</span>
+                </div>
+                <div class="manual-hud-hp"><i id="manualHudHpA"></i></div>
+                <div class="manual-hud-resource-row">
+                  <span id="manualHudEnergyA" class="manual-hud-energy">0 energy</span>
+                  <span id="manualHudChargesA" class="manual-hud-charges"></span>
+                </div>
+              </div>
+            </article>
+            <article class="manual-hud-side" data-side="B">
+              <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
+              <div class="manual-hud-copy">
+                <div class="manual-hud-name-row">
+                  <strong id="manualHudNameB" class="manual-hud-name">Pokemon B</strong>
+                  <span id="manualHudHpTextB" class="manual-hud-hp-text">0/0 HP</span>
+                </div>
+                <div class="manual-hud-hp"><i id="manualHudHpB"></i></div>
+                <div class="manual-hud-resource-row">
+                  <span id="manualHudEnergyB" class="manual-hud-energy">0 energy</span>
+                  <span id="manualHudChargesB" class="manual-hud-charges"></span>
+                </div>
+              </div>
+            </article>
           </div>
           <div id="manualEditorActions" class="manual-editor-actions">
             <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
@@ -10206,6 +10452,9 @@
       });
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
       $("manualModeExit").onclick = exitLiveManualMode;
+      $("manualOverlayExit").onclick = exitLiveManualMode;
+      $("manualOverlayUndo").onclick = undoLiveManualCommand;
+      $("manualOverlayRedo").onclick = redoLiveManualCommand;
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
@@ -14650,8 +14899,37 @@
         : `${left?.energy ?? 0} / ${right?.energy ?? 0}`;
       $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
       $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
+      renderManualDuelHud();
       renderManualStateInspector(runtimeStatus);
       updateManualTimelineEventMenu();
+    }
+
+    function renderManualDuelHud() {
+      if (!manualModeState?.enabled || !left || !right) return;
+      const renderSide = (side, combatant) => {
+        const sprite = $(`manualHudSprite${side}`);
+        if (sprite) setPokemonImage(sprite, combatant.p);
+        if ($(`manualHudName${side}`)) $(`manualHudName${side}`).textContent = combatant.p?.name || `Pokemon ${side}`;
+        if ($(`manualHudHpText${side}`)) $(`manualHudHpText${side}`).textContent = `${combatant.hp}/${combatant.maxHp} HP`;
+        const hpPercent = Math.max(0, Math.min(100, combatant.maxHp ? combatant.hp / combatant.maxHp * 100 : 0));
+        const hpColor = hpPercent > 50 ? "var(--good)" : hpPercent > 20 ? "var(--warn)" : "var(--danger)";
+        if ($(`manualHudHp${side}`)) {
+          $(`manualHudHp${side}`).style.setProperty("--hp-percent", `${hpPercent}%`);
+          $(`manualHudHp${side}`).style.setProperty("--hp-color", hpColor);
+        }
+        if ($(`manualHudEnergy${side}`)) $(`manualHudEnergy${side}`).textContent = `${combatant.energy} energy`;
+        if ($(`manualHudCharges${side}`)) {
+          $(`manualHudCharges${side}`).innerHTML = validChargedMoves(combatant).slice(0, 2).map(move => {
+            const cost = Math.max(1, Number(move.energyCost || 1));
+            const fill = Math.max(0, Math.min(100, combatant.energy / cost * 100));
+            const color = typeColors[move.type] || "var(--accent)";
+            const label = timelineEditorMoveLabel(move, "charge");
+            return `<span class="manual-hud-charge" style="--move-color:${escapeHtml(color)};--charge-fill:${fill}%" title="${escapeHtml(`${move.name}: ${combatant.energy}/${cost} energy`)}">${escapeHtml(label)}</span>`;
+          }).join("");
+        }
+      };
+      renderSide("A", left);
+      renderSide("B", right);
     }
 
     function renderManualStateInspector(runtimeStatus) {
@@ -14724,6 +15002,8 @@
       branchSelect.hidden = !enabled;
       undo.disabled = !manualBranchRegistry || manualBranchRegistry.history.length <= 1;
       redo.disabled = !manualBranchRegistry || !manualBranchRegistry.redoStack.length;
+      if ($("manualOverlayUndo")) $("manualOverlayUndo").disabled = undo.disabled;
+      if ($("manualOverlayRedo")) $("manualOverlayRedo").disabled = redo.disabled;
       const active = manualBranchRegistry ? window.PvPeakManualBranches.activeBranch(manualBranchRegistry) : null;
       if (enabled && manualBranchRegistry) {
         branchSelect.innerHTML = Object.values(manualBranchRegistry.branches)

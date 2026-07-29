@@ -21,6 +21,16 @@ for (const id of [
   "manualDecisionTurn",
   "manualDecisionEnergy",
   "manualDecisionLegal",
+  "manualDuelHud",
+  "manualHudSpriteA",
+  "manualHudSpriteB",
+  "manualHudHpA",
+  "manualHudHpB",
+  "manualHudChargesA",
+  "manualHudChargesB",
+  "manualOverlayUndo",
+  "manualOverlayRedo",
+  "manualOverlayExit",
   "manualStateInspector",
   "manualInspectorPhase",
   "manualInspectorGrid",
@@ -64,6 +74,14 @@ assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,320}width: 100%;[\s\S
 assert.match(html, /\.manual-state-inspector\s*\{[\s\S]{0,180}grid-column: 2/);
 assert.match(html, /\.manual-inspector-grid\s*\{[\s\S]{0,120}grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
 assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
+assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,400}body\.manual-mode-active #battleTimeline/);
+assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
+assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
+assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{\s*display: none/);
+assert.match(html, /function renderManualDuelHud/);
+assert.match(html, /setPokemonImage\(sprite, combatant\.p\)/);
+assert.match(html, /validChargedMoves\(combatant\)\.slice\(0, 2\)/);
+assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 
 for (const value of ["battle-start", "selected-before", "selected-after", "current"]) {
   assert.match(html, new RegExp(`value=["']${value}["']`), `Missing branch-point option ${value}.`);
