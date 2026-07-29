@@ -6925,7 +6925,7 @@
     }
     .shield-decision-arena {
       position: relative;
-      min-height: 210px;
+      min-height: 224px;
       overflow: hidden;
       isolation: isolate;
       border: 1px solid color-mix(in srgb, var(--line) 78%, var(--accent));
@@ -6940,8 +6940,8 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      width: min(67%, 310px);
-      aspect-ratio: 1.64;
+      width: min(84%, 388px);
+      aspect-ratio: 1.72;
       transform: translate(-50%, -50%) rotate(-30deg) skewX(30deg);
       border: 2px solid color-mix(in srgb, var(--accent) 26%, var(--line));
       border-radius: 13px;
@@ -6953,7 +6953,7 @@
       z-index: -1;
     }
     .shield-decision-arena::after {
-      width: min(57%, 264px);
+      width: min(73%, 336px);
       border-width: 1px;
       opacity: .72;
       background: transparent;
@@ -6968,12 +6968,12 @@
       filter: drop-shadow(0 5px 5px color-mix(in srgb, var(--shadow) 68%, transparent));
     }
     .shield-decision-sprite.defender {
-      left: clamp(9px, 7%, 28px);
-      bottom: 7px;
+      left: 13%;
+      bottom: 12%;
     }
     .shield-decision-sprite.attacker {
-      top: 4px;
-      right: clamp(9px, 7%, 28px);
+      top: 10%;
+      right: 13%;
     }
     .shield-decision-emblem {
       position: absolute;
@@ -7017,14 +7017,12 @@
       line-height: 1.35;
     }
     .shield-decision-facts div {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
+      display: block;
     }
     .shield-decision-facts dt,
     .shield-decision-facts dd { margin: 0; }
     .shield-decision-facts dt::after { content: ":"; }
-    .shield-decision-facts dd { color: var(--ink); font-weight: 850; }
+    .shield-decision-facts dd { margin-left: 4px; color: var(--ink); font-weight: 850; }
     @media (prefers-reduced-motion: no-preference) {
       #manualDecisionModal.shield-decision-modal.open .shield-decision-emblem {
         animation: shield-decision-pulse 1.5s ease-in-out infinite;
