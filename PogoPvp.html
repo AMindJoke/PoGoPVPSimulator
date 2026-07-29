@@ -245,7 +245,21 @@
       border-bottom-color: var(--accent);
       box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
-    h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: 0; white-space: nowrap; }
+    h1 { margin: 0; white-space: nowrap; }
+    .app-wordmark {
+      display: grid;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 950;
+      line-height: .8;
+      letter-spacing: -.03em;
+    }
+    .app-wordmark small {
+      font-size: 9px;
+      letter-spacing: .11em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
     .mobile-header-actions { display: none; }
     .app-tabs {
       margin-left: auto;
@@ -5675,7 +5689,7 @@
       body.manual-mode-active #battleTimeline {
         --timeline-track-height: 58px;
         --timeline-lane-height: 38px;
-        --timeline-side-zone-width: 116px;
+        --timeline-side-zone-width: 100px;
         position: fixed;
         inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
         z-index: 500;
@@ -6011,8 +6025,15 @@
         min-height: 168px;
       }
       body.manual-mode-active .timeline-label img {
-        width: 44px;
-        height: 44px;
+        width: 52px;
+        height: 52px;
+      }
+      body.manual-mode-active .timeline-label {
+        padding-left: 0;
+        overflow: visible;
+      }
+      body.manual-mode-active .timeline-pokemon-flow {
+        transform: translateX(-5px);
       }
     }
     .timeline-tools {
@@ -6457,10 +6478,7 @@
       display: inline;
     }
     body.manual-mode-active .timeline-block.fast {
-      height: 18px !important;
-      border-radius: 5px;
-      color: #fff;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, .35);
+      border-radius: 3px;
     }
     body.manual-mode-active .timeline-block.charge {
       height: 28px;
@@ -7600,7 +7618,8 @@
         gap: 9px;
         padding: 10px;
       }
-      h1 { font-size: 16px; }
+      .app-wordmark { font-size: 23px; }
+      .app-wordmark small { font-size: 7px; }
       .app-tabs {
         margin-left: 0;
         display: grid;
@@ -9609,7 +9628,7 @@
 <body class="clarity-ui" data-view="simulator">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
-    <h1>Pokemon GO PvP Simulator</h1>
+    <h1><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
     <div class="mobile-header-actions" aria-label="Simulator controls">
       <button id="mobileReset" type="button" title="Reset simulator" aria-label="Reset simulator"><span aria-hidden="true">&#8635;</span></button>
       <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
@@ -23354,8 +23373,7 @@
       const borderColor = darken(color, .18);
       const visualStart = timelineFastVisualTurn(event, chargeSlots);
       const size = timelineFastSize(turnPx);
-      const editorLabel = timelineEditorMoveLabel(event.move);
-      const tokenWidth = manualModeState?.enabled ? Math.max(22, Math.min(54, editorLabel.length * 6 + 8)) : size;
+      const tokenWidth = size;
       const pairedShield = event.sneaked && Number.isInteger(event.sneakChargeIndex)
         ? timeline.find(candidate => (candidate.kind === "shield" || candidate.kind === "form-protect") && candidate.trainer === event.trainer && candidate.chargeIndex === event.sneakChargeIndex)
         : null;
@@ -23363,7 +23381,7 @@
       const left = visualStart * turnPx - tokenWidth / 2 - pairedOffset;
       const cls = `timeline-block fast${event.sneaked ? " sneaked" : ""}${pairedShield ? " shield-paired" : ""}${selectedTimelineIndex === eventIndex ? " selected" : ""}`;
       const top = Math.max(2, (22 - size) / 2);
-      return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${tokenWidth}px;height:${size}px;background:${color};border-color:${borderColor}"><span class="timeline-token-label">${escapeHtml(editorLabel)}</span></div>${timelineMarkers(event, eventIndex, left + tokenWidth + 8)}`;
+      return `<div class="${cls}" data-event-index="${eventIndex}" aria-label="${escapeHtml(timelineMoveTitle(event))}" style="left:${left}px;top:${top}px;width:${tokenWidth}px;height:${size}px;background:${color};border-color:${borderColor}"></div>${timelineMarkers(event, eventIndex, left + tokenWidth + 8)}`;
     }
 
     function timelineEditorMoveLabel(move) {
