@@ -8306,17 +8306,290 @@
       .manual-state-inspector {
         padding-top: 9px;
       }
-      body.manual-mode-active .manual-editor-workspace {
+      body.manual-mode-active > header,
+      body.manual-mode-active #simulatorView > .toolbar,
+      body.manual-mode-active #simulatorView > .setup,
+      body.manual-mode-active #simulatorView > .battle-cta-row,
+      body.manual-mode-active .analysis-grid > :not(#battleTimeline) {
         display: none;
       }
-      body.manual-mode-active .manual-mobile-action-mount {
-        display: block;
-        grid-column: 1 / -1;
-        padding: 7px;
-        border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
-        border-radius: 9px;
-        background: color-mix(in srgb, var(--accent) 5%, var(--soft));
+      body.manual-mode-active main {
+        padding: 0 0 calc(12px + env(safe-area-inset-bottom, 0px));
       }
+      body.manual-mode-active .analysis-grid {
+        display: block;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+      }
+      body.manual-mode-active #battleTimeline {
+        --manual-mobile-top-offset: 0px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        padding: 0 8px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
+      }
+      .manual-mobile-focus-mount { display: none; }
+      body.manual-mode-active .manual-mobile-focus-mount {
+        position: sticky;
+        top: 0;
+        z-index: 42;
+        display: grid;
+        gap: 7px;
+        margin: 0 -8px;
+        padding: calc(6px + env(safe-area-inset-top, 0px)) 8px 7px;
+        background: var(--bg);
+        box-shadow: 0 4px 9px color-mix(in srgb, var(--shadow) 74%, transparent);
+      }
+      body.manual-mode-active .manual-workspace-header {
+        display: flex;
+        align-items: center;
+        min-height: 42px;
+        gap: 7px;
+        padding: 5px 2px;
+      }
+      body.manual-mode-active .manual-workspace-brand {
+        display: grid;
+        color: var(--accent-dark);
+        font-size: 18px;
+        font-weight: 950;
+        line-height: .78;
+      }
+      body.manual-mode-active .manual-workspace-brand small {
+        font-size: 6px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-workspace-badge {
+        padding: 6px 8px;
+        border-radius: 6px;
+        background: var(--danger);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 950;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-workspace-scenario { display: none; }
+      body.manual-mode-active .manual-workspace-nav {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin-left: auto;
+      }
+      body.manual-mode-active .manual-workspace-nav > button,
+      body.manual-mode-active .manual-guide summary {
+        min-width: 0;
+        min-height: 32px;
+        padding: 4px 6px;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 10px;
+        font-weight: 850;
+        box-shadow: none;
+      }
+      body.manual-mode-active .manual-workspace-nav > button:first-child {
+        max-width: 74px;
+        white-space: normal;
+        line-height: 1.05;
+      }
+      body.manual-mode-active .manual-guide {
+        position: relative;
+      }
+      body.manual-mode-active .manual-guide summary {
+        display: grid;
+        place-items: center;
+        list-style: none;
+      }
+      body.manual-mode-active .manual-guide summary::-webkit-details-marker { display: none; }
+      body.manual-mode-active .manual-guide > span {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 4;
+        width: min(286px, calc(100vw - 24px));
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 10px 24px rgba(23, 33, 47, .18);
+        color: var(--text);
+        font-size: 10px;
+        line-height: 1.4;
+      }
+      body.manual-mode-active .manual-duel-hud {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
+        gap: 4px;
+        padding: 7px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-hud-side {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 5px;
+        padding: 4px;
+        border: 0;
+        background: transparent;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] {
+        grid-template-columns: minmax(0, 1fr) 42px;
+      }
+      body.manual-mode-active .manual-hud-sprite {
+        width: 42px;
+        height: 42px;
+      }
+      body.manual-mode-active .manual-hud-copy { gap: 3px; }
+      body.manual-mode-active .manual-hud-name-row { gap: 3px; }
+      body.manual-mode-active .manual-hud-name {
+        font-size: 12px;
+      }
+      .manual-hud-types {
+        display: inline-flex;
+        gap: 2px;
+        min-width: 0;
+      }
+      .manual-hud-types .type-badge {
+        min-height: 15px;
+        padding: 1px 4px;
+        font-size: 7px;
+      }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 9px; }
+      body.manual-mode-active .manual-hud-hp { height: 7px; }
+      body.manual-mode-active .manual-hud-charges {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) 32px;
+        align-items: center;
+        gap: 3px;
+        width: 100%;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { flex-direction: initial; }
+      body.manual-mode-active .manual-hud-charges .energy-orb {
+        width: 32px;
+        height: 32px;
+      }
+      body.manual-mode-active .manual-hud-energy {
+        justify-content: center;
+        gap: 2px;
+        font-size: 8px;
+      }
+      body.manual-mode-active .manual-hud-energy strong { font-size: 13px; }
+      body.manual-mode-active .manual-hud-energy small { font-size: 8px; }
+      body.manual-mode-active .manual-hud-center {
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 1px;
+        text-align: center;
+      }
+      body.manual-mode-active .manual-hud-center > strong {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        font-size: 14px;
+      }
+      body.manual-mode-active .manual-hud-center span { font-size: 10px; font-weight: 900; }
+      body.manual-mode-active .manual-hud-center small { font-size: 8px; }
+      body.manual-mode-active .manual-hud-center em { display: none; }
+      body.manual-mode-active .manual-timeline-stage {
+        position: sticky;
+        top: var(--manual-mobile-top-offset);
+        z-index: 40;
+        display: block;
+        order: 2;
+        padding: 7px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+        box-shadow: 0 5px 12px color-mix(in srgb, var(--shadow) 78%, transparent);
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-head {
+        margin-bottom: 5px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-head h2 { font-size: 14px; }
+      body.manual-mode-active .manual-timeline-stage .timeline-legend {
+        gap: 5px;
+        font-size: 9px;
+      }
+      body.manual-mode-active .timeline-grid { min-height: 106px; }
+      body.manual-mode-active .timeline-scroll {
+        min-height: 106px;
+        height: 106px;
+        background: var(--soft);
+      }
+      body.manual-mode-active .manual-editor-workspace {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      body.manual-mode-active .manual-decision-panel {
+        display: grid;
+        gap: 8px;
+      }
+      body.manual-mode-active .manual-decision-banner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 7px;
+        padding: 9px;
+        border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-decision-primary strong { font-size: 15px; }
+      body.manual-mode-active .manual-decision-facts {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-flow: initial;
+        grid-auto-columns: initial;
+        gap: 4px;
+      }
+      body.manual-mode-active .manual-decision-facts > span { padding: 4px; }
+      body.manual-mode-active .manual-overlay-controls { display: flex; }
+      body.manual-mode-active .manual-overlay-controls .manual-overlay-exit { display: none; }
+      body.manual-mode-active .manual-editor-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-editor-actions .actions {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      body.manual-mode-active .manual-editor-actions .actions button {
+        min-height: 52px;
+        padding: 8px 10px;
+      }
+      body.manual-mode-active .manual-editor-actions .move-button-label strong { font-size: 14px; }
+      body.manual-mode-active .manual-editor-actions .move-button-label > span { font-size: 10px; }
+      body.manual-mode-active .manual-editor-command-bar {
+        padding-top: 7px;
+        border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      }
+      body.manual-mode-active .manual-editor-command-bar button {
+        width: 100%;
+        min-height: 48px;
+      }
+      body.manual-mode-active .manual-mobile-action-mount { display: none; }
       .manual-mobile-action-mount[hidden] {
         display: none;
       }
@@ -8331,6 +8604,78 @@
       }
       .manual-mobile-action-mount .manual-editor-command-bar {
         padding-top: 6px;
+      }
+      body.manual-mode-active .manual-mobile-secondary-mount {
+        display: block;
+        margin-top: 8px;
+      }
+      body.manual-mode-active .manual-runtime-toolbar {
+        display: grid;
+        gap: 7px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+      }
+      body.manual-mode-active .manual-runtime-summary {
+        display: none;
+      }
+      body.manual-mode-active .manual-history-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+      body.manual-mode-active .manual-history-actions button,
+      body.manual-mode-active #manualModeExit {
+        min-height: 40px;
+      }
+      body.manual-mode-active .manual-version-panel {
+        margin-top: 0;
+      }
+      body.manual-mode-active .manual-state-inspector {
+        display: block;
+        margin-top: 8px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      body.manual-mode-active .manual-state-inspector-head,
+      body.manual-mode-active .manual-state-inspector .manual-inspector-grid {
+        display: none;
+      }
+      body.manual-mode-active #manualInspectorDetailsToggle {
+        min-height: 40px;
+        margin: 0;
+      }
+      body.manual-mode-active .manual-state-inspector.mobile-details-open {
+        position: fixed;
+        right: 10px;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        left: 10px;
+        z-index: 80;
+        max-height: min(72vh, 560px);
+        padding: 12px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        box-shadow: 0 18px 44px rgba(23, 33, 47, .28), 0 0 0 100vmax rgba(23, 33, 47, .38);
+      }
+      body.manual-mode-active .manual-state-inspector.mobile-details-open .manual-state-inspector-head,
+      body.manual-mode-active .manual-state-inspector.mobile-details-open .manual-inspector-grid {
+        display: grid;
+      }
+      body.manual-mode-active .manual-state-inspector.mobile-details-open .manual-state-inspector-head {
+        display: flex;
+      }
+      body.manual-mode-active .manual-state-inspector.mobile-details-open .manual-inspector-advanced[hidden] {
+        display: grid;
+      }
+      body.manual-mode-active .manual-state-inspector.mobile-details-open #manualInspectorDetailsToggle {
+        position: sticky;
+        bottom: 0;
+        margin-top: 8px;
+        background: var(--panel);
       }
       .manual-decision-facts {
         grid-auto-flow: column;
@@ -9901,6 +10246,7 @@
 
     <div class="analysis-grid">
       <section class="timeline" id="battleTimeline">
+        <div id="manualMobileFocusMount" class="manual-mobile-focus-mount" hidden></div>
         <div id="manualWorkspaceHeader" class="manual-workspace-header">
           <span class="manual-workspace-brand">PvP <small>Simulator</small></span>
           <strong class="manual-workspace-badge">Manual Mode</strong>
@@ -9916,7 +10262,7 @@
             <button id="manualWorkspaceExit" class="secondary" type="button">Exit</button>
           </span>
         </div>
-        <div class="manual-timeline-stage">
+        <div id="manualTimelineStage" class="manual-timeline-stage">
           <div class="timeline-head">
             <h2>Timeline</h2>
             <div class="timeline-tools">
@@ -9953,6 +10299,7 @@
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
                   <strong id="manualHudNameA" class="manual-hud-name">Pokemon A</strong>
+                  <span id="manualHudTypesA" class="manual-hud-types" aria-label="Pokemon A types"></span>
                   <span id="manualHudHpTextA" class="manual-hud-hp-text">0/0 HP</span>
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpA"></i></div>
@@ -9976,6 +10323,7 @@
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
                   <strong id="manualHudNameB" class="manual-hud-name">Pokemon B</strong>
+                  <span id="manualHudTypesB" class="manual-hud-types" aria-label="Pokemon B types"></span>
                   <span id="manualHudHpTextB" class="manual-hud-hp-text">0/0 HP</span>
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpB"></i></div>
@@ -10039,6 +10387,7 @@
             <div id="manualInspectorAdvancedGrid" class="manual-inspector-grid manual-inspector-advanced" hidden></div>
             <button id="manualInspectorDetailsToggle" class="secondary" type="button" aria-expanded="false">View Full Details</button>
           </aside>
+          <div id="manualMobileSecondaryMount" class="manual-mobile-secondary-mount" hidden></div>
           <div id="manualTimelineEventMenu" class="manual-timeline-event-menu" hidden>
             <span class="manual-event-menu-copy">
               <strong id="manualEventMenuTitle">Selected event</strong>
@@ -10106,7 +10455,7 @@
               <h2>Manual controls</h2>
               <span id="manualModeStatus" class="manual-mode-status">Automatic timeline</span>
             </div>
-            <div class="manual-grid">
+            <div id="manualRuntimeToolbarHome" class="manual-grid">
               <div id="manualSetup" class="manual-setup">
                 <div class="manual-config-fields">
                   <div class="manual-config-group">
@@ -10354,6 +10703,7 @@
     let manualBranchRegistry = null;
     let manualOriginalRuntimeState = null;
     let manualRootSnapshotId = null;
+    let manualModeMinimized = false;
     let displayedResources = {};
     // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
     const startingFastAdvantages = { p1: null, p2: null };
@@ -10848,7 +11198,7 @@
       $("manualSelectionCancel").onclick = cancelManualBranchSelection;
       $("manualModeExit").onclick = exitLiveManualMode;
       $("manualOverlayExit").onclick = exitLiveManualMode;
-      $("manualBackToSimulation").onclick = exitLiveManualMode;
+      $("manualBackToSimulation").onclick = backToSimulationFromManual;
       $("manualWorkspaceExit").onclick = exitLiveManualMode;
       $("manualOverlayUndo").onclick = undoLiveManualCommand;
       $("manualOverlayRedo").onclick = redoLiveManualCommand;
@@ -14759,6 +15109,7 @@
         }
       });
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      manualModeMinimized = false;
       const selectedControlMode = $("manualControlMode")?.value;
       if (Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(selectedControlMode)) {
         manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, selectedControlMode);
@@ -14766,6 +15117,9 @@
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       updateManualBranchSelectionUi();
       render();
+      if (window.matchMedia("(max-width: 900px)").matches) {
+        requestAnimationFrame(() => $("manualMobileFocusMount")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+      }
       return true;
     }
 
@@ -14777,14 +15131,32 @@
       manualBranchRegistry = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
+      manualModeMinimized = false;
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
       add("Returned to the immutable automatic timeline.", "info");
       render();
     }
 
+    function backToSimulationFromManual() {
+      if (!manualModeState?.enabled) return false;
+      manualModeMinimized = true;
+      add("Returned to the simulator view. The current manual timeline is preserved.", "info");
+      render();
+      return true;
+    }
+
     function toggleLiveManualMode() {
-      return manualModeState?.enabled ? exitLiveManualMode() : enterLiveManualMode();
+      if (!manualModeState?.enabled) return enterLiveManualMode();
+      if (manualModeMinimized) {
+        manualModeMinimized = false;
+        render();
+        if (window.matchMedia("(max-width: 900px)").matches) {
+          requestAnimationFrame(() => $("manualMobileFocusMount")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+        }
+        return true;
+      }
+      return exitLiveManualMode();
     }
 
     function changeLiveManualControlMode() {
@@ -15260,9 +15632,11 @@
       const workspace = $("manualEditorWorkspace");
       if (!workspace) return;
       const enabled = !!manualModeState?.enabled;
-      workspace.hidden = !enabled;
-      document.body.classList.toggle("manual-mode-active", enabled);
-      if (!enabled) return;
+      const focused = enabled && !manualModeMinimized;
+      workspace.hidden = !focused;
+      document.body.classList.toggle("manual-mode-active", focused);
+      document.body.classList.toggle("manual-mode-minimized", enabled && manualModeMinimized);
+      if (!focused) return;
       const pending = manualModeState.pendingDecision || {};
       const waitingSides = runtimeStatus.waitingSides || [];
       const activeSide = pending.activeSide
@@ -15319,6 +15693,13 @@
         const sprite = $(`manualHudSprite${side}`);
         if (sprite) setPokemonImage(sprite, combatant.p);
         if ($(`manualHudName${side}`)) $(`manualHudName${side}`).textContent = combatant.p?.name || `Pokemon ${side}`;
+        const types = Array.isArray(combatant.p?.types) ? combatant.p.types : [];
+        if ($(`manualHudTypes${side}`)) {
+          $(`manualHudTypes${side}`).innerHTML = types.map(type => {
+            const color = typeColors[type] || "#66788c";
+            return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
+          }).join("");
+        }
         if ($(`manualHudHpText${side}`)) $(`manualHudHpText${side}`).textContent = `${combatant.hp}/${combatant.maxHp} HP`;
         const hpPercent = Math.max(0, Math.min(100, combatant.maxHp ? combatant.hp / combatant.maxHp * 100 : 0));
         const hpColor = hpPercent > 50 ? "var(--good)" : hpPercent > 20 ? "var(--warn)" : "var(--danger)";
@@ -15402,6 +15783,14 @@
       const advanced = $("manualInspectorAdvancedGrid");
       const toggle = $("manualInspectorDetailsToggle");
       if (!advanced || !toggle) return false;
+      if (window.matchMedia("(max-width: 900px)").matches) {
+        const inspector = $("manualStateInspector");
+        const opening = !inspector?.classList.contains("mobile-details-open");
+        inspector?.classList.toggle("mobile-details-open", opening);
+        toggle.setAttribute("aria-expanded", String(opening));
+        toggle.textContent = opening ? "Close Details" : "View Details";
+        return true;
+      }
       const opening = advanced.hidden;
       advanced.hidden = !opening;
       toggle.setAttribute("aria-expanded", String(opening));
@@ -15421,9 +15810,9 @@
       const overlayScenario = $("manualOverlayScenario");
       const controlMode = $("manualControlMode");
       if (!toggle || !status || !startPoint || !controlMode || !branchSelect || !undo || !redo) return;
-      toggle.textContent = "Start Manual Mode";
-      if ($("manualSetup")) $("manualSetup").hidden = enabled;
-      if ($("manualRuntimeToolbar")) $("manualRuntimeToolbar").hidden = !enabled;
+      toggle.textContent = enabled && manualModeMinimized ? "Resume Manual Mode" : "Start Manual Mode";
+      if ($("manualSetup")) $("manualSetup").hidden = enabled && !manualModeMinimized;
+      if ($("manualRuntimeToolbar")) $("manualRuntimeToolbar").hidden = !enabled || manualModeMinimized;
       if ($("manualActionsA")) $("manualActionsA").hidden = !enabled;
       if ($("manualActionsB")) $("manualActionsB").hidden = !enabled;
       startPoint.disabled = enabled;
@@ -15582,15 +15971,38 @@
       const mobileMount = $("manualMobileActionMount");
       const inspector = $("manualStateInspector");
       const decisionPanel = $("manualDecisionPanel");
-      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel) return;
+      const focusMount = $("manualMobileFocusMount");
+      const workspaceHeader = $("manualWorkspaceHeader");
+      const timelineStage = $("manualTimelineStage");
+      const duelHud = $("manualDuelHud");
+      const secondaryMount = $("manualMobileSecondaryMount");
+      const runtimeToolbar = $("manualRuntimeToolbar");
+      const runtimeHome = $("manualRuntimeToolbarHome");
+      const battleTimeline = $("battleTimeline");
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
       if (mobile) {
-        if (actions.parentElement !== mobileMount) mobileMount.append(actions);
+        if (workspaceHeader.parentElement !== focusMount) focusMount.append(workspaceHeader);
+        if (duelHud.parentElement !== focusMount) focusMount.append(duelHud);
+        if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
+        if (runtimeToolbar.parentElement !== secondaryMount) secondaryMount.append(runtimeToolbar);
         mobileMount.hidden = !manualModeState?.enabled;
+        focusMount.hidden = !manualModeState?.enabled || manualModeMinimized;
+        secondaryMount.hidden = !manualModeState?.enabled || manualModeMinimized;
+        requestAnimationFrame(() => {
+          if (!manualModeState?.enabled || manualModeMinimized) return;
+          battleTimeline.style.setProperty("--manual-mobile-top-offset", `${focusMount.offsetHeight}px`);
+        });
         return;
       }
       mobileMount.hidden = true;
+      focusMount.hidden = true;
+      secondaryMount.hidden = true;
+      battleTimeline.style.removeProperty("--manual-mobile-top-offset");
+      if (workspaceHeader.parentElement !== battleTimeline) battleTimeline.insertBefore(workspaceHeader, timelineStage);
+      if (duelHud.parentElement !== workspace) workspace.insertBefore(duelHud, decisionPanel);
       if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
+      if (runtimeToolbar.parentElement !== runtimeHome) runtimeHome.append(runtimeToolbar);
     }
 
     function manualActionUnavailableReason(combatant, move, actionType) {
