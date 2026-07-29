@@ -8707,7 +8707,7 @@
         background: transparent;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: minmax(0, 1fr) 46px;
+        grid-template-columns: 46px minmax(0, 1fr);
       }
       body.manual-mode-active .manual-hud-sprite {
         width: 46px;
@@ -8728,10 +8728,10 @@
         grid-column: 1;
         font-size: 13px;
       }
-      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 2; grid-row: 1; }
-      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name-row { grid-column: 1; grid-row: 1; }
-      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name { justify-self: end; text-align: right; }
-      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-types { justify-content: end; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 1; grid-row: 1; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name-row { grid-column: 2; grid-row: 1; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name { justify-self: start; text-align: left; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-types { justify-content: start; }
       .manual-hud-types {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -8749,7 +8749,7 @@
         grid-column: 1 / -1;
         grid-row: 2;
         width: 100%;
-        height: 13px;
+        height: 15px;
         border-radius: 3px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: 0; }
@@ -8784,7 +8784,7 @@
         font-size: 8px;
       }
       body.manual-mode-active .manual-hud-energy strong { font-size: 13px; }
-      body.manual-mode-active .manual-hud-energy small { display: none; }
+      body.manual-mode-active .manual-hud-energy small { display: inline; font-size: 8px; }
       body.manual-mode-active .manual-hud-center {
         position: relative;
         display: grid;
@@ -8933,6 +8933,13 @@
         gap: 4px;
         min-width: 0;
       }
+      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control button {
+        width: 36px;
+        min-width: 36px;
+        min-height: 30px;
+      }
+      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control svg { width: 16px; height: 16px; }
+      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control strong { font-size: 10px; }
       body.manual-mode-active .manual-editor-command-bar button {
         width: 100%;
         min-height: 48px;
