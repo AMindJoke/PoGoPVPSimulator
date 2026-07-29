@@ -120,6 +120,8 @@ assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 assert.match(html, /manualBackToSimulation"\)\.onclick = backToSimulationFromManual/);
 assert.match(html, /function backToSimulationFromManual/);
 assert.match(html, /manualModeMinimized = true/);
+assert.match(html, /function scrollManualMobileEditorToTop/);
+assert.match(html, /window\.scrollTo\(\{ top, behavior: "auto" \}\)/);
 assert.match(html, /function keepLatestManualTimelineEventVisible/);
 assert.match(html, /scroll\.scrollBy\(/);
 assert.match(html, /syncManualBranchAfterAction\(result\.action\);\s*render\(\);\s*return true;/);

@@ -15182,7 +15182,7 @@
       updateManualBranchSelectionUi();
       render();
       if (window.matchMedia("(max-width: 900px)").matches) {
-        requestAnimationFrame(() => $("manualMobileFocusMount")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+        scrollManualMobileEditorToTop();
       }
       return true;
     }
@@ -15216,11 +15216,20 @@
         manualModeMinimized = false;
         render();
         if (window.matchMedia("(max-width: 900px)").matches) {
-          requestAnimationFrame(() => $("manualMobileFocusMount")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+          scrollManualMobileEditorToTop();
         }
         return true;
       }
       return exitLiveManualMode();
+    }
+
+    function scrollManualMobileEditorToTop() {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const focusMount = $("manualMobileFocusMount");
+        if (!focusMount || !manualModeState?.enabled || manualModeMinimized) return;
+        const top = Math.max(0, window.scrollY + focusMount.getBoundingClientRect().top);
+        window.scrollTo({ top, behavior: "auto" });
+      }));
     }
 
     function changeLiveManualControlMode() {
