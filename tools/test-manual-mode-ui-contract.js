@@ -14,6 +14,7 @@ for (const id of [
   "manualRuntimeState",
   "manualRuntimeDetail",
   "manualRuntimeTurn",
+  "manualMobileActionMount",
   "manualEditorWorkspace",
   "manualDecisionBanner",
   "manualCurrentDecisionTitle",
@@ -80,7 +81,14 @@ assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
 assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{\s*display: none/);
 assert.match(html, /function renderManualDuelHud/);
 assert.match(html, /setPokemonImage\(sprite, combatant\.p\)/);
-assert.match(html, /validChargedMoves\(combatant\)\.slice\(0, 2\)/);
+assert.match(html, /energyMoveOrb\(move, combatant\.energy, prefix, index\)/);
+assert.match(html, /function syncManualEditorPlacement/);
+assert.match(html, /window\.matchMedia\("\(max-width: 900px\)"\)\.matches/);
+assert.match(html, /mobileMount\.append\(actions\)/);
+assert.match(html, /workspace\.insertBefore\(actions, inspector\)/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-workspace\s*\{\s*display: none/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 46px/);
+assert.match(html, /--timeline-track-height: 58px/);
 assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 
 for (const value of ["battle-start", "selected-before", "selected-after", "current"]) {

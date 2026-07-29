@@ -5390,6 +5390,22 @@
       font-weight: 850;
       white-space: nowrap;
     }
+    .manual-hud-energy {
+      display: inline-grid;
+      grid-auto-flow: column;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .manual-hud-energy strong {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .manual-hud-energy small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
+    }
     .manual-hud-hp {
       height: 8px;
       overflow: hidden;
@@ -5409,21 +5425,7 @@
       gap: 5px;
     }
     .manual-hud-side[data-side="B"] .manual-hud-charges { flex-direction: row-reverse; }
-    .manual-hud-charge {
-      display: inline-grid;
-      place-items: center;
-      width: 31px;
-      height: 31px;
-      border: 3px solid color-mix(in srgb, var(--move-color) 75%, var(--line));
-      border-radius: 50%;
-      background:
-        linear-gradient(to top, color-mix(in srgb, var(--move-color) 78%, var(--panel)) 0 var(--charge-fill), var(--panel) var(--charge-fill) 100%);
-      color: var(--text);
-      font-size: 8px;
-      font-weight: 950;
-      letter-spacing: -.02em;
-      text-transform: uppercase;
-    }
+    .manual-mobile-action-mount { display: none; }
     .manual-decision-primary {
       display: grid;
       gap: 2px;
@@ -5679,6 +5681,45 @@
       body.manual-mode-active .manual-duel-hud {
         display: grid;
       }
+      body.manual-mode-active .manual-hud-side {
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 13px;
+        padding: 12px 14px;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] {
+        grid-template-columns: minmax(0, 1fr) 78px;
+      }
+      body.manual-mode-active .manual-hud-sprite {
+        width: 76px;
+        height: 76px;
+      }
+      body.manual-mode-active .manual-hud-name {
+        font-size: 17px;
+      }
+      body.manual-mode-active .manual-hud-hp-text {
+        font-size: 12px;
+      }
+      body.manual-mode-active .manual-hud-hp {
+        height: 14px;
+        box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
+      }
+      body.manual-mode-active .manual-hud-energy strong {
+        font-size: 20px;
+      }
+      body.manual-mode-active .manual-hud-energy small {
+        font-size: 11px;
+      }
+      body.manual-mode-active .manual-hud-charges {
+        gap: 8px;
+      }
+      body.manual-mode-active .manual-hud-charges .energy-orb {
+        width: 46px;
+        height: 46px;
+        border-width: 3px;
+      }
+      body.manual-mode-active .manual-hud-charges .energy-orb-label {
+        font-size: 14px;
+      }
       body.manual-mode-active .manual-editor-actions {
         grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
         align-items: stretch;
@@ -5686,6 +5727,16 @@
       }
       body.manual-mode-active .manual-editor-actions .actions {
         padding: 7px;
+      }
+      body.manual-mode-active .manual-editor-actions .actions button {
+        min-height: 46px;
+        padding: 7px 8px;
+      }
+      body.manual-mode-active .manual-editor-actions .move-button-label strong {
+        font-size: 13px;
+      }
+      body.manual-mode-active .manual-editor-actions .move-button-label > span {
+        font-size: 10px;
       }
       body.manual-mode-active .manual-editor-command-bar {
         grid-column: 3;
@@ -5701,11 +5752,20 @@
         display: none;
       }
       body.manual-mode-active .timeline-grid {
-        min-height: 124px;
+        min-height: 168px;
       }
       body.manual-mode-active .timeline-scroll {
         height: 100%;
-        min-height: 124px;
+        min-height: 168px;
+      }
+      body.manual-mode-active #battleTimeline {
+        --timeline-track-height: 58px;
+        --timeline-lane-height: 38px;
+        --timeline-side-zone-width: 116px;
+      }
+      body.manual-mode-active .timeline-label img {
+        width: 44px;
+        height: 44px;
       }
     }
     .timeline-tools {
@@ -7980,6 +8040,32 @@
       .manual-state-inspector {
         padding-top: 9px;
       }
+      body.manual-mode-active .manual-editor-workspace {
+        display: none;
+      }
+      body.manual-mode-active .manual-mobile-action-mount {
+        display: block;
+        grid-column: 1 / -1;
+        padding: 7px;
+        border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+        border-radius: 9px;
+        background: color-mix(in srgb, var(--accent) 5%, var(--soft));
+      }
+      .manual-mobile-action-mount[hidden] {
+        display: none;
+      }
+      .manual-mobile-action-mount .manual-editor-actions {
+        grid-template-columns: 1fr;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      .manual-mobile-action-mount .manual-editor-actions .actions {
+        margin: 0;
+      }
+      .manual-mobile-action-mount .manual-editor-command-bar {
+        padding-top: 6px;
+      }
       .manual-decision-facts {
         grid-auto-flow: column;
         grid-auto-columns: minmax(0, 1fr);
@@ -9771,6 +9857,7 @@
                   </span>
                   <span id="manualRuntimeTurn">Turn 0</span>
                 </div>
+                <div id="manualMobileActionMount" class="manual-mobile-action-mount" hidden></div>
                 <select id="manualBranchSelect" class="manual-native-select" aria-label="Timeline version" hidden></select>
                 <div class="manual-history-actions" role="group" aria-label="Manual branch history">
                   <button id="manualUndo" class="secondary" type="button" title="Undo the last manual edit." hidden disabled>↶ Undo</button>
@@ -10426,6 +10513,7 @@
         }
       }, { passive: true });
       window.addEventListener("resize", renderTimeline);
+      window.addEventListener("resize", syncManualEditorPlacement);
       document.addEventListener("pointerover", handleChargeInfoPointerOver);
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
@@ -14917,15 +15005,14 @@
           $(`manualHudHp${side}`).style.setProperty("--hp-percent", `${hpPercent}%`);
           $(`manualHudHp${side}`).style.setProperty("--hp-color", hpColor);
         }
-        if ($(`manualHudEnergy${side}`)) $(`manualHudEnergy${side}`).textContent = `${combatant.energy} energy`;
+        if ($(`manualHudEnergy${side}`)) {
+          $(`manualHudEnergy${side}`).innerHTML = `<strong>${combatant.energy}</strong><small>energy</small>`;
+        }
         if ($(`manualHudCharges${side}`)) {
-          $(`manualHudCharges${side}`).innerHTML = validChargedMoves(combatant).slice(0, 2).map(move => {
-            const cost = Math.max(1, Number(move.energyCost || 1));
-            const fill = Math.max(0, Math.min(100, combatant.energy / cost * 100));
-            const color = typeColors[move.type] || "var(--accent)";
-            const label = timelineEditorMoveLabel(move, "charge");
-            return `<span class="manual-hud-charge" style="--move-color:${escapeHtml(color)};--charge-fill:${fill}%" title="${escapeHtml(`${move.name}: ${combatant.energy}/${cost} energy`)}">${escapeHtml(label)}</span>`;
-          }).join("");
+          const prefix = side === "A" ? "p1" : "p2";
+          $(`manualHudCharges${side}`).innerHTML = combatant.charged.slice(0, 2)
+            .map((move, index) => energyMoveOrb(move, combatant.energy, prefix, index))
+            .join("");
         }
       };
       renderSide("A", left);
@@ -14981,6 +15068,7 @@
 
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
+      syncManualEditorPlacement();
       const toggle = $("manualModeToggle");
       const status = $("manualModeStatus");
       const startPoint = $("manualStartPoint");
@@ -15126,6 +15214,22 @@
         });
       }
       updateManualBranchSelectionUi();
+    }
+
+    function syncManualEditorPlacement() {
+      const actions = $("manualEditorActions");
+      const workspace = $("manualEditorWorkspace");
+      const mobileMount = $("manualMobileActionMount");
+      const inspector = $("manualStateInspector");
+      if (!actions || !workspace || !mobileMount || !inspector) return;
+      const mobile = window.matchMedia("(max-width: 900px)").matches;
+      if (mobile) {
+        if (actions.parentElement !== mobileMount) mobileMount.append(actions);
+        mobileMount.hidden = !manualModeState?.enabled;
+        return;
+      }
+      mobileMount.hidden = true;
+      if (actions.parentElement !== workspace) workspace.insertBefore(actions, inspector);
     }
 
     function manualActionUnavailableReason(combatant, move, actionType) {
