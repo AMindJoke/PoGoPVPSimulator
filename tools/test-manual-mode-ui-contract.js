@@ -110,6 +110,14 @@ assert.match(html, /Continue Automatically/);
 assert.match(html, /function toggleManualInspectorDetails/);
 assert.match(html, /manualOverlayScenario"\)\.onchange/);
 assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
+assert.match(html, /manualBackToSimulation"\)\.onclick = backToSimulationFromManual/);
+assert.match(html, /function backToSimulationFromManual/);
+assert.match(html, /manualModeMinimized = true/);
+assert.match(html, /function keepLatestManualTimelineEventVisible/);
+assert.match(html, /scroll\.scrollBy\(/);
+assert.match(html, /id="manualMobileVersionsToggle"/);
+assert.match(html, /function toggleManualMobileVersions/);
+assert.match(html, /mobile-versions-open/);
 
 for (const value of ["battle-start", "selected-before", "selected-after", "current"]) {
   assert.match(html, new RegExp(`value=["']${value}["']`), `Missing branch-point option ${value}.`);

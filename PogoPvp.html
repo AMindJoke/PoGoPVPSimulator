@@ -8629,6 +8629,17 @@
       body.manual-mode-active #manualModeExit {
         min-height: 40px;
       }
+      body.manual-mode-active #manualBranchSelect {
+        width: 100%;
+        min-height: 38px;
+      }
+      body.manual-mode-active #manualMobileVersionsToggle {
+        display: block;
+        min-height: 40px;
+      }
+      body.manual-mode-active .manual-runtime-toolbar:not(.mobile-versions-open) .manual-version-panel {
+        display: none;
+      }
       body.manual-mode-active .manual-version-panel {
         margin-top: 0;
       }
@@ -10257,7 +10268,7 @@
             <button id="manualBackToSimulation" class="secondary" type="button">← Back to Simulation</button>
             <details class="manual-guide">
               <summary>Guide</summary>
-              <span>Choose a legal action, inspect the resulting timeline, or resume automatic play from the current state.</span>
+              <span>Choose a legal action and watch HP, Energy, and the Timeline update. Undo reverses your latest edit; use a timeline event to create an alternative branch. Continue Automatically lets the simulator proceed from here. Back to Simulation keeps this manual result visible.</span>
             </details>
             <button id="manualWorkspaceExit" class="secondary" type="button">Exit</button>
           </span>
@@ -10520,6 +10531,7 @@
                   <button id="manualRedo" class="secondary" type="button" title="Restore the last undone edit." hidden disabled>↷ Redo</button>
                 </div>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
+                <button id="manualMobileVersionsToggle" class="secondary" type="button" hidden aria-expanded="false">Manage Timeline Versions</button>
                 <div id="manualVersionPanel" class="manual-version-panel">
                   <div class="manual-version-head">
                     <span><strong>Timeline versions</strong><small>Choose which version of the battle you are viewing or editing</small></span>
@@ -11204,6 +11216,7 @@
       $("manualOverlayRedo").onclick = redoLiveManualCommand;
       $("manualOverlayScenario").onchange = event => switchLiveManualBranch(event.target.value);
       $("manualInspectorDetailsToggle").onclick = toggleManualInspectorDetails;
+      $("manualMobileVersionsToggle").onclick = toggleManualMobileVersions;
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
@@ -15798,6 +15811,18 @@
       return true;
     }
 
+    function toggleManualMobileVersions() {
+      if (!window.matchMedia("(max-width: 900px)").matches) return false;
+      const toolbar = $("manualRuntimeToolbar");
+      const toggle = $("manualMobileVersionsToggle");
+      if (!toolbar || !toggle) return false;
+      const opening = !toolbar.classList.contains("mobile-versions-open");
+      toolbar.classList.toggle("mobile-versions-open", opening);
+      toggle.setAttribute("aria-expanded", String(opening));
+      toggle.textContent = opening ? "Hide Timeline Versions" : "Manage Timeline Versions";
+      return true;
+    }
+
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
       syncManualEditorPlacement();
@@ -15821,6 +15846,7 @@
       undo.hidden = !enabled;
       redo.hidden = !enabled;
       branchSelect.hidden = !enabled;
+      if ($("manualMobileVersionsToggle")) $("manualMobileVersionsToggle").hidden = !enabled;
       undo.disabled = !manualBranchRegistry || manualBranchRegistry.history.length <= 1;
       redo.disabled = !manualBranchRegistry || !manualBranchRegistry.redoStack.length;
       if ($("manualOverlayUndo")) $("manualOverlayUndo").disabled = undo.disabled;
@@ -15989,6 +16015,10 @@
         mobileMount.hidden = !manualModeState?.enabled;
         focusMount.hidden = !manualModeState?.enabled || manualModeMinimized;
         secondaryMount.hidden = !manualModeState?.enabled || manualModeMinimized;
+        if (!inspector.classList.contains("mobile-details-open")) {
+          const detailsToggle = $("manualInspectorDetailsToggle");
+          if (detailsToggle) detailsToggle.textContent = "View Details";
+        }
         requestAnimationFrame(() => {
           if (!manualModeState?.enabled || manualModeMinimized) return;
           battleTimeline.style.setProperty("--manual-mobile-top-offset", `${focusMount.offsetHeight}px`);
@@ -15999,6 +16029,9 @@
       focusMount.hidden = true;
       secondaryMount.hidden = true;
       battleTimeline.style.removeProperty("--manual-mobile-top-offset");
+      inspector.classList.remove("mobile-details-open");
+      runtimeToolbar.classList.remove("mobile-versions-open");
+      if ($("manualInspectorDetailsToggle")) $("manualInspectorDetailsToggle").textContent = "View Full Details";
       if (workspaceHeader.parentElement !== battleTimeline) battleTimeline.insertBefore(workspaceHeader, timelineStage);
       if (duelHud.parentElement !== workspace) workspace.insertBefore(duelHud, decisionPanel);
       if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
@@ -20488,6 +20521,7 @@
       renderManualModeControls();
       if (!scenarioWorkspace) renderKeyNumbers();
       renderTimeline();
+      keepLatestManualTimelineEventVisible();
       if (scenarioState || scenarioWorkspace) {
         clearScenarioResultPanels();
       } else {
@@ -20499,6 +20533,28 @@
       renderTechnicalReview();
       renderScenarioStacks();
       if (renderSpan) perfDebug.endSpan(renderSpan);
+    }
+
+    function keepLatestManualTimelineEventVisible() {
+      if (!manualModeState?.enabled || manualModeMinimized || !window.matchMedia("(max-width: 900px)").matches || !timeline.length) return;
+      requestAnimationFrame(() => {
+        const scroll = $("timelineScroll");
+        const latestIndex = timeline.length - 1;
+        const eventElement = [...document.querySelectorAll(`#timelineScroll [data-event-index="${latestIndex}"]`)]
+          .find(element => element.classList.contains("timeline-block") || element.classList.contains("timeline-marker"));
+        if (!scroll || !eventElement) return;
+        const viewport = scroll.getBoundingClientRect();
+        const target = eventElement.getBoundingClientRect();
+        const inset = 28;
+        let delta = 0;
+        if (target.right > viewport.right - inset) delta = target.right - (viewport.right - inset);
+        else if (target.left < viewport.left + inset) delta = target.left - (viewport.left + inset);
+        if (Math.abs(delta) < 2) return;
+        scroll.scrollBy({
+          left: delta,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+        });
+      });
     }
 
     function scenarioApi() {
