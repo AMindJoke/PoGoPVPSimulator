@@ -104,6 +104,8 @@ assert.match(html, /body\.manual-mode-active \.manual-mobile-focus-mount\s*\{[\s
 assert.match(html, /body\.manual-mode-active \.manual-editor-workspace\s*\{[\s\S]{0,80}order: 3/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions\s*\{\s*order: 1/);
 assert.match(html, /body\.manual-mode-active \.manual-decision-banner\s*\{\s*order: 2/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-actions\s*\{[\s\S]{0,140}grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-command-bar\s*\{[\s\S]{0,80}grid-column: 1 \/ -1/);
 assert.match(html, /body\.manual-mode-active main\s*\{[\s\S]{0,90}136px/);
 assert.match(html, /manual-hud-types\s*\{[\s\S]{0,90}grid-column: 1 \/ -1/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 46px/);

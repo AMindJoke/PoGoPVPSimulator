@@ -8577,26 +8577,37 @@
       body.manual-mode-active .manual-overlay-controls .manual-overlay-exit { display: none; }
       body.manual-mode-active .manual-editor-actions {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 6px;
         padding: 8px;
         border: 1px solid var(--line);
         background: var(--panel);
       }
       body.manual-mode-active .manual-editor-actions .actions {
         grid-template-columns: 1fr;
-        gap: 7px;
+        gap: 5px;
         padding: 0;
         border: 0;
         background: transparent;
       }
-      body.manual-mode-active .manual-editor-actions .actions button {
-        min-height: 52px;
-        padding: 8px 10px;
+      body.manual-mode-active .manual-editor-actions .actions::before {
+        font-size: 8px;
       }
-      body.manual-mode-active .manual-editor-actions .move-button-label strong { font-size: 14px; }
-      body.manual-mode-active .manual-editor-actions .move-button-label > span { font-size: 10px; }
+      body.manual-mode-active .manual-editor-actions .actions button {
+        min-height: 42px;
+        padding: 6px 7px;
+      }
+      body.manual-mode-active .manual-editor-actions .move-button-label strong { font-size: 11px; }
+      body.manual-mode-active .manual-editor-actions .move-button-label > span { font-size: 8px; }
+      body.manual-mode-active .manual-editor-actions .manual-auto-response {
+        min-height: 42px;
+        padding: 6px;
+        font-size: 9px;
+      }
+      body.manual-mode-active .manual-editor-actions .manual-auto-response small { font-size: 8px; }
       body.manual-mode-active .manual-editor-command-bar {
+        grid-column: 1 / -1;
         padding-top: 7px;
         border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       }
