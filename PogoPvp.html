@@ -8690,28 +8690,28 @@
       }
       body.manual-mode-active .manual-duel-hud {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
-        gap: 4px;
-        padding: 7px;
+        grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr);
+        gap: 0;
+        padding: 9px 7px 6px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-hud-side {
-        grid-template-columns: 42px minmax(0, 1fr);
-        gap: 5px;
-        padding: 4px;
+        grid-template-columns: 46px minmax(0, 1fr);
+        gap: 6px;
+        padding: 3px 2px;
         border: 0;
         background: transparent;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: minmax(0, 1fr) 42px;
+        grid-template-columns: minmax(0, 1fr) 46px;
       }
       body.manual-mode-active .manual-hud-sprite {
-        width: 42px;
-        height: 42px;
+        width: 46px;
+        height: 46px;
       }
-      body.manual-mode-active .manual-hud-copy { gap: 3px; }
+      body.manual-mode-active .manual-hud-copy { gap: 4px; }
       body.manual-mode-active .manual-hud-name-row {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
@@ -8719,7 +8719,7 @@
       }
       body.manual-mode-active .manual-hud-name {
         grid-column: 1;
-        font-size: 12px;
+        font-size: 13px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name { justify-self: end; text-align: right; }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-types { justify-content: end; }
@@ -8735,24 +8735,24 @@
         padding: 1px 4px;
         font-size: 7px;
       }
-      body.manual-mode-active .manual-hud-hp-text { font-size: 7px; }
-      body.manual-mode-active .manual-hud-hp { height: 11px; }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 8px; }
+      body.manual-mode-active .manual-hud-hp { height: 13px; border-radius: 3px; }
       body.manual-mode-active .manual-hud-charges {
         display: grid;
-        grid-template-columns: 32px minmax(0, 1fr) 32px;
+        grid-template-columns: 36px minmax(0, 1fr) 36px;
         align-items: center;
-        gap: 3px;
+        gap: 4px;
         width: 100%;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { flex-direction: initial; }
       body.manual-mode-active .manual-hud-charges .energy-orb {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
       }
       body.manual-mode-active .manual-hud-shield-setup { display: none; }
       body.manual-mode-active .manual-mobile-shield-setup {
         grid-column: 1 / -1;
-        padding-top: 2px;
+        padding-top: 5px;
         border-top: 0;
       }
       body.manual-mode-active .manual-hud-energy {
@@ -8763,23 +8763,35 @@
       body.manual-mode-active .manual-hud-energy strong { font-size: 13px; }
       body.manual-mode-active .manual-hud-energy small { display: none; }
       body.manual-mode-active .manual-hud-center {
+        position: relative;
         display: grid;
         place-content: center;
         justify-items: center;
-        gap: 1px;
+        gap: 3px;
         text-align: center;
       }
+      body.manual-mode-active .manual-hud-center::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        left: 50%;
+        width: 1px;
+        background: color-mix(in srgb, var(--line) 68%, transparent);
+      }
+      body.manual-mode-active .manual-hud-center > * { position: relative; z-index: 1; }
       body.manual-mode-active .manual-hud-center > strong {
         display: grid;
         place-items: center;
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
         border: 1px solid var(--line);
         border-radius: 50%;
+        background: var(--panel);
         font-size: 14px;
       }
-      body.manual-mode-active .manual-hud-center span { font-size: 10px; font-weight: 900; }
-      body.manual-mode-active .manual-hud-center small { font-size: 8px; }
+      body.manual-mode-active .manual-hud-center span { padding: 1px 3px; background: var(--panel); font-size: 11px; font-weight: 900; }
+      body.manual-mode-active .manual-hud-center small { padding: 0 3px; background: var(--panel); font-size: 8px; }
       body.manual-mode-active .manual-hud-center em { display: none; }
       body.manual-mode-active .manual-timeline-stage {
         position: sticky;

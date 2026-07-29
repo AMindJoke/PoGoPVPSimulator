@@ -228,6 +228,8 @@ assert.match(html, /class="manual-hud-hp"><i id="manualHudHpB"><\/i><span id="ma
 assert.match(html, /function handleManualActionDamagePreviewOver/);
 assert.match(html, /data-manual-preview-prefix/);
 assert.match(html, /manual-hud-hp\.damage-preview::after/);
+assert.match(html, /manual-hud-center::before/);
+assert.match(html, /grid-template-columns: minmax\(0, 1fr\) 62px minmax\(0, 1fr\)/);
 assert.doesNotMatch(html, /setShieldCount\(prefix, count\);\s*await restartManualTimeline/);
 assert.match(html, /steps = runAutomaticBattleToEnd\(1000\)/);
 assert.match(html, /startTimelineReplayFromTurn\(replayStartTurn, timelineStart\)/);
