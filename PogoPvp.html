@@ -5509,6 +5509,35 @@
     .manual-editor-command-bar button {
       min-width: 126px;
     }
+    .manual-continue-auto {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      text-align: left;
+    }
+    .manual-continue-auto-icon {
+      color: var(--accent);
+      font-size: 28px;
+      font-weight: 950;
+      line-height: .8;
+      letter-spacing: -6px;
+      transform: translateX(-2px);
+    }
+    .manual-continue-auto-copy {
+      display: grid;
+      gap: 2px;
+    }
+    .manual-continue-auto-copy strong {
+      font-size: 12px;
+      line-height: 1.05;
+    }
+    .manual-continue-auto-copy small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 650;
+      line-height: 1.15;
+    }
     .manual-state-inspector {
       grid-column: 2;
       grid-row: 2;
@@ -5936,7 +5965,7 @@
         border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       }
       body.manual-mode-active .manual-editor-command-bar button {
-        min-width: 132px;
+        min-width: 164px;
       }
       body.manual-mode-active .manual-state-inspector {
         grid-area: sidebar;
@@ -9975,7 +10004,13 @@
                 <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
               </div>
               <div class="manual-editor-command-bar">
-                <button id="manualResumeAuto" class="secondary" type="button" title="Continue this timeline version using automatic decisions.">Resume Automatically</button>
+                <button id="manualResumeAuto" class="secondary manual-continue-auto" type="button" title="Continue this timeline version using automatic decisions.">
+                  <span class="manual-continue-auto-icon" aria-hidden="true">»</span>
+                  <span class="manual-continue-auto-copy">
+                    <strong>Continue Automatically</strong>
+                    <small>Simulator will proceed from here</small>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -15015,15 +15050,16 @@
         return false;
       }
       const accepted = await manualDecision(
-        "Resume automatic battle",
+        "Continue automatically",
         "Continue <strong>this timeline version</strong> from the current state using automatic decisions?<br><small>The original simulation remains unchanged.</small>",
-        "Resume automatic",
+        "Continue automatically",
         "Cancel"
       );
       if (!accepted) return false;
       manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
       const previousSuppressRender = suppressRender;
       const timelineStart = timeline.length;
+      const replayStartTurn = Number(manualCanonicalState()?.currentTurn || Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
       let steps = 0;
       try {
         suppressRender = true;
@@ -15055,6 +15091,9 @@
         "info"
       );
       render();
+      if (steps > 0 && addedEvents > 0) {
+        startTimelineReplayFromTurn(replayStartTurn, timelineStart);
+      }
       return steps > 0;
     }
 
@@ -22774,6 +22813,72 @@
       timelineReplayAnimation = requestAnimationFrame(step);
     }
 
+    function startTimelineReplayFromTurn(startTurn, startEventIndex) {
+      stopTimelineReplay();
+      const scroll = $("timelineScroll");
+      const line = $("timelineHoverLine");
+      const label = $("timelineHoverLabel");
+      const rulerLane = $("timelineRuler")?.querySelector(".timeline-lane");
+      if (!scroll || !line || !label || !rulerLane || startEventIndex >= timeline.length) return;
+      const turnPx = Number.parseFloat($("timelineRuler").style.getPropertyValue("--turn-px")) || 18;
+      const chargeSlots = timelineChargeSlots();
+      const startX = Math.max(0, visualTurn(Math.max(0, Number(startTurn) || 0), chargeSlots, false) * turnPx);
+      const maxX = Math.max(
+        startX + turnPx,
+        ...timeline.slice(startEventIndex).map((event, offset) =>
+          timelineReplayEventX(event, startEventIndex + offset, chargeSlots, turnPx)
+        )
+      );
+      const visualTurns = (maxX - startX) / Math.max(1, turnPx);
+      const duration = Math.min(4200, Math.max(900, visualTurns * 55));
+      const startedAt = performance.now();
+      scroll.classList.add("replay-active");
+      setTimelineReplayRangeProgress(0, startX, maxX, turnPx, startEventIndex, chargeSlots);
+      const step = now => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        setTimelineReplayRangeProgress(progress, startX, maxX, turnPx, startEventIndex, chargeSlots);
+        if (progress < 1) {
+          timelineReplayAnimation = requestAnimationFrame(step);
+        } else {
+          timelineReplayAnimation = null;
+          window.setTimeout(() => stopTimelineReplay(false), 260);
+        }
+      };
+      timelineReplayAnimation = requestAnimationFrame(step);
+    }
+
+    function setTimelineReplayRangeProgress(progress, startX, endX, turnPx, startEventIndex, chargeSlots) {
+      const scroll = $("timelineScroll");
+      const line = $("timelineHoverLine");
+      const label = $("timelineHoverLabel");
+      if (!scroll || !line || !label) return;
+      const x = startX + (endX - startX) * progress;
+      const currentTurn = x / Math.max(1, turnPx);
+      line.style.transform = `translate3d(${x}px, 0, 0)`;
+      const followScroll = Math.max(0, x - scroll.clientWidth * .72);
+      scroll.scrollLeft += (followScroll - scroll.scrollLeft) * .24;
+      label.style.transform = `translate3d(${Math.max(32, Math.min(scroll.scrollLeft + scroll.clientWidth - 34, x))}px, 0, 0) translateX(-50%)`;
+      label.textContent = `T${currentTurn.toFixed(1)} / ${(currentTurn * .5).toFixed(1)}s`;
+      document.querySelectorAll("#timelineScroll [data-event-index]").forEach(element => {
+        const eventIndex = Number(element.dataset.eventIndex);
+        if (eventIndex < startEventIndex) {
+          element.classList.remove("replay-hidden");
+          return;
+        }
+        const event = timeline[eventIndex];
+        const eventX = event ? timelineReplayEventX(event, eventIndex, chargeSlots, turnPx) : 0;
+        const wasHidden = element.classList.contains("replay-hidden");
+        const hidden = eventX > x + 1;
+        element.classList.toggle("replay-hidden", hidden);
+        if (wasHidden && !hidden && element.classList.contains("has-stage-effect")) {
+          element.classList.remove("effect-pulse");
+          void element.offsetWidth;
+          element.classList.add("effect-pulse");
+          window.setTimeout(() => element.classList.remove("effect-pulse"), 460);
+        }
+      });
+    }
+
     function setTimelineReplayProgress(progress, turnPx, maxX) {
       const scroll = $("timelineScroll");
       const line = $("timelineHoverLine");
@@ -23287,9 +23392,35 @@
     }
 
     function timelineMoveTooltipHtml(event, isSwipe = false) {
-      const lines = timelineMoveTitle(event, isSwipe).split("\n");
+      const lines = timelineMoveSummary(event, isSwipe).split("\n");
       return `<strong>${escapeHtml(lines[0] || "")}</strong>` +
         lines.slice(1).filter(Boolean).map(line => `<span>${escapeHtml(line)}</span>`).join("");
+    }
+
+    function timelineMoveSummary(event, isSwipe = false) {
+      if (isSwipe) return "Swipe";
+      if (event.kind === "shield") {
+        return [
+          "Shield",
+          event.move?.name ? `${event.move.name} blocked` : "Charged Move blocked",
+          `${event.absorbedDamage || 0} damage absorbed`
+        ].join("\n");
+      }
+      if (event.kind === "form-protect") {
+        return [
+          "Disguise broken",
+          `${event.absorbedDamage || 0} damage absorbed`
+        ].join("\n");
+      }
+      if (!event.move) return "Battle event";
+      const energy = event.kind === "fast"
+        ? `+${event.move.energyGain || 0} energy`
+        : `-${event.move.energyCost || 0} energy`;
+      return [
+        event.move.name,
+        `${event.damage || 0} damage`,
+        energy
+      ].join("\n");
     }
 
     function timelineMoveTitle(event, isSwipe = false) {
