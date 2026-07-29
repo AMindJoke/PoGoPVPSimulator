@@ -62,6 +62,7 @@ for (const id of [
   "manualBranchSelect",
   "manualUndo",
   "manualRedo",
+  "manualRestartTimeline",
   "manualSelectionHint",
   "manualSelectionHintText",
   "manualSelectionCancel",
@@ -211,6 +212,15 @@ assert.match(html, /id="manualResumeAuto"/);
 assert.match(html, /<strong>Continue Automatically<\/strong>/);
 assert.match(html, /Simulator will proceed from here/);
 assert.match(html, /function resumeAutomaticFromManualTimeline/);
+assert.match(html, /function restartManualTimeline/);
+assert.match(html, /Restart this Manual Mode timeline from the beginning/);
+assert.match(html, /Timeline:/);
+assert.match(html, /id="manualHudShieldControlA"/);
+assert.match(html, /id="manualHudShieldControlB"/);
+assert.match(html, /id="manualMobileShieldSetup"/);
+assert.match(html, /id="manualMobileShieldControlA"/);
+assert.match(html, /id="manualMobileShieldControlB"/);
+assert.match(html, /function renderManualHudShieldControl/);
 assert.match(html, /steps = runAutomaticBattleToEnd\(1000\)/);
 assert.match(html, /startTimelineReplayFromTurn\(replayStartTurn, timelineStart\)/);
 assert.match(html, /function setTimelineReplayRangeProgress/);

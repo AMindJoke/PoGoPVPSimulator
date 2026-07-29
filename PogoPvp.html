@@ -5394,6 +5394,38 @@
     }
     .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 2; grid-row: 1; }
     .manual-hud-side[data-side="B"] .manual-hud-copy { grid-column: 1; grid-row: 1; }
+    .manual-hud-resource-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .manual-hud-side[data-side="B"] .manual-hud-resource-row { flex-direction: row-reverse; }
+    .manual-hud-shield-setup {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .manual-hud-side[data-side="B"] .manual-hud-shield-setup { margin-left: 0; margin-right: auto; }
+    .manual-hud-shield-setup > small { font-size: 8px; font-weight: 850; }
+    .manual-hud-shield-control { display: inline-flex; gap: 2px; }
+    .manual-hud-shield-control button {
+      display: grid;
+      place-items: center;
+      width: 23px;
+      min-width: 23px;
+      min-height: 23px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 9px;
+      line-height: 1;
+    }
+    .manual-hud-shield-control button.active { background: var(--accent); color: #fff; }
+    .manual-hud-shield-control svg { width: 15px; height: 15px; }
+    .manual-mobile-shield-setup { display: none; }
     .manual-hud-sprite {
       width: 52px;
       height: 52px;
@@ -8663,6 +8695,7 @@
         width: 32px;
         height: 32px;
       }
+      body.manual-mode-active .manual-hud-shield-setup { display: none; }
       body.manual-mode-active .manual-hud-energy {
         justify-content: center;
         gap: 2px;
@@ -8786,6 +8819,26 @@
         grid-column: 1 / -1;
         padding-top: 7px;
         border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      }
+      body.manual-mode-active .manual-mobile-shield-setup {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: auto 1fr 1fr;
+        align-items: center;
+        gap: 6px;
+        padding-top: 7px;
+        border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 850;
+      }
+      body.manual-mode-active .manual-mobile-shield-setup > span { grid-column: 1 / -1; }
+      body.manual-mode-active .manual-mobile-shield-setup label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+        min-width: 0;
       }
       body.manual-mode-active .manual-editor-command-bar button {
         width: 100%;
@@ -10504,7 +10557,7 @@
         <div id="manualWorkspaceHeader" class="manual-workspace-header">
           <span class="manual-workspace-brand">PvP <small>Simulator</small></span>
           <strong class="manual-workspace-badge">Manual Mode</strong>
-          <label class="manual-workspace-scenario">Scenario:
+          <label class="manual-workspace-scenario">Timeline:
             <select id="manualOverlayScenario" aria-label="Manual Mode scenario"></select>
           </label>
           <span class="manual-workspace-nav">
@@ -10560,6 +10613,7 @@
                     <span id="manualHudEnergyA" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="A-1"></span>
                   </span>
+                  <span class="manual-hud-shield-setup"><small>Start shields</small><span id="manualHudShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A starting shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10584,6 +10638,7 @@
                     <span id="manualHudEnergyB" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="B-1"></span>
                   </span>
+                  <span class="manual-hud-shield-setup"><small>Start shields</small><span id="manualHudShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B starting shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10629,6 +10684,11 @@
                     <small>Simulator will proceed from here</small>
                   </span>
                 </button>
+              </div>
+              <div id="manualMobileShieldSetup" class="manual-mobile-shield-setup" aria-label="Starting shield settings">
+                <span>Starting shields</span>
+                <label>Pokémon A <span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A starting shields"></span></label>
+                <label>Pokémon B <span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B starting shields"></span></label>
               </div>
             </div>
           </div>
@@ -10769,6 +10829,7 @@
                 <div class="manual-history-actions" role="group" aria-label="Manual branch history">
                   <button id="manualUndo" class="secondary" type="button" title="Undo the last manual edit." hidden disabled>↶ Undo</button>
                   <button id="manualRedo" class="secondary" type="button" title="Restore the last undone edit." hidden disabled>↷ Redo</button>
+                  <button id="manualRestartTimeline" class="secondary" type="button" title="Restart this Manual Mode timeline from the beginning.">↺ Restart</button>
                 </div>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
                 <button id="manualMobileVersionsToggle" class="secondary" type="button" hidden aria-expanded="false">Manage Timeline Versions</button>
@@ -11471,6 +11532,7 @@
       $("manualModeToggle").onclick = toggleLiveManualMode;
       $("manualUndo").onclick = undoLiveManualCommand;
       $("manualRedo").onclick = redoLiveManualCommand;
+      $("manualRestartTimeline").onclick = () => restartManualTimeline();
       $("manualBranchSelect").onchange = switchLiveManualBranch;
       $("manualControlMode").onchange = changeLiveManualControlMode;
       $("manualStartPoint").onchange = updateManualBranchSelectionUi;
@@ -15872,6 +15934,20 @@
       return restoreActiveManualBranch();
     }
 
+    async function restartManualTimeline(options = {}) {
+      if (!manualModeState?.enabled) return false;
+      const confirmed = options.confirm === false || await manualDecision(
+        "Restart timeline",
+        "Return this Manual Mode timeline to the beginning of the matchup? Your current manual edits and branches will be cleared.",
+        "Restart",
+        "Cancel"
+      );
+      if (!confirmed) return false;
+      exitLiveManualMode();
+      if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
+      return enterLiveManualMode();
+    }
+
     function switchLiveManualBranch(requestedBranchId = null) {
       const branchId = typeof requestedBranchId === "string" ? requestedBranchId : $("manualBranchSelect")?.value;
       if (!manualBranchRegistry || !manualBranchRegistry.branches[branchId]) return false;
@@ -16080,6 +16156,7 @@
           const slot = document.querySelector(`[data-manual-charge-slot="${side}-${index}"]`);
           if (slot) slot.innerHTML = energyMoveOrb(move, combatant.energy, prefix, index);
         });
+        renderManualHudShieldControl(side, prefix);
       };
       renderSide("A", left);
       renderSide("B", right);
@@ -16089,6 +16166,26 @@
         $("manualHudPhase").textContent = title(String(manualModeState.pendingDecision?.phase || "before action").toLowerCase().replaceAll("_", " "));
       }
       if ($("manualHudActor")) $("manualHudActor").textContent = $("manualCurrentDecisionTitle")?.textContent || "Choose an action";
+    }
+
+    function renderManualHudShieldControl(side, prefix) {
+      const controls = [$(`manualHudShieldControl${side}`), $(`manualMobileShieldControl${side}`)].filter(Boolean);
+      if (!controls.length) return;
+      const selected = Math.max(0, Math.min(2, Number($(`${prefix}Shields`)?.value || 0)));
+      const controlsHtml = [0, 1, 2].map(count =>
+        `<button type="button" class="${count === selected ? "active" : ""}" data-manual-start-shields="${count}" title="Restart from the beginning with ${count} shield${count === 1 ? "" : "s"}">${count === 0 ? "0" : shieldSvg()}</button>`
+      ).join("");
+      controls.forEach(control => {
+        control.innerHTML = controlsHtml;
+        control.querySelectorAll("button").forEach(button => {
+          button.onclick = async () => {
+            const count = Number(button.dataset.manualStartShields);
+            if (count === selected) return;
+            setShieldCount(prefix, count);
+            await restartManualTimeline({ confirm: false });
+          };
+        });
+      });
     }
 
     function renderManualStateInspector(runtimeStatus) {
