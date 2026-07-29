@@ -9547,6 +9547,30 @@
       }
     }
 
+    @media (max-width: 900px) and (max-height: 620px) {
+      body.manual-mode-active .manual-mobile-focus-mount {
+        gap: 4px;
+        padding-top: calc(3px + env(safe-area-inset-top, 0px));
+        padding-bottom: 4px;
+      }
+      body.manual-mode-active .manual-workspace-header { min-height: 34px; }
+      body.manual-mode-active .manual-duel-hud { padding: 4px; }
+      body.manual-mode-active .manual-hud-sprite { width: 34px; height: 34px; }
+      body.manual-mode-active .manual-hud-side {
+        grid-template-columns: 34px minmax(0, 1fr);
+        padding: 2px;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] {
+        grid-template-columns: minmax(0, 1fr) 34px;
+      }
+      body.manual-mode-active .manual-timeline-stage { padding: 5px; }
+      body.manual-mode-active .timeline-grid,
+      body.manual-mode-active .timeline-scroll {
+        min-height: 88px;
+        height: 88px;
+      }
+    }
+
     @media (max-width: 900px) {
       .analysis-page-head { align-items: end; }
       .analysis-page-actions { display: grid; grid-template-columns: auto minmax(210px, 1fr) auto; align-items: end; }
@@ -14849,6 +14873,7 @@
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
       syncManualBranchAfterAction(result.action);
+      render();
       return true;
     }
 

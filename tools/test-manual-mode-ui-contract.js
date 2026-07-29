@@ -115,6 +115,8 @@ assert.match(html, /function backToSimulationFromManual/);
 assert.match(html, /manualModeMinimized = true/);
 assert.match(html, /function keepLatestManualTimelineEventVisible/);
 assert.match(html, /scroll\.scrollBy\(/);
+assert.match(html, /syncManualBranchAfterAction\(result\.action\);\s*render\(\);\s*return true;/);
+assert.match(html, /@media \(max-width: 900px\) and \(max-height: 620px\)/);
 assert.match(html, /id="manualMobileVersionsToggle"/);
 assert.match(html, /function toggleManualMobileVersions/);
 assert.match(html, /mobile-versions-open/);
