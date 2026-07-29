@@ -5411,20 +5411,38 @@
     }
     .manual-hud-side[data-side="B"] .manual-hud-shield-setup { margin-left: 0; margin-right: auto; }
     .manual-hud-shield-setup > small { font-size: 8px; font-weight: 850; }
-    .manual-hud-shield-control { display: inline-flex; gap: 2px; }
+    .manual-hud-shield-control {
+      display: inline-flex;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--panel) 94%, var(--accent));
+    }
     .manual-hud-shield-control button {
       display: grid;
-      place-items: center;
-      width: 23px;
-      min-width: 23px;
-      min-height: 23px;
+      grid-template-columns: auto auto;
+      place-content: center;
+      align-items: center;
+      gap: 1px;
+      width: 31px;
+      min-width: 31px;
+      min-height: 25px;
       padding: 0;
-      border-radius: 50%;
+      border: 0;
+      border-right: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+      border-radius: 0;
       font-size: 9px;
       line-height: 1;
+      background: transparent;
+      color: var(--muted);
     }
+    .manual-hud-shield-control button:last-child { border-right: 0; }
     .manual-hud-shield-control button.active { background: var(--accent); color: #fff; }
-    .manual-hud-shield-control svg { width: 15px; height: 15px; }
+    .manual-hud-shield-control button:disabled { cursor: not-allowed; opacity: .52; }
+    .manual-hud-shield-control button:not(:disabled):hover { background: color-mix(in srgb, var(--accent) 13%, var(--panel)); }
+    .manual-hud-shield-control button.active:hover { background: var(--accent); }
+    .manual-hud-shield-control strong { font-size: 9px; }
+    .manual-hud-shield-control svg { width: 13px; height: 13px; }
     .manual-mobile-shield-setup { display: none; }
     .manual-hud-sprite {
       width: 52px;
@@ -10613,7 +10631,7 @@
                     <span id="manualHudEnergyA" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="A-1"></span>
                   </span>
-                  <span class="manual-hud-shield-setup"><small>Start shields</small><span id="manualHudShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A starting shields"></span></span>
+                  <span class="manual-hud-shield-setup"><small>Shields</small><span id="manualHudShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10638,7 +10656,7 @@
                     <span id="manualHudEnergyB" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="B-1"></span>
                   </span>
-                  <span class="manual-hud-shield-setup"><small>Start shields</small><span id="manualHudShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B starting shields"></span></span>
+                  <span class="manual-hud-shield-setup"><small>Shields</small><span id="manualHudShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10685,10 +10703,10 @@
                   </span>
                 </button>
               </div>
-              <div id="manualMobileShieldSetup" class="manual-mobile-shield-setup" aria-label="Starting shield settings">
-                <span>Starting shields</span>
-                <label>Pokémon A <span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A starting shields"></span></label>
-                <label>Pokémon B <span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B starting shields"></span></label>
+              <div id="manualMobileShieldSetup" class="manual-mobile-shield-setup" aria-label="Manual shield settings">
+                <span>Shields</span>
+                <label>Pokémon A <span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
+                <label>Pokémon B <span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
               </div>
             </div>
           </div>
@@ -16171,21 +16189,47 @@
     function renderManualHudShieldControl(side, prefix) {
       const controls = [$(`manualHudShieldControl${side}`), $(`manualMobileShieldControl${side}`)].filter(Boolean);
       if (!controls.length) return;
-      const selected = Math.max(0, Math.min(2, Number($(`${prefix}Shields`)?.value || 0)));
+      const combatant = side === "A" ? left : right;
+      const selected = Math.max(0, Math.min(2, Number(combatant?.shields ?? $(`${prefix}Shields`)?.value ?? 0)));
+      const canEdit = !!manualModeState?.enabled && timeline.length === 0;
+      const titleText = canEdit
+        ? "Set the shields available to this Pokemon in Manual Mode"
+        : "Shields can be set before the first Manual Mode action";
       const controlsHtml = [0, 1, 2].map(count =>
-        `<button type="button" class="${count === selected ? "active" : ""}" data-manual-start-shields="${count}" title="Restart from the beginning with ${count} shield${count === 1 ? "" : "s"}">${count === 0 ? "0" : shieldSvg()}</button>`
+        `<button type="button" class="${count === selected ? "active" : ""}" data-manual-shields="${count}" title="${titleText}"${canEdit ? "" : " disabled"}>${shieldSvg()}<strong>${count}</strong></button>`
       ).join("");
       controls.forEach(control => {
         control.innerHTML = controlsHtml;
         control.querySelectorAll("button").forEach(button => {
-          button.onclick = async () => {
-            const count = Number(button.dataset.manualStartShields);
+          button.onclick = () => {
+            const count = Number(button.dataset.manualShields);
             if (count === selected) return;
-            setShieldCount(prefix, count);
-            await restartManualTimeline({ confirm: false });
+            setManualStartingShieldCount(side, count);
           };
         });
       });
+    }
+
+    function setManualStartingShieldCount(side, count) {
+      if (!manualModeState?.enabled || timeline.length > 0) return false;
+      const combatant = side === "A" ? left : right;
+      if (!combatant) return false;
+      const normalized = Math.max(0, Math.min(2, Number(count) || 0));
+      combatant.shields = normalized;
+      const prefix = side === "A" ? "p1" : "p2";
+      if ($(`${prefix}Shields`)) $(`${prefix}Shields`).value = String(normalized);
+      initialTimelineState = battleSnapshot();
+      if (manualRootSnapshotId && manualSnapshotStore) {
+        manualSnapshotStore.capture(
+          manualRootSnapshotId,
+          window.PvPeakManualSnapshots.BOUNDARY.AFTER,
+          captureManualRuntimeSnapshot(),
+          { turn: 0, timelineIndex: 0 }
+        );
+      }
+      manualBattleRuntime = null;
+      render();
+      return true;
     }
 
     function renderManualStateInspector(runtimeStatus) {
