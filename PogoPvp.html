@@ -5513,6 +5513,21 @@
       background: var(--hp-color, var(--good));
       transition: width .18s ease, background .18s ease;
     }
+    .manual-hud-hp.damage-preview::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--damage-left, 0%);
+      width: var(--damage-width, 0%);
+      background:
+        repeating-linear-gradient(135deg, rgba(255,255,255,.24) 0 4px, rgba(255,255,255,0) 4px 8px),
+        linear-gradient(90deg, #ff2f2f, #ff8a00);
+      border-left: 2px solid rgba(255,255,255,.92);
+      box-shadow: inset 0 0 0 1px rgba(95, 10, 10, .38);
+      z-index: 1;
+      pointer-events: none;
+    }
     .manual-hud-hp-text {
       position: absolute;
       inset: 0;
@@ -5524,6 +5539,7 @@
       letter-spacing: .015em;
       text-shadow: 0 1px 2px rgba(14, 25, 39, .68);
       pointer-events: none;
+      z-index: 2;
     }
     .manual-hud-charges {
       display: inline-flex;
@@ -5962,6 +5978,7 @@
       body.manual-mode-active .manual-hud-hp {
         width: min(100%, 290px);
         height: 22px;
+        border-radius: 4px;
         box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: auto; }
@@ -8868,8 +8885,8 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: center;
         gap: 6px;
-        padding-top: 7px;
-        border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+        padding-top: 2px;
+        border-top: 0;
         color: var(--muted);
         font-size: 9px;
         font-weight: 850;
@@ -11555,6 +11572,8 @@
       document.addEventListener("pointerover", handleChargeInfoPointerOver);
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
+      document.addEventListener("pointerover", handleManualActionDamagePreviewOver);
+      document.addEventListener("pointerout", handleManualActionDamagePreviewOut);
       document.addEventListener("keydown", event => {
         if (event.key === "Escape" && $("manualGuideModal")?.classList.contains("open")) {
           event.preventDefault();
@@ -20870,6 +20889,27 @@
       hideChargeInfo();
     }
 
+    function handleManualActionDamagePreviewOver(event) {
+      const button = event.target.closest("button[data-manual-preview-prefix]");
+      if (!button || !manualModeState?.enabled || button.disabled) return;
+      const prefix = button.dataset.manualPreviewPrefix;
+      const attacker = prefix === "p1" ? left : right;
+      const defender = prefix === "p1" ? right : left;
+      const defenderPrefix = prefix === "p1" ? "p2" : "p1";
+      const moveIndex = Number(button.dataset.manualPreviewMoveIndex || -1);
+      const move = moveIndex === -1 ? attacker?.fast : attacker?.charged?.[moveIndex];
+      if (!attacker || !defender || !move) return;
+      const damage = estimate(attacker, defender, move);
+      showHpDamagePreview(defenderPrefix, defender.hp, defender.maxHp, Math.min(defender.hp, damage));
+    }
+
+    function handleManualActionDamagePreviewOut(event) {
+      const button = event.target.closest("button[data-manual-preview-prefix]");
+      if (!button || (event.relatedTarget && button.contains(event.relatedTarget))) return;
+      clearHpDamagePreview("p1");
+      clearHpDamagePreview("p2");
+    }
+
     function showChargeInfo(orb, event) {
       const prefix = orb.dataset.prefix;
       const moveIndex = Number(orb.dataset.moveIndex || 0);
@@ -20959,22 +20999,29 @@
     }
 
     function showHpDamagePreview(prefix, hp, maxHp, damage) {
-      const hpBox = $(`${prefix}Hp`)?.closest(".hp");
-      if (!hpBox || !maxHp || damage <= 0) return;
+      if (!maxHp || damage <= 0) return;
       const nextHp = Math.max(0, hp - damage);
       const leftPct = Math.max(0, Math.min(100, nextHp / maxHp * 100));
       const widthPct = Math.max(0, Math.min(100, (hp - nextHp) / maxHp * 100));
-      hpBox.style.setProperty("--damage-left", `${leftPct}%`);
-      hpBox.style.setProperty("--damage-width", `${widthPct}%`);
-      hpBox.classList.add("damage-preview");
+      const side = prefix === "p1" ? "A" : "B";
+      [$(`${prefix}Hp`)?.closest(".hp"), $(`manualHudHp${side}`)?.closest(".manual-hud-hp")]
+        .filter(Boolean)
+        .forEach(hpBox => {
+          hpBox.style.setProperty("--damage-left", `${leftPct}%`);
+          hpBox.style.setProperty("--damage-width", `${widthPct}%`);
+          hpBox.classList.add("damage-preview");
+        });
     }
 
     function clearHpDamagePreview(prefix) {
-      const hpBox = $(`${prefix}Hp`)?.closest(".hp");
-      if (!hpBox) return;
-      hpBox.classList.remove("damage-preview");
-      hpBox.style.removeProperty("--damage-left");
-      hpBox.style.removeProperty("--damage-width");
+      const side = prefix === "p1" ? "A" : "B";
+      [$(`${prefix}Hp`)?.closest(".hp"), $(`manualHudHp${side}`)?.closest(".manual-hud-hp")]
+        .filter(Boolean)
+        .forEach(hpBox => {
+          hpBox.classList.remove("damage-preview");
+          hpBox.style.removeProperty("--damage-left");
+          hpBox.style.removeProperty("--damage-width");
+        });
     }
 
     function renderTypeBadges(prefix, types) {
@@ -24632,6 +24679,14 @@
 
     function setMoveButton(id, move, text, kind = "", opponent = null) {
       const button = $(id);
+      const manualPreview = id.match(/^(p[12])Use(Fast|Charge([12]))$/);
+      if (manualPreview) {
+        button.dataset.manualPreviewPrefix = manualPreview[1];
+        button.dataset.manualPreviewMoveIndex = manualPreview[2] === "Fast" ? "-1" : String(Number(manualPreview[3]) - 1);
+      } else {
+        delete button.dataset.manualPreviewPrefix;
+        delete button.dataset.manualPreviewMoveIndex;
+      }
       if (!move) {
         button.innerHTML =
           `<span class="move-button-label"><strong>${escapeHtml(text)}</strong><span><span class="move-kind">${escapeHtml(kind)}</span></span></span>`;
