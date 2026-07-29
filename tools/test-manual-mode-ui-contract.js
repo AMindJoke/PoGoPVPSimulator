@@ -223,6 +223,8 @@ assert.match(html, /id="manualMobileShieldControlB"/);
 assert.match(html, /function renderManualHudShieldControl/);
 assert.match(html, /function setManualStartingShieldCount/);
 assert.match(html, /data-manual-shields/);
+assert.match(html, /class="manual-hud-hp"><i id="manualHudHpA"><\/i><span id="manualHudHpTextA"/);
+assert.match(html, /class="manual-hud-hp"><i id="manualHudHpB"><\/i><span id="manualHudHpTextB"/);
 assert.doesNotMatch(html, /setShieldCount\(prefix, count\);\s*await restartManualTimeline/);
 assert.match(html, /steps = runAutomaticBattleToEnd\(1000\)/);
 assert.match(html, /startTimelineReplayFromTurn\(replayStartTurn, timelineStart\)/);
