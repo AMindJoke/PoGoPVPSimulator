@@ -122,6 +122,7 @@ assert.match(html, /function backToSimulationFromManual/);
 assert.match(html, /manualModeMinimized = true/);
 assert.match(html, /function scrollManualMobileEditorToTop/);
 assert.match(html, /window\.scrollTo\(\{ top: 0, left: 0, behavior: "auto" \}\)/);
+assert.match(html, /body\.manual-mode-active \.manual-timeline-stage \.timeline \{\s*--timeline-side-zone-width: 48px;/);
 assert.match(html, /function keepLatestManualTimelineEventVisible/);
 assert.match(html, /scroll\.scrollBy\(/);
 assert.match(html, /syncManualBranchAfterAction\(result\.action\);\s*render\(\);\s*return true;/);

@@ -9100,6 +9100,23 @@
         width: 24px;
         height: 24px;
       }
+      /* Manual Mode gives the two lane sprites their own slim gutter: this
+         keeps them readable while reclaiming width for the actual timeline. */
+      body.manual-mode-active .manual-timeline-stage .timeline {
+        --timeline-side-zone-width: 48px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-grid {
+        gap: 0 2px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-label {
+        justify-content: flex-start;
+        padding-left: 0;
+        overflow: visible;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-label img {
+        width: 32px;
+        height: 32px;
+      }
       .timeline-start-badge {
         min-width: 30px;
         max-width: 32px;
