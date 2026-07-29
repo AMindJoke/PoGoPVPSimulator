@@ -101,6 +101,7 @@ assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
 assert.match(html, /body\.manual-mode-active \.manual-timeline-stage\s*\{[\s\S]{0,160}position: sticky/);
 assert.match(html, /body\.manual-mode-active \.manual-mobile-focus-mount\s*\{[\s\S]{0,120}position: sticky/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-workspace\s*\{[\s\S]{0,80}order: 3/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 46px/);
 assert.match(html, /id="manualHudTypesA"/);
 assert.match(html, /id="manualHudTypesB"/);
