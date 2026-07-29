@@ -5329,6 +5329,31 @@
       border-radius: 9px;
       background: var(--panel);
     }
+    :root {
+      --manual-motion-fast: 160ms;
+      --manual-motion-standard: 200ms;
+      --manual-focus-duration: 720ms;
+    }
+    .manual-decision-banner.decision-transition,
+    .manual-editor-actions.decision-transition {
+      animation: manual-decision-enter var(--manual-motion-standard) ease-out both;
+    }
+    .manual-decision-banner.is-terminal {
+      border-color: color-mix(in srgb, var(--accent) 52%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 11%, transparent);
+    }
+    .manual-decision-banner.is-terminal .manual-editor-kicker { color: var(--accent-strong); }
+    @keyframes manual-decision-enter { from { opacity: .35; transform: translateY(4px); } }
+    #timelineScroll .timeline-block.manual-event-focus,
+    #timelineScroll .timeline-marker.manual-event-focus {
+      outline: 2px solid color-mix(in srgb, var(--accent) 74%, #fff);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent), 0 0 12px color-mix(in srgb, var(--accent) 24%, transparent);
+      z-index: 8;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+    }
     .manual-overlay-controls {
       display: none;
       align-items: center;
@@ -6865,6 +6890,7 @@
       z-index: 20;
     }
     .modal.open { display: flex; }
+    .modal.open { animation: manual-modal-backdrop-in var(--manual-motion-standard, 200ms) ease-out both; }
     .modal-card {
       width: min(440px, 100%);
       background: var(--panel);
@@ -6874,6 +6900,7 @@
       box-shadow: 0 18px 50px rgba(0,0,0,.28);
       padding: 14px;
     }
+    .modal.open .modal-card { animation: manual-modal-card-in var(--manual-motion-standard, 200ms) ease-out both; }
     .modal-head {
       display: flex;
       justify-content: space-between;
@@ -6907,6 +6934,23 @@
     .decision-actions button {
       min-height: 34px;
     }
+    .manual-guide-modal .modal-card { width: min(500px, 100%); }
+    .manual-guide-body {
+      max-height: min(62vh, 470px);
+      overflow: auto;
+      padding-right: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+    .manual-guide-body ol { display: grid; gap: 9px; margin: 0; padding-left: 22px; }
+    .manual-guide-body li { padding-left: 2px; }
+    .manual-guide-body strong,
+    .manual-guide-body span { display: block; }
+    .manual-guide-body strong { color: var(--ink); }
+    .manual-guide-body p { margin: 13px 0 0; padding-top: 10px; border-top: 1px solid var(--line); color: var(--ink); }
+    @keyframes manual-modal-backdrop-in { from { background: rgba(10, 16, 24, 0); } }
+    @keyframes manual-modal-card-in { from { opacity: 0; transform: translateY(6px) scale(.985); } }
     #manualDecisionModal.shield-decision-modal .modal-card {
       width: min(470px, 100%);
       padding: 16px;
@@ -10465,10 +10509,7 @@
           </label>
           <span class="manual-workspace-nav">
             <button id="manualBackToSimulation" class="secondary" type="button">← Back to Simulation</button>
-            <details class="manual-guide">
-              <summary>Guide</summary>
-              <span>Choose a legal action and watch HP, Energy, and the Timeline update. Undo reverses your latest edit; use a timeline event to create an alternative branch. Continue Automatically lets the simulator proceed from here. Back to Simulation keeps this manual result visible.</span>
-            </details>
+            <button id="manualGuideOpen" class="secondary" type="button">Guide</button>
             <button id="manualWorkspaceExit" class="secondary" type="button">Exit</button>
           </span>
         </div>
@@ -10881,6 +10922,25 @@
     </div>
   </div>
 
+  <div class="modal manual-guide-modal" id="manualGuideModal" aria-hidden="true" aria-labelledby="manualGuideTitle">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2 id="manualGuideTitle">Manual Mode Guide</h2>
+        <button id="manualGuideClose" class="modal-close" type="button" aria-label="Close guide" title="Close guide">×</button>
+      </div>
+      <div class="manual-guide-body">
+        <ol>
+          <li><strong>Choose an action</strong><span>Select one of the currently legal actions for the active Pokémon.</span></li>
+          <li><strong>Watch the battle update</strong><span>HP, Energy and the Timeline update after each resolved action.</span></li>
+          <li><strong>Undo a change</strong><span>Use Undo to return to the state before the latest manual edit.</span></li>
+          <li><strong>Explore an alternative</strong><span>Create a new branch to test a different decision without losing the original scenario.</span></li>
+          <li><strong>Resume automatically</strong><span>Use Resume Automatically to let the simulator continue from the current canonical state.</span></li>
+        </ol>
+        <p>Back to Simulation returns to the regular simulator view while preserving the current battle context.</p>
+      </div>
+    </div>
+  </div>
+
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
@@ -10927,6 +10987,9 @@
     let lastTimelineHoverClientX = null;
     let lastTimelineHoverText = "";
     let manualDecisionResolve = null;
+    let manualDecisionVisualKey = null;
+    let manualTimelineFocusTimer = null;
+    let manualTimelineFocusEventId = null;
     let suppressRender = false;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
@@ -11317,6 +11380,11 @@
       $("manualDecisionModal").addEventListener("click", event => {
         if (event.target.id === "manualDecisionModal") manualDecisionResolve?.(false);
       });
+      $("manualGuideOpen").onclick = openManualGuide;
+      $("manualGuideClose").onclick = closeManualGuide;
+      $("manualGuideModal").addEventListener("click", event => {
+        if (event.target.id === "manualGuideModal") closeManualGuide();
+      });
       $("timelineZoomOut").onclick = () => stepTimelineZoom(-1);
       $("timelineZoomIn").onclick = () => stepTimelineZoom(1);
       renderTimelineZoomControl();
@@ -11388,6 +11456,12 @@
       document.addEventListener("pointerover", handleChargeInfoPointerOver);
       document.addEventListener("pointermove", handleChargeInfoPointerMove);
       document.addEventListener("pointerout", handleChargeInfoPointerOut);
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && $("manualGuideModal")?.classList.contains("open")) {
+          event.preventDefault();
+          closeManualGuide();
+        }
+      });
       $("p1UseFast").onclick = () => executeLiveManualFast("A");
       $("p1UseCharge1").onclick = () => executeLiveManualCharge("A", 0);
       $("p1UseCharge2").onclick = () => executeLiveManualCharge("A", 1);
@@ -15576,13 +15650,12 @@
         const parentBranchId = manualBranchRegistry.activeBranchId;
         const controlMode = manualModeState.controlMode;
         restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix);
-        const alternativeNumber = Object.keys(manualBranchRegistry.branches)
-          .filter(id => id !== window.PvPeakManualBranches.ORIGINAL_BRANCH_ID).length + 1;
         manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
           type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
           payload: {
             parentBranchId,
-            label: `Alternative ${alternativeNumber}`,
+            label: uniqueManualBranchLabel(`${boundary === window.PvPeakManualSnapshots.BOUNDARY.BEFORE ? "Before" : "After"} Turn ${Number(event.start || 0)}`),
+            labelSource: "AUTO",
             branchPoint: { boundary, eventId: event.timelineEventId, stateHash: plan.stateHash },
             timelineModel: currentManualTimelineModel(),
             terminalResult: currentManualTerminalResult()
@@ -15652,12 +15725,16 @@
 
     function syncManualBranchAfterAction(action) {
       if (!manualBranchRegistry || !manualModeState?.enabled) return;
+      const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
+      const hasNoEdits = !(active?.edits || []).length;
+      const automaticLabel = hasNoEdits ? automaticManualBranchLabel(action) : null;
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.UPDATE_BRANCH,
         payload: {
           branchId: manualBranchRegistry.activeBranchId,
           timelineModel: currentManualTimelineModel(),
           terminalResult: currentManualTerminalResult(),
+          ...(automaticLabel ? { label: uniqueManualBranchLabel(automaticLabel, active?.branchId), labelSource: "AUTO" } : {}),
           edit: {
             type: action?.actionType || "MANUAL_ACTION",
             manualActionId: action?.id || null,
@@ -15666,6 +15743,32 @@
           }
         }
       });
+    }
+
+    function automaticManualBranchLabel(action = {}) {
+      const type = action?.actionType || action?.type || "";
+      if (type === "SHIELD") return "Shield";
+      if (type === "NO_SHIELD") return "No Shield";
+      if (type === "WAIT") return "Wait";
+      if (type === "RESUME_AUTO") return "Resume Automatically";
+      if (type === "INSERT_LAG") return "Insert Lag";
+      if (type === "INSERT_DRE") return "Insert DRE";
+      if (type === "REMOVE_EVENT") return "Delete Fast";
+      const move = moveMap.get(action?.moveId)?.name || action?.move?.name || "";
+      if (type === "FAST_MOVE") return `Use ${move || "Fast Move"}`;
+      if (type === "CHARGED_MOVE") return `Use ${move || "Charged Move"}`;
+      return "Manual Edit";
+    }
+
+    function uniqueManualBranchLabel(baseLabel, excludeBranchId = null) {
+      const base = String(baseLabel || "Manual Edit").trim() || "Manual Edit";
+      const labels = new Set(Object.values(manualBranchRegistry?.branches || {})
+        .filter(branch => branch.branchId !== excludeBranchId)
+        .map(branch => String(branch.label || "").toLocaleLowerCase()));
+      if (!labels.has(base.toLocaleLowerCase())) return base;
+      let index = 2;
+      while (labels.has(`${base} ${index}`.toLocaleLowerCase())) index++;
+      return `${base} ${index}`;
     }
 
     async function resumeAutomaticFromManualTimeline() {
@@ -15801,7 +15904,7 @@
       if (!active) return false;
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.DUPLICATE_BRANCH,
-        payload: { branchId: active.branchId, label: `${active.label} copy` }
+        payload: { branchId: active.branchId, label: uniqueManualBranchLabel(`${active.label} copy`) }
       });
       return restoreActiveManualBranch();
     }
@@ -15883,6 +15986,8 @@
         || (manualModeState.controlledSides?.length === 1 ? manualModeState.controlledSides[0] : null);
       const actor = activeSide === "A" ? left : activeSide === "B" ? right : null;
       const shieldDecision = manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION;
+      const terminal = manualModeState.status === window.PvPeakManualMode.STATUS.TERMINAL;
+      const terminalResult = terminal ? currentManualTerminalResult() : null;
       const actionLabels = (combatant, side = null) =>
         legalBattleActions(combatant, manualCanonicalState()?.currentTurn).map(action => {
           const type = action.type === "charged" ? "charged_move" : action.type === "fast" ? "fast_move" : action.type;
@@ -15901,14 +16006,35 @@
           ? actionLabels(actor)
           : waitingSides.flatMap(side => actionLabels(side === "A" ? left : right, side));
       const actorName = actor?.p?.name || null;
-      $("manualCurrentDecisionTitle").textContent = shieldDecision
+      const terminalLabel = terminalResult?.winner === "tie"
+        ? "DRAW"
+        : terminalResult?.winner === "A"
+          ? `${left?.p?.name || "Pokemon A"} WINS`
+          : terminalResult?.winner === "B"
+            ? `${right?.p?.name || "Pokemon B"} WINS`
+            : "SIMULTANEOUS FAINT";
+      $("manualCurrentDecisionTitle").textContent = terminal
+        ? "BATTLE COMPLETE"
+        : shieldDecision
         ? `${actorName || `Pokemon ${activeSide || ""}`} shield decision`
         : actorName
           ? `${actorName} to act`
           : waitingSides.length > 1
             ? `Choose Pokemon ${waitingSides.join(" or ")}`
             : runtimeStatus.text;
-      $("manualDecisionWhy").textContent = runtimeStatus.detail;
+      $("manualDecisionWhy").textContent = terminal ? terminalLabel : runtimeStatus.detail;
+      const banner = $("manualDecisionBanner");
+      const actions = $("manualEditorActions");
+      banner?.classList.toggle("is-terminal", terminal);
+      const decisionKey = [manualModeState.status, manualModeState.cursorTurn, manualModeState.cursorEventId, terminalLabel].join("|");
+      if (manualDecisionVisualKey !== decisionKey) {
+        manualDecisionVisualKey = decisionKey;
+        [banner, actions].filter(Boolean).forEach(element => {
+          element.classList.remove("decision-transition");
+          void element.offsetWidth;
+          element.classList.add("decision-transition");
+        });
+      }
       $("manualDecisionTurn").textContent = String(manualModeState.cursorTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
       $("manualDecisionEnergy").textContent = actor
         ? String(actor.energy)
@@ -16565,6 +16691,22 @@
         "Apply",
         "Skip"
       );
+    }
+
+    function openManualGuide() {
+      const modal = $("manualGuideModal");
+      if (!modal) return;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => $("manualGuideClose")?.focus());
+    }
+
+    function closeManualGuide() {
+      const modal = $("manualGuideModal");
+      if (!modal || !modal.classList.contains("open")) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      $("manualGuideOpen")?.focus();
     }
 
     function manualDecision(titleText, bodyHtml, yesText, noText, options = {}) {
@@ -20778,12 +20920,15 @@
     }
 
     function keepLatestManualTimelineEventVisible() {
-      if (!manualModeState?.enabled || manualModeMinimized || !window.matchMedia("(max-width: 900px)").matches || !timeline.length) return;
+      if (!manualModeState?.enabled || manualModeMinimized || !timeline.length) return;
       requestAnimationFrame(() => {
         const scroll = $("timelineScroll");
         const latestIndex = timeline.length - 1;
-        const eventElement = [...document.querySelectorAll(`#timelineScroll [data-event-index="${latestIndex}"]`)]
-          .find(element => element.classList.contains("timeline-block") || element.classList.contains("timeline-marker"));
+        const focusEventId = timeline[latestIndex]?.timelineEventId || `timeline-${latestIndex}`;
+        const shouldFocus = manualTimelineFocusEventId !== focusEventId;
+        const eventElements = [...document.querySelectorAll(`#timelineScroll [data-event-index="${latestIndex}"]`)]
+          .filter(element => element.classList.contains("timeline-block") || element.classList.contains("timeline-marker"));
+        const eventElement = eventElements[0];
         if (!scroll || !eventElement) return;
         const viewport = scroll.getBoundingClientRect();
         const target = eventElement.getBoundingClientRect();
@@ -20791,11 +20936,20 @@
         let delta = 0;
         if (target.right > viewport.right - inset) delta = target.right - (viewport.right - inset);
         else if (target.left < viewport.left + inset) delta = target.left - (viewport.left + inset);
-        if (Math.abs(delta) < 2) return;
-        scroll.scrollBy({
-          left: delta,
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
-        });
+        if (Math.abs(delta) >= 2) {
+          scroll.scrollBy({
+            left: delta,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+          });
+        }
+        if (!shouldFocus) return;
+        manualTimelineFocusEventId = focusEventId;
+        eventElements.forEach(element => element.classList.add("manual-event-focus"));
+        if (manualTimelineFocusTimer) window.clearTimeout(manualTimelineFocusTimer);
+        manualTimelineFocusTimer = window.setTimeout(() => {
+          eventElements.forEach(element => element.classList.remove("manual-event-focus"));
+          manualTimelineFocusTimer = null;
+        }, 720);
       });
     }
 

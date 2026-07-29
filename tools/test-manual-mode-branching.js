@@ -42,6 +42,22 @@ registry = Branches.execute(registry, {
 });
 assert.equal(Branches.activeBranch(registry).terminalResult.winner, "B");
 assert.equal(Branches.activeBranch(registry).edits.length, 1);
+assert.equal(Branches.activeBranch(registry).labelSource, "AUTO");
+
+registry = Branches.execute(registry, {
+  type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+  payload: { branchId: "MANUAL-1", timelineModel: editedTimeline, label: "Use Surf", labelSource: "AUTO" }
+});
+assert.equal(registry.branches["MANUAL-1"].label, "Use Surf");
+registry = Branches.execute(registry, {
+  type: Branches.COMMAND_TYPE.RENAME_BRANCH,
+  payload: { branchId: "MANUAL-1", label: "Closing line" }
+});
+registry = Branches.execute(registry, {
+  type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+  payload: { branchId: "MANUAL-1", timelineModel: editedTimeline, label: "Use Swift", labelSource: "AUTO" }
+});
+assert.equal(registry.branches["MANUAL-1"].label, "Closing line", "Manual branch names must survive later automatic updates.");
 
 registry = Branches.execute(registry, {
   type: Branches.COMMAND_TYPE.DUPLICATE_BRANCH,

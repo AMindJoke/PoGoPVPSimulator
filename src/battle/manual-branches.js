@@ -27,6 +27,7 @@
       parentBranchId: input.parentBranchId || null,
       branchPoint: clone(input.branchPoint || null),
       label: input.label || input.branchId,
+      labelSource: input.labelSource || "AUTO",
       createdAt: input.createdAt || new Date().toISOString(),
       edits: clone(input.edits || []),
       timelineModel: clone(input.timelineModel || null),
@@ -100,6 +101,7 @@
         if (!target) throw new Error("BRANCH_NOT_FOUND");
         if (payload.branchId === ORIGINAL_BRANCH_ID) throw new Error("ORIGINAL_BRANCH_IMMUTABLE");
         target.label = String(payload.label || "").trim() || target.label;
+        target.labelSource = "MANUAL";
         break;
       }
       case COMMAND_TYPE.SWITCH_BRANCH:
@@ -136,6 +138,10 @@
         target.edits = [...(target.edits || []), clone(payload.edit)].filter(Boolean);
         target.stateHash = payload.stateHash || payload.timelineModel?.events?.at(-1)?.stateHashAfter || payload.timelineModel?.initialStateHash || null;
         target.classification = payload.classification || target.classification;
+        if (payload.label && target.labelSource !== "MANUAL") {
+          target.label = String(payload.label).trim() || target.label;
+          target.labelSource = payload.labelSource || "AUTO";
+        }
         break;
       }
       default:
