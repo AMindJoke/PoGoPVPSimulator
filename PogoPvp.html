@@ -5404,19 +5404,18 @@
     .manual-hud-shield-setup {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
       margin-left: auto;
       color: var(--muted);
       white-space: nowrap;
     }
     .manual-hud-side[data-side="B"] .manual-hud-shield-setup { margin-left: 0; margin-right: auto; }
-    .manual-hud-shield-setup > small { font-size: 8px; font-weight: 850; }
     .manual-hud-shield-control {
       display: inline-flex;
+      flex: 0 0 auto;
       overflow: hidden;
-      border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
+      border: 1px solid #c8d0da;
       border-radius: 999px;
-      background: color-mix(in srgb, var(--panel) 94%, var(--accent));
+      background: rgba(255,255,255,.75);
     }
     .manual-hud-shield-control button {
       display: grid;
@@ -5424,12 +5423,12 @@
       place-content: center;
       align-items: center;
       gap: 1px;
-      width: 31px;
-      min-width: 31px;
-      min-height: 25px;
+      width: 34px;
+      min-width: 34px;
+      min-height: 28px;
       padding: 0;
       border: 0;
-      border-right: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+      border-right: 1px solid #c8d0da;
       border-radius: 0;
       font-size: 9px;
       line-height: 1;
@@ -5442,7 +5441,8 @@
     .manual-hud-shield-control button:not(:disabled):hover { background: color-mix(in srgb, var(--accent) 13%, var(--panel)); }
     .manual-hud-shield-control button.active:hover { background: var(--accent); }
     .manual-hud-shield-control strong { font-size: 9px; }
-    .manual-hud-shield-control svg { width: 13px; height: 13px; }
+    .manual-hud-shield-control svg { width: 15px; height: 15px; color: #b245c5; }
+    .manual-hud-shield-control button.active svg { color: #d45af0; }
     .manual-mobile-shield-setup { display: none; }
     .manual-hud-sprite {
       width: 52px;
@@ -8841,7 +8841,7 @@
       body.manual-mode-active .manual-mobile-shield-setup {
         grid-column: 1 / -1;
         display: grid;
-        grid-template-columns: auto 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: center;
         gap: 6px;
         padding-top: 7px;
@@ -8850,7 +8850,6 @@
         font-size: 9px;
         font-weight: 850;
       }
-      body.manual-mode-active .manual-mobile-shield-setup > span { grid-column: 1 / -1; }
       body.manual-mode-active .manual-mobile-shield-setup label {
         display: flex;
         align-items: center;
@@ -10631,7 +10630,7 @@
                     <span id="manualHudEnergyA" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="A-1"></span>
                   </span>
-                  <span class="manual-hud-shield-setup"><small>Shields</small><span id="manualHudShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></span>
+                  <span class="manual-hud-shield-setup"><span id="manualHudShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10656,7 +10655,7 @@
                     <span id="manualHudEnergyB" class="manual-hud-energy"><strong>0</strong><small>energy</small></span>
                     <span data-manual-charge-slot="B-1"></span>
                   </span>
-                  <span class="manual-hud-shield-setup"><small>Shields</small><span id="manualHudShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></span>
+                  <span class="manual-hud-shield-setup"><span id="manualHudShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></span>
                 </div>
               </div>
             </article>
@@ -10704,7 +10703,6 @@
                 </button>
               </div>
               <div id="manualMobileShieldSetup" class="manual-mobile-shield-setup" aria-label="Manual shield settings">
-                <span>Shields</span>
                 <label>Pokémon A <span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
                 <label>Pokémon B <span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
               </div>
