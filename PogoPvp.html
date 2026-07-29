@@ -10783,6 +10783,9 @@
     let manualOriginalRuntimeState = null;
     let manualRootSnapshotId = null;
     let manualModeMinimized = false;
+    // This belongs to the Manual Mode session, not to an individual timeline
+    // version. Switching Original/Manual must never change who is controlled.
+    let manualSessionControlMode = null;
     let displayedResources = {};
     // Fast-count badges track button-added energy only; manual edits or fast changes invalidate provenance.
     const startingFastAdvantages = { p1: null, p2: null };
@@ -13573,6 +13576,7 @@
       manualBranchRegistry = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
+      manualSessionControlMode = null;
       battleInsights = [];
       lastBattleDecisionTrace = null;
       lastTacticalPatternSummary = null;
@@ -15089,8 +15093,13 @@
 
     function rebuildManualModeStateForBranch(activeBranch) {
       const point = currentManualDecisionPoint();
+      const controlModes = window.PvPeakManualMode.CONTROL_MODE;
+      const controlMode = Object.values(controlModes).includes(manualSessionControlMode)
+        ? manualSessionControlMode
+        : manualModeState?.controlMode || controlModes.BOTH_MANUAL;
       manualModeState = window.PvPeakManualMode.createState({
-        originalTimeline: manualBranchRegistry?.branches?.["AUTO-ORIGINAL"]?.timelineModel?.events || []
+        originalTimeline: manualBranchRegistry?.branches?.["AUTO-ORIGINAL"]?.timelineModel?.events || [],
+        controlMode
       });
       manualModeState = window.PvPeakManualMode.enable(manualModeState, {
         originalTimeline: manualModeState.originalTimeline,
@@ -15116,6 +15125,10 @@
         A: Math.max(0, Math.min(2, Number($("p1Shields")?.value || 0))),
         B: Math.max(0, Math.min(2, Number($("p2Shields")?.value || 0)))
       };
+      const selectedControlMode = $("manualControlMode")?.value;
+      if (Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(selectedControlMode)) {
+        manualSessionControlMode = selectedControlMode;
+      }
       const originalTimeline = cloneTechnicalValue(timeline);
       const originalInitialState = cloneTechnicalValue(initialTimelineState);
       const originalTerminal = currentManualTerminalResult();
@@ -15191,10 +15204,6 @@
       });
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
       manualModeMinimized = false;
-      const selectedControlMode = $("manualControlMode")?.value;
-      if (Object.values(window.PvPeakManualMode.CONTROL_MODE).includes(selectedControlMode)) {
-        manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, selectedControlMode);
-      }
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       updateManualBranchSelectionUi();
       render();
@@ -15213,6 +15222,7 @@
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
       manualModeMinimized = false;
+      manualSessionControlMode = null;
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
       add("Returned to the immutable automatic timeline.", "info");
@@ -15261,6 +15271,7 @@
         return false;
       }
       manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, controlMode);
+      manualSessionControlMode = controlMode;
       add(`Manual control changed to ${controlMode === "PLAYER_A_MANUAL"
         ? "A manual / B automatic"
         : controlMode === "PLAYER_B_MANUAL"
