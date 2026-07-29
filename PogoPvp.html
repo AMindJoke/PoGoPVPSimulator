@@ -15224,12 +15224,18 @@
     }
 
     function scrollManualMobileEditorToTop() {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        const focusMount = $("manualMobileFocusMount");
-        if (!focusMount || !manualModeState?.enabled || manualModeMinimized) return;
-        const top = Math.max(0, window.scrollY + focusMount.getBoundingClientRect().top);
-        window.scrollTo({ top, behavior: "auto" });
-      }));
+      // The editor header is sticky on mobile, so its bounding rect becomes 0
+      // while the page is still at the position of the button that opened it.
+      // Always reset the document itself instead of using that sticky element as
+      // a scroll target. Repeating after layout lets Safari finish relocating the
+      // mobile-only controls before it restores its scroll anchoring.
+      const resetToEditorStart = () => {
+        if (!manualModeState?.enabled || manualModeMinimized) return;
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      };
+      resetToEditorStart();
+      requestAnimationFrame(() => requestAnimationFrame(resetToEditorStart));
+      window.setTimeout(resetToEditorStart, 180);
     }
 
     function changeLiveManualControlMode() {
