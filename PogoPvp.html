@@ -246,6 +246,18 @@
       box-shadow: 0 0 20px rgba(0, 228, 255, .16);
     }
     h1 { margin: 0; white-space: nowrap; }
+    .app-title-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #fff;
+    }
+    .app-franchise {
+      font-size: 28px;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
     .app-wordmark {
       display: grid;
       color: #fff;
@@ -7882,6 +7894,8 @@
         gap: 9px;
         padding: 10px;
       }
+      .app-title-lockup { gap: 7px; }
+      .app-franchise { font-size: 23px; }
       .app-wordmark { font-size: 23px; }
       .app-wordmark small { font-size: 7px; }
       .app-tabs {
@@ -10381,7 +10395,7 @@
 <body class="clarity-ui" data-view="simulator">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
-    <h1><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
+    <h1 class="app-title-lockup"><span class="app-franchise">Pokémon</span><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
     <div class="mobile-header-actions" aria-label="Simulator controls">
       <button id="mobileReset" type="button" title="Reset simulator" aria-label="Reset simulator"><span aria-hidden="true">&#8635;</span></button>
       <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
