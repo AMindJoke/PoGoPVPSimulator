@@ -5647,10 +5647,11 @@
     .manual-scenario-more { position: relative; z-index: 70; }
     .manual-scenario-more > button { min-width: 38px; padding-inline: 9px; font-size: 18px; letter-spacing: .08em; }
     .manual-scenario-menu {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      z-index: 45;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: auto;
+      z-index: 700;
       display: grid;
       min-width: 166px;
       padding: 5px;
@@ -5861,10 +5862,6 @@
     @media (min-width: 901px) {
       body.manual-mode-active {
         overflow: hidden;
-      }
-      body.manual-mode-active .manual-scenario-menu {
-        top: auto;
-        bottom: calc(100% + 6px);
       }
       body.manual-mode-active .modal {
         z-index: 600;
@@ -11673,7 +11670,7 @@
       $("manualScenarioLibraryImport").onclick = () => $("manualScenarioImportFile")?.click();
       $("manualScenarioImportFile").onchange = importManualScenarioFile;
       document.addEventListener("click", event => {
-        if (!event.target.closest(".manual-scenario-more")) closeManualScenarioMenu();
+        if (!event.target.closest(".manual-scenario-more, .manual-scenario-menu")) closeManualScenarioMenu();
       });
       $("timelineZoomOut").onclick = () => stepTimelineZoom(-1);
       $("timelineZoomIn").onclick = () => stepTimelineZoom(1);
@@ -16428,10 +16425,23 @@
 
     function toggleManualScenarioMenu() {
       const menu = $("manualScenarioMenu");
-      if (!menu) return;
+      const trigger = $("manualScenarioMore");
+      if (!menu || !trigger) return;
       const open = menu.hidden;
-      menu.hidden = !open;
-      $("manualScenarioMore")?.setAttribute("aria-expanded", String(open));
+      if (!open) return closeManualScenarioMenu();
+      if (menu.parentElement !== document.body) document.body.append(menu);
+      menu.hidden = false;
+      const triggerRect = trigger.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const gutter = 8;
+      const below = triggerRect.bottom + 6 + menuRect.height <= window.innerHeight - gutter;
+      const top = below
+        ? triggerRect.bottom + 6
+        : Math.max(gutter, triggerRect.top - 6 - menuRect.height);
+      const left = Math.max(gutter, Math.min(window.innerWidth - menuRect.width - gutter, triggerRect.right - menuRect.width));
+      menu.style.top = `${Math.round(top)}px`;
+      menu.style.left = `${Math.round(left)}px`;
+      trigger.setAttribute("aria-expanded", "true");
     }
 
     function closeManualScenarioMenu() {
