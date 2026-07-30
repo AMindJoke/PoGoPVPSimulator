@@ -11253,6 +11253,7 @@
     let manualDecisionReturnFocus = null;
     let manualScenarioId = null;
     let manualScenarioBaseline = null;
+    let manualScenarioDraftName = null;
     const manualScenarioLibrary = (() => {
       try { return window.PvPeakManualScenarioLibrary?.createLibrary?.(window.localStorage) || null; }
       catch (_) { return null; }
@@ -16338,7 +16339,7 @@
       if (!enabled) return;
       const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
       const status = manualScenarioStatus();
-      $("manualScenarioName").textContent = entry?.name || manualScenarioDefaultName();
+      $("manualScenarioName").textContent = entry?.name || manualScenarioDraftName || manualScenarioDefaultName();
       const statusElement = $("manualScenarioStatus");
       statusElement.dataset.state = status.state;
       statusElement.textContent = status.label;
@@ -16353,11 +16354,12 @@
       const payload = manualScenarioSnapshot();
       if (!payload) return false;
       const existing = manualScenarioId ? manualScenarioLibrary.get(manualScenarioId) : null;
-      const name = existing?.name || window.prompt("Name this scenario:", manualScenarioDefaultName());
+      const name = existing?.name || manualScenarioDraftName || window.prompt("Name this scenario:", manualScenarioDefaultName());
       if (!name?.trim()) return false;
       const saved = manualScenarioLibrary.save({ id: manualScenarioId, name, payload, summary: manualScenarioSummary() });
       manualScenarioId = saved.id;
       manualScenarioBaseline = JSON.stringify(payload);
+      manualScenarioDraftName = null;
       add(`Scenario saved as ${saved.name}.`, "info");
       renderManualScenarioPanel();
       return true;
@@ -16414,6 +16416,7 @@
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualScenarioId = entry.id;
         manualScenarioBaseline = JSON.stringify(entry.payload);
+        manualScenarioDraftName = null;
         closeManualScenarioLibrary();
         render();
         add(`Opened scenario ${entry.name}.`, "info");
@@ -16457,27 +16460,34 @@
       const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
       if (command === "export") return exportManualScenario();
       if (command === "import") return $("manualScenarioImportFile")?.click();
-      if (!entry) return false;
       if (command === "rename") {
-        const name = window.prompt("Rename scenario:", entry.name);
+        const currentName = entry?.name || manualScenarioDraftName || manualScenarioDefaultName();
+        const name = window.prompt("Rename scenario:", currentName);
         if (!name?.trim()) return false;
-        manualScenarioLibrary.rename(entry.id, name);
+        if (entry) manualScenarioLibrary.rename(entry.id, name);
+        else manualScenarioDraftName = name.trim();
         renderManualScenarioPanel();
         return true;
       }
       if (command === "duplicate") {
-        const name = window.prompt("Duplicate scenario as:", `${entry.name} copy`);
+        const currentName = entry?.name || manualScenarioDraftName || manualScenarioDefaultName();
+        const name = window.prompt("Duplicate scenario as:", `${currentName} copy`);
         if (!name?.trim()) return false;
-        const duplicate = manualScenarioLibrary.duplicate(entry.id, name);
+        const payload = manualScenarioSnapshot();
+        if (!payload || !manualScenarioLibrary) return false;
+        const duplicate = manualScenarioLibrary.save({ name, payload, summary: manualScenarioSummary() });
         manualScenarioId = duplicate.id;
         manualScenarioBaseline = JSON.stringify(duplicate.payload);
+        manualScenarioDraftName = null;
         renderManualScenarioPanel();
         return true;
       }
+      if (!entry) return false;
       if (command === "delete" && window.confirm(`Delete "${entry.name}" from this browser?`)) {
         manualScenarioLibrary.remove(entry.id);
         manualScenarioId = null;
         manualScenarioBaseline = null;
+        manualScenarioDraftName = null;
         renderManualScenarioPanel();
         return true;
       }
