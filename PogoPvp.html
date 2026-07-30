@@ -5644,7 +5644,7 @@
     .manual-scenario-status[data-state="saved"]::after { content: "✓"; font-size: 10px; }
     .manual-scenario-actions { display: inline-flex; flex: 0 1 auto; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
     .manual-scenario-actions button { min-height: 34px; padding: 6px 13px; white-space: nowrap; }
-    .manual-scenario-more { position: relative; }
+    .manual-scenario-more { position: relative; z-index: 70; }
     .manual-scenario-more > button { min-width: 38px; padding-inline: 9px; font-size: 18px; letter-spacing: .08em; }
     .manual-scenario-menu {
       position: absolute;
@@ -6104,6 +6104,8 @@
       }
       body.manual-mode-active .manual-decision-panel {
         grid-area: decision;
+        position: relative;
+        z-index: 60;
         display: grid;
         gap: 7px;
         padding: 9px;
