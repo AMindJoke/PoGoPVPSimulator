@@ -32,6 +32,7 @@
   <script src="src/battle/manual-branches.js"></script>
   <script src="src/battle/manual-scenario-io.js"></script>
   <script src="src/battle/manual-scenario-library.js"></script>
+  <script src="src/battle/energy-trainer.js"></script>
   <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
@@ -5760,6 +5761,34 @@
       font-size: 9px;
       font-weight: 750;
     }
+    .energy-trainer { display: grid; gap: 12px; margin-top: 12px; min-width: 0; }
+    .energy-trainer-pokemon { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: center; gap: 10px; }
+    .energy-trainer-pokemon img { width: 54px; height: 54px; object-fit: contain; }
+    .energy-trainer-pokemon strong { display: block; overflow: hidden; color: var(--text); font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+    .energy-trainer-types { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .energy-trainer-types .type-badge { font-size: 8px; }
+    .energy-trainer-fast { color: var(--muted); font-size: 10px; font-weight: 800; }
+    .energy-trainer-fast strong { color: var(--text); }
+    .energy-trainer-scale { position: relative; min-width: 0; padding-top: 54px; }
+    .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 52px; }
+    .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
+    .energy-trainer-threshold-label { position: absolute; left: 0; bottom: 7px; width: min(84px, 42vw); padding: 4px 5px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--move-color) 42%, var(--line)); border-radius: 5px; background: var(--panel); color: var(--text); font-size: 8px; font-weight: 850; line-height: 1.15; text-align: center; text-overflow: ellipsis; white-space: nowrap; transform: translateX(-50%); }
+    .energy-trainer-threshold-label[data-edge="start"] { transform: translateX(0); }
+    .energy-trainer-threshold-label[data-edge="end"] { transform: translateX(-100%); }
+    .energy-trainer-threshold-label[data-lane="1"] { bottom: 29px; }
+    .energy-trainer-threshold.is-ready { border-left-width: 2px; border-left-color: var(--move-color); }
+    .energy-trainer-threshold.is-ready .energy-trainer-threshold-label { border-color: var(--move-color); background: color-mix(in srgb, var(--move-color) 13%, var(--panel)); }
+    .energy-trainer-tiles { display: grid; grid-template-columns: repeat(var(--tile-count), minmax(0, 1fr)); gap: 4px; }
+    .energy-trainer-tile { position: relative; min-width: 0; height: 22px; overflow: hidden; border: 1px solid color-mix(in srgb, #c77b28 48%, var(--line)); border-radius: 4px; background: color-mix(in srgb, #e9a55c 13%, var(--soft)); }
+    .energy-trainer-tile::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--tile-fill) * 100%); background: #d88b39; transition: width 180ms ease-out; }
+    .energy-trainer-tile[data-state="partial"] { border-style: dashed; }
+    .energy-trainer-tile[data-state="full"] { border-style: solid; border-color: #c87828; }
+    .energy-trainer-counts { display: grid; grid-template-columns: repeat(var(--tile-count), minmax(0, 1fr)); gap: 4px; min-height: 16px; margin-top: 3px; }
+    .energy-trainer-count { min-width: 0; color: #a7601d; font-size: 10px; font-weight: 950; line-height: 1.2; text-align: center; }
+    .energy-trainer-count[hidden] { visibility: hidden; display: block; }
+    .energy-trainer-count.pop { animation: energy-trainer-pop 210ms ease-out both; }
+    @keyframes energy-trainer-pop { 0% { opacity: .25; transform: scale(.72); } 65% { opacity: 1; transform: scale(1.18); } 100% { opacity: 1; transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .energy-trainer-tile::after { transition: none; } .energy-trainer-count.pop { animation: none; } }
     .manual-inspector-advanced[hidden] { display: none; }
     #manualInspectorDetailsToggle {
       width: 100%;
@@ -9093,10 +9122,15 @@
         border: 0;
         background: transparent;
       }
-      body.manual-mode-active .manual-state-inspector-head,
       body.manual-mode-active .manual-state-inspector .manual-inspector-grid {
         display: none;
       }
+      body.manual-mode-active .manual-state-inspector-head { display: flex; padding: 0 4px; }
+      body.manual-mode-active .energy-trainer { padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
+      body.manual-mode-active .energy-trainer-scale { padding-top: 60px; }
+      body.manual-mode-active .energy-trainer-tiles,
+      body.manual-mode-active .energy-trainer-counts { gap: 3px; }
+      body.manual-mode-active .energy-trainer-threshold-label { max-width: 76px; font-size: 7px; }
       body.manual-mode-active #manualInspectorDetailsToggle {
         min-height: 40px;
         margin: 0;
@@ -10881,11 +10915,9 @@
               </div>
             </div>
           </div>
-          <aside id="manualStateInspector" class="manual-state-inspector">
-            <div class="manual-state-inspector-head"><strong>Current State</strong><small id="manualInspectorPhase">Waiting</small></div>
-            <div id="manualInspectorGrid" class="manual-inspector-grid"></div>
-            <div id="manualInspectorAdvancedGrid" class="manual-inspector-grid manual-inspector-advanced" hidden></div>
-            <button id="manualInspectorDetailsToggle" class="secondary" type="button" aria-expanded="false">View Full Details</button>
+          <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualEnergyTrainerTitle">
+            <div class="manual-state-inspector-head"><strong id="manualEnergyTrainerTitle">Energy Trainer</strong><small>Fast Move counting</small></div>
+            <div id="manualEnergyTrainer" class="energy-trainer" aria-live="polite"></div>
           </aside>
           <div id="manualMobileSecondaryMount" class="manual-mobile-secondary-mount" hidden></div>
           <div id="manualTimelineEventMenu" class="manual-timeline-event-menu" hidden>
@@ -11254,6 +11286,8 @@
     let manualScenarioId = null;
     let manualScenarioBaseline = null;
     let manualScenarioDraftName = null;
+    let manualEnergyTrainerPrevious = null;
+    let manualEnergyTrainerSuppressPop = true;
     const manualScenarioLibrary = (() => {
       try { return window.PvPeakManualScenarioLibrary?.createLibrary?.(window.localStorage) || null; }
       catch (_) { return null; }
@@ -11783,7 +11817,6 @@
       $("manualOverlayUndo").onclick = undoLiveManualCommand;
       $("manualOverlayRedo").onclick = redoLiveManualCommand;
       $("manualOverlayScenario").onchange = event => switchLiveManualBranch(event.target.value);
-      $("manualInspectorDetailsToggle").onclick = toggleManualInspectorDetails;
       $("manualMobileVersionsToggle").onclick = toggleManualMobileVersions;
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
@@ -14041,6 +14074,8 @@
     }
 
     function resetBattleStateFromSetup() {
+      manualEnergyTrainerPrevious = null;
+      manualEnergyTrainerSuppressPop = true;
       exitPreviewMode();
       clearTechnicalReview({ restore: false, renderNow: false });
       technicalSegmentStartState = null;
@@ -15565,6 +15600,7 @@
 
     function restoreManualRuntimePayload(payload, restoredTimeline) {
       if (!payload) throw new Error("SNAPSHOT_NOT_FOUND");
+      manualEnergyTrainerSuppressPop = true;
       const restored = cloneTechnicalValue(payload);
       left = restored.left;
       right = restored.right;
@@ -15618,6 +15654,8 @@
     function enterLiveManualMode() {
       if (!left || !right) startBattle();
       if (!left || !right) return false;
+      manualEnergyTrainerPrevious = null;
+      manualEnergyTrainerSuppressPop = true;
       const startMode = $("manualStartPoint")?.value || "battle-start";
       const selectedStartingShields = {
         A: Math.max(0, Math.min(2, Number($("p1Shields")?.value || 0))),
@@ -16697,56 +16735,61 @@
     }
 
     function renderManualStateInspector(runtimeStatus) {
-      const grid = $("manualInspectorGrid");
-      const advancedGrid = $("manualInspectorAdvancedGrid");
-      if (!grid || !advancedGrid || !manualModeState?.enabled || !left || !right) return;
-      const state = turnEngineState();
-      const pending = state?.pendingEvents || [];
-      const phase = manualModeState.pendingDecision?.phase
-        || manualModeState.status.replaceAll("_", " ");
-      const currentTurn = Number(state?.currentTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
-      const readySides = ["A", "B"].filter(side =>
-        Number(state?.sides?.[side]?.readyTurn ?? Infinity) <= currentTurn
-        && Number(state?.sides?.[side]?.hp || 0) > 0
-      );
-      const cmp = left.attack > right.attack
-        ? `A · ${left.p.name}`
-        : right.attack > left.attack
-          ? `B · ${right.p.name}`
-          : "Tie";
-      const item = (label, value, titleText = value) =>
-        `<span class="manual-inspector-item" title="${escapeHtml(String(titleText))}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(String(value))}</strong></span>`;
-      const signedStage = value => {
-        const stage = Number(value || 0);
-        return `${stage > 0 ? "+" : ""}${stage}`;
-      };
-      const stages = combatant => `Atk ${signedStage(combatant.attackStage)} · Def ${signedStage(combatant.defenseStage)}`;
-      const cooldown = side => Math.max(0, Number(state?.sides?.[side]?.readyTurn || 0) - currentTurn);
-      const pendingFast = pending.filter(event => event.type === "fast-impact");
-      const pendingEventText = pending.length
-        ? pending.map(event => `${event.moveName || event.moveId || event.type || "Event"} · T${event.resolveTurn ?? event.turn ?? "?"}`).join(", ")
-        : "None";
-      if ($("manualInspectorPhase")) $("manualInspectorPhase").textContent = runtimeStatus.text;
-      grid.innerHTML = [
-        item("Turn", currentTurn),
-        item("Phase", title(String(phase).toLowerCase().replaceAll("_", " "))),
-        item(`${left.p.name} · HP`, `${left.hp}/${left.maxHp}`),
-        item(`${left.p.name} · Energy`, left.energy),
-        item(`${left.p.name} · Shields`, left.shields),
-        item(`${left.p.name} · Cooldown`, `${cooldown("A")}t`),
-        item(`${right.p.name} · HP`, `${right.hp}/${right.maxHp}`),
-        item(`${right.p.name} · Energy`, right.energy),
-        item(`${right.p.name} · Shields`, right.shields),
-        item(`${right.p.name} · Cooldown`, `${cooldown("B")}t`),
-        item("Pending events", pendingEventText)
-      ].join("");
-      advancedGrid.innerHTML = [
-        item("Ready side", readySides.join(" + ") || "None"),
-        item("CMP", cmp),
-        item(`${left.p.name} · Stages`, stages(left)),
-        item(`${right.p.name} · Stages`, stages(right)),
-        item("Pending Fast", pendingFast.length, pendingFast.map(event => event.moveName || event.moveId || event.id).join(", ") || "None")
-      ].join("");
+      const trainer = $("manualEnergyTrainer");
+      const tileApi = window.PvPeakEnergyTrainer;
+      if (!trainer || !tileApi || !manualModeState?.enabled || !left || !right) return;
+      const pendingSide = manualModeState.pendingDecision?.activeSide;
+      const controlledSides = manualModeState.controlledSides || [];
+      const side = pendingSide && controlledSides.includes(pendingSide)
+        ? pendingSide
+        : controlledSides.length === 1
+          ? controlledSides[0]
+          : pendingSide || manualModeState.selectedSide || "A";
+      const combatant = side === "B" ? right : left;
+      const fast = combatant.fast;
+      const fastEnergy = Math.max(1, Number(fast?.energyGain || 1));
+      const model = tileApi.createTileModel({ energy: combatant.energy, fastEnergy });
+      const completeCount = model.tiles.filter(tile => tile.complete).length;
+      const partialTile = model.tiles.find(tile => tile.state === "partial") || null;
+      const latestEvent = timeline.at(-1) || null;
+      const latestEventId = latestEvent?.timelineEventId || latestEvent?.id || `${timeline.length}:${latestEvent?.kind || "none"}`;
+      const previous = manualEnergyTrainerPrevious;
+      const currentTrainerState = { side, fastId: fast?.id, energy: Number(combatant.energy), completeCount, fastEnergy, maxEnergy: 100 };
+      const shouldPop = tileApi.shouldAnimateCompletion({
+        previous,
+        current: currentTrainerState,
+        eventKind: latestEvent?.kind,
+        eventId: latestEventId,
+        suppressed: manualEnergyTrainerSuppressPop
+      });
+      const popIndex = shouldPop ? completeCount - 1 : -1;
+      const charged = tileApi.createChargedThresholdModel(combatant.charged, combatant.energy);
+      const readyMoves = charged.filter(item => item.ready).map(item => item.move.name);
+      const tileDescription = partialTile
+        ? `${completeCount} complete Fast Moves and a partial remainder of ${partialTile.amount} out of ${partialTile.capacity}`
+        : `${completeCount} complete Fast Moves and no partial remainder`;
+      trainer.setAttribute("aria-label", `${combatant.p.name}. ${fast?.name || "Fast Move"}, plus ${fastEnergy} energy per use. ${tileDescription}. Available Charged Moves: ${readyMoves.join(", ") || "none"}.`);
+      trainer.innerHTML = `
+        <div class="energy-trainer-pokemon">
+          <img id="manualEnergyTrainerSprite" alt="${escapeHtml(combatant.p.name)}">
+          <div><strong>${escapeHtml(combatant.p.name)}</strong><span class="energy-trainer-types">${(combatant.p.types || []).map(type => {
+            const color = typeColors[type] || "#66788c";
+            return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(type))}</span>`;
+          }).join("")}</span></div>
+        </div>
+        <div class="energy-trainer-fast"><strong>${escapeHtml(fast?.name || "Fast Move")}</strong> · +${fastEnergy} energy per use</div>
+        <div class="energy-trainer-scale">
+          <div class="energy-trainer-thresholds" aria-label="Charged Move energy thresholds">${charged.map(({ move, cost, lane, edge, ready }) => {
+            const color = typeColors[move.type] || "#66788c";
+            return `<span class="energy-trainer-threshold ${ready ? "is-ready" : ""}" style="left:${cost}%;--move-color:${color}" aria-label="${escapeHtml(move.name)}, ${cost} energy${ready ? ", available" : ", not yet available"}"><span class="energy-trainer-threshold-label" data-lane="${lane}" data-edge="${edge}">${escapeHtml(move.abbreviation || move.name)} · ${cost}</span></span>`;
+          }).join("")}</div>
+          <div class="energy-trainer-tiles" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map(tile => `<span class="energy-trainer-tile" data-state="${tile.state}" style="--tile-fill:${tile.fill}"></span>`).join("")}</div>
+          <div class="energy-trainer-counts" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map((tile, index) => `<span class="energy-trainer-count ${index === popIndex ? "pop" : ""}"${tile.complete ? "" : " hidden"}>${index + 1}</span>`).join("")}</div>
+        </div>`;
+      const sprite = $("manualEnergyTrainerSprite");
+      if (sprite) setPokemonImage(sprite, combatant.p);
+      manualEnergyTrainerPrevious = { ...currentTrainerState, eventId: latestEventId };
+      manualEnergyTrainerSuppressPop = false;
     }
 
     function toggleManualInspectorDetails() {

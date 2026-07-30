@@ -1,0 +1,22 @@
+const assert = require("assert");
+const { createTileModel, createChargedThresholdModel, shouldAnimateCompletion } = require("../src/battle/energy-trainer.js");
+
+const tile = (energy, gain) => createTileModel({ energy, fastEnergy: gain });
+assert.deepStrictEqual(tile(0, 13).tiles.map(item => item.state), Array(8).fill("empty"));
+assert.deepStrictEqual(tile(13, 13).tiles.map(item => item.state), ["full", ...Array(7).fill("empty")]);
+assert.deepStrictEqual(tile(52, 13).tiles.map(item => item.complete), [true, true, true, true, false, false, false, false]);
+assert.deepStrictEqual(tile(17, 13).tiles.slice(0, 2).map(item => [item.amount, item.capacity, item.state]), [[13, 13, "full"], [4, 13, "partial"]]);
+assert.deepStrictEqual(tile(100, 13).tiles.map(item => item.state), Array(8).fill("full"));
+assert.deepStrictEqual(tile(52 - 35, 13).tiles.slice(0, 2).map(item => [item.amount, item.state]), [[13, "full"], [4, "partial"]]);
+assert.strictEqual(tile(100, 20).tiles.length, 5);
+assert.strictEqual(tile(100, 13).tiles.at(-1).capacity, 9);
+const thresholdsBelow = createChargedThresholdModel([{ name: "Body Slam", energyCost: 35 }, { name: "Power Whip", energyCost: 50 }], 34);
+assert.deepStrictEqual(thresholdsBelow.map(item => [item.positionPercent, item.ready, item.lane]), [[35, false, 0], [50, false, 1]]);
+const thresholdsReady = createChargedThresholdModel([{ name: "Body Slam", energyCost: 35 }, { name: "Power Whip", energyCost: 50 }], 50);
+assert.deepStrictEqual(thresholdsReady.map(item => item.ready), [true, true]);
+const previous = { side: "A", fastId: "ROLLOUT", energy: 4, completeCount: 0, eventId: "event-1" };
+const current = { side: "A", fastId: "ROLLOUT", energy: 17, completeCount: 1, fastEnergy: 13, maxEnergy: 100 };
+assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "fast", eventId: "event-2" }), true);
+assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "fast", eventId: "event-2", suppressed: true }), false);
+assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "charge", eventId: "event-2" }), false);
+console.log("Energy Trainer tile model tests passed.");

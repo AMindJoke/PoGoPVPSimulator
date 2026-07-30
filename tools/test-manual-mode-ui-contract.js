@@ -45,10 +45,8 @@ for (const id of [
   "manualOverlayRedo",
   "manualOverlayExit",
   "manualStateInspector",
-  "manualInspectorPhase",
-  "manualInspectorGrid",
-  "manualInspectorAdvancedGrid",
-  "manualInspectorDetailsToggle",
+  "manualEnergyTrainerTitle",
+  "manualEnergyTrainer",
   "manualTimelineEventMenu",
   "manualEventMenuTitle",
   "manualEventInspect",
@@ -88,7 +86,7 @@ for (const id of [
 assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,220}grid-template-columns: minmax\(0, 1\.65fr\) minmax\(300px, \.85fr\)/);
 assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,320}width: 100%;[\s\S]{0,80}max-width: none/);
 assert.match(html, /\.manual-state-inspector\s*\{[\s\S]{0,180}grid-column: 2/);
-assert.match(html, /\.manual-inspector-grid\s*\{[\s\S]{0,120}grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+assert.match(html, /\.energy-trainer-tiles\s*\{[\s\S]{0,160}repeat\(var\(--tile-count\), minmax\(0, 1fr\)\)/);
 assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
 assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,400}body\.manual-mode-active #battleTimeline/);
 assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
@@ -120,7 +118,7 @@ assert.match(html, /id="manualHudTypesB"/);
 assert.match(html, /--timeline-track-height: 58px/);
 assert.match(html, /grid-template-areas:[\s\S]{0,160}"header header"[\s\S]{0,160}"decision sidebar"/);
 assert.match(html, /Continue Automatically/);
-assert.match(html, /function toggleManualInspectorDetails/);
+assert.match(html, /src\/battle\/energy-trainer\.js/);
 assert.match(html, /manualOverlayScenario"\)\.onchange/);
 assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 assert.match(html, /manualBackToSimulation"\)\.onclick = backToSimulationFromManual/);
@@ -174,10 +172,10 @@ assert.match(html, /manual-mode-active/);
 assert.match(html, /actorName} to act/);
 assert.match(html, /legalBattleActions\(actor/);
 assert.match(html, /function renderManualStateInspector/);
-assert.match(html, /Pending Fast/);
-assert.match(html, /Pending events/);
-assert.match(html, /\$\{left\.p\.name\} · Cooldown/);
-assert.match(html, /\$\{right\.p\.name\} · Stages/);
+assert.match(html, /tileApi\.createTileModel/);
+assert.match(html, /energy-trainer-threshold/);
+assert.match(html, /manualEnergyTrainerSuppressPop/);
+assert.match(html, /tileApi\.shouldAnimateCompletion/);
 assert.match(html, /function manualActionUnavailableReason/);
 assert.match(html, /a shield decision is pending/);
 assert.match(html, /cooldown active for/);
