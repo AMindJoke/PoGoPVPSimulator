@@ -57,7 +57,25 @@ const overfarm = createNextCycleModel({
   remainingEnergy: 60,
   fastMove: mudShot
 });
-assert.deepStrictEqual(overfarm.rows.map(row => [row.fastMovesNeeded, row.ready]), [[0, true], [0, true]]);
+assert.equal(overfarm.cycleCarryEnergy, 6);
+assert.deepStrictEqual(overfarm.rows.map(row => [row.fastMovesNeeded, row.ready]), [[4, false], [5, false]]);
+const powderSnow = { id: "POWDER_SNOW", name: "Powder Snow", energyGain: 8 };
+const weatherBall = { id: "WEATHER_BALL_ICE", name: "Weather Ball (Ice)", energyCost: 35, type: "ice" };
+const abomasnowOverfarm = createNextCycleModel({
+  usedMove: weatherBall,
+  chargedMoves: [weatherBall],
+  remainingEnergy: 21,
+  fastMove: powderSnow
+});
+assert.equal(abomasnowOverfarm.cycleCarryEnergy, 5);
+assert.deepStrictEqual(abomasnowOverfarm.rows.map(row => [row.name, row.fastMovesNeeded]), [["Weather Ball", 4]]);
+const alreadyReady = createNextCycleModel({
+  usedMove: { id: "CHEAP_MOVE", name: "Cheap Move", energyCost: 5 },
+  chargedMoves: [{ id: "CHEAP_MOVE", name: "Cheap Move", energyCost: 5 }],
+  remainingEnergy: 8,
+  fastMove: mudShot
+});
+assert.deepStrictEqual(alreadyReady.rows.map(row => [row.fastMovesNeeded, row.ready]), [[0, true]]);
 const equalCost = createNextCycleModel({
   usedMove: mudBomb,
   chargedMoves: [mudBomb, { ...mudBomb, id: "OTHER_40", name: "Other Move" }],

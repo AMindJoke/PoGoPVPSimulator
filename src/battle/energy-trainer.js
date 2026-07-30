@@ -61,9 +61,12 @@
     );
     if (!usedMove || !Number.isFinite(fastEnergy) || fastEnergy <= 0 || !validCharged.length) return null;
     const residual = Math.max(0, Number(remainingEnergy) || 0);
+    // Whole Fast-Move gains in the residual are overfarm; Next Cycle teaches the
+    // repeating cycle, so only the irreducible carry influences the next count.
+    const cycleCarryEnergy = residual % fastEnergy;
     const rows = validCharged.map(move => {
       const cost = Math.max(0, Number(move.energyCost));
-      const fastMovesNeeded = Math.max(0, Math.ceil((cost - residual) / fastEnergy));
+      const fastMovesNeeded = Math.max(0, Math.ceil((cost - cycleCarryEnergy) / fastEnergy));
       return Object.freeze({
         moveId: move.id || null,
         name: displayMoveName(move.name || move.id),
@@ -80,6 +83,7 @@
       fastMoveName: displayMoveName(fastMove.name || fastMove.id),
       fastEnergy,
       remainingEnergy: residual,
+      cycleCarryEnergy,
       rows: Object.freeze(rows)
     });
   }
