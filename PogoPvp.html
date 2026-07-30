@@ -5345,6 +5345,7 @@
       --manual-motion-fast: 160ms;
       --manual-motion-standard: 200ms;
       --manual-focus-duration: 720ms;
+      --manual-motion-ease-out: cubic-bezier(.2, .8, .2, 1);
     }
     .manual-decision-banner.decision-transition,
     .manual-editor-actions.decision-transition {
@@ -5356,6 +5357,11 @@
     }
     .manual-decision-banner.is-terminal .manual-editor-kicker { color: var(--accent-strong); }
     @keyframes manual-decision-enter { from { opacity: .35; transform: translateY(4px); } }
+    .manual-editor-workspace.is-resolving .manual-decision-banner,
+    .manual-editor-workspace.shield-decision-pending .manual-decision-banner {
+      border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 9%, transparent);
+    }
     #timelineScroll .timeline-block.manual-event-focus,
     #timelineScroll .timeline-marker.manual-event-focus {
       outline: 2px solid color-mix(in srgb, var(--accent) 74%, #fff);
@@ -5399,6 +5405,13 @@
       border: 1px solid var(--line);
       border-radius: 9px;
       background: var(--panel);
+      transition: border-color var(--manual-motion-fast) var(--manual-motion-ease-out), box-shadow var(--manual-motion-standard) var(--manual-motion-ease-out), background-color var(--manual-motion-fast) var(--manual-motion-ease-out), opacity var(--manual-motion-fast) var(--manual-motion-ease-out);
+    }
+    .manual-duel-hud[data-active-side] .manual-hud-side:not(.is-active-decision) { opacity: .72; }
+    .manual-hud-side.is-active-decision {
+      border-color: color-mix(in srgb, var(--accent) 68%, var(--line));
+      background: color-mix(in srgb, var(--accent) 6%, var(--panel));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 11%, transparent), 0 7px 15px color-mix(in srgb, var(--shadow) 24%, transparent);
     }
     .manual-hud-side[data-side="B"] {
       grid-template-columns: minmax(0, 1fr) 54px;
@@ -6991,6 +7004,7 @@
     }
     .modal.open { display: flex; }
     .modal.open { animation: manual-modal-backdrop-in var(--manual-motion-standard, 200ms) ease-out both; }
+    .modal.open.closing { pointer-events: none; animation: manual-modal-backdrop-out var(--manual-motion-fast, 160ms) ease-out both; }
     .modal-card {
       width: min(440px, 100%);
       background: var(--panel);
@@ -7001,6 +7015,7 @@
       padding: 14px;
     }
     .modal.open .modal-card { animation: manual-modal-card-in var(--manual-motion-standard, 200ms) ease-out both; }
+    .modal.open.closing .modal-card { animation: manual-modal-card-out var(--manual-motion-fast, 160ms) ease-out both; }
     .modal-head {
       display: flex;
       justify-content: space-between;
@@ -7051,6 +7066,8 @@
     .manual-guide-body p { margin: 13px 0 0; padding-top: 10px; border-top: 1px solid var(--line); color: var(--ink); }
     @keyframes manual-modal-backdrop-in { from { background: rgba(10, 16, 24, 0); } }
     @keyframes manual-modal-card-in { from { opacity: 0; transform: translateY(6px) scale(.985); } }
+    @keyframes manual-modal-backdrop-out { to { background: rgba(10, 16, 24, 0); } }
+    @keyframes manual-modal-card-out { to { opacity: 0; transform: translateY(3px) scale(.985); } }
     #manualDecisionModal.shield-decision-modal .modal-card {
       width: min(470px, 100%);
       padding: 16px;
@@ -7110,6 +7127,7 @@
       height: 82px;
       object-fit: contain;
       filter: drop-shadow(0 5px 5px color-mix(in srgb, var(--shadow) 68%, transparent));
+      transition: filter var(--manual-motion-standard) var(--manual-motion-ease-out), transform var(--manual-motion-standard) var(--manual-motion-ease-out), opacity var(--manual-motion-standard) var(--manual-motion-ease-out);
     }
     .shield-decision-sprite.defender {
       left: 13%;
@@ -7168,13 +7186,13 @@
     .shield-decision-facts dt::after { content: ":"; }
     .shield-decision-facts dd { margin-left: 4px; color: var(--ink); font-weight: 850; }
     @media (prefers-reduced-motion: no-preference) {
-      #manualDecisionModal.shield-decision-modal.open .shield-decision-emblem {
-        animation: shield-decision-pulse 1.5s ease-in-out infinite;
-      }
+      #manualDecisionModal.shield-decision-modal.open:not(.closing) .shield-decision-emblem { animation: shield-decision-emblem-in var(--manual-motion-standard) var(--manual-motion-ease-out) both; }
+      #manualDecisionModal.shield-decision-modal.open:not(.closing) .shield-decision-sprite.defender { animation: shield-decision-defender-in var(--manual-motion-standard) var(--manual-motion-ease-out) both; }
+      #manualDecisionModal.shield-decision-modal.open:not(.closing) .shield-decision-sprite.attacker { animation: shield-decision-attacker-in var(--manual-motion-standard) var(--manual-motion-ease-out) both; }
     }
-    @keyframes shield-decision-pulse {
-      50% { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 8px 23px color-mix(in srgb, #7660d9 46%, transparent), inset 0 1px 0 rgba(255,255,255,.72); }
-    }
+    @keyframes shield-decision-emblem-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.98); } }
+    @keyframes shield-decision-defender-in { from { opacity: 0; transform: translate(-5px, 4px); } }
+    @keyframes shield-decision-attacker-in { from { opacity: 0; transform: translate(5px, -4px); } }
     @media (max-width: 430px) {
       .modal { padding: 12px; }
       #manualDecisionModal.shield-decision-modal .modal-card { padding: 12px; }
@@ -11080,7 +11098,7 @@
     </div>
   </div>
 
-  <div class="modal" id="manualDecisionModal" aria-hidden="true">
+  <div class="modal" id="manualDecisionModal" role="dialog" aria-modal="true" aria-labelledby="manualDecisionTitle" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-head">
         <h2 id="manualDecisionTitle">Manual decision</h2>
@@ -11163,6 +11181,8 @@
     let manualDecisionVisualKey = null;
     let manualTimelineFocusTimer = null;
     let manualTimelineFocusEventId = null;
+    let manualDecisionCloseTimer = null;
+    let manualDecisionReturnFocus = null;
     let suppressRender = false;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
@@ -11553,6 +11573,7 @@
       $("manualDecisionModal").addEventListener("click", event => {
         if (event.target.id === "manualDecisionModal") manualDecisionResolve?.(false);
       });
+      document.addEventListener("keydown", handleManualDecisionModalKeydown);
       $("manualGuideOpen").onclick = openManualGuide;
       $("manualGuideClose").onclick = closeManualGuide;
       $("manualGuideModal").addEventListener("click", event => {
@@ -16032,6 +16053,7 @@
         restoreManualRuntimePayload(snapshot.state, events);
       }
       rebuildManualModeStateForBranch(active);
+      manualTimelineFocusEventId = null;
       render();
       return true;
     }
@@ -16216,6 +16238,8 @@
       const banner = $("manualDecisionBanner");
       const actions = $("manualEditorActions");
       banner?.classList.toggle("is-terminal", terminal);
+      workspace.classList.toggle("is-resolving", manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING);
+      workspace.classList.toggle("shield-decision-pending", shieldDecision);
       const decisionKey = [manualModeState.status, manualModeState.cursorTurn, manualModeState.cursorEventId, terminalLabel].join("|");
       if (manualDecisionVisualKey !== decisionKey) {
         manualDecisionVisualKey = decisionKey;
@@ -16244,7 +16268,19 @@
 
     function renderManualDuelHud() {
       if (!manualModeState?.enabled || !left || !right) return;
+      const runtimeStatus = manualRuntimeStatusPresentation();
+      const pending = manualModeState.pendingDecision || {};
+      const activeSide = pending.activeSide
+        || (runtimeStatus.waitingSides?.length === 1 ? runtimeStatus.waitingSides[0] : null)
+        || (manualModeState.controlledSides?.length === 1 ? manualModeState.controlledSides[0] : null);
+      const hud = $("manualDuelHud");
+      if (hud) {
+        if (activeSide) hud.dataset.activeSide = activeSide;
+        else delete hud.dataset.activeSide;
+      }
       const renderSide = (side, combatant) => {
+        const sideElement = document.querySelector(`.manual-hud-side[data-side="${side}"]`);
+        sideElement?.classList.toggle("is-active-decision", activeSide === side);
         const sprite = $(`manualHudSprite${side}`);
         if (sprite) setPokemonImage(sprite, combatant.p);
         if ($(`manualHudName${side}`)) $(`manualHudName${side}`).textContent = combatant.p?.name || `Pokemon ${side}`;
@@ -16946,12 +16982,57 @@
       $("manualGuideOpen")?.focus();
     }
 
+    function manualDecisionFocusableControls() {
+      const modal = $("manualDecisionModal");
+      if (!modal?.classList.contains("open") || modal.getAttribute("aria-hidden") === "true") return [];
+      return [...modal.querySelectorAll("button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])")]
+        .filter(element => !element.hidden && element.getClientRects().length);
+    }
+
+    function handleManualDecisionModalKeydown(event) {
+      const modal = $("manualDecisionModal");
+      if (!modal?.classList.contains("open") || modal.getAttribute("aria-hidden") === "true") return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        manualDecisionResolve?.(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const controls = manualDecisionFocusableControls();
+      if (!controls.length) return;
+      const current = document.activeElement;
+      const index = controls.indexOf(current);
+      if (event.shiftKey && (index <= 0 || current === modal)) {
+        event.preventDefault();
+        controls.at(-1).focus();
+      } else if (!event.shiftKey && (index === -1 || index === controls.length - 1)) {
+        event.preventDefault();
+        controls[0].focus();
+      }
+    }
+
+    function restoreManualDecisionFocus(kind, returnFocus) {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const modal = $("manualDecisionModal");
+        if (modal?.classList.contains("open") && modal.getAttribute("aria-hidden") !== "true") return;
+        const nextAction = kind === "shield"
+          ? document.querySelector("#manualEditorActions .actions.is-awaiting button:not([disabled])")
+            || document.querySelector("#manualEditorActions button:not([disabled])")
+          : null;
+        const target = nextAction || returnFocus;
+        if (target?.isConnected && !target.disabled && target.getClientRects().length) target.focus({ preventScroll: true });
+      }));
+    }
+
     function manualDecision(titleText, bodyHtml, yesText, noText, options = {}) {
       const modal = $("manualDecisionModal");
       const yes = $("manualDecisionYes");
       const no = $("manualDecisionNo");
       if (!modal || !yes || !no) return Promise.resolve(false);
       if (manualDecisionResolve) manualDecisionResolve(false);
+      if (manualDecisionCloseTimer) window.clearTimeout(manualDecisionCloseTimer);
+      manualDecisionCloseTimer = null;
+      manualDecisionReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       $("manualDecisionTitle").textContent = titleText;
       $("manualDecisionBody").innerHTML = bodyHtml;
       modal.classList.toggle("shield-decision-modal", options.kind === "shield");
@@ -16961,14 +17042,23 @@
       }
       yes.textContent = yesText;
       no.textContent = noText;
+      modal.classList.remove("closing");
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => no.focus({ preventScroll: true }));
       return new Promise(resolve => {
         manualDecisionResolve = value => {
-          modal.classList.remove("open");
+          const returnFocus = manualDecisionReturnFocus;
+          manualDecisionReturnFocus = null;
           modal.setAttribute("aria-hidden", "true");
+          modal.classList.add("closing");
           manualDecisionResolve = null;
+          manualDecisionCloseTimer = window.setTimeout(() => {
+            modal.classList.remove("open", "closing");
+            manualDecisionCloseTimer = null;
+          }, 160);
           resolve(value);
+          restoreManualDecisionFocus(options.kind, returnFocus);
         };
         yes.onclick = () => manualDecisionResolve?.(true);
         no.onclick = () => manualDecisionResolve?.(false);
