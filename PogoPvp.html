@@ -15706,6 +15706,7 @@
           restoreFullSimulatorState(selectedStartState);
         }
         else startBattle({ skipRender: true });
+        document.body.classList.add("battle-results-visible");
         branchPoint = { boundary: "BATTLE_START", eventId: null };
       } else if (startMode === "selected-before" || startMode === "selected-after") {
         const sourceEvent = selectedManualTimelineSourceEvent(originalTimeline);

@@ -148,6 +148,7 @@ for (const value of ["battle-start", "selected-before", "selected-after", "curre
 assert.match(html, /manualModeToggle"\)\.onclick = toggleLiveManualMode/);
 assert.match(html, /manualModeExit"\)\.onclick = exitLiveManualMode/);
 assert.match(html, /function resetBattleStateFromSetup\(\)[\s\S]{0,3200}lastBattleInitialSimulatorState = cloneTechnicalValue\(snapshotFullSimulatorState\(\)\)/);
+assert.match(html, /if \(startMode === "battle-start"\)[\s\S]{0,650}document\.body\.classList\.add\("battle-results-visible"\)/);
 assert.match(html, /manualControlMode"\)\.onchange = changeLiveManualControlMode/);
 assert.match(html, /data-manual-start-anchor="selected"/);
 assert.match(html, /data-manual-boundary="selected-before"/);
