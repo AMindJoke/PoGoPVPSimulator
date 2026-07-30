@@ -5776,8 +5776,10 @@
     .energy-trainer-threshold-label[data-edge="start"] { transform: translateX(0); }
     .energy-trainer-threshold-label[data-edge="end"] { transform: translateX(-100%); }
     .energy-trainer-threshold-label[data-lane="1"] { bottom: 29px; }
-    .energy-trainer-threshold.is-ready { border-left-width: 2px; border-left-color: var(--move-color); }
-    .energy-trainer-threshold.is-ready .energy-trainer-threshold-label { border-color: var(--move-color); background: color-mix(in srgb, var(--move-color) 13%, var(--panel)); }
+    .energy-trainer-threshold.is-ready { border-left-width: 3px; border-left-color: var(--move-color); }
+    .energy-trainer-threshold.is-ready::after { content: ""; position: absolute; left: -5px; bottom: -4px; width: 7px; height: 7px; border: 2px solid var(--panel); border-radius: 50%; background: var(--move-color); box-shadow: 0 0 0 1px var(--move-color); }
+    .energy-trainer-threshold.is-ready .energy-trainer-threshold-label { border-color: color-mix(in srgb, var(--move-color) 78%, #17212f); background: var(--move-color); color: var(--move-text); font-weight: 950; box-shadow: 0 3px 8px color-mix(in srgb, var(--move-color) 28%, transparent); }
+    .energy-trainer-threshold.is-ready .energy-trainer-threshold-label::before { content: "✓ "; font-weight: 950; }
     .energy-trainer-tiles { display: grid; grid-template-columns: repeat(var(--tile-count), minmax(0, 1fr)); gap: 4px; }
     .energy-trainer-tile { position: relative; min-width: 0; height: 22px; overflow: hidden; border: 1px solid color-mix(in srgb, #c77b28 48%, var(--line)); border-radius: 4px; background: color-mix(in srgb, #e9a55c 13%, var(--soft)); }
     .energy-trainer-tile::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--tile-fill) * 100%); background: #d88b39; transition: width 180ms ease-out; }
@@ -11533,7 +11535,8 @@
 
       moveMap = new Map(gm.moves.map(m => [m.moveId, {
         id: m.moveId,
-        name: m.name || m.moveId,
+        name: window.PvPeakEnergyTrainer?.displayMoveName?.(m.name || m.moveId) || m.name || m.moveId,
+        sourceName: m.name || m.moveId,
         type: m.type,
         power: Number(m.power || 0),
         abbreviation: m.abbreviation || "",
@@ -16781,7 +16784,7 @@
         <div class="energy-trainer-scale">
           <div class="energy-trainer-thresholds" aria-label="Charged Move energy thresholds">${charged.map(({ move, cost, lane, edge, ready }) => {
             const color = typeColors[move.type] || "#66788c";
-            return `<span class="energy-trainer-threshold ${ready ? "is-ready" : ""}" style="left:${cost}%;--move-color:${color}" aria-label="${escapeHtml(move.name)}, ${cost} energy${ready ? ", available" : ", not yet available"}"><span class="energy-trainer-threshold-label" data-lane="${lane}" data-edge="${edge}">${escapeHtml(move.abbreviation || move.name)} · ${cost}</span></span>`;
+            return `<span class="energy-trainer-threshold ${ready ? "is-ready" : ""}" style="left:${cost}%;--move-color:${color};--move-text:${contrastText(color)}" aria-label="${escapeHtml(move.name)}, ${cost} energy${ready ? ", available" : ", not yet available"}"><span class="energy-trainer-threshold-label" data-lane="${lane}" data-edge="${edge}">${escapeHtml(move.abbreviation || move.name)} · ${cost}</span></span>`;
           }).join("")}</div>
           <div class="energy-trainer-tiles" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map(tile => `<span class="energy-trainer-tile" data-state="${tile.state}" style="--tile-fill:${tile.fill}"></span>`).join("")}</div>
           <div class="energy-trainer-counts" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map((tile, index) => `<span class="energy-trainer-count ${index === popIndex ? "pop" : ""}"${tile.complete ? "" : " hidden"}>${index + 1}</span>`).join("")}</div>

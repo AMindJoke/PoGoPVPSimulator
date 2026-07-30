@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { createTileModel, createChargedThresholdModel, shouldAnimateCompletion } = require("../src/battle/energy-trainer.js");
+const { createTileModel, createChargedThresholdModel, shouldAnimateCompletion, displayMoveName } = require("../src/battle/energy-trainer.js");
 
 const tile = (energy, gain) => createTileModel({ energy, fastEnergy: gain });
 assert.deepStrictEqual(tile(0, 13).tiles.map(item => item.state), Array(8).fill("empty"));
@@ -19,4 +19,7 @@ const current = { side: "A", fastId: "ROLLOUT", energy: 17, completeCount: 1, fa
 assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "fast", eventId: "event-2" }), true);
 assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "fast", eventId: "event-2", suppressed: true }), false);
 assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "charge", eventId: "event-2" }), false);
+for (const type of ["Fire", "Ice", "Normal", "Rock", "Water"]) assert.equal(displayMoveName(`Weather Ball (${type})`), "Weather Ball");
+assert.equal(displayMoveName("Weather Ball"), "Weather Ball");
+assert.equal(displayMoveName("Shadow Ball"), "Shadow Ball");
 console.log("Energy Trainer tile model tests passed.");

@@ -49,5 +49,10 @@
       && current.energy - previous.energy === expectedGain;
   }
 
-  return Object.freeze({ createTileModel, createChargedThresholdModel, shouldAnimateCompletion });
+  function displayMoveName(value) {
+    const name = String(value || "");
+    return /^Weather Ball \((?:Fire|Ice|Normal|Rock|Water)\)$/i.test(name) ? "Weather Ball" : name;
+  }
+
+  return Object.freeze({ createTileModel, createChargedThresholdModel, shouldAnimateCompletion, displayMoveName });
 });
