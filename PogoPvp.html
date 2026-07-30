@@ -5623,9 +5623,9 @@
       font-size: 11px;
     }
     .manual-scenario-panel {
-      display: grid;
-      grid-template-columns: minmax(160px, 1fr) auto;
+      display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 10px;
       width: 100%;
       min-width: 0;
@@ -5634,7 +5634,7 @@
       border-radius: 7px;
       background: var(--panel);
     }
-    .manual-scenario-copy { display: grid; min-width: 0; gap: 2px; }
+    .manual-scenario-copy { display: grid; flex: 1 1 150px; min-width: 0; gap: 2px; }
     .manual-scenario-copy small { color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
     .manual-scenario-title-row { display: flex; align-items: center; gap: 9px; min-width: 0; }
     .manual-scenario-title-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 17px; }
@@ -5642,7 +5642,7 @@
     .manual-scenario-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
     .manual-scenario-status[data-state="unsaved"] { color: var(--muted); }
     .manual-scenario-status[data-state="saved"]::after { content: "✓"; font-size: 10px; }
-    .manual-scenario-actions { display: inline-flex; align-items: center; gap: 7px; }
+    .manual-scenario-actions { display: inline-flex; flex: 0 1 auto; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
     .manual-scenario-actions button { min-height: 34px; padding: 6px 13px; white-space: nowrap; }
     .manual-scenario-more { position: relative; }
     .manual-scenario-more > button { min-width: 38px; padding-inline: 9px; font-size: 18px; letter-spacing: .08em; }
