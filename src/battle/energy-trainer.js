@@ -54,5 +54,119 @@
     return /^Weather Ball \((?:Fire|Ice|Normal|Rock|Water)\)$/i.test(name) ? "Weather Ball" : name;
   }
 
-  return Object.freeze({ createTileModel, createChargedThresholdModel, shouldAnimateCompletion, displayMoveName });
+  function createNextCycleModel({ usedMove, chargedMoves = [], remainingEnergy = 0, fastMove } = {}) {
+    const fastEnergy = Number(fastMove?.energyGain || 0);
+    const validCharged = chargedMoves.slice(0, 2).filter(move =>
+      move && Number.isFinite(Number(move.energyCost)) && Number(move.energyCost) > 0
+    );
+    if (!usedMove || !Number.isFinite(fastEnergy) || fastEnergy <= 0 || !validCharged.length) return null;
+    const residual = Math.max(0, Number(remainingEnergy) || 0);
+    const rows = validCharged.map(move => {
+      const cost = Math.max(0, Number(move.energyCost));
+      const fastMovesNeeded = Math.max(0, Math.ceil((cost - residual) / fastEnergy));
+      return Object.freeze({
+        moveId: move.id || null,
+        name: displayMoveName(move.name || move.id),
+        type: move.type || null,
+        cost,
+        fastMovesNeeded,
+        ready: fastMovesNeeded === 0
+      });
+    });
+    return Object.freeze({
+      usedMoveId: usedMove.id || null,
+      usedMoveName: displayMoveName(usedMove.name || usedMove.id),
+      fastMoveId: fastMove.id || null,
+      fastMoveName: displayMoveName(fastMove.name || fastMove.id),
+      fastEnergy,
+      remainingEnergy: residual,
+      rows: Object.freeze(rows)
+    });
+  }
+
+  function shouldPresentNextCycle({ executionOk = false, actionType, actionSide, trackedSide, model } = {}) {
+    return executionOk === true
+      && ["charged", "charged_move", "CHARGED_MOVE"].includes(actionType)
+      && !!actionSide
+      && actionSide === trackedSide
+      && !!model;
+  }
+
+  function createNextCycleController(options = {}) {
+    const schedule = options.schedule || ((callback, delay) => setTimeout(callback, delay));
+    const cancel = options.cancel || (timer => clearTimeout(timer));
+    const onChange = typeof options.onChange === "function" ? options.onChange : () => {};
+    const entranceMs = Math.max(0, Number(options.entranceMs ?? 190));
+    const visibleMs = Math.max(0, Number(options.visibleMs ?? 2500));
+    const exitMs = Math.max(0, Number(options.exitMs ?? 220));
+    let state = null;
+    let sequence = 0;
+    let entranceTimer = null;
+    let hideTimer = null;
+    let clearTimer = null;
+
+    function cancelTimers() {
+      [entranceTimer, hideTimer, clearTimer].forEach(timer => {
+        if (timer !== null) cancel(timer);
+      });
+      entranceTimer = null;
+      hideTimer = null;
+      clearTimer = null;
+    }
+
+    function publish() {
+      onChange(state);
+      return state;
+    }
+
+    function clear({ notify = true } = {}) {
+      cancelTimers();
+      state = null;
+      if (notify) publish();
+      return null;
+    }
+
+    function show(payload) {
+      if (!payload) return clear();
+      cancelTimers();
+      const token = ++sequence;
+      state = Object.freeze({ ...payload, token, phase: "entering" });
+      publish();
+      entranceTimer = schedule(() => {
+        entranceTimer = null;
+        if (!state || state.token !== token) return;
+        state = Object.freeze({ ...state, phase: "visible" });
+        publish();
+      }, entranceMs);
+      hideTimer = schedule(() => {
+        hideTimer = null;
+        if (!state || state.token !== token) return;
+        state = Object.freeze({ ...state, phase: "leaving" });
+        publish();
+        clearTimer = schedule(() => {
+          clearTimer = null;
+          if (!state || state.token !== token) return;
+          state = null;
+          publish();
+        }, exitMs);
+      }, entranceMs + visibleMs);
+      return state;
+    }
+
+    return Object.freeze({
+      show,
+      clear,
+      getState: () => state
+    });
+  }
+
+  return Object.freeze({
+    createTileModel,
+    createChargedThresholdModel,
+    shouldAnimateCompletion,
+    displayMoveName,
+    createNextCycleModel,
+    shouldPresentNextCycle,
+    createNextCycleController
+  });
 });

@@ -5769,6 +5769,21 @@
     .energy-trainer-types .type-badge { padding: 3px 7px; font-size: 10px; }
     .energy-trainer-fast { color: var(--muted); font-size: 12px; font-weight: 800; line-height: 1.35; }
     .energy-trainer-fast strong { color: var(--text); }
+    .energy-trainer-next-cycle-slot { position: relative; min-width: 0; min-height: 126px; }
+    .energy-trainer-next-cycle { position: absolute; inset: 0; display: grid; align-content: start; gap: 8px; padding: 10px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line)); border-radius: 8px; background: color-mix(in srgb, var(--accent) 5%, var(--soft)); box-shadow: 0 5px 14px rgba(24, 38, 56, .08); opacity: 1; transform: none; transition: opacity 220ms ease, transform 190ms ease; }
+    .energy-trainer-next-cycle.is-entering { opacity: 0; transform: translateY(-4px) scale(.99); }
+    .energy-trainer-next-cycle.is-leaving { opacity: 0; transform: translateY(-3px); pointer-events: none; }
+    .energy-trainer-next-cycle-used { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; min-width: 0; }
+    .energy-trainer-next-cycle-used strong { overflow: hidden; color: var(--text); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .energy-trainer-next-cycle-used span { flex: 0 0 auto; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .energy-trainer-next-cycle-title { color: var(--muted); font-size: 10px; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+    .energy-trainer-next-cycle-rows { display: grid; gap: 7px; min-width: 0; }
+    .energy-trainer-next-cycle-row { display: grid; grid-template-columns: minmax(70px, .85fr) minmax(0, 1.15fr); align-items: center; gap: 8px; min-width: 0; }
+    .energy-trainer-next-cycle-row > strong { overflow: hidden; color: var(--text); font-size: 11px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+    .energy-trainer-next-cycle-dots { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
+    .energy-trainer-next-cycle-dot { width: 10px; height: 10px; flex: 0 0 10px; border: 2px solid color-mix(in srgb, var(--move-color) 78%, #17212f); border-radius: 50%; background: color-mix(in srgb, var(--move-color) 66%, var(--panel)); box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 34%, transparent); }
+    .energy-trainer-next-cycle-ready { display: inline-flex; width: fit-content; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid color-mix(in srgb, var(--move-color) 60%, var(--line)); border-radius: 999px; color: var(--text); font-size: 10px; font-weight: 950; }
+    .energy-trainer-next-cycle-ready::before { content: "✓"; color: var(--move-color); font-weight: 1000; }
     .energy-trainer-scale { position: relative; min-width: 0; padding-top: 76px; }
     .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 74px; }
     .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
@@ -5790,7 +5805,7 @@
     .energy-trainer-count[hidden] { visibility: hidden; display: block; }
     .energy-trainer-count.pop { animation: energy-trainer-pop 210ms ease-out both; }
     @keyframes energy-trainer-pop { 0% { opacity: .25; transform: scale(.72); } 65% { opacity: 1; transform: scale(1.18); } 100% { opacity: 1; transform: scale(1); } }
-    @media (prefers-reduced-motion: reduce) { .energy-trainer-tile::after { transition: none; } .energy-trainer-count.pop { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .energy-trainer-tile::after { transition: none; } .energy-trainer-count.pop { animation: none; } .energy-trainer-next-cycle { transition: opacity 1ms linear; transform: none !important; } }
     .manual-inspector-advanced[hidden] { display: none; }
     #manualInspectorDetailsToggle {
       width: 100%;
@@ -9136,6 +9151,9 @@
       body.manual-mode-active .energy-trainer-tiles,
       body.manual-mode-active .energy-trainer-counts { gap: 3px; }
       body.manual-mode-active .energy-trainer-threshold-label { max-width: 98px; font-size: 9px; }
+      body.manual-mode-active .energy-trainer-next-cycle-slot { min-height: 122px; }
+      body.manual-mode-active .energy-trainer-next-cycle-row { grid-template-columns: minmax(76px, .75fr) minmax(0, 1.25fr); }
+      body.manual-mode-active .energy-trainer-next-cycle-dot { width: 9px; height: 9px; flex-basis: 9px; }
       body.manual-mode-active #manualInspectorDetailsToggle {
         min-height: 40px;
         margin: 0;
@@ -10922,7 +10940,7 @@
           </div>
           <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualEnergyTrainerTitle">
             <div class="manual-state-inspector-head"><strong id="manualEnergyTrainerTitle">Energy Trainer</strong><small>Fast Move counting</small></div>
-            <div id="manualEnergyTrainer" class="energy-trainer" aria-live="polite"></div>
+            <div id="manualEnergyTrainer" class="energy-trainer"></div>
           </aside>
           <div id="manualMobileSecondaryMount" class="manual-mobile-secondary-mount" hidden></div>
           <div id="manualTimelineEventMenu" class="manual-timeline-event-menu" hidden>
@@ -11293,6 +11311,18 @@
     let manualScenarioDraftName = null;
     let manualEnergyTrainerPrevious = null;
     let manualEnergyTrainerSuppressPop = true;
+    const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
+      onChange: state => {
+        if (!manualModeState?.enabled) return;
+        const feedback = document.querySelector(".energy-trainer-next-cycle");
+        if (state && feedback?.dataset.nextCycleToken === String(state.token)) {
+          feedback.classList.toggle("is-entering", state.phase === "entering");
+          feedback.classList.toggle("is-leaving", state.phase === "leaving");
+          return;
+        }
+        renderManualStateInspector(manualRuntimeStatusPresentation());
+      }
+    }) || null;
     const manualScenarioLibrary = (() => {
       try { return window.PvPeakManualScenarioLibrary?.createLibrary?.(window.localStorage) || null; }
       catch (_) { return null; }
@@ -14093,6 +14123,7 @@
     }
 
     function resetBattleStateFromSetup() {
+      clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerPrevious = null;
       manualEnergyTrainerSuppressPop = true;
       exitPreviewMode();
@@ -15333,6 +15364,8 @@
         render();
         return false;
       }
+      const nextCycleTrackedSide = manualEnergyTrainerTrackedSide();
+      let nextCyclePayload = null;
       const state = manualCanonicalState();
       const automaticSide = side === "A" ? "B" : "A";
       const automatic = automaticSide === "A" ? left : right;
@@ -15409,7 +15442,16 @@
           execution = await window.PvPeakManualHybrid.executeCoordinatedDecision(decision, {
             executeManual: async registration => {
               context.acted.add(registration.sideId);
-              return runtime.executePrepared(preparedManual);
+              const result = await runtime.executePrepared(preparedManual);
+              if (result?.ok && actionType === window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE) {
+                nextCyclePayload = captureManualEnergyTrainerNextCycle({
+                  side,
+                  usedMoveId: moveId,
+                  trackedSide: nextCycleTrackedSide,
+                  executionOk: true
+                });
+              }
+              return result;
             },
             executeAutomatic: async registration => {
               context.acted.add(registration.sideId);
@@ -15440,6 +15482,7 @@
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
       syncManualBranchAfterAction(preparedManual.action);
+      if (execution?.ok && nextCyclePayload) presentManualEnergyTrainerNextCycle(nextCyclePayload);
       render();
       return !!execution?.ok;
     }
@@ -15482,6 +15525,7 @@
       if (!ensureLiveManualSession(side)) return false;
       const attacker = side === "A" ? left : right;
       const move = attacker.charged?.[index];
+      const nextCycleTrackedSide = manualEnergyTrainerTrackedSide();
       if (move && attacker.energy < move.energyCost) {
         return offerManualBuildToCharged(side, index);
       }
@@ -15518,6 +15562,13 @@
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
       syncManualBranchAfterAction(result.action);
+      const nextCyclePayload = captureManualEnergyTrainerNextCycle({
+        side,
+        usedMoveId: move?.id || null,
+        trackedSide: nextCycleTrackedSide,
+        executionOk: true
+      });
+      if (nextCyclePayload) presentManualEnergyTrainerNextCycle(nextCyclePayload);
       render();
       return true;
     }
@@ -15621,6 +15672,7 @@
 
     function restoreManualRuntimePayload(payload, restoredTimeline) {
       if (!payload) throw new Error("SNAPSHOT_NOT_FOUND");
+      clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerSuppressPop = true;
       const restored = cloneTechnicalValue(payload);
       left = restored.left;
@@ -15675,6 +15727,7 @@
     function enterLiveManualMode() {
       if (!left || !right) startBattle();
       if (!left || !right) return false;
+      clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerPrevious = null;
       manualEnergyTrainerSuppressPop = true;
       const startMode = $("manualStartPoint")?.value || "battle-start";
@@ -15772,6 +15825,7 @@
     }
 
     function exitLiveManualMode() {
+      clearManualEnergyTrainerNextCycle();
       if (manualOriginalRuntimeState) restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualBattleRuntime = null;
@@ -16185,6 +16239,7 @@
     function restoreActiveManualBranch() {
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       if (!active) return false;
+      clearManualEnergyTrainerNextCycle();
       if (active.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) {
         restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
       } else {
@@ -16458,6 +16513,7 @@
     function openStoredManualScenario(id) {
       const entry = manualScenarioLibrary?.get(id);
       if (!entry) return false;
+      clearManualEnergyTrainerNextCycle();
       const imported = window.PvPeakManualScenarioIO?.importScenario(entry.payload, { battleEngineVersion });
       if (!imported?.ok || !entry.payload?.applicationState || !entry.payload?.manualSession) {
         add(`Cannot open ${entry.name}: ${imported?.errors?.join(", ") || "invalid scenario data"}.`, "info");
@@ -16570,6 +16626,7 @@
       const file = event.target.files?.[0];
       event.target.value = "";
       if (!file) return false;
+      clearManualEnergyTrainerNextCycle();
       try {
         const payload = JSON.parse(await file.text());
         const imported = window.PvPeakManualScenarioIO?.importScenario(payload, { battleEngineVersion });
@@ -16756,17 +16813,84 @@
       return true;
     }
 
-    function renderManualStateInspector(runtimeStatus) {
-      const trainer = $("manualEnergyTrainer");
-      const tileApi = window.PvPeakEnergyTrainer;
-      if (!trainer || !tileApi || !manualModeState?.enabled || !left || !right) return;
+    function manualEnergyTrainerTrackedSide() {
       const pendingSide = manualModeState.pendingDecision?.activeSide;
       const controlledSides = manualModeState.controlledSides || [];
-      const side = pendingSide && controlledSides.includes(pendingSide)
+      return pendingSide && controlledSides.includes(pendingSide)
         ? pendingSide
         : controlledSides.length === 1
           ? controlledSides[0]
           : pendingSide || manualModeState.selectedSide || "A";
+    }
+
+    function clearManualEnergyTrainerNextCycle() {
+      manualEnergyTrainerNextCycleController?.clear?.({ notify: false });
+    }
+
+    function captureManualEnergyTrainerNextCycle({ side, usedMoveId, trackedSide, executionOk }) {
+      const tileApi = window.PvPeakEnergyTrainer;
+      const combatant = side === "B" ? right : left;
+      const usedMove = combatant?.charged?.find(move => move?.id === usedMoveId) || null;
+      const model = tileApi?.createNextCycleModel?.({
+        usedMove,
+        chargedMoves: combatant?.charged || [],
+        remainingEnergy: combatant?.energy,
+        fastMove: combatant?.fast
+      });
+      if (!tileApi?.shouldPresentNextCycle?.({
+        executionOk,
+        actionType: window.PvPeakManualAction?.ACTION_TYPE?.CHARGED_MOVE,
+        actionSide: side,
+        trackedSide,
+        model
+      })) return null;
+      return Object.freeze({
+        ...model,
+        side,
+        pokemonId: combatant.p?.id || null
+      });
+    }
+
+    function presentManualEnergyTrainerNextCycle(payload) {
+      if (!payload || !manualEnergyTrainerNextCycleController) return false;
+      manualEnergyTrainerNextCycleController.show(payload);
+      return true;
+    }
+
+    function manualEnergyTrainerNextCycleMarkup(nextCycle) {
+      if (!nextCycle) return '<div class="energy-trainer-next-cycle-slot" aria-hidden="true"></div>';
+      const fastName = nextCycle.fastMoveName || "Fast Move";
+      const descriptions = nextCycle.rows.map(row => row.ready
+        ? `${row.name} is already ready`
+        : `${row.name} requires ${row.fastMovesNeeded} ${row.fastMovesNeeded === 1 ? "use" : "uses"} of ${fastName}`
+      );
+      const description = `After using ${nextCycle.usedMoveName}: ${descriptions.join("; ")}.`;
+      const phaseClass = nextCycle.phase === "entering"
+        ? " is-entering"
+        : nextCycle.phase === "leaving"
+          ? " is-leaving"
+          : "";
+      return `<div class="energy-trainer-next-cycle-slot"><section class="energy-trainer-next-cycle${phaseClass}" data-next-cycle-token="${nextCycle.token}" role="status" aria-live="polite" aria-atomic="true" aria-label="${escapeHtml(description)}">
+        <div class="energy-trainer-next-cycle-used"><strong>${escapeHtml(nextCycle.usedMoveName)} used</strong><span>Cycle snapshot</span></div>
+        <div class="energy-trainer-next-cycle-title">Next cycle</div>
+        <div class="energy-trainer-next-cycle-rows">${nextCycle.rows.map(row => {
+          const color = typeColors[row.type] || "#66788c";
+          const rowDescription = row.ready
+            ? `${row.name}, already ready`
+            : `${row.name}, ${row.fastMovesNeeded} ${row.fastMovesNeeded === 1 ? "use" : "uses"} of ${fastName}`;
+          const outcome = row.ready
+            ? `<span class="energy-trainer-next-cycle-ready" style="--move-color:${color}">Ready</span>`
+            : `<span class="energy-trainer-next-cycle-dots" style="--move-color:${color}" aria-hidden="true">${Array.from({ length: row.fastMovesNeeded }, () => '<span class="energy-trainer-next-cycle-dot"></span>').join("")}</span>`;
+          return `<div class="energy-trainer-next-cycle-row" aria-label="${escapeHtml(rowDescription)}"><strong>${escapeHtml(row.name)}</strong>${outcome}</div>`;
+        }).join("")}</div>
+      </section></div>`;
+    }
+
+    function renderManualStateInspector(runtimeStatus) {
+      const trainer = $("manualEnergyTrainer");
+      const tileApi = window.PvPeakEnergyTrainer;
+      if (!trainer || !tileApi || !manualModeState?.enabled || !left || !right) return;
+      const side = manualEnergyTrainerTrackedSide();
       const combatant = side === "B" ? right : left;
       const fast = combatant.fast;
       const fastEnergy = Math.max(1, Number(fast?.energyGain || 1));
@@ -16790,6 +16914,15 @@
       const tileDescription = partialTile
         ? `${completeCount} complete Fast Moves and a partial remainder of ${partialTile.amount} out of ${partialTile.capacity}`
         : `${completeCount} complete Fast Moves and no partial remainder`;
+      let nextCycle = manualEnergyTrainerNextCycleController?.getState?.() || null;
+      if (nextCycle && (
+        nextCycle.side !== side
+        || nextCycle.pokemonId !== combatant.p?.id
+        || nextCycle.fastMoveId !== fast?.id
+      )) {
+        clearManualEnergyTrainerNextCycle();
+        nextCycle = null;
+      }
       trainer.setAttribute("aria-label", `${combatant.p.name}. ${fast?.name || "Fast Move"}, plus ${fastEnergy} energy per use. ${tileDescription}. Available Charged Moves: ${readyMoves.join(", ") || "none"}.`);
       trainer.innerHTML = `
         <div class="energy-trainer-pokemon">
@@ -16800,6 +16933,7 @@
           }).join("")}</span></div>
         </div>
         <div class="energy-trainer-fast"><strong>${escapeHtml(fast?.name || "Fast Move")}</strong> · +${fastEnergy} energy per use</div>
+        ${manualEnergyTrainerNextCycleMarkup(nextCycle)}
         <div class="energy-trainer-scale">
           <div class="energy-trainer-thresholds" aria-label="Charged Move energy thresholds">${charged.map(({ move, cost, lane, edge, ready }) => {
             const color = typeColors[move.type] || "#66788c";

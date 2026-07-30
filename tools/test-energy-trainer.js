@@ -1,5 +1,13 @@
 const assert = require("assert");
-const { createTileModel, createChargedThresholdModel, shouldAnimateCompletion, displayMoveName } = require("../src/battle/energy-trainer.js");
+const {
+  createTileModel,
+  createChargedThresholdModel,
+  shouldAnimateCompletion,
+  displayMoveName,
+  createNextCycleModel,
+  shouldPresentNextCycle,
+  createNextCycleController
+} = require("../src/battle/energy-trainer.js");
 
 const tile = (energy, gain) => createTileModel({ energy, fastEnergy: gain });
 assert.deepStrictEqual(tile(0, 13).tiles.map(item => item.state), Array(8).fill("empty"));
@@ -22,4 +30,104 @@ assert.equal(shouldAnimateCompletion({ previous, current, eventKind: "charge", e
 for (const type of ["Fire", "Ice", "Normal", "Rock", "Water"]) assert.equal(displayMoveName(`Weather Ball (${type})`), "Weather Ball");
 assert.equal(displayMoveName("Weather Ball"), "Weather Ball");
 assert.equal(displayMoveName("Shadow Ball"), "Shadow Ball");
-console.log("Energy Trainer tile model tests passed.");
+
+const mudShot = { id: "MUD_SHOT", name: "Mud Shot", energyGain: 9 };
+const mudBomb = { id: "MUD_BOMB", name: "Mud Bomb", energyCost: 40, type: "ground" };
+const scald = { id: "SCALD", name: "Scald", energyCost: 50, type: "water" };
+const afterMudBomb = createNextCycleModel({
+  usedMove: mudBomb,
+  chargedMoves: [mudBomb, scald],
+  remainingEnergy: 5,
+  fastMove: mudShot
+});
+assert.deepStrictEqual(afterMudBomb.rows.map(row => [row.name, row.fastMovesNeeded, row.ready]), [
+  ["Mud Bomb", 4, false],
+  ["Scald", 5, false]
+]);
+const afterScald = createNextCycleModel({
+  usedMove: scald,
+  chargedMoves: [mudBomb, scald],
+  remainingEnergy: 0,
+  fastMove: mudShot
+});
+assert.deepStrictEqual(afterScald.rows.map(row => row.fastMovesNeeded), [5, 6]);
+const overfarm = createNextCycleModel({
+  usedMove: mudBomb,
+  chargedMoves: [mudBomb, scald],
+  remainingEnergy: 60,
+  fastMove: mudShot
+});
+assert.deepStrictEqual(overfarm.rows.map(row => [row.fastMovesNeeded, row.ready]), [[0, true], [0, true]]);
+const equalCost = createNextCycleModel({
+  usedMove: mudBomb,
+  chargedMoves: [mudBomb, { ...mudBomb, id: "OTHER_40", name: "Other Move" }],
+  remainingEnergy: 4,
+  fastMove: mudShot
+});
+assert.deepStrictEqual(equalCost.rows.map(row => [row.name, row.fastMovesNeeded]), [["Mud Bomb", 4], ["Other Move", 4]]);
+assert.strictEqual(createNextCycleModel({
+  usedMove: mudBomb,
+  chargedMoves: [mudBomb],
+  remainingEnergy: 5,
+  fastMove: mudShot
+}).rows.length, 1);
+assert.strictEqual(createNextCycleModel({ usedMove: mudBomb, chargedMoves: [mudBomb], remainingEnergy: 0, fastMove: null }), null);
+assert.strictEqual(createNextCycleModel({ usedMove: mudBomb, chargedMoves: [mudBomb], remainingEnergy: 0, fastMove: { energyGain: 0 } }), null);
+assert.equal(shouldPresentNextCycle({
+  executionOk: true,
+  actionType: "CHARGED_MOVE",
+  actionSide: "A",
+  trackedSide: "A",
+  model: afterMudBomb
+}), true);
+assert.equal(shouldPresentNextCycle({
+  executionOk: false,
+  actionType: "CHARGED_MOVE",
+  actionSide: "A",
+  trackedSide: "A",
+  model: afterMudBomb
+}), false);
+assert.equal(shouldPresentNextCycle({
+  executionOk: true,
+  actionType: "CHARGED_MOVE",
+  actionSide: "B",
+  trackedSide: "A",
+  model: afterMudBomb
+}), false);
+
+let nextTimerId = 0;
+const scheduled = new Map();
+const cancelled = [];
+const controllerStates = [];
+const controller = createNextCycleController({
+  schedule(callback, delay) {
+    const id = ++nextTimerId;
+    scheduled.set(id, { callback, delay });
+    return id;
+  },
+  cancel(id) {
+    cancelled.push(id);
+    scheduled.delete(id);
+  },
+  onChange(state) {
+    controllerStates.push(state ? `${state.usedMoveName}:${state.phase}` : "cleared");
+  }
+});
+const firstState = controller.show(afterMudBomb);
+const firstToken = firstState.token;
+assert.equal(scheduled.size, 2);
+const secondState = controller.show(afterScald);
+assert.notEqual(secondState.token, firstToken);
+assert(cancelled.length >= 2);
+assert.equal(controller.getState().usedMoveName, "Scald");
+const secondEntrance = [...scheduled.entries()].find(([, timer]) => timer.delay === 190);
+secondEntrance[1].callback();
+assert.equal(controller.getState().phase, "visible");
+const secondHide = [...scheduled.entries()].find(([, timer]) => timer.delay === 2690);
+secondHide[1].callback();
+assert.equal(controller.getState().phase, "leaving");
+controller.clear();
+assert.equal(controller.getState(), null);
+assert.equal(controllerStates.at(-1), "cleared");
+
+console.log("Energy Trainer tile and Next Cycle tests passed.");
