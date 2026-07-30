@@ -99,6 +99,7 @@
     const entranceMs = Math.max(0, Number(options.entranceMs ?? 190));
     const visibleMs = Math.max(0, Number(options.visibleMs ?? 2500));
     const exitMs = Math.max(0, Number(options.exitMs ?? 220));
+    const persistent = options.persistent === true;
     let state = null;
     let sequence = 0;
     let entranceTimer = null;
@@ -130,8 +131,9 @@
       if (!payload) return clear();
       cancelTimers();
       const token = ++sequence;
-      state = Object.freeze({ ...payload, token, phase: "entering" });
+      state = Object.freeze({ ...payload, token, phase: persistent ? "visible" : "entering" });
       publish();
+      if (persistent) return state;
       entranceTimer = schedule(() => {
         entranceTimer = null;
         if (!state || state.token !== token) return;

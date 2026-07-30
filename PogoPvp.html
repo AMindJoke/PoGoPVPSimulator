@@ -5767,12 +5767,10 @@
     .energy-trainer-pokemon strong { display: block; overflow: hidden; color: var(--text); font-size: 18px; text-overflow: ellipsis; white-space: nowrap; }
     .energy-trainer-types { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
     .energy-trainer-types .type-badge { padding: 3px 7px; font-size: 10px; }
-    .energy-trainer-fast { color: var(--muted); font-size: 12px; font-weight: 800; line-height: 1.35; }
+    .energy-trainer-fast { margin-top: 7px; color: var(--muted); font-size: 12px; font-weight: 800; line-height: 1.35; }
     .energy-trainer-fast strong { color: var(--text); }
-    .energy-trainer-next-cycle-slot { position: relative; min-width: 0; min-height: 126px; }
-    .energy-trainer-next-cycle { position: absolute; inset: 0; display: grid; align-content: start; gap: 8px; padding: 10px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line)); border-radius: 8px; background: color-mix(in srgb, var(--accent) 5%, var(--soft)); box-shadow: 0 5px 14px rgba(24, 38, 56, .08); opacity: 1; transform: none; transition: opacity 220ms ease, transform 190ms ease; }
-    .energy-trainer-next-cycle.is-entering { opacity: 0; transform: translateY(-4px) scale(.99); }
-    .energy-trainer-next-cycle.is-leaving { opacity: 0; transform: translateY(-3px); pointer-events: none; }
+    .energy-trainer-next-cycle-slot { min-width: 0; }
+    .energy-trainer-next-cycle { display: grid; align-content: start; gap: 8px; padding: 10px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line)); border-radius: 8px; background: color-mix(in srgb, var(--accent) 5%, var(--soft)); box-shadow: 0 5px 14px rgba(24, 38, 56, .08); }
     .energy-trainer-next-cycle-used { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; min-width: 0; }
     .energy-trainer-next-cycle-used strong { overflow: hidden; color: var(--text); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
     .energy-trainer-next-cycle-used span { flex: 0 0 auto; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
@@ -5805,7 +5803,7 @@
     .energy-trainer-count[hidden] { visibility: hidden; display: block; }
     .energy-trainer-count.pop { animation: energy-trainer-pop 210ms ease-out both; }
     @keyframes energy-trainer-pop { 0% { opacity: .25; transform: scale(.72); } 65% { opacity: 1; transform: scale(1.18); } 100% { opacity: 1; transform: scale(1); } }
-    @media (prefers-reduced-motion: reduce) { .energy-trainer-tile::after { transition: none; } .energy-trainer-count.pop { animation: none; } .energy-trainer-next-cycle { transition: opacity 1ms linear; transform: none !important; } }
+    @media (prefers-reduced-motion: reduce) { .energy-trainer-tile::after { transition: none; } .energy-trainer-count.pop { animation: none; } }
     .manual-inspector-advanced[hidden] { display: none; }
     #manualInspectorDetailsToggle {
       width: 100%;
@@ -9151,7 +9149,6 @@
       body.manual-mode-active .energy-trainer-tiles,
       body.manual-mode-active .energy-trainer-counts { gap: 3px; }
       body.manual-mode-active .energy-trainer-threshold-label { max-width: 98px; font-size: 9px; }
-      body.manual-mode-active .energy-trainer-next-cycle-slot { min-height: 122px; }
       body.manual-mode-active .energy-trainer-next-cycle-row { grid-template-columns: minmax(76px, .75fr) minmax(0, 1.25fr); }
       body.manual-mode-active .energy-trainer-next-cycle-dot { width: 9px; height: 9px; flex-basis: 9px; }
       body.manual-mode-active #manualInspectorDetailsToggle {
@@ -11312,6 +11309,7 @@
     let manualEnergyTrainerPrevious = null;
     let manualEnergyTrainerSuppressPop = true;
     const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
+      persistent: true,
       onChange: state => {
         if (!manualModeState?.enabled) return;
         const feedback = document.querySelector(".energy-trainer-next-cycle");
@@ -16858,7 +16856,7 @@
     }
 
     function manualEnergyTrainerNextCycleMarkup(nextCycle) {
-      if (!nextCycle) return '<div class="energy-trainer-next-cycle-slot" aria-hidden="true"></div>';
+      if (!nextCycle) return "";
       const fastName = nextCycle.fastMoveName || "Fast Move";
       const descriptions = nextCycle.rows.map(row => row.ready
         ? `${row.name} is already ready`
@@ -16930,10 +16928,8 @@
           <div><strong>${escapeHtml(combatant.p.name)}</strong><span class="energy-trainer-types">${(combatant.p.types || []).map(type => {
             const color = typeColors[type] || "#66788c";
             return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(type))}</span>`;
-          }).join("")}</span></div>
+          }).join("")}</span><div class="energy-trainer-fast"><strong>${escapeHtml(fast?.name || "Fast Move")}</strong> · +${fastEnergy} energy per use</div></div>
         </div>
-        <div class="energy-trainer-fast"><strong>${escapeHtml(fast?.name || "Fast Move")}</strong> · +${fastEnergy} energy per use</div>
-        ${manualEnergyTrainerNextCycleMarkup(nextCycle)}
         <div class="energy-trainer-scale">
           <div class="energy-trainer-thresholds" aria-label="Charged Move energy thresholds">${charged.map(({ move, cost, lane, edge, ready }) => {
             const color = typeColors[move.type] || "#66788c";
@@ -16941,7 +16937,8 @@
           }).join("")}</div>
           <div class="energy-trainer-tiles" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map(tile => `<span class="energy-trainer-tile" data-state="${tile.state}" style="--tile-fill:${tile.fill}"></span>`).join("")}</div>
           <div class="energy-trainer-counts" style="--tile-count:${model.tiles.length}" aria-hidden="true">${model.tiles.map((tile, index) => `<span class="energy-trainer-count ${index === popIndex ? "pop" : ""}"${tile.complete ? "" : " hidden"}>${index + 1}</span>`).join("")}</div>
-        </div>`;
+        </div>
+        ${manualEnergyTrainerNextCycleMarkup(nextCycle)}`;
       const sprite = $("manualEnergyTrainerSprite");
       if (sprite) setPokemonImage(sprite, combatant.p);
       manualEnergyTrainerPrevious = { ...currentTrainerState, eventId: latestEventId };

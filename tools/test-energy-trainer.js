@@ -130,4 +130,19 @@ controller.clear();
 assert.equal(controller.getState(), null);
 assert.equal(controllerStates.at(-1), "cleared");
 
+let persistentTimerCount = 0;
+const persistentController = createNextCycleController({
+  persistent: true,
+  schedule() {
+    persistentTimerCount++;
+    return persistentTimerCount;
+  }
+});
+persistentController.show(afterMudBomb);
+assert.equal(persistentController.getState().phase, "visible");
+assert.equal(persistentTimerCount, 0);
+persistentController.show(afterScald);
+assert.equal(persistentController.getState().usedMoveName, "Scald");
+assert.equal(persistentTimerCount, 0);
+
 console.log("Energy Trainer tile and Next Cycle tests passed.");

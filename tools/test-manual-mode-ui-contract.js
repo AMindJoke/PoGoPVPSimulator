@@ -87,9 +87,10 @@ assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,220}grid-template-col
 assert.match(html, /\.manual-editor-workspace\s*\{[\s\S]{0,320}width: 100%;[\s\S]{0,80}max-width: none/);
 assert.match(html, /\.manual-state-inspector\s*\{[\s\S]{0,180}grid-column: 2/);
 assert.match(html, /\.energy-trainer-tiles\s*\{[\s\S]{0,160}repeat\(var\(--tile-count\), minmax\(0, 1fr\)\)/);
-assert.match(html, /\.energy-trainer-next-cycle-slot\s*\{[\s\S]{0,120}min-height: 126px/);
+assert.match(html, /\.energy-trainer-next-cycle-slot\s*\{[\s\S]{0,80}min-width: 0/);
 assert.match(html, /\.energy-trainer-next-cycle-dots\s*\{[\s\S]{0,140}flex-wrap: wrap/);
-assert.match(html, /@media \(prefers-reduced-motion: reduce\)[\s\S]{0,340}\.energy-trainer-next-cycle\s*\{[\s\S]{0,100}transform: none !important/);
+const nextCycleCss = html.match(/\.energy-trainer-next-cycle\s*\{([^}]+)\}/)?.[1] || "";
+assert.doesNotMatch(nextCycleCss, /transition|opacity|transform/, "Persistent Next Cycle feedback must not fade or move.");
 assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
 assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,400}body\.manual-mode-active #battleTimeline/);
 assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
@@ -186,10 +187,17 @@ assert.match(html, /manualEnergyTrainerSuppressPop/);
 assert.match(html, /tileApi\.shouldAnimateCompletion/);
 assert.match(html, /function captureManualEnergyTrainerNextCycle/);
 assert.match(html, /function presentManualEnergyTrainerNextCycle/);
+assert.match(html, /createNextCycleController\?\.\(\{\s*persistent: true/);
 assert.match(html, /role="status" aria-live="polite" aria-atomic="true"/);
 assert.match(html, /energy-trainer-next-cycle-dot/);
 assert.match(html, /energy-trainer-next-cycle-ready/);
 assert.match(html, /nextCycle\.pokemonId !== combatant\.p\?\.id/);
+const energyTrainerRender = html.match(/function renderManualStateInspector[\s\S]+?function toggleManualInspectorDetails/)?.[0] || "";
+assert(
+  energyTrainerRender.indexOf('class="energy-trainer-pokemon"') < energyTrainerRender.indexOf('class="energy-trainer-scale"')
+  && energyTrainerRender.indexOf('class="energy-trainer-scale"') < energyTrainerRender.indexOf("manualEnergyTrainerNextCycleMarkup(nextCycle)"),
+  "Energy Trainer must render Pokemon, then tiles/threshold scale, then Next Cycle."
+);
 assert.match(html, /function manualActionUnavailableReason/);
 assert.match(html, /a shield decision is pending/);
 assert.match(html, /cooldown active for/);
