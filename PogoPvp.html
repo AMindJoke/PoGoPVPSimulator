@@ -13982,12 +13982,18 @@
 
     function fallbackImageUrl(p) {
       if (!p || !p.dex) return "";
+      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${p.dex}.png`;
+    }
+
+    function finalFallbackImageUrl(p) {
+      if (!p || !p.dex) return "";
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.dex}.png`;
     }
 
     function setPokemonImage(img, p) {
       const nextSrc = imageUrl(p);
       const nextFallback = fallbackImageUrl(p);
+      const finalFallback = finalFallbackImageUrl(p);
       const nextKey = p ? `${p.id}|${nextSrc}` : "";
       if (img.dataset.spriteKey === nextKey) {
         img.alt = p ? p.name : "";
@@ -13998,16 +14004,23 @@
       img.classList.toggle("shadow-pokemon", isShadow(p));
       img.dataset.spriteKey = nextKey;
       img.dataset.fallback = nextFallback;
-      img.src = nextSrc;
+      img.dataset.finalFallback = finalFallback;
+      img.referrerPolicy = "no-referrer";
       img.onerror = () => {
         if (img.dataset.fallback && img.src !== img.dataset.fallback) {
           img.src = img.dataset.fallback;
           img.dataset.fallback = "";
           return;
         }
+        if (img.dataset.finalFallback && img.src !== img.dataset.finalFallback) {
+          img.src = img.dataset.finalFallback;
+          img.dataset.finalFallback = "";
+          return;
+        }
         img.onerror = null;
         img.src = fallbackSvg(p ? p.name : "?");
       };
+      img.src = nextSrc || nextFallback || finalFallback || fallbackSvg(p ? p.name : "?");
     }
 
     function spriteSlug(p) {
