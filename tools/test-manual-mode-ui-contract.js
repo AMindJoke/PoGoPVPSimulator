@@ -24,11 +24,16 @@ for (const id of [
   "manualDecisionBanner",
   "manualCurrentDecisionTitle",
   "manualDecisionWhy",
-  "manualDecisionTurn",
-  "manualDecisionEnergy",
-  "manualDecisionHp",
-  "manualDecisionShields",
-  "manualDecisionLegal",
+  "manualScenarioPanel",
+  "manualScenarioName",
+  "manualScenarioStatus",
+  "manualScenarioOpen",
+  "manualScenarioSave",
+  "manualScenarioMore",
+  "manualScenarioMenu",
+  "manualScenarioLibraryModal",
+  "manualScenarioLibraryList",
+  "manualScenarioImportFile",
   "manualDuelHud",
   "manualHudSpriteA",
   "manualHudSpriteB",
@@ -160,6 +165,11 @@ assert.match(html, /Unshielded damage/);
 assert.match(html, /Shields remaining/);
 assert.match(html, /modal\.classList\.toggle\("shield-decision-modal", options\.kind === "shield"\)/);
 assert.match(html, /function renderManualDecisionBanner/);
+assert.match(html, /function renderManualScenarioPanel/);
+assert.match(html, /function saveManualScenario/);
+assert.match(html, /function openStoredManualScenario/);
+assert.match(html, /localStorage/);
+assert.match(html, /manual-scenario-library\.js/);
 assert.match(html, /manual-mode-active/);
 assert.match(html, /actorName} to act/);
 assert.match(html, /legalBattleActions\(actor/);

@@ -31,6 +31,7 @@
   <script src="src/battle/manual-timeline.js"></script>
   <script src="src/battle/manual-branches.js"></script>
   <script src="src/battle/manual-scenario-io.js"></script>
+  <script src="src/battle/manual-scenario-library.js"></script>
   <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
@@ -5333,7 +5334,7 @@
     .manual-decision-banner {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(190px, .72fr) minmax(0, 1.45fr) auto;
       align-items: center;
       gap: 14px;
       padding: 11px 12px;
@@ -5621,6 +5622,56 @@
       color: var(--text);
       font-size: 11px;
     }
+    .manual-scenario-panel {
+      display: grid;
+      grid-template-columns: minmax(160px, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+    }
+    .manual-scenario-copy { display: grid; min-width: 0; gap: 2px; }
+    .manual-scenario-copy small { color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+    .manual-scenario-title-row { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .manual-scenario-title-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 17px; }
+    .manual-scenario-status { display: inline-flex; align-items: center; gap: 5px; color: #198b47; font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .manual-scenario-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .manual-scenario-status[data-state="unsaved"] { color: var(--muted); }
+    .manual-scenario-status[data-state="saved"]::after { content: "✓"; font-size: 10px; }
+    .manual-scenario-actions { display: inline-flex; align-items: center; gap: 7px; }
+    .manual-scenario-actions button { min-height: 34px; padding: 6px 13px; white-space: nowrap; }
+    .manual-scenario-more { position: relative; }
+    .manual-scenario-more > button { min-width: 38px; padding-inline: 9px; font-size: 18px; letter-spacing: .08em; }
+    .manual-scenario-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 45;
+      display: grid;
+      min-width: 166px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      box-shadow: 0 10px 22px rgba(23, 33, 47, .18);
+    }
+    .manual-scenario-menu[hidden] { display: none; }
+    .manual-scenario-menu button { justify-content: start; min-height: 31px; padding: 5px 8px; border: 0; border-radius: 5px; background: transparent; box-shadow: none; font-size: 11px; text-align: left; }
+    .manual-scenario-menu button:hover { background: var(--soft); }
+    .manual-scenario-menu button.danger { color: var(--danger); border-top: 1px solid var(--line); border-radius: 0; }
+    .manual-scenario-library .modal-card { width: min(430px, 100%); }
+    .manual-scenario-library-list { display: grid; max-height: min(54vh, 390px); overflow: auto; border-top: 1px solid var(--line); }
+    .manual-scenario-library-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px 4px; border-bottom: 1px solid var(--line); }
+    .manual-scenario-library-item button { justify-self: start; min-width: 0; padding: 0; border: 0; background: none; box-shadow: none; color: var(--ink); text-align: left; }
+    .manual-scenario-library-item button strong, .manual-scenario-library-item button small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .manual-scenario-library-item button small { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .manual-scenario-library-item span { align-self: center; color: #198b47; font-size: 10px; font-weight: 800; }
+    .manual-scenario-library-empty { padding: 18px 4px; color: var(--muted); font-size: 12px; text-align: center; }
+    .manual-scenario-library-import { width: 100%; margin-top: 10px; }
     .manual-editor-actions {
       grid-column: 1;
       grid-row: 2;
@@ -8907,6 +8958,7 @@
         gap: 4px;
       }
       body.manual-mode-active .manual-decision-facts > span { padding: 4px; }
+      body.manual-mode-active .manual-scenario-panel { grid-column: 1 / -1; min-width: 0; }
       body.manual-mode-active .manual-overlay-controls { display: flex; }
       body.manual-mode-active .manual-overlay-controls .manual-overlay-exit { display: none; }
       body.manual-mode-active .manual-editor-actions {
@@ -10784,13 +10836,17 @@
                 <strong id="manualCurrentDecisionTitle">Choose an action</strong>
                 <span id="manualDecisionWhy">Automatic simulation is paused.</span>
               </div>
-              <div class="manual-decision-facts">
-                <span><small>HP</small><strong id="manualDecisionHp">-</strong></span>
-                <span><small>Energy</small><strong id="manualDecisionEnergy">0</strong></span>
-                <span><small>Shields</small><strong id="manualDecisionShields">-</strong></span>
-                <span><small>Legal actions</small><strong id="manualDecisionLegal">-</strong></span>
-                <span hidden><small>Turn</small><strong id="manualDecisionTurn">0</strong></span>
-              </div>
+              <section id="manualScenarioPanel" class="manual-scenario-panel" aria-label="Scenario controls">
+                <div class="manual-scenario-copy">
+                  <small>Scenario</small>
+                  <div class="manual-scenario-title-row"><strong id="manualScenarioName">Untitled scenario</strong><span id="manualScenarioStatus" class="manual-scenario-status" data-state="unsaved">Unsaved</span></div>
+                </div>
+                <div class="manual-scenario-actions">
+                  <button id="manualScenarioOpen" class="secondary" type="button">▱ Open</button>
+                  <button id="manualScenarioSave" class="secondary" type="button">▣ Save</button>
+                  <span class="manual-scenario-more"><button id="manualScenarioMore" class="secondary" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Scenario menu">…</button><span id="manualScenarioMenu" class="manual-scenario-menu" role="menu" hidden><button type="button" role="menuitem" data-scenario-command="rename">✎ Rename</button><button type="button" role="menuitem" data-scenario-command="duplicate">⧉ Duplicate</button><button type="button" role="menuitem" data-scenario-command="export">⇧ Export JSON</button><button type="button" role="menuitem" data-scenario-command="import">⇩ Import JSON</button><button type="button" role="menuitem" class="danger" data-scenario-command="delete">⌫ Delete</button></span></span>
+                </div>
+              </section>
               <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
                 <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
                 <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
@@ -11131,6 +11187,15 @@
     </div>
   </div>
 
+  <div class="modal manual-scenario-library" id="manualScenarioLibraryModal" aria-hidden="true" aria-labelledby="manualScenarioLibraryTitle">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-head"><h2 id="manualScenarioLibraryTitle">My Scenarios</h2><button id="manualScenarioLibraryClose" class="modal-close" type="button" aria-label="Close scenarios">×</button></div>
+      <div id="manualScenarioLibraryList" class="manual-scenario-library-list"></div>
+      <button id="manualScenarioLibraryImport" class="secondary manual-scenario-library-import" type="button">⇧ Import Scenario</button>
+    </div>
+  </div>
+  <input id="manualScenarioImportFile" type="file" accept="application/json,.json" hidden>
+
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
@@ -11182,6 +11247,12 @@
     let manualTimelineFocusEventId = null;
     let manualDecisionCloseTimer = null;
     let manualDecisionReturnFocus = null;
+    let manualScenarioId = null;
+    let manualScenarioBaseline = null;
+    const manualScenarioLibrary = (() => {
+      try { return window.PvPeakManualScenarioLibrary?.createLibrary?.(window.localStorage) || null; }
+      catch (_) { return null; }
+    })();
     let suppressRender = false;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
@@ -11577,6 +11648,26 @@
       $("manualGuideClose").onclick = closeManualGuide;
       $("manualGuideModal").addEventListener("click", event => {
         if (event.target.id === "manualGuideModal") closeManualGuide();
+      });
+      $("manualScenarioOpen").onclick = openManualScenarioLibrary;
+      $("manualScenarioSave").onclick = saveManualScenario;
+      $("manualScenarioMore").onclick = toggleManualScenarioMenu;
+      $("manualScenarioMenu").onclick = event => {
+        const command = event.target.closest("[data-scenario-command]")?.dataset.scenarioCommand;
+        if (command) runManualScenarioCommand(command);
+      };
+      $("manualScenarioLibraryClose").onclick = closeManualScenarioLibrary;
+      $("manualScenarioLibraryModal").addEventListener("click", event => {
+        if (event.target.id === "manualScenarioLibraryModal") closeManualScenarioLibrary();
+      });
+      $("manualScenarioLibraryList").onclick = event => {
+        const id = event.target.closest("[data-manual-scenario-id]")?.dataset.manualScenarioId;
+        if (id) openStoredManualScenario(id);
+      };
+      $("manualScenarioLibraryImport").onclick = () => $("manualScenarioImportFile")?.click();
+      $("manualScenarioImportFile").onchange = importManualScenarioFile;
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".manual-scenario-more")) closeManualScenarioMenu();
       });
       $("timelineZoomOut").onclick = () => stepTimelineZoom(-1);
       $("timelineZoomIn").onclick = () => stepTimelineZoom(1);
@@ -16181,6 +16272,232 @@
       }
     }
 
+    function manualScenarioSnapshot() {
+      if (!manualModeState?.enabled || !manualBranchRegistry || !window.PvPeakManualScenarioIO) return null;
+      const canonical = window.PvPeakManualScenarioIO.exportScenario({
+        registry: manualBranchRegistry,
+        battleEngineVersion,
+        plannerMode: "PVPOKE_PARITY",
+        pokemon: { A: left?.p?.id || null, B: right?.p?.id || null },
+        exportedAt: manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId)?.payload?.exportedAt : undefined
+      });
+      return {
+        ...canonical,
+        localScenarioVersion: 1,
+        applicationState: snapshotFullSimulatorState(),
+        manualSession: {
+          sessionControlMode: manualSessionControlMode,
+          originalRuntimeState: cloneTechnicalValue(manualOriginalRuntimeState),
+          rootSnapshotId: manualRootSnapshotId,
+          snapshots: manualSnapshotStore?.exportEntries?.() || []
+        }
+      };
+    }
+
+    function manualScenarioSignature() {
+      const snapshot = manualScenarioSnapshot();
+      try { return snapshot ? JSON.stringify(snapshot) : null; }
+      catch (_) { return null; }
+    }
+
+    function manualScenarioDefaultName() {
+      return `${left?.p?.name || "Pokemon A"} vs ${right?.p?.name || "Pokemon B"}`;
+    }
+
+    function manualScenarioSummary() {
+      return {
+        matchup: manualScenarioDefaultName(),
+        eventCount: timeline.length,
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function manualScenarioStatus() {
+      const signature = manualScenarioSignature();
+      if (!manualScenarioId) return { state: "unsaved", label: "Unsaved", signature };
+      return signature && signature === manualScenarioBaseline
+        ? { state: "saved", label: "Saved", signature }
+        : { state: "modified", label: "Modified", signature };
+    }
+
+    function renderManualScenarioPanel() {
+      const panel = $("manualScenarioPanel");
+      const save = $("manualScenarioSave");
+      const open = $("manualScenarioOpen");
+      const more = $("manualScenarioMore");
+      if (!panel || !save || !open || !more) return;
+      const enabled = !!manualModeState?.enabled;
+      panel.hidden = !enabled;
+      save.disabled = !enabled || !manualScenarioLibrary;
+      open.disabled = !manualScenarioLibrary;
+      more.disabled = !enabled;
+      if (!enabled) return;
+      const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
+      const status = manualScenarioStatus();
+      $("manualScenarioName").textContent = entry?.name || manualScenarioDefaultName();
+      const statusElement = $("manualScenarioStatus");
+      statusElement.dataset.state = status.state;
+      statusElement.textContent = status.label;
+      save.textContent = status.state === "modified" ? "▣ Save" : "▣ Save";
+    }
+
+    function saveManualScenario() {
+      if (!manualScenarioLibrary) {
+        add("Scenario storage is unavailable in this browser.", "info");
+        return false;
+      }
+      const payload = manualScenarioSnapshot();
+      if (!payload) return false;
+      const existing = manualScenarioId ? manualScenarioLibrary.get(manualScenarioId) : null;
+      const name = existing?.name || window.prompt("Name this scenario:", manualScenarioDefaultName());
+      if (!name?.trim()) return false;
+      const saved = manualScenarioLibrary.save({ id: manualScenarioId, name, payload, summary: manualScenarioSummary() });
+      manualScenarioId = saved.id;
+      manualScenarioBaseline = JSON.stringify(payload);
+      add(`Scenario saved as ${saved.name}.`, "info");
+      renderManualScenarioPanel();
+      return true;
+    }
+
+    function openManualScenarioLibrary() {
+      const modal = $("manualScenarioLibraryModal");
+      if (!modal) return;
+      renderManualScenarioLibrary();
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => $("manualScenarioLibraryClose")?.focus());
+    }
+
+    function closeManualScenarioLibrary() {
+      const modal = $("manualScenarioLibraryModal");
+      if (!modal?.classList.contains("open")) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      $("manualScenarioOpen")?.focus({ preventScroll: true });
+    }
+
+    function renderManualScenarioLibrary() {
+      const list = $("manualScenarioLibraryList");
+      if (!list) return;
+      const entries = manualScenarioLibrary?.list?.() || [];
+      list.innerHTML = entries.length
+        ? entries.map(entry => {
+          const events = Number(entry.summary?.eventCount || 0);
+          const updated = new Date(entry.updatedAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+          return `<article class="manual-scenario-library-item"><button type="button" data-manual-scenario-id="${escapeHtml(entry.id)}"><strong>${escapeHtml(entry.name)}</strong><small>${escapeHtml(entry.summary?.matchup || "Manual scenario")} · ${escapeHtml(updated)} · ${events} events</small></button><span>Saved ✓</span></article>`;
+        }).join("")
+        : '<div class="manual-scenario-library-empty">No saved scenarios yet.</div>';
+    }
+
+    function openStoredManualScenario(id) {
+      const entry = manualScenarioLibrary?.get(id);
+      if (!entry) return false;
+      const imported = window.PvPeakManualScenarioIO?.importScenario(entry.payload, { battleEngineVersion });
+      if (!imported?.ok || !entry.payload?.applicationState || !entry.payload?.manualSession) {
+        add(`Cannot open ${entry.name}: ${imported?.errors?.join(", ") || "invalid scenario data"}.`, "info");
+        return false;
+      }
+      try {
+        restoreFullSimulatorState(cloneTechnicalValue(entry.payload.applicationState));
+        manualBranchRegistry = cloneTechnicalValue(imported.scenario.branchRegistry);
+        manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
+        manualSnapshotStore?.importEntries?.(entry.payload.manualSession.snapshots || []);
+        manualOriginalRuntimeState = cloneTechnicalValue(entry.payload.manualSession.originalRuntimeState);
+        manualRootSnapshotId = entry.payload.manualSession.rootSnapshotId || null;
+        manualSessionControlMode = entry.payload.manualSession.sessionControlMode || null;
+        manualBattleRuntime = null;
+        manualModeMinimized = false;
+        rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+        manualScenarioId = entry.id;
+        manualScenarioBaseline = JSON.stringify(entry.payload);
+        closeManualScenarioLibrary();
+        render();
+        add(`Opened scenario ${entry.name}.`, "info");
+        return true;
+      } catch (error) {
+        add(`Cannot restore ${entry.name}: ${error.message}.`, "info");
+        return false;
+      }
+    }
+
+    function toggleManualScenarioMenu() {
+      const menu = $("manualScenarioMenu");
+      if (!menu) return;
+      const open = menu.hidden;
+      menu.hidden = !open;
+      $("manualScenarioMore")?.setAttribute("aria-expanded", String(open));
+    }
+
+    function closeManualScenarioMenu() {
+      const menu = $("manualScenarioMenu");
+      if (!menu || menu.hidden) return;
+      menu.hidden = true;
+      $("manualScenarioMore")?.setAttribute("aria-expanded", "false");
+    }
+
+    function runManualScenarioCommand(command) {
+      closeManualScenarioMenu();
+      const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
+      if (command === "export") return exportManualScenario();
+      if (command === "import") return $("manualScenarioImportFile")?.click();
+      if (!entry) return false;
+      if (command === "rename") {
+        const name = window.prompt("Rename scenario:", entry.name);
+        if (!name?.trim()) return false;
+        manualScenarioLibrary.rename(entry.id, name);
+        renderManualScenarioPanel();
+        return true;
+      }
+      if (command === "duplicate") {
+        const name = window.prompt("Duplicate scenario as:", `${entry.name} copy`);
+        if (!name?.trim()) return false;
+        const duplicate = manualScenarioLibrary.duplicate(entry.id, name);
+        manualScenarioId = duplicate.id;
+        manualScenarioBaseline = JSON.stringify(duplicate.payload);
+        renderManualScenarioPanel();
+        return true;
+      }
+      if (command === "delete" && window.confirm(`Delete "${entry.name}" from this browser?`)) {
+        manualScenarioLibrary.remove(entry.id);
+        manualScenarioId = null;
+        manualScenarioBaseline = null;
+        renderManualScenarioPanel();
+        return true;
+      }
+      return false;
+    }
+
+    function exportManualScenario() {
+      const payload = manualScenarioSnapshot();
+      if (!payload) return false;
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${manualScenarioDefaultName().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "scenario"}.json`;
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(link.href), 0);
+      return true;
+    }
+
+    async function importManualScenarioFile(event) {
+      const file = event.target.files?.[0];
+      event.target.value = "";
+      if (!file) return false;
+      try {
+        const payload = JSON.parse(await file.text());
+        const imported = window.PvPeakManualScenarioIO?.importScenario(payload, { battleEngineVersion });
+        if (!imported?.ok) throw new Error(imported?.errors?.join(", ") || "INVALID_IMPORT_DOCUMENT");
+        const name = window.prompt("Save imported scenario as:", payload?.applicationState?.controls?.p1Pokemon && payload?.applicationState?.controls?.p2Pokemon ? "Imported scenario" : "Imported scenario");
+        if (!name?.trim() || !manualScenarioLibrary) return false;
+        const saved = manualScenarioLibrary.save({ name, payload, summary: { matchup: "Imported scenario", eventCount: Number(payload.timeline?.length || 0) } });
+        renderManualScenarioLibrary();
+        return openStoredManualScenario(saved.id);
+      } catch (error) {
+        add(`Scenario import failed: ${error.message}.`, "info");
+        return false;
+      }
+    }
+
     function renderManualDecisionBanner(runtimeStatus) {
       const workspace = $("manualEditorWorkspace");
       if (!workspace) return;
@@ -16248,20 +16565,9 @@
           element.classList.add("decision-transition");
         });
       }
-      $("manualDecisionTurn").textContent = String(manualModeState.cursorTurn ?? Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
-      $("manualDecisionEnergy").textContent = actor
-        ? String(actor.energy)
-        : `${left?.energy ?? 0} / ${right?.energy ?? 0}`;
-      $("manualDecisionHp").textContent = actor
-        ? `${actor.hp}/${actor.maxHp}`
-        : `${left?.hp ?? 0}/${left?.maxHp ?? 0} · ${right?.hp ?? 0}/${right?.maxHp ?? 0}`;
-      $("manualDecisionShields").textContent = actor
-        ? String(actor.shields)
-        : `${left?.shields ?? 0} / ${right?.shields ?? 0}`;
-      $("manualDecisionLegal").textContent = legal.length ? String(legal.length) : "-";
-      $("manualDecisionLegal").title = legal.length ? legal.join(", ") : "No legal action is currently available.";
       renderManualDuelHud();
       renderManualStateInspector(runtimeStatus);
+      renderManualScenarioPanel();
       updateManualTimelineEventMenu();
     }
 
