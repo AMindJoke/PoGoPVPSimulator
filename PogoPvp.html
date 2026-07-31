@@ -5817,6 +5817,27 @@
     .manual-battle-state > summary small { color: var(--muted); font-size: 9px; }
     .manual-battle-state-editor { padding: 0 10px 10px; }
     .manual-battle-state-editor > p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+    .manual-battle-state-editor { display: grid; gap: 10px; }
+    .manual-battle-state-side { display: grid; gap: 6px; min-width: 0; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--soft); }
+    .manual-battle-state-side > header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 6px; padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
+    .manual-battle-state-side > header > span { color: var(--muted); font-size: 9px; font-weight: 900; text-transform: uppercase; }
+    .manual-battle-state-side > header > strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .manual-battle-state-side > header > em { padding: 2px 5px; border-radius: 999px; background: color-mix(in srgb, var(--good) 12%, var(--panel)); color: var(--good); font-size: 8px; font-style: normal; font-weight: 900; }
+    .manual-battle-state-side > header > em.is-fainted { background: color-mix(in srgb, var(--danger) 12%, var(--panel)); color: var(--danger); }
+    .manual-state-number-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 5px; }
+    .manual-state-number-row label { display: grid; gap: 3px; color: var(--muted); font-size: 9px; font-weight: 850; }
+    .manual-state-number-row input { width: 100%; min-width: 0; height: 31px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: inherit; font-size: 12px; font-weight: 850; }
+    .manual-state-number-row > span { padding-bottom: 7px; color: var(--muted); font-size: 9px; }
+    .manual-state-field-label { color: var(--muted); font-size: 9px; font-weight: 850; }
+    .manual-state-segmented { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 2px; min-width: 0; }
+    .manual-state-segmented button { min-width: 0; min-height: 25px; padding: 2px 0; border-color: var(--line); background: var(--panel); color: var(--muted); font-size: 8px; }
+    .manual-state-segmented button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+    .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .manual-state-effects { display: grid; gap: 2px; padding: 6px 7px; border-radius: 6px; background: var(--panel); }
+    .manual-state-effects small { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+    .manual-state-effects span { font-size: 10px; font-weight: 800; }
+    .manual-state-side-actions { display: grid; grid-template-columns: 1fr 1.35fr; gap: 5px; }
+    .manual-state-side-actions button { min-height: 30px; padding: 4px 6px; font-size: 9px; }
     .energy-trainer-scale { position: relative; min-width: 0; padding-top: 76px; }
     .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 74px; }
     .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
@@ -11353,6 +11374,7 @@
     let manualScenarioDraftName = null;
     let manualEnergyTrainerPrevious = null;
     let manualEnergyTrainerSuppressPop = true;
+    let manualJudgeEventSequence = 0;
     const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
       persistent: true,
       onChange: state => {
@@ -16937,10 +16959,158 @@
       </section></div>`;
     }
 
+    function manualBattleStateCombatant(side) {
+      return side === "B" ? right : left;
+    }
+
+    function manualBattleStateStageLabel(value) {
+      const stage = Number(value || 0);
+      return stage > 0 ? `+${stage}` : String(stage);
+    }
+
+    function manualBattleStateSegmented(side, field, selected, values) {
+      return `<div class="manual-state-segmented" role="group" aria-label="Pokemon ${side} ${field}">${values.map(value => {
+        const active = Number(selected) === value;
+        const label = manualBattleStateStageLabel(value);
+        return `<button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value}" aria-label="Pokemon ${side} ${field} ${label}" aria-pressed="${active}">${label}</button>`;
+      }).join("")}</div>`;
+    }
+
+    function renderManualBattleStateEditor() {
+      const editor = $("manualBattleStateEditor");
+      if (!editor || !manualModeState?.enabled || !left || !right) return;
+      const stateApi = window.PvPeakManualBattleState;
+      const sideMarkup = side => {
+        const combatant = manualBattleStateCombatant(side);
+        const state = stateApi.normalizeManualBattleState(combatant);
+        const effects = state.attackStage === 0 && state.defenseStage === 0
+          ? "No active stat changes"
+          : [
+              state.attackStage ? `Attack ${manualBattleStateStageLabel(state.attackStage)}` : null,
+              state.defenseStage ? `Defense ${manualBattleStateStageLabel(state.defenseStage)}` : null
+            ].filter(Boolean).join(" · ");
+        return `<article class="manual-battle-state-side" data-side="${side}">
+          <header><span>Pokemon ${side}</span><strong>${escapeHtml(combatant.p.name)}</strong><em class="${state.fainted ? "is-fainted" : ""}">${state.fainted ? "Fainted" : "Active"}</em></header>
+          <div class="manual-state-number-row">
+            <label for="manualStateHp${side}">HP<input id="manualStateHp${side}" type="number" min="0" max="${state.maxHp}" step="1" value="${state.hp}" data-manual-state-side="${side}" data-manual-state-field="hp"></label>
+            <span>/ ${state.maxHp}</span>
+            <label for="manualStateEnergy${side}">Energy<input id="manualStateEnergy${side}" type="number" min="0" max="100" step="1" value="${state.energy}" data-manual-state-side="${side}" data-manual-state-field="energy"></label>
+          </div>
+          <label class="manual-state-field-label">Attack</label>
+          ${manualBattleStateSegmented(side, "attackStage", state.attackStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
+          <label class="manual-state-field-label">Defense</label>
+          ${manualBattleStateSegmented(side, "defenseStage", state.defenseStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
+          <label class="manual-state-field-label">Shields</label>
+          ${manualBattleStateSegmented(side, "shields", state.shields, [0, 1, 2])}
+          <div class="manual-state-effects"><small>Applied Effects</small><span>${escapeHtml(effects)}</span></div>
+          <div class="manual-state-side-actions">
+            <button type="button" class="secondary" data-manual-mark-fainted="${side}" ${state.fainted ? "disabled" : ""}>Mark fainted</button>
+            <button type="button" data-manual-bring-next="${side}" ${state.fainted ? "" : "disabled"}>Bring next Pokémon</button>
+          </div>
+        </article>`;
+      };
+      editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}`;
+      editor.querySelectorAll("input[data-manual-state-field]").forEach(input => {
+        input.onkeydown = event => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            input.blur();
+          }
+        };
+        input.onchange = () => commitManualBattleStateEdit(
+          input.dataset.manualStateSide,
+          input.dataset.manualStateField,
+          input.value
+        );
+      });
+      editor.querySelectorAll("button[data-manual-state-field]").forEach(button => {
+        button.onclick = () => commitManualBattleStateEdit(
+          button.dataset.manualStateSide,
+          button.dataset.manualStateField,
+          button.dataset.manualStateValue
+        );
+      });
+      editor.querySelectorAll("[data-manual-mark-fainted]").forEach(button => {
+        button.onclick = () => commitManualBattleStateEdit(button.dataset.manualMarkFainted, "hp", 0);
+      });
+    }
+
+    function manualStateEventLabel(side, field, value, combatant) {
+      const subject = side === "A" ? "Player" : "Opponent";
+      if (field === "hp" && Number(value) <= 0) return `${combatant.p.name} fainted`;
+      if (field === "hp") return `Set ${subject} HP to ${value}`;
+      if (field === "energy") return `Set ${subject} Energy to ${value}`;
+      if (field === "attackStage") return `Set ${subject} Attack to ${manualBattleStateStageLabel(value)}`;
+      if (field === "defenseStage") return `Set ${subject} Defense to ${manualBattleStateStageLabel(value)}`;
+      if (field === "shields") return `Set ${subject} Shields to ${value}`;
+      return `Updated ${subject} battle state`;
+    }
+
+    function recordManualJudgeEvent(side, kind, label, beforeState, details = {}) {
+      const turn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      const event = {
+        id: `judge-${Date.now()}-${++manualJudgeEventSequence}`,
+        timelineEventId: `judge-${Date.now()}-${manualJudgeEventSequence}`,
+        timelineIndex: timeline.length,
+        trainer: side,
+        kind,
+        judgeEventType: details.eventType || "STATE_EDIT",
+        label,
+        source: "judge-manual",
+        start: turn,
+        duration: 1,
+        details: cloneTechnicalValue(details),
+        state: battleSnapshot()
+      };
+      timeline.push(event);
+      captureManualEventSnapshots(event, beforeState);
+      return event;
+    }
+
+    function commitManualBattleStateEdit(side, field, rawValue) {
+      const stateApi = window.PvPeakManualBattleState;
+      const combatant = manualBattleStateCombatant(side);
+      if (!stateApi || !combatant || !["hp", "energy", "attackStage", "defenseStage", "shields"].includes(field)) return false;
+      const beforeNormalized = stateApi.normalizeManualBattleState(combatant);
+      const beforeValue = beforeNormalized[field];
+      const beforeState = captureManualRuntimeSnapshot();
+      const normalized = stateApi.applyManualBattleState(combatant, { [field]: rawValue });
+      const nextValue = normalized[field];
+      if (nextValue === beforeValue) {
+        renderManualBattleStateEditor();
+        return false;
+      }
+      clearManualEnergyTrainerNextCycle();
+      manualEnergyTrainerSuppressPop = true;
+      const prefix = scenarioSidePrefix(side);
+      if (field === "shields") $(`${prefix}Shields`).value = String(nextValue);
+      if (field === "energy") $(`${prefix}StartEnergy`).value = String(nextValue);
+      const label = manualStateEventLabel(side, field, nextValue, combatant);
+      const event = recordManualJudgeEvent(
+        side,
+        field === "hp" && normalized.fainted ? "manual-faint" : "manual-state",
+        label,
+        beforeState,
+        { eventType: "STATE_EDIT", field, previousValue: beforeValue, value: nextValue, fainted: normalized.fainted }
+      );
+      syncManualBranchAfterAction({
+        id: event.timelineEventId,
+        actionType: field === "hp" && normalized.fainted ? "MARK_FAINTED" : "SET_BATTLE_STATE",
+        side,
+        field,
+        value: nextValue
+      });
+      rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      add(label, normalized.fainted ? "ko" : "info");
+      render();
+      return true;
+    }
+
     function renderManualStateInspector(runtimeStatus) {
       const trainer = $("manualEnergyTrainer");
       const tileApi = window.PvPeakEnergyTrainer;
       if (!trainer || !tileApi || !manualModeState?.enabled || !left || !right) return;
+      renderManualBattleStateEditor();
       const side = manualEnergyTrainerTrackedSide();
       const combatant = side === "B" ? right : left;
       const fast = combatant.fast;

@@ -51,6 +51,14 @@ assert.equal(combatant.defenseStage, -2);
 assert.equal(fainted.fainted, false);
 
 assert.equal(State.applyManualBattleState(combatant, { hp: 0 }).fainted, true);
+for (let stage = -4; stage <= 4; stage++) {
+  const staged = State.applyManualBattleState(combatant, { attackStage: stage, defenseStage: stage });
+  assert.equal(staged.attackStage, stage);
+  assert.equal(staged.defenseStage, stage);
+}
+for (const shields of [0, 1, 2]) {
+  assert.equal(State.applyManualBattleState(combatant, { shields }).shields, shields);
+}
 assert.throws(() => State.normalizeManualBattleState({}, {}), /ACTIVE_POKEMON_REQUIRED/);
 
 console.log("Manual Battle State normalization tests passed.");
