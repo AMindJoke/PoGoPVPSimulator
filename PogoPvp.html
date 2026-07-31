@@ -4286,6 +4286,22 @@
     }
     .timeline-block.technical-lag { background: #d17818; }
     .timeline-block.technical-dre { background: #b13978; }
+    .timeline-block.judge-event {
+      top: 1px;
+      height: 20px;
+      min-width: 52px;
+      padding: 2px 6px;
+      border: 1px dashed color-mix(in srgb, var(--accent) 72%, var(--line));
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--accent) 18%, var(--panel));
+      color: var(--ink);
+      font-size: 8px;
+      font-weight: 900;
+      text-shadow: none;
+      z-index: 7;
+    }
+    .timeline-block.judge-event.manual-faint { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 15%, var(--panel)); color: var(--danger); }
+    .timeline-block.judge-event.manual-entry { border-style: solid; border-color: var(--good); background: color-mix(in srgb, var(--good) 16%, var(--panel)); color: var(--good); }
     body.technical-review-branch .timeline {
       box-shadow: 0 0 0 2px rgba(123,75,196,.3), 0 0 18px rgba(123,75,196,.12), var(--shadow);
     }
@@ -16545,6 +16561,13 @@
         registry: manualBranchRegistry,
         battleEngineVersion,
         plannerMode: "PVPOKE_PARITY",
+        reviewMode: scenarioReviewMode,
+        scenarioReview: {
+          state: scenarioState,
+          segmentInitialState: scenarioSegmentInitialState,
+          timelineStart: scenarioTimelineStart,
+          history: scenarioHistory
+        },
         pokemon: { A: left?.p?.id || null, B: right?.p?.id || null },
         exportedAt: manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId)?.payload?.exportedAt : undefined
       });
@@ -16668,6 +16691,17 @@
       }
       try {
         restoreFullSimulatorState(cloneTechnicalValue(entry.payload.applicationState));
+        if (Object.prototype.hasOwnProperty.call(entry.payload, "reviewMode")) {
+          scenarioReviewMode = normalizedScenarioReviewMode(imported.scenario.reviewMode);
+        }
+        if (imported.scenario.scenarioReview) {
+          const restoredReview = cloneTechnicalValue(imported.scenario.scenarioReview);
+          scenarioState = restoredReview.state || null;
+          scenarioSegmentInitialState = restoredReview.segmentInitialState || null;
+          scenarioTimelineStart = Number(restoredReview.timelineStart || 0);
+          scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restoredReview.history?.A || []));
+          scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restoredReview.history?.B || []));
+        }
         manualBranchRegistry = cloneTechnicalValue(imported.scenario.branchRegistry);
         manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
         manualSnapshotStore?.importEntries?.(entry.payload.manualSession.snapshots || []);
@@ -24765,6 +24799,13 @@
           }
         },
         battle: snapshotBattleState(),
+        scenarioReview: {
+          mode: scenarioReviewMode,
+          state: cloneTechnicalValue(scenarioState),
+          segmentInitialState: cloneTechnicalValue(scenarioSegmentInitialState),
+          timelineStart: scenarioTimelineStart,
+          history: cloneTechnicalValue(scenarioHistory)
+        },
         battleResultsVisible: document.body.classList.contains("battle-results-visible")
       };
     }
@@ -24780,6 +24821,13 @@
       restoreToggleVisuals("p1");
       restoreToggleVisuals("p2");
       restoreBattleState(state.battle);
+      const review = state.scenarioReview;
+      scenarioReviewMode = normalizedScenarioReviewMode(review?.mode);
+      scenarioState = cloneTechnicalValue(review?.state || null);
+      scenarioSegmentInitialState = cloneTechnicalValue(review?.segmentInitialState || null);
+      scenarioTimelineStart = Number(review?.timelineStart || 0);
+      scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(cloneTechnicalValue(review?.history?.A) || []));
+      scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(cloneTechnicalValue(review?.history?.B) || []));
       document.body.classList.toggle("battle-results-visible", !!state.battleResultsVisible);
     }
 
@@ -24857,6 +24905,13 @@
     function restoreBattleState(snapshot) {
       left = snapshot.left;
       right = snapshot.right;
+      [left, right].filter(Boolean).forEach(combatant => {
+        window.PvPeakManualBattleState?.applyManualBattleState?.(combatant, {
+          attackStage: combatant.attackStage ?? 0,
+          defenseStage: combatant.defenseStage ?? 0,
+          shields: combatant.shields ?? 0
+        });
+      });
       log = snapshot.log;
       timeline = snapshot.timeline;
       initialTimelineState = snapshot.initialTimelineState;
@@ -24988,6 +25043,21 @@
       const event = timeline[index];
       if (!event) return;
       const state = event.state || {};
+      if (event.source === "judge-manual") {
+        $("eventModalTitle").textContent = "Judge edit";
+        $("eventModalBody").innerHTML =
+          `<div class="event-visual"><div class="event-move"><strong>${escapeHtml(event.label || "Manual battle state update")}</strong><span>Manual reconstruction · Side ${escapeHtml(event.trainer || "-")}</span></div></div>` +
+          [
+            ["Event type", event.judgeEventType || event.kind],
+            ["Turn", event.start],
+            ["Side", event.trainer],
+            ["A HP / Energy", state.A ? `${state.A.hp}/${state.A.maxHp} - ${state.A.energy}` : "-"],
+            ["B HP / Energy", state.B ? `${state.B.hp}/${state.B.maxHp} - ${state.B.energy}` : "-"]
+          ].map(([label, value]) => `<div class="detail-cell">${label}<strong>${escapeHtml(String(value))}</strong></div>`).join("");
+        $("eventModal").classList.add("open");
+        $("eventModal").setAttribute("aria-hidden", "false");
+        return;
+      }
       const actor = event.trainer === "A" ? left : right;
       const target = event.trainer === "A" ? right : left;
       const color = typeColors[event.move.type] || "#156f8f";
@@ -25565,6 +25635,7 @@
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
         if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
+        if (event.source === "judge-manual") return renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots);
         if (event.kind === "technical-lag" || event.kind === "technical-dre") {
           const baseTurn = visualTurn(event.start, chargeSlots, false);
           const label = event.kind === "technical-lag" ? "+1T" : "DRE";
@@ -25607,6 +25678,32 @@
         const effects = isCharge ? timelineStageEffectHtml(event) : "";
         return `${trail}<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(labelText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}${effects}</div>${markers}`;
       }).join("") + timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) + `</div>`;
+    }
+
+    function manualJudgeTimelineShortLabel(event) {
+      if (event.kind === "manual-entry") return `IN · ${event.details?.pokemonName || "Pokémon"}`;
+      if (event.kind === "manual-faint") return "KO · Judge";
+      const field = event.details?.field;
+      const value = event.details?.value;
+      if (field === "hp") return `HP · ${value}`;
+      if (field === "energy") return `EN · ${value}`;
+      if (field === "attackStage") return `ATK · ${manualBattleStateStageLabel(value)}`;
+      if (field === "defenseStage") return `DEF · ${manualBattleStateStageLabel(value)}`;
+      if (field === "shields") return `SH · ${value}`;
+      return "Judge edit";
+    }
+
+    function renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots) {
+      const label = manualJudgeTimelineShortLabel(event);
+      const width = Math.max(52, Math.min(128, label.length * 5 + 16));
+      const earlierAtTurn = timeline.slice(0, index).filter(candidate =>
+        candidate.source === "judge-manual"
+        && candidate.trainer === trainer
+        && Number(candidate.start || 0) === Number(event.start || 0)
+      ).length;
+      const left = Math.max(2, visualTurn(event.start, chargeSlots, false) * turnPx + earlierAtTurn * 14);
+      const cls = `timeline-block judge-event ${event.kind}${selectedTimelineIndex === index ? " selected" : ""}`;
+      return `<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(event.label || label)}" title="${escapeHtml(event.label || label)}" style="left:${left}px;width:${width}px">${escapeHtml(label)}</div>`;
     }
 
     function timelineStageEffectClass(event) {
@@ -25691,6 +25788,7 @@
 
     function timelineMoveSummary(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
+      if (event.source === "judge-manual") return [event.label || "Judge edit", "Manual reconstruction"].join("\n");
       if (event.kind === "shield") {
         return [
           "Shield",
@@ -25717,6 +25815,11 @@
 
     function timelineMoveTitle(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
+      if (event.source === "judge-manual") return [
+        event.label || "Judge edit",
+        "Source: Judge manual reconstruction",
+        `Turn: ${Number(event.start || 0)}`
+      ].join("\n");
       const registrationTurn = Number(event.registrationTurn ?? event.start ?? 0);
       const resolutionTurn = Number(event.resolutionTurn ?? event.resolveTurn ?? event.start ?? 0);
       const pendingLabels = [

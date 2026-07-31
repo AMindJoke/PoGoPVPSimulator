@@ -25,6 +25,11 @@ registry = Branches.execute(registry, {
 const json = IO.stringifyScenario({
   registry,
   battleEngineVersion: "battle-planner-v27",
+  reviewMode: "manual",
+  scenarioReview: {
+    state: { status: "active", mode: "manual" },
+    history: { A: [{ pokemonId: "swampert", hp: 0 }], B: [] }
+  },
   pokemon: { A: "quagsire_shadow", B: "corsola_galarian" },
   exportedAt: "2026-01-01T00:02:00.000Z"
 });
@@ -34,6 +39,17 @@ assert.equal(imported.scenario.activeBranchId, "MANUAL-1");
 assert.equal(imported.scenario.originalBranch.branchId, Branches.ORIGINAL_BRANCH_ID);
 assert.equal(imported.scenario.manualBranch.branchId, "MANUAL-1");
 assert.deepEqual(imported.scenario.pokemon, { A: "quagsire_shadow", B: "corsola_galarian" });
+assert.equal(imported.scenario.reviewMode, "manual");
+assert.equal(imported.scenario.scenarioReview.state.status, "active");
+assert.equal(imported.scenario.scenarioReview.history.A[0].pokemonId, "swampert");
+
+const legacy = JSON.parse(json);
+delete legacy.reviewMode;
+delete legacy.scenarioReview;
+const importedLegacy = IO.importScenario(legacy, { battleEngineVersion: "battle-planner-v27" });
+assert.equal(importedLegacy.ok, true);
+assert.equal(importedLegacy.scenario.reviewMode, "manual");
+assert.equal(importedLegacy.scenario.scenarioReview, null);
 
 const mismatch = IO.importScenario(json, { battleEngineVersion: "battle-planner-v28" });
 assert.equal(mismatch.ok, false);

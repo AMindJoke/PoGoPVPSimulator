@@ -24,6 +24,8 @@
       schemaVersion: SCHEMA_VERSION,
       battleEngineVersion: String(input.battleEngineVersion || ""),
       plannerMode: input.plannerMode || "PVPOKE_PARITY",
+      reviewMode: input.reviewMode === "automatic" ? "automatic" : "manual",
+      scenarioReview: clone(input.scenarioReview || null),
       exportedAt: input.exportedAt || new Date().toISOString(),
       pokemon: clone(input.pokemon || null),
       initialState: clone(input.initialState || active?.timelineModel?.initialState || null),
@@ -73,6 +75,12 @@
     }
     const errors = validateScenario(document, options);
     if (errors.length) return { ok: false, errors, scenario: null };
+    if (document.reviewMode !== "automatic" && document.reviewMode !== "manual") {
+      document.reviewMode = "manual";
+    }
+    if (!Object.prototype.hasOwnProperty.call(document, "scenarioReview")) {
+      document.scenarioReview = null;
+    }
     return {
       ok: true,
       errors: [],
