@@ -5851,15 +5851,18 @@
     .manual-battle-state-side > header > strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
     .manual-battle-state-side > header > em { padding: 2px 5px; border-radius: 999px; background: color-mix(in srgb, var(--good) 12%, var(--panel)); color: var(--good); font-size: 8px; font-style: normal; font-weight: 900; }
     .manual-battle-state-side > header > em.is-fainted { background: color-mix(in srgb, var(--danger) 12%, var(--panel)); color: var(--danger); }
-    .manual-state-number-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 5px; }
-    .manual-state-number-row label { display: grid; gap: 3px; color: var(--muted); font-size: 9px; font-weight: 850; }
-    .manual-state-number-row input { width: 100%; min-width: 0; height: 31px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: inherit; font-size: 12px; font-weight: 850; }
-    .manual-state-number-row > span { padding-bottom: 7px; color: var(--muted); font-size: 9px; }
+    .manual-state-number-row { display: grid; grid-template-columns: 1fr; gap: 7px; }
+    .manual-state-number-row label { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3px; color: var(--muted); font-size: 9px; font-weight: 850; }
+    .manual-state-input-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px; min-width: 0; }
+    .manual-state-input-shell input { width: 100%; min-width: 0; height: 42px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); font: inherit; font-size: 16px; font-weight: 850; }
+    .manual-state-input-shell small { min-width: 31px; color: var(--muted); font-size: 9px; font-weight: 850; }
     .manual-state-field-label { color: var(--muted); font-size: 9px; font-weight: 850; }
     .manual-state-segmented { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 2px; min-width: 0; }
     .manual-state-segmented button { min-width: 0; min-height: 25px; padding: 2px 0; border-color: var(--line); background: var(--panel); color: var(--muted); font-size: 8px; }
     .manual-state-segmented button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
     .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .manual-state-segmented[aria-label$="shields"] button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+    .manual-state-segmented[aria-label$="shields"] svg { width: 16px; height: 16px; flex: 0 0 auto; }
     .manual-state-effects { display: grid; gap: 2px; padding: 6px 7px; border-radius: 6px; background: var(--panel); }
     .manual-state-effects small { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
     .manual-state-effects span { font-size: 10px; font-weight: 800; }
@@ -10155,8 +10158,8 @@
       }
       .manual-battle-state-editor { padding: 0 7px 8px; overflow: hidden; }
       .manual-battle-state-side { padding: 8px; }
-      .manual-state-number-row { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-      .manual-state-number-row input { min-height: 42px; font-size: 16px; }
+      .manual-state-number-row { grid-template-columns: 1fr; }
+      .manual-state-input-shell input { min-height: 44px; font-size: 16px; }
       .manual-state-segmented { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
       .manual-state-segmented button { min-height: 36px; font-size: 10px; }
       .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -10630,6 +10633,39 @@
         opacity: .62;
       }
     }
+
+    /* Scenario Review is a first-class workspace, not the Manual Mode overlay. */
+    body[data-view="scenario-review"] #manualEnergyTrainerHead,
+    body[data-view="scenario-review"] #manualEnergyTrainer {
+      display: none;
+    }
+    @media (min-width: 901px) {
+      body[data-view="scenario-review"].manual-mode-active {
+        overflow: auto;
+      }
+      body[data-view="scenario-review"].manual-mode-active #simulatorView > .setup,
+      body[data-view="scenario-review"].manual-mode-active #simulatorView > .battle-cta-row,
+      body[data-view="scenario-review"].manual-mode-active .analysis-grid > :not(#battleTimeline) {
+        display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .analysis-grid {
+        display: block;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+      }
+      body[data-view="scenario-review"].manual-mode-active #battleTimeline {
+        position: relative;
+        inset: auto;
+        z-index: auto;
+        width: 100%;
+        min-height: calc(100dvh - 180px);
+        max-height: none;
+        margin: 0;
+        overflow: visible;
+        box-shadow: 0 14px 32px rgba(23, 33, 47, .14);
+      }
+    }
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
@@ -11048,15 +11084,15 @@
               </div>
             </div>
           </div>
-          <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualEnergyTrainerTitle">
+          <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualBattleStateTitle">
             <details id="manualBattleStatePanel" class="manual-battle-state" open>
-              <summary><strong>Battle State</strong><small>Judge reconstruction controls</small></summary>
+              <summary><strong id="manualBattleStateTitle">Battle State</strong><small>Judge reconstruction controls</small></summary>
               <div id="manualBattleStateEditor" class="manual-battle-state-editor">
                 <p>Select both Pokémon to begin a manual review.</p>
               </div>
               <div id="manualBattleStateFeedback" class="sr-only" aria-live="polite"></div>
             </details>
-            <div class="manual-state-inspector-head"><strong id="manualEnergyTrainerTitle">Energy Trainer</strong><small>Fast Move counting</small></div>
+            <div id="manualEnergyTrainerHead" class="manual-state-inspector-head"><strong id="manualEnergyTrainerTitle">Energy Trainer</strong><small>Fast Move counting</small></div>
             <div id="manualEnergyTrainer" class="energy-trainer"></div>
           </aside>
           <div id="manualMobileSecondaryMount" class="manual-mobile-secondary-mount" hidden></div>
@@ -12682,10 +12718,19 @@
         renderMetaRankings();
       }
       if (next === "analysis") renderPokemonAnalysis();
-      if (next === "simulator" || next === "scenario-review") {
+      if (next === "simulator") {
         if (previous !== next) refreshPokemonLists();
         render();
-        if (next === "scenario-review") ensureScenarioReviewWorkspaceMode();
+      }
+      if (next === "scenario-review") {
+        if (previous !== next) refreshPokemonLists();
+        const canEnterWorkspaceDirectly = normalizedScenarioReviewMode(scenarioState?.mode ?? scenarioReviewMode) === "manual"
+          && setupReadyForBattle();
+        if (canEnterWorkspaceDirectly) ensureScenarioReviewWorkspaceMode();
+        else {
+          render();
+          ensureScenarioReviewWorkspaceMode();
+        }
       }
       updateMetaBackToTop();
     }
@@ -17109,7 +17154,8 @@
       return `<div class="manual-state-segmented" role="group" aria-label="Pokemon ${side} ${field}">${values.map(value => {
         const active = Number(selected) === value;
         const label = field === "shields" ? String(value) : manualBattleStateStageLabel(value);
-        return `<button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value}" aria-label="Pokemon ${side} ${field} ${label}" aria-pressed="${active}">${label}</button>`;
+        const content = field === "shields" ? `${shieldSvg()}<strong>${label}</strong>` : label;
+        return `<button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value}" aria-label="Pokemon ${side} ${field} ${label}" aria-pressed="${active}">${content}</button>`;
       }).join("")}</div>`;
     }
 
@@ -17129,9 +17175,8 @@
         return `<article class="manual-battle-state-side" data-side="${side}">
           <header><span>Pokemon ${side}</span><strong>${escapeHtml(combatant.p.name)}</strong><em class="${state.fainted ? "is-fainted" : ""}">${state.fainted ? "Fainted" : "Active"}</em></header>
           <div class="manual-state-number-row">
-            <label for="manualStateHp${side}">HP<input id="manualStateHp${side}" type="number" min="0" max="${state.maxHp}" step="1" value="${state.hp}" data-manual-state-side="${side}" data-manual-state-field="hp"></label>
-            <span>/ ${state.maxHp}</span>
-            <label for="manualStateEnergy${side}">Energy<input id="manualStateEnergy${side}" type="number" min="0" max="100" step="1" value="${state.energy}" data-manual-state-side="${side}" data-manual-state-field="energy"></label>
+            <label for="manualStateHp${side}"><span>HP</span><span class="manual-state-input-shell"><input id="manualStateHp${side}" type="number" min="0" max="${state.maxHp}" step="1" value="${state.hp}" data-manual-state-side="${side}" data-manual-state-field="hp"><small>/ ${state.maxHp}</small></span></label>
+            <label for="manualStateEnergy${side}"><span>Energy</span><span class="manual-state-input-shell"><input id="manualStateEnergy${side}" type="number" min="0" max="100" step="1" value="${state.energy}" data-manual-state-side="${side}" data-manual-state-field="energy"><small>/ 100</small></span></label>
           </div>
           <label class="manual-state-field-label">Attack</label>
           ${manualBattleStateSegmented(side, "attackStage", state.attackStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
@@ -17392,9 +17437,19 @@
 
     function renderManualStateInspector(runtimeStatus) {
       const trainer = $("manualEnergyTrainer");
+      const trainerHead = $("manualEnergyTrainerHead");
       const tileApi = window.PvPeakEnergyTrainer;
-      if (!trainer || !tileApi || !manualModeState?.enabled || !left || !right) return;
+      if (!trainer || !manualModeState?.enabled || !left || !right) return;
       renderManualBattleStateEditor();
+      const scenarioReviewWorkspace = document.body.dataset.view === "scenario-review";
+      if (trainerHead) trainerHead.hidden = scenarioReviewWorkspace;
+      trainer.hidden = scenarioReviewWorkspace;
+      if (scenarioReviewWorkspace) {
+        trainer.innerHTML = "";
+        manualEnergyTrainerPrevious = null;
+        return;
+      }
+      if (!tileApi) return;
       const side = manualEnergyTrainerTrackedSide();
       const combatant = side === "B" ? right : left;
       const fast = combatant.fast;

@@ -46,7 +46,9 @@ for (const id of [
   "manualOverlayExit",
   "manualStateInspector",
   "manualBattleStatePanel",
+  "manualBattleStateTitle",
   "manualBattleStateEditor",
+  "manualEnergyTrainerHead",
   "manualEnergyTrainerTitle",
   "manualEnergyTrainer",
   "manualTimelineEventMenu",
@@ -139,6 +141,11 @@ assert.match(html, /manualBattleStateSegmented\(side, "attackStage"/);
 assert.match(html, /manualBattleStateSegmented\(side, "defenseStage"/);
 assert.match(html, /manualBattleStateSegmented\(side, "shields"/);
 assert.match(html, /type="number" min="0" max="\$\{state\.maxHp\}"/);
+assert.match(html, /class="manual-state-input-shell"/);
+assert.match(html, /field === "shields" \? `\$\{shieldSvg\(\)\}/);
+assert.match(html, /body\[data-view="scenario-review"\] #manualEnergyTrainerHead/);
+assert.match(html, /body\[data-view="scenario-review"\]\.manual-mode-active #battleTimeline\s*\{[\s\S]{0,120}position: relative/);
+assert.match(html, /canEnterWorkspaceDirectly[\s\S]{0,260}ensureScenarioReviewWorkspaceMode\(\)/);
 assert.match(html, /clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /captureManualEventSnapshots\(event, beforeState\)/);
 assert.match(html, /syncManualBranchAfterAction\(\{/);
