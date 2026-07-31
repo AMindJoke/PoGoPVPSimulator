@@ -59,6 +59,37 @@ for (let stage = -4; stage <= 4; stage++) {
 for (const shields of [0, 1, 2]) {
   assert.equal(State.applyManualBattleState(combatant, { shields }).shields, shields);
 }
+const survivor = JSON.parse(JSON.stringify(combatant));
+const incoming = {
+  p: { id: "clodsire", name: "Clodsire" },
+  maxHp: 173,
+  hp: 173,
+  energy: 0,
+  attackStage: 0,
+  defenseStage: 0,
+  shields: 1
+};
+State.prepareIncomingCombatant(incoming, {
+  fullHp: false,
+  hp: 120,
+  energy: 35,
+  attackStage: 2,
+  defenseStage: -1
+});
+assert.deepEqual(incoming, {
+  p: { id: "clodsire", name: "Clodsire" },
+  maxHp: 173,
+  hp: 120,
+  energy: 35,
+  attackStage: 2,
+  defenseStage: -1,
+  shields: 1
+});
+assert.deepEqual(combatant, survivor, "preparing an incoming Pokemon must not alter the survivor");
+assert.deepEqual(
+  State.eligibleIncomingPokemon([{ id: "a" }, { id: "b" }, { id: "c" }], ["a", "c"]).map(item => item.id),
+  ["b"]
+);
 assert.throws(() => State.normalizeManualBattleState({}, {}), /ACTIVE_POKEMON_REQUIRED/);
 
 console.log("Manual Battle State normalization tests passed.");

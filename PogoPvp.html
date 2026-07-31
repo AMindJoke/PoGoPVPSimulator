@@ -5838,6 +5838,17 @@
     .manual-state-effects span { font-size: 10px; font-weight: 800; }
     .manual-state-side-actions { display: grid; grid-template-columns: 1fr 1.35fr; gap: 5px; }
     .manual-state-side-actions button { min-height: 30px; padding: 4px 6px; font-size: 9px; }
+    .manual-bring-next-modal .modal-card { width: min(560px, 100%); }
+    .manual-bring-next-body { display: grid; gap: 12px; }
+    .manual-bring-next-field { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 850; }
+    .manual-bring-next-field select,
+    .manual-bring-next-field input { width: 100%; min-height: 36px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); font: inherit; }
+    .manual-bring-next-state { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); }
+    .manual-bring-next-state > strong { grid-column: 1 / -1; font-size: 11px; }
+    .manual-bring-next-hp-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .manual-bring-next-hp-mode button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .manual-bring-next-stages { grid-column: 1 / -1; display: grid; gap: 5px; }
+    .manual-bring-next-actions { display: flex; justify-content: flex-end; gap: 8px; }
     .energy-trainer-scale { position: relative; min-width: 0; padding-top: 76px; }
     .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 74px; }
     .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
@@ -11318,6 +11329,47 @@
   </div>
   <input id="manualScenarioImportFile" type="file" accept="application/json,.json" hidden>
 
+  <div class="modal manual-bring-next-modal" id="manualBringNextModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="manualBringNextTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="manualBringNextTitle">Choose next Pokémon</h2>
+        <button id="manualBringNextClose" class="modal-close" type="button" aria-label="Close Pokémon selector">×</button>
+      </div>
+      <div class="manual-bring-next-body">
+        <label class="manual-bring-next-field" for="manualBringNextPokemon">Pokémon
+          <select id="manualBringNextPokemon"></select>
+        </label>
+        <section class="manual-bring-next-state" aria-labelledby="manualBringNextStateTitle">
+          <strong id="manualBringNextStateTitle">Starting state</strong>
+          <div class="manual-bring-next-field">
+            <span>HP</span>
+            <div class="manual-bring-next-hp-mode" role="group" aria-label="Starting HP mode">
+              <button id="manualBringNextHpFull" type="button" aria-pressed="true">Full HP</button>
+              <button id="manualBringNextHpCustom" class="secondary" type="button" aria-pressed="false">Custom HP</button>
+            </div>
+          </div>
+          <label class="manual-bring-next-field" for="manualBringNextHp">Custom HP
+            <input id="manualBringNextHp" type="number" min="0" step="1" disabled>
+          </label>
+          <label class="manual-bring-next-field" for="manualBringNextEnergy">Energy
+            <input id="manualBringNextEnergy" type="number" min="0" max="100" step="1" value="0">
+          </label>
+          <div></div>
+          <div class="manual-bring-next-stages">
+            <span class="manual-state-field-label">Attack</span>
+            <div id="manualBringNextAttack"></div>
+            <span class="manual-state-field-label">Defense</span>
+            <div id="manualBringNextDefense"></div>
+          </div>
+        </section>
+        <div class="manual-bring-next-actions">
+          <button id="manualBringNextCancel" class="secondary" type="button">Cancel</button>
+          <button id="manualBringNextConfirm" type="button">Bring in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.PVPOKE_GAMEMASTER;
@@ -11375,6 +11427,8 @@
     let manualEnergyTrainerPrevious = null;
     let manualEnergyTrainerSuppressPop = true;
     let manualJudgeEventSequence = 0;
+    let manualBringNextContext = null;
+    let manualIncomingStatePending = null;
     const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
       persistent: true,
       onChange: state => {
@@ -11792,6 +11846,18 @@
       $("manualGuideClose").onclick = closeManualGuide;
       $("manualGuideModal").addEventListener("click", event => {
         if (event.target.id === "manualGuideModal") closeManualGuide();
+      });
+      $("manualBringNextClose").onclick = closeManualBringNext;
+      $("manualBringNextCancel").onclick = closeManualBringNext;
+      $("manualBringNextConfirm").onclick = confirmManualBringNext;
+      $("manualBringNextPokemon").onchange = syncManualBringNextPokemon;
+      $("manualBringNextHpFull").onclick = () => setManualBringNextHpMode(true);
+      $("manualBringNextHpCustom").onclick = () => setManualBringNextHpMode(false);
+      $("manualBringNextModal").addEventListener("click", event => {
+        if (event.target.id === "manualBringNextModal") closeManualBringNext();
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && $("manualBringNextModal")?.classList.contains("open")) closeManualBringNext();
       });
       $("manualScenarioOpen").onclick = openManualScenarioLibrary;
       $("manualScenarioSave").onclick = saveManualScenario;
@@ -15752,6 +15818,14 @@
       right = restored.right;
       battleTurns = restored.battleTurns || { A: 0, B: 0 };
       initialTimelineState = restored.initialTimelineState || initialTimelineState;
+      if (Object.prototype.hasOwnProperty.call(restored, "scenarioState")) {
+        scenarioState = restored.scenarioState;
+        scenarioReviewMode = normalizedScenarioReviewMode(restored.scenarioReviewMode ?? scenarioState?.mode);
+        scenarioSegmentInitialState = restored.scenarioSegmentInitialState || null;
+        scenarioTimelineStart = Number(restored.scenarioTimelineStart || 0);
+        scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restored.scenarioHistory?.A || []));
+        scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restored.scenarioHistory?.B || []));
+      }
       timeline = cloneTechnicalValue(restoredTimeline || []);
       log = [];
       selectedTimelineIndex = null;
@@ -17005,7 +17079,7 @@
           <div class="manual-state-effects"><small>Applied Effects</small><span>${escapeHtml(effects)}</span></div>
           <div class="manual-state-side-actions">
             <button type="button" class="secondary" data-manual-mark-fainted="${side}" ${state.fainted ? "disabled" : ""}>Mark fainted</button>
-            <button type="button" data-manual-bring-next="${side}" ${state.fainted ? "" : "disabled"}>Bring next Pokémon</button>
+            <button type="button" data-manual-bring-next="${side}">${state.fainted ? "Bring next Pokémon" : "Replace active Pokémon"}</button>
           </div>
         </article>`;
       };
@@ -17033,6 +17107,122 @@
       editor.querySelectorAll("[data-manual-mark-fainted]").forEach(button => {
         button.onclick = () => commitManualBattleStateEdit(button.dataset.manualMarkFainted, "hp", 0);
       });
+      editor.querySelectorAll("[data-manual-bring-next]").forEach(button => {
+        button.onclick = () => openManualBringNext(button.dataset.manualBringNext, button);
+      });
+    }
+
+    function manualIncomingSegmented(field, selected) {
+      return `<div class="manual-state-segmented" role="group" aria-label="Incoming Pokémon ${field}">${[-4, -3, -2, -1, 0, 1, 2, 3, 4].map(value =>
+        `<button type="button" data-manual-incoming-field="${field}" data-manual-incoming-value="${value}" aria-label="Incoming Pokémon ${field} ${manualBattleStateStageLabel(value)}" aria-pressed="${Number(selected) === value}">${manualBattleStateStageLabel(value)}</button>`
+      ).join("")}</div>`;
+    }
+
+    function manualBringNextExcludedPokemon(side) {
+      return [
+        ...(scenarioHistory[side] || []).map(state => state?.pokemonId),
+        left?.p?.id,
+        right?.p?.id
+      ].filter(Boolean);
+    }
+
+    function renderManualBringNextStages() {
+      if (!manualBringNextContext) return;
+      $("manualBringNextAttack").innerHTML = manualIncomingSegmented("attackStage", manualBringNextContext.attackStage);
+      $("manualBringNextDefense").innerHTML = manualIncomingSegmented("defenseStage", manualBringNextContext.defenseStage);
+      $("manualBringNextModal").querySelectorAll("[data-manual-incoming-field]").forEach(button => {
+        button.onclick = () => {
+          manualBringNextContext[button.dataset.manualIncomingField] = Number(button.dataset.manualIncomingValue);
+          renderManualBringNextStages();
+        };
+      });
+    }
+
+    function syncManualBringNextPokemon() {
+      const pokemon = findPokemon($("manualBringNextPokemon")?.value);
+      const defaults = pokemon?.defaultIVs?.cp1500 || null;
+      const stats = pokemon
+        ? statsForIvSpread(pokemon, defaults ? defaults[1] : 0, defaults ? defaults[2] : 15, defaults ? defaults[3] : 15)
+        : null;
+      const maxHp = Math.max(1, Number(stats?.hp || 1));
+      if (manualBringNextContext) manualBringNextContext.maxHp = maxHp;
+      $("manualBringNextHp").max = String(maxHp);
+      $("manualBringNextHp").value = String(maxHp);
+    }
+
+    function setManualBringNextHpMode(fullHp) {
+      if (!manualBringNextContext) return;
+      manualBringNextContext.fullHp = !!fullHp;
+      $("manualBringNextHpFull").setAttribute("aria-pressed", String(!!fullHp));
+      $("manualBringNextHpCustom").setAttribute("aria-pressed", String(!fullHp));
+      $("manualBringNextHpFull").classList.toggle("secondary", !fullHp);
+      $("manualBringNextHpCustom").classList.toggle("secondary", !!fullHp);
+      $("manualBringNextHp").disabled = !!fullHp;
+      if (fullHp) $("manualBringNextHp").value = String(manualBringNextContext.maxHp || 1);
+    }
+
+    function openManualBringNext(side, origin) {
+      if (!manualModeState?.enabled || !["A", "B"].includes(side)) return false;
+      const combatant = manualBattleStateCombatant(side);
+      if (!combatant) return false;
+      const returnFocus = origin || document.activeElement;
+      if (combatant.hp > 0) commitManualBattleStateEdit(side, "hp", 0);
+      lockScenarioState({ focusIncoming: false });
+      if (scenarioState?.status !== "awaiting-incoming" || scenarioState.awaitingSide !== side) return false;
+      const candidates = window.PvPeakManualBattleState.eligibleIncomingPokemon(
+        allPokemon,
+        manualBringNextExcludedPokemon(side)
+      );
+      manualBringNextContext = {
+        side,
+        returnFocus,
+        fullHp: true,
+        maxHp: 1,
+        attackStage: 0,
+        defenseStage: 0
+      };
+      $("manualBringNextTitle").textContent = `Choose next Pokémon · Side ${side}`;
+      $("manualBringNextPokemon").innerHTML = candidates.map(pokemon =>
+        `<option value="${escapeHtml(pokemon.id)}">${escapeHtml(displayName(pokemon))}</option>`
+      ).join("");
+      $("manualBringNextEnergy").value = "0";
+      renderManualBringNextStages();
+      syncManualBringNextPokemon();
+      setManualBringNextHpMode(true);
+      const modal = $("manualBringNextModal");
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      $("manualBringNextConfirm").disabled = !candidates.length;
+      requestAnimationFrame(() => $("manualBringNextPokemon")?.focus({ preventScroll: true }));
+      return true;
+    }
+
+    function closeManualBringNext() {
+      const context = manualBringNextContext;
+      const modal = $("manualBringNextModal");
+      modal?.classList.remove("open");
+      modal?.setAttribute("aria-hidden", "true");
+      manualBringNextContext = null;
+      if (context?.returnFocus?.isConnected) context.returnFocus.focus({ preventScroll: true });
+    }
+
+    function confirmManualBringNext() {
+      const context = manualBringNextContext;
+      const pokemonId = $("manualBringNextPokemon")?.value;
+      if (!context || !findPokemon(pokemonId)) return false;
+      manualIncomingStatePending = {
+        side: context.side,
+        beforeState: captureManualRuntimeSnapshot(),
+        fullHp: context.fullHp,
+        hp: $("manualBringNextHp")?.value,
+        energy: $("manualBringNextEnergy")?.value,
+        attackStage: context.attackStage,
+        defenseStage: context.defenseStage
+      };
+      const prefix = scenarioSidePrefix(context.side);
+      closeManualBringNext();
+      selectPokemon(prefix, pokemonId, true);
+      return true;
     }
 
     function manualStateEventLabel(side, field, value, combatant) {
@@ -18045,6 +18235,11 @@
         right,
         battleTurns,
         initialTimelineState,
+        scenarioState,
+        scenarioReviewMode,
+        scenarioSegmentInitialState,
+        scenarioTimelineStart,
+        scenarioHistory,
         p1Shields: $("p1Shields")?.value,
         p2Shields: $("p2Shields")?.value,
         p1StartEnergy: $("p1StartEnergy")?.value,
@@ -22128,7 +22323,7 @@
       return side === "A" ? "p1" : "p2";
     }
 
-    function lockScenarioState() {
+    function lockScenarioState(options = {}) {
       const api = scenarioApi();
       const outcome = scenarioWinnerAndLoser();
       if (!api || !outcome || !battleEnded()) return;
@@ -22169,7 +22364,7 @@
       document.body.classList.add("scenario-review-active");
       renderScenarioReview();
       renderScenarioStacks();
-      requestAnimationFrame(() => {
+      if (options.focusIncoming !== false) requestAnimationFrame(() => {
         smoothScrollToElement($("scenarioReview"), "center");
         $(`${prefix}Search`)?.focus({ preventScroll: true });
         openPokemonSuggestions(prefix, false);
@@ -22201,11 +22396,19 @@
         );
         incoming.shields = remainingShields;
         survivor.shields = survivorShields;
-        incoming.energy = 0;
-        incoming.attackStage = 0;
-        incoming.defenseStage = 0;
+        const pendingIncoming = manualIncomingStatePending?.side === incomingSide
+          ? manualIncomingStatePending
+          : null;
+        window.PvPeakManualBattleState.prepareIncomingCombatant(incoming, {
+          fullHp: pendingIncoming?.fullHp ?? true,
+          hp: pendingIncoming?.hp,
+          energy: pendingIncoming?.energy ?? 0,
+          attackStage: pendingIncoming?.attackStage ?? 0,
+          defenseStage: pendingIncoming?.defenseStage ?? 0,
+          shields: remainingShields
+        });
         $(`${prefix}Shields`).value = String(remainingShields);
-        $(`${prefix}StartEnergy`).value = "0";
+        $(`${prefix}StartEnergy`).value = String(incoming.energy);
         $(`${survivorPrefix}Shields`).value = String(Math.max(0, survivorShields));
         $(`${survivorPrefix}StartEnergy`).value = String(Math.max(0, survivor.energy));
         clearStartingFastAdvantage(prefix);
@@ -22231,6 +22434,31 @@
           incomingPokemonName: incoming.p.name
         });
         api.continueWithIncoming(scenarioState);
+        if (pendingIncoming) {
+          const entryLabel = `${incoming.p.name} entered with ${incoming.hp} HP, ${incoming.energy} energy, Attack ${manualBattleStateStageLabel(incoming.attackStage)}, Defense ${manualBattleStateStageLabel(incoming.defenseStage)}`;
+          const event = recordManualJudgeEvent(incomingSide, "manual-entry", entryLabel, pendingIncoming.beforeState, {
+            eventType: "POKEMON_ENTRY",
+            pokemonId: incoming.p.id,
+            pokemonName: incoming.p.name,
+            hp: incoming.hp,
+            maxHp: incoming.maxHp,
+            energy: incoming.energy,
+            attackStage: incoming.attackStage,
+            defenseStage: incoming.defenseStage,
+            survivorSide,
+            survivor: scenarioApi()?.createPokemonState?.(survivor)
+          });
+          syncManualBranchAfterAction({
+            id: event.timelineEventId,
+            actionType: "BRING_NEXT_POKEMON",
+            side: incomingSide,
+            pokemonId: incoming.p.id
+          });
+          rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+          clearManualEnergyTrainerNextCycle();
+          manualEnergyTrainerPrevious = null;
+          manualEnergyTrainerSuppressPop = true;
+        }
         add(`Scenario continues: ${survivor.p.name} vs ${incoming.p.name}`, "info");
 
         const card = document.querySelector(`.trainer-card.${incomingSide === "A" ? "a" : "b"}`);
@@ -22245,6 +22473,7 @@
         animateScenarioIncomingCard(incomingSide);
       } finally {
         scenarioApplyingTransition = false;
+        manualIncomingStatePending = null;
       }
       return true;
     }

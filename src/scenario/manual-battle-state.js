@@ -49,12 +49,30 @@
     return normalized;
   }
 
+  function prepareIncomingCombatant(combatant, patch = {}) {
+    if (!combatant?.p?.id) throw new Error("ACTIVE_POKEMON_REQUIRED");
+    return applyManualBattleState(combatant, {
+      hp: patch.fullHp === false ? patch.hp : combatant.maxHp,
+      energy: patch.energy ?? 0,
+      attackStage: patch.attackStage ?? 0,
+      defenseStage: patch.defenseStage ?? 0,
+      shields: patch.shields ?? combatant.shields
+    });
+  }
+
+  function eligibleIncomingPokemon(pokemon, excludedIds = []) {
+    const excluded = new Set((excludedIds || []).filter(Boolean));
+    return (pokemon || []).filter(candidate => candidate?.id && !excluded.has(candidate.id));
+  }
+
   return Object.freeze({
     REVIEW_MODE,
     integer,
     clampInteger,
     normalizeReviewMode,
     normalizeManualBattleState,
-    applyManualBattleState
+    applyManualBattleState,
+    prepareIncomingCombatant,
+    eligibleIncomingPokemon
   });
 });
