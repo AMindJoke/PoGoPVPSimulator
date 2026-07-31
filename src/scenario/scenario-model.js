@@ -15,6 +15,7 @@
     return {
       schemaVersion: SCHEMA_VERSION,
       id: options.id || `scenario-${Date.now()}`,
+      mode: options.mode === "automatic" ? "automatic" : "manual",
       status: "active",
       segments: [],
       activeSide: null,

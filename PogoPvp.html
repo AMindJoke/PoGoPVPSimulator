@@ -22,6 +22,7 @@
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
+  <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
   <script src="src/battle/manual-mode.js"></script>
@@ -4157,6 +4158,20 @@
       align-items: center;
       gap: 7px;
     }
+    .scenario-review-modes {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    .scenario-review-modes button.active {
+      border-color: #156f8f;
+      background: #156f8f;
+      color: #fff;
+    }
     .scenario-review-actions button {
       min-height: 32px;
       padding: 6px 12px;
@@ -5782,6 +5797,26 @@
     .energy-trainer-next-cycle-dot { width: 10px; height: 10px; flex: 0 0 10px; border: 2px solid color-mix(in srgb, var(--move-color) 78%, #17212f); border-radius: 50%; background: color-mix(in srgb, var(--move-color) 66%, var(--panel)); box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 34%, transparent); }
     .energy-trainer-next-cycle-ready { display: inline-flex; width: fit-content; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid color-mix(in srgb, var(--move-color) 60%, var(--line)); border-radius: 999px; color: var(--text); font-size: 10px; font-weight: 950; }
     .energy-trainer-next-cycle-ready::before { content: "✓"; color: var(--move-color); font-weight: 1000; }
+    .manual-battle-state {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel);
+    }
+    .manual-battle-state > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 11px;
+      cursor: pointer;
+      list-style: none;
+    }
+    .manual-battle-state > summary::-webkit-details-marker { display: none; }
+    .manual-battle-state > summary strong { font-size: 12px; text-transform: uppercase; }
+    .manual-battle-state > summary small { color: var(--muted); font-size: 9px; }
+    .manual-battle-state-editor { padding: 0 10px 10px; }
+    .manual-battle-state-editor > p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
     .energy-trainer-scale { position: relative; min-width: 0; padding-top: 76px; }
     .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 74px; }
     .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
@@ -10936,6 +10971,12 @@
             </div>
           </div>
           <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualEnergyTrainerTitle">
+            <details id="manualBattleStatePanel" class="manual-battle-state" open>
+              <summary><strong>Battle State</strong><small>Judge reconstruction controls</small></summary>
+              <div id="manualBattleStateEditor" class="manual-battle-state-editor">
+                <p>Select both Pokémon to begin a manual review.</p>
+              </div>
+            </details>
             <div class="manual-state-inspector-head"><strong id="manualEnergyTrainerTitle">Energy Trainer</strong><small>Fast Move counting</small></div>
             <div id="manualEnergyTrainer" class="energy-trainer"></div>
           </aside>
@@ -10962,6 +11003,10 @@
           <span id="scenarioReviewSummary"></span>
         </div>
         <div class="scenario-review-actions">
+          <div class="scenario-review-modes" role="group" aria-label="Scenario Review mode">
+            <button id="scenarioManualMode" type="button" aria-pressed="true">Manual Review</button>
+            <button id="scenarioAutoMode" class="secondary" type="button" aria-pressed="false">Auto Simulation</button>
+          </div>
           <button id="scenarioLockState" class="scenario-lock" type="button">Lock State</button>
           <button id="scenarioEnd" class="secondary" type="button" hidden>End Scenario</button>
         </div>
@@ -11397,6 +11442,8 @@
       suggestion: null
     };
     let scenarioState = null;
+    let scenarioReviewMode = window.PvPeakManualBattleState?.REVIEW_MODE?.MANUAL || "manual";
+    let scenarioManualEntryPending = false;
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -11662,6 +11709,8 @@
         button.onclick = () => stepStartEnergy(button.dataset.prefix, button.dataset.energyStep === "up" ? 1 : -1);
       });
       $("battleCta").onclick = runBattleToEnd;
+      $("scenarioManualMode").onclick = () => setScenarioReviewMode("manual");
+      $("scenarioAutoMode").onclick = () => setScenarioReviewMode("automatic");
       $("scenarioLockState").onclick = lockScenarioState;
       $("scenarioEnd").onclick = endScenarioReview;
       $("technicalLagMode").onclick = () => setTechnicalReviewMode("one-turn-lag");
@@ -12503,6 +12552,7 @@
       if (next === "simulator" || next === "scenario-review") {
         if (previous !== next) refreshPokemonLists();
         render();
+        if (next === "scenario-review") ensureScenarioReviewWorkspaceMode();
       }
       updateMetaBackToTop();
     }
@@ -14093,6 +14143,9 @@
         return;
       }
       resetBattleStateFromSetup();
+      if (document.body.dataset.view === "scenario-review" && scenarioReviewMode === "manual") {
+        ensureScenarioReviewWorkspaceMode();
+      }
     }
 
     function handleFastMoveChange(prefix) {
@@ -21840,6 +21893,60 @@
       return window.PvPeakScenario || null;
     }
 
+    function normalizedScenarioReviewMode(value = scenarioReviewMode) {
+      return window.PvPeakManualBattleState?.normalizeReviewMode?.(value, "manual")
+        || (value === "automatic" ? "automatic" : "manual");
+    }
+
+    function setScenarioReviewMode(mode) {
+      scenarioReviewMode = normalizedScenarioReviewMode(mode);
+      if (scenarioState) scenarioState.mode = scenarioReviewMode;
+      if (scenarioReviewMode === "automatic") {
+        scenarioManualEntryPending = false;
+        if (manualModeState?.enabled) exitLiveManualMode();
+        render();
+        return true;
+      }
+      return ensureScenarioReviewWorkspaceMode();
+    }
+
+    function ensureScenarioReviewWorkspaceMode() {
+      if (document.body.dataset.view !== "scenario-review") return false;
+      scenarioReviewMode = normalizedScenarioReviewMode(scenarioState?.mode ?? scenarioReviewMode);
+      if (scenarioReviewMode !== "manual") {
+        scenarioManualEntryPending = false;
+        renderScenarioReview();
+        return true;
+      }
+      if (!setupReadyForBattle()) {
+        scenarioManualEntryPending = true;
+        renderScenarioReview();
+        return false;
+      }
+      scenarioManualEntryPending = false;
+      if (!scenarioState) {
+        scenarioState = scenarioApi()?.createScenario?.({
+          mode: "manual",
+          originalState: lastBattleInitialSimulatorState || snapshotFullSimulatorState()
+        }) || null;
+        scenarioSegmentInitialState = battleSnapshot();
+        scenarioTimelineStart = timeline.length;
+      } else {
+        scenarioState.mode = "manual";
+      }
+      document.body.classList.add("battle-results-visible", "scenario-review-active");
+      if (manualModeState?.enabled) {
+        manualModeMinimized = false;
+        render();
+        return true;
+      }
+      if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
+      if ($("manualControlMode") && window.PvPeakManualMode?.CONTROL_MODE?.BOTH_MANUAL) {
+        $("manualControlMode").value = window.PvPeakManualMode.CONTROL_MODE.BOTH_MANUAL;
+      }
+      return enterLiveManualMode();
+    }
+
     function scenarioWinnerAndLoser() {
       if (!left || !right) return null;
       if (left.hp > 0 && right.hp <= 0) return { survivor: left, fainted: right, survivorSide: "A", faintedSide: "B" };
@@ -22406,12 +22513,31 @@
       const endButton = $("scenarioEnd");
       const outcome = scenarioWinnerAndLoser();
       const canLock = !!outcome && battleEnded();
-      const active = canLock || !!scenarioState;
+      const scenarioWorkspace = document.body.dataset.view === "scenario-review";
+      scenarioReviewMode = normalizedScenarioReviewMode(scenarioState?.mode ?? scenarioReviewMode);
+      const active = scenarioWorkspace || canLock || !!scenarioState;
       box.hidden = !active;
       box.classList.toggle("active", active);
       if (!active) return;
+      const manualModeButton = $("scenarioManualMode");
+      const automaticModeButton = $("scenarioAutoMode");
+      const manualSelected = scenarioReviewMode === "manual";
+      manualModeButton?.classList.toggle("active", manualSelected);
+      automaticModeButton?.classList.toggle("active", !manualSelected);
+      manualModeButton?.setAttribute("aria-pressed", String(manualSelected));
+      automaticModeButton?.setAttribute("aria-pressed", String(!manualSelected));
       lockButton.disabled = !!technicalReviewState.issue;
       lockButton.title = technicalReviewState.issue ? "Clear Technical Review before locking this state" : "";
+
+      if (scenarioManualEntryPending || (!scenarioState && !outcome)) {
+        $("scenarioReviewTitle").textContent = manualSelected ? "Manual Review ready" : "Auto Simulation ready";
+        $("scenarioReviewSummary").textContent = manualSelected
+          ? "Choose both Pokémon to open the manual Scenario Builder. No simulation starts automatically."
+          : "Choose both Pokémon, then press Battle when you want to run the automatic simulation.";
+        lockButton.hidden = true;
+        endButton.hidden = !scenarioState;
+        return;
+      }
 
       if (scenarioState?.status === "awaiting-incoming") {
         const sideName = scenarioState.awaitingSide === "A" ? "Pokemon A" : "Pokemon B";
@@ -22468,6 +22594,8 @@
       technicalSegmentStartState = null;
       if (scenarioState) scenarioApi()?.endScenario(scenarioState);
       scenarioState = null;
+      scenarioReviewMode = "manual";
+      scenarioManualEntryPending = document.body.dataset.view === "scenario-review" && !setupReadyForBattle();
       scenarioSegmentInitialState = null;
       scenarioTimelineStart = 0;
       scenarioHistory.A.length = 0;

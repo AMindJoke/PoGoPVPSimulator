@@ -45,6 +45,8 @@ for (const id of [
   "manualOverlayRedo",
   "manualOverlayExit",
   "manualStateInspector",
+  "manualBattleStatePanel",
+  "manualBattleStateEditor",
   "manualEnergyTrainerTitle",
   "manualEnergyTrainer",
   "manualTimelineEventMenu",
@@ -126,6 +128,11 @@ assert.match(html, /--timeline-track-height: 58px/);
 assert.match(html, /grid-template-areas:[\s\S]{0,160}"header header"[\s\S]{0,160}"decision sidebar"/);
 assert.match(html, /Continue Automatically/);
 assert.match(html, /src\/battle\/energy-trainer\.js/);
+assert.match(html, /src\/scenario\/manual-battle-state\.js/);
+assert.match(html, /scenarioManualMode/);
+assert.match(html, /scenarioAutoMode/);
+assert.match(html, /function ensureScenarioReviewWorkspaceMode/);
+assert.match(html, /No simulation starts automatically/);
 assert.match(html, /manualOverlayScenario"\)\.onchange/);
 assert.match(html, /manualOverlayExit"\)\.onclick = exitLiveManualMode/);
 assert.match(html, /manualBackToSimulation"\)\.onclick = backToSimulationFromManual/);

@@ -20,6 +20,8 @@ const survivor = {
 };
 
 const scenario = Scenario.createScenario({ id: "test-scenario", originalState: { setup: "original" } });
+assert.equal(scenario.mode, "manual");
+assert.equal(Scenario.createScenario({ mode: "automatic" }).mode, "automatic");
 const survivorState = Scenario.createPokemonState(survivor);
 const segment = Scenario.createSegment({
   index: 0,
