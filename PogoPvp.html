@@ -3582,16 +3582,6 @@
     .actions button.ready {
       box-shadow: 0 0 0 3px rgba(214, 173, 57, .30);
     }
-    .actions button:disabled:not(.build-available):not(.charge-energy-ready) {
-      cursor: not-allowed;
-      opacity: .38;
-      filter: saturate(.34) brightness(.94);
-      box-shadow: none;
-    }
-    .actions button.charge-energy-ready:not(:disabled) {
-      box-shadow: 0 0 0 2px rgba(214, 173, 57, .42), 0 5px 14px rgba(214, 173, 57, .20);
-      filter: saturate(1.12) brightness(1.04);
-    }
     .actions button.build-available {
       opacity: .78;
       border-style: dashed;
@@ -6357,11 +6347,9 @@
         min-height: 46px;
         padding: 7px 8px;
       }
-      /* Keep every equipped Charged Move in view.  A move may have enough
-         energy while its Pokemon is still waiting for the opposing Fast Move
-         to finish; hiding the disabled card made a ready charge look as if it
-         had disappeared.  The normal disabled state still prevents an
-         out-of-turn action. */
+      body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
+        display: none;
+      }
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
         font-size: 13px;
       }
@@ -17920,9 +17908,6 @@
             const button = $(id);
             const move = index === 0 ? combatant.fast : combatant.charged?.[index - 1];
             const legal = index === 0 ? legalFast : !!move && legalChargedIds.has(move.id);
-            const chargeEnergyReady = index > 0
-              && !!move
-              && Number(combatant.energy || 0) >= Number(move.energyCost || 0);
             const canBuild = index > 0
               && !!move
               && combatant.energy < move.energyCost
@@ -17931,7 +17916,6 @@
               && manualModeState.status === window.PvPeakManualMode.STATUS.AWAITING_ACTION;
             button.disabled = !legal && !canBuild;
             button.classList.toggle("build-available", canBuild);
-            button.classList.toggle("charge-energy-ready", chargeEnergyReady);
             if (canBuild) {
               const fastMoves = Math.ceil((move.energyCost - combatant.energy) / Math.max(1, Number(combatant.fast?.energyGain || 1)));
               button.title = `${button.title || move.name}\nBuild available: ${fastMoves} ${combatant.fast.name}${fastMoves === 1 ? "" : "s"}, revalidated after each.`;
