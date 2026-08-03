@@ -4281,6 +4281,22 @@
       outline-offset: 2px;
       cursor: crosshair;
     }
+    .timeline-block.technical-eligible::after {
+      content: "Technical target";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 3px);
+      z-index: 12;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: #7042ad;
+      color: #fff;
+      font-size: 7px;
+      font-weight: 900;
+      line-height: 1;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
     .timeline-block.technical-selected {
       outline-color: #7b4bc4;
       box-shadow: 0 0 0 4px rgba(123, 75, 196, .16);
@@ -4316,6 +4332,23 @@
     }
     .timeline-block.judge-event.manual-faint { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 15%, var(--panel)); color: var(--danger); }
     .timeline-block.judge-event.manual-entry { border-style: solid; border-color: var(--good); background: color-mix(in srgb, var(--good) 16%, var(--panel)); color: var(--good); }
+    .manual-technical-issues {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    .manual-technical-issues > header { display: grid; gap: 2px; }
+    .manual-technical-issues > header strong { font-size: 11px; }
+    .manual-technical-issues > header small { color: var(--muted); font-size: 9px; font-weight: 750; line-height: 1.3; }
+    .manual-technical-issue-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .manual-technical-issue-actions button { flex: 1 1 86px; min-height: 31px; padding: 5px 7px; font-size: 10px; }
+    .manual-technical-issue-actions button[aria-pressed="true"] { border-color: #7042ad; background: #7042ad; color: #fff; }
+    .manual-technical-selection { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 7px; border-radius: 6px; background: color-mix(in srgb, #7042ad 10%, var(--panel)); }
+    .manual-technical-selection span { color: var(--ink); font-size: 10px; font-weight: 800; line-height: 1.3; }
+    .manual-technical-selection button { flex: 0 0 auto; min-height: 28px; padding: 4px 7px; font-size: 9px; }
+    body[data-view="scenario-review"].manual-mode-active #technicalReview { display: none !important; }
     body.technical-review-branch .timeline {
       box-shadow: 0 0 0 2px rgba(123,75,196,.3), 0 0 18px rgba(123,75,196,.12), var(--shadow);
     }
@@ -14381,6 +14414,11 @@
 
     function resetBattleStateFromSetup() {
       clearManualEnergyTrainerNextCycle();
+      technicalIssueInjection = null;
+      if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
+        clearManualTechnicalDraft({ renderNow: false });
+        technicalReviewState.pendingDre = null;
+      }
       manualEnergyTrainerPrevious = null;
       manualEnergyTrainerSuppressPop = true;
       exitPreviewMode();
@@ -15929,6 +15967,7 @@
 
     function restoreManualRuntimePayload(payload, restoredTimeline) {
       if (!payload) throw new Error("SNAPSHOT_NOT_FOUND");
+      technicalIssueInjection = null;
       clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerSuppressPop = true;
       const restored = cloneTechnicalValue(payload);
@@ -15955,6 +15994,7 @@
       if ($("p2StartEnergy")) $("p2StartEnergy").value = restored.p2StartEnergy ?? right?.energy ?? 0;
       manualBattleRuntime = null;
       add(`Manual branch restored at turn ${Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))}.`, "info");
+      return true;
     }
 
     function manualRootSnapshot() {
@@ -16091,6 +16131,11 @@
 
     function exitLiveManualMode() {
       clearManualEnergyTrainerNextCycle();
+      technicalIssueInjection = null;
+      if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
+        clearManualTechnicalDraft({ renderNow: false });
+        technicalReviewState.pendingDre = null;
+      }
       if (manualOriginalRuntimeState) restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualBattleRuntime = null;
@@ -17244,7 +17289,7 @@
           </div>
         </article>`;
       };
-      editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}`;
+      editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}${manualTechnicalIssuesMarkup()}`;
       editor.querySelectorAll("input[data-manual-state-field]").forEach(input => {
         input.onkeydown = event => {
           if (event.key === "Enter") {
@@ -17278,6 +17323,52 @@
       editor.querySelectorAll("[data-manual-bring-next]").forEach(button => {
         button.onclick = () => openManualBringNext(button.dataset.manualBringNext, button);
       });
+      editor.querySelectorAll("[data-manual-technical-issue]").forEach(button => {
+        button.onclick = () => setTechnicalReviewMode(button.dataset.manualTechnicalIssue, button);
+      });
+      editor.querySelectorAll("[data-manual-technical-cancel]").forEach(button => {
+        button.onclick = () => cancelTechnicalIssueSelection(button);
+      });
+      editor.querySelectorAll("[data-manual-technical-confirm]").forEach(button => {
+        button.onclick = () => confirmManualTechnicalIssue(button.dataset.manualTechnicalConfirm || null);
+      });
+    }
+
+    function manualTechnicalIssuesMarkup() {
+      const api = window.PvPeakTechnicalReview;
+      const available = document.body.dataset.view === "scenario-review" && !!manualModeState?.enabled && !!api;
+      if (!available) return "";
+      const mode = technicalReviewState?.mode || null;
+      const draft = technicalReviewState?.draft || null;
+      const instructions = mode === api.ISSUE_TYPES.ONE_TURN_LAG
+        ? "Select the Fast Move affected by the one-turn lag."
+        : mode === api.ISSUE_TYPES.DRE
+          ? "Select the Fast Move that created the DRE window."
+          : "Reconstruct a reported timing issue from an eligible Fast Move.";
+      const draftMarkup = draft
+        ? manualTechnicalDraftMarkup(draft)
+        : "";
+      return `<section class="manual-technical-issues" aria-label="Technical Issues">
+        <header><strong>Technical Issues</strong><small>${escapeHtml(instructions)}</small></header>
+        <div class="manual-technical-issue-actions" role="group" aria-label="Technical issue selection">
+          <button type="button" data-manual-technical-issue="one-turn-lag" aria-pressed="${mode === api.ISSUE_TYPES.ONE_TURN_LAG}">1-Turn Lag</button>
+          <button type="button" data-manual-technical-issue="dre" aria-pressed="${mode === api.ISSUE_TYPES.DRE}">DRE</button>
+        </div>
+        ${mode ? `<div class="manual-technical-selection" role="status"><span>${escapeHtml(instructions)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
+        ${draftMarkup}
+      </section>`;
+    }
+
+    function manualTechnicalDraftMarkup(issue) {
+      const combatant = issue.trainer === "A" ? left : right;
+      if (!issue || !combatant) return "";
+      if (issue.type === "one-turn-lag") {
+        return `<div class="manual-technical-selection" role="status"><span>One-Turn Lag — ${escapeHtml(combatant.p.name)} loses one turn before ${escapeHtml(issue.moveName)}.</span><span><button type="button" data-manual-technical-confirm="lag">Confirm</button><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></span></div>`;
+      }
+      const allowed = new Set(issue.chargedMoveIds || []);
+      const moves = validChargedMoves(combatant).filter(move => allowed.has(move.id));
+      return `<div class="manual-technical-selection" role="status"><span>DRE at T${issue.turn}: ${escapeHtml(issue.energyFastName)} unlocks a Charged Move before pending ${escapeHtml(issue.lethalFastMoveName)} damage.</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>
+        <div class="manual-technical-issue-actions" role="group" aria-label="DRE Charged Move choice">${moves.map(move => `<button type="button" data-manual-technical-confirm="${escapeHtml(move.id)}" ${moves.length === 1 ? "data-default-dre-choice" : ""}>Use ${escapeHtml(move.name)} · ${move.energyCost}</button>`).join("")}</div>`;
     }
 
     function manualIncomingSegmented(field, selected) {
@@ -22846,8 +22937,57 @@
       window.PvPeakTechnicalReview?.clearReview?.(technicalReviewState);
     }
 
-    function setTechnicalReviewMode(mode) {
-      if (document.body.dataset.view !== "scenario-review" || !timeline.length) return;
+    function manualTechnicalSegmentStartIndex() {
+      return Math.max(0, Number(scenarioTimelineStart || 0));
+    }
+
+    function manualTechnicalEventEligible(eventIndex, event = timeline?.[eventIndex]) {
+      if (!manualModeState?.enabled || !manualBranchRegistry || !event || event.kind !== "fast") return false;
+      if (eventIndex < manualTechnicalSegmentStartIndex()) return false;
+      if (event.issueType || event.judgeEventType || event.drePending || event.technicalLagPending) return false;
+      const eventId = event.timelineEventId || event.id;
+      return !!eventId && !!manualSnapshotStore?.get(eventId, window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
+    }
+
+    function manualTechnicalRestorePlan(issue) {
+      const event = timeline?.[issue?.eventIndex];
+      const eventId = event?.timelineEventId || event?.id;
+      if (!manualTechnicalEventEligible(issue?.eventIndex, event) || !eventId) return null;
+      try {
+        return window.PvPeakManualSnapshots.createRestorePlan({
+          timeline,
+          store: manualSnapshotStore,
+          eventId,
+          boundary: window.PvPeakManualSnapshots.BOUNDARY.BEFORE
+        });
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function clearManualTechnicalDraft(options = {}) {
+      technicalReviewState.mode = null;
+      technicalReviewState.selectedEventIndex = null;
+      technicalReviewState.draft = null;
+      technicalReviewState.selectionBranchId = null;
+      technicalReviewState.selectionOrigin = null;
+      technicalIssueInjection = null;
+      if (options.renderNow !== false) render();
+    }
+
+    function setTechnicalReviewMode(mode, origin = null) {
+      if (document.body.dataset.view !== "scenario-review" || (!timeline.length && !manualModeState?.enabled)) return false;
+      if (manualModeState?.enabled) {
+        if (!Object.values(window.PvPeakTechnicalReview?.ISSUE_TYPES || {}).includes(mode)) return false;
+        if (technicalReviewState.mode === mode) return cancelTechnicalIssueSelection();
+        cancelTechnicalIssueSelection({ focus: false, renderNow: false });
+        technicalReviewState.mode = mode;
+        technicalReviewState.selectedEventIndex = null;
+        technicalReviewState.selectionBranchId = manualBranchRegistry?.activeBranchId || null;
+        technicalReviewState.selectionOrigin = origin || null;
+        render();
+        return true;
+      }
       if (technicalReviewState.issue) clearTechnicalReview({ restore: true, renderNow: false });
       technicalReviewState.mode = technicalReviewState.mode === mode ? null : mode;
       technicalReviewState.selectedEventIndex = null;
@@ -22855,10 +22995,36 @@
       renderTimeline();
     }
 
+    function cancelTechnicalIssueSelection(options = {}) {
+      const origin = technicalReviewState?.selectionOrigin || null;
+      const wasSelecting = !!technicalReviewState?.mode;
+      if (!technicalReviewState) return false;
+      technicalReviewState.mode = null;
+      technicalReviewState.selectedEventIndex = null;
+      technicalReviewState.selectionBranchId = null;
+      technicalReviewState.selectionOrigin = null;
+      technicalReviewState.draft = null;
+      technicalIssueInjection = null;
+      if (options.renderNow !== false) render();
+      if (options.focus !== false && origin?.focus) requestAnimationFrame(() => origin.focus());
+      return wasSelecting;
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape" || document.body.dataset.view !== "scenario-review") return;
+      if (!technicalReviewState?.mode && !technicalReviewState?.draft && !technicalReviewState?.pendingDre) return;
+      event.preventDefault();
+      technicalReviewState.pendingDre = null;
+      cancelTechnicalIssueSelection();
+    });
+
     function technicalIssueForEvent(eventIndex) {
       const api = window.PvPeakTechnicalReview;
       if (!api || !technicalReviewState.mode) return null;
-      const segmentStart = technicalSegmentStartIndex();
+      const manual = !!manualModeState?.enabled;
+      const event = timeline?.[eventIndex];
+      if (manual && !manualTechnicalEventEligible(eventIndex, event)) return null;
+      const segmentStart = manual ? manualTechnicalSegmentStartIndex() : technicalSegmentStartIndex();
       return technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG
         ? api.createOneTurnLagIssue(timeline, eventIndex, segmentStart)
         : api.createDreIssue(timeline, eventIndex, segmentStart, { A: left, B: right });
@@ -22867,9 +23033,226 @@
     function handleTechnicalTimelineSelection(eventIndex) {
       if (document.body.dataset.view !== "scenario-review" || !technicalReviewState.mode) return false;
       const issue = technicalIssueForEvent(eventIndex);
+      if (manualModeState?.enabled) {
+        if (!issue) return true;
+        technicalReviewState.selectedEventIndex = eventIndex;
+        beginManualTechnicalReconstruction(issue);
+        return true;
+      }
       if (!issue || !technicalSegmentStartState) return true;
       simulateTechnicalIssue(issue);
       return true;
+    }
+
+    function beginManualTechnicalReconstruction(issue) {
+      if (!issue || !manualTechnicalRestorePlan(issue)) return false;
+      technicalReviewState.mode = null;
+      technicalReviewState.draft = {
+        ...cloneTechnicalValue(issue),
+        selectedEventId: timeline[issue.eventIndex]?.timelineEventId || timeline[issue.eventIndex]?.id || null
+      };
+      technicalReviewState.selectedEventIndex = issue.eventIndex;
+      render();
+      return true;
+    }
+
+    function recordManualTechnicalEvent(issue, details = {}) {
+      const beforeState = captureManualRuntimeSnapshot();
+      const attacker = issue.trainer === "A" ? left : right;
+      const event = {
+        id: `technical-${Date.now()}-${++manualJudgeEventSequence}`,
+        timelineEventId: `technical-${Date.now()}-${manualJudgeEventSequence}`,
+        timelineIndex: timeline.length,
+        trainer: issue.trainer,
+        move: details.move || attacker?.fast || null,
+        kind: details.kind || "technical-lag",
+        issueType: issue.type,
+        start: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)),
+        duration: Number(details.duration || 1),
+        damage: 0,
+        label: details.label || "Technical reconstruction",
+        details: cloneTechnicalValue(details),
+        state: battleSnapshot()
+      };
+      timeline.push(event);
+      captureManualEventSnapshots(event, beforeState);
+      return event;
+    }
+
+    function finalizeManualTechnicalBranch(issue, plan, sourceBranchId, eventId, edit = {}) {
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+        type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
+        payload: {
+          parentBranchId: sourceBranchId,
+          label: issue.type === "dre" ? "DRE reconstruction" : "One-Turn Lag reconstruction",
+          classification: "TECHNICAL_RECONSTRUCTION",
+          branchPoint: {
+            boundary: window.PvPeakManualSnapshots.BOUNDARY.BEFORE,
+            eventId: plan.eventId,
+            stateHash: plan.stateHash
+          },
+          timelineModel: currentManualTimelineModel(),
+          terminalResult: currentManualTerminalResult(),
+          edits: [{ type: issue.type === "dre" ? "INSERT_DRE" : "INSERT_LAG", issue: cloneTechnicalValue(issue), ...cloneTechnicalValue(edit) }]
+        }
+      });
+      rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      manualBattleRuntime = null;
+      manualTimelineFocusEventId = eventId || timeline.at(-1)?.timelineEventId || null;
+      clearManualEnergyTrainerNextCycle();
+      manualEnergyTrainerSuppressPop = true;
+      clearManualTechnicalDraft({ renderNow: false });
+      render();
+      return true;
+    }
+
+    function restoreManualTechnicalSource() {
+      technicalIssueInjection = null;
+      manualBattleRuntime = null;
+      clearManualEnergyTrainerNextCycle();
+      manualEnergyTrainerSuppressPop = true;
+      return restoreActiveManualBranch();
+    }
+
+    async function confirmManualTechnicalIssue(choice) {
+      const issue = technicalReviewState?.draft;
+      const plan = issue ? manualTechnicalRestorePlan(issue) : null;
+      if (!issue || !plan || !manualBranchRegistry) return false;
+      const sourceBranchId = manualBranchRegistry.activeBranchId;
+      const sourceState = captureManualRuntimeSnapshot();
+      const sourceEvent = timeline[issue.eventIndex];
+      const attacker = issue.trainer === "A" ? left : right;
+      const defender = issue.trainer === "A" ? right : left;
+      if (!attacker || !defender || !restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix)) return false;
+      manualBattleRuntime = null;
+      const restoredAttacker = issue.trainer === "A" ? left : right;
+      const restoredDefender = issue.trainer === "A" ? right : left;
+      const previousSuppress = suppressRender;
+      suppressRender = true;
+      try {
+        if (issue.type === "one-turn-lag") {
+          const lagEvent = recordManualTechnicalEvent(issue, {
+            kind: "technical-lag",
+            duration: 1,
+            label: `One-Turn Lag — ${restoredAttacker.p.name} loses one turn before ${restoredAttacker.fast.name}.`
+          });
+          battleTurns[issue.trainer] = Number(battleTurns[issue.trainer] || 0) + 1;
+          lagEvent.state = battleSnapshot();
+          captureManualEventSnapshots(lagEvent, plan.runtimeState);
+          const occurred = useFast(restoredAttacker, restoredDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: issue.type } });
+          if (!occurred) throw new Error("DELAYED_FAST_INVALIDATED");
+          suppressRender = previousSuppress;
+          return finalizeManualTechnicalBranch(issue, plan, sourceBranchId, lagEvent.timelineEventId, { selectedEventId: sourceEvent?.timelineEventId || null });
+        }
+
+        const allowedMoves = validChargedMoves(restoredAttacker)
+          .filter(move => (issue.chargedMoveIds || []).includes(move.id));
+        const chosenMove = allowedMoves.find(move => move.id === choice);
+        if (!chosenMove) throw new Error("DRE_CHARGED_MOVE_INVALID");
+        technicalIssueInjection = {
+          type: "dre",
+          trainer: issue.trainer,
+          targetOrdinal: issue.actionOrdinal,
+          counts: {
+            A: Math.max(0, Number(issue.trainer === "A" ? issue.actionOrdinal - 1 : issue.lethalFastOrdinal - 1)),
+            B: Math.max(0, Number(issue.trainer === "B" ? issue.actionOrdinal - 1 : issue.lethalFastOrdinal - 1))
+          },
+          issue: cloneTechnicalValue(issue),
+          applied: false,
+          pendingEvents: [],
+          manualChoiceRequired: true,
+          sourceState,
+          sourceBranchId,
+          plan
+        };
+        if (!useFast(restoredAttacker, restoredDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: "dre" } })) throw new Error("DRE_ENERGY_FAST_INVALIDATED");
+        const lethalAttacker = issue.fastSide === "A" ? left : right;
+        const lethalDefender = issue.fastSide === "A" ? right : left;
+        if (!useFast(lethalAttacker, lethalDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: "dre-pending" } })) throw new Error("DRE_PENDING_FAST_INVALIDATED");
+        const pending = technicalIssueInjection.pendingFast;
+        if (!pending || !technicalIssueInjection.energyReady) throw new Error("DRE_WINDOW_NOT_CREATED");
+        const dreEvent = recordManualTechnicalEvent(issue, {
+          kind: "technical-dre",
+          move: chosenMove,
+          label: `DRE window — ${restoredAttacker.p.name} uses ${chosenMove.name} before pending ${pending.moveName} damage.`,
+          pendingFastEventId: pending.id,
+          pendingFastMoveName: pending.moveName,
+          chargedMoveId: chosenMove.id
+        });
+        technicalIssueInjection.dreEventId = dreEvent.timelineEventId;
+        technicalIssueInjection.chosenMoveId = chosenMove.id;
+        technicalIssueInjection.awaitingChargeChoice = true;
+        suppressRender = previousSuppress;
+        technicalReviewState.draft = null;
+        technicalReviewState.pendingDre = { issue: cloneTechnicalValue(issue), chosenMoveId: chosenMove.id, technicalEventId: dreEvent.timelineEventId };
+        render();
+        return resolveManualTechnicalDreCharge();
+      } catch (error) {
+        suppressRender = previousSuppress;
+        restoreManualTechnicalSource();
+        technicalReviewState.draft = cloneTechnicalValue(issue);
+        render();
+        add(`Technical reconstruction could not be applied (${error.message}).`, "info");
+        return false;
+      }
+    }
+
+    async function resolveManualTechnicalDreCharge() {
+      const injection = technicalIssueInjection;
+      const issue = injection?.issue;
+      const attacker = issue?.trainer === "A" ? left : right;
+      const defender = issue?.trainer === "A" ? right : left;
+      const moveIndex = attacker?.charged?.findIndex(move => move?.id === injection?.chosenMoveId) ?? -1;
+      if (!injection || !issue || !attacker || !defender || moveIndex < 0) return false;
+      try {
+        // A DRE Charged Move is exceptional timing, but it must still use the
+        // same canonical damage, shield and buff paths as a normal manual throw.
+        const move = attacker.charged[moveIndex];
+        const shielded = await askManualShieldDecision(attacker, defender, move, estimate(attacker, defender, move));
+        const forceBuffs = await askManualBuffDecision(move);
+        const applied = useCharge(attacker, defender, moveIndex, {
+          shielded,
+          forceBuffs,
+          manualAction: {
+            actionType: window.PvPeakManualAction.ACTION_TYPE.CHARGED_MOVE,
+            technicalIssue: "dre",
+            pendingFastEventId: injection.pendingFast?.id || null
+          },
+          aiReason: "DRE reconstruction",
+          deferCooldownReset: true
+        });
+        if (!applied) throw new Error("DRE_CHARGED_REJECTED");
+        manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+          timeline,
+          cursorTurn: manualCanonicalState()?.currentTurn || 0,
+          cursorEventId: timeline.at(-1)?.timelineEventId || null,
+          terminal: battleEnded(),
+          terminalResult: currentManualTerminalResult(),
+          pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+        });
+        const technicalEvent = timeline.find(event => event.timelineEventId === injection.dreEventId);
+        if (technicalEvent) {
+          technicalEvent.dreResolved = !!timeline.find(event => event.dreResolved);
+          technicalEvent.dreDenied = !!timeline.find(event => event.dreDenied);
+          technicalEvent.state = battleSnapshot();
+        }
+        const plan = injection.plan;
+        const sourceBranchId = injection.sourceBranchId;
+        const eventId = injection.dreEventId;
+        technicalReviewState.pendingDre = null;
+        return finalizeManualTechnicalBranch(issue, plan, sourceBranchId, eventId, {
+          selectedEventId: issue.selectedEventId || null,
+          chosenMoveId: injection.chosenMoveId,
+          pendingFastEventId: injection.pendingFast?.id || null
+        });
+      } catch (error) {
+        restoreManualTechnicalSource();
+        technicalReviewState.pendingDre = null;
+        technicalReviewState.draft = cloneTechnicalValue(issue);
+        render();
+        add(`DRE Charged Move could not resolve (${error.message}).`, "info");
+        return false;
+      }
     }
 
     function simulateTechnicalIssue(issue) {
@@ -23040,6 +23423,10 @@
       if (!injection || injection.type !== "dre" || injection.applied || !injection.energyReady) return null;
       const pending = injection.pendingFast;
       if (!pending) return null;
+      if (injection.manualChoiceRequired) {
+        injection.awaitingChargeChoice = true;
+        return true;
+      }
       const attacker = injection.energyReady.attackerSide === "A" ? left : right;
       const defender = injection.energyReady.defenderSide === "A" ? left : right;
       if (!attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return null;
@@ -23124,11 +23511,16 @@
         const event = timeline[index];
         let eligible = false;
         if (technicalReviewState.mode === api.ISSUE_TYPES.ONE_TURN_LAG) {
-          eligible = index >= technicalSegmentStartIndex() && event?.kind === "fast";
+          eligible = manualModeState?.enabled
+            ? manualTechnicalEventEligible(index, event)
+            : index >= technicalSegmentStartIndex() && event?.kind === "fast";
         } else if (technicalReviewState.mode === api.ISSUE_TYPES.DRE) {
-          eligible = !!api.createDreIssue(timeline, index, technicalSegmentStartIndex(), { A: left, B: right });
+          const segmentStart = manualModeState?.enabled ? manualTechnicalSegmentStartIndex() : technicalSegmentStartIndex();
+          eligible = (!manualModeState?.enabled || manualTechnicalEventEligible(index, event))
+            && !!api.createDreIssue(timeline, index, segmentStart, { A: left, B: right });
         }
         block.classList.toggle("technical-eligible", eligible);
+        block.setAttribute("aria-disabled", String(!!technicalReviewState.mode && !eligible));
         block.classList.toggle("technical-selected", technicalReviewState.activeBranch === "original" && technicalReviewState.selectedEventIndex === index);
       });
     }

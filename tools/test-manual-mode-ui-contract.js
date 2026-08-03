@@ -398,6 +398,20 @@ assert.match(html, /function restoreManualRuntimePayload[\s\S]{0,180}clearManual
 assert.match(html, /function restoreActiveManualBranch[\s\S]{0,220}clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function exitLiveManualMode\(\)\s*\{\s*clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function openStoredManualScenario[\s\S]{0,180}clearManualEnergyTrainerNextCycle\(\)/);
+assert.match(html, /function manualTechnicalIssuesMarkup/);
+assert.match(html, /Technical Issues/);
+assert.match(html, /data-manual-technical-issue="one-turn-lag"/);
+assert.match(html, /data-manual-technical-issue="dre"/);
+assert.match(html, /Select the Fast Move affected by the one-turn lag\./);
+assert.match(html, /Select the Fast Move that created the DRE window\./);
+assert.match(html, /function cancelTechnicalIssueSelection/);
+assert.match(html, /function confirmManualTechnicalIssue/);
+assert.match(html, /kind: "technical-lag"/);
+assert.match(html, /kind: "technical-dre"/);
+assert.match(html, /manualChoiceRequired: true/);
+assert.match(html, /function resolveManualTechnicalDreCharge/);
+assert.match(html, /function restoreManualRuntimePayload[\s\S]{0,2400}return true;/);
+assert.match(html, /event\.key !== "Escape" \|\| document\.body\.dataset\.view !== "scenario-review"/);
 
 const inlineScripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 assert(inlineScripts.length, "Expected the simulator inline runtime.");
