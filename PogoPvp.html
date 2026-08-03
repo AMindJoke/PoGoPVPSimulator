@@ -4332,6 +4332,7 @@
     }
     .timeline-block.judge-event.manual-faint { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 15%, var(--panel)); color: var(--danger); }
     .timeline-block.judge-event.manual-entry { border-style: solid; border-color: var(--good); background: color-mix(in srgb, var(--good) 16%, var(--panel)); color: var(--good); }
+    .manual-technical-issues-mount { padding: 0 12px 10px; }
     .manual-technical-issues {
       display: grid;
       gap: 6px;
@@ -11044,6 +11045,7 @@
             <button id="timelineZoomIn" type="button" aria-label="Zoom timeline in">+</button>
           </div>
         </div>
+        <div id="manualTechnicalIssuesMount" class="manual-technical-issues-mount" hidden></div>
         <section id="manualEditorWorkspace" class="manual-editor-workspace" aria-live="polite" hidden>
           <div id="manualDuelHud" class="manual-duel-hud" aria-label="Current battle state">
             <article class="manual-hud-side" data-side="A">
@@ -16131,6 +16133,11 @@
 
     function exitLiveManualMode() {
       clearManualEnergyTrainerNextCycle();
+      const technicalMount = $("manualTechnicalIssuesMount");
+      if (technicalMount) {
+        technicalMount.hidden = true;
+        technicalMount.innerHTML = "";
+      }
       technicalIssueInjection = null;
       if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
         clearManualTechnicalDraft({ renderNow: false });
@@ -17289,7 +17296,8 @@
           </div>
         </article>`;
       };
-      editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}${manualTechnicalIssuesMarkup()}`;
+      editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}`;
+      renderManualTechnicalIssues();
       editor.querySelectorAll("input[data-manual-state-field]").forEach(input => {
         input.onkeydown = event => {
           if (event.key === "Enter") {
@@ -17357,6 +17365,23 @@
         ${mode ? `<div class="manual-technical-selection" role="status"><span>${escapeHtml(instructions)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
         ${draftMarkup}
       </section>`;
+    }
+
+    function renderManualTechnicalIssues() {
+      const mount = $("manualTechnicalIssuesMount");
+      if (!mount) return;
+      const markup = manualTechnicalIssuesMarkup();
+      mount.hidden = !markup;
+      mount.innerHTML = markup;
+      mount.querySelectorAll("[data-manual-technical-issue]").forEach(button => {
+        button.onclick = () => setTechnicalReviewMode(button.dataset.manualTechnicalIssue, button);
+      });
+      mount.querySelectorAll("[data-manual-technical-cancel]").forEach(button => {
+        button.onclick = () => cancelTechnicalIssueSelection(button);
+      });
+      mount.querySelectorAll("[data-manual-technical-confirm]").forEach(button => {
+        button.onclick = () => confirmManualTechnicalIssue(button.dataset.manualTechnicalConfirm || null);
+      });
     }
 
     function manualTechnicalDraftMarkup(issue) {
@@ -17567,6 +17592,7 @@
         start: turn,
         duration: 1,
         details: cloneTechnicalValue(details),
+        hiddenFromTimeline: !!details.hiddenFromTimeline,
         state: battleSnapshot()
       };
       timeline.push(event);
@@ -17606,7 +17632,7 @@
         field === "hp" && normalized.fainted ? "manual-faint" : "manual-state",
         label,
         beforeState,
-        { eventType: "STATE_EDIT", field, previousValue: beforeValue, value: nextValue, fainted: normalized.fainted }
+        { eventType: "STATE_EDIT", field, previousValue: beforeValue, value: nextValue, fainted: normalized.fainted, hiddenFromTimeline: !(field === "hp" && normalized.fainted) }
       );
       syncManualBranchAfterAction({
         id: event.timelineEventId,
@@ -26129,7 +26155,8 @@
       const chargeSlots = timelineChargeSlots();
       const chargeStarts = uniqueChargeStarts(chargeSlots);
       const isFit = timelineIsFit();
-      const rawMaxTurn = Math.max(20, ...timeline.map(event => event.kind === "fast" ? timelineFastImpactTurn(event) + 2 : event.start + event.duration + 1));
+      const visibleTimeline = timeline.filter(event => !event.hiddenFromTimeline);
+      const rawMaxTurn = Math.max(20, ...visibleTimeline.map(event => event.kind === "fast" ? timelineFastImpactTurn(event) + 2 : event.start + event.duration + 1));
       const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns + (isFit ? 3 : 0);
       const scroll = $("timelineScroll");
       scroll.classList.toggle("fit-mode", isFit);
@@ -26287,7 +26314,7 @@
 
     function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeSlots, chargeStarts) {
       const row = $(id);
-      const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer);
+      const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer && !item.event.hiddenFromTimeline);
       row.style.setProperty("--turn-px", `${turnPx}px`);
       const laneWidth = maxTurn * turnPx;
       if (!events.length) {
