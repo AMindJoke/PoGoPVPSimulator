@@ -123,9 +123,14 @@ assert.match(html, /body\.manual-mode-active \.manual-editor-actions\s*\{[\s\S]{
 assert.match(html, /body\.manual-mode-active \.manual-editor-command-bar\s*\{[\s\S]{0,80}grid-column: 1 \/ -1/);
 assert.match(html, /body\.manual-mode-active main\s*\{[\s\S]{0,90}136px/);
 assert.match(html, /manual-hud-types\s*\{[\s\S]{0,90}grid-column: 1 \/ -1/);
-assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 40px/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 32px/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-hp\s*\{[\s\S]{0,100}height: 24px/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-shield-control\s*\{[\s\S]{0,120}grid-template-columns: repeat\(3, 34px\)/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.actions button\s*\{[\s\S]{0,140}min-height: 58px/);
-assert.match(html, /button\.style\.setProperty\("--move-type-color", color\)/);
+assert.match(html, /grid-template-columns: repeat\(10, minmax\(0, 1fr\)\)/);
+assert.match(html, /"actions-a actions-a actions-a actions-a actions-a actions-b actions-b actions-b actions-b actions-b"/);
+assert.match(html, /data-manual-charge-slot="A-0"[\s\S]{0,180}id="manualHudEnergyA"[\s\S]{0,180}data-manual-charge-slot="A-1"/);
+assert.match(html, /data-manual-charge-slot="B-0"[\s\S]{0,180}id="manualHudEnergyB"[\s\S]{0,180}data-manual-charge-slot="B-1"/);
 assert.match(html, /id="manualHudTypesA"/);
 assert.match(html, /id="manualHudTypesB"/);
 assert.match(html, /--timeline-track-height: 48px/);

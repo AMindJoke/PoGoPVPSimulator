@@ -6257,8 +6257,38 @@
       }
       body.manual-mode-active .manual-hud-name-row,
       body.manual-mode-active .manual-hud-resource-row {
-        justify-content: flex-start;
-        gap: 6px;
+        width: 100%;
+        gap: 8px;
+      }
+      body.manual-mode-active .manual-hud-copy {
+        width: min(100%, 255px);
+        justify-self: start;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-copy {
+        justify-self: end;
+      }
+      body.manual-mode-active .manual-hud-name-row {
+        justify-content: space-between;
+      }
+      body.manual-mode-active .manual-hud-resource-row {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+      }
+      body.manual-mode-active .manual-hud-resource-row .manual-hud-charges {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      body.manual-mode-active .manual-hud-resource-row .manual-hud-shield-setup {
+        grid-column: 3;
+        grid-row: 1;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-resource-row .manual-hud-shield-setup {
+        grid-column: 1;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-resource-row .manual-hud-charges {
+        grid-column: 3;
+        grid-row: 1;
       }
       body.manual-mode-active .manual-hud-shield-setup,
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-shield-setup {
@@ -6266,8 +6296,8 @@
         margin-left: 0;
       }
       body.manual-mode-active .manual-hud-hp {
-        width: min(100%, 290px);
-        height: 12px;
+        width: 100%;
+        height: 24px;
         border-radius: 999px;
         box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
       }
@@ -6277,35 +6307,45 @@
         font-size: 16px;
       }
       body.manual-mode-active .manual-hud-energy small {
-        font-size: 9px;
+        font-size: 10px;
       }
       body.manual-mode-active .manual-hud-charges {
         display: grid;
-        grid-template-columns: 40px minmax(52px, auto) 40px;
+        grid-template-columns: 32px minmax(50px, auto) 32px;
         align-items: center;
         justify-content: start;
-        gap: 5px;
+        gap: 4px;
+        direction: ltr;
       }
-      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: end; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges {
+        flex-direction: initial;
+        justify-content: end;
+      }
       body.manual-mode-active .manual-hud-charges .energy-orb {
-        width: 40px;
-        min-width: 40px;
+        width: 32px;
+        min-width: 32px;
         height: 32px;
-        flex: 0 0 40px;
+        flex: 0 0 32px;
         border-width: 2px;
-        border-radius: 999px;
+        border-radius: 50%;
       }
       body.manual-mode-active .manual-hud-charges .energy-orb-label {
         font-size: 10px;
       }
-      body.manual-mode-active .manual-hud-shield-control button {
-        width: 36px;
-        min-width: 36px;
-        min-height: 32px;
-        gap: 2px;
+      body.manual-mode-active .manual-hud-shield-control {
+        display: grid;
+        grid-template-columns: repeat(3, 34px);
+        width: 104px;
+        min-width: 104px;
       }
-      body.manual-mode-active .manual-hud-shield-control svg { width: 16px; height: 16px; }
-      body.manual-mode-active .manual-hud-shield-control strong { font-size: 10px; }
+      body.manual-mode-active .manual-hud-shield-control button {
+        width: 34px;
+        min-width: 34px;
+        min-height: 32px;
+        gap: 1px;
+      }
+      body.manual-mode-active .manual-hud-shield-control svg { width: 14px; height: 14px; }
+      body.manual-mode-active .manual-hud-shield-control strong { font-size: 9px; }
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
@@ -6343,10 +6383,10 @@
         position: relative;
         z-index: 60;
         display: grid;
-        grid-template-columns: minmax(220px, 1fr) minmax(260px, 320px) auto 160px;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
         grid-template-areas:
-          "decision scenario controls command"
-          "actions-a actions-a actions-b actions-b";
+          "decision decision decision scenario scenario scenario controls controls command command"
+          "actions-a actions-a actions-a actions-a actions-a actions-b actions-b actions-b actions-b actions-b";
         align-items: stretch;
         gap: 6px;
         margin-top: 28px;
@@ -6406,30 +6446,21 @@
         padding: 5px 6px;
       }
       body.manual-mode-active .manual-editor-actions .actions button {
-        grid-template-columns: 18px minmax(0, 1fr);
-        gap: 7px;
+        grid-template-columns: 12px minmax(0, 1fr);
+        gap: 4px;
         min-height: 58px;
-        padding: 7px 9px;
-        border-radius: 8px;
-        background: color-mix(in srgb, var(--move-type-color, var(--accent)) 14%, var(--panel)) !important;
-        border-color: color-mix(in srgb, var(--move-type-color, var(--accent)) 54%, var(--line)) !important;
-        color: var(--text) !important;
-        box-shadow: 0 2px 5px color-mix(in srgb, var(--move-type-color, var(--shadow)) 12%, transparent);
-      }
-      body.manual-mode-active .manual-editor-actions .actions button:hover {
-        filter: brightness(.98) saturate(1.06);
-        box-shadow: 0 4px 9px color-mix(in srgb, var(--move-type-color, var(--shadow)) 20%, transparent);
+        padding: 6px 7px;
       }
       body.manual-mode-active .manual-editor-actions .actions .move-icon {
-        width: 18px;
-        height: 18px;
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--move-type-color, var(--accent)) 14%, transparent);
+        width: 12px;
+        height: 12px;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
       }
       body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
         display: none;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
-        font-size: 13px;
+        font-size: 12px;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label > span {
         font-size: 9px;
@@ -26834,14 +26865,12 @@
         button.style.background = "var(--soft)";
         button.style.borderColor = "var(--line)";
         button.style.color = "var(--muted)";
-        button.style.removeProperty("--move-type-color");
         button.title = "No charged move selected";
         button.disabled = true;
         return;
       }
       button.disabled = false;
       const color = typeColors[move.type] || "#156f8f";
-      button.style.setProperty("--move-type-color", color);
       const effect = opponent ? moveEffectLabel(move, opponent) : "";
       const effectClass = effect ? effect.toLowerCase() : "";
       const effectChip = effect ? `<span class="effect-chip ${effectClass}">${effect}</span>` : "";
