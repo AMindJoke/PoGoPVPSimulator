@@ -123,7 +123,9 @@ assert.match(html, /body\.manual-mode-active \.manual-editor-actions\s*\{[\s\S]{
 assert.match(html, /body\.manual-mode-active \.manual-editor-command-bar\s*\{[\s\S]{0,80}grid-column: 1 \/ -1/);
 assert.match(html, /body\.manual-mode-active main\s*\{[\s\S]{0,90}136px/);
 assert.match(html, /manual-hud-types\s*\{[\s\S]{0,90}grid-column: 1 \/ -1/);
-assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 34px/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 40px/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.actions button\s*\{[\s\S]{0,140}min-height: 58px/);
+assert.match(html, /button\.style\.setProperty\("--move-type-color", color\)/);
 assert.match(html, /id="manualHudTypesA"/);
 assert.match(html, /id="manualHudTypesB"/);
 assert.match(html, /--timeline-track-height: 48px/);

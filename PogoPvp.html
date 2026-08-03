@@ -6191,7 +6191,7 @@
       body.manual-mode-active .manual-duel-hud {
         grid-area: battle;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 116px minmax(0, 1fr);
         align-items: stretch;
         padding: 7px;
         border: 1px solid var(--line);
@@ -6236,19 +6236,24 @@
         text-transform: uppercase;
       }
       body.manual-mode-active .manual-hud-side {
-        grid-template-columns: 58px minmax(0, 1fr);
-        gap: 8px;
+        grid-template-columns: 66px minmax(0, 1fr);
+        gap: 10px;
         padding: 7px 9px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: minmax(0, 1fr) 58px;
+        grid-template-columns: minmax(0, 1fr) 66px;
       }
       body.manual-mode-active .manual-hud-sprite {
-        width: 56px;
-        height: 56px;
+        width: 64px;
+        height: 64px;
       }
       body.manual-mode-active .manual-hud-name {
         font-size: 14px;
+      }
+      body.manual-mode-active .manual-hud-types .type-badge {
+        min-height: 20px;
+        padding: 3px 7px;
+        font-size: 9px;
       }
       body.manual-mode-active .manual-hud-name-row,
       body.manual-mode-active .manual-hud-resource-row {
@@ -6261,9 +6266,9 @@
         margin-left: 0;
       }
       body.manual-mode-active .manual-hud-hp {
-        width: min(100%, 270px);
-        height: 14px;
-        border-radius: 4px;
+        width: min(100%, 290px);
+        height: 12px;
+        border-radius: 999px;
         box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: auto; }
@@ -6276,24 +6281,27 @@
       }
       body.manual-mode-active .manual-hud-charges {
         display: grid;
-        grid-template-columns: 34px minmax(52px, auto) 34px;
+        grid-template-columns: 40px minmax(52px, auto) 40px;
         align-items: center;
         justify-content: start;
         gap: 5px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: end; }
       body.manual-mode-active .manual-hud-charges .energy-orb {
-        width: 34px;
-        height: 34px;
+        width: 40px;
+        min-width: 40px;
+        height: 32px;
+        flex: 0 0 40px;
         border-width: 2px;
+        border-radius: 999px;
       }
       body.manual-mode-active .manual-hud-charges .energy-orb-label {
         font-size: 10px;
       }
       body.manual-mode-active .manual-hud-shield-control button {
-        width: 34px;
-        min-width: 34px;
-        min-height: 30px;
+        width: 36px;
+        min-width: 36px;
+        min-height: 32px;
         gap: 2px;
       }
       body.manual-mode-active .manual-hud-shield-control svg { width: 16px; height: 16px; }
@@ -6305,13 +6313,30 @@
         align-content: start;
         min-width: 0;
         min-height: 0;
-        padding: 7px;
+        padding: 6px 7px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-timeline-stage .timeline-head {
-        margin-bottom: 5px;
+        margin-bottom: 3px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-legend {
+        gap: 12px;
+        opacity: .94;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-legend span {
+        gap: 5px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-legend i {
+        width: 16px;
+        height: 16px;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-hover-label {
+        min-width: 40px;
+        padding: 1px 5px;
+        font-size: 9px;
+        line-height: 1.1;
       }
       body.manual-mode-active .manual-decision-panel {
         grid-area: decision;
@@ -6324,6 +6349,7 @@
           "actions-a actions-a actions-b actions-b";
         align-items: stretch;
         gap: 6px;
+        margin-top: 28px;
         padding: 7px;
         border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
         border-radius: 9px;
@@ -6380,17 +6406,35 @@
         padding: 5px 6px;
       }
       body.manual-mode-active .manual-editor-actions .actions button {
-        min-height: 40px;
-        padding: 5px 7px;
+        grid-template-columns: 18px minmax(0, 1fr);
+        gap: 7px;
+        min-height: 58px;
+        padding: 7px 9px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--move-type-color, var(--accent)) 14%, var(--panel)) !important;
+        border-color: color-mix(in srgb, var(--move-type-color, var(--accent)) 54%, var(--line)) !important;
+        color: var(--text) !important;
+        box-shadow: 0 2px 5px color-mix(in srgb, var(--move-type-color, var(--shadow)) 12%, transparent);
+      }
+      body.manual-mode-active .manual-editor-actions .actions button:hover {
+        filter: brightness(.98) saturate(1.06);
+        box-shadow: 0 4px 9px color-mix(in srgb, var(--move-type-color, var(--shadow)) 20%, transparent);
+      }
+      body.manual-mode-active .manual-editor-actions .actions .move-icon {
+        width: 18px;
+        height: 18px;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--move-type-color, var(--accent)) 14%, transparent);
       }
       body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
         display: none;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
-        font-size: 12px;
+        font-size: 13px;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label > span {
         font-size: 9px;
+        color: var(--muted);
+        opacity: 1;
       }
       body.manual-mode-active .manual-editor-command-bar {
         grid-area: command;
@@ -22361,7 +22405,7 @@
       renderIvImpact(prefix, c, opponent);
       renderShields(prefix);
       renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
-      setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, `Fast · +${c.fast.energyGain} energy · ${c.fast.turns}t`, opponent);
+      setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, `Fast · +${c.fast.energyGain} energy · ${c.fast.turns}T`, opponent);
       setMoveButton(c1Id, c.charged[0], c.charged[0]?.name || "None", c.charged[0] ? `Charged · ${c.charged[0].energyCost} energy` : "Charged", opponent);
       setMoveButton(c2Id, c.charged[1], c.charged[1]?.name || "None", c.charged[1] ? `Charged · ${c.charged[1].energyCost} energy` : "Charged", opponent);
       $(c1Id).classList.toggle("ready", !!c.charged[0] && c.energy >= c.charged[0].energyCost);
@@ -26790,12 +26834,14 @@
         button.style.background = "var(--soft)";
         button.style.borderColor = "var(--line)";
         button.style.color = "var(--muted)";
+        button.style.removeProperty("--move-type-color");
         button.title = "No charged move selected";
         button.disabled = true;
         return;
       }
       button.disabled = false;
       const color = typeColors[move.type] || "#156f8f";
+      button.style.setProperty("--move-type-color", color);
       const effect = opponent ? moveEffectLabel(move, opponent) : "";
       const effectClass = effect ? effect.toLowerCase() : "";
       const effectChip = effect ? `<span class="effect-chip ${effectClass}">${effect}</span>` : "";
