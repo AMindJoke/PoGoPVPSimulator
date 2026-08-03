@@ -102,6 +102,8 @@ assert.doesNotMatch(
   /body\.manual-mode-active \.manual-editor-actions \.actions button:disabled:not\(\.build-available\)\s*\{[\s\S]{0,80}display:\s*none/,
   "Manual Mode must keep disabled Charged Move cards visible so ready energy is never hidden."
 );
+assert.match(html, /button\.classList\.toggle\("charge-energy-ready", chargeEnergyReady\)/);
+assert.match(html, /\.actions button:disabled:not\(\.build-available\):not\(\.charge-energy-ready\)/);
 assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
 assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
 assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{[\s\S]{0,80}grid-area: sidebar/);
