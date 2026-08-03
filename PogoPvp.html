@@ -6335,8 +6335,52 @@
       body.manual-mode-active .manual-overlay-controls {
         display: flex;
       }
+      body.manual-mode-active .manual-decision-banner {
+        grid-template-columns: minmax(150px, .65fr) auto minmax(0, 1.55fr);
+        gap: 8px;
+      }
+      body.manual-mode-active .manual-overlay-controls { gap: 3px; }
+      body.manual-mode-active .manual-overlay-controls button { min-height: 30px; padding: 4px 7px; }
+      body.manual-mode-active .manual-scenario-panel { padding: 6px 8px; gap: 7px; }
+      body.manual-mode-active .manual-scenario-title-row strong { font-size: 14px; }
+      body.manual-mode-active .manual-scenario-actions { flex-wrap: nowrap; gap: 4px; }
+      body.manual-mode-active .manual-scenario-actions button { min-height: 30px; padding: 4px 8px; }
+      body.manual-mode-active .manual-continue-auto { flex: 0 0 auto; min-width: 144px; gap: 5px; white-space: nowrap; }
+      body.manual-mode-active .manual-continue-auto-icon { font-size: 21px; }
+      body.manual-mode-active .manual-continue-auto-copy small { display: none; }
+      body.manual-mode-active .manual-duel-hud {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        padding: 6px;
+      }
+      body.manual-mode-active .manual-hud-center { display: none; }
+      body.manual-mode-active .manual-hud-side,
+      body.manual-mode-active .manual-hud-side[data-side="B"] {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 7px;
+        padding: 6px 8px;
+        text-align: left;
+      }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 1; grid-row: 1; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-copy { grid-column: 2; grid-row: 1; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name-row,
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-resource-row { flex-direction: row; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-shield-setup { margin-left: auto; margin-right: 0; }
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: start; }
+      body.manual-mode-active .manual-hud-sprite { width: 50px; height: 50px; }
+      body.manual-mode-active .manual-hud-name { font-size: 14px; }
+      body.manual-mode-active .manual-hud-hp { width: 100%; height: 16px; }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 10px; }
+      body.manual-mode-active .manual-hud-energy strong { font-size: 15px; }
+      body.manual-mode-active .manual-hud-energy small { font-size: 9px; }
+      body.manual-mode-active .manual-hud-charges { grid-template-columns: 34px minmax(48px, auto) 34px; gap: 4px; }
+      body.manual-mode-active .manual-hud-charges .energy-orb { width: 34px; height: 34px; border-width: 2px; }
+      body.manual-mode-active .manual-hud-charges .energy-orb-label { font-size: 10px; }
+      body.manual-mode-active .manual-hud-shield-control button { width: 34px; min-width: 34px; min-height: 28px; gap: 1px; }
+      body.manual-mode-active .manual-hud-shield-control svg { width: 15px; height: 15px; }
+      body.manual-mode-active .manual-hud-shield-control strong { font-size: 9px; }
       body.manual-mode-active .manual-editor-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: stretch;
         padding: 7px;
       }
@@ -6355,16 +6399,6 @@
       }
       body.manual-mode-active .manual-editor-actions .move-button-label > span {
         font-size: 10px;
-      }
-      body.manual-mode-active .manual-editor-command-bar {
-        grid-column: 3;
-        align-items: stretch;
-        padding: 0 0 0 7px;
-        border-top: 0;
-        border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-      }
-      body.manual-mode-active .manual-editor-command-bar button {
-        min-width: 164px;
       }
       body.manual-mode-active .manual-state-inspector {
         grid-area: sidebar;
@@ -11116,6 +11150,11 @@
                 <strong id="manualCurrentDecisionTitle">Choose an action</strong>
                 <span id="manualDecisionWhy">Automatic simulation is paused.</span>
               </div>
+              <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
+                <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
+                <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
+                <button id="manualOverlayExit" class="secondary manual-overlay-exit" type="button" title="Exit Manual Mode" aria-label="Exit Manual Mode">×</button>
+              </div>
               <section id="manualScenarioPanel" class="manual-scenario-panel" aria-label="Scenario controls">
                 <div class="manual-scenario-copy">
                   <small>Scenario</small>
@@ -11125,13 +11164,9 @@
                   <button id="manualScenarioOpen" class="secondary" type="button">▱ Open</button>
                   <button id="manualScenarioSave" class="secondary" type="button">▣ Save</button>
                   <span class="manual-scenario-more"><button id="manualScenarioMore" class="secondary" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Scenario menu">…</button><span id="manualScenarioMenu" class="manual-scenario-menu" role="menu" hidden><button type="button" role="menuitem" data-scenario-command="rename">✎ Rename</button><button type="button" role="menuitem" data-scenario-command="duplicate">⧉ Duplicate</button><button type="button" role="menuitem" data-scenario-command="export">⇧ Export JSON</button><button type="button" role="menuitem" data-scenario-command="import">⇩ Import JSON</button><button type="button" role="menuitem" class="danger" data-scenario-command="delete">⌫ Delete</button></span></span>
+                  <button id="manualResumeAuto" class="secondary manual-continue-auto" type="button" title="Continue this timeline version using automatic decisions."><span class="manual-continue-auto-icon" aria-hidden="true">»</span><span class="manual-continue-auto-copy"><strong>Continue Automatically</strong><small>Simulator will proceed from here</small></span></button>
                 </div>
               </section>
-              <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
-                <button id="manualOverlayUndo" class="secondary" type="button" title="Undo the last manual edit">↶ Undo</button>
-                <button id="manualOverlayRedo" class="secondary" type="button" title="Restore the last undone edit">↷ Redo</button>
-                <button id="manualOverlayExit" class="secondary manual-overlay-exit" type="button" title="Exit Manual Mode" aria-label="Exit Manual Mode">×</button>
-              </div>
             </div>
             <div id="manualEditorActions" class="manual-editor-actions">
               <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
@@ -11145,15 +11180,6 @@
                 <button id="p2UseCharge1">Charged 1</button>
                 <button id="p2UseCharge2">Charged 2</button>
                 <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
-              </div>
-              <div class="manual-editor-command-bar">
-                <button id="manualResumeAuto" class="secondary manual-continue-auto" type="button" title="Continue this timeline version using automatic decisions.">
-                  <span class="manual-continue-auto-icon" aria-hidden="true">»</span>
-                  <span class="manual-continue-auto-copy">
-                    <strong>Continue Automatically</strong>
-                    <small>Simulator will proceed from here</small>
-                  </span>
-                </button>
               </div>
             </div>
           </div>
