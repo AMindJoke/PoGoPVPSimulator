@@ -6060,27 +6060,33 @@
         z-index: 600;
       }
       body.manual-mode-active #battleTimeline {
-        --timeline-track-height: 58px;
-        --timeline-lane-height: 38px;
-        --timeline-side-zone-width: 92px;
+        --timeline-track-height: 48px;
+        --timeline-lane-height: 32px;
+        --timeline-side-zone-width: 74px;
         position: fixed;
-        inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
+        top: clamp(10px, 2vh, 20px);
+        right: auto;
+        bottom: auto;
+        left: 50%;
         z-index: 500;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(250px, 290px);
-        grid-template-rows: auto auto minmax(190px, 1fr) auto auto;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 280px);
+        grid-template-rows: auto auto auto auto auto;
         grid-template-areas:
           "header header"
           "battle sidebar"
           "timeline sidebar"
           "decision sidebar"
           "event sidebar";
-        gap: 10px 12px;
-        width: auto;
-        max-width: none;
-        max-height: none;
-        padding: 0 14px 14px;
+        align-content: start;
+        gap: 8px 10px;
+        width: min(1600px, calc(100vw - 24px));
+        max-width: 1600px;
+        max-height: calc(100vh - clamp(20px, 4vh, 40px));
+        padding: 0 10px 10px;
         overflow: auto;
+        box-sizing: border-box;
+        transform: translateX(-50%);
         box-shadow:
           0 0 0 100vmax rgba(15, 23, 42, .62),
           0 20px 60px rgba(15, 23, 42, .34);
@@ -6089,10 +6095,10 @@
         grid-area: header;
         display: flex;
         align-items: center;
-        gap: 14px;
-        min-height: 58px;
-        margin: 0 -14px;
-        padding: 8px 14px;
+        gap: 10px;
+        min-height: 50px;
+        margin: 0 -10px;
+        padding: 6px 10px;
         border-bottom: 1px solid var(--line);
         background: var(--panel);
       }
@@ -6185,9 +6191,9 @@
       body.manual-mode-active .manual-duel-hud {
         grid-area: battle;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 164px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
         align-items: stretch;
-        padding: 10px;
+        padding: 7px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
@@ -6196,125 +6202,141 @@
         display: grid;
         place-content: center;
         justify-items: center;
-        gap: 3px;
+        gap: 1px;
         color: var(--text);
         text-align: center;
       }
       body.manual-mode-active .manual-hud-center > strong {
         display: grid;
         place-items: center;
-        width: 56px;
-        height: 56px;
+        width: 40px;
+        height: 40px;
         border: 1px solid var(--line);
         border-radius: 50%;
-        font-size: 22px;
+        font-size: 17px;
       }
       body.manual-mode-active .manual-hud-center span {
-        font-size: 13px;
+        font-size: 10px;
         font-weight: 900;
       }
       body.manual-mode-active .manual-hud-center small {
         color: var(--muted);
-        font-size: 9px;
+        font-size: 8px;
         font-weight: 750;
       }
       body.manual-mode-active .manual-hud-center em {
-        margin-top: 3px;
-        padding: 4px 9px;
+        margin-top: 1px;
+        padding: 3px 6px;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent) 11%, var(--soft));
         color: var(--accent-dark);
-        font-size: 9px;
+        font-size: 8px;
         font-style: normal;
         font-weight: 950;
         text-transform: uppercase;
       }
       body.manual-mode-active .manual-hud-side {
-        grid-template-columns: 78px minmax(0, 1fr);
-        gap: 13px;
-        padding: 12px 14px;
+        grid-template-columns: 58px minmax(0, 1fr);
+        gap: 8px;
+        padding: 7px 9px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: minmax(0, 1fr) 78px;
+        grid-template-columns: minmax(0, 1fr) 58px;
       }
       body.manual-mode-active .manual-hud-sprite {
-        width: 76px;
-        height: 76px;
+        width: 56px;
+        height: 56px;
       }
       body.manual-mode-active .manual-hud-name {
-        font-size: 17px;
+        font-size: 14px;
+      }
+      body.manual-mode-active .manual-hud-name-row,
+      body.manual-mode-active .manual-hud-resource-row {
+        justify-content: flex-start;
+        gap: 6px;
+      }
+      body.manual-mode-active .manual-hud-shield-setup,
+      body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-shield-setup {
+        margin-right: 0;
+        margin-left: 0;
       }
       body.manual-mode-active .manual-hud-hp {
-        width: min(100%, 290px);
-        height: 22px;
+        width: min(100%, 270px);
+        height: 14px;
         border-radius: 4px;
         box-shadow: inset 0 0 0 1px rgba(23, 33, 47, .10);
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: auto; }
-      body.manual-mode-active .manual-hud-hp-text { font-size: 13px; }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 9px; }
       body.manual-mode-active .manual-hud-energy strong {
-        font-size: 20px;
+        font-size: 16px;
       }
       body.manual-mode-active .manual-hud-energy small {
-        font-size: 11px;
+        font-size: 9px;
       }
       body.manual-mode-active .manual-hud-charges {
         display: grid;
-        grid-template-columns: 46px minmax(66px, auto) 46px;
+        grid-template-columns: 34px minmax(52px, auto) 34px;
         align-items: center;
         justify-content: start;
-        gap: 8px;
+        gap: 5px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: end; }
       body.manual-mode-active .manual-hud-charges .energy-orb {
-        width: 46px;
-        height: 46px;
-        border-width: 3px;
+        width: 34px;
+        height: 34px;
+        border-width: 2px;
       }
       body.manual-mode-active .manual-hud-charges .energy-orb-label {
-        font-size: 14px;
+        font-size: 10px;
       }
       body.manual-mode-active .manual-hud-shield-control button {
-        width: 48px;
-        min-width: 48px;
-        min-height: 40px;
-        gap: 3px;
+        width: 34px;
+        min-width: 34px;
+        min-height: 30px;
+        gap: 2px;
       }
-      body.manual-mode-active .manual-hud-shield-control svg { width: 22px; height: 22px; }
-      body.manual-mode-active .manual-hud-shield-control strong { font-size: 13px; }
+      body.manual-mode-active .manual-hud-shield-control svg { width: 16px; height: 16px; }
+      body.manual-mode-active .manual-hud-shield-control strong { font-size: 10px; }
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
-        grid-template-rows: auto minmax(168px, max-content) auto auto;
+        grid-template-rows: auto 116px auto auto;
         align-content: start;
         min-width: 0;
         min-height: 0;
-        padding: 10px;
+        padding: 7px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-timeline-stage .timeline-head {
-        margin-bottom: 8px;
+        margin-bottom: 5px;
       }
       body.manual-mode-active .manual-decision-panel {
         grid-area: decision;
         position: relative;
         z-index: 60;
         display: grid;
-        gap: 7px;
-        padding: 9px;
+        grid-template-columns: minmax(220px, 1fr) minmax(260px, 320px) auto 160px;
+        grid-template-areas:
+          "decision scenario controls command"
+          "actions-a actions-a actions-b actions-b";
+        align-items: stretch;
+        gap: 6px;
+        padding: 7px;
         border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-decision-banner {
-        grid-template-columns: minmax(180px, .85fr) minmax(0, 1.4fr) auto;
+        display: contents;
         padding: 0;
         border: 0;
         background: transparent;
       }
       body.manual-mode-active .manual-decision-primary {
+        grid-area: decision;
         gap: 1px;
         text-align: center;
       }
@@ -6333,45 +6355,62 @@
         padding: 5px 7px;
       }
       body.manual-mode-active .manual-overlay-controls {
+        grid-area: controls;
         display: flex;
       }
-      body.manual-mode-active .manual-editor-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
-        align-items: stretch;
-        padding: 7px;
+      body.manual-mode-active .manual-scenario-panel {
+        grid-area: scenario;
+        gap: 6px;
+        padding: 5px 7px;
       }
+      body.manual-mode-active .manual-scenario-title-row strong { font-size: 13px; }
+      body.manual-mode-active .manual-scenario-actions { gap: 4px; }
+      body.manual-mode-active .manual-scenario-actions button {
+        min-height: 29px;
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+      body.manual-mode-active .manual-editor-actions {
+        display: contents;
+      }
+      body.manual-mode-active #manualActionsA { grid-area: actions-a; }
+      body.manual-mode-active #manualActionsB { grid-area: actions-b; }
       body.manual-mode-active .manual-editor-actions .actions {
-        padding: 7px;
+        align-items: stretch;
+        padding: 5px 6px;
       }
       body.manual-mode-active .manual-editor-actions .actions button {
-        min-height: 46px;
-        padding: 7px 8px;
+        min-height: 40px;
+        padding: 5px 7px;
       }
       body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
         display: none;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
-        font-size: 13px;
+        font-size: 12px;
       }
       body.manual-mode-active .manual-editor-actions .move-button-label > span {
-        font-size: 10px;
+        font-size: 9px;
       }
       body.manual-mode-active .manual-editor-command-bar {
-        grid-column: 3;
+        grid-area: command;
         align-items: stretch;
-        padding: 0 0 0 7px;
+        padding: 0 0 0 5px;
         border-top: 0;
         border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       }
       body.manual-mode-active .manual-editor-command-bar button {
-        min-width: 164px;
+        min-width: 145px;
       }
+      body.manual-mode-active .manual-continue-auto-copy strong { font-size: 10px; }
+      body.manual-mode-active .manual-continue-auto-copy small { display: none; }
+      body.manual-mode-active .manual-continue-auto-icon { font-size: 22px; }
       body.manual-mode-active .manual-state-inspector {
         grid-area: sidebar;
         display: grid;
         align-content: start;
         min-height: 0;
-        padding: 13px;
+        padding: 8px;
         overflow: auto;
         border: 1px solid var(--line);
         border-radius: 9px;
@@ -6380,13 +6419,13 @@
       body.manual-mode-active .manual-inspector-grid {
         grid-template-columns: 1fr;
         gap: 0;
-        margin-top: 10px;
+        margin-top: 6px;
       }
       body.manual-mode-active .manual-inspector-item {
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: 8px;
-        padding: 7px 4px;
+        padding: 5px 3px;
         border: 0;
         border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
         border-radius: 0;
@@ -6403,22 +6442,71 @@
         grid-area: event;
       }
       body.manual-mode-active .timeline-grid {
-        min-height: 168px;
+        min-height: 116px;
       }
       body.manual-mode-active .timeline-scroll {
         height: 100%;
-        min-height: 168px;
+        min-height: 116px;
       }
       body.manual-mode-active .timeline-label img {
-        width: 52px;
-        height: 52px;
+        width: 42px;
+        height: 42px;
       }
       body.manual-mode-active .timeline-label {
         padding-left: 0;
         overflow: visible;
       }
       body.manual-mode-active .timeline-pokemon-flow {
-        transform: translateX(-8px);
+        transform: translateX(-5px);
+      }
+      body.manual-mode-active .manual-technical-issues-mount {
+        width: min(270px, 100%);
+        padding-top: 2px;
+      }
+      body.manual-mode-active .manual-technical-issues {
+        gap: 4px;
+        margin-top: 2px;
+        padding: 6px 7px;
+      }
+      body.manual-mode-active .manual-technical-issue-actions button {
+        min-height: 28px;
+        padding: 4px 6px;
+      }
+      body.manual-mode-active .manual-battle-state > summary {
+        padding: 7px 8px;
+      }
+      body.manual-mode-active .manual-battle-state-editor {
+        gap: 7px;
+        padding: 0 7px 7px;
+      }
+      body.manual-mode-active .manual-battle-state-side {
+        gap: 4px;
+        padding: 7px;
+      }
+      body.manual-mode-active .manual-state-number-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+      }
+      body.manual-mode-active .manual-state-input-shell {
+        gap: 3px;
+      }
+      body.manual-mode-active .manual-state-input-shell input {
+        height: 34px;
+        padding: 4px 6px;
+        font-size: 14px;
+      }
+      body.manual-mode-active .manual-state-input-shell small {
+        min-width: 26px;
+        font-size: 8px;
+      }
+      body.manual-mode-active .manual-state-segmented button {
+        min-height: 22px;
+      }
+      body.manual-mode-active .manual-state-effects {
+        padding: 5px 6px;
+      }
+      body.manual-mode-active .manual-state-side-actions button {
+        min-height: 27px;
       }
     }
     .timeline-tools {
@@ -10716,11 +10804,13 @@
         position: relative;
         inset: auto;
         z-index: auto;
-        width: 100%;
-        min-height: calc(100dvh - 180px);
+        width: min(1600px, calc(100vw - 24px));
+        min-height: 0;
+        max-width: 1600px;
         max-height: none;
-        margin: 0;
+        margin: 0 auto;
         overflow: visible;
+        transform: none;
         box-shadow: 0 14px 32px rgba(23, 33, 47, .14);
       }
     }
