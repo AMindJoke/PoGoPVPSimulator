@@ -6589,6 +6589,9 @@
     body[data-view="scenario-review"].scenario-review-active .timeline {
       --timeline-side-zone-width: 132px;
     }
+    body[data-view="scenario-review"].scenario-review-active .timeline.has-replacement-transition {
+      --timeline-side-zone-width: var(--timeline-replacement-side-zone-width, 176px);
+    }
     .timeline-pokemon-flow {
       display: inline-flex;
       align-items: center;
@@ -8440,6 +8443,9 @@
       }
       body[data-view="scenario-review"].scenario-review-active .timeline {
         --timeline-side-zone-width: 88px;
+      }
+      body[data-view="scenario-review"].scenario-review-active .timeline.has-replacement-transition {
+        --timeline-side-zone-width: var(--timeline-replacement-side-zone-width, 92px);
       }
       .timeline-pokemon-flow img {
         width: 23px;
@@ -25693,6 +25699,9 @@
       const timelineSpan = perfRunId ? perfDebug.startSpan("timeline.generation", perfRunId) : null;
       renderTimelineZoomControl();
       if (!left || !right) {
+        $("battleTimeline")?.classList.remove("has-replacement-transition");
+        $("battleTimeline")?.style.removeProperty("--timeline-replacement-side-zone-width");
+        $("battleTimeline")?.style.removeProperty("--timeline-side-zone-width");
         $("timelineScroll")?.querySelectorAll(":scope > .scenario-segment-divider").forEach(marker => marker.remove());
         $("p1TimelineLabel").textContent = "A";
         $("p2TimelineLabel").textContent = "B";
@@ -25706,6 +25715,7 @@
       }
       renderTimelinePokemonZone("p1", left);
       renderTimelinePokemonZone("p2", right);
+      syncTimelineReplacementSpace();
       const chargeSlots = timelineChargeSlots();
       const chargeStarts = uniqueChargeStarts(chargeSlots);
       const isFit = timelineIsFit();
@@ -25742,6 +25752,31 @@
       const faintedSprite = label.querySelector('[data-scenario-sprite="fainted"]');
       const faintedPokemon = fainted?.combatant?.p;
       if (faintedSprite && faintedPokemon) setPokemonImage(faintedSprite, faintedPokemon);
+    }
+
+    function syncTimelineReplacementSpace() {
+      const timelinePanel = $("battleTimeline");
+      if (!timelinePanel) return false;
+      const scenarioReview = document.body.dataset.view === "scenario-review";
+      const hasTransition = scenarioReview && ["A", "B"].some(side => (scenarioHistory[side] || []).length > 0);
+      timelinePanel.classList.toggle("has-replacement-transition", hasTransition);
+      if (!hasTransition) {
+        timelinePanel.style.removeProperty("--timeline-replacement-side-zone-width");
+        timelinePanel.style.removeProperty("--timeline-side-zone-width");
+        return false;
+      }
+      const mobile = window.matchMedia("(max-width: 900px)").matches;
+      const labels = [$("p1TimelineLabel"), $("p2TimelineLabel")].filter(Boolean);
+      const measuredWidth = Math.max(0, ...labels.map(label => Math.ceil(label.scrollWidth + 10)));
+      const minimum = mobile ? 84 : 132;
+      const maximum = mobile ? Math.min(108, Math.floor(window.innerWidth * .3)) : 220;
+      const reservedWidth = Math.max(minimum, Math.min(maximum, measuredWidth));
+      timelinePanel.style.setProperty("--timeline-replacement-side-zone-width", `${reservedWidth}px`);
+      // Set the consumed grid variable inline as well: responsive rules define
+      // their own defaults later in the stylesheet, while a replacement must
+      // keep its measured reservation at every viewport width.
+      timelinePanel.style.setProperty("--timeline-side-zone-width", `${reservedWidth}px`);
+      return true;
     }
 
     function renderScenarioTimelineTransitions(chargeSlots, turnPx) {

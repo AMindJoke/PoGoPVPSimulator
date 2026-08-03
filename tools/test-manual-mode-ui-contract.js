@@ -198,6 +198,13 @@ assert.match(html, /controlMode = Object\.values\(controlModes\)\.includes\(manu
 assert.match(html, /manualSessionControlMode = selectedControlMode/);
 assert.match(html, /function keepLatestManualTimelineEventVisible/);
 assert.match(html, /scroll\.scrollBy\(/);
+assert.match(html, /function syncTimelineReplacementSpace/);
+assert.match(html, /classList\.toggle\("has-replacement-transition", hasTransition\)/);
+assert.match(html, /--timeline-replacement-side-zone-width/);
+assert.match(html, /style\.setProperty\("--timeline-side-zone-width", `\$\{reservedWidth\}px`\)/);
+assert.match(html, /style\.removeProperty\("--timeline-side-zone-width"\)/);
+assert.match(html, /Math\.ceil\(label\.scrollWidth \+ 10\)/);
+assert.match(html, /syncTimelineReplacementSpace\(\);/);
 assert.match(html, /syncManualBranchAfterAction\(result\.action\);\s*render\(\);\s*return true;/);
 assert.match(html, /@media \(max-width: 900px\) and \(max-height: 620px\)/);
 assert.match(html, /id="manualMobileVersionsToggle"/);
