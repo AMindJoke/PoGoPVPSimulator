@@ -127,6 +127,7 @@ assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s
 assert.match(html, /body\.manual-mode-active \.manual-hud-hp\s*\{[\s\S]{0,100}height: 24px/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-shield-control\s*\{[\s\S]{0,120}grid-template-columns: repeat\(3, 34px\)/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.actions button\s*\{[\s\S]{0,140}min-height: 58px/);
+assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.move-button-label > span\s*\{[\s\S]{0,80}color: inherit/);
 assert.match(html, /grid-template-columns: repeat\(10, minmax\(0, 1fr\)\)/);
 assert.match(html, /"actions-a actions-a actions-a actions-a actions-a actions-b actions-b actions-b actions-b actions-b"/);
 assert.match(html, /data-manual-charge-slot="A-0"[\s\S]{0,180}id="manualHudEnergyA"[\s\S]{0,180}data-manual-charge-slot="A-1"/);
