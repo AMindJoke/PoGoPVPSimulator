@@ -5863,6 +5863,7 @@
     .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .manual-state-segmented[aria-label$="shields"] button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
     .manual-state-segmented[aria-label$="shields"] svg { width: 16px; height: 16px; flex: 0 0 auto; }
+    .manual-state-shield-toggle { width: 100%; }
     .manual-state-effects { display: grid; gap: 2px; padding: 6px 7px; border-radius: 6px; background: var(--panel); }
     .manual-state-effects small { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
     .manual-state-effects span { font-size: 10px; font-weight: 800; }
@@ -10665,6 +10666,20 @@
         overflow: visible;
         box-shadow: 0 14px 32px rgba(23, 33, 47, .14);
       }
+    }
+    body.clarity-ui .manual-state-shield-toggle {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      border-radius: 8px;
+    }
+    body.clarity-ui .manual-state-shield-toggle button {
+      min-height: 38px;
+      padding: 4px 8px;
+    }
+    body.clarity-ui .manual-state-shield-toggle svg {
+      width: 24px;
+      height: 24px;
+      flex-basis: 24px;
     }
   </style>
 </head>
@@ -17159,6 +17174,32 @@
       }).join("")}</div>`;
     }
 
+    function shieldControlButtonMarkup(options = {}) {
+      const active = !!options.active;
+      const value = Number(options.value || 0);
+      const dataAttribute = options.dataAttribute || "data-shields";
+      const accessibleLabel = options.accessibleLabel || `${value} shields remaining`;
+      const titleText = options.title || accessibleLabel;
+      const visibleValue = options.showValue === false ? "" : `<strong>${value}</strong>`;
+      return `<button type="button" class="${active ? "active" : ""}" ${dataAttribute}="${value}" title="${escapeHtml(titleText)}" aria-label="${escapeHtml(accessibleLabel)}" aria-pressed="${active}">${shieldSvg()}${visibleValue}</button>`;
+    }
+
+    function manualBattleStateShieldControl(side, selected) {
+      const count = Math.max(0, Math.min(2, Number(selected || 0)));
+      const buttons = [1, 2].map(slot => {
+        const target = slot === count ? Math.max(0, count - 1) : slot;
+        return shieldControlButtonMarkup({
+          value: target,
+          active: slot <= count,
+          dataAttribute: "data-manual-state-shields",
+          accessibleLabel: `${slot <= count ? "Active" : "Inactive"} shield ${slot}; set Pokemon ${side} to ${target} shields remaining`,
+          title: `Set Pokemon ${side} to ${target} shields`,
+          showValue: false
+        });
+      }).join("");
+      return `<div class="shield-count-toggle manual-state-shield-toggle" role="group" aria-label="Pokemon ${side}: ${count} shields remaining" data-shield-count="${count}">${buttons}</div>`;
+    }
+
     function renderManualBattleStateEditor() {
       const editor = $("manualBattleStateEditor");
       if (!editor || !manualModeState?.enabled || !left || !right) return;
@@ -17183,7 +17224,7 @@
           <label class="manual-state-field-label">Defense</label>
           ${manualBattleStateSegmented(side, "defenseStage", state.defenseStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
           <label class="manual-state-field-label">Shields</label>
-          ${manualBattleStateSegmented(side, "shields", state.shields, [0, 1, 2])}
+          ${manualBattleStateShieldControl(side, state.shields)}
           <div class="manual-state-effects"><small>Applied Effects</small><span>${escapeHtml(effects)}</span></div>
           <div class="manual-state-side-actions">
             <button type="button" class="secondary" data-manual-mark-fainted="${side}" ${state.fainted ? "disabled" : ""}>Mark fainted</button>
@@ -17210,6 +17251,13 @@
           button.dataset.manualStateSide,
           button.dataset.manualStateField,
           button.dataset.manualStateValue
+        );
+      });
+      editor.querySelectorAll("button[data-manual-state-shields]").forEach(button => {
+        button.onclick = () => commitManualBattleStateEdit(
+          button.closest(".manual-battle-state-side").dataset.side,
+          "shields",
+          button.dataset.manualStateShields
         );
       });
       editor.querySelectorAll("[data-manual-mark-fainted]").forEach(button => {
@@ -17540,6 +17588,7 @@
 
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
+      const scenarioReviewWorkspace = document.body.dataset.view === "scenario-review" && enabled;
       syncManualEditorPlacement();
       const toggle = $("manualModeToggle");
       const status = $("manualModeStatus");
@@ -17566,6 +17615,10 @@
       redo.disabled = !manualBranchRegistry || !manualBranchRegistry.redoStack.length;
       if ($("manualOverlayUndo")) $("manualOverlayUndo").disabled = undo.disabled;
       if ($("manualOverlayRedo")) $("manualOverlayRedo").disabled = redo.disabled;
+      if ($("manualBackToSimulation")) $("manualBackToSimulation").hidden = scenarioReviewWorkspace;
+      if ($("manualWorkspaceExit")) $("manualWorkspaceExit").hidden = scenarioReviewWorkspace;
+      if ($("manualOverlayExit")) $("manualOverlayExit").hidden = scenarioReviewWorkspace;
+      if ($("manualWorkspaceHeader")) $("manualWorkspaceHeader").dataset.reviewContext = scenarioReviewWorkspace ? "scenario-review" : "battle-simulator";
       const active = manualBranchRegistry ? window.PvPeakManualBranches.activeBranch(manualBranchRegistry) : null;
       if (enabled && manualBranchRegistry) {
         branchSelect.innerHTML = Object.values(manualBranchRegistry.branches)
@@ -22308,10 +22361,13 @@
 
     function renderShields(prefix) {
       const selectedShields = Math.max(0, Math.min(2, Number($(`${prefix}Shields`).value || 0)));
-      $(`${prefix}ShieldVisual`).innerHTML = [0, 1, 2].map(count => {
-        const icons = `${shieldSvg()}<strong>${count}</strong>`;
-        return `<button type="button" class="${count === selectedShields ? "active" : ""}" data-shields="${count}" title="${count} shield${count === 1 ? "" : "s"} matchup">${icons}</button>`;
-      }).join("");
+      $(`${prefix}ShieldVisual`).innerHTML = [0, 1, 2].map(count => shieldControlButtonMarkup({
+        value: count,
+        active: count === selectedShields,
+        dataAttribute: "data-shields",
+        accessibleLabel: `${count} shield${count === 1 ? "" : "s"} matchup`,
+        title: `${count} shield${count === 1 ? "" : "s"} matchup`
+      })).join("");
       $(`${prefix}ShieldVisual`).querySelectorAll("button").forEach(button => {
         button.onclick = () => setShieldCount(prefix, Number(button.dataset.shields));
       });
