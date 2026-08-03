@@ -1963,9 +1963,17 @@ function createPvPeakBattleIntelligenceApi() {
       numeric(move.energyCost) > numeric(selected.energyCost)
       && numeric(move.damage) > numeric(selected.damage)
     );
+    const repeatedGuaranteedAttackDebuffRoute = selected?.guaranteedEffect
+      && sequence.length > 1
+      && sequence[0]?.id === sequence[1]?.id
+      && numeric(selected.buffApplyChance) >= 1
+      && (
+        (selected.buffTarget === "opponent" && numeric(selected.buffs?.[0]) < 0)
+        || (selected.buffTarget === "both" && numeric(selected.buffsOpponent?.[0]) < 0)
+      );
     const preserveGuaranteedEffectOpener = selected?.guaranteedEffect
       && selected.effectStrategicValue?.valuable !== false
-      && numeric(selected.damage) >= bestImmediateDamage * .75;
+      && (repeatedGuaranteedAttackDebuffRoute || numeric(selected.damage) >= bestImmediateDamage * .75);
     const preserveRepeatedCheapRoute = sequence.length > 1
       && sequence[0]?.id === sequence[1]?.id
       && higherCostPressureAvailable;
@@ -2187,7 +2195,7 @@ function createPvPeakBattleIntelligenceApi() {
       selectedMoveId: selected.id,
       triggered,
       rejected,
-      evidence: { finalSequence: sequence.map(move => move.id) }
+      evidence: { finalSequence: sequence.map(move => move.id), repeatedGuaranteedAttackDebuffRoute }
     };
   }
 

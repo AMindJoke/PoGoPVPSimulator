@@ -43,6 +43,7 @@
     "test:matrix-simultaneous-draw": "node tools/test-matrix-simultaneous-draw.js",
     "test:quagsire-corsola-ledger": "node tools/test-quagsire-corsola-mechanics-ledger.js",
     "test:quagsire-corsola-default": "node tools/test-quagsire-corsola-default-pvpoke.js",
+    "test:feraligatr-cradily": "node tools/test-feraligatr-cradily-rock-tomb.js",
     "test:battle-principles": "node tools/test-battle-principles-registry.js",
     "test:principle-trace": "node tools/test-principle-trace-contract.js",
     "test:principle-engine-complete-migration": "node tools/test-principle-engine-complete-migration.js",
