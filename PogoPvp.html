@@ -6347,9 +6347,11 @@
         min-height: 46px;
         padding: 7px 8px;
       }
-      body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
-        display: none;
-      }
+      /* Keep every equipped Charged Move in view.  A move may have enough
+         energy while its Pokemon is still waiting for the opposing Fast Move
+         to finish; hiding the disabled card made a ready charge look as if it
+         had disappeared.  The normal disabled state still prevents an
+         out-of-turn action. */
       body.manual-mode-active .manual-editor-actions .move-button-label strong {
         font-size: 13px;
       }

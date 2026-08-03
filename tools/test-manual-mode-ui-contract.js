@@ -97,6 +97,11 @@ const nextCycleCss = html.match(/\.energy-trainer-next-cycle\s*\{([^}]+)\}/)?.[1
 assert.doesNotMatch(nextCycleCss, /transition|opacity|transform/, "Persistent Next Cycle feedback must not fade or move.");
 assert.match(html, /waitingSides\.flatMap\(side => actionLabels/);
 assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,400}body\.manual-mode-active #battleTimeline/);
+assert.doesNotMatch(
+  html,
+  /body\.manual-mode-active \.manual-editor-actions \.actions button:disabled:not\(\.build-available\)\s*\{[\s\S]{0,80}display:\s*none/,
+  "Manual Mode must keep disabled Charged Move cards visible so ready energy is never hidden."
+);
 assert.match(html, /box-shadow:[\s\S]{0,120}0 0 0 100vmax/);
 assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
 assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{[\s\S]{0,80}grid-area: sidebar/);
