@@ -65,6 +65,27 @@
     return (pokemon || []).filter(candidate => candidate?.id && !excluded.has(candidate.id));
   }
 
+  function replacementAvailability(combatant, candidates = [], scenario = null, side = null) {
+    const fainted = !!combatant && integer(combatant.hp, 0) <= 0;
+    const awaitingThisSide = scenario?.status === "awaiting-incoming" && scenario?.awaitingSide === side;
+    const awaitingOtherSide = scenario?.status === "awaiting-incoming" && scenario?.awaitingSide !== side;
+    const hasCandidates = Array.isArray(candidates) && candidates.length > 0;
+    return Object.freeze({
+      fainted,
+      awaitingThisSide,
+      hasCandidates,
+      canOpen: !!combatant && hasCandidates && !awaitingOtherSide,
+      needsScenarioLock: fainted && !awaitingThisSide && !awaitingOtherSide,
+      reason: !combatant
+        ? "ACTIVE_POKEMON_REQUIRED"
+        : !hasCandidates
+          ? "NO_VALID_REPLACEMENT"
+          : awaitingOtherSide
+            ? "OTHER_SIDE_AWAITING_REPLACEMENT"
+            : null
+    });
+  }
+
   return Object.freeze({
     REVIEW_MODE,
     integer,
@@ -73,6 +94,7 @@
     normalizeManualBattleState,
     applyManualBattleState,
     prepareIncomingCombatant,
-    eligibleIncomingPokemon
+    eligibleIncomingPokemon,
+    replacementAvailability
   });
 });

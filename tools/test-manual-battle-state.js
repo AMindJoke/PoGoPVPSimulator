@@ -90,6 +90,43 @@ assert.deepEqual(
   State.eligibleIncomingPokemon([{ id: "a" }, { id: "b" }, { id: "c" }], ["a", "c"]).map(item => item.id),
   ["b"]
 );
+
+const faintedAvailability = State.replacementAvailability(
+  { hp: 0 },
+  [{ id: "c" }],
+  { status: "active", awaitingSide: null },
+  "A"
+);
+assert.equal(faintedAvailability.canOpen, true);
+assert.equal(faintedAvailability.needsScenarioLock, true);
+
+const cancelledAvailability = State.replacementAvailability(
+  { hp: 0 },
+  [{ id: "c" }],
+  { status: "awaiting-incoming", awaitingSide: "A" },
+  "A"
+);
+assert.equal(cancelledAvailability.canOpen, true, "Cancel must not consume replacement availability.");
+assert.equal(cancelledAvailability.needsScenarioLock, false, "Reopening must reuse the canonical awaiting state.");
+assert.equal(cancelledAvailability.awaitingThisSide, true);
+
+const otherSideAvailability = State.replacementAvailability(
+  { hp: 0 },
+  [{ id: "c" }],
+  { status: "awaiting-incoming", awaitingSide: "B" },
+  "A"
+);
+assert.equal(otherSideAvailability.canOpen, false);
+assert.equal(otherSideAvailability.reason, "OTHER_SIDE_AWAITING_REPLACEMENT");
+
+const emptyAvailability = State.replacementAvailability(
+  { hp: 0 },
+  [],
+  { status: "awaiting-incoming", awaitingSide: "A" },
+  "A"
+);
+assert.equal(emptyAvailability.canOpen, false);
+assert.equal(emptyAvailability.reason, "NO_VALID_REPLACEMENT");
 assert.throws(() => State.normalizeManualBattleState({}, {}), /ACTIVE_POKEMON_REQUIRED/);
 
 console.log("Manual Battle State normalization tests passed.");

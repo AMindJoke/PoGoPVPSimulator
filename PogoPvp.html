@@ -11945,14 +11945,14 @@
       $("manualGuideModal").addEventListener("click", event => {
         if (event.target.id === "manualGuideModal") closeManualGuide();
       });
-      $("manualBringNextClose").onclick = closeManualBringNext;
-      $("manualBringNextCancel").onclick = closeManualBringNext;
+      $("manualBringNextClose").onclick = cancelManualBringNext;
+      $("manualBringNextCancel").onclick = cancelManualBringNext;
       $("manualBringNextConfirm").onclick = confirmManualBringNext;
       $("manualBringNextPokemon").onchange = syncManualBringNextPokemon;
       $("manualBringNextHpFull").onclick = () => setManualBringNextHpMode(true);
       $("manualBringNextHpCustom").onclick = () => setManualBringNextHpMode(false);
       $("manualBringNextModal").addEventListener("click", event => {
-        if (event.target.id === "manualBringNextModal") closeManualBringNext();
+        if (event.target.id === "manualBringNextModal") cancelManualBringNext();
       });
       document.addEventListener("keydown", handleManualBringNextKeydown);
       $("manualScenarioOpen").onclick = openManualScenarioLibrary;
@@ -17207,6 +17207,7 @@
       const sideMarkup = side => {
         const combatant = manualBattleStateCombatant(side);
         const state = stateApi.normalizeManualBattleState(combatant);
+        const replacement = manualBringNextAvailability(side);
         const effects = state.attackStage === 0 && state.defenseStage === 0
           ? "No active stat changes"
           : [
@@ -17228,7 +17229,7 @@
           <div class="manual-state-effects"><small>Applied Effects</small><span>${escapeHtml(effects)}</span></div>
           <div class="manual-state-side-actions">
             <button type="button" class="secondary" data-manual-mark-fainted="${side}" ${state.fainted ? "disabled" : ""}>Mark fainted</button>
-            <button type="button" data-manual-bring-next="${side}">${state.fainted ? "Bring next Pokémon" : "Replace active Pokémon"}</button>
+            <button type="button" data-manual-bring-next="${side}" ${replacement.canOpen ? "" : "disabled"} title="${replacement.canOpen ? "Choose an incoming Pokémon" : "No valid replacement is currently available"}">${replacement.canOpen ? (state.fainted ? "Bring next Pokémon" : "Replace active Pokémon") : "No replacement available"}</button>
           </div>
         </article>`;
       };
@@ -17282,6 +17283,24 @@
       ].filter(Boolean);
     }
 
+    function manualBringNextAvailability(side) {
+      const stateApi = window.PvPeakManualBattleState;
+      const combatant = manualBattleStateCombatant(side);
+      const candidates = stateApi?.eligibleIncomingPokemon(
+        allPokemon,
+        manualBringNextExcludedPokemon(side)
+      ) || [];
+      const availability = stateApi?.replacementAvailability(combatant, candidates, scenarioState, side) || {
+        fainted: Number(combatant?.hp || 0) <= 0,
+        awaitingThisSide: false,
+        hasCandidates: candidates.length > 0,
+        canOpen: !!combatant && candidates.length > 0,
+        needsScenarioLock: Number(combatant?.hp || 0) <= 0,
+        reason: candidates.length ? null : "NO_VALID_REPLACEMENT"
+      };
+      return { ...availability, candidates };
+    }
+
     function renderManualBringNextStages() {
       if (!manualBringNextContext) return;
       $("manualBringNextAttack").innerHTML = manualIncomingSegmented("attackStage", manualBringNextContext.attackStage);
@@ -17323,12 +17342,21 @@
       if (!combatant) return false;
       const returnFocus = origin || document.activeElement;
       if (combatant.hp > 0) commitManualBattleStateEdit(side, "hp", 0);
-      lockScenarioState({ focusIncoming: false });
+      let availability = manualBringNextAvailability(side);
+      if (!availability.canOpen) {
+        const feedback = $("manualBattleStateFeedback");
+        if (feedback) feedback.textContent = availability.reason === "NO_VALID_REPLACEMENT"
+          ? `No valid replacement is available for Pokemon ${side}.`
+          : `Pokemon ${side} cannot be replaced right now.`;
+        renderManualBattleStateEditor();
+        return false;
+      }
+      if (availability.needsScenarioLock) lockScenarioState({ focusIncoming: false });
       if (scenarioState?.status !== "awaiting-incoming" || scenarioState.awaitingSide !== side) return false;
-      const candidates = window.PvPeakManualBattleState.eligibleIncomingPokemon(
-        allPokemon,
-        manualBringNextExcludedPokemon(side)
-      );
+      availability = manualBringNextAvailability(side);
+      const candidates = availability.candidates;
+      if (!availability.canOpen) return false;
+      if (manualIncomingStatePending?.side === side) manualIncomingStatePending = null;
       manualBringNextContext = {
         side,
         returnFocus,
@@ -17362,12 +17390,20 @@
       if (context?.returnFocus?.isConnected) context.returnFocus.focus({ preventScroll: true });
     }
 
+    function cancelManualBringNext() {
+      const side = manualBringNextContext?.side;
+      if (side && manualIncomingStatePending?.side === side) manualIncomingStatePending = null;
+      closeManualBringNext();
+      renderManualBattleStateEditor();
+      return true;
+    }
+
     function handleManualBringNextKeydown(event) {
       const modal = $("manualBringNextModal");
       if (!modal?.classList.contains("open")) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        closeManualBringNext();
+        cancelManualBringNext();
         return;
       }
       if (event.key !== "Tab") return;
@@ -22531,7 +22567,15 @@
     function lockScenarioState(options = {}) {
       const api = scenarioApi();
       const outcome = scenarioWinnerAndLoser();
-      if (!api || !outcome || !battleEnded()) return;
+      if (!api || !outcome || !battleEnded()) return false;
+      if (scenarioState?.status === "awaiting-incoming") {
+        const samePendingSide = scenarioState.awaitingSide === outcome.faintedSide;
+        if (samePendingSide) {
+          renderScenarioReview();
+          renderScenarioStacks();
+        }
+        return samePendingSide;
+      }
 
       if (!scenarioState) {
         scenarioState = api.createScenario({ originalState: lastBattleInitialSimulatorState || snapshotFullSimulatorState() });
@@ -22574,6 +22618,7 @@
         $(`${prefix}Search`)?.focus({ preventScroll: true });
         openPokemonSuggestions(prefix, false);
       });
+      return true;
     }
 
     function continueScenarioWithSelectedPokemon(prefix) {
