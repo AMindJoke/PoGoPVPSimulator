@@ -6076,7 +6076,7 @@
         width: min(1420px, calc(100vw - clamp(24px, 6vw, 84px)));
         z-index: 500;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(250px, 290px);
+        grid-template-columns: minmax(0, 1fr) 380px;
         grid-template-rows: auto auto minmax(190px, max-content) auto auto;
         grid-template-areas:
           "header header"
@@ -6084,10 +6084,10 @@
           "timeline sidebar"
           "decision sidebar"
           "event sidebar";
-        gap: 10px 12px;
+        gap: 8px 10px;
         max-width: none;
         max-height: calc(100vh - clamp(20px, 5vh, 48px));
-        padding: 0 14px 14px;
+        padding: 0 10px 10px;
         overflow: auto;
         box-shadow:
           0 0 0 100vmax rgba(15, 23, 42, .62),
@@ -6293,25 +6293,25 @@
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
-        grid-template-rows: auto minmax(168px, max-content) auto auto;
+        grid-template-rows: auto minmax(126px, max-content) auto auto;
         align-content: start;
         min-width: 0;
         min-height: 0;
-        padding: 10px;
+        padding: 8px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-timeline-stage .timeline-head {
-        margin-bottom: 8px;
+        margin-bottom: 5px;
       }
       body.manual-mode-active .manual-decision-panel {
         grid-area: decision;
         position: relative;
         z-index: 60;
         display: grid;
-        gap: 7px;
-        padding: 9px;
+        gap: 6px;
+        padding: 7px;
         border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
         border-radius: 9px;
         background: var(--panel);
@@ -6367,15 +6367,15 @@
         justify-content: start;
         width: fit-content;
         max-width: 100%;
-        gap: 6px;
-        padding: 6px;
+        gap: 5px;
+        padding: 5px;
       }
       body.manual-mode-active .manual-hud-center { display: none; }
       body.manual-mode-active .manual-hud-side,
       body.manual-mode-active .manual-hud-side[data-side="B"] {
         grid-template-columns: 54px minmax(0, 1fr);
-        gap: 7px;
-        padding: 6px 8px;
+        gap: 6px;
+        padding: 5px 7px;
         text-align: left;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 1; grid-row: 1; }
@@ -6387,29 +6387,30 @@
       body.manual-mode-active .manual-hud-shield-setup,
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-shield-setup { margin-left: 0; margin-right: 0; }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { justify-content: start; }
-      body.manual-mode-active .manual-hud-sprite { width: 50px; height: 50px; }
-      body.manual-mode-active .manual-hud-name { font-size: 14px; }
-      body.manual-mode-active .manual-hud-hp { width: min(100%, 260px); height: 16px; }
-      body.manual-mode-active .manual-hud-hp-text { font-size: 10px; }
-      body.manual-mode-active .manual-hud-energy strong { font-size: 15px; }
+      body.manual-mode-active .manual-hud-sprite { width: 46px; height: 46px; }
+      body.manual-mode-active .manual-hud-copy { gap: 3px; }
+      body.manual-mode-active .manual-hud-name { font-size: 13px; }
+      body.manual-mode-active .manual-hud-hp { width: min(100%, 220px); height: 8px; }
+      body.manual-mode-active .manual-hud-hp-text { font-size: 9px; }
+      body.manual-mode-active .manual-hud-energy strong { font-size: 13px; }
       body.manual-mode-active .manual-hud-energy small { font-size: 9px; }
-      body.manual-mode-active .manual-hud-charges { grid-template-columns: 34px minmax(48px, auto) 34px; gap: 4px; }
-      body.manual-mode-active .manual-hud-charges .energy-orb { width: 34px; height: 34px; border-width: 2px; }
+      body.manual-mode-active .manual-hud-charges { grid-template-columns: 30px minmax(42px, auto) 30px; gap: 3px; }
+      body.manual-mode-active .manual-hud-charges .energy-orb { width: 30px; height: 30px; border-width: 2px; }
       body.manual-mode-active .manual-hud-charges .energy-orb-label { font-size: 10px; }
-      body.manual-mode-active .manual-hud-shield-control button { width: 34px; min-width: 34px; min-height: 28px; gap: 1px; }
-      body.manual-mode-active .manual-hud-shield-control svg { width: 15px; height: 15px; }
+      body.manual-mode-active .manual-hud-shield-control button { width: 30px; min-width: 30px; min-height: 26px; gap: 1px; }
+      body.manual-mode-active .manual-hud-shield-control svg { width: 13px; height: 13px; }
       body.manual-mode-active .manual-hud-shield-control strong { font-size: 9px; }
       body.manual-mode-active .manual-editor-actions {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: stretch;
-        padding: 7px;
+        padding: 6px;
       }
       body.manual-mode-active .manual-editor-actions .actions {
-        padding: 7px;
+        padding: 6px;
       }
       body.manual-mode-active .manual-editor-actions .actions button {
-        min-height: 46px;
-        padding: 7px 8px;
+        min-height: 38px;
+        padding: 6px 7px;
       }
       body.manual-mode-active .manual-editor-actions .actions button:disabled:not(.build-available) {
         display: none;
@@ -6425,16 +6426,22 @@
         display: grid;
         align-content: start;
         min-height: 0;
-        padding: 13px;
+        padding: 9px;
         overflow: auto;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
+      body.manual-mode-active .manual-battle-state-editor { gap: 7px; padding: 0 7px 7px; }
+      body.manual-mode-active .manual-battle-state-side { gap: 5px; padding: 7px; }
+      body.manual-mode-active .manual-state-number-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      body.manual-mode-active .manual-state-segmented button { min-height: 23px; }
+      body.manual-mode-active .manual-state-effects { padding: 5px 6px; }
+      body.manual-mode-active .manual-state-side-actions button { min-height: 28px; }
       body.manual-mode-active .manual-inspector-grid {
         grid-template-columns: 1fr;
         gap: 0;
-        margin-top: 10px;
+        margin-top: 7px;
       }
       body.manual-mode-active .manual-inspector-item {
         grid-template-columns: minmax(0, 1fr) auto;
@@ -6457,11 +6464,11 @@
         grid-area: event;
       }
       body.manual-mode-active .timeline-grid {
-        min-height: 168px;
+        min-height: 126px;
       }
       body.manual-mode-active .timeline-scroll {
         height: 100%;
-        min-height: 168px;
+        min-height: 126px;
       }
       body.manual-mode-active .timeline-label img {
         width: 52px;
