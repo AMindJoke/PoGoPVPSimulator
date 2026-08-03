@@ -359,6 +359,9 @@
       padding-right: 0;
       border-right: 0;
     }
+    body[data-view="scenario-review"].scenario-manual-setup .battle-cta-row {
+      display: none;
+    }
     body[data-view="scenario-review"] .toolbar-preset,
     body[data-view="scenario-review"] .toolbar-filters,
     body[data-view="scenario-review"] #counts {
@@ -10674,7 +10677,7 @@
       }
     }
     body.clarity-ui .manual-state-shield-toggle {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       width: 100%;
       border-radius: 8px;
     }
@@ -10710,8 +10713,8 @@
     <div id="simulatorView" class="app-view">
     <div class="toolbar">
       <div class="scenario-toolbar-copy">
-        <strong>Scenario Review</strong>
-        <span>Judge workspace · continuous battle state</span>
+        <strong id="scenarioToolbarTitle">Manual Review</strong>
+        <span id="scenarioToolbarSummary">Judge workspace · continuous battle state</span>
       </div>
       <div class="toolbar-group toolbar-actions">
         <button id="reset" class="secondary">Reset</button>
@@ -12732,6 +12735,7 @@
       const next = supportedViews.has(view) ? view : "simulator";
       const previous = document.body.dataset.view;
       document.body.dataset.view = next;
+      if (next !== "scenario-review") document.body.classList.remove("scenario-manual-setup");
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.classList.toggle("active", button.dataset.viewTarget === next);
       });
@@ -12745,6 +12749,9 @@
       }
       if (next === "scenario-review") {
         if (previous !== next) refreshPokemonLists();
+        // A view-level Auto Simulation choice must not leak into the next new
+        // review. Only an existing scenario carries an explicit saved mode.
+        if (!scenarioState) scenarioReviewMode = "manual";
         const canEnterWorkspaceDirectly = normalizedScenarioReviewMode(scenarioState?.mode ?? scenarioReviewMode) === "manual"
           && setupReadyForBattle();
         if (canEnterWorkspaceDirectly) ensureScenarioReviewWorkspaceMode();
@@ -17192,17 +17199,15 @@
 
     function manualBattleStateShieldControl(side, selected) {
       const count = Math.max(0, Math.min(2, Number(selected || 0)));
-      const buttons = [1, 2].map(slot => {
-        const target = slot === count ? Math.max(0, count - 1) : slot;
-        return shieldControlButtonMarkup({
-          value: target,
-          active: slot <= count,
+      const buttons = [0, 1, 2].map(value =>
+        shieldControlButtonMarkup({
+          value,
+          active: value === count,
           dataAttribute: "data-manual-state-shields",
-          accessibleLabel: `${slot <= count ? "Active" : "Inactive"} shield ${slot}; set Pokemon ${side} to ${target} shields remaining`,
-          title: `Set Pokemon ${side} to ${target} shields`,
-          showValue: false
-        });
-      }).join("");
+          accessibleLabel: `Set Pokemon ${side} to ${value} shields remaining`,
+          title: `Set Pokemon ${side} to ${value} shields`
+        })
+      ).join("");
       return `<div class="shield-count-toggle manual-state-shield-toggle" role="group" aria-label="Pokemon ${side}: ${count} shields remaining" data-shield-count="${count}">${buttons}</div>`;
     }
 
@@ -22515,6 +22520,7 @@
       if (scenarioState) scenarioState.mode = scenarioReviewMode;
       if (scenarioReviewMode === "automatic") {
         scenarioManualEntryPending = false;
+        document.body.classList.remove("scenario-manual-setup");
         if (manualModeState?.enabled) exitLiveManualMode();
         render();
         return true;
@@ -22532,10 +22538,12 @@
       }
       if (!setupReadyForBattle()) {
         scenarioManualEntryPending = true;
+        document.body.classList.add("scenario-manual-setup");
         renderScenarioReview();
         return false;
       }
       scenarioManualEntryPending = false;
+      document.body.classList.remove("scenario-manual-setup");
       if (!scenarioState) {
         scenarioState = scenarioApi()?.createScenario?.({
           mode: "manual",
@@ -23177,6 +23185,16 @@
       const manualModeButton = $("scenarioManualMode");
       const automaticModeButton = $("scenarioAutoMode");
       const manualSelected = scenarioReviewMode === "manual";
+      const toolbarTitle = $("scenarioToolbarTitle");
+      const toolbarSummary = $("scenarioToolbarSummary");
+      if (scenarioWorkspace && toolbarTitle && toolbarSummary) {
+        toolbarTitle.textContent = manualSelected ? "Manual Review" : "Auto Simulation";
+        toolbarSummary.textContent = manualSelected
+          ? scenarioManualEntryPending
+            ? "Choose both Pokémon · the manual workspace opens automatically"
+            : "Judge workspace · continuous battle state"
+          : "Automatic battle review";
+      }
       manualModeButton?.classList.toggle("active", manualSelected);
       automaticModeButton?.classList.toggle("active", !manualSelected);
       manualModeButton?.setAttribute("aria-pressed", String(manualSelected));
