@@ -6070,11 +6070,14 @@
         --timeline-lane-height: 38px;
         --timeline-side-zone-width: 92px;
         position: fixed;
-        inset: clamp(10px, 2.5vh, 24px) clamp(12px, 3vw, 42px);
+        top: clamp(10px, 2.5vh, 24px);
+        left: clamp(12px, 3vw, 42px);
+        bottom: auto;
+        width: min(1420px, calc(100vw - clamp(24px, 6vw, 84px)));
         z-index: 500;
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(250px, 290px);
-        grid-template-rows: auto auto minmax(190px, 1fr) auto auto;
+        grid-template-rows: auto auto minmax(190px, max-content) auto auto;
         grid-template-areas:
           "header header"
           "battle sidebar"
@@ -6082,9 +6085,8 @@
           "decision sidebar"
           "event sidebar";
         gap: 10px 12px;
-        width: auto;
         max-width: none;
-        max-height: none;
+        max-height: calc(100vh - clamp(20px, 5vh, 48px));
         padding: 0 14px 14px;
         overflow: auto;
         box-shadow:
