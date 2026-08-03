@@ -4342,7 +4342,18 @@
       border-radius: 7px;
       background: var(--panel);
     }
-    .manual-technical-issues > header { display: grid; gap: 2px; }
+    .manual-technical-issues > header {
+      position: static;
+      display: grid;
+      min-height: 0;
+      gap: 2px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      color: inherit;
+    }
     .manual-technical-issues > header strong { color: var(--muted); font-size: 11px; }
     .manual-technical-issues > header small { color: var(--muted); font-size: 9px; font-weight: 750; line-height: 1.3; }
     .manual-technical-issue-actions { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -6274,7 +6285,8 @@
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
-        grid-template-rows: auto minmax(168px, 1fr) auto auto;
+        grid-template-rows: auto minmax(168px, max-content) auto auto;
+        align-content: start;
         min-width: 0;
         min-height: 0;
         padding: 10px;
