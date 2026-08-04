@@ -5913,7 +5913,12 @@
     .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .manual-state-segmented[aria-label$="shields"] button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
     .manual-state-segmented[aria-label$="shields"] svg { width: 16px; height: 16px; flex: 0 0 auto; }
-    .manual-state-shield-toggle { width: 100%; }
+    .manual-state-stepper { display: grid; grid-template-columns: minmax(0, 1fr) 29px 34px 29px; align-items: center; gap: 4px; min-width: 0; }
+    .manual-state-stepper button,
+    .manual-state-stepper output { display: grid; place-items: center; min-width: 0; min-height: 28px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .manual-state-stepper button { padding: 2px; }
+    .manual-state-stepper button:disabled { opacity: .38; cursor: not-allowed; }
+    .manual-state-stepper output { color: var(--accent); }
     .manual-state-effects { display: grid; gap: 2px; padding: 6px 7px; border-radius: 6px; background: var(--panel); }
     .manual-state-effects small { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
     .manual-state-effects span { font-size: 10px; font-weight: 800; }
@@ -6593,6 +6598,10 @@
       }
       body.manual-mode-active .manual-state-segmented button {
         min-height: 22px;
+      }
+      body.manual-mode-active .manual-state-stepper button,
+      body.manual-mode-active .manual-state-stepper output {
+        min-height: 24px;
       }
       body.manual-mode-active .manual-state-effects {
         padding: 5px 6px;
@@ -10401,6 +10410,9 @@
       .manual-state-segmented { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
       .manual-state-segmented button { min-height: 36px; font-size: 10px; }
       .manual-state-segmented[aria-label$="shields"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .manual-state-stepper { grid-template-columns: minmax(0, 1fr) 40px 44px 40px; gap: 5px; }
+      .manual-state-stepper button,
+      .manual-state-stepper output { min-height: 40px; font-size: 12px; }
       .manual-state-side-actions { grid-template-columns: 1fr; }
       .manual-state-side-actions button { min-height: 40px; font-size: 10px; }
       .manual-bring-next-modal { align-items: flex-end; padding: 0; }
@@ -10909,20 +10921,6 @@
         transform: none;
         box-shadow: 0 14px 32px rgba(23, 33, 47, .14);
       }
-    }
-    body.clarity-ui .manual-state-shield-toggle {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      width: 100%;
-      border-radius: 8px;
-    }
-    body.clarity-ui .manual-state-shield-toggle button {
-      min-height: 38px;
-      padding: 4px 8px;
-    }
-    body.clarity-ui .manual-state-shield-toggle svg {
-      width: 24px;
-      height: 24px;
-      flex-basis: 24px;
     }
   </style>
 </head>
@@ -17430,13 +17428,15 @@
       return stage > 0 ? `+${stage}` : String(stage);
     }
 
-    function manualBattleStateSegmented(side, field, selected, values) {
-      return `<div class="manual-state-segmented" role="group" aria-label="Pokemon ${side} ${field}">${values.map(value => {
-        const active = Number(selected) === value;
-        const label = field === "shields" ? String(value) : manualBattleStateStageLabel(value);
-        const content = field === "shields" ? `${shieldSvg()}<strong>${label}</strong>` : label;
-        return `<button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value}" aria-label="Pokemon ${side} ${field} ${label}" aria-pressed="${active}">${content}</button>`;
-      }).join("")}</div>`;
+    function manualBattleStateStageStepper(side, field, selected) {
+      const value = Math.max(-4, Math.min(4, Number(selected || 0)));
+      const label = field === "attackStage" ? "Attack" : "Defense";
+      return `<div class="manual-state-stepper" role="group" aria-label="Pokemon ${side} ${label}">
+        <span class="manual-state-field-label">${label}</span>
+        <button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value - 1}" aria-label="Decrease Pokemon ${side} ${label}"${value <= -4 ? " disabled" : ""}>&minus;</button>
+        <output aria-label="Pokemon ${side} ${label} modifier">${manualBattleStateStageLabel(value)}</output>
+        <button type="button" data-manual-state-side="${side}" data-manual-state-field="${field}" data-manual-state-value="${value + 1}" aria-label="Increase Pokemon ${side} ${label}"${value >= 4 ? " disabled" : ""}>+</button>
+      </div>`;
     }
 
     function shieldControlButtonMarkup(options = {}) {
@@ -17447,20 +17447,6 @@
       const titleText = options.title || accessibleLabel;
       const visibleValue = options.showValue === false ? "" : `<strong>${value}</strong>`;
       return `<button type="button" class="${active ? "active" : ""}" ${dataAttribute}="${value}" title="${escapeHtml(titleText)}" aria-label="${escapeHtml(accessibleLabel)}" aria-pressed="${active}">${shieldSvg()}${visibleValue}</button>`;
-    }
-
-    function manualBattleStateShieldControl(side, selected) {
-      const count = Math.max(0, Math.min(2, Number(selected || 0)));
-      const buttons = [0, 1, 2].map(value =>
-        shieldControlButtonMarkup({
-          value,
-          active: value === count,
-          dataAttribute: "data-manual-state-shields",
-          accessibleLabel: `Set Pokemon ${side} to ${value} shields remaining`,
-          title: `Set Pokemon ${side} to ${value} shields`
-        })
-      ).join("");
-      return `<div class="shield-count-toggle manual-state-shield-toggle" role="group" aria-label="Pokemon ${side}: ${count} shields remaining" data-shield-count="${count}">${buttons}</div>`;
     }
 
     function renderManualBattleStateEditor() {
@@ -17483,12 +17469,8 @@
             <label for="manualStateHp${side}"><span>HP</span><span class="manual-state-input-shell"><input id="manualStateHp${side}" type="number" min="0" max="${state.maxHp}" step="1" value="${state.hp}" data-manual-state-side="${side}" data-manual-state-field="hp"><small>/ ${state.maxHp}</small></span></label>
             <label for="manualStateEnergy${side}"><span>Energy</span><span class="manual-state-input-shell"><input id="manualStateEnergy${side}" type="number" min="0" max="100" step="1" value="${state.energy}" data-manual-state-side="${side}" data-manual-state-field="energy"><small>/ 100</small></span></label>
           </div>
-          <label class="manual-state-field-label">Attack</label>
-          ${manualBattleStateSegmented(side, "attackStage", state.attackStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
-          <label class="manual-state-field-label">Defense</label>
-          ${manualBattleStateSegmented(side, "defenseStage", state.defenseStage, [-4, -3, -2, -1, 0, 1, 2, 3, 4])}
-          <label class="manual-state-field-label">Shields</label>
-          ${manualBattleStateShieldControl(side, state.shields)}
+          ${manualBattleStateStageStepper(side, "attackStage", state.attackStage)}
+          ${manualBattleStateStageStepper(side, "defenseStage", state.defenseStage)}
           <div class="manual-state-effects"><small>Applied Effects</small><span>${escapeHtml(effects)}</span></div>
           <div class="manual-state-side-actions">
             <button type="button" class="secondary" data-manual-mark-fainted="${side}" ${state.fainted ? "disabled" : ""}>Mark fainted</button>
@@ -17516,13 +17498,6 @@
           button.dataset.manualStateSide,
           button.dataset.manualStateField,
           button.dataset.manualStateValue
-        );
-      });
-      editor.querySelectorAll("button[data-manual-state-shields]").forEach(button => {
-        button.onclick = () => commitManualBattleStateEdit(
-          button.closest(".manual-battle-state-side").dataset.side,
-          "shields",
-          button.dataset.manualStateShields
         );
       });
       editor.querySelectorAll("[data-manual-mark-fainted]").forEach(button => {
