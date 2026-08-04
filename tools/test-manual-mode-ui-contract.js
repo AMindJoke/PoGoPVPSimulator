@@ -137,7 +137,7 @@ assert.match(html, /id="manualHudTypesB"/);
 assert.match(html, /--timeline-track-height: 48px/);
 assert.match(html, /grid-template-areas:[\s\S]{0,160}"header header"[\s\S]{0,160}"decision sidebar"/);
 assert.match(html, /body\[data-view="scenario-review"\]\.manual-mode-active main\s*\{[\s\S]{0,100}padding: 8px/);
-assert.match(html, /width: min\(1680px, calc\(100vw - 16px\)\)/);
+assert.match(html, /width: min\(1220px, calc\(100vw - 16px\)\)/);
 assert.match(html, /body\.manual-mode-active \.manual-timeline-stage\s*\{[\s\S]{0,160}grid-template-rows: auto 128px auto auto/);
 assert.match(html, /grid-template-rows: auto auto auto auto auto/);
 assert.match(html, /body\.manual-mode-active \.manual-state-number-row\s*\{[\s\S]{0,100}repeat\(2, minmax\(0, 1fr\)\)/);
