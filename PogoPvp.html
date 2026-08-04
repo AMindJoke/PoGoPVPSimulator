@@ -6070,7 +6070,7 @@
         left: 50%;
         z-index: 500;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(260px, 280px);
+        grid-template-columns: minmax(0, 1fr) minmax(250px, 270px);
         grid-template-rows: auto auto auto auto auto;
         grid-template-areas:
           "header header"
@@ -6079,11 +6079,11 @@
           "decision sidebar"
           "event sidebar";
         align-content: start;
-        gap: 8px 10px;
-        width: min(1600px, calc(100vw - 24px));
-        max-width: 1600px;
+        gap: 8px;
+        width: min(1680px, calc(100vw - 8px));
+        max-width: 1680px;
         max-height: calc(100vh - clamp(20px, 4vh, 40px));
-        padding: 0 10px 10px;
+        padding: 0 6px 8px;
         overflow: auto;
         box-sizing: border-box;
         transform: translateX(-50%);
@@ -6097,8 +6097,8 @@
         align-items: center;
         gap: 10px;
         min-height: 50px;
-        margin: 0 -10px;
-        padding: 6px 10px;
+        margin: 0 -6px;
+        padding: 6px 8px;
         border-bottom: 1px solid var(--line);
         background: var(--panel);
       }
@@ -6191,9 +6191,11 @@
       body.manual-mode-active .manual-duel-hud {
         grid-area: battle;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 116px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 360px) 90px minmax(0, 360px);
+        justify-content: center;
         align-items: stretch;
-        padding: 7px;
+        gap: 8px;
+        padding: 4px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
@@ -6209,8 +6211,8 @@
       body.manual-mode-active .manual-hud-center > strong {
         display: grid;
         place-items: center;
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         border: 1px solid var(--line);
         border-radius: 50%;
         font-size: 17px;
@@ -6236,16 +6238,16 @@
         text-transform: uppercase;
       }
       body.manual-mode-active .manual-hud-side {
-        grid-template-columns: 66px minmax(0, 1fr);
-        gap: 10px;
-        padding: 7px 9px;
+        grid-template-columns: 60px minmax(0, 1fr);
+        gap: 8px;
+        padding: 5px 7px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: minmax(0, 1fr) 66px;
+        grid-template-columns: minmax(0, 1fr) 60px;
       }
       body.manual-mode-active .manual-hud-sprite {
-        width: 64px;
-        height: 64px;
+        width: 58px;
+        height: 58px;
       }
       body.manual-mode-active .manual-hud-name {
         font-size: 14px;
@@ -6261,7 +6263,7 @@
         gap: 8px;
       }
       body.manual-mode-active .manual-hud-copy {
-        width: min(100%, 255px);
+        width: 100%;
         justify-self: start;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-copy {
@@ -6349,11 +6351,11 @@
       body.manual-mode-active .manual-timeline-stage {
         grid-area: timeline;
         display: grid;
-        grid-template-rows: auto 116px auto auto;
+        grid-template-rows: auto 128px auto auto;
         align-content: start;
         min-width: 0;
         min-height: 0;
-        padding: 6px 7px;
+        padding: 7px 8px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
@@ -6389,8 +6391,8 @@
           "actions-a actions-a actions-a actions-a actions-a actions-b actions-b actions-b actions-b actions-b";
         align-items: stretch;
         gap: 6px;
-        margin-top: 28px;
-        padding: 7px;
+        margin-top: 0;
+        padding: 6px;
         border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
         border-radius: 9px;
         background: var(--panel);
@@ -6423,6 +6425,12 @@
       body.manual-mode-active .manual-overlay-controls {
         grid-area: controls;
         display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      body.manual-mode-active .manual-overlay-controls button {
+        min-height: 29px;
+        padding: 4px 7px;
       }
       body.manual-mode-active .manual-scenario-panel {
         grid-area: scenario;
@@ -6485,7 +6493,7 @@
         display: grid;
         align-content: start;
         min-height: 0;
-        padding: 8px;
+        padding: 7px;
         overflow: auto;
         border: 1px solid var(--line);
         border-radius: 9px;
@@ -6517,11 +6525,11 @@
         grid-area: event;
       }
       body.manual-mode-active .timeline-grid {
-        min-height: 116px;
+        min-height: 128px;
       }
       body.manual-mode-active .timeline-scroll {
         height: 100%;
-        min-height: 116px;
+        min-height: 128px;
       }
       body.manual-mode-active .timeline-label img {
         width: 42px;
@@ -10864,6 +10872,10 @@
       body[data-view="scenario-review"].manual-mode-active {
         overflow: auto;
       }
+      body[data-view="scenario-review"].manual-mode-active main {
+        gap: 8px;
+        padding: 8px;
+      }
       body[data-view="scenario-review"].manual-mode-active #simulatorView > .setup,
       body[data-view="scenario-review"].manual-mode-active #simulatorView > .battle-cta-row,
       body[data-view="scenario-review"].manual-mode-active .analysis-grid > :not(#battleTimeline) {
@@ -10879,9 +10891,9 @@
         position: relative;
         inset: auto;
         z-index: auto;
-        width: min(1600px, calc(100vw - 24px));
+        width: min(1680px, calc(100vw - 16px));
         min-height: 0;
-        max-width: 1600px;
+        max-width: 1680px;
         max-height: none;
         margin: 0 auto;
         overflow: visible;
