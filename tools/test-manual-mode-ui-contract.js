@@ -125,6 +125,7 @@ assert.match(html, /body\.manual-mode-active main\s*\{[\s\S]{0,90}136px/);
 assert.match(html, /manual-hud-types\s*\{[\s\S]{0,90}grid-column: 1 \/ -1/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-charges \.energy-orb\s*\{[\s\S]{0,100}width: 32px/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-hp\s*\{[\s\S]{0,100}height: 24px/);
+assert.match(html, /body\.manual-mode-active \.manual-hud-side\s*\{[\s\S]{0,180}border: 0;[\s\S]{0,80}background: transparent/);
 assert.match(html, /body\.manual-mode-active \.manual-hud-shield-control\s*\{[\s\S]{0,120}grid-template-columns: repeat\(3, 34px\)/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.actions button\s*\{[\s\S]{0,140}min-height: 58px/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions \.move-button-label > span\s*\{[\s\S]{0,80}color: inherit/);
