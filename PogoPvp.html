@@ -23556,7 +23556,8 @@
         const move = attacker.charged[moveIndex];
         const shielded = await askManualShieldDecision(attacker, defender, move, estimate(attacker, defender, move));
         const forceBuffs = await askManualBuffDecision(move);
-        const applied = useCharge(attacker, defender, moveIndex, {
+        const chargeTimelineStart = timeline.length;
+        useCharge(attacker, defender, moveIndex, {
           shielded,
           forceBuffs,
           manualAction: {
@@ -23567,7 +23568,15 @@
           aiReason: "DRE reconstruction",
           deferCooldownReset: true
         });
-        if (!applied) throw new Error("DRE_CHARGED_REJECTED");
+        const chargedEvent = timeline.slice(chargeTimelineStart).find(event => (
+          event?.kind === "charge"
+          && event.trainer === issue.trainer
+          && event.move?.id === move.id
+        ));
+        // useCharge() returns whether the battle can continue, so a legitimate
+        // terminal KO returns false. The semantic Charged event is the reliable
+        // proof that the DRE action resolved and must be committed.
+        if (!chargedEvent) throw new Error("DRE_CHARGED_REJECTED");
         manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
           timeline,
           cursorTurn: manualCanonicalState()?.currentTurn || 0,
