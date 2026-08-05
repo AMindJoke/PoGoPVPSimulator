@@ -9065,6 +9065,8 @@
       }
       body.manual-mode-active #battleTimeline {
         --manual-mobile-top-offset: 0px;
+        --timeline-track-height: 46px;
+        --timeline-lane-height: 30px;
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -9341,7 +9343,10 @@
         z-index: 40;
         display: block;
         order: 2;
+        min-width: 0;
+        max-width: 100%;
         padding: 7px;
+        overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
@@ -9355,12 +9360,52 @@
         gap: 5px;
         font-size: 9px;
       }
-      body.manual-mode-active .timeline-grid { min-height: 106px; }
+      body.manual-mode-active .timeline-grid {
+        min-width: 0;
+        min-height: 116px;
+        grid-template-rows: 20px var(--timeline-track-height) var(--timeline-track-height);
+      }
       body.manual-mode-active .timeline-scroll {
-        min-height: 106px;
-        height: 106px;
+        width: 100%;
+        max-width: 100%;
+        min-height: 116px;
+        height: 116px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        touch-action: pan-x pan-y;
         background: var(--soft);
       }
+      body.manual-mode-active .timeline-scroll.fit-mode {
+        overflow-x: auto;
+        scrollbar-gutter: stable;
+      }
+      body.manual-mode-active .timeline-scroll::-webkit-scrollbar { height: 6px; }
+      body.manual-mode-active .timeline-scroll::-webkit-scrollbar-track { background: transparent; }
+      body.manual-mode-active .timeline-scroll::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--muted) 46%, transparent);
+      }
+      body.manual-mode-active .timeline-ruler,
+      body.manual-mode-active .timeline-track {
+        min-width: 100%;
+      }
+      body.manual-mode-active .timeline-block.fast {
+        min-width: 14px;
+        min-height: 14px;
+      }
+      body.manual-mode-active .timeline-block.technical-event {
+        min-width: 28px;
+        min-height: 20px;
+        font-size: 9px;
+      }
+      body.manual-mode-active .timeline-zoom-control {
+        grid-template-columns: 23px 38px 23px;
+        margin-top: 4px;
+      }
+      body.manual-mode-active .timeline-zoom-control button { min-height: 23px; }
       body.manual-mode-active .manual-editor-workspace {
         display: block;
         order: 3;
@@ -10491,8 +10536,8 @@
       body.manual-mode-active .manual-timeline-stage { padding: 5px; }
       body.manual-mode-active .timeline-grid,
       body.manual-mode-active .timeline-scroll {
-        min-height: 88px;
-        height: 88px;
+        min-height: 112px;
+        height: 112px;
       }
     }
 
@@ -26582,16 +26627,25 @@
       const rawMaxTurn = Math.max(20, ...visibleTimeline.map(event => event.kind === "fast" ? timelineFastImpactTurn(event) + 2 : event.start + event.duration + 1));
       const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns + (isFit ? 3 : 0);
       const scroll = $("timelineScroll");
+      const mobileManualScroll = manualMobileTimelineScrollEnabled();
       scroll.classList.toggle("fit-mode", isFit);
+      scroll.classList.toggle("mobile-scroll-mode", mobileManualScroll);
       const turnPx = timelineTurnPixels(maxTurn, scroll);
+      const previousScrollLeft = scroll.scrollLeft;
+      const mobileScrollKey = `${manualRootSnapshotId || "manual"}:${left.p?.id || "A"}:${right.p?.id || "B"}`;
+      const sameMobileTimeline = scroll.dataset.mobileTimelineKey === mobileScrollKey;
       const keepAtEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 4;
       renderTimelineRuler(maxTurn, turnPx);
       renderTimelineRow("A", "p1Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderScenarioTimelineTransitions(chargeSlots, turnPx);
       renderTechnicalTimelineState();
-      if (isFit) scroll.scrollLeft = 0;
+      if (mobileManualScroll && !sameMobileTimeline) scroll.scrollLeft = 0;
+      else if (isFit && !mobileManualScroll) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
+      else if (mobileManualScroll) scroll.scrollLeft = Math.min(previousScrollLeft, Math.max(0, scroll.scrollWidth - scroll.clientWidth));
+      if (mobileManualScroll) scroll.dataset.mobileTimelineKey = mobileScrollKey;
+      else delete scroll.dataset.mobileTimelineKey;
       if (timelineSpan) perfDebug.endSpan(timelineSpan);
     }
 
@@ -26673,7 +26727,12 @@
     function timelineTurnPixels(maxTurn, scroll) {
       const available = Math.max(1, scroll.clientWidth - 2);
       const fit = Math.min(24, available / Math.max(1, maxTurn));
-      return fit * timelineZoomPercent() / 100;
+      const readableFit = manualMobileTimelineScrollEnabled() ? Math.max(18, fit) : fit;
+      return readableFit * timelineZoomPercent() / 100;
+    }
+
+    function manualMobileTimelineScrollEnabled() {
+      return !!manualModeState?.enabled && window.matchMedia("(max-width: 900px)").matches;
     }
 
     function timelineZoomPercent() {
@@ -26753,7 +26812,7 @@
           const title = event.kind === "technical-lag"
             ? `One-turn lag before ${event.move?.name || "Fast Move"}`
             : `${event.move?.name || "Charged Move"} fires before pending ${event.pendingFastMoveName || "Fast Move"} damage`;
-          return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}" data-event-index="${index}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
+          return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}" data-event-index="${index}" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
         }
         const isShield = event.kind === "shield" || event.kind === "form-protect";
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
