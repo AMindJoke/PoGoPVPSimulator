@@ -11,8 +11,8 @@ const {
   createBattleConfig
 } = require("./build-great-league-meta-database");
 
-const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-const standardMovesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+const standardMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
 const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
 const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon?.speciesId && pokemon.baseStats)
@@ -65,7 +65,7 @@ function assertDirectParityOwnership(result) {
   for (const decision of decisions) {
     assert.strictEqual(decision.finalAuthority, "PRINCIPLE_ENGINE");
     assert.strictEqual(decision.fallbackUsed, false);
-    assert.strictEqual(decision.principleResult?.evidence?.plannerMode, "PVPOKE_PARITY");
+    assert.strictEqual(decision.principleResult?.evidence?.plannerMode, "CANONICAL");
     assert.strictEqual(decision.principlesEvaluated.length, 43);
     assert(decision.candidates.length <= 2, "Only the actor's legal Charged Moves may be compared.");
     assert(decision.candidates.every(candidate => (candidate.branchDepth || 0) === 0),

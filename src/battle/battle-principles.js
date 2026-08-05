@@ -4,7 +4,7 @@ const PRINCIPLE_REGISTRY_VERSION = "principle-registry-v1";
 
 const PRINCIPLE_STATUS = Object.freeze({
   ACTIVE: "ACTIVE",
-  MODIFIED_FROM_PVPOKE: "MODIFIED_FROM_PVPOKE",
+  ADAPTED: "ADAPTED",
   REPLACED: "REPLACED",
   DISABLED: "DISABLED",
   EXPERIMENTAL: "EXPERIMENTAL",
@@ -38,14 +38,14 @@ const COMMON_FORBIDDEN_SIDE_EFFECTS = Object.freeze([
   "MUST_NOT_USE_SPECIES_ID_EXCEPTION"
 ]);
 
-const PVPOKE_ACTION_LOGIC_SOURCE = Object.freeze({
-  repository: "https://github.com/pvpoke/pvpoke",
+const INTERNAL_ACTION_LOGIC_SOURCE = Object.freeze({
+  repository: "local",
   files: [
     "src/js/battle/actions/ActionLogic.js",
     "src/js/battle/Battle.js",
     "src/js/battle/DamageCalculator.js"
   ],
-  referenceDocument: "PvPoke_Battle_Intelligence_Reverse_Engineering_v1.0.md"
+  referenceDocument: "BATTLE_INTELLIGENCE.md"
 });
 
 function principle(input) {
@@ -62,7 +62,7 @@ function principle(input) {
     allowedOutputs: Object.freeze([...(input.allowedOutputs || [])]),
     forbiddenSideEffects: Object.freeze([...(input.forbiddenSideEffects || COMMON_FORBIDDEN_SIDE_EFFECTS)]),
     reasonCodes: Object.freeze([...(input.reasonCodes || [])]),
-    source: Object.freeze(input.source || PVPOKE_ACTION_LOGIC_SOURCE),
+    source: Object.freeze(input.source || INTERNAL_ACTION_LOGIC_SOURCE),
     status: input.status,
     introducedInVersion: input.introducedInVersion || PRINCIPLE_REGISTRY_VERSION,
     modifiedInVersion: input.modifiedInVersion || PRINCIPLE_REGISTRY_VERSION,
@@ -99,7 +99,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "FAST_MOVE_INTENT_OR_AMBIGUITY_ESCALATION",
     allowedOutputs: ["fast_move", "retain_future_breakpoint_alternative"],
     reasonCodes: ["CHEAPEST_CHARGED_NOT_AFFORDABLE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-avail-002-cheapest-not-affordable"]
   }),
   principle({
@@ -129,7 +129,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "CHARGED_REACHABILITY_VECTOR",
     allowedOutputs: ["reachability_vector"],
     reasonCodes: ["CHARGED_READINESS_CALCULATED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-route-004-charged-readiness"]
   }),
   principle({
@@ -144,7 +144,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "SURVIVAL_HORIZON",
     allowedOutputs: ["survival_horizon"],
     reasonCodes: ["SURVIVAL_HORIZON_ESTIMATED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-survival-005-survival-horizon"]
   }),
   principle({
@@ -174,7 +174,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "RETAIN_ROUTE_ALTERNATIVE",
     allowedOutputs: ["retain_route", "charged_move"],
     reasonCodes: ["TWO_CHEAP_MOVES_OUTRANK_NUKE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-route-007-two-copies-outrank-nuke"]
   }),
   principle({
@@ -219,7 +219,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "CHARGED_MOVE_INTENT",
     allowedOutputs: ["charged_move", "fast_move_until_affordable"],
     reasonCodes: ["PROTECTION_FORM_BREAKER"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-special-010-protection-form-breaker"]
   }),
   principle({
@@ -234,7 +234,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "THROW_NOW_OR_FAST_THEN_REPLAN",
     allowedOutputs: ["charged_move", "fast_move", "wait"],
     reasonCodes: ["OPTIMAL_CHARGE_TIMING"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-timing-011-optimize-charged-timing", "tools/test-timing-compatibility.js"]
   }),
   principle({
@@ -249,7 +249,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "TIMING_TARGET",
     allowedOutputs: ["timing_target"],
     reasonCodes: ["TIMING_TARGET_DERIVED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-timing-012-target-fast-durations"]
   }),
   principle({
@@ -324,7 +324,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "THROW_NOW",
     allowedOutputs: ["charged_move"],
     reasonCodes: ["CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-timing-017-current-resources-unusable"]
   }),
   principle({
@@ -354,7 +354,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "THROW_NOW",
     allowedOutputs: ["charged_move"],
     reasonCodes: ["LETHAL_CHARGED_CONCEDED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-timing-019-opponent-lethal-charged"]
   }),
   principle({
@@ -384,7 +384,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "FAST_MOVE_INTENT_THEN_REPLAN",
     allowedOutputs: ["fast_move"],
     reasonCodes: ["SAFE_EXTRA_FAST", "OPTIMAL_CHARGE_TIMING"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-timing-021-one-fast-then-replan"]
   }),
   principle({
@@ -429,7 +429,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "BAIT_ROUTE_CANDIDATE",
     allowedOutputs: ["charged_move_candidate", "straight_route"],
     reasonCodes: ["SHIELD_PRESSURE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-bait-024-long-credible-bait"]
   }),
   principle({
@@ -444,7 +444,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "NON_DEBUFFING_MOVE_CANDIDATE",
     allowedOutputs: ["charged_move_candidate"],
     reasonCodes: ["PREFER_NON_DEBUFF_ROUTE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-move-025-long-non-debuffing"]
   }),
   principle({
@@ -489,7 +489,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "COMPACT_ROUTE_SET",
     allowedOutputs: ["route_set"],
     reasonCodes: ["COMPACT_ROUTE_GENERATED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-compact-028-fastest-effective-ko-route"]
   }),
   principle({
@@ -504,7 +504,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "SEARCH_BUDGET_STATE",
     allowedOutputs: ["complete", "incomplete"],
     reasonCodes: ["SEARCH_BUDGET_APPLIED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-search-029-bound-state-count"]
   }),
   principle({
@@ -549,7 +549,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "NO_PROC_MATRIX_OR_REVIEW_BRANCHES",
     allowedOutputs: ["no_proc", "scenario_review_proc_branch", "scenario_review_no_proc_branch"],
     reasonCodes: ["NON_GUARANTEED_EFFECT_NO_PROC_MATRIX"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-chance-032-no-proc-matrix", "DM-02"]
   }),
   principle({
@@ -594,7 +594,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "PRUNE_WITH_REASON",
     allowedOutputs: ["prune", "retain"],
     reasonCodes: ["DOMINATED_STATE_PRUNED"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-search-035-prune-dominated-states"]
   }),
   principle({
@@ -624,7 +624,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "FAST_UNTIL_BAIT_CREDIBLE_OR_BAIT_ROUTE",
     allowedOutputs: ["fast_move", "charged_move_candidate"],
     reasonCodes: ["BUILD_TO_CREDIBLE_NUKE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-bait-037-build-to-nuke"]
   }),
   principle({
@@ -669,7 +669,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "DAMAGE_ORDERED_ROUTE",
     allowedOutputs: ["charged_move_candidate"],
     reasonCodes: ["BEST_IMMEDIATE_DAMAGE"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-move-040-useful-immediate-damage"]
   }),
   principle({
@@ -714,7 +714,7 @@ const BATTLE_PRINCIPLES = Object.freeze([
     output: "SHIELD_OR_NO_SHIELD_DECISION",
     allowedOutputs: ["shield", "no_shield", "retain_material_counterfactual"],
     reasonCodes: ["SHIELD_PREVENTS_KO", "SHIELD_HEAVY_PRESSURE", "SHIELD_PRESERVES_WIN_CONDITION", "SHIELD_SAVED_LOW_THREAT"],
-    status: PRINCIPLE_STATUS.MODIFIED_FROM_PVPOKE,
+    status: PRINCIPLE_STATUS.ADAPTED,
     tests: ["principle-shield-043-current-future-resource-value", "DM-01"]
   })
 ]);

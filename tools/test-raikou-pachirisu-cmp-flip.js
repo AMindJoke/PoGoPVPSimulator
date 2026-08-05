@@ -11,8 +11,8 @@ const {
   createBattleConfig
 } = require("./build-great-league-meta-database");
 
-const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-const movesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+const movesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
 const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
 const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon?.speciesId && pokemon.baseStats)

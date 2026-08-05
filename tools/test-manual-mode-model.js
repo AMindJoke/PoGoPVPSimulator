@@ -47,7 +47,7 @@ assert.deepEqual(Manual.validateState(state), []);
 state = Manual.setControlMode(state, Manual.CONTROL_MODE.PLAYER_A_MANUAL);
 assert.deepEqual(state.controlledSides, ["A"]);
 assert.equal(state.autoPolicyBySide.A, Manual.AUTO_POLICY.MANUAL);
-assert.equal(state.autoPolicyBySide.B, Manual.AUTO_POLICY.PVPOKE_PARITY);
+assert.equal(state.autoPolicyBySide.B, Manual.AUTO_POLICY.CANONICAL);
 assert.throws(() => Manual.setSelectedSide(state, "B"), /SIDE_NOT_MANUALLY_CONTROLLED/);
 
 state = Manual.setSelectedSide(state, "A");

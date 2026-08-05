@@ -5,7 +5,7 @@ const path = require("path");
 const Translator = require("../tools/pvpoke-state-translator");
 
 const ROOT = path.resolve(__dirname, "..");
-const PVPOKE_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
+const CANONICAL_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
 const TARGET_STATE_COUNT = 640;
 const SEED = 27072026;
 
@@ -104,8 +104,8 @@ function buildKingdraTinkatonPrimaryBuildFixture(data) {
   };
   return {
     id: "reviewed-kingdra-shadow-tinkaton-primary-build-0s-adv3-turn20",
-    suite: "PVPOKE_DIFFERENTIAL_PARITY",
-    pvpokeRevision: PVPOKE_REVISION,
+    suite: "CANONICAL_DIFFERENTIAL_PARITY",
+    pvpokeRevision: CANONICAL_REVISION,
     source: "actual-pinned-pvpoke-runtime-reviewed-state",
     family: "primary-charged-build-before-forced-cheap-throw",
     categories: ["reviewed", "shields-down", "forced-throw", "primary-charged-build", "cmp-safe"],
@@ -133,8 +133,8 @@ function buildFixture(index, leftRanking, rightRanking, data, rng) {
   mutateStateForCategory(category, a, b, shieldPair, index);
   return {
     id: `real-diff-${String(index + 1).padStart(3, "0")}`,
-    suite: "PVPOKE_DIFFERENTIAL_PARITY",
-    pvpokeRevision: PVPOKE_REVISION,
+    suite: "CANONICAL_DIFFERENTIAL_PARITY",
+    pvpokeRevision: CANONICAL_REVISION,
     source: "real-gamemaster-mutated-legal-state",
     family: category.family,
     categories: category.categories,
@@ -352,7 +352,7 @@ function loadRealData() {
 }
 
 function loadDefaultMovesets() {
-  const source = fs.readFileSync(path.join(ROOT, "pvpoke-default-movesets.js"), "utf8");
+  const source = fs.readFileSync(path.join(ROOT, "default-movesets.js"), "utf8");
   const json = source.replace(/^.*?=\s*/s, "").replace(/;\s*$/s, "");
   const parsed = JSON.parse(json);
   return Object.fromEntries(Object.entries(parsed).map(([id, moves]) => [id, [moves.fast, ...(moves.charged || [])]]));
@@ -370,7 +370,7 @@ function mulberry32(seed) {
 }
 
 module.exports = {
-  PVPOKE_REVISION,
+  CANONICAL_REVISION,
   TARGET_STATE_COUNT,
   SEED,
   buildDifferentialCorpus,

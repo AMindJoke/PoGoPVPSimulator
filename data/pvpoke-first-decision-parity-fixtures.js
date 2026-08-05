@@ -1,6 +1,6 @@
 "use strict";
 
-const PVPOKE_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
+const CANONICAL_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
 const ACTION_FAMILY_SIZE = 40;
 const SHIELD_FAMILY_SIZE = 40;
 
@@ -63,7 +63,7 @@ function buildActionFixtures() {
       fixtures.push({
         id: `${family}-${String(index + 1).padStart(2, "0")}`,
         family,
-        pvpokeRevision: PVPOKE_REVISION,
+        pvpokeRevision: CANONICAL_REVISION,
         ...build(index)
       });
     }
@@ -237,12 +237,12 @@ function buildShieldFixtures() {
     return {
       id: `would-shield-${String(index + 1).padStart(2, "0")}`,
       family: "would-shield",
-      pvpokeRevision: PVPOKE_REVISION,
+      pvpokeRevision: CANONICAL_REVISION,
       source: "ActionLogic:1116-1200",
       categories: ["shield", shield ? "shield" : "no-shield", index % 3 ? "shield-difference" : "equal-shields"],
       input: {
         policy: "smart",
-        plannerMode: "PVPOKE_PARITY",
+        plannerMode: "CANONICAL",
         state: { shields: 1, hp: 100, maxHp: 100 },
         threat: { damage, energyCost: 40 },
         parityThreat: {
@@ -264,7 +264,7 @@ function buildShieldFixtures() {
 }
 
 module.exports = {
-  PVPOKE_REVISION,
+  CANONICAL_REVISION,
   ACTION_FAMILY_SIZE,
   SHIELD_FAMILY_SIZE,
   buildActionFixtures,

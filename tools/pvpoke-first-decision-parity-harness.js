@@ -115,7 +115,7 @@ function evaluateActionFixture(fixture) {
     side: "A",
     legalActions,
     policy: "FAST",
-    plannerMode: "PVPOKE_PARITY",
+    plannerMode: "CANONICAL",
     context: buildContext(fixture, state)
   });
   const expectedDecision = normalizeExpected(fixture.expected);
@@ -234,7 +234,7 @@ function summarize(results) {
     suite: "RULE_CONFORMANCE",
     reference: "manual expected fixture conformance",
     generatedAt: new Date().toISOString(),
-    pvpokeRevision: Fixtures.PVPOKE_REVISION,
+    pvpokeRevision: Fixtures.CANONICAL_REVISION,
     objective: "first-strategic-decision-parity",
     totalStates: results.length,
     actionStates: results.filter(result => result.kind === "action").length,
@@ -280,7 +280,7 @@ function markdownReport(report) {
     "",
     "- Suite: `RULE_CONFORMANCE`",
     "- Reference: manual expected fixture conformance",
-    "- This is separate from `PVPOKE_DIFFERENTIAL_PARITY`, which executes the actual pinned PvPoke runtime.",
+    "- This is separate from `CANONICAL_DIFFERENTIAL_PARITY`, which executes the actual pinned PvPoke runtime.",
     "",
     `- PvPoke revision: \`${report.pvpokeRevision}\``,
     `- Objective: ${report.objective}`,

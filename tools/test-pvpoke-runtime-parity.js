@@ -54,7 +54,7 @@ for (const callerContext of ["battle", "matrix", "offline", "scenario-review"]) 
     side: "A",
     legalActions,
     policy: callerContext === "scenario-review" ? "DEEP_REVIEW" : "FAST",
-    plannerMode: "PVPOKE_PARITY",
+    plannerMode: "CANONICAL",
     context: {
       callerContext,
       chargedTimingOptimization: false,
@@ -83,12 +83,12 @@ for (const decision of decisions.slice(1)) {
   assert.deepEqual(decision.principlesTriggered, canonical.principlesTriggered, `${decision.callerContext} principles differ from live battle.`);
   assert.equal(decision.finalAuthority, "PRINCIPLE_ENGINE");
   assert.equal(decision.fallbackUsed, false);
-  assert.equal(decision.plannerMode, "PVPOKE_PARITY");
+  assert.equal(decision.plannerMode, "CANONICAL");
 }
 
 const html = fs.readFileSync(path.resolve(__dirname, "..", "PogoPvp.html"), "utf8");
 assert(html.includes("const PvPeakBattleIntelligence = (${window.createPvPeakBattleIntelligenceApi.toString()})();"));
-assert(html.includes('plannerMode: "PVPOKE_PARITY"'));
+assert(html.includes('plannerMode: "CANONICAL"'));
 assert(!html.includes("battleIntelligenceCandidateEvidence,"));
 
 console.log(JSON.stringify({

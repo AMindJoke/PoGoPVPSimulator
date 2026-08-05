@@ -176,7 +176,7 @@ function extractLiveWorkerSource() {
       createPvPeakBattleIntelligenceApi: battleIntelligence.createApi,
       location: { search: "" }
     },
-    document: {},
+    document: { addEventListener: () => {} },
     indexedDB: null,
     Blob: function Blob() {},
     URL: { createObjectURL: () => "" },
@@ -1111,10 +1111,10 @@ function validateOutput({ rankings, matchups, pool, opponentPool, profiles, scen
 function main() {
   const started = Date.now();
   const metaConfig = readJson("data/great-league-meta.json");
-  const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-  const standardMovesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+  const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+  const standardMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
   if (!gamemaster || !Array.isArray(gamemaster.moves) || !Array.isArray(gamemaster.pokemon)) {
-    throw new Error("Could not load gamemaster-data.js.");
+    throw new Error("Could not load battle-data.js.");
   }
 
   const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));

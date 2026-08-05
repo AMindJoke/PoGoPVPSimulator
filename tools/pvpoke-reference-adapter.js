@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-const PINNED_PVPOKE_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
+const PINNED_CANONICAL_REVISION = "5e1e3d971369a47aaf3e7247f50710d80205d570";
 const REQUIRED_MODULES = Object.freeze([
   "src/js/battle/DamageCalculator.js",
   "src/js/battle/timeline/TimelineAction.js",
@@ -13,7 +13,7 @@ const REQUIRED_MODULES = Object.freeze([
 
 function createPvPokeReference(options = {}) {
   const repoPath = path.resolve(options.repoPath || path.join(__dirname, "..", "vendor", "pvpoke"));
-  const revision = options.revision || PINNED_PVPOKE_REVISION;
+  const revision = options.revision || PINNED_CANONICAL_REVISION;
   validateReferenceDirectory(repoPath, revision);
 
   const loadedModules = [];
@@ -172,7 +172,7 @@ function lastDecisionReason(battle) {
 }
 
 module.exports = {
-  PINNED_PVPOKE_REVISION,
+  PINNED_CANONICAL_REVISION,
   REQUIRED_MODULES,
   createPvPokeReference,
   validateReferenceDirectory

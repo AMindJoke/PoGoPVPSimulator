@@ -1,6 +1,5 @@
-﻿// Generated from PvPoke rankings-1500.json on 2026-07-02T09:48:18Z.
-// Source: https://raw.githubusercontent.com/pvpoke/pvpoke/master/src/data/rankings/all/overall/rankings-1500.json
-window.PVPOKE_DEFAULT_MOVESETS = {
+// Generated default Great League movesets.
+window.BATTLE_DEFAULT_MOVESETS = {
     "mimikyu":  {
                     "fast":  "SHADOW_CLAW",
                     "charged":  [

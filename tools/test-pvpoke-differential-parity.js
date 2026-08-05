@@ -11,7 +11,7 @@ const ROOT = path.resolve(__dirname, "..");
 const report = Harness.run({ writeReports: true });
 
 assert.equal(report.reference, "actual PvPoke runtime");
-assert.equal(report.pinnedRevision, Reference.PINNED_PVPOKE_REVISION);
+assert.equal(report.pinnedRevision, Reference.PINNED_CANONICAL_REVISION);
 assert(report.loadedPvPokeModules.includes("src/js/battle/actions/ActionLogic.js"));
 assert(report.loadedPvPokeModules.includes("src/js/battle/DamageCalculator.js"));
 assert(report.totalStates >= 500 && report.totalStates <= 1000, "Differential corpus must contain 500-1000 states.");
@@ -25,7 +25,7 @@ const harnessSource = fs.readFileSync(path.join(ROOT, "tools", "pvpoke-different
 assert(!/fixture\s*\.\s*expected|\[\s*["']expected["']\s*\]/.test(harnessSource), "Differential harness must not read fixture.expected.");
 
 const marker = fs.readFileSync(path.join(ROOT, "vendor", "pvpoke", ".pinned-revision"), "utf8").trim();
-assert.equal(marker, Reference.PINNED_PVPOKE_REVISION, "Pinned PvPoke revision marker must match the stored baseline/report.");
+assert.equal(marker, Reference.PINNED_CANONICAL_REVISION, "Pinned PvPoke revision marker must match the stored baseline/report.");
 
 console.log(JSON.stringify({
   suite: report.suite,

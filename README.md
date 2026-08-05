@@ -1,6 +1,6 @@
 # Pokemon GO PvP Simulator
 
-Browser-based Pokemon GO PvP simulator inspired by PvPoke.
+Browser-based Pokémon GO PvP battle simulator and manual scenario review workspace.
 
 ## Open locally
 
@@ -14,20 +14,20 @@ Required files:
 
 - `index.html`
 - `PogoPvp.html`
-- `gamemaster-data.js`
+- `battle-data.js`
 
 Optional/local files such as `.exe`, `.zip`, and old test files are not needed for the web version.
 
 ## Data
 
-The simulator uses a gamemaster stored in `gamemaster-data.js`.
+The simulator uses a gamemaster stored in `battle-data.js`.
 
 
 ```powershell
-.\tools\Import-PvPokeMovesets.ps1
+.\tools\Import-DefaultMovesets.ps1
 ```
 
-This writes `pvpoke-default-movesets.js`, a lightweight local `speciesId -> moveset` map.
+This writes `default-movesets.js`, a lightweight local `speciesId -> moveset` map.
 
 ## Offline Great League data
 

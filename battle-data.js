@@ -1,4 +1,4 @@
-window.PVPOKE_GAMEMASTER = {
+window.BATTLE_GAMEMASTER = {
     "timestamp":  "2026-06-28 03:14:49",
     "id":  "gamemaster",
     "title":  "Default",

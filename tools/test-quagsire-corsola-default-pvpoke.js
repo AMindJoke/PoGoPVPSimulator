@@ -11,8 +11,8 @@ const {
   createBattleConfig
 } = require("./build-great-league-meta-database");
 
-const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-const movesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+const movesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
 const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
 const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon?.speciesId && pokemon.baseStats)
@@ -81,7 +81,7 @@ for (const run of runs) {
     ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"],
     "Planner must match PvPoke's Aqua Tail, Mud Bomb, Aqua Tail sequence."
   );
-  assert.equal(run.result.decisionTrace.decisions[0].principleResult.evidence.plannerMode, "PVPOKE_PARITY");
+  assert.equal(run.result.decisionTrace.decisions[0].principleResult.evidence.plannerMode, "CANONICAL");
 }
 
 const { config, result, finalState, charged } = runs[0];

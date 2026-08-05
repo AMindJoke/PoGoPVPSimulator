@@ -65,10 +65,10 @@ function scanInvalidValues(value, prefix, issues, limit = 60) {
 }
 
 function loadKnownPokemonIds() {
-  const source = path.join(ROOT, "gamemaster-data.js");
+  const source = path.join(ROOT, "battle-data.js");
   if (!fs.existsSync(source)) return null;
   const code = fs.readFileSync(source, "utf8");
-  const match = code.match(/window\.PVPOKE_GAMEMASTER\s*=\s*(\{[\s\S]*\});?\s*$/);
+  const match = code.match(/window\.BATTLE_GAMEMASTER\s*=\s*(\{[\s\S]*\});?\s*$/);
   if (!match) return null;
   const data = JSON.parse(match[1]);
   return new Set((data.pokemon || []).map(p => p.speciesId).filter(Boolean));
@@ -288,7 +288,7 @@ function buildReport({ datasetPath = DEFAULT_DATASET, validation, dataset, gener
       currentEngineVersion: BATTLE_ENGINE_VERSION,
       provenance,
       simulatorSource: metadata.simulatorSource || null,
-      gameMasterHash: metadata.gameMasterHash || hashFile("gamemaster-data.js"),
+      gameMasterHash: metadata.gameMasterHash || hashFile("battle-data.js"),
       gitCommitSha: metadata.gitCommitSha || gitSha(),
       datasetGeneratedAt: metadata.generatedAt || null
     },

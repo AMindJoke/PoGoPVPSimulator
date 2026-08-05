@@ -22,8 +22,8 @@ const {
 
 const ROOT = path.resolve(__dirname, "..");
 const fixture = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "battle-regressions", "iv-sensitivity.json"), "utf8"));
-const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-const standardMovesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+const standardMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
 const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
 const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon && pokemon.speciesId && pokemon.baseStats)
@@ -139,7 +139,7 @@ const tinkatonResults = fixture.cases.map((testCase, index) => {
   for (const decision of result.decisionTrace.decisions.filter(item => item.decisionType === "charged-move-selection")) {
     assert.strictEqual(decision.finalAuthority, "PRINCIPLE_ENGINE", `${testCase.id} lost direct principle authority.`);
     assert.strictEqual(decision.fallbackUsed, false, `${testCase.id} used strategic fallback.`);
-    assert.strictEqual(decision.principleResult?.evidence?.plannerMode, "PVPOKE_PARITY");
+    assert.strictEqual(decision.principleResult?.evidence?.plannerMode, "CANONICAL");
     assert.strictEqual(decision.principlesEvaluated.length, 43);
   }
   return {

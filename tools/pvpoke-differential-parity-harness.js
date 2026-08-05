@@ -12,7 +12,7 @@ const ROOT = path.resolve(__dirname, "..");
 const REPORT_DIR = path.join(ROOT, "reports", "pvpoke-differential-parity");
 const COMPARABLE_STATUSES = new Set([Translator.EXACT, Translator.NORMALIZED_EQUIVALENT]);
 const FAILURE_CATEGORIES = Object.freeze([
-  "PVPOKE_ACTION_DIFFERENCE",
+  "CANONICAL_ACTION_DIFFERENCE",
   "MOVE_ID_DIFFERENCE",
   "SHIELD_DIFFERENCE",
   "TIMING_STATE_CONVENTION",
@@ -31,7 +31,7 @@ function run(options = {}) {
   assertHarnessIndependence();
   const reference = Reference.createPvPokeReference({
     repoPath: options.repoPath || path.join(ROOT, "vendor", "pvpoke"),
-    revision: options.revision || Reference.PINNED_PVPOKE_REVISION
+    revision: options.revision || Reference.PINNED_CANONICAL_REVISION
   });
   const fixtures = options.fixtures || Corpus.buildDifferentialCorpus();
   const results = fixtures.map(fixture => evaluateFixture(fixture, reference));
@@ -110,7 +110,7 @@ function evaluateSimulatorFirstAction(fixture) {
     side: "A",
     legalActions,
     policy: "FAST",
-    plannerMode: "PVPOKE_PARITY",
+    plannerMode: "CANONICAL",
     context: {
       callerContext: "pvpoke-differential-parity",
       farmEnergy: fixture.options?.farmEnergy,
@@ -189,7 +189,7 @@ function normalizeSimulatorType(type) {
 
 function compareDecisions(pvpokeDecision, simulatorDecision, fixture, translated) {
   if (pvpokeDecision.actionType !== simulatorDecision.actionType) {
-    return mismatch("PVPOKE_ACTION_DIFFERENCE", `Action family differs: PvPoke ${pvpokeDecision.actionType}, simulator ${simulatorDecision.actionType}.`);
+    return mismatch("CANONICAL_ACTION_DIFFERENCE", `Action family differs: PvPoke ${pvpokeDecision.actionType}, simulator ${simulatorDecision.actionType}.`);
   }
   if (pvpokeDecision.actionType === "charged_move" && pvpokeDecision.moveId !== simulatorDecision.moveId) {
     return mismatch("MOVE_ID_DIFFERENCE", `Charged Move differs: PvPoke ${pvpokeDecision.moveId}, simulator ${simulatorDecision.moveId}.`);
@@ -211,7 +211,7 @@ function summarize(results, fixtures, reference) {
   const unsupported = results.filter(row => !row.comparable);
   return {
     schemaVersion: 1,
-    suite: "PVPOKE_DIFFERENTIAL_PARITY",
+    suite: "CANONICAL_DIFFERENTIAL_PARITY",
     reference: "actual PvPoke runtime",
     pinnedRevision: reference.revision,
     generatedAt: new Date().toISOString(),

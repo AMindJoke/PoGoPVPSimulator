@@ -115,9 +115,9 @@ assert.equal(hybridSelections, 0);
 assert.equal(principleResolvedDecisions, totalAutomaticDecisions);
 assert.equal(principleResolvedDecisions / totalAutomaticDecisions, 1);
 assert.equal(evaluatedPrinciples.size, 43, `Expected direct evaluation of all 43 principles, saw ${evaluatedPrinciples.size}/43.`);
-assert.equal(BattleIntelligence.DEFAULT_PLANNER_MODE, "PVPOKE_PARITY");
-assert.equal(BattleIntelligence.PLANNER_MODES.PVPOKE_PARITY, "PVPOKE_PARITY");
-assert(runtimeSources.liveAndWorker.includes('plannerMode: "PVPOKE_PARITY"'));
+assert.equal(BattleIntelligence.DEFAULT_PLANNER_MODE, "CANONICAL");
+assert.equal(BattleIntelligence.PLANNER_MODES.CANONICAL, "CANONICAL");
+assert(runtimeSources.liveAndWorker.includes('plannerMode: "CANONICAL"'));
 assert(!runtimeSources.liveAndWorker.includes("battleIntelligenceCandidateEvidence,"));
 
 console.log(JSON.stringify({

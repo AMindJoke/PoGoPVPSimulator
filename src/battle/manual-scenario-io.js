@@ -23,7 +23,7 @@
     return {
       schemaVersion: SCHEMA_VERSION,
       battleEngineVersion: String(input.battleEngineVersion || ""),
-      plannerMode: input.plannerMode || "PVPOKE_PARITY",
+      plannerMode: "CANONICAL",
       reviewMode: input.reviewMode === "automatic" ? "automatic" : "manual",
       scenarioReview: clone(input.scenarioReview || null),
       exportedAt: input.exportedAt || new Date().toISOString(),
@@ -55,7 +55,7 @@
     ) {
       errors.push("BATTLE_ENGINE_VERSION_MISMATCH");
     }
-    if (document.plannerMode !== "PVPOKE_PARITY") errors.push("UNSUPPORTED_PLANNER_MODE");
+    if (!String(document.plannerMode || "").trim()) errors.push("PLANNER_MODE_MISSING");
     if (!document.branchRegistry) errors.push("BRANCH_REGISTRY_MISSING");
     else errors.push(...Branches.validateRegistry(document.branchRegistry));
     if (!document.originalBranch || document.originalBranch.branchId !== Branches.ORIGINAL_BRANCH_ID) {
@@ -81,6 +81,9 @@
     if (!Object.prototype.hasOwnProperty.call(document, "scenarioReview")) {
       document.scenarioReview = null;
     }
+    // Planner labels are metadata only. Normalize legacy documents so every
+    // newly saved or re-exported scenario uses the current project vocabulary.
+    document.plannerMode = "CANONICAL";
     return {
       ok: true,
       errors: [],

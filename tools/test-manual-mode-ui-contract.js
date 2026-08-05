@@ -382,7 +382,7 @@ assert.match(html, /label: "Current manual edit"/);
 assert.match(html, /Read-only automatic result/);
 assert.match(html, /from before the selected action/);
 assert.match(html, /\? "unchanged"[\s\S]{0,80}: "your changes"/);
-assert.doesNotMatch(html, /moves from PvPoke|PvPoke policy/i);
+assert.doesNotMatch(html, /moves from external service|external planner policy/i);
 assert.match(html, /Need \$\{missingEnergy\} more energy/);
 assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);
 assert.match(html, /Charged · \$\{c\.charged\[0\]\.energyCost\} energy/);

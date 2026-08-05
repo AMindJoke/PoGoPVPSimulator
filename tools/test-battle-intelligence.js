@@ -156,7 +156,7 @@ const guaranteedEffectOrdering = select(guaranteedEffectOrderingState, {
 assert.equal(
   guaranteedEffectOrdering.action.moveId,
   "NUKE",
-  "PVPOKE_PARITY must apply guaranteed effects inside route simulation, not promote effect moves as an extra post-processing heuristic."
+  "CANONICAL must apply guaranteed effects inside route simulation, not promote effect moves as an extra post-processing heuristic."
 );
 assert.equal(guaranteedEffectOrdering.fallbackUsed, false);
 
@@ -182,7 +182,7 @@ const buildToUnshieldedCloser = select(buildToUnshieldedCloserState, {
 assert.equal(
   buildToUnshieldedCloser.action.type,
   "fast_move",
-  "PVPOKE_PARITY must build one safe Fast Move to an unshielded lethal closer instead of throwing a nonlethal bait."
+  "CANONICAL must build one safe Fast Move to an unshielded lethal closer instead of throwing a nonlethal bait."
 );
 assert(buildToUnshieldedCloser.principlesTriggered.includes("ROUTE-026_BUILD_TO_SELECTED_MOVE"));
 assert.equal(buildToUnshieldedCloser.fallbackUsed, false);
@@ -266,7 +266,7 @@ assert.equal(cappedEnergy.action.type, "charged_move");
 assert.equal(cappedEnergy.action.moveId, "NUKE");
 assert(cappedEnergy.principleIds.includes("TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS"));
 assert(!cappedEnergy.sourceRuleIds.includes("BI_HYBRID_BASELINE"));
-assert.equal(cappedEnergy.principleResult.intent, "PVPOKE_CHARGED_SEQUENCE");
+assert.equal(cappedEnergy.principleResult.intent, "CANONICAL_CHARGED_SEQUENCE");
 assert.equal(cappedEnergy.finalAuthority, "PRINCIPLE_ENGINE");
 
 const timingPending = TurnEngine.createFastImpactEvent({
@@ -314,7 +314,7 @@ const constrainedTimingThrow = select(state({ energyA: 96, hpB: 120 }), {
 });
 assert.equal(blockedTimingOverrides, 0);
 assert.equal(constrainedTimingThrow.action.type, "charged_move");
-assert.equal(constrainedTimingThrow.principleResult.intent, "PVPOKE_CHARGED_SEQUENCE");
+assert.equal(constrainedTimingThrow.principleResult.intent, "CANONICAL_CHARGED_SEQUENCE");
 assert.equal(constrainedTimingThrow.overrideBlocked, false);
 assert.equal(constrainedTimingThrow.principleDecisionPreserved, true);
 assert.equal(constrainedTimingThrow.fallbackUsed, false);

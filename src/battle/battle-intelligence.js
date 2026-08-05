@@ -35,10 +35,10 @@ function createPvPeakBattleIntelligenceApi() {
     NO_TIMING_PREFERENCE: "NO_TIMING_PREFERENCE"
   });
   const PLANNER_MODES = Object.freeze({
-    PVPOKE_PARITY: "PVPOKE_PARITY",
+    CANONICAL: "CANONICAL",
     PRINCIPLE_ADVANCED: "PRINCIPLE_ADVANCED"
   });
-  const DEFAULT_PLANNER_MODE = PLANNER_MODES.PVPOKE_PARITY;
+  const DEFAULT_PLANNER_MODE = PLANNER_MODES.CANONICAL;
   const MIGRATED_PRINCIPLE_CATEGORIES = Object.freeze([
     "availability",
     "policy",
@@ -342,8 +342,8 @@ function createPvPeakBattleIntelligenceApi() {
 
   function evaluatePrinciples(input = {}) {
     const plannerMode = String(input.plannerMode || DEFAULT_PLANNER_MODE).toUpperCase();
-    if (plannerMode === PLANNER_MODES.PVPOKE_PARITY) {
-      return evaluatePvPokeParityPrinciples(input);
+    if (plannerMode === PLANNER_MODES.CANONICAL) {
+      return evaluateCanonicalPrinciples(input);
     }
     const state = input.state;
     const side = input.side;
@@ -702,7 +702,7 @@ function createPvPeakBattleIntelligenceApi() {
     )[0] || null;
   }
 
-  function evaluatePvPokeParityPrinciples(input = {}) {
+  function evaluateCanonicalPrinciples(input = {}) {
     const state = input.state || {};
     const side = input.side;
     const actor = state.sides?.[side] || {};
@@ -712,8 +712,8 @@ function createPvPeakBattleIntelligenceApi() {
     const fast = candidates.find(candidate => candidate.action.type === ACTION_TYPES.FAST_MOVE) || null;
     const chargedCandidates = candidates.filter(candidate => candidate.action.type === ACTION_TYPES.CHARGED_MOVE);
     const context = input.context || {};
-    const moves = pvpokeActiveChargedMoves(actor, opponent, context, side);
-    const opponentMoves = pvpokeActiveChargedMoves(opponent, actor, context, opponentSide, true);
+    const moves = canonicalActiveChargedMoves(actor, opponent, context, side);
+    const opponentMoves = canonicalActiveChargedMoves(opponent, actor, context, opponentSide, true);
     const readiness = chargedReadiness(actor, state, side);
     const allPrinciples = [
       "AVAIL-001_NO_ACTIVE_CHARGED_MOVE", "AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE",
@@ -748,8 +748,8 @@ function createPvPeakBattleIntelligenceApi() {
     const rejected = [];
     const finish = (candidate, category, intent, evidence = {}) => ({
       ...resolvedPrinciple(candidate, category, intent, triggered, rejected, {
-        plannerMode: PLANNER_MODES.PVPOKE_PARITY,
-        pvpokeRevision: "5e1e3d971369a47aaf3e7247f50710d80205d570",
+        plannerMode: PLANNER_MODES.CANONICAL,
+        plannerVersion: "canonical-v1",
         chargedReadiness: readiness,
         ...evidence
       }),
@@ -790,7 +790,7 @@ function createPvPeakBattleIntelligenceApi() {
 
     const canonicalPendingLethal = nextPendingLethal(state, side);
     if (canonicalPendingLethal && chargedCandidates.length) {
-      const forcedPending = pvpokeForcedThrow({
+      const forcedPending = canonicalForcedThrow({
         actor,
         opponent,
         moves,
@@ -812,11 +812,11 @@ function createPvPeakBattleIntelligenceApi() {
       }
     }
 
-    const survival = pvpokeSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context });
+    const survival = canonicalSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context });
     triggered.push("SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON");
-    const forced = pvpokeForcedThrow({ actor, opponent, moves, chargedCandidates, survival, context });
+    const forced = canonicalForcedThrow({ actor, opponent, moves, chargedCandidates, survival, context });
     if (forced) {
-      const primaryBuild = pvpokeOneFastBuildToPrimaryCharged({
+      const primaryBuild = canonicalOneFastBuildToPrimaryCharged({
         state,
         side,
         actor,
@@ -850,7 +850,7 @@ function createPvPeakBattleIntelligenceApi() {
 
     if ((context.canonicalOpponentLethalBeforeNextWindow === true
       || context.opponentLethalBeforeNextWindow === true) && chargedCandidates.length) {
-      const safeBuild = pvpokeSafeOneFastBuildToLethal({
+      const safeBuild = canonicalSafeOneFastBuildToLethal({
         state,
         side,
         actor,
@@ -888,7 +888,7 @@ function createPvPeakBattleIntelligenceApi() {
       });
     }
 
-    const immediateOpponentChargedThreat = pvpokeImmediateOpponentChargedThreat({
+    const immediateOpponentChargedThreat = canonicalImmediateOpponentChargedThreat({
       state,
       actor,
       opponent,
@@ -896,7 +896,7 @@ function createPvPeakBattleIntelligenceApi() {
       context
     });
     if (immediateOpponentChargedThreat && chargedCandidates.length) {
-      const urgent = pvpokeBestForcedImpactMove({ actor, opponent, moves, chargedCandidates });
+      const urgent = canonicalBestForcedImpactMove({ actor, opponent, moves, chargedCandidates });
       if (urgent?.candidate) {
         triggered.push(
           "SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON",
@@ -912,7 +912,7 @@ function createPvPeakBattleIntelligenceApi() {
       }
     }
 
-    const lethal = pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context });
+    const lethal = canonicalImmediateLethal({ actor, opponent, moves, chargedCandidates, context });
     if (lethal) {
       triggered.push("TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL", "TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
       return finish(lethal.candidate, "tactical", "IMMEDIATE_LETHAL", {
@@ -928,7 +928,7 @@ function createPvPeakBattleIntelligenceApi() {
       const breaker = moves.find(move => numeric(actor.energy) >= move.energyCost && !move.selfDebuffing);
       if (breaker) {
         triggered.push("SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER");
-        return finish(pvpokeCandidateForMove(breaker, chargedCandidates), "tactical", "BREAK_PROTECTION", {
+        return finish(canonicalCandidateForMove(breaker, chargedCandidates), "tactical", "BREAK_PROTECTION", {
           sourceBranch: "ActionLogic:236-247",
           mechanicCapability: protection.capability || "charged-damage-protection"
         });
@@ -936,7 +936,7 @@ function createPvPeakBattleIntelligenceApi() {
     }
     rejected.push("SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER");
 
-    const timing = pvpokeTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival });
+    const timing = canonicalTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival });
     triggered.push(...timing.triggered);
     rejected.push(...timing.rejected);
     if (timing.waitOneFast && fast) {
@@ -947,7 +947,7 @@ function createPvPeakBattleIntelligenceApi() {
       });
     }
 
-    const longMatch = pvpokeLongMatchDecision({
+    const longMatch = canonicalLongMatchDecision({
       actor, opponent, moves, fast, chargedCandidates, context
     });
     triggered.push(...longMatch.triggered);
@@ -973,7 +973,7 @@ function createPvPeakBattleIntelligenceApi() {
       });
     }
 
-    const compact = pvpokeCompactDecision({
+    const compact = canonicalCompactDecision({
       state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context
     });
     triggered.push(...compact.triggered);
@@ -991,13 +991,13 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     const errorCandidate = fast || candidates[0] || null;
-    return finish(errorCandidate, "route", "PVPOKE_EXPLICIT_UNSUPPORTED_FAST", {
+    return finish(errorCandidate, "route", "CANONICAL_EXPLICIT_UNSUPPORTED_FAST", {
       sourceBranch: "ActionLogic compact planner produced no guaranteed route",
       unsupportedReason: compact.evidence?.reason || "NO_GUARANTEED_ROUTE"
     });
   }
 
-  function pvpokeActiveChargedMoves(actor, opponent, context, side, opponentPerspective = false) {
+  function canonicalActiveChargedMoves(actor, opponent, context, side, opponentPerspective = false) {
     const moves = (actor.chargedMoves || []).filter(Boolean).map((move, index) => {
       const action = { type: ACTION_TYPES.CHARGED_MOVE, side, moveId: move.id || move.moveId || null, move };
       const damage = opponentPerspective && typeof context.estimateOpponentDamage === "function"
@@ -1006,7 +1006,7 @@ function createPvPeakBattleIntelligenceApi() {
           ? Math.max(0, numeric(context.estimateDamage(action)))
           : Math.max(0, numeric(move.damage ?? move.power));
       const energyCost = Math.max(1, numeric(move.energyCost ?? move.energy, 1));
-      const flags = pvpokeMoveFlags(move);
+      const flags = canonicalMoveFlags(move);
       return {
         ...move,
         original: move,
@@ -1021,7 +1021,7 @@ function createPvPeakBattleIntelligenceApi() {
     return moves.sort((a, b) => a.energyCost - b.energyCost || a.index - b.index);
   }
 
-  function pvpokeMoveFlags(move = {}) {
+  function canonicalMoveFlags(move = {}) {
     const own = move.buffTarget === "both" ? move.buffsSelf
       : move.buffTarget === "opponent" ? null : move.buffs;
     const selfDebuffing = hasHarmfulSelfEffect({ move });
@@ -1040,13 +1040,13 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeCandidateForMove(move, chargedCandidates) {
+  function canonicalCandidateForMove(move, chargedCandidates) {
     return chargedCandidates.find(candidate => candidate.action.moveId === move.id)
       || chargedCandidates.find(candidate => candidate.action.move === move.original)
       || null;
   }
 
-  function pvpokeSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context }) {
+  function canonicalSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context }) {
     const oppFastDamage = Math.max(0, numeric(
       typeof context.estimateFastDamage === "function"
         ? context.estimateFastDamage("opponent")
@@ -1135,7 +1135,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeForcedThrow({ actor, opponent, moves, chargedCandidates, survival }) {
+  function canonicalForcedThrow({ actor, opponent, moves, chargedCandidates, survival }) {
     const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
     const lethalWindow = survival.turnsToLive < fastTurns
       || (survival.turnsToLive === fastTurns && !survival.winsCmp)
@@ -1161,7 +1161,7 @@ function createPvPeakBattleIntelligenceApi() {
         twoCopies = true;
       }
     }
-    const candidate = selected ? pvpokeCandidateForMove(selected, chargedCandidates) : null;
+    const candidate = selected ? canonicalCandidateForMove(selected, chargedCandidates) : null;
     return candidate ? {
       candidate,
       twoCopies,
@@ -1169,7 +1169,7 @@ function createPvPeakBattleIntelligenceApi() {
     } : null;
   }
 
-  function pvpokeOneFastBuildToPrimaryCharged({ state, actor, opponent, moves, fast }) {
+  function canonicalOneFastBuildToPrimaryCharged({ state, actor, opponent, moves, fast }) {
     if (!fast || !moves?.length || !actor?.chargedMoves?.length) return null;
     const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
     const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
@@ -1214,7 +1214,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeImmediateOpponentChargedThreat({ state, actor, opponent, opponentMoves, context }) {
+  function canonicalImmediateOpponentChargedThreat({ state, actor, opponent, opponentMoves, context }) {
     if (typeof context?.compactSurvivalProjection === "function") return null;
     if (numeric(actor.shields) > 0) return null;
     const currentTurn = numeric(state?.currentTurn);
@@ -1235,7 +1235,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeSafeOneFastBuildToLethal({ state, side, actor, opponent, opponentMoves, moves, fast, chargedCandidates, context }) {
+  function canonicalSafeOneFastBuildToLethal({ state, side, actor, opponent, opponentMoves, moves, fast, chargedCandidates, context }) {
     if (!fast || numeric(opponent.shields) > 0) return null;
     const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
     const fastTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
@@ -1246,7 +1246,7 @@ function createPvPeakBattleIntelligenceApi() {
     const pendingDamage = pendingDamageThrough(state, side, readyTurn);
     if (numeric(actor.hp) <= pendingDamage) return null;
 
-    const opponentThreat = pvpokeOpponentChargedThreatTurn({
+    const opponentThreat = canonicalOpponentChargedThreatTurn({
       state,
       side,
       actor,
@@ -1296,7 +1296,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeOpponentChargedThreatTurn({ state, side, actor, opponent, opponentMoves, throughTurn }) {
+  function canonicalOpponentChargedThreatTurn({ state, side, actor, opponent, opponentMoves, throughTurn }) {
     const stateTurn = numeric(state?.currentTurn);
     const opponentFastTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
     const opponentFastGain = Math.max(0, numeric(opponent.fastMove?.energyGain));
@@ -1320,7 +1320,7 @@ function createPvPeakBattleIntelligenceApi() {
     return best;
   }
 
-  function pvpokeBestForcedImpactMove({ actor, opponent, moves, chargedCandidates }) {
+  function canonicalBestForcedImpactMove({ actor, opponent, moves, chargedCandidates }) {
     let selected = null;
     let comparedDamage = -1;
     let twoCopies = false;
@@ -1340,7 +1340,7 @@ function createPvPeakBattleIntelligenceApi() {
         twoCopies = true;
       }
     }
-    const candidate = selected ? pvpokeCandidateForMove(selected, chargedCandidates) : null;
+    const candidate = selected ? canonicalCandidateForMove(selected, chargedCandidates) : null;
     return candidate ? {
       candidate,
       twoCopies,
@@ -1348,7 +1348,7 @@ function createPvPeakBattleIntelligenceApi() {
     } : null;
   }
 
-  function pvpokeImmediateLethal({ actor, opponent, moves, chargedCandidates, context }) {
+  function canonicalImmediateLethal({ actor, opponent, moves, chargedCandidates, context }) {
     if (numeric(opponent.shields) !== 0) return null;
     const baitEnabled = normalizeBaitPolicy(actor.baiting) !== "off";
     const ownFastDamage = Math.max(0, numeric(
@@ -1363,14 +1363,14 @@ function createPvPeakBattleIntelligenceApi() {
         && !move.selfDebuffing
         && (index === 0 || (index === 1 && !baitEnabled))
         && numeric(opponent.hp) > ownFastDamage) {
-        const candidate = pvpokeCandidateForMove(move, chargedCandidates);
+        const candidate = canonicalCandidateForMove(move, chargedCandidates);
         if (candidate) return { candidate, move };
       }
     }
     return null;
   }
 
-  function pvpokeTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival }) {
+  function canonicalTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival }) {
     const triggered = ["TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS"];
     const rejected = [];
     const ownTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
@@ -1493,7 +1493,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeBestChargedMove(moves) {
+  function canonicalBestChargedMove(moves) {
     if (!moves.length) return null;
     let best = moves[0];
     for (const move of moves) {
@@ -1512,7 +1512,7 @@ function createPvPeakBattleIntelligenceApi() {
     return best;
   }
 
-  function pvpokeWouldShieldThreat(context, move) {
+  function canonicalWouldShieldThreat(context, move) {
     if (typeof context.willOpponentShield !== "function") return true;
     return !!context.willOpponentShield({
       type: ACTION_TYPES.CHARGED_MOVE,
@@ -1521,10 +1521,10 @@ function createPvPeakBattleIntelligenceApi() {
     });
   }
 
-  function pvpokeLongMatchDecision({ actor, opponent, moves, fast, chargedCandidates, context }) {
+  function canonicalLongMatchDecision({ actor, opponent, moves, fast, chargedCandidates, context }) {
     const triggered = [];
     const rejected = [];
-    const best = pvpokeBestChargedMove(moves);
+    const best = canonicalBestChargedMove(moves);
     const fastest = moves[0];
     const fastDamage = Math.max(0, numeric(
       typeof context.estimateFastDamage === "function"
@@ -1556,7 +1556,7 @@ function createPvPeakBattleIntelligenceApi() {
       && baitEnabled
       && numeric(opponent.shields) > 0
       && !moves[0].selfDebuffing
-      && pvpokeWouldShieldThreat(context, moves[1])) {
+      && canonicalWouldShieldThreat(context, moves[1])) {
       selected = moves[0];
       triggered.push("BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT", "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE");
     } else rejected.push("BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT");
@@ -1572,7 +1572,7 @@ function createPvPeakBattleIntelligenceApi() {
       else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
     } else rejected.push("MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE");
 
-    const nearPressureMove = pvpokeNearChargedPressureMove({ actor, opponent, moves, selected, fastGain });
+    const nearPressureMove = canonicalNearChargedPressureMove({ actor, opponent, moves, selected, fastGain });
     if (nearPressureMove && numeric(actor.energy) >= selected.energyCost) {
       triggered.push("ROUTE-026_BUILD_TO_SELECTED_MOVE", "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
       return {
@@ -1623,7 +1623,7 @@ function createPvPeakBattleIntelligenceApi() {
     } else rejected.push("EFFECT-027_STACK_SELF_DEBUFFING_MOVES");
     return {
       resolved: true,
-      candidate: pvpokeCandidateForMove(selected, chargedCandidates),
+      candidate: canonicalCandidateForMove(selected, chargedCandidates),
       category: "route",
       intent: "LONG_MATCH_SELECTED_MOVE",
       triggered,
@@ -1632,7 +1632,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeNearChargedPressureMove({ actor, opponent, moves, selected, fastGain }) {
+  function canonicalNearChargedPressureMove({ actor, opponent, moves, selected, fastGain }) {
     const currentEnergy = numeric(actor.energy);
     const nextEnergy = Math.min(100, currentEnergy + Math.max(1, numeric(fastGain, 1)));
     const opponentHp = numeric(opponent.hp);
@@ -1657,7 +1657,7 @@ function createPvPeakBattleIntelligenceApi() {
       )[0] || null;
   }
 
-  function pvpokeCompactDecision({ state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context }) {
+  function canonicalCompactDecision({ state, side, actor, opponent, moves, opponentMoves, fast, chargedCandidates, context }) {
     const triggered = [
       "COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE",
       "SEARCH-029_BOUND_PLANNER_STATE_COUNT",
@@ -1698,7 +1698,7 @@ function createPvPeakBattleIntelligenceApi() {
         continue;
       }
 
-      const fastDamage = pvpokeCompactDamage(context, actor.fastMove, actor, opponent, current.buffs, true);
+      const fastDamage = canonicalCompactDamage(context, actor.fastMove, actor, opponent, current.buffs, true);
       if (fastDamage > 0) {
         const movesToFarm = Math.ceil(current.oppHealth / fastDamage);
         const farmState = {
@@ -1708,7 +1708,7 @@ function createPvPeakBattleIntelligenceApi() {
           turn: current.turn + movesToFarm * Math.max(1, numeric(actor.fastMove?.turns, 1)),
           moves: [...current.moves]
         };
-        pvpokeInsertByTurn(queue, farmState);
+        canonicalInsertByTurn(queue, farmState);
         farmCandidates++;
         orderedInsertions++;
       }
@@ -1719,11 +1719,11 @@ function createPvPeakBattleIntelligenceApi() {
         const missing = Math.max(0, move.energyCost - current.energy);
         const fastCount = missing > 0 ? Math.ceil(missing / fastGain) : 0;
         const readinessTurns = fastCount * fastTurns;
-        const moveDamage = pvpokeCompactDamage(context, move.original, actor, opponent, current.buffs, false);
+        const moveDamage = canonicalCompactDamage(context, move.original, actor, opponent, current.buffs, false);
         let attackBuff = current.buffs;
         if (numeric(move.buffApplyChance) >= 1) {
-          attackBuff = clamp(attackBuff + pvpokeOffensiveStageDelta(move.original), -4, 4);
-          if (pvpokeOffensiveStageDelta(move.original) !== 0) guaranteedEffectBranches++;
+          attackBuff = clamp(attackBuff + canonicalOffensiveStageDelta(move.original), -4, 4);
+          if (canonicalOffensiveStageDelta(move.original) !== 0) guaranteedEffectBranches++;
         }
 
         const newEnergy = current.energy + fastGain * fastCount - move.energyCost;
@@ -1745,7 +1745,7 @@ function createPvPeakBattleIntelligenceApi() {
           buffs: attackBuff,
           chance: current.chance
         };
-        const inserted = pvpokeInsertCompactState(queue, next);
+        const inserted = canonicalInsertCompactState(queue, next);
         if (inserted.inserted) orderedInsertions++;
         if (inserted.pruned) prunedStates++;
         if (inserted.equivalentTieBreak) equivalentTieBreaks++;
@@ -1770,7 +1770,7 @@ function createPvPeakBattleIntelligenceApi() {
               buffs: attackBuff,
               chance: current.chance
             };
-            const stackInserted = pvpokeInsertCompactState(queue, stacked);
+            const stackInserted = canonicalInsertCompactState(queue, stacked);
             if (stackInserted.inserted) orderedInsertions++;
             if (stackInserted.pruned) prunedStates++;
             if (stackInserted.equivalentTieBreak) equivalentTieBreaks++;
@@ -1793,11 +1793,11 @@ function createPvPeakBattleIntelligenceApi() {
       return {
         candidate: fast,
         category: "route",
-        intent: "PVPOKE_COMPACT_ABORT_FAST",
+        intent: "CANONICAL_COMPACT_ABORT_FAST",
         triggered,
         rejected,
         evidence: {
-          reason: capReached ? "PVPOKE_500_STATE_CAP" : "NO_GUARANTEED_ROUTE",
+          reason: capReached ? "CANONICAL_500_STATE_CAP" : "NO_GUARANTEED_ROUTE",
           stateCount,
           farmCandidates,
           shieldBranches,
@@ -1816,7 +1816,7 @@ function createPvPeakBattleIntelligenceApi() {
       && finalState.moves[1].id === cheapestMove.id);
     if (twoCheapRetained) triggered.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
     else rejected.push("ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE");
-    const post = pvpokePostProcessChargedSequence({
+    const post = canonicalPostProcessChargedSequence({
       actor,
       opponent,
       opponentMoves,
@@ -1835,7 +1835,7 @@ function createPvPeakBattleIntelligenceApi() {
       triggered,
       rejected,
       evidence: {
-        reason: "PVPOKE_GUARANTEED_ROUTE",
+        reason: "CANONICAL_GUARANTEED_ROUTE",
         stateCount,
         farmCandidates,
         shieldBranches,
@@ -1861,7 +1861,7 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
-  function pvpokeCompactDamage(context, move, actor, opponent, attackBuff, fastMove) {
+  function canonicalCompactDamage(context, move, actor, opponent, attackBuff, fastMove) {
     if (!move) return 0;
     if (typeof context.compactDamage === "function") {
       return Math.max(0, numeric(context.compactDamage("actor", move, {
@@ -1884,7 +1884,7 @@ function createPvPeakBattleIntelligenceApi() {
     return Math.max(0, numeric(move.damage ?? move.power));
   }
 
-  function pvpokeOffensiveStageDelta(move = {}) {
+  function canonicalOffensiveStageDelta(move = {}) {
     if (numeric(move.buffApplyChance) < 1) return 0;
     if (move.buffTarget === "both") {
       return numeric(move.buffsSelf?.[0]) - numeric(move.buffsOpponent?.[1]);
@@ -1893,13 +1893,13 @@ function createPvPeakBattleIntelligenceApi() {
     return numeric(move.buffs?.[0]);
   }
 
-  function pvpokeInsertByTurn(queue, state) {
+  function canonicalInsertByTurn(queue, state) {
     let index = 0;
     while (index < queue.length && numeric(queue[index].turn) <= numeric(state.turn)) index++;
     queue.splice(index, 0, state);
   }
 
-  function pvpokeInsertCompactState(queue, state) {
+  function canonicalInsertCompactState(queue, state) {
     let equivalentTieBreak = false;
     for (let index = 0; index < queue.length; index++) {
       const existing = queue[index];
@@ -1909,8 +1909,8 @@ function createPvPeakBattleIntelligenceApi() {
         && numeric(existing.energy) === numeric(state.energy)
         && numeric(existing.oppShields) === numeric(state.oppShields)) {
         equivalentTieBreak = true;
-        const existingValue = pvpokeMoveHistoryDebuffValue(existing.moves);
-        const candidateValue = pvpokeMoveHistoryDebuffValue(state.moves);
+        const existingValue = canonicalMoveHistoryDebuffValue(existing.moves);
+        const candidateValue = canonicalMoveHistoryDebuffValue(state.moves);
         if (existingValue > candidateValue) {
           queue.splice(index, 1);
           break;
@@ -1924,11 +1924,11 @@ function createPvPeakBattleIntelligenceApi() {
         return { inserted: false, pruned: true, equivalentTieBreak };
       }
     }
-    pvpokeInsertByTurn(queue, state);
+    canonicalInsertByTurn(queue, state);
     return { inserted: true, pruned: false, equivalentTieBreak };
   }
 
-  function pvpokeMoveHistoryDebuffValue(moves) {
+  function canonicalMoveHistoryDebuffValue(moves) {
     return (moves || []).reduce((score, move) => {
       if (move.selfDebuffing) score++;
       if (move.guaranteedEffect && move.selfBuffing) score--;
@@ -1936,7 +1936,7 @@ function createPvPeakBattleIntelligenceApi() {
     }, 0);
   }
 
-  function pvpokePostProcessChargedSequence({
+  function canonicalPostProcessChargedSequence({
     actor, opponent, opponentMoves, moves, plannedMoves, fast, chargedCandidates, context
   }) {
     const triggered = [];
@@ -2000,7 +2000,7 @@ function createPvPeakBattleIntelligenceApi() {
     if (!preserveRepeatedCheapRoute && baitEnabled && numeric(opponent.shields) > 0 && moves.length > 1) {
       const dpeRatio = moves[1].dpe / Math.max(.0001, selected.dpe);
       if (numeric(actor.energy) >= moves[1].energyCost && dpeRatio > 1.5
-        && !pvpokeWouldShieldThreat(context, moves[1])) {
+        && !canonicalWouldShieldThreat(context, moves[1])) {
         selected = moves[1];
         triggered.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
       } else rejected.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD");
@@ -2129,7 +2129,7 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
     }
 
-    const opponentBest = pvpokeBestChargedMove(opponentMoves);
+    const opponentBest = canonicalBestChargedMove(opponentMoves);
     if (selected.selfDebuffing && numeric(actor.shields) === 0 && numeric(actor.energy) < 100 && opponentBest
       && numeric(opponent.energy) >= opponentBest.energyCost
       && !(typeof context.willActorShieldAgainstOpponent === "function"
@@ -2189,9 +2189,9 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
     }
     return {
-      candidate: pvpokeCandidateForMove(selected, chargedCandidates),
+      candidate: canonicalCandidateForMove(selected, chargedCandidates),
       category: selected.guaranteedEffect ? "effects" : "route",
-      intent: "PVPOKE_CHARGED_SEQUENCE",
+      intent: "CANONICAL_CHARGED_SEQUENCE",
       selectedMoveId: selected.id,
       triggered,
       rejected,
@@ -4034,7 +4034,7 @@ function createPvPeakBattleIntelligenceApi() {
     }
 
     if (policy === "smart" && input.parityThreat) {
-      return done(pvpokeWouldShieldDecision(input));
+      return done(canonicalWouldShieldDecision(input));
     }
 
     if (counterfactual) {
@@ -4073,7 +4073,7 @@ function createPvPeakBattleIntelligenceApi() {
     return done(shieldResult(false, "SHIELD_SAVED_LOW_THREAT", "Smart shield saves shield for higher threat.", .72));
   }
 
-  function pvpokeWouldShieldDecision(input = {}) {
+  function canonicalWouldShieldDecision(input = {}) {
     const state = input.state || {};
     const threat = input.threat || {};
     const parity = input.parityThreat || {};
@@ -4121,11 +4121,11 @@ function createPvPeakBattleIntelligenceApi() {
       shield,
       shield ? "SHIELD_PRESERVES_WIN_CONDITION" : "SHIELD_SAVED_LOW_THREAT",
       shield
-        ? "PvPoke wouldShield blocks this Charged Move from current and next-cycle pressure."
-        : "PvPoke wouldShield preserves the shield because current and next-cycle pressure stay below its gates.",
+        ? "Canonical wouldShield blocks this Charged Move from current and next-cycle pressure."
+        : "Canonical wouldShield preserves the shield because current and next-cycle pressure stay below its gates.",
       .99,
       {
-        plannerMode: PLANNER_MODES.PVPOKE_PARITY,
+        plannerMode: PLANNER_MODES.CANONICAL,
         sourceBranch: "ActionLogic:1116-1200",
         postMoveHp,
         fastAttacks,
@@ -4134,7 +4134,7 @@ function createPvPeakBattleIntelligenceApi() {
         fastDpt,
         shieldWeight,
         noShieldWeight,
-        parityReason: shield ? "PVPOKE_WOULD_SHIELD" : "PVPOKE_WOULD_NOT_SHIELD"
+        plannerReason: shield ? "CANONICAL_WOULD_SHIELD" : "CANONICAL_WOULD_NOT_SHIELD"
       }
     );
   }

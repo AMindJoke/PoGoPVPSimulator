@@ -4,13 +4,13 @@ const fs = require("fs");
 const https = require("https");
 const path = require("path");
 
-const { PINNED_PVPOKE_REVISION, REQUIRED_MODULES, validateReferenceDirectory } = require("./pvpoke-reference-adapter");
+const { PINNED_CANONICAL_REVISION, REQUIRED_MODULES, validateReferenceDirectory } = require("./pvpoke-reference-adapter");
 
 const ROOT = path.resolve(__dirname, "..");
 const REPO_PATH = path.join(ROOT, "vendor", "pvpoke");
 
 function rawUrl(relativePath) {
-  return `https://raw.githubusercontent.com/pvpoke/pvpoke/${PINNED_PVPOKE_REVISION}/${relativePath}`;
+  return `https://raw.githubusercontent.com/pvpoke/pvpoke/${PINNED_CANONICAL_REVISION}/${relativePath}`;
 }
 
 async function setup() {
@@ -21,12 +21,12 @@ async function setup() {
     const content = await fetchText(rawUrl(relativePath));
     fs.writeFileSync(destination, content, "utf8");
   }
-  fs.writeFileSync(path.join(REPO_PATH, ".pinned-revision"), `${PINNED_PVPOKE_REVISION}\n`, "utf8");
-  validateReferenceDirectory(REPO_PATH, PINNED_PVPOKE_REVISION);
+  fs.writeFileSync(path.join(REPO_PATH, ".pinned-revision"), `${PINNED_CANONICAL_REVISION}\n`, "utf8");
+  validateReferenceDirectory(REPO_PATH, PINNED_CANONICAL_REVISION);
   console.log(JSON.stringify({
     reference: "actual PvPoke runtime",
     repoPath: path.relative(ROOT, REPO_PATH).replace(/\\/g, "/"),
-    pinnedRevision: PINNED_PVPOKE_REVISION,
+    pinnedRevision: PINNED_CANONICAL_REVISION,
     modules: REQUIRED_MODULES
   }, null, 2));
 }

@@ -40,7 +40,7 @@
 
   const AUTO_POLICY = Object.freeze({
     MANUAL: "MANUAL",
-    PVPOKE_PARITY: "PVPOKE_PARITY"
+    CANONICAL: "CANONICAL"
   });
 
   const VALID_TRANSITIONS = Object.freeze({
@@ -121,7 +121,7 @@
   function autoPolicyFor(controlledSides, supplied = {}) {
     const automaticPolicy = side => supplied[side] && supplied[side] !== AUTO_POLICY.MANUAL
       ? supplied[side]
-      : AUTO_POLICY.PVPOKE_PARITY;
+      : AUTO_POLICY.CANONICAL;
     return {
       A: controlledSides.includes("A") ? AUTO_POLICY.MANUAL : automaticPolicy("A"),
       B: controlledSides.includes("B") ? AUTO_POLICY.MANUAL : automaticPolicy("B")

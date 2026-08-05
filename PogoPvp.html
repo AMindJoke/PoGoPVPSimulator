@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokemon GO PvP Simulator</title>
-  <script src="gamemaster-data.js"></script>
-  <script src="pvpoke-default-movesets.js"></script>
+  <script src="battle-data.js"></script>
+  <script src="default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
   <script src="data/great-league-ranking-details.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -11712,7 +11712,7 @@
 
   <script>
     const $ = id => document.getElementById(id);
-    const gm = window.PVPOKE_GAMEMASTER;
+    const gm = window.BATTLE_GAMEMASTER;
     const ivOptimization = window.PvPeakIvOptimization;
     const ivImpactPresenter = window.PvPeakIvImpact || {};
     const rankingDetailsPresenter = window.PvPeakRankingDetails || {};
@@ -11942,8 +11942,8 @@
         charged: ["SKY_ATTACK", "BRAVE_BIRD"]
       }
     };
-    const pvpokeStandardMovesets = window.PVPOKE_DEFAULT_MOVESETS || {};
-    const standardMovesets = { ...fallbackStandardMovesets, ...pvpokeStandardMovesets };
+    const bundledStandardMovesets = window.BATTLE_DEFAULT_MOVESETS || {};
+    const standardMovesets = { ...fallbackStandardMovesets, ...bundledStandardMovesets };
     const damageBonus = 1.2999999523162842;
     const shadowAtkMultiplier = 1.2;
     const shadowDefMultiplier = 0.83333331;
@@ -12020,7 +12020,7 @@
       const pagePerfRunId = perfDebugEnabled ? perfDebug.beginRun("startup") : null;
       const inputSpan = pagePerfRunId ? perfDebug.startSpan("input.processing", pagePerfRunId) : null;
       if (!gm || !gm.pokemon || !gm.moves) {
-        showError("Could not find gamemaster-data.js. Keep PogoPvp.html and gamemaster-data.js in the same folder.");
+        showError("Could not find battle-data.js. Keep PogoPvp.html and battle-data.js in the same folder.");
         if (inputSpan) perfDebug.endSpan(inputSpan);
         if (pagePerfRunId) perfDebug.finishRun(pagePerfRunId, { error: "missing-gamemaster" });
         return;
@@ -17005,7 +17005,7 @@
       const canonical = window.PvPeakManualScenarioIO.exportScenario({
         registry: manualBranchRegistry,
         battleEngineVersion,
-        plannerMode: "PVPOKE_PARITY",
+        plannerMode: "CANONICAL",
         reviewMode: scenarioReviewMode,
         scenarioReview: {
           state: scenarioState,
@@ -18680,7 +18680,7 @@
         : false;
       const result = api.selectShieldAction({
         policy,
-        plannerMode: "PVPOKE_PARITY",
+        plannerMode: "CANONICAL",
         intelligencePolicy: battleIntelligencePolicy(),
         callerContext: battleIntelligenceCallerContext(),
         state: {
@@ -20077,7 +20077,7 @@
         side: attacker.trainer,
         legalActions,
         policy: battleIntelligencePolicy(),
-        plannerMode: "PVPOKE_PARITY",
+        plannerMode: "CANONICAL",
         context: {
           callerContext: battleIntelligenceCallerContext(),
           chargedTimingOptimization: true,

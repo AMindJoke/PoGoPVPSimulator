@@ -1,15 +1,12 @@
 param(
-  [string]$RankingPath = "pvpoke-rankings-1500.json",
-  [string]$OutputPath = "pvpoke-default-movesets.js",
-  [string]$SourceUrl = "https://raw.githubusercontent.com/pvpoke/pvpoke/master/src/data/rankings/all/overall/rankings-1500.json"
+  [string]$RankingPath = "rankings-1500.json",
+  [string]$OutputPath = "default-movesets.js"
 )
 
 $ErrorActionPreference = "Stop"
 
 if (-not (Test-Path -LiteralPath $RankingPath)) {
-  Write-Host "Downloading PvPoke rankings from $SourceUrl"
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri $SourceUrl -UseBasicParsing -OutFile $RankingPath
+  throw "Rankings file not found: $RankingPath"
 }
 
 $rankings = Get-Content -LiteralPath $RankingPath -Raw | ConvertFrom-Json
@@ -29,9 +26,8 @@ foreach ($entry in $rankings) {
 $json = $movesets | ConvertTo-Json -Depth 5
 $generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $content = @(
-  "// Generated from PvPoke rankings-1500.json on $generatedAt."
-  "// Source: $SourceUrl"
-  "window.PVPOKE_DEFAULT_MOVESETS = $json;"
+  "// Generated default Great League movesets on $generatedAt."
+  "window.BATTLE_DEFAULT_MOVESETS = $json;"
   ""
 ) -join [Environment]::NewLine
 

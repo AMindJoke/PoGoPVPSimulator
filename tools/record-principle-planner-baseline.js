@@ -19,8 +19,8 @@ const OUTPUT_PATH = path.join(OUTPUT_DIR, "principle-planner-baseline-8e8f2b0.js
 const SCHEMA_VERSION = 1;
 const BASELINE_COMMIT = "8e8f2b0efaa04c17847763f0478b54bb6c8571cc";
 
-const gamemaster = readWindowGlobal("gamemaster-data.js", "PVPOKE_GAMEMASTER");
-const movesets = readWindowGlobal("pvpoke-default-movesets.js", "PVPOKE_DEFAULT_MOVESETS") || {};
+const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+const movesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
 const moveMap = new Map(gamemaster.moves.map(move => [move.moveId, normalizeMove(move)]));
 const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon?.speciesId && pokemon.baseStats)
