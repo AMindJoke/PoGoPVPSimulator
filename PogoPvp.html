@@ -4282,7 +4282,7 @@
       cursor: crosshair;
     }
     .timeline-block.technical-eligible::after {
-      content: "Technical target";
+      content: attr(data-technical-target-label);
       position: absolute;
       left: 50%;
       bottom: calc(100% + 3px);
@@ -17616,11 +17616,19 @@
       if (!available) return "";
       const mode = technicalReviewState?.mode || null;
       const draft = technicalReviewState?.draft || null;
+      const eligibleTargets = mode ? manualTechnicalEligibleEventIndexes(mode) : [];
       const instructions = mode === api.ISSUE_TYPES.ONE_TURN_LAG
         ? "Select the Fast Move affected by the one-turn lag."
         : mode === api.ISSUE_TYPES.DRE
           ? "Select the Fast Move that created the DRE window."
           : "Reconstruct a reported timing issue from an eligible Fast Move.";
+      const selectionMessage = mode === api.ISSUE_TYPES.DRE && !eligibleTargets.length
+        ? "No valid DRE target in this segment. A Fast Move must unlock a Charged Move immediately before lethal opposing Fast Move damage."
+        : mode === api.ISSUE_TYPES.ONE_TURN_LAG && !eligibleTargets.length
+          ? "No valid Fast Move is available in the current segment."
+          : eligibleTargets.length === 1
+            ? "1 valid target is highlighted on the timeline."
+            : `${eligibleTargets.length} valid targets are highlighted on the timeline.`;
       const draftMarkup = draft
         ? manualTechnicalDraftMarkup(draft)
         : "";
@@ -17630,7 +17638,7 @@
           <button type="button" data-manual-technical-issue="one-turn-lag" aria-pressed="${mode === api.ISSUE_TYPES.ONE_TURN_LAG}">1-Turn Lag</button>
           <button type="button" data-manual-technical-issue="dre" aria-pressed="${mode === api.ISSUE_TYPES.DRE}">DRE</button>
         </div>
-        ${mode ? `<div class="manual-technical-selection" role="status"><span>${escapeHtml(instructions)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
+        ${mode ? `<div class="manual-technical-selection" role="status" aria-live="polite"><span>${escapeHtml(selectionMessage)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
         ${draftMarkup}
       </section>`;
     }
@@ -23247,6 +23255,22 @@
       return !!eventId && !!manualSnapshotStore?.get(eventId, window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
     }
 
+    function manualTechnicalEligibleEventIndexes(mode) {
+      const api = window.PvPeakTechnicalReview;
+      if (!api || !manualModeState?.enabled || !mode) return [];
+      const segmentStart = manualTechnicalSegmentStartIndex();
+      return timeline.reduce((eligible, event, index) => {
+        if (!manualTechnicalEventEligible(index, event)) return eligible;
+        const issue = mode === api.ISSUE_TYPES.ONE_TURN_LAG
+          ? api.createOneTurnLagIssue(timeline, index, segmentStart)
+          : mode === api.ISSUE_TYPES.DRE
+            ? api.createDreIssue(timeline, index, segmentStart, { A: left, B: right })
+            : null;
+        if (issue) eligible.push(index);
+        return eligible;
+      }, []);
+    }
+
     function manualTechnicalRestorePlan(issue) {
       const event = timeline?.[issue?.eventIndex];
       const eventId = event?.timelineEventId || event?.id;
@@ -23848,6 +23872,15 @@
             && !!api.createDreIssue(timeline, index, segmentStart, { A: left, B: right });
         }
         block.classList.toggle("technical-eligible", eligible);
+        const targetLabel = technicalReviewState.mode === api.ISSUE_TYPES.DRE ? "DRE target" : "1-Turn Lag target";
+        if (eligible) block.dataset.technicalTargetLabel = targetLabel;
+        else delete block.dataset.technicalTargetLabel;
+        if (!block.dataset.technicalBaseAriaLabel) {
+          block.dataset.technicalBaseAriaLabel = block.getAttribute("aria-label") || "Timeline event";
+        }
+        block.setAttribute("aria-label", eligible
+          ? `${block.dataset.technicalBaseAriaLabel}. ${targetLabel}`
+          : block.dataset.technicalBaseAriaLabel);
         block.setAttribute("aria-disabled", String(!!technicalReviewState.mode && !eligible));
         block.classList.toggle("technical-selected", technicalReviewState.activeBranch === "original" && technicalReviewState.selectedEventIndex === index);
       });
