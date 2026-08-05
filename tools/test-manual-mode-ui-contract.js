@@ -15,6 +15,12 @@ for (const id of [
   "manualRuntimeDetail",
   "manualRuntimeTurn",
   "manualMobileActionMount",
+  "manualMobileReviewShell",
+  "manualMobileHudArea",
+  "manualMobileTimelineArea",
+  "manualMobileBottomSheetShell",
+  "manualMobileTabsShell",
+  "manualMobileControlsArea",
   "manualWorkspaceHeader",
   "manualOverlayScenario",
   "manualBackToSimulation",
@@ -108,6 +114,17 @@ assert(pokemonImageLoader.indexOf("img.onerror =") < pokemonImageLoader.lastInde
 assert.match(html, /energyMoveOrb\(move, combatant\.energy, prefix, index\)/);
 assert.match(html, /function syncManualEditorPlacement/);
 assert.match(html, /window\.matchMedia\("\(max-width: 900px\)"\)\.matches/);
+assert.match(html, /\.manual-mobile-review-shell\s*\{\s*display: none;\s*\}/, "The mobile shell must not affect desktop layout.");
+assert.match(html, /@media \(max-width: 900px\)[\s\S]*?body\.manual-mode-active \.manual-mobile-review-shell:not\(\[hidden\]\)[\s\S]{0,360}display: contents;/, "The mobile shell must activate only inside the mobile breakpoint.");
+assert.match(html, /id="manualMobileHudArea"[^>]+data-mobile-source="manualMobileFocusMount manualDuelHud"/, "The mobile HUD area must reuse the existing HUD nodes.");
+assert.match(html, /id="manualMobileTimelineArea"[^>]+data-mobile-source="manualTimelineStage"/, "The mobile Timeline area must reuse the existing Timeline stage.");
+assert.match(html, /id="manualMobileBottomSheetShell"[^>]+data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar"/, "The future bottom sheet must reference the existing controls.");
+const mobileShellMarkup = html.match(/<section id="manualMobileReviewShell"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
+assert.doesNotMatch(mobileShellMarkup, /<(?:button|input|select|textarea)\b/, "The Phase 1 shell must not duplicate interactive controls.");
+for (const functionName of ["syncManualEditorPlacement", "renderManualDuelHud", "renderManualDecisionBanner", "renderManualBattleStateEditor"]) {
+  const declarations = html.match(new RegExp(`function\\s+${functionName}\\s*\\(`, "g")) || [];
+  assert.equal(declarations.length, 1, `${functionName} must not be duplicated for mobile.`);
+}
 assert.match(html, /focusMount\.append\(workspaceHeader\)/);
 assert.match(html, /focusMount\.append\(duelHud\)/);
 assert.match(html, /decisionPanel\.append\(actions\)/);

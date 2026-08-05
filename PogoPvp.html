@@ -5562,6 +5562,7 @@
     .manual-hud-shield-control svg { width: 15px; height: 15px; color: #b245c5; }
     .manual-hud-shield-control button.active svg { color: #d45af0; }
     .manual-mobile-shield-setup { display: none; }
+    .manual-mobile-review-shell { display: none; }
     .manual-hud-sprite {
       width: 52px;
       height: 52px;
@@ -9073,6 +9074,13 @@
         box-shadow: none;
         overflow: visible;
       }
+      body.manual-mode-active .manual-mobile-review-shell:not([hidden]),
+      body.manual-mode-active .manual-mobile-shell-region,
+      body.manual-mode-active .manual-mobile-bottom-sheet-shell,
+      body.manual-mode-active .manual-mobile-tabs-shell,
+      body.manual-mode-active .manual-mobile-controls-shell {
+        display: contents;
+      }
       .manual-mobile-focus-mount { display: none; }
       body.manual-mode-active .manual-mobile-focus-mount {
         position: sticky;
@@ -11200,6 +11208,14 @@
 
     <div class="analysis-grid">
       <section class="timeline" id="battleTimeline">
+        <section id="manualMobileReviewShell" class="manual-mobile-review-shell" aria-hidden="true" hidden>
+          <div id="manualMobileHudArea" class="manual-mobile-shell-region manual-mobile-hud-area" data-mobile-source="manualMobileFocusMount manualDuelHud" aria-controls="manualMobileFocusMount manualDuelHud"></div>
+          <div id="manualMobileTimelineArea" class="manual-mobile-shell-region manual-mobile-timeline-area" data-mobile-source="manualTimelineStage" aria-controls="manualTimelineStage"></div>
+          <section id="manualMobileBottomSheetShell" class="manual-mobile-bottom-sheet-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar">
+            <div id="manualMobileTabsShell" class="manual-mobile-tabs-shell" aria-label="Future mobile review tabs"></div>
+            <div id="manualMobileControlsArea" class="manual-mobile-controls-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar"></div>
+          </section>
+        </section>
         <div id="manualMobileFocusMount" class="manual-mobile-focus-mount" hidden></div>
         <div id="manualWorkspaceHeader" class="manual-workspace-header">
           <span class="manual-workspace-brand">PvP <small>Simulator</small></span>
@@ -18213,9 +18229,12 @@
       const runtimeToolbar = $("manualRuntimeToolbar");
       const runtimeHome = $("manualRuntimeToolbarHome");
       const battleTimeline = $("battleTimeline");
-      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline) return;
+      const mobileShell = $("manualMobileReviewShell");
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
       if (mobile) {
+        mobileShell.hidden = !manualModeState?.enabled;
+        mobileShell.dataset.active = manualModeState?.enabled ? "true" : "false";
         if (workspaceHeader.parentElement !== focusMount) focusMount.append(workspaceHeader);
         if (duelHud.parentElement !== focusMount) focusMount.append(duelHud);
         if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
@@ -18234,6 +18253,8 @@
         return;
       }
       mobileMount.hidden = true;
+      mobileShell.hidden = true;
+      delete mobileShell.dataset.active;
       focusMount.hidden = true;
       secondaryMount.hidden = true;
       battleTimeline.style.removeProperty("--manual-mobile-top-offset");
