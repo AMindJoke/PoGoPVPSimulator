@@ -98,6 +98,18 @@ const afterImpact = TurnEngine.resolveFastImpact(TurnEngine.createState({ ...sta
 assert.equal(afterImpact.state.sides.A.hp, 0);
 assert.equal(afterImpact.outcome.winner, "B");
 
+const energyImpact = TurnEngine.createFastImpactEvent({
+  sourceSide: "A",
+  targetSide: "B",
+  damage: 3,
+  energyGain: 9,
+  startTurn: 5,
+  duration: 2
+});
+const afterEnergyImpact = TurnEngine.resolveFastImpact(state, energyImpact);
+assert.equal(afterEnergyImpact.state.sides.A.energy, 69);
+assert.equal(afterEnergyImpact.state.sides.B.hp, 97);
+
 const sourceFainted = TurnEngine.createState({
   ...state,
   sides: { A: state.sides.A, B: { ...state.sides.B, hp: 0 } },

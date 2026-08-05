@@ -11875,6 +11875,7 @@
     };
     let technicalSegmentStartState = null;
     let technicalIssueInjection = null;
+    let manualPendingFastEvents = [];
     let technicalSimulationRunning = false;
     let matchupInspectorOpen = false;
     let matchupInspectorScrollPending = false;
@@ -14615,6 +14616,7 @@
     function resetBattleStateFromSetup() {
       clearManualEnergyTrainerNextCycle();
       technicalIssueInjection = null;
+      manualPendingFastEvents = [];
       if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
         clearManualTechnicalDraft({ renderNow: false });
         technicalReviewState.pendingDre = null;
@@ -15553,9 +15555,10 @@
             chargedMoves: validChargedMoves(right)
           }
         },
-        pendingEvents: typeof technicalIssueInjection !== "undefined"
-          ? technicalIssueInjection?.pendingEvents || []
-          : []
+        pendingEvents: [
+          ...(typeof manualModeState !== "undefined" && manualModeState?.enabled && typeof manualPendingFastEvents !== "undefined" ? manualPendingFastEvents : []),
+          ...(typeof technicalIssueInjection !== "undefined" ? technicalIssueInjection?.pendingEvents || [] : [])
+        ]
       });
     }
 
@@ -15584,6 +15587,87 @@
       return state ? api.terminalOutcome(state).ended : !!(left && right && (left.hp <= 0 || right.hp <= 0));
     }
 
+    function resolveManualFastImpactsThrough(turn) {
+      const api = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      if (!api || !manualPendingFastEvents.length || !left || !right) return [];
+      const targetTurn = Math.max(0, Number(turn || 0));
+      const dueTurns = [...new Set(manualPendingFastEvents
+        .filter(event => event.status === "pending" && Number(event.resolveTurn || 0) <= targetTurn)
+        .map(event => Number(event.resolveTurn || 0)))]
+        .sort((a, b) => a - b);
+      const resolved = [];
+      dueTurns.forEach(resolveTurn => {
+        const state = api.createState({ ...turnEngineState(resolveTurn), currentTurn: resolveTurn, pendingEvents: manualPendingFastEvents });
+        const phase = api.resolveDueFastImpacts(state, resolveTurn);
+        left.hp = phase.state.sides.A.hp;
+        left.energy = phase.state.sides.A.energy;
+        right.hp = phase.state.sides.B.hp;
+        right.energy = phase.state.sides.B.energy;
+        phase.events.forEach(impact => {
+          const event = Number.isInteger(impact.timelineIndex) ? timeline[impact.timelineIndex] : null;
+          if (event) {
+            event.fastImpactStatus = impact.status;
+            event.resolutionTurn = impact.resolveTurn;
+            event.resolveTurn = impact.resolveTurn;
+            event.energyAfter = Number((impact.sourceSide === "A" ? left : right)?.energy || 0);
+            event.hpAfter = Number((impact.targetSide === "A" ? left : right)?.hp || 0);
+            event.state = battleSnapshot();
+          }
+          resolved.push(impact);
+          const source = impact.sourceSide === "A" ? left : right;
+          const target = impact.targetSide === "A" ? left : right;
+          add(
+            impact.status === "denied"
+              ? `T${impact.resolveTurn} - ${impact.moveName} impact is denied because ${source?.p?.name || "the attacker"} has fainted.`
+              : `T${impact.resolveTurn} - ${source?.trainer}: ${impact.moveName} resolves: ${impact.damage} damage, +${impact.energyGain} energy.`,
+            impact.status === "denied" ? "info" : "fast"
+          );
+        });
+        manualPendingFastEvents = phase.state.pendingEvents;
+      });
+      return resolved;
+    }
+
+    function registerManualFast(attacker, defender, options = {}) {
+      const api = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      if (!api || !attacker?.fast || !defender) return false;
+      const energyBefore = Number(attacker.energy || 0);
+      const hpBefore = Number(defender.hp || 0);
+      const damage = estimate(attacker, defender, attacker.fast);
+      const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
+        actionLifecycle: options.actionLifecycle || null,
+        manualAction: options.manualAction || null,
+        energyAfter: energyBefore,
+        hpBefore,
+        hpAfter: hpBefore
+      });
+      const pending = api.createFastImpactEvent({
+        id: `manual-fast-impact-${event.timelineEventId}`,
+        sourceSide: attacker.trainer,
+        targetSide: defender.trainer,
+        moveId: attacker.fast.id,
+        moveName: attacker.fast.name,
+        damage,
+        energyGain: Math.max(0, Number(attacker.fast.energyGain || 0)),
+        startTurn: event.start,
+        duration: event.duration,
+        timelineIndex: event.timelineIndex,
+        source: "manual-mode"
+      });
+      event.fastImpactStatus = "pending";
+      event.resolveTurn = pending.resolveTurn;
+      event.resolutionTurn = pending.resolveTurn;
+      manualPendingFastEvents = api.scheduleEvent(manualPendingFastEvents, pending);
+      completeAutomaticActionLifecycle(options.actionLifecycle, event, attacker, defender, {
+        registrationTurn: event.start,
+        resolutionTurn: pending.resolveTurn
+      });
+      attacker.lastFastStart = event.start;
+      add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} registers ${attacker.fast.name}; impact at T${pending.resolveTurn}.`, "fast");
+      resolveManualFastImpactsThrough(Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
+      return event;
+    }
+
     function ready() {
       if (!left || !right) startBattle();
       if (battleEnded()) {
@@ -15599,6 +15683,13 @@
         ? captureManualRuntimeSnapshot()
         : null;
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
+      if (typeof manualModeState !== "undefined" && manualModeState?.enabled && !technicalIssueInjection && chargedContinuationDepth === 0) {
+        const event = registerManualFast(attacker, defender, options);
+        if (!event) return false;
+        if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(event, manualRuntimeBefore);
+        if (activeAutoTurnContext?.deferTerminalFinalization) return true;
+        return finish();
+      }
       const dreFastOrdinal = typeof nextTechnicalDreFastOrdinal === "function" ? nextTechnicalDreFastOrdinal(attacker) : 0;
       const energyBefore = attacker.energy;
       const hpBefore = defender.hp;
@@ -16174,6 +16265,7 @@
       left = restored.left;
       right = restored.right;
       battleTurns = restored.battleTurns || { A: 0, B: 0 };
+      manualPendingFastEvents = cloneTechnicalValue(restored.manualPendingFastEvents || []);
       initialTimelineState = restored.initialTimelineState || initialTimelineState;
       if (Object.prototype.hasOwnProperty.call(restored, "scenarioState")) {
         scenarioState = restored.scenarioState;
@@ -16337,6 +16429,7 @@
         technicalMount.innerHTML = "";
       }
       technicalIssueInjection = null;
+      manualPendingFastEvents = [];
       if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
         clearManualTechnicalDraft({ renderNow: false });
         technicalReviewState.pendingDre = null;
@@ -18775,6 +18868,7 @@
         left,
         right,
         battleTurns,
+        manualPendingFastEvents,
         initialTimelineState,
         scenarioState,
         scenarioReviewMode,
@@ -22979,6 +23073,7 @@
 
         const continuationTurn = Math.max(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
         battleTurns = { A: continuationTurn, B: continuationTurn };
+        manualPendingFastEvents = [];
         selectedTimelineIndex = null;
         previewTimelineIndex = null;
         previewingTimeline = false;
@@ -23090,6 +23185,7 @@
         timeline,
         initialTimelineState,
         battleTurns,
+        manualPendingFastEvents,
         selectedTimelineIndex,
         previewTimelineIndex,
         previewingTimeline,
@@ -23113,6 +23209,7 @@
       timeline = restored.timeline || [];
       initialTimelineState = restored.initialTimelineState || null;
       battleTurns = restored.battleTurns || { A: 0, B: 0 };
+      manualPendingFastEvents = cloneTechnicalValue(restored.manualPendingFastEvents || []);
       selectedTimelineIndex = restored.selectedTimelineIndex ?? null;
       previewTimelineIndex = restored.previewTimelineIndex ?? null;
       previewingTimeline = !!restored.previewingTimeline;
@@ -23350,6 +23447,11 @@
           .filter(move => (issue.chargedMoveIds || []).includes(move.id));
         const chosenMove = allowedMoves.find(move => move.id === choice);
         if (!chosenMove) throw new Error("DRE_CHARGED_MOVE_INVALID");
+        const pendingObservedFast = manualPendingFastEvents.find(event => (
+          event.sourceSide === issue.fastSide
+          && event.targetSide === issue.trainer
+          && Number(event.timelineIndex) === Number(issue.lethalFastIndex)
+        )) || null;
         technicalIssueInjection = {
           type: "dre",
           trainer: issue.trainer,
@@ -23367,9 +23469,28 @@
           plan
         };
         if (!useFast(restoredAttacker, restoredDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: "dre" } })) throw new Error("DRE_ENERGY_FAST_INVALIDATED");
-        const lethalAttacker = issue.fastSide === "A" ? left : right;
-        const lethalDefender = issue.fastSide === "A" ? right : left;
-        if (!useFast(lethalAttacker, lethalDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: "dre-pending" } })) throw new Error("DRE_PENDING_FAST_INVALIDATED");
+        const reconstructedEnergyFast = timeline.at(-1);
+        if (reconstructedEnergyFast?.kind === "fast" && reconstructedEnergyFast.trainer === issue.trainer) {
+          reconstructedEnergyFast.resolveTurn = Number(sourceEvent?.resolveTurn ?? issue.turn);
+          reconstructedEnergyFast.resolutionTurn = reconstructedEnergyFast.resolveTurn;
+          reconstructedEnergyFast.fastImpactStatus = "resolved";
+          reconstructedEnergyFast.state = battleSnapshot();
+        }
+        if (pendingObservedFast) {
+          technicalIssueInjection.pendingFast = cloneTechnicalValue(pendingObservedFast);
+          technicalIssueInjection.pendingEvents = [cloneTechnicalValue(pendingObservedFast)];
+          manualPendingFastEvents = manualPendingFastEvents.filter(event => event.id !== pendingObservedFast.id);
+          const pendingTimelineEvent = timeline[pendingObservedFast.timelineIndex];
+          if (pendingTimelineEvent) {
+            pendingTimelineEvent.drePending = true;
+            pendingTimelineEvent.fastImpactStatus = "pending";
+            pendingTimelineEvent.state = battleSnapshot();
+          }
+        } else {
+          const lethalAttacker = issue.fastSide === "A" ? left : right;
+          const lethalDefender = issue.fastSide === "A" ? right : left;
+          if (!useFast(lethalAttacker, lethalDefender, { manualAction: { actionType: "FAST_MOVE", technicalIssue: "dre-pending" } })) throw new Error("DRE_PENDING_FAST_INVALIDATED");
+        }
         const pending = technicalIssueInjection.pendingFast;
         if (!pending || !technicalIssueInjection.energyReady) throw new Error("DRE_WINDOW_NOT_CREATED");
         const dreEvent = recordManualTechnicalEvent(issue, {
@@ -23577,7 +23698,10 @@
       const pendingEvent = Number.isInteger(pending.timelineIndex) ? timeline[pending.timelineIndex] : null;
       const result = api.resolveFastImpact(turnEngineState(), pending);
       const denied = result.event.status === "denied";
-      if (!denied) attacker.hp = result.state.sides[attacker.trainer].hp;
+      attacker.hp = result.state.sides[attacker.trainer].hp;
+      attacker.energy = result.state.sides[attacker.trainer].energy;
+      defender.hp = result.state.sides[defender.trainer].hp;
+      defender.energy = result.state.sides[defender.trainer].energy;
       if (pendingEvent) {
         pendingEvent.drePending = false;
         pendingEvent.technicalLagPending = false;
@@ -23585,6 +23709,9 @@
         pendingEvent.technicalLagDenied = injection.type === "one-turn-lag" && denied;
         pendingEvent.dreResolved = injection.type === "dre" && !denied;
         pendingEvent.technicalLagResolved = injection.type === "one-turn-lag" && !denied;
+        pendingEvent.fastImpactStatus = result.event.status;
+        pendingEvent.energyAfter = defender.energy;
+        pendingEvent.hpAfter = attacker.hp;
         pendingEvent.state = battleSnapshot();
       }
       const label = injection.type === "dre" ? "DRE" : "One-turn lag";

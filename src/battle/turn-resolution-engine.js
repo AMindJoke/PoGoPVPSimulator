@@ -171,6 +171,7 @@ function createPvPeakTurnEngineApi() {
       moveId: input.moveId || null,
       moveName: input.moveName || "Fast Move",
       damage: Math.max(0, numeric(input.damage)),
+      energyGain: Math.max(0, numeric(input.energyGain)),
       startTurn,
       duration,
       resolveTurn: fastImpactTurn(startTurn, duration),
@@ -228,6 +229,7 @@ function createPvPeakTurnEngineApi() {
     if (!source || !target || source.hp <= 0) {
       resolvedEvent.status = "denied";
     } else {
+      source.energy = Math.max(0, Math.min(100, source.energy + Math.max(0, numeric(event.energyGain))));
       target.hp = Math.max(0, target.hp - Math.max(0, numeric(event.damage)));
       resolvedEvent.status = "resolved";
     }
@@ -248,6 +250,7 @@ function createPvPeakTurnEngineApi() {
         B: next.sides.B.hp > 0
       };
       const damageByTarget = { A: 0, B: 0 };
+      const energyBySource = { A: 0, B: 0 };
       simultaneous.forEach(event => {
         const resolvedEvent = { ...event };
         if (!aliveAtPhaseStart[event.sourceSide] || !next.sides[event.targetSide]) {
@@ -255,10 +258,12 @@ function createPvPeakTurnEngineApi() {
         } else {
           resolvedEvent.status = "resolved";
           damageByTarget[event.targetSide] += Math.max(0, numeric(event.damage));
+          energyBySource[event.sourceSide] += Math.max(0, numeric(event.energyGain));
         }
         resolvedEvents.push(resolvedEvent);
       });
       for (const sideId of ["A", "B"]) {
+        next.sides[sideId].energy = Math.max(0, Math.min(100, next.sides[sideId].energy + energyBySource[sideId]));
         next.sides[sideId].hp = Math.max(0, next.sides[sideId].hp - damageByTarget[sideId]);
       }
     }
