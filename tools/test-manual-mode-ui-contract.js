@@ -19,6 +19,8 @@ for (const id of [
   "manualMobileHudArea",
   "manualMobileTimelineArea",
   "manualMobileBottomSheetShell",
+  "manualMobileSheetHandle",
+  "manualMobileSheetStatus",
   "manualMobileTabsShell",
   "manualMobileControlsArea",
   "manualWorkspaceHeader",
@@ -121,9 +123,10 @@ assert.match(html, /\.manual-mobile-review-shell\s*\{\s*display: none;\s*\}/, "T
 assert.match(html, /@media \(max-width: 900px\)[\s\S]*?body\.manual-mode-active \.manual-mobile-review-shell:not\(\[hidden\]\)[\s\S]{0,360}display: contents;/, "The mobile shell must activate only inside the mobile breakpoint.");
 assert.match(html, /id="manualMobileHudArea"[^>]+data-mobile-source="manualMobileFocusMount manualDuelHud"/, "The mobile HUD area must reuse the existing HUD nodes.");
 assert.match(html, /id="manualMobileTimelineArea"[^>]+data-mobile-source="manualTimelineStage"/, "The mobile Timeline area must reuse the existing Timeline stage.");
-assert.match(html, /id="manualMobileBottomSheetShell"[^>]+data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar"/, "The future bottom sheet must reference the existing controls.");
+assert.match(html, /id="manualMobileBottomSheetShell"[^>]+data-state="collapsed"[^>]+data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar"/, "The bottom sheet must reference the existing controls.");
 const mobileShellMarkup = html.match(/<section id="manualMobileReviewShell"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
-assert.doesNotMatch(mobileShellMarkup, /<(?:button|input|select|textarea)\b/, "The Phase 1 shell must not duplicate interactive controls.");
+const mobileShellInteractiveIds = [...mobileShellMarkup.matchAll(/<(?:button|input|select|textarea)\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
+assert.deepEqual(mobileShellInteractiveIds, ["manualMobileSheetHandle"], "The bottom sheet may add only its handle; review controls must be reparented rather than duplicated.");
 for (const functionName of ["syncManualEditorPlacement", "renderManualDuelHud", "renderManualDecisionBanner", "renderManualBattleStateEditor"]) {
   const declarations = html.match(new RegExp(`function\\s+${functionName}\\s*\\(`, "g")) || [];
   assert.equal(declarations.length, 1, `${functionName} must not be duplicated for mobile.`);
@@ -132,6 +135,23 @@ assert.match(html, /focusMount\.append\(workspaceHeader\)/);
 assert.match(html, /focusMount\.append\(duelHud\)/);
 assert.match(html, /decisionPanel\.append\(actions\)/);
 assert.match(html, /secondaryMount\.append\(runtimeToolbar\)/);
+assert.match(html, /mobileControls\.append\(decisionPanel\)/);
+assert.match(html, /mobileControls\.append\(technicalMount\)/);
+assert.match(html, /mobileControls\.append\(inspector\)/);
+assert.match(html, /mobileControls\.append\(eventMenu\)/);
+assert.match(html, /mobileControls\.append\(runtimeToolbar\)/);
+assert.match(html, /const mobileReview = mobile && document\.body\.dataset\.view === "scenario-review"/, "The bottom sheet must remain exclusive to mobile Scenario Review.");
+assert.match(html, /function restoreManualReviewControlHomes\(\)/, "Desktop and non-review mobile layouts need canonical control restoration.");
+assert.match(html, /body\[data-view="scenario-review"\]\.manual-mode-active \.manual-mobile-bottom-sheet-shell\s*\{[\s\S]{0,100}position: fixed;[\s\S]{0,100}bottom: 0;/, "The Scenario Review sheet must be fixed to the mobile viewport bottom.");
+assert.match(html, /manual-mobile-bottom-sheet-shell\[data-state="half"\][\s\S]{0,80}height: min\(52dvh, 460px\)/);
+assert.match(html, /manual-mobile-bottom-sheet-shell\[data-state="expanded"\][\s\S]{0,120}height: min\(88dvh/);
+assert.match(html, /manual-mobile-controls-shell\s*\{[\s\S]{0,220}overflow-y: auto;[\s\S]{0,100}overscroll-behavior: contain;/, "Bottom sheet content must scroll internally.");
+assert.match(html, /manual-mobile-controls-shell \.manual-state-inspector\.mobile-details-open\s*\{[^}]*position: static;[^}]*box-shadow: none;[^}]*\}/, "Battle State details must expand inside the sheet rather than opening a nested mobile overlay.");
+assert.match(html, /env\(safe-area-inset-bottom, 0px\)/, "The mobile sheet must respect the device bottom safe area.");
+assert.match(html, /function setManualMobileSheetState\(state/);
+assert.match(html, /function cycleManualMobileSheetState\(\)/);
+assert.match(html, /MANUAL_MOBILE_SHEET_STATES = Object\.freeze\(\["collapsed", "half", "expanded"\]\)/);
+assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
 assert.match(html, /body\.manual-mode-active \.manual-timeline-stage\s*\{[\s\S]{0,160}position: sticky/);

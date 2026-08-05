@@ -5563,6 +5563,7 @@
     .manual-hud-shield-control button.active svg { color: #d45af0; }
     .manual-mobile-shield-setup { display: none; }
     .manual-mobile-review-shell { display: none; }
+    .manual-mobile-sheet-handle { display: none; }
     .manual-hud-status,
     .manual-hud-mobile-actor { display: none; }
     .manual-hud-sprite {
@@ -9406,6 +9407,98 @@
         margin-top: 4px;
       }
       body.manual-mode-active .timeline-zoom-control button { min-height: 23px; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 90;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        width: 100%;
+        height: calc(56px + env(safe-area-inset-bottom, 0px));
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 8px);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: 16px 16px 0 0;
+        background: var(--panel);
+        box-shadow: 0 -8px 24px rgba(23, 33, 47, .18);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="half"] {
+        height: min(52dvh, 460px);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="expanded"] {
+        height: min(88dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 8px));
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-sheet-handle {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 55px;
+        padding: 6px 14px;
+        border: 0;
+        border-radius: 0;
+        background: var(--panel);
+        color: var(--text);
+        text-align: left;
+        box-shadow: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-sheet-grip {
+        display: block;
+        width: 32px;
+        height: 4px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--muted) 42%, transparent);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-sheet-handle-copy {
+        display: grid;
+        gap: 1px;
+        min-width: 0;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-sheet-handle-copy strong {
+        font-size: 11px;
+        font-weight: 950;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-sheet-handle-copy small {
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 750;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell { display: none; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell {
+        display: block;
+        min-height: 0;
+        padding: 2px 8px calc(12px + env(safe-area-inset-bottom, 0px));
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="collapsed"] .manual-mobile-controls-shell {
+        display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell > * {
+        width: 100%;
+        margin-top: 8px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell > :first-child { margin-top: 0; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell .manual-state-inspector,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell .manual-mobile-secondary-mount {
+        margin-top: 8px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell .manual-state-inspector.mobile-details-open {
+        position: static;
+        max-height: none;
+        padding: 0;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
       body.manual-mode-active .manual-editor-workspace {
         display: block;
         order: 3;
@@ -11293,9 +11386,13 @@
         <section id="manualMobileReviewShell" class="manual-mobile-review-shell" aria-hidden="true" hidden>
           <div id="manualMobileHudArea" class="manual-mobile-shell-region manual-mobile-hud-area" data-mobile-source="manualMobileFocusMount manualDuelHud" aria-controls="manualMobileFocusMount manualDuelHud"></div>
           <div id="manualMobileTimelineArea" class="manual-mobile-shell-region manual-mobile-timeline-area" data-mobile-source="manualTimelineStage" aria-controls="manualTimelineStage"></div>
-          <section id="manualMobileBottomSheetShell" class="manual-mobile-bottom-sheet-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar">
+          <section id="manualMobileBottomSheetShell" class="manual-mobile-bottom-sheet-shell" data-state="collapsed" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-label="Mobile review controls" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar">
+            <button id="manualMobileSheetHandle" class="manual-mobile-sheet-handle" type="button" aria-controls="manualMobileControlsArea" aria-expanded="false">
+              <span class="manual-mobile-sheet-grip" aria-hidden="true"></span>
+              <span class="manual-mobile-sheet-handle-copy"><strong>Review controls</strong><small id="manualMobileSheetStatus">Collapsed · Tap to open</small></span>
+            </button>
             <div id="manualMobileTabsShell" class="manual-mobile-tabs-shell" aria-label="Future mobile review tabs"></div>
-            <div id="manualMobileControlsArea" class="manual-mobile-controls-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualRuntimeToolbar"></div>
+            <div id="manualMobileControlsArea" class="manual-mobile-controls-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-hidden="true"></div>
           </section>
         </section>
         <div id="manualMobileFocusMount" class="manual-mobile-focus-mount" hidden></div>
@@ -11845,6 +11942,8 @@
     let manualOriginalRuntimeState = null;
     let manualRootSnapshotId = null;
     let manualModeMinimized = false;
+    const MANUAL_MOBILE_SHEET_STATES = Object.freeze(["collapsed", "half", "expanded"]);
+    let manualMobileSheetState = "collapsed";
     // This belongs to the Manual Mode session, not to an individual timeline
     // version. Switching Original/Manual must never change who is controlled.
     let manualSessionControlMode = null;
@@ -12429,6 +12528,8 @@
       $("manualOverlayRedo").onclick = redoLiveManualCommand;
       $("manualOverlayScenario").onchange = event => switchLiveManualBranch(event.target.value);
       $("manualMobileVersionsToggle").onclick = toggleManualMobileVersions;
+      $("manualMobileSheetHandle").onclick = cycleManualMobileSheetState;
+      document.addEventListener("keydown", handleManualMobileSheetKeydown);
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
       $("manualEventBranchBefore").onclick = () => createManualAlternativeFromSelected(window.PvPeakManualSnapshots.BOUNDARY.BEFORE);
@@ -16513,6 +16614,7 @@
       });
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
       manualModeMinimized = false;
+      manualMobileSheetState = "collapsed";
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       updateManualBranchSelectionUi();
       render();
@@ -16543,6 +16645,7 @@
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
       manualModeMinimized = false;
+      manualMobileSheetState = "collapsed";
       manualSessionControlMode = null;
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
@@ -17256,6 +17359,7 @@
         manualSessionControlMode = entry.payload.manualSession.sessionControlMode || null;
         manualBattleRuntime = null;
         manualModeMinimized = false;
+        manualMobileSheetState = "collapsed";
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualScenarioId = entry.id;
         manualScenarioBaseline = JSON.stringify(entry.payload);
@@ -18142,6 +18246,64 @@
       return true;
     }
 
+    function setManualMobileSheetState(state, { returnFocus = false } = {}) {
+      const normalized = MANUAL_MOBILE_SHEET_STATES.includes(state) ? state : "collapsed";
+      manualMobileSheetState = normalized;
+      const sheet = $("manualMobileBottomSheetShell");
+      const handle = $("manualMobileSheetHandle");
+      const controls = $("manualMobileControlsArea");
+      const status = $("manualMobileSheetStatus");
+      if (!sheet || !handle || !controls || !status) return false;
+      const open = normalized !== "collapsed";
+      const statusText = normalized === "collapsed"
+        ? "Collapsed · Tap to open"
+        : normalized === "half"
+          ? "Half height · Tap to expand"
+          : "Expanded · Tap to collapse";
+      sheet.dataset.state = normalized;
+      handle.setAttribute("aria-expanded", String(open));
+      handle.setAttribute("aria-label", `Review controls: ${statusText}`);
+      controls.setAttribute("aria-hidden", String(!open));
+      status.textContent = statusText;
+      if (returnFocus) handle.focus({ preventScroll: true });
+      return true;
+    }
+
+    function cycleManualMobileSheetState() {
+      if (document.body.dataset.view !== "scenario-review" || !manualModeState?.enabled || !window.matchMedia("(max-width: 900px)").matches) return false;
+      const index = MANUAL_MOBILE_SHEET_STATES.indexOf(manualMobileSheetState);
+      const next = MANUAL_MOBILE_SHEET_STATES[(Math.max(0, index) + 1) % MANUAL_MOBILE_SHEET_STATES.length];
+      return setManualMobileSheetState(next);
+    }
+
+    function handleManualMobileSheetKeydown(event) {
+      if (event.key !== "Escape" || manualMobileSheetState === "collapsed") return;
+      if (document.body.dataset.view !== "scenario-review" || !manualModeState?.enabled || !window.matchMedia("(max-width: 900px)").matches) return;
+      if (document.querySelector(".modal.open")) return;
+      event.preventDefault();
+      setManualMobileSheetState("collapsed", { returnFocus: true });
+    }
+
+    function restoreManualReviewControlHomes() {
+      const workspace = $("manualEditorWorkspace");
+      const decisionPanel = $("manualDecisionPanel");
+      const inspector = $("manualStateInspector");
+      const secondaryMount = $("manualMobileSecondaryMount");
+      const eventMenu = $("manualTimelineEventMenu");
+      const technicalMount = $("manualTechnicalIssuesMount");
+      const timelineStage = $("manualTimelineStage");
+      const timelineZoom = timelineStage?.querySelector(".timeline-zoom-control");
+      const runtimeToolbar = $("manualRuntimeToolbar");
+      const runtimeHome = $("manualRuntimeToolbarHome");
+      if (!workspace || !decisionPanel || !inspector || !secondaryMount || !eventMenu || !technicalMount || !timelineStage || !timelineZoom || !runtimeToolbar || !runtimeHome) return false;
+      if (decisionPanel.parentElement !== workspace) workspace.insertBefore(decisionPanel, secondaryMount);
+      if (inspector.parentElement !== workspace) workspace.insertBefore(inspector, secondaryMount);
+      if (eventMenu.parentElement !== workspace) secondaryMount.after(eventMenu);
+      if (technicalMount.parentElement !== timelineStage) timelineStage.insertBefore(technicalMount, timelineZoom);
+      if (runtimeToolbar.parentElement !== runtimeHome) runtimeHome.append(runtimeToolbar);
+      return true;
+    }
+
     function renderManualModeControls() {
       const enabled = !!manualModeState?.enabled;
       const scenarioReviewWorkspace = document.body.dataset.view === "scenario-review" && enabled;
@@ -18330,18 +18492,33 @@
       const runtimeHome = $("manualRuntimeToolbarHome");
       const battleTimeline = $("battleTimeline");
       const mobileShell = $("manualMobileReviewShell");
-      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell) return;
+      const mobileControls = $("manualMobileControlsArea");
+      const technicalMount = $("manualTechnicalIssuesMount");
+      const eventMenu = $("manualTimelineEventMenu");
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell || !mobileControls || !technicalMount || !eventMenu) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
+      const mobileReview = mobile && document.body.dataset.view === "scenario-review";
       if (mobile) {
-        mobileShell.hidden = !manualModeState?.enabled;
-        mobileShell.dataset.active = manualModeState?.enabled ? "true" : "false";
+        mobileShell.hidden = !manualModeState?.enabled || !mobileReview;
+        mobileShell.dataset.active = manualModeState?.enabled && mobileReview ? "true" : "false";
+        mobileShell.setAttribute("aria-hidden", String(!manualModeState?.enabled || !mobileReview));
         if (workspaceHeader.parentElement !== focusMount) focusMount.append(workspaceHeader);
         if (duelHud.parentElement !== focusMount) focusMount.append(duelHud);
         if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
-        if (runtimeToolbar.parentElement !== secondaryMount) secondaryMount.append(runtimeToolbar);
+        if (mobileReview) {
+          if (decisionPanel.parentElement !== mobileControls) mobileControls.append(decisionPanel);
+          if (technicalMount.parentElement !== mobileControls) mobileControls.append(technicalMount);
+          if (inspector.parentElement !== mobileControls) mobileControls.append(inspector);
+          if (eventMenu.parentElement !== mobileControls) mobileControls.append(eventMenu);
+          if (runtimeToolbar.parentElement !== mobileControls) mobileControls.append(runtimeToolbar);
+          setManualMobileSheetState(manualMobileSheetState);
+        } else {
+          restoreManualReviewControlHomes();
+          if (runtimeToolbar.parentElement !== secondaryMount) secondaryMount.append(runtimeToolbar);
+        }
         mobileMount.hidden = !manualModeState?.enabled;
         focusMount.hidden = !manualModeState?.enabled || manualModeMinimized;
-        secondaryMount.hidden = !manualModeState?.enabled || manualModeMinimized;
+        secondaryMount.hidden = mobileReview || !manualModeState?.enabled || manualModeMinimized;
         if (!inspector.classList.contains("mobile-details-open")) {
           const detailsToggle = $("manualInspectorDetailsToggle");
           if (detailsToggle) detailsToggle.textContent = "View Details";
@@ -18355,16 +18532,17 @@
       mobileMount.hidden = true;
       mobileShell.hidden = true;
       delete mobileShell.dataset.active;
+      mobileShell.setAttribute("aria-hidden", "true");
       focusMount.hidden = true;
       secondaryMount.hidden = true;
       battleTimeline.style.removeProperty("--manual-mobile-top-offset");
       inspector.classList.remove("mobile-details-open");
       runtimeToolbar.classList.remove("mobile-versions-open");
       if ($("manualInspectorDetailsToggle")) $("manualInspectorDetailsToggle").textContent = "View Full Details";
+      restoreManualReviewControlHomes();
       if (workspaceHeader.parentElement !== battleTimeline) battleTimeline.insertBefore(workspaceHeader, timelineStage);
       if (duelHud.parentElement !== workspace) workspace.insertBefore(duelHud, decisionPanel);
       if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
-      if (runtimeToolbar.parentElement !== runtimeHome) runtimeHome.append(runtimeToolbar);
     }
 
     function manualActionUnavailableReason(combatant, move, actionType) {
