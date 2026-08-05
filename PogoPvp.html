@@ -23556,6 +23556,9 @@
         const move = attacker.charged[moveIndex];
         const shielded = await askManualShieldDecision(attacker, defender, move, estimate(attacker, defender, move));
         const forceBuffs = await askManualBuffDecision(move);
+        if (manualModeState.status !== window.PvPeakManualMode.STATUS.RESOLVING) {
+          manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+        }
         const chargeTimelineStart = timeline.length;
         useCharge(attacker, defender, moveIndex, {
           shielded,

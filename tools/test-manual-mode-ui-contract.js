@@ -437,6 +437,7 @@ assert.match(html, /kind: "technical-lag"/);
 assert.match(html, /kind: "technical-dre"/);
 assert.match(html, /manualChoiceRequired: true/);
 assert.match(html, /function resolveManualTechnicalDreCharge/);
+assert.match(html, /manualModeState = window\.PvPeakManualMode\.beginResolution\(manualModeState\);/);
 assert.match(html, /const chargeTimelineStart = timeline\.length;/);
 assert.match(html, /timeline\.slice\(chargeTimelineStart\)\.find\(event => \(/);
 assert.match(html, /if \(!chargedEvent\) throw new Error\("DRE_CHARGED_REJECTED"\);/);
