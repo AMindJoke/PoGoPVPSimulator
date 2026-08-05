@@ -43,6 +43,9 @@ for (const id of [
   "manualDuelHud",
   "manualHudSpriteA",
   "manualHudSpriteB",
+  "manualHudStatusA",
+  "manualHudStatusB",
+  "manualHudMobileActor",
   "manualHudHpA",
   "manualHudHpB",
   "manualHudChargesA",
@@ -133,6 +136,12 @@ assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
 assert.match(html, /body\.manual-mode-active \.manual-timeline-stage\s*\{[\s\S]{0,160}position: sticky/);
 assert.match(html, /body\.manual-mode-active \.manual-mobile-focus-mount\s*\{[\s\S]{0,120}position: sticky/);
+assert.match(html, /\.manual-hud-status,\s*\.manual-hud-mobile-actor\s*\{\s*display: none;\s*\}/, "Mobile-only HUD status must stay hidden on desktop.");
+assert.match(html, /@media \(max-width: 900px\)[\s\S]*?body\.manual-mode-active \.manual-hud-status\s*\{[\s\S]{0,180}display: inline-flex/, "Compact status chips must activate only on mobile.");
+assert.match(html, /body\.manual-mode-active \.manual-hud-center \.manual-hud-mobile-actor\s*\{[\s\S]{0,100}display: inline-flex/, "The acting-side summary must be visible in the mobile HUD.");
+assert.match(html, /grid-template-columns: minmax\(0, 1fr\) 48px minmax\(0, 1fr\)/, "The mobile HUD must reserve a compact center column.");
+assert.match(html, /status\.textContent = fainted \? "Fainted" : "Active"/, "HUD faint state must come from canonical combatant HP.");
+assert.match(html, /\? `\$\{activeSide\} to act`/, "The mobile HUD must expose the current acting side.");
 assert.match(html, /body\.manual-mode-active \.manual-editor-workspace\s*\{[\s\S]{0,80}order: 3/);
 assert.match(html, /body\.manual-mode-active \.manual-editor-actions\s*\{\s*order: 1/);
 assert.match(html, /body\.manual-mode-active \.manual-decision-banner\s*\{\s*order: 2/);
@@ -372,7 +381,7 @@ assert.match(html, /function handleManualActionDamagePreviewOver/);
 assert.match(html, /data-manual-preview-prefix/);
 assert.match(html, /manual-hud-hp\.damage-preview::after/);
 assert.match(html, /manual-hud-center::before/);
-assert.match(html, /grid-template-columns: minmax\(0, 1fr\) 62px minmax\(0, 1fr\)/);
+assert.match(html, /grid-template-columns: minmax\(0, 1fr\) 48px minmax\(0, 1fr\)/);
 assert.match(html, /manual-hud-copy \{ display: contents; \}/);
 assert.match(html, /manual-hud-hp \{\s*grid-column: 1 \/ -1;/);
 assert.match(html, /manual-hud-resource-row \{\s*grid-column: 1 \/ -1;/);

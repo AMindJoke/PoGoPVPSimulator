@@ -5563,6 +5563,8 @@
     .manual-hud-shield-control button.active svg { color: #d45af0; }
     .manual-mobile-shield-setup { display: none; }
     .manual-mobile-review-shell { display: none; }
+    .manual-hud-status,
+    .manual-hud-mobile-actor { display: none; }
     .manual-hud-sprite {
       width: 52px;
       height: 52px;
@@ -9087,18 +9089,18 @@
         top: 0;
         z-index: 42;
         display: grid;
-        gap: 7px;
+        gap: 4px;
         margin: 0 -8px;
-        padding: calc(6px + env(safe-area-inset-top, 0px)) 8px 7px;
+        padding: calc(4px + env(safe-area-inset-top, 0px)) 8px 5px;
         background: var(--bg);
         box-shadow: 0 4px 9px color-mix(in srgb, var(--shadow) 74%, transparent);
       }
       body.manual-mode-active .manual-workspace-header {
         display: flex;
         align-items: center;
-        min-height: 42px;
+        min-height: 36px;
         gap: 7px;
-        padding: 5px 2px;
+        padding: 2px;
       }
       body.manual-mode-active .manual-workspace-brand {
         display: grid;
@@ -9172,44 +9174,65 @@
       }
       body.manual-mode-active .manual-duel-hud {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
         gap: 0;
-        padding: 9px 7px 6px;
+        padding: 6px 5px 4px;
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--panel);
       }
       body.manual-mode-active .manual-hud-side {
-        grid-template-columns: 46px minmax(0, 1fr);
+        grid-template-columns: 38px minmax(0, 1fr);
         grid-template-rows: auto auto auto;
-        gap: 6px;
-        padding: 3px 2px;
+        gap: 3px;
+        padding: 2px;
         align-content: start;
         border: 0;
         background: transparent;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] {
-        grid-template-columns: 46px minmax(0, 1fr);
+        grid-template-columns: 38px minmax(0, 1fr);
       }
       body.manual-mode-active .manual-hud-sprite {
-        width: 46px;
-        height: 46px;
+        width: 38px;
+        height: 38px;
         grid-column: 1;
         grid-row: 1;
       }
       body.manual-mode-active .manual-hud-copy { display: contents; }
       body.manual-mode-active .manual-hud-name-row {
         display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 2px 3px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1px 3px;
         grid-column: 2;
         grid-row: 1;
         align-self: center;
       }
       body.manual-mode-active .manual-hud-name {
         grid-column: 1;
-        font-size: 13px;
+        font-size: 11px;
       }
+      body.manual-mode-active .manual-hud-status {
+        grid-column: 2;
+        grid-row: 1;
+        display: inline-flex;
+        align-items: center;
+        align-self: center;
+        min-height: 14px;
+        padding: 1px 3px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--good) 15%, var(--panel));
+        color: var(--good);
+        font-size: 7px;
+        font-weight: 950;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-hud-status[data-state="fainted"] {
+        background: color-mix(in srgb, var(--danger) 13%, var(--panel));
+        color: var(--danger);
+      }
+      body.manual-mode-active .manual-hud-side.is-active-decision .manual-hud-name { color: var(--accent-dark); }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-sprite { grid-column: 1; grid-row: 1; }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name-row { grid-column: 2; grid-row: 1; }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-name { justify-self: start; text-align: left; }
@@ -9222,8 +9245,8 @@
         min-width: 0;
       }
       .manual-hud-types .type-badge {
-        min-height: 15px;
-        padding: 1px 4px;
+        min-height: 13px;
+        padding: 1px 3px;
         font-size: 7px;
       }
       body.manual-mode-active .manual-hud-hp-text { font-size: 8px; }
@@ -9231,7 +9254,7 @@
         grid-column: 1 / -1;
         grid-row: 2;
         width: 100%;
-        height: 15px;
+        height: 13px;
         border-radius: 3px;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-hp { margin-left: 0; }
@@ -9243,16 +9266,16 @@
       }
       body.manual-mode-active .manual-hud-charges {
         display: grid;
-        grid-template-columns: 36px minmax(0, 1fr) 36px;
+        grid-template-columns: 30px minmax(0, 1fr) 30px;
         align-items: center;
-        gap: 4px;
+        gap: 2px;
         width: 100%;
         justify-content: center;
       }
       body.manual-mode-active .manual-hud-side[data-side="B"] .manual-hud-charges { flex-direction: initial; }
       body.manual-mode-active .manual-hud-charges .energy-orb {
-        width: 36px;
-        height: 36px;
+        width: 30px;
+        height: 30px;
       }
       body.manual-mode-active .manual-hud-shield-setup { display: none; }
       body.manual-mode-active .manual-mobile-shield-setup {
@@ -9263,10 +9286,10 @@
       body.manual-mode-active .manual-hud-energy {
         justify-content: center;
         gap: 2px;
-        font-size: 8px;
+        font-size: 7px;
       }
-      body.manual-mode-active .manual-hud-energy strong { font-size: 13px; }
-      body.manual-mode-active .manual-hud-energy small { display: inline; font-size: 8px; }
+      body.manual-mode-active .manual-hud-energy strong { font-size: 12px; }
+      body.manual-mode-active .manual-hud-energy small { display: inline; font-size: 7px; }
       body.manual-mode-active .manual-hud-center {
         position: relative;
         display: grid;
@@ -9288,16 +9311,30 @@
       body.manual-mode-active .manual-hud-center > strong {
         display: grid;
         place-items: center;
-        width: 38px;
-        height: 38px;
+        width: 30px;
+        height: 30px;
         border: 1px solid var(--line);
         border-radius: 50%;
         background: var(--panel);
-        font-size: 14px;
+        font-size: 12px;
       }
-      body.manual-mode-active .manual-hud-center span { padding: 1px 3px; background: var(--panel); font-size: 11px; font-weight: 900; }
-      body.manual-mode-active .manual-hud-center small { padding: 0 3px; background: var(--panel); font-size: 8px; }
+      body.manual-mode-active .manual-hud-center span { padding: 1px 3px; background: var(--panel); font-size: 9px; font-weight: 900; }
+      body.manual-mode-active .manual-hud-center small { padding: 0 2px; background: var(--panel); font-size: 7px; line-height: 1.1; }
       body.manual-mode-active .manual-hud-center em { display: none; }
+      body.manual-mode-active .manual-hud-center .manual-hud-mobile-actor {
+        display: inline-flex;
+        max-width: 46px;
+        padding: 2px 4px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+        color: var(--accent-dark);
+        font-size: 7px;
+        font-style: normal;
+        font-weight: 950;
+        line-height: 1.05;
+        text-align: center;
+        text-transform: uppercase;
+      }
       body.manual-mode-active .manual-timeline-stage {
         position: sticky;
         top: var(--manual-mobile-top-offset);
@@ -9400,10 +9437,10 @@
       body.manual-mode-active .manual-mobile-shield-setup {
         grid-column: 1 / -1;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
         align-items: center;
-        gap: 6px;
-        padding-top: 2px;
+        gap: 3px;
+        padding-top: 1px;
         border-top: 0;
         color: var(--muted);
         font-size: 9px;
@@ -9418,12 +9455,12 @@
       }
       body.manual-mode-active .manual-mobile-shield-setup label:nth-child(2) { grid-column: 3; }
       body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control button {
-        width: 36px;
-        min-width: 36px;
-        min-height: 30px;
+        width: 28px;
+        min-width: 28px;
+        min-height: 24px;
       }
-      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control svg { width: 16px; height: 16px; }
-      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control strong { font-size: 10px; }
+      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control svg { width: 12px; height: 12px; }
+      body.manual-mode-active .manual-mobile-shield-setup .manual-hud-shield-control strong { font-size: 8px; }
       body.manual-mode-active .manual-editor-command-bar button {
         width: 100%;
         min-height: 48px;
@@ -11267,6 +11304,7 @@
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
                   <strong id="manualHudNameA" class="manual-hud-name">Pokemon A</strong>
+                  <span id="manualHudStatusA" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesA" class="manual-hud-types" aria-label="Pokemon A types"></span>
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpA"></i><span id="manualHudHpTextA" class="manual-hud-hp-text">0/0 HP</span></div>
@@ -11285,12 +11323,14 @@
               <span>Turn <b id="manualHudTurn">0</b></span>
               <small id="manualHudPhase">Before action</small>
               <em id="manualHudActor">Choose an action</em>
+              <em id="manualHudMobileActor" class="manual-hud-mobile-actor">A or B</em>
             </div>
             <article class="manual-hud-side" data-side="B">
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
                   <strong id="manualHudNameB" class="manual-hud-name">Pokemon B</strong>
+                  <span id="manualHudStatusB" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesB" class="manual-hud-types" aria-label="Pokemon B types"></span>
                 </div>
                 <div class="manual-hud-hp"><i id="manualHudHpB"></i><span id="manualHudHpTextB" class="manual-hud-hp-text">0/0 HP</span></div>
@@ -17375,6 +17415,12 @@
         const sprite = $(`manualHudSprite${side}`);
         if (sprite) setPokemonImage(sprite, combatant.p);
         if ($(`manualHudName${side}`)) $(`manualHudName${side}`).textContent = combatant.p?.name || `Pokemon ${side}`;
+        const status = $(`manualHudStatus${side}`);
+        if (status) {
+          const fainted = combatant.hp <= 0;
+          status.textContent = fainted ? "Fainted" : "Active";
+          status.dataset.state = fainted ? "fainted" : "active";
+        }
         const types = Array.isArray(combatant.p?.types) ? combatant.p.types : [];
         if ($(`manualHudTypes${side}`)) {
           $(`manualHudTypes${side}`).innerHTML = types.map(type => {
@@ -17407,6 +17453,15 @@
         $("manualHudPhase").textContent = title(String(manualModeState.pendingDecision?.phase || "before action").toLowerCase().replaceAll("_", " "));
       }
       if ($("manualHudActor")) $("manualHudActor").textContent = $("manualCurrentDecisionTitle")?.textContent || "Choose an action";
+      if ($("manualHudMobileActor")) {
+        $("manualHudMobileActor").textContent = runtimeStatus.tone === "terminal"
+          ? "Battle ended"
+          : activeSide
+            ? `${activeSide} to act`
+            : runtimeStatus.tone === "warning"
+              ? "Resolving"
+              : "A or B";
+      }
     }
 
     function renderManualHudShieldControl(side, prefix) {
