@@ -24,6 +24,10 @@ for (const id of [
   "manualMobileTabMoves",
   "manualMobileTabJudge",
   "manualMobileTabScenario",
+  "manualMobileBattleStateNav",
+  "manualMobileBattleStateA",
+  "manualMobileBattleStateB",
+  "manualMobileBattleStateClose",
   "manualMobileTabsShell",
   "manualMobileControlsArea",
   "manualWorkspaceHeader",
@@ -165,6 +169,15 @@ assert.match(html, /setManualMobileReviewTab\(manualMobileReviewTab\)/, "Renderi
 assert.match(html, /data-active-tab="moves"\] #manualTechnicalIssuesMount/);
 assert.match(html, /data-active-tab="judge"\] #manualDecisionPanel/);
 assert.match(html, /data-active-tab="scenario"\] #manualEditorActions/);
+assert.match(html, /data-manual-hud-side="A" role="button" tabindex="0"[^>]+aria-controls="manualStateInspector"/);
+assert.match(html, /data-manual-hud-side="B" role="button" tabindex="0"[^>]+aria-controls="manualStateInspector"/);
+assert.match(html, /function openManualMobileBattleState\(side\)/);
+assert.match(html, /function setManualMobileBattleStateSide\(side/);
+assert.match(html, /setManualMobileReviewTab\("judge"\)/, "Opening Battle State from the HUD must reveal the Judge tab.");
+assert.match(html, /setManualMobileSheetState\("half"\)/, "Opening Battle State must reveal a collapsed sheet.");
+assert.match(html, /manualMobileBattleStateSide = null/, "Only one optional mobile Battle State side may be active.");
+assert.match(html, /data-mobile-side="A"\] \.manual-battle-state-side\[data-side="B"\]/);
+assert.match(html, /data-mobile-side="B"\] \.manual-battle-state-side\[data-side="A"\]/);
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);

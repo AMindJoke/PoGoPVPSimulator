@@ -5564,6 +5564,7 @@
     .manual-mobile-shield-setup { display: none; }
     .manual-mobile-review-shell { display: none; }
     .manual-mobile-sheet-handle { display: none; }
+    .manual-mobile-battle-state-nav { display: none; }
     .manual-hud-status,
     .manual-hud-mobile-actor { display: none; }
     .manual-hud-sprite {
@@ -9550,6 +9551,40 @@
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualScenarioPanel {
         display: flex;
       }
+      body[data-view="scenario-review"].manual-mode-active .manual-hud-side { cursor: pointer; }
+      body[data-view="scenario-review"].manual-mode-active .manual-hud-side:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: 2px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] #manualStateInspector[data-mobile-side="none"] {
+        display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 10px 10px 0 0;
+        background: var(--soft);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav > strong { font-size: 11px; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav span { display: flex; gap: 4px; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav button {
+        min-width: 44px;
+        min-height: 40px;
+        padding: 6px 9px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav button[aria-pressed="true"] {
+        background: var(--accent);
+        color: #fff;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-state-inspector[data-mobile-side] #manualBattleStatePanel > summary { display: none; }
+      body[data-view="scenario-review"].manual-mode-active .manual-state-inspector[data-mobile-side="A"] .manual-battle-state-side[data-side="B"],
+      body[data-view="scenario-review"].manual-mode-active .manual-state-inspector[data-mobile-side="B"] .manual-battle-state-side[data-side="A"] {
+        display: none;
+      }
       body.manual-mode-active .manual-editor-workspace {
         display: block;
         order: 3;
@@ -11496,7 +11531,7 @@
         </div>
         <section id="manualEditorWorkspace" class="manual-editor-workspace" aria-live="polite" hidden>
           <div id="manualDuelHud" class="manual-duel-hud" aria-label="Current battle state">
-            <article class="manual-hud-side" data-side="A">
+            <article class="manual-hud-side" data-side="A" data-manual-hud-side="A" role="button" tabindex="0" aria-controls="manualStateInspector" aria-expanded="false" aria-label="Open Pokemon A Battle State">
               <img id="manualHudSpriteA" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
@@ -11522,7 +11557,7 @@
               <em id="manualHudActor">Choose an action</em>
               <em id="manualHudMobileActor" class="manual-hud-mobile-actor">A or B</em>
             </div>
-            <article class="manual-hud-side" data-side="B">
+            <article class="manual-hud-side" data-side="B" data-manual-hud-side="B" role="button" tabindex="0" aria-controls="manualStateInspector" aria-expanded="false" aria-label="Open Pokemon B Battle State">
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
@@ -11595,6 +11630,14 @@
             </div>
           </div>
           <aside id="manualStateInspector" class="manual-state-inspector" aria-labelledby="manualBattleStateTitle">
+            <div id="manualMobileBattleStateNav" class="manual-mobile-battle-state-nav" aria-label="Choose Battle State Pokemon">
+              <strong>Battle State</strong>
+              <span>
+                <button id="manualMobileBattleStateA" class="secondary" type="button" data-manual-battle-state-side="A" aria-pressed="false">A</button>
+                <button id="manualMobileBattleStateB" class="secondary" type="button" data-manual-battle-state-side="B" aria-pressed="false">B</button>
+                <button id="manualMobileBattleStateClose" class="secondary" type="button" aria-label="Close Battle State">Close</button>
+              </span>
+            </div>
             <details id="manualBattleStatePanel" class="manual-battle-state" open>
               <summary><strong id="manualBattleStateTitle">Battle State</strong><small>Judge reconstruction controls</small></summary>
               <div id="manualBattleStateEditor" class="manual-battle-state-editor">
@@ -12001,6 +12044,7 @@
     let manualMobileSheetState = "collapsed";
     const MANUAL_MOBILE_REVIEW_TABS = Object.freeze(["moves", "judge", "scenario"]);
     let manualMobileReviewTab = "moves";
+    let manualMobileBattleStateSide = null;
     // This belongs to the Manual Mode session, not to an individual timeline
     // version. Switching Original/Manual must never change who is controlled.
     let manualSessionControlMode = null;
@@ -12589,6 +12633,21 @@
       document.querySelectorAll("[data-manual-mobile-tab]").forEach(button => {
         button.onclick = () => setManualMobileReviewTab(button.dataset.manualMobileTab, { focus: true });
       });
+      document.querySelectorAll("[data-manual-hud-side]").forEach(hud => {
+        hud.onclick = event => {
+          if (event.target.closest("button")) return;
+          openManualMobileBattleState(hud.dataset.manualHudSide);
+        };
+        hud.onkeydown = event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openManualMobileBattleState(hud.dataset.manualHudSide);
+        };
+      });
+      document.querySelectorAll("[data-manual-battle-state-side]").forEach(button => {
+        button.onclick = () => setManualMobileBattleStateSide(button.dataset.manualBattleStateSide, { focus: true });
+      });
+      $("manualMobileBattleStateClose").onclick = () => setManualMobileBattleStateSide(null, { returnFocus: true });
       document.addEventListener("keydown", handleManualMobileSheetKeydown);
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
@@ -16676,6 +16735,7 @@
       manualModeMinimized = false;
       manualMobileSheetState = "collapsed";
       manualMobileReviewTab = "moves";
+      manualMobileBattleStateSide = null;
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       updateManualBranchSelectionUi();
       render();
@@ -16708,6 +16768,7 @@
       manualModeMinimized = false;
       manualMobileSheetState = "collapsed";
       manualMobileReviewTab = "moves";
+      manualMobileBattleStateSide = null;
       manualSessionControlMode = null;
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
@@ -17423,6 +17484,7 @@
         manualModeMinimized = false;
         manualMobileSheetState = "collapsed";
         manualMobileReviewTab = "moves";
+        manualMobileBattleStateSide = null;
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualScenarioId = entry.id;
         manualScenarioBaseline = JSON.stringify(entry.payload);
@@ -17855,6 +17917,12 @@
         </article>`;
       };
       editor.innerHTML = `${sideMarkup("A")}${sideMarkup("B")}`;
+      document.querySelectorAll("[data-manual-battle-state-side]").forEach(button => {
+        const side = button.dataset.manualBattleStateSide;
+        const combatant = side === "A" ? left : right;
+        button.textContent = combatant?.p?.name || side;
+      });
+      setManualMobileBattleStateSide(manualMobileBattleStateSide);
       renderManualTechnicalIssues();
       editor.querySelectorAll("input[data-manual-state-field]").forEach(input => {
         input.onkeydown = event => {
@@ -18351,6 +18419,38 @@
         button.tabIndex = active ? 0 : -1;
         if (active && focus) button.focus({ preventScroll: true });
       });
+      return true;
+    }
+
+    function setManualMobileBattleStateSide(side, { focus = false, returnFocus = false } = {}) {
+      const normalized = side === "A" || side === "B" ? side : null;
+      const previous = manualMobileBattleStateSide;
+      manualMobileBattleStateSide = normalized;
+      const inspector = $("manualStateInspector");
+      const panel = $("manualBattleStatePanel");
+      if (!inspector) return false;
+      inspector.dataset.mobileSide = normalized || "none";
+      if (normalized && panel) panel.open = true;
+      document.querySelectorAll("[data-manual-battle-state-side]").forEach(button => {
+        const active = button.dataset.manualBattleStateSide === normalized;
+        button.setAttribute("aria-pressed", String(active));
+        if (active && focus) button.focus({ preventScroll: true });
+      });
+      document.querySelectorAll("[data-manual-hud-side]").forEach(hud => {
+        hud.setAttribute("aria-expanded", String(hud.dataset.manualHudSide === normalized));
+      });
+      if (returnFocus && previous) {
+        document.querySelector(`[data-manual-hud-side="${previous}"]`)?.focus({ preventScroll: true });
+      }
+      return true;
+    }
+
+    function openManualMobileBattleState(side) {
+      if (document.body.dataset.view !== "scenario-review" || !manualModeState?.enabled || !window.matchMedia("(max-width: 900px)").matches) return false;
+      setManualMobileReviewTab("judge");
+      setManualMobileBattleStateSide(side);
+      if (manualMobileSheetState === "collapsed") setManualMobileSheetState("half");
+      requestAnimationFrame(() => $("manualStateInspector")?.scrollIntoView({ block: "start", behavior: "smooth" }));
       return true;
     }
 
