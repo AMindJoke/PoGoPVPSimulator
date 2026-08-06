@@ -21,6 +21,9 @@ for (const id of [
   "manualMobileBottomSheetShell",
   "manualMobileSheetHandle",
   "manualMobileSheetStatus",
+  "manualMobileTabMoves",
+  "manualMobileTabJudge",
+  "manualMobileTabScenario",
   "manualMobileTabsShell",
   "manualMobileControlsArea",
   "manualWorkspaceHeader",
@@ -126,7 +129,7 @@ assert.match(html, /id="manualMobileTimelineArea"[^>]+data-mobile-source="manual
 assert.match(html, /id="manualMobileBottomSheetShell"[^>]+data-state="collapsed"[^>]+data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar"/, "The bottom sheet must reference the existing controls.");
 const mobileShellMarkup = html.match(/<section id="manualMobileReviewShell"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
 const mobileShellInteractiveIds = [...mobileShellMarkup.matchAll(/<(?:button|input|select|textarea)\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
-assert.deepEqual(mobileShellInteractiveIds, ["manualMobileSheetHandle"], "The bottom sheet may add only its handle; review controls must be reparented rather than duplicated.");
+assert.deepEqual(mobileShellInteractiveIds, ["manualMobileSheetHandle", "manualMobileTabMoves", "manualMobileTabJudge", "manualMobileTabScenario"], "The bottom sheet may add only its navigation controls; review controls must be reparented rather than duplicated.");
 for (const functionName of ["syncManualEditorPlacement", "renderManualDuelHud", "renderManualDecisionBanner", "renderManualBattleStateEditor"]) {
   const declarations = html.match(new RegExp(`function\\s+${functionName}\\s*\\(`, "g")) || [];
   assert.equal(declarations.length, 1, `${functionName} must not be duplicated for mobile.`);
@@ -151,6 +154,17 @@ assert.match(html, /env\(safe-area-inset-bottom, 0px\)/, "The mobile sheet must 
 assert.match(html, /function setManualMobileSheetState\(state/);
 assert.match(html, /function cycleManualMobileSheetState\(\)/);
 assert.match(html, /MANUAL_MOBILE_SHEET_STATES = Object\.freeze\(\["collapsed", "half", "expanded"\]\)/);
+assert.match(html, /MANUAL_MOBILE_REVIEW_TABS = Object\.freeze\(\["moves", "judge", "scenario"\]\)/);
+assert.match(html, /function setManualMobileReviewTab\(tab/);
+assert.match(html, /data-active-tab="moves"/, "Moves must be the initial mobile review tab.");
+assert.match(html, /role="tab" data-manual-mobile-tab="moves"[^>]+aria-selected="true"/, "Moves must be selected initially.");
+assert.match(html, /data-manual-mobile-tab="judge"/);
+assert.match(html, /data-manual-mobile-tab="scenario"/);
+assert.match(html, /manualMobileReviewTab = "moves"/);
+assert.match(html, /setManualMobileReviewTab\(manualMobileReviewTab\)/, "Rendering must preserve the active tab instead of remounting controls.");
+assert.match(html, /data-active-tab="moves"\] #manualTechnicalIssuesMount/);
+assert.match(html, /data-active-tab="judge"\] #manualDecisionPanel/);
+assert.match(html, /data-active-tab="scenario"\] #manualEditorActions/);
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);

@@ -9414,7 +9414,7 @@
         left: 0;
         z-index: 90;
         display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr);
         width: 100%;
         height: calc(56px + env(safe-area-inset-bottom, 0px));
         max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 8px);
@@ -9467,7 +9467,34 @@
         font-size: 8px;
         font-weight: 750;
       }
-      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell { display: none; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 4px 8px 6px;
+        border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell button {
+        min-height: 40px;
+        padding: 7px 8px;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        color: var(--muted);
+        box-shadow: none;
+        font-size: 11px;
+        font-weight: 900;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell button[aria-selected="true"] {
+        border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+        background: color-mix(in srgb, var(--accent) 11%, var(--panel));
+        color: var(--accent-dark);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="collapsed"] .manual-mobile-tabs-shell {
+        display: none;
+      }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell {
         display: block;
         min-height: 0;
@@ -9498,6 +9525,30 @@
         border-radius: 0;
         background: transparent;
         box-shadow: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualScenarioPanel,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualTechnicalIssuesMount,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualStateInspector,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualTimelineEventMenu,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualRuntimeToolbar,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] #manualDecisionPanel,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] #manualRuntimeToolbar,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-decision-primary,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-overlay-controls,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualEditorActions,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualTechnicalIssuesMount,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualStateInspector,
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualTimelineEventMenu {
+        display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualDecisionPanel {
+        display: block;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualDecisionBanner {
+        display: block;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualScenarioPanel {
+        display: flex;
       }
       body.manual-mode-active .manual-editor-workspace {
         display: block;
@@ -11386,12 +11437,16 @@
         <section id="manualMobileReviewShell" class="manual-mobile-review-shell" aria-hidden="true" hidden>
           <div id="manualMobileHudArea" class="manual-mobile-shell-region manual-mobile-hud-area" data-mobile-source="manualMobileFocusMount manualDuelHud" aria-controls="manualMobileFocusMount manualDuelHud"></div>
           <div id="manualMobileTimelineArea" class="manual-mobile-shell-region manual-mobile-timeline-area" data-mobile-source="manualTimelineStage" aria-controls="manualTimelineStage"></div>
-          <section id="manualMobileBottomSheetShell" class="manual-mobile-bottom-sheet-shell" data-state="collapsed" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-label="Mobile review controls" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar">
+          <section id="manualMobileBottomSheetShell" class="manual-mobile-bottom-sheet-shell" data-state="collapsed" data-active-tab="moves" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-label="Mobile review controls" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar">
             <button id="manualMobileSheetHandle" class="manual-mobile-sheet-handle" type="button" aria-controls="manualMobileControlsArea" aria-expanded="false">
               <span class="manual-mobile-sheet-grip" aria-hidden="true"></span>
               <span class="manual-mobile-sheet-handle-copy"><strong>Review controls</strong><small id="manualMobileSheetStatus">Collapsed · Tap to open</small></span>
             </button>
-            <div id="manualMobileTabsShell" class="manual-mobile-tabs-shell" aria-label="Future mobile review tabs"></div>
+            <div id="manualMobileTabsShell" class="manual-mobile-tabs-shell" role="tablist" aria-label="Mobile review controls">
+              <button id="manualMobileTabMoves" type="button" role="tab" data-manual-mobile-tab="moves" aria-selected="true" aria-controls="manualMobileControlsArea">Moves</button>
+              <button id="manualMobileTabJudge" type="button" role="tab" data-manual-mobile-tab="judge" aria-selected="false" aria-controls="manualMobileControlsArea" tabindex="-1">Judge</button>
+              <button id="manualMobileTabScenario" type="button" role="tab" data-manual-mobile-tab="scenario" aria-selected="false" aria-controls="manualMobileControlsArea" tabindex="-1">Scenario</button>
+            </div>
             <div id="manualMobileControlsArea" class="manual-mobile-controls-shell" data-mobile-source="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-controls="manualDecisionPanel manualStateInspector manualTechnicalIssuesMount manualTimelineEventMenu manualRuntimeToolbar" aria-hidden="true"></div>
           </section>
         </section>
@@ -11944,6 +11999,8 @@
     let manualModeMinimized = false;
     const MANUAL_MOBILE_SHEET_STATES = Object.freeze(["collapsed", "half", "expanded"]);
     let manualMobileSheetState = "collapsed";
+    const MANUAL_MOBILE_REVIEW_TABS = Object.freeze(["moves", "judge", "scenario"]);
+    let manualMobileReviewTab = "moves";
     // This belongs to the Manual Mode session, not to an individual timeline
     // version. Switching Original/Manual must never change who is controlled.
     let manualSessionControlMode = null;
@@ -12529,6 +12586,9 @@
       $("manualOverlayScenario").onchange = event => switchLiveManualBranch(event.target.value);
       $("manualMobileVersionsToggle").onclick = toggleManualMobileVersions;
       $("manualMobileSheetHandle").onclick = cycleManualMobileSheetState;
+      document.querySelectorAll("[data-manual-mobile-tab]").forEach(button => {
+        button.onclick = () => setManualMobileReviewTab(button.dataset.manualMobileTab, { focus: true });
+      });
       document.addEventListener("keydown", handleManualMobileSheetKeydown);
       $("manualResumeAuto").onclick = resumeAutomaticFromManualTimeline;
       $("manualEventInspect").onclick = inspectSelectedManualTimelineEvent;
@@ -16615,6 +16675,7 @@
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
       manualModeMinimized = false;
       manualMobileSheetState = "collapsed";
+      manualMobileReviewTab = "moves";
       add(`Manual Mode started from ${startMode.replaceAll("-", " ")}.`, "info");
       updateManualBranchSelectionUi();
       render();
@@ -16646,6 +16707,7 @@
       manualRootSnapshotId = null;
       manualModeMinimized = false;
       manualMobileSheetState = "collapsed";
+      manualMobileReviewTab = "moves";
       manualSessionControlMode = null;
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
@@ -17360,6 +17422,7 @@
         manualBattleRuntime = null;
         manualModeMinimized = false;
         manualMobileSheetState = "collapsed";
+        manualMobileReviewTab = "moves";
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualScenarioId = entry.id;
         manualScenarioBaseline = JSON.stringify(entry.payload);
@@ -18276,6 +18339,21 @@
       return setManualMobileSheetState(next);
     }
 
+    function setManualMobileReviewTab(tab, { focus = false } = {}) {
+      const normalized = MANUAL_MOBILE_REVIEW_TABS.includes(tab) ? tab : "moves";
+      manualMobileReviewTab = normalized;
+      const sheet = $("manualMobileBottomSheetShell");
+      if (!sheet) return false;
+      sheet.dataset.activeTab = normalized;
+      document.querySelectorAll("[data-manual-mobile-tab]").forEach(button => {
+        const active = button.dataset.manualMobileTab === normalized;
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+        if (active && focus) button.focus({ preventScroll: true });
+      });
+      return true;
+    }
+
     function handleManualMobileSheetKeydown(event) {
       if (event.key !== "Escape" || manualMobileSheetState === "collapsed") return;
       if (document.body.dataset.view !== "scenario-review" || !manualModeState?.enabled || !window.matchMedia("(max-width: 900px)").matches) return;
@@ -18512,6 +18590,7 @@
           if (eventMenu.parentElement !== mobileControls) mobileControls.append(eventMenu);
           if (runtimeToolbar.parentElement !== mobileControls) mobileControls.append(runtimeToolbar);
           setManualMobileSheetState(manualMobileSheetState);
+          setManualMobileReviewTab(manualMobileReviewTab);
         } else {
           restoreManualReviewControlHomes();
           if (runtimeToolbar.parentElement !== secondaryMount) secondaryMount.append(runtimeToolbar);
