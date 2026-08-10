@@ -9493,6 +9493,16 @@
         background: color-mix(in srgb, var(--accent) 11%, var(--panel));
         color: var(--accent-dark);
       }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-tabs-shell button[data-technical-active="true"]::after {
+        content: "";
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin-left: 6px;
+        border-radius: 50%;
+        background: #8a3fc0;
+        box-shadow: 0 0 0 2px color-mix(in srgb, #8a3fc0 18%, transparent);
+      }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="collapsed"] .manual-mobile-tabs-shell {
         display: none;
       }
@@ -9558,6 +9568,17 @@
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] #manualStateInspector[data-mobile-side="none"] {
         display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] #manualTechnicalIssuesMount {
+        order: -1;
+        margin-top: 0;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] .manual-technical-issues {
+        border-color: color-mix(in srgb, #8a3fc0 28%, var(--line));
+        background: color-mix(in srgb, #8a3fc0 5%, var(--panel));
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="judge"] .manual-technical-issue-actions button {
+        min-height: 44px;
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-battle-state-nav {
         display: flex;
@@ -18386,8 +18407,10 @@
       const status = $("manualMobileSheetStatus");
       if (!sheet || !handle || !controls || !status) return false;
       const open = normalized !== "collapsed";
+      const activeTechnicalMode = technicalReviewState?.mode || null;
+      const technicalLabel = activeTechnicalMode === "dre" ? "DRE" : activeTechnicalMode === "one-turn-lag" ? "1-Turn Lag" : null;
       const statusText = normalized === "collapsed"
-        ? "Collapsed · Tap to open"
+        ? technicalLabel ? `${technicalLabel} active · Select a highlighted Fast Move` : "Collapsed · Tap to open"
         : normalized === "half"
           ? "Half height · Tap to expand"
           : "Expanded · Tap to collapse";
@@ -18419,6 +18442,27 @@
         button.tabIndex = active ? 0 : -1;
         if (active && focus) button.focus({ preventScroll: true });
       });
+      syncManualMobileTechnicalIndicator();
+      return true;
+    }
+
+    function syncManualMobileTechnicalIndicator() {
+      const judgeTab = $("manualMobileTabJudge");
+      if (!judgeTab) return false;
+      const mode = technicalReviewState?.mode || null;
+      const draft = technicalReviewState?.draft || null;
+      const active = !!mode || !!draft;
+      const label = mode === "dre" || draft?.type === "dre" ? "DRE" : mode === "one-turn-lag" || draft?.type === "one-turn-lag" ? "1-Turn Lag" : null;
+      judgeTab.dataset.technicalActive = String(active);
+      judgeTab.setAttribute("aria-label", active && label ? `Judge, ${label} reconstruction active` : "Judge");
+      return active;
+    }
+
+    function revealManualMobileTechnicalDraft() {
+      if (document.body.dataset.view !== "scenario-review" || !manualModeState?.enabled || !window.matchMedia("(max-width: 900px)").matches) return false;
+      setManualMobileReviewTab("judge");
+      setManualMobileSheetState("half");
+      requestAnimationFrame(() => $("manualTechnicalIssuesMount")?.scrollIntoView({ block: "start", behavior: "smooth" }));
       return true;
     }
 
@@ -23786,6 +23830,10 @@
         technicalReviewState.selectionBranchId = manualBranchRegistry?.activeBranchId || null;
         technicalReviewState.selectionOrigin = origin || null;
         render();
+        if (window.matchMedia("(max-width: 900px)").matches) {
+          setManualMobileReviewTab("judge");
+          setManualMobileSheetState("collapsed");
+        }
         return true;
       }
       if (technicalReviewState.issue) clearTechnicalReview({ restore: true, renderNow: false });
@@ -23853,6 +23901,7 @@
       };
       technicalReviewState.selectedEventIndex = issue.eventIndex;
       render();
+      revealManualMobileTechnicalDraft();
       return true;
     }
 

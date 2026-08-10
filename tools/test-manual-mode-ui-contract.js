@@ -178,6 +178,12 @@ assert.match(html, /setManualMobileSheetState\("half"\)/, "Opening Battle State 
 assert.match(html, /manualMobileBattleStateSide = null/, "Only one optional mobile Battle State side may be active.");
 assert.match(html, /data-mobile-side="A"\] \.manual-battle-state-side\[data-side="B"\]/);
 assert.match(html, /data-mobile-side="B"\] \.manual-battle-state-side\[data-side="A"\]/);
+assert.match(html, /function syncManualMobileTechnicalIndicator\(\)/);
+assert.match(html, /function revealManualMobileTechnicalDraft\(\)/);
+assert.match(html, /setManualMobileSheetState\("collapsed"\)/, "Starting a mobile technical selection must uncover the timeline.");
+assert.match(html, /revealManualMobileTechnicalDraft\(\)/, "Selecting an eligible timeline event must return to the Judge confirmation flow.");
+assert.match(html, /data-technical-active="true"/, "The Judge tab needs a non-text-independent active issue indicator.");
+assert.match(html, /Select a highlighted Fast Move/, "Collapsed selection mode must explain the next timeline action.");
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
