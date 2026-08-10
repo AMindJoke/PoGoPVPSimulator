@@ -9561,6 +9561,47 @@
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualScenarioPanel {
         display: flex;
       }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualDecisionBanner {
+        order: 1;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        padding: 8px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualEditorActions { order: 2; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-decision-primary { min-width: 0; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-decision-primary strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-overlay-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 44px);
+        gap: 4px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-overlay-controls button {
+        min-width: 44px;
+        min-height: 40px;
+        padding: 6px 4px;
+        font-size: 9px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-editor-command-bar {
+        display: flex;
+        justify-content: flex-end;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-continue-auto {
+        width: auto;
+        min-height: 42px;
+        padding: 7px 12px;
+        border-color: var(--line);
+        background: var(--soft);
+        color: var(--ink);
+        box-shadow: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-continue-auto-icon { color: var(--accent); }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-continue-auto-copy strong { font-size: 10px; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-continue-auto-copy small { display: none; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualRuntimeToolbar { margin-top: 8px; }
       body[data-view="scenario-review"].manual-mode-active .manual-hud-side { cursor: pointer; }
       body[data-view="scenario-review"].manual-mode-active .manual-hud-side:focus-visible {
         outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);

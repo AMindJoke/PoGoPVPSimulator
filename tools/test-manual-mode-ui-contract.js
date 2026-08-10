@@ -184,6 +184,11 @@ assert.match(html, /setManualMobileSheetState\("collapsed"\)/, "Starting a mobil
 assert.match(html, /revealManualMobileTechnicalDraft\(\)/, "Selecting an eligible timeline event must return to the Judge confirmation flow.");
 assert.match(html, /data-technical-active="true"/, "The Judge tab needs a non-text-independent active issue indicator.");
 assert.match(html, /Select a highlighted Fast Move/, "Collapsed selection mode must explain the next timeline action.");
+assert.match(html, /data-active-tab="moves"\] #manualDecisionBanner\s*\{[^}]*order: 1;/, "Current Decision and history actions must lead the Moves tab.");
+assert.match(html, /data-active-tab="moves"\] #manualEditorActions\s*\{[^}]*order: 2;/, "Legal moves must follow the current decision without leaving the Moves tab.");
+assert.match(html, /data-active-tab="moves"\] \.manual-overlay-controls\s*\{[^}]*grid-template-columns: repeat\(2, 44px\)/, "Undo and Redo must remain compact and directly reachable.");
+assert.match(html, /data-active-tab="moves"\] \.manual-continue-auto\s*\{[^}]*width: auto;[^}]*background: var\(--soft\);/, "Continue Automatically must remain a secondary, non-fixed action.");
+assert.match(html, /data-active-tab="scenario"\] #manualRuntimeToolbar/, "Scenario and timeline management must remain confined to the Scenario tab.");
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
