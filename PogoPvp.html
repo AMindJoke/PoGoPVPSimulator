@@ -9429,7 +9429,7 @@
         will-change: height;
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="half"] {
-        height: min(52dvh, 460px);
+        height: min(var(--manual-mobile-half-height, 52dvh), 460px);
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="expanded"] {
         height: min(88dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 8px));
@@ -9569,12 +9569,12 @@
         display: flex;
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualDecisionBanner {
-        order: 1;
+        order: 2;
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         padding: 8px;
       }
-      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualEditorActions { order: 2; }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualEditorActions { order: 1; }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-decision-primary { min-width: 0; }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] .manual-decision-primary strong {
         overflow: hidden;
@@ -18465,6 +18465,7 @@
       const controls = $("manualMobileControlsArea");
       const status = $("manualMobileSheetStatus");
       if (!sheet || !handle || !controls || !status) return false;
+      syncManualMobileSheetGeometry();
       const open = normalized !== "collapsed";
       const activeTechnicalMode = technicalReviewState?.mode || null;
       const technicalLabel = activeTechnicalMode === "dre" ? "DRE" : activeTechnicalMode === "one-turn-lag" ? "1-Turn Lag" : null;
@@ -18479,6 +18480,24 @@
       controls.setAttribute("aria-hidden", String(!open));
       status.textContent = statusText;
       if (returnFocus) handle.focus({ preventScroll: true });
+      return true;
+    }
+
+    function syncManualMobileSheetGeometry() {
+      const sheet = $("manualMobileBottomSheetShell");
+      const timelineStage = $("manualTimelineStage");
+      const mobileReview = document.body.dataset.view === "scenario-review"
+        && !!manualModeState?.enabled
+        && window.matchMedia("(max-width: 900px)").matches;
+      if (!sheet || !timelineStage || !mobileReview) {
+        sheet?.style.removeProperty("--manual-mobile-half-height");
+        return false;
+      }
+      const viewport = window.visualViewport;
+      const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+      const timelineBottom = timelineStage.getBoundingClientRect().bottom;
+      const available = Math.max(56, Math.floor(viewportBottom - timelineBottom - 6));
+      sheet.style.setProperty("--manual-mobile-half-height", `${Math.min(460, available)}px`);
       return true;
     }
 
@@ -18821,6 +18840,7 @@
         requestAnimationFrame(() => {
           if (!manualModeState?.enabled || manualModeMinimized) return;
           battleTimeline.style.setProperty("--manual-mobile-top-offset", `${focusMount.offsetHeight}px`);
+          syncManualMobileSheetGeometry();
         });
         return;
       }
