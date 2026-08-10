@@ -4361,6 +4361,7 @@
     .manual-technical-issue-actions { display: flex; gap: 5px; flex-wrap: wrap; }
     .manual-technical-issue-actions button { flex: 1 1 86px; min-height: 31px; padding: 5px 7px; font-size: 10px; }
     .manual-technical-issue-actions button[aria-pressed="true"] { border-color: #7042ad; background: #7042ad; color: #fff; }
+    .manual-technical-comparison-shortcut { width: 100%; min-height: 31px; padding: 5px 7px; font-size: 10px; }
     .manual-technical-selection { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 7px; border-radius: 6px; background: color-mix(in srgb, #7042ad 10%, var(--panel)); }
     .manual-technical-selection span { color: var(--ink); font-size: 10px; font-weight: 800; line-height: 1.3; }
     .manual-technical-selection button { flex: 0 0 auto; min-height: 28px; padding: 4px 7px; font-size: 9px; }
@@ -17715,8 +17716,13 @@
       const branchStates = {};
       branches.forEach(branch => {
         const previousBranch = previous?.branches?.find(candidate => candidate.sourceBranchId === branch.branchId);
-        const runtimeState = manualRuntimeSnapshotForBranch(branch) || previousBranch?.runtimeState || null;
         const active = branch.branchId === manualBranchRegistry.activeBranchId;
+        // Once a comparison exists, an inactive outcome owns its stored runtime
+        // state. Snapshot IDs can be replayed while the active branch rewinds,
+        // so looking them up again could make the untouched outcome drift.
+        const runtimeState = active
+          ? captureManualRuntimeSnapshot()
+          : previousBranch?.runtimeState || manualRuntimeSnapshotForBranch(branch) || null;
         branchStates[branch.branchId] = {
           runtimeState,
           manualModeState: active ? cloneTechnicalValue(manualModeState) : cloneTechnicalValue(previousBranch?.manualModeState || null),
@@ -17724,7 +17730,6 @@
           technicalIssue: active ? cloneTechnicalValue(technicalIssueInjection) : cloneTechnicalValue(previousBranch?.technicalIssue || null)
         };
       });
-      const branchPoint = cloneTechnicalValue(branches[0].branchPoint || previous?.branchPoint || {});
       const branchPointState = cloneTechnicalValue(
         options.branchPointState
         || previous?.branchPoint?.state
@@ -17738,7 +17743,11 @@
           createdAt: previous?.createdAt || branches[0].createdAt || null,
           branchIds: branches.map(branch => branch.branchId),
           branchStates,
-          branchPoint: { ...branchPoint, state: branchPointState },
+          // The shared prefix is canonical. A branch may intentionally rewind
+          // earlier than the point where comparison creation was requested
+          // (for example a DRE reconstruction), so derive its event/turn from
+          // the two live timelines rather than stale registry metadata.
+          branchPoint: { state: branchPointState },
           branchPointState
         });
         return manualScenarioComparison;
@@ -17904,6 +17913,10 @@
     }
 
     async function createManualScenarioComparison() {
+      return createManualScenarioComparisonFromCurrent();
+    }
+
+    async function createManualScenarioComparisonFromCurrent(options = {}) {
       const active = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry);
       const originalId = window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID;
       if (
@@ -17914,13 +17927,15 @@
         || active.branchId === originalId
         || manualComparisonRegistryBranches().length
       ) return false;
-      const accepted = await manualDecision(
-        "Create comparison",
-        "Use the <strong>current reconstructed state</strong> as the shared branch point?<br><small>Branch A and Branch B will start identically and can then be resolved independently.</small>",
-        "Create comparison",
-        "Cancel"
-      );
-      if (!accepted) return false;
+      if (options.confirm !== false) {
+        const accepted = await manualDecision(
+          "Create comparison",
+          "Use the <strong>current reconstructed state</strong> as the shared branch point?<br><small>Branch A and Branch B will start identically and can then be resolved independently.</small>",
+          "Create comparison",
+          "Cancel"
+        );
+        if (!accepted) return false;
+      }
       const sourceRuntime = captureManualRuntimeSnapshot();
       const sourceControlMode = manualModeState.controlMode;
       const lastEvent = timeline.at(-1) || null;
@@ -17940,17 +17955,18 @@
             branchPoint,
             timelineModel: currentManualTimelineModel(),
             terminalResult: currentManualTerminalResult(),
+            activeSlot: options.activeSlot === "B" ? "B" : "A",
             branches: [
-              { slot: "A", label: uniqueManualBranchLabel("Branch A") },
-              { slot: "B", label: uniqueManualBranchLabel("Branch B") }
+              { slot: "A", label: uniqueManualBranchLabel(options.branchALabel || "Branch A") },
+              { slot: "B", label: uniqueManualBranchLabel(options.branchBLabel || "Branch B") }
             ]
           }
         });
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, sourceControlMode);
-        manualMobileComparisonView = "A";
+        manualMobileComparisonView = options.activeSlot === "B" ? "B" : "A";
         rebuildManualScenarioComparison({ branchPointState: sourceRuntime });
-        add("Comparison created. Branch A and Branch B now share this history and can be resolved independently.", "info");
+        add(options.successMessage || "Comparison created. Branch A and Branch B now share this history and can be resolved independently.", "info");
         render();
         return true;
       } catch (error) {
@@ -17958,6 +17974,36 @@
         render();
         return false;
       }
+    }
+
+    function manualDreComparisonShortcutEligibleEventIndexes() {
+      const dreType = window.PvPeakTechnicalReview?.ISSUE_TYPES?.DRE;
+      if (
+        !dreType
+        || !manualModeState?.enabled
+        || !manualBranchRegistry
+        || manualComparisonRegistryBranches().length
+        || technicalReviewState?.mode
+        || technicalReviewState?.draft
+        || technicalReviewState?.pendingDre
+      ) return [];
+      return manualTechnicalEligibleEventIndexes(dreType);
+    }
+
+    async function createManualDreComparisonShortcut() {
+      const eligibleTargets = manualDreComparisonShortcutEligibleEventIndexes();
+      if (!eligibleTargets.length) return false;
+      const created = await createManualScenarioComparisonFromCurrent({
+        confirm: false,
+        activeSlot: "B",
+        branchALabel: "Normal Resolution",
+        branchBLabel: "DRE Resolution",
+        successMessage: "DRE comparison created. Normal Resolution preserves the observed state; select the highlighted Fast Move to reconstruct DRE Resolution."
+      });
+      if (!created) return false;
+      const dreButton = $("manualTechnicalIssuesMount")?.querySelector('[data-manual-technical-issue="dre"]') || null;
+      setTechnicalReviewMode(window.PvPeakTechnicalReview.ISSUE_TYPES.DRE, dreButton);
+      return true;
     }
 
     async function resumeAutomaticFromManualTimeline() {
@@ -19036,6 +19082,7 @@
       const mode = technicalReviewState?.mode || null;
       const draft = technicalReviewState?.draft || null;
       const eligibleTargets = mode ? manualTechnicalEligibleEventIndexes(mode) : [];
+      const dreComparisonTargets = manualDreComparisonShortcutEligibleEventIndexes();
       const instructions = mode === api.ISSUE_TYPES.ONE_TURN_LAG
         ? "Select the Fast Move affected by the one-turn lag."
         : mode === api.ISSUE_TYPES.DRE
@@ -19057,6 +19104,7 @@
           <button type="button" data-manual-technical-issue="one-turn-lag" aria-pressed="${mode === api.ISSUE_TYPES.ONE_TURN_LAG}">1-Turn Lag</button>
           <button type="button" data-manual-technical-issue="dre" aria-pressed="${mode === api.ISSUE_TYPES.DRE}">DRE</button>
         </div>
+        ${dreComparisonTargets.length ? `<button type="button" class="secondary manual-technical-comparison-shortcut" data-manual-dre-comparison>Compare with/without DRE</button>` : ""}
         ${mode ? `<div class="manual-technical-selection" role="status" aria-live="polite"><span>${escapeHtml(selectionMessage)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
         ${draftMarkup}
       </section>`;
@@ -19076,6 +19124,9 @@
       });
       mount.querySelectorAll("[data-manual-technical-confirm]").forEach(button => {
         button.onclick = () => confirmManualTechnicalIssue(button.dataset.manualTechnicalConfirm || null);
+      });
+      mount.querySelectorAll("[data-manual-dre-comparison]").forEach(button => {
+        button.onclick = () => createManualDreComparisonShortcut();
       });
     }
 
@@ -25014,23 +25065,38 @@
     }
 
     function finalizeManualTechnicalBranch(issue, plan, sourceBranchId, eventId, edit = {}) {
-      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
-        type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
-        payload: {
-          parentBranchId: sourceBranchId,
-          label: issue.type === "dre" ? "DRE reconstruction" : "One-Turn Lag reconstruction",
-          classification: "TECHNICAL_RECONSTRUCTION",
-          branchPoint: {
-            boundary: window.PvPeakManualSnapshots.BOUNDARY.BEFORE,
-            eventId: plan.eventId,
-            stateHash: plan.stateHash
-          },
-          timelineModel: currentManualTimelineModel(),
-          terminalResult: currentManualTerminalResult(),
-          edits: [{ type: issue.type === "dre" ? "INSERT_DRE" : "INSERT_LAG", issue: cloneTechnicalValue(issue), ...cloneTechnicalValue(edit) }]
-        }
-      });
+      const sourceBranch = manualBranchRegistry?.branches?.[sourceBranchId] || null;
+      const technicalEdit = { type: issue.type === "dre" ? "INSERT_DRE" : "INSERT_LAG", issue: cloneTechnicalValue(issue), ...cloneTechnicalValue(edit) };
+      const command = sourceBranch?.comparisonId
+        ? {
+            type: window.PvPeakManualBranches.COMMAND_TYPE.UPDATE_BRANCH,
+            payload: {
+              branchId: sourceBranchId,
+              timelineModel: currentManualTimelineModel(),
+              terminalResult: currentManualTerminalResult(),
+              classification: sourceBranch.classification,
+              edit: technicalEdit
+            }
+          }
+        : {
+            type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_BRANCH,
+            payload: {
+              parentBranchId: sourceBranchId,
+              label: issue.type === "dre" ? "DRE reconstruction" : "One-Turn Lag reconstruction",
+              classification: "TECHNICAL_RECONSTRUCTION",
+              branchPoint: {
+                boundary: window.PvPeakManualSnapshots.BOUNDARY.BEFORE,
+                eventId: plan.eventId,
+                stateHash: plan.stateHash
+              },
+              timelineModel: currentManualTimelineModel(),
+              terminalResult: currentManualTerminalResult(),
+              edits: [technicalEdit]
+            }
+          };
+      manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, command);
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      rebuildManualScenarioComparison({ branchPointState: sourceBranch?.comparisonId ? plan.runtimeState : undefined });
       manualBattleRuntime = null;
       manualTimelineFocusEventId = eventId || timeline.at(-1)?.timelineEventId || null;
       clearManualEnergyTrainerNextCycle();
@@ -25053,11 +25119,16 @@
       const plan = issue ? manualTechnicalRestorePlan(issue) : null;
       if (!issue || !plan || !manualBranchRegistry) return false;
       const sourceBranchId = manualBranchRegistry.activeBranchId;
+      const sourceBranch = manualBranchRegistry.branches[sourceBranchId] || null;
       const sourceState = captureManualRuntimeSnapshot();
       const sourceEvent = timeline[issue.eventIndex];
       const attacker = issue.trainer === "A" ? left : right;
       const defender = issue.trainer === "A" ? right : left;
-      if (!attacker || !defender || !restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix)) return false;
+      if (!attacker || !defender || !sourceBranch || !restoreManualRuntimePayload(plan.runtimeState, plan.immutablePrefix)) return false;
+      // The observed branch may already be terminal (the normal DRE outcome).
+      // Rebuild the controller from the restored pre-event runtime so the
+      // existing charged/shield flow starts from a live canonical decision.
+      rebuildManualModeStateForBranch(sourceBranch);
       manualBattleRuntime = null;
       const restoredAttacker = issue.trainer === "A" ? left : right;
       const restoredDefender = issue.trainer === "A" ? right : left;

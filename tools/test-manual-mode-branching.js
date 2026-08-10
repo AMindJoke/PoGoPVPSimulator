@@ -117,6 +117,22 @@ assert.equal(comparisonRegistry.branches["COMPARE-B"].comparisonSlot, "B");
 assert.equal(comparisonRegistry.branches["COMPARE-A"].parentBranchId, Branches.ORIGINAL_BRANCH_ID);
 assert.notEqual(comparisonRegistry.branches["COMPARE-A"].timelineModel, comparisonRegistry.branches["COMPARE-B"].timelineModel);
 assert.equal(comparisonRegistry.history.length, 1, "Both comparison branches must be created by one atomic command.");
+let dreShortcutRegistry = Branches.createRegistry({ timelineModel: originalTimeline, createdAt: "2026-01-01T00:00:00.000Z" });
+dreShortcutRegistry = Branches.execute(dreShortcutRegistry, {
+  type: Branches.COMMAND_TYPE.CREATE_COMPARISON,
+  payload: {
+    comparisonId: "dre-comparison",
+    activeSlot: "B",
+    branches: [
+      { slot: "A", branchId: "NORMAL-RESOLUTION", label: "Normal Resolution" },
+      { slot: "B", branchId: "DRE-RESOLUTION", label: "DRE Resolution" }
+    ],
+    timelineModel: originalTimeline
+  }
+});
+assert.equal(dreShortcutRegistry.activeBranchId, "DRE-RESOLUTION", "A shortcut may open directly on the branch that will diverge.");
+assert.equal(dreShortcutRegistry.branches["NORMAL-RESOLUTION"].label, "Normal Resolution");
+assert.equal(dreShortcutRegistry.branches["DRE-RESOLUTION"].label, "DRE Resolution");
 assert.throws(() => Branches.execute(comparisonRegistry, {
   type: Branches.COMMAND_TYPE.DELETE_BRANCH,
   payload: { branchId: "COMPARE-A" }
