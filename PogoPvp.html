@@ -9429,7 +9429,7 @@
         will-change: height;
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="half"] {
-        height: min(var(--manual-mobile-half-height, 52dvh), 460px);
+        height: var(--manual-mobile-half-height, min(52dvh, 460px));
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="expanded"] {
         height: min(88dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 8px));
@@ -18486,18 +18486,18 @@
     function syncManualMobileSheetGeometry() {
       const sheet = $("manualMobileBottomSheetShell");
       const timelineStage = $("manualTimelineStage");
+      const timelineGrid = timelineStage?.querySelector(".timeline-grid");
       const mobileReview = document.body.dataset.view === "scenario-review"
         && !!manualModeState?.enabled
         && window.matchMedia("(max-width: 900px)").matches;
-      if (!sheet || !timelineStage || !mobileReview) {
+      if (!sheet || !timelineGrid || !mobileReview) {
         sheet?.style.removeProperty("--manual-mobile-half-height");
         return false;
       }
-      const viewport = window.visualViewport;
-      const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
-      const timelineBottom = timelineStage.getBoundingClientRect().bottom;
+      const viewportBottom = window.innerHeight;
+      const timelineBottom = timelineGrid.getBoundingClientRect().bottom;
       const available = Math.max(56, Math.floor(viewportBottom - timelineBottom - 6));
-      sheet.style.setProperty("--manual-mobile-half-height", `${Math.min(460, available)}px`);
+      sheet.style.setProperty("--manual-mobile-half-height", `${available}px`);
       return true;
     }
 

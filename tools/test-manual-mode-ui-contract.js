@@ -150,7 +150,7 @@ assert.match(html, /mobileControls\.append\(runtimeToolbar\)/);
 assert.match(html, /const mobileReview = mobile && document\.body\.dataset\.view === "scenario-review"/, "The bottom sheet must remain exclusive to mobile Scenario Review.");
 assert.match(html, /function restoreManualReviewControlHomes\(\)/, "Desktop and non-review mobile layouts need canonical control restoration.");
 assert.match(html, /body\[data-view="scenario-review"\]\.manual-mode-active \.manual-mobile-bottom-sheet-shell\s*\{[\s\S]{0,100}position: fixed;[\s\S]{0,100}bottom: 0;/, "The Scenario Review sheet must be fixed to the mobile viewport bottom.");
-assert.match(html, /manual-mobile-bottom-sheet-shell\[data-state="half"\][\s\S]{0,120}height: min\(var\(--manual-mobile-half-height, 52dvh\), 460px\)/);
+assert.match(html, /manual-mobile-bottom-sheet-shell\[data-state="half"\][\s\S]{0,120}height: var\(--manual-mobile-half-height, min\(52dvh, 460px\)\)/);
 assert.match(html, /manual-mobile-bottom-sheet-shell\[data-state="expanded"\][\s\S]{0,120}height: min\(88dvh/);
 assert.match(html, /manual-mobile-controls-shell\s*\{[\s\S]{0,220}overflow-y: auto;[\s\S]{0,100}overscroll-behavior: contain;/, "Bottom sheet content must scroll internally.");
 assert.match(html, /manual-mobile-controls-shell \.manual-state-inspector\.mobile-details-open\s*\{[^}]*position: static;[^}]*box-shadow: none;[^}]*\}/, "Battle State details must expand inside the sheet rather than opening a nested mobile overlay.");
@@ -186,7 +186,7 @@ assert.match(html, /data-technical-active="true"/, "The Judge tab needs a non-te
 assert.match(html, /Select a highlighted Fast Move/, "Collapsed selection mode must explain the next timeline action.");
 assert.match(html, /data-active-tab="moves"\] #manualDecisionBanner\s*\{[^}]*order: 2;/, "Current Decision and history actions must follow the legal moves.");
 assert.match(html, /data-active-tab="moves"\] #manualEditorActions\s*\{[^}]*order: 1;/, "Legal moves must be the first interactive content in the Moves tab.");
-assert.match(html, /function syncManualMobileSheetGeometry\(\)/, "Half-height placement must follow the rendered Timeline boundary.");
+assert.match(html, /function syncManualMobileSheetGeometry\(\)[\s\S]{0,320}querySelector\("\.timeline-grid"\)/, "Half-height placement must follow the rendered Timeline rows rather than the full panel.");
 assert.match(html, /viewportBottom - timelineBottom - 6/, "The open sheet must leave a small gap below the Timeline.");
 assert.match(html, /data-active-tab="moves"\] \.manual-overlay-controls\s*\{[^}]*grid-template-columns: repeat\(2, 44px\)/, "Undo and Redo must remain compact and directly reachable.");
 assert.match(html, /data-active-tab="moves"\] \.manual-continue-auto\s*\{[^}]*width: auto;[^}]*background: var\(--soft\);/, "Continue Automatically must remain a secondary, non-fixed action.");
