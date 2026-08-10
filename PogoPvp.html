@@ -17416,10 +17416,10 @@
 
     function manualScenarioSnapshot() {
       if (!manualModeState?.enabled || !manualBranchRegistry || !window.PvPeakManualScenarioIO) return null;
-      const canonical = window.PvPeakManualScenarioIO.exportScenario({
+      const applicationState = snapshotFullSimulatorState();
+      return window.PvPeakManualScenarioIO.serializeScenario({
         registry: manualBranchRegistry,
         battleEngineVersion,
-        plannerMode: "CANONICAL",
         reviewMode: scenarioReviewMode,
         scenarioReview: {
           state: scenarioState,
@@ -17428,18 +17428,35 @@
           history: scenarioHistory
         },
         pokemon: { A: left?.p?.id || null, B: right?.p?.id || null },
-        exportedAt: manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId)?.payload?.exportedAt : undefined
-      });
-      return {
-        ...canonical,
-        localScenarioVersion: 1,
-        applicationState: snapshotFullSimulatorState(),
+        applicationState,
+        runtimeState: captureManualRuntimeSnapshot(),
+        manualModeState,
+        pendingFastEvents: manualPendingFastEvents,
+        technicalIssue: technicalIssueInjection,
         manualSession: {
           sessionControlMode: manualSessionControlMode,
           originalRuntimeState: cloneTechnicalValue(manualOriginalRuntimeState),
           rootSnapshotId: manualRootSnapshotId,
           snapshots: manualSnapshotStore?.exportEntries?.() || []
         }
+      });
+    }
+
+    function manualScenarioValidationOptions(options = {}) {
+      return {
+        battleEngineVersion,
+        ...options,
+        isPokemonId: id => !!findPokemon(id),
+        isMoveId: (pokemonId, moveId, category) => {
+          const move = moveMap.get(moveId);
+          if (!move) return false;
+          if (!pokemonId) return true;
+          const pokemon = findPokemon(pokemonId);
+          if (!pokemon) return false;
+          const pool = category === "fast" ? pokemon.fast : pokemon.charged;
+          return Array.isArray(pool) && pool.includes(moveId);
+        },
+        validateManualState: state => window.PvPeakManualMode?.validateState?.(state) || []
       };
     }
 
@@ -17543,36 +17560,38 @@
       const entry = manualScenarioLibrary?.get(id);
       if (!entry) return false;
       clearManualEnergyTrainerNextCycle();
-      const imported = window.PvPeakManualScenarioIO?.importScenario(entry.payload, { battleEngineVersion });
-      if (!imported?.ok || !entry.payload?.applicationState || !entry.payload?.manualSession) {
+      const imported = window.PvPeakManualScenarioIO?.deserializeScenario(entry.payload, manualScenarioValidationOptions());
+      const document = imported?.scenario;
+      if (!imported?.ok || !document?.state?.applicationState || !document?.session) {
         add(`Cannot open ${entry.name}: ${imported?.errors?.join(", ") || "invalid scenario data"}.`, "info");
         return false;
       }
       try {
-        restoreFullSimulatorState(cloneTechnicalValue(entry.payload.applicationState));
-        if (Object.prototype.hasOwnProperty.call(entry.payload, "reviewMode")) {
-          scenarioReviewMode = normalizedScenarioReviewMode(imported.scenario.reviewMode);
-        }
-        if (imported.scenario.scenarioReview) {
-          const restoredReview = cloneTechnicalValue(imported.scenario.scenarioReview);
-          scenarioState = restoredReview.state || null;
-          scenarioSegmentInitialState = restoredReview.segmentInitialState || null;
-          scenarioTimelineStart = Number(restoredReview.timelineStart || 0);
-          scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restoredReview.history?.A || []));
-          scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restoredReview.history?.B || []));
-        }
-        manualBranchRegistry = cloneTechnicalValue(imported.scenario.branchRegistry);
+        restoreFullSimulatorState(cloneTechnicalValue(document.state.applicationState));
+        const restoredReview = cloneTechnicalValue(document.review);
+        scenarioReviewMode = normalizedScenarioReviewMode(restoredReview.mode);
+        scenarioState = restoredReview.state || null;
+        scenarioSegmentInitialState = restoredReview.segmentInitialState || null;
+        scenarioTimelineStart = Number(restoredReview.timelineStart || 0);
+        scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restoredReview.history?.A || []));
+        scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restoredReview.history?.B || []));
+        manualBranchRegistry = cloneTechnicalValue(document.branchModel.registry);
         manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
-        manualSnapshotStore?.importEntries?.(entry.payload.manualSession.snapshots || []);
-        manualOriginalRuntimeState = cloneTechnicalValue(entry.payload.manualSession.originalRuntimeState);
-        manualRootSnapshotId = entry.payload.manualSession.rootSnapshotId || null;
-        manualSessionControlMode = entry.payload.manualSession.sessionControlMode || null;
+        manualSnapshotStore?.importEntries?.(document.session.snapshots || []);
+        manualOriginalRuntimeState = cloneTechnicalValue(document.session.originalRuntimeState);
+        manualRootSnapshotId = document.session.rootSnapshotId || null;
+        manualSessionControlMode = document.session.controlMode || null;
         manualBattleRuntime = null;
         manualModeMinimized = false;
         manualMobileSheetState = "collapsed";
         manualMobileReviewTab = "moves";
         manualMobileBattleStateSide = null;
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+        manualPendingFastEvents = cloneTechnicalValue(document.state.pendingFastEvents || []);
+        technicalIssueInjection = cloneTechnicalValue(document.technicalIssues.active || null);
+        if (document.state.manualMode && !window.PvPeakManualMode.validateState(document.state.manualMode).length) {
+          manualModeState = cloneTechnicalValue(document.state.manualMode);
+        }
         manualScenarioId = entry.id;
         manualScenarioBaseline = JSON.stringify(entry.payload);
         manualScenarioDraftName = null;
@@ -17672,11 +17691,12 @@
       clearManualEnergyTrainerNextCycle();
       try {
         const payload = JSON.parse(await file.text());
-        const imported = window.PvPeakManualScenarioIO?.importScenario(payload, { battleEngineVersion });
+        const imported = window.PvPeakManualScenarioIO?.deserializeScenario(payload, manualScenarioValidationOptions());
         if (!imported?.ok) throw new Error(imported?.errors?.join(", ") || "INVALID_IMPORT_DOCUMENT");
-        const name = window.prompt("Save imported scenario as:", payload?.applicationState?.controls?.p1Pokemon && payload?.applicationState?.controls?.p2Pokemon ? "Imported scenario" : "Imported scenario");
+        const name = window.prompt("Save imported scenario as:", "Imported scenario");
         if (!name?.trim() || !manualScenarioLibrary) return false;
-        const saved = manualScenarioLibrary.save({ name, payload, summary: { matchup: "Imported scenario", eventCount: Number(payload.timeline?.length || 0) } });
+        const canonicalPayload = imported.scenario;
+        const saved = manualScenarioLibrary.save({ name, payload: canonicalPayload, summary: { matchup: "Imported scenario", eventCount: Number(canonicalPayload.timeline?.events?.length || 0) } });
         renderManualScenarioLibrary();
         return openStoredManualScenario(saved.id);
       } catch (error) {

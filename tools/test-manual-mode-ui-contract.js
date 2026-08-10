@@ -378,6 +378,9 @@ assert.match(html, /modal\.classList\.toggle\("shield-decision-modal", options\.
 assert.match(html, /function renderManualDecisionBanner/);
 assert.match(html, /function renderManualScenarioPanel/);
 assert.match(html, /function saveManualScenario/);
+assert.match(html, /function manualScenarioSnapshot\(\)[\s\S]{0,2200}PvPeakManualScenarioIO\.serializeScenario/, "Scenario Review saves must use the canonical serializer.");
+assert.match(html, /pendingFastEvents: manualPendingFastEvents,[\s\S]{0,100}technicalIssue: technicalIssueInjection/, "Canonical saves must include pending Fast and Technical Issue state.");
+assert.match(html, /function openStoredManualScenario\(id\)[\s\S]{0,500}deserializeScenario\(entry\.payload, manualScenarioValidationOptions\(\)\)/, "Open Scenario must validate and deserialize before restoring application state.");
 assert.match(html, /function openStoredManualScenario/);
 assert.match(html, /localStorage/);
 assert.match(html, /manual-scenario-library\.js/);
