@@ -13,7 +13,19 @@ assert.match(html, /manualScenarioComparison = cloneTechnicalValue\(scenarioDocu
 assert.match(html, /id="manualComparisonPanel"[^>]+aria-labelledby="manualComparisonTitle"[^>]+hidden/, "Desktop Manual Mode must expose one semantic comparison panel.");
 assert.match(html, /function renderManualComparisonPanel\(\)[\s\S]{0,3200}comparisonViewModel\(comparison\)[\s\S]{0,3200}data-comparison-branch-id/, "The desktop comparison UI must render the canonical projection and reuse live branch switching.");
 assert.match(html, /Shared history and branch results/, "The comparison UI must distinguish shared history from branch results.");
-assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,220}manual-comparison-panel/, "Phase 7 comparison presentation must remain desktop-only.");
+assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,220}manual-comparison-panel/, "Desktop comparison presentation must retain its dedicated breakpoint.");
+assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,260}manual-comparison-panel/, "Scenario Comparison must provide a dedicated mobile presentation.");
+assert.match(html, /MANUAL_MOBILE_COMPARISON_VIEWS = Object\.freeze\(\["A", "B", "diff"\]\)/, "Mobile comparison must expose Branch A, Branch B, and Diff views.");
+assert.match(html, /function setManualMobileComparisonView\(requestedView/, "Mobile comparison navigation needs one canonical presentation controller.");
+assert.match(html, /setManualMobileComparisonView[\s\S]{0,1000}switchLiveManualBranch\(branch\.sourceBranchId\)/, "Mobile Branch A/B views must reuse canonical live branch switching.");
+assert.match(html, /id="manualComparisonMobileDiff"[\s\S]{0,200}manualMobileComparisonDiffMarkup\(viewModel\)/, "Mobile Diff must render the semantic comparison projection vertically.");
+assert.match(html, /No corresponding event/, "Mobile Diff must explain unmatched turns in text.");
+assert.match(html, /#manualTimelineStage\[data-mobile-comparison-view="diff"\] \.timeline-grid,[\s\S]{0,180}display: none/, "Diff view must replace, rather than duplicate, the main mobile timeline.");
+assert.match(html, /id="manualHudComparisonView"[^>]+hidden/, "The compact HUD must expose the active mobile comparison view.");
+assert.match(html, /Viewing: Branch \$\{manualMobileComparisonView\}/, "The HUD comparison label must track Branch A and Branch B.");
+assert.match(html, /manual-comparison-mobile-switch button\s*\{[^}]*min-height: 44px;/, "Mobile comparison tabs must remain touchable.");
+assert.match(html, /function handleManualMobileComparisonKeydown\(event\)/, "Mobile comparison tabs must support keyboard navigation.");
+assert.match(html, /timelineStage\?\.dataset\.mobileComparisonView === "diff"[\s\S]{0,120}manualComparisonPanel/, "Bottom-sheet placement must follow the vertical Diff view when active.");
 assert.match(html, /function manualComparisonDivergenceMarkup\(viewModel\)[\s\S]{0,1700}First divergence/, "Comparison UI must expose the first divergence in text, not through color alone.");
 assert.match(html, /function manualComparisonDivergenceMarkup\(viewModel\)[\s\S]{0,1700}No corresponding event/, "Comparison UI must explain an unmatched branch event.");
 assert.match(html, /Only in A[\s\S]{0,80}Only in B/, "Comparison UI must label branch-exclusive event colors accessibly.");
@@ -71,6 +83,8 @@ for (const id of [
   "manualHudStatusA",
   "manualHudStatusB",
   "manualHudMobileActor",
+  "manualHudComparisonView",
+  "manualTimelineGrid",
   "manualHudHpA",
   "manualHudHpB",
   "manualHudChargesA",

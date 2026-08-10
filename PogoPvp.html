@@ -5776,7 +5776,8 @@
     .manual-scenario-library-item span { align-self: center; color: #198b47; font-size: 10px; font-weight: 800; }
     .manual-scenario-library-empty { padding: 18px 4px; color: var(--muted); font-size: 12px; text-align: center; }
     .manual-scenario-library-import { width: 100%; margin-top: 10px; }
-    .manual-comparison-panel { display: none; }
+    .manual-comparison-panel,
+    .manual-comparison-mobile { display: none; }
     .manual-comparison-panel[hidden] { display: none !important; }
     @media (min-width: 901px) {
       body[data-view="scenario-review"].manual-mode-active .manual-comparison-panel {
@@ -5795,6 +5796,7 @@
         background: transparent;
         box-shadow: none;
       }
+      .manual-comparison-desktop { display: contents; }
       .manual-comparison-heading,
       .manual-comparison-shared,
       .manual-comparison-branch-head,
@@ -6054,6 +6056,144 @@
         white-space: nowrap;
       }
       .manual-comparison-pokemon.is-fainted { opacity: .6; }
+    }
+    @media (max-width: 900px) {
+      body[data-view="scenario-review"].manual-mode-active .manual-comparison-panel {
+        display: grid;
+        width: 100%;
+        max-width: none;
+        margin: 6px 0 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .manual-comparison-desktop { display: none; }
+      .manual-comparison-mobile {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+      }
+      .manual-comparison-mobile-switch {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: color-mix(in srgb, var(--soft) 72%, var(--panel));
+      }
+      .manual-comparison-mobile-switch button {
+        min-width: 0;
+        min-height: 44px;
+        padding: 7px 8px;
+        border-color: transparent;
+        background: transparent;
+        color: var(--muted);
+        box-shadow: none;
+        font-size: 11px;
+        font-weight: 900;
+      }
+      .manual-comparison-mobile-switch button[aria-selected="true"] {
+        border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+        background: var(--panel);
+        color: var(--accent-dark);
+        box-shadow: 0 2px 6px color-mix(in srgb, var(--shadow) 70%, transparent);
+      }
+      .manual-comparison-mobile-status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 5px 7px;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 750;
+      }
+      .manual-comparison-mobile-status strong { color: var(--text); font-size: 10px; }
+      .manual-comparison-mobile-diff {
+        display: grid;
+        gap: 7px;
+        max-height: min(43dvh, 360px);
+        padding: 1px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+      }
+      .manual-comparison-mobile-diff[hidden] { display: none; }
+      .manual-comparison-mobile-diff-row {
+        display: grid;
+        gap: 4px;
+        padding: 7px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--soft) 54%, var(--panel));
+      }
+      .manual-comparison-mobile-diff-row > strong {
+        color: var(--muted);
+        font-size: 9px;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+      }
+      .manual-comparison-mobile-diff-side {
+        display: grid;
+        grid-template-columns: 21px minmax(0, 1fr);
+        align-items: start;
+        gap: 6px;
+        min-width: 0;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+      }
+      .manual-comparison-mobile-diff-side > b {
+        display: grid;
+        place-items: center;
+        width: 21px;
+        height: 21px;
+        border-radius: 50%;
+        background: #1683a2;
+        color: #fff;
+        font-size: 9px;
+      }
+      .manual-comparison-mobile-diff-side[data-slot="B"] > b { background: #7654b5; }
+      .manual-comparison-mobile-diff-events { display: grid; gap: 3px; min-width: 0; }
+      .manual-comparison-mobile-diff-events span {
+        overflow-wrap: anywhere;
+        color: var(--text);
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .manual-comparison-mobile-diff-events em {
+        color: var(--muted);
+        font-size: 9px;
+        font-style: normal;
+        font-weight: 700;
+      }
+      .manual-comparison-mobile-versus {
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 950;
+        text-align: center;
+      }
+      body.manual-mode-active .manual-hud-center .manual-hud-comparison-view:not([hidden]) {
+        display: inline-flex;
+        max-width: 48px;
+        padding: 2px 4px;
+        border-radius: 999px;
+        background: color-mix(in srgb, #7654b5 12%, var(--panel));
+        color: #65439f;
+        font-size: 7px;
+        font-style: normal;
+        font-weight: 950;
+        line-height: 1.05;
+        text-align: center;
+        text-transform: uppercase;
+      }
+      body.manual-mode-active .manual-duel-hud[data-comparison-view] .manual-hud-mobile-actor { display: none; }
+      body[data-view="scenario-review"].manual-mode-active #manualTimelineStage[data-mobile-comparison-view="diff"] .timeline-grid,
+      body[data-view="scenario-review"].manual-mode-active #manualTimelineStage[data-mobile-comparison-view="diff"] .timeline-legend { display: none; }
+      body[data-view="scenario-review"].manual-mode-active #manualTimelineStage[data-mobile-comparison-view="diff"] .timeline-head { margin-bottom: 0; }
     }
     .manual-editor-actions {
       grid-column: 1;
@@ -11920,7 +12060,7 @@
               <input id="timelineZoom" type="hidden" value="100">
             </div>
           </div>
-          <div class="timeline-grid">
+          <div id="manualTimelineGrid" class="timeline-grid">
             <div class="timeline-label" id="p1TimelineLabel">A</div>
             <div class="timeline-label" id="p2TimelineLabel">B</div>
             <div class="timeline-scroll" id="timelineScroll">
@@ -11967,6 +12107,7 @@
               <small id="manualHudPhase">Before action</small>
               <em id="manualHudActor">Choose an action</em>
               <em id="manualHudMobileActor" class="manual-hud-mobile-actor">A or B</em>
+              <em id="manualHudComparisonView" class="manual-hud-comparison-view" hidden>Viewing: Branch A</em>
             </div>
             <article class="manual-hud-side" data-side="B" data-manual-hud-side="B" role="button" tabindex="0" aria-controls="manualStateInspector" aria-expanded="false" aria-label="Open Pokemon B Battle State">
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
@@ -12459,6 +12600,8 @@
     const MANUAL_MOBILE_REVIEW_TABS = Object.freeze(["moves", "judge", "scenario"]);
     let manualMobileReviewTab = "moves";
     let manualMobileBattleStateSide = null;
+    const MANUAL_MOBILE_COMPARISON_VIEWS = Object.freeze(["A", "B", "diff"]);
+    let manualMobileComparisonView = "A";
     // This belongs to the Manual Mode session, not to an individual timeline
     // version. Switching Original/Manual must never change who is controlled.
     let manualSessionControlMode = null;
@@ -17655,6 +17798,51 @@
       return `<div class="manual-comparison-divergence" aria-label="First divergence at turn ${divergence.turn}"><span class="manual-comparison-divergence-copy"><strong>First divergence</strong><small>Turn ${divergence.turn}</small></span>${side("A")}${side("B")}</div>`;
     }
 
+    function manualMobileComparisonDiffMarkup(viewModel) {
+      const rows = viewModel.difference?.rows || [];
+      if (!rows.length) {
+        return `<div class="manual-comparison-mobile-diff-row"><strong>No differences yet</strong><div class="manual-comparison-mobile-diff-events"><em>Branch A and Branch B currently resolve identically.</em></div></div>`;
+      }
+      const side = (slot, events) => `<div class="manual-comparison-mobile-diff-side" data-slot="${slot}"><b>${slot}</b><span class="manual-comparison-mobile-diff-events">${events.length
+        ? events.map(event => `<span>${escapeHtml(manualComparisonEventLabel(event))}${event.firstDivergence ? " · First divergence" : ""}</span>`).join("")
+        : `<em>No corresponding event</em>`}</span></div>`;
+      return rows.map(row => `<article class="manual-comparison-mobile-diff-row" aria-label="Comparison at turn ${row.turn}"><strong>Turn ${row.turn}</strong>${side("A", row.A)}<span class="manual-comparison-mobile-versus" aria-hidden="true">VS</span>${side("B", row.B)}</article>`).join("");
+    }
+
+    function setManualMobileComparisonView(requestedView, { focus = false } = {}) {
+      const view = MANUAL_MOBILE_COMPARISON_VIEWS.includes(requestedView) ? requestedView : "A";
+      const comparison = manualScenarioComparison;
+      if (!comparison?.branches?.length) return false;
+      const previousView = manualMobileComparisonView;
+      manualMobileComparisonView = view;
+      if (view !== "diff") {
+        const branch = comparison.branches.find(candidate => candidate.slot === view);
+        if (!branch) {
+          manualMobileComparisonView = previousView;
+          return false;
+        }
+        if (manualBranchRegistry?.activeBranchId !== branch.sourceBranchId && !switchLiveManualBranch(branch.sourceBranchId)) {
+          manualMobileComparisonView = previousView;
+          return false;
+        }
+      }
+      render();
+      if (focus) requestAnimationFrame(() => document.querySelector(`[data-mobile-comparison-view="${view}"]`)?.focus());
+      return true;
+    }
+
+    function handleManualMobileComparisonKeydown(event) {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      const currentIndex = Math.max(0, MANUAL_MOBILE_COMPARISON_VIEWS.indexOf(manualMobileComparisonView));
+      const nextIndex = event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? MANUAL_MOBILE_COMPARISON_VIEWS.length - 1
+          : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) + MANUAL_MOBILE_COMPARISON_VIEWS.length) % MANUAL_MOBILE_COMPARISON_VIEWS.length;
+      event.preventDefault();
+      setManualMobileComparisonView(MANUAL_MOBILE_COMPARISON_VIEWS[nextIndex], { focus: true });
+    }
+
     function renderManualComparisonPanel() {
       const panel = $("manualComparisonPanel");
       const comparison = manualScenarioComparison;
@@ -17668,11 +17856,18 @@
       panel.hidden = !available;
       if (!available) {
         panel.innerHTML = "";
+        manualMobileComparisonView = "A";
+        const timelineStage = $("manualTimelineStage");
+        if (timelineStage) delete timelineStage.dataset.mobileComparisonView;
         return;
       }
       const viewModel = window.PvPeakScenarioComparison.comparisonViewModel(comparison);
       const branchPointTurn = Math.max(0, Number(viewModel.branchPoint?.turn || 0));
       const activeBranchId = manualBranchRegistry?.activeBranchId || null;
+      const activeComparisonSlot = viewModel.branches.find(branch => branch.sourceBranchId === activeBranchId)?.slot || "A";
+      if (manualMobileComparisonView !== "diff") manualMobileComparisonView = activeComparisonSlot;
+      const timelineStage = $("manualTimelineStage");
+      if (timelineStage) timelineStage.dataset.mobileComparisonView = manualMobileComparisonView;
       const branchMarkup = viewModel.branches.map(branch => {
         const pokemonA = branch.pokemon.A;
         const pokemonB = branch.pokemon.B;
@@ -17685,13 +17880,26 @@
           <div class="manual-comparison-pokemon-grid">${pokemonMarkup("A", pokemonA)}${pokemonMarkup("B", pokemonB)}</div>
         </article>`;
       }).join("");
-      panel.innerHTML = `<div class="manual-comparison-heading"><span><small>Scenario Comparison</small><strong id="manualComparisonTitle">Shared history and branch results</strong></span><small>Branch point · Turn ${branchPointTurn}</small></div>
+      const activeMobileBranch = viewModel.branches.find(branch => branch.slot === activeComparisonSlot);
+      const mobileViewLabel = manualMobileComparisonView === "diff" ? "Difference view" : `Branch ${manualMobileComparisonView}`;
+      const mobileTabs = MANUAL_MOBILE_COMPARISON_VIEWS.map(view => {
+        const selected = manualMobileComparisonView === view;
+        const label = view === "diff" ? "Diff" : `Branch ${view}`;
+        const controls = view === "diff" ? "manualComparisonMobileDiff" : "manualTimelineGrid";
+        return `<button type="button" role="tab" data-mobile-comparison-view="${view}" aria-selected="${selected}" aria-controls="${controls}" tabindex="${selected ? "0" : "-1"}">${label}</button>`;
+      }).join("");
+      panel.innerHTML = `<h2 id="manualComparisonTitle" class="sr-only">Scenario Comparison</h2><div class="manual-comparison-desktop"><div class="manual-comparison-heading"><span><small>Scenario Comparison</small><strong>Shared history and branch results</strong></span><small>Branch point · Turn ${branchPointTurn}</small></div>
         <div class="manual-comparison-diff-legend" aria-label="Comparison event legend"><span>Shared</span><span>Only in A</span><span>Only in B</span></div>
         <div class="manual-comparison-shared"><span class="manual-comparison-shared-copy"><strong>Shared history</strong><small>${viewModel.sharedEvents.length} common event${viewModel.sharedEvents.length === 1 ? "" : "s"}</small></span><div class="manual-comparison-events" role="list" aria-label="Shared history events">${manualComparisonEventsMarkup(viewModel.sharedEvents, "Battle start · no shared actions", { forceShared: true })}</div></div>
         ${manualComparisonDivergenceMarkup(viewModel)}
-        <div class="manual-comparison-branches">${branchMarkup}</div>`;
+        <div class="manual-comparison-branches">${branchMarkup}</div></div>
+        <div class="manual-comparison-mobile"><div class="manual-comparison-mobile-switch" role="tablist" aria-label="Comparison view">${mobileTabs}</div><div class="manual-comparison-mobile-status" role="status"><strong>Viewing: ${mobileViewLabel}</strong><span>${manualMobileComparisonView === "diff" ? `${viewModel.difference.counts.onlyA + viewModel.difference.counts.onlyB} different events` : escapeHtml(activeMobileBranch?.outcome || "In progress")}</span></div><div id="manualComparisonMobileDiff" class="manual-comparison-mobile-diff"${manualMobileComparisonView === "diff" ? "" : " hidden"}>${manualMobileComparisonDiffMarkup(viewModel)}</div></div>`;
       panel.querySelectorAll("[data-comparison-branch-id]").forEach(button => {
         button.onclick = () => switchLiveManualBranch(button.dataset.comparisonBranchId);
+      });
+      panel.querySelectorAll("[data-mobile-comparison-view]").forEach(button => {
+        button.onclick = () => setManualMobileComparisonView(button.dataset.mobileComparisonView);
+        button.onkeydown = handleManualMobileComparisonKeydown;
       });
     }
 
@@ -17740,6 +17948,7 @@
         });
         rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
         manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, sourceControlMode);
+        manualMobileComparisonView = "A";
         rebuildManualScenarioComparison({ branchPointState: sourceRuntime });
         add("Comparison created. Branch A and Branch B now share this history and can be resolved independently.", "info");
         render();
@@ -18504,6 +18713,8 @@
       if (hud) {
         if (activeSide) hud.dataset.activeSide = activeSide;
         else delete hud.dataset.activeSide;
+        if (manualScenarioComparison?.branches?.length === 2) hud.dataset.comparisonView = manualMobileComparisonView;
+        else delete hud.dataset.comparisonView;
       }
       const renderSide = (side, combatant) => {
         const sideElement = document.querySelector(`.manual-hud-side[data-side="${side}"]`);
@@ -18557,6 +18768,14 @@
             : runtimeStatus.tone === "warning"
               ? "Resolving"
               : "A or B";
+      }
+      const comparisonView = $("manualHudComparisonView");
+      if (comparisonView) {
+        const visible = manualScenarioComparison?.branches?.length === 2;
+        comparisonView.hidden = !visible;
+        comparisonView.textContent = manualMobileComparisonView === "diff"
+          ? "Viewing: Diff"
+          : `Viewing: Branch ${manualMobileComparisonView}`;
       }
     }
 
@@ -19228,7 +19447,9 @@
     function syncManualMobileSheetGeometry() {
       const sheet = $("manualMobileBottomSheetShell");
       const timelineStage = $("manualTimelineStage");
-      const timelineGrid = timelineStage?.querySelector(".timeline-grid");
+      const timelineGrid = timelineStage?.dataset.mobileComparisonView === "diff"
+        ? $("manualComparisonPanel")
+        : timelineStage?.querySelector(".timeline-grid");
       const mobileReview = document.body.dataset.view === "scenario-review"
         && !!manualModeState?.enabled
         && window.matchMedia("(max-width: 900px)").matches;

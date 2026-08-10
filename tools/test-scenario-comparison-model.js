@@ -99,6 +99,13 @@ assert.equal(comparisonView.branches[0].events[0].difference, Comparison.EVENT_D
 assert.equal(comparisonView.branches[0].events[0].firstDivergence, true);
 assert.equal(comparisonView.branches[1].events[0].difference, Comparison.EVENT_DIFFERENCE.ONLY_B);
 assert.equal(comparisonView.branches[1].events[0].firstDivergence, true);
+assert.deepEqual(comparisonView.difference.rows.map(row => row.turn), [6, 7, 8]);
+assert.equal(comparisonView.difference.rows[0].A[0].timelineEventId, "normal-impact");
+assert.equal(comparisonView.difference.rows[0].B[0].timelineEventId, "dre-window");
+assert.equal(comparisonView.difference.rows[1].A[0].timelineEventId, "normal-faint");
+assert.equal(comparisonView.difference.rows[1].B[0].timelineEventId, "swift");
+assert.equal(comparisonView.difference.rows[2].A.length, 0, "Mobile diff rows must represent unmatched turns explicitly.");
+assert.equal(comparisonView.difference.rows[2].B[0].timelineEventId, "dre-faint");
 const semanticAlignment = Comparison.semanticEventAlignment([
   event("branch-a-only", "A", "fast", 6, { damage: 4 }),
   event("rejoined-a", "A", "fast", 10, { damage: 3 })
@@ -116,6 +123,7 @@ const identicalAlignment = Comparison.semanticEventAlignment(
 );
 assert.equal(identicalAlignment.diverged, false);
 assert.equal(identicalAlignment.firstDivergence, null);
+assert.deepEqual(identicalAlignment.rows, [], "Shared events must not pollute the vertical mobile diff.");
 assert.notEqual(
   Comparison.semanticEventKey(event("damage-a", "A", "fast", 12, { damage: 2 })),
   Comparison.semanticEventKey(event("damage-b", "A", "fast", 12, { damage: 3 })),

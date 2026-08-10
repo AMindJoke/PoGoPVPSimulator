@@ -256,6 +256,16 @@
     const eventA = firstA >= 0 ? differenceA[firstA] : null;
     const eventB = firstB >= 0 ? differenceB[firstB] : null;
     const turns = [eventA, eventB].filter(Boolean).map(event => Number(event.start || 0));
+    const rowsByTurn = new Map();
+    const appendRowEvent = (slot, event) => {
+      if (event.difference === EVENT_DIFFERENCE.SHARED) return;
+      const turn = Math.max(0, Number(event.start || 0));
+      const row = rowsByTurn.get(turn) || { turn, A: [], B: [] };
+      row[slot].push(clone(event));
+      rowsByTurn.set(turn, row);
+    };
+    differenceA.forEach(event => appendRowEvent("A", event));
+    differenceB.forEach(event => appendRowEvent("B", event));
     return {
       diverged: !!(eventA || eventB),
       firstDivergence: eventA || eventB ? {
@@ -264,6 +274,7 @@
         B: clone(eventB)
       } : null,
       branches: { A: differenceA, B: differenceB },
+      rows: [...rowsByTurn.values()].sort((first, second) => first.turn - second.turn),
       counts: {
         shared: matchedA.size,
         onlyA: differenceA.length - matchedA.size,
