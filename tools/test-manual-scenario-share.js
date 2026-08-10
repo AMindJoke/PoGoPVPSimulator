@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const { gzipSync } = require("node:zlib");
 const Branches = require("../src/battle/manual-branches.js");
 const ManualMode = require("../src/battle/manual-mode.js");
+const Comparison = require("../src/battle/scenario-comparison.js");
 const IO = require("../src/battle/manual-scenario-io.js");
 const Share = require("../src/battle/manual-scenario-share.js");
 const { BATTLE_ENGINE_VERSION } = require("../src/reliability/battle-reliability.js");
@@ -107,6 +108,79 @@ function fixture() {
   });
 }
 
+function comparisonFixture() {
+  const scenario = fixture();
+  const sharedEvents = structuredClone(scenario.timeline.events);
+  const branchPoint = {
+    eventId: sharedEvents.at(-1).timelineEventId,
+    boundary: "AFTER_EVENT",
+    turn: 2,
+    stateHash: sharedEvents.at(-1).stateHashAfter
+  };
+  let registry = Branches.execute(scenario.branchModel.registry, {
+    type: Branches.COMMAND_TYPE.CREATE_COMPARISON,
+    payload: {
+      comparisonId: "shared-comparison-1",
+      parentBranchId: scenario.branchModel.registry.activeBranchId,
+      branchPoint,
+      timelineModel: structuredClone(scenario.branchModel.registry.branches[scenario.branchModel.registry.activeBranchId].timelineModel),
+      branches: [
+        { slot: "A", branchId: "COMPARISON-A", label: "Normal Resolution" },
+        { slot: "B", branchId: "COMPARISON-B", label: "DRE Resolution" }
+      ]
+    }
+  });
+  const branchEvent = (slot, trainer, move, start) => ({
+    id: `comparison-${slot.toLowerCase()}-event`,
+    timelineEventId: `comparison-${slot.toLowerCase()}-event`,
+    trainer,
+    kind: "fast",
+    move,
+    start,
+    duration: trainer === "A" ? 2 : 3,
+    damage: trainer === "A" ? 5 : 7,
+    stateHashAfter: `comparison-${slot.toLowerCase()}-state`
+  });
+  const eventA = branchEvent("A", "A", { id: "POWDER_SNOW", name: "Powder Snow" }, 2);
+  const eventB = branchEvent("B", "B", { id: "ROLLOUT", name: "Rollout" }, 2);
+  const initialState = structuredClone(scenario.branchModel.registry.branches[scenario.branchModel.registry.activeBranchId].timelineModel.initialState);
+  const timelineModelA = { initialState, initialStateHash: "initial", events: [...sharedEvents, eventA], terminalResult: null };
+  const timelineModelB = { initialState, initialStateHash: "initial", events: [...sharedEvents, eventB], terminalResult: null };
+  registry = Branches.execute(registry, {
+    type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+    payload: { branchId: "COMPARISON-A", timelineModel: timelineModelA, edit: { type: "USE_FAST", side: "A" } }
+  });
+  registry = Branches.execute(registry, {
+    type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+    payload: { branchId: "COMPARISON-B", timelineModel: timelineModelB, edit: { type: "USE_FAST", side: "B" } }
+  });
+  const runtimeA = structuredClone(scenario.state.runtimeState);
+  runtimeA.left.energy = 16;
+  runtimeA.battleTurns = { A: 4, B: 2 };
+  const runtimeB = structuredClone(scenario.state.runtimeState);
+  runtimeB.right.energy = 13;
+  runtimeB.battleTurns = { A: 2, B: 5 };
+  const comparison = Comparison.comparisonFromRegistry(registry, {
+    comparisonId: "shared-comparison-1",
+    sourceScenarioId: "shared-scenario-1",
+    createdAt: "2026-08-10T00:00:02.000Z",
+    branchIds: ["COMPARISON-A", "COMPARISON-B"],
+    branchStates: {
+      "COMPARISON-A": { runtimeState: runtimeA },
+      "COMPARISON-B": { runtimeState: runtimeB }
+    },
+    branchPoint
+  });
+  scenario.branchModel.registry = registry;
+  scenario.branchModel.activeBranchId = registry.activeBranchId;
+  scenario.timeline.events = structuredClone(timelineModelA.events);
+  scenario.state.applicationState.battle.timeline = structuredClone(timelineModelA.events);
+  scenario.state.runtimeState = runtimeA;
+  scenario.state.currentTurn = 2;
+  scenario.comparison = comparison;
+  return scenario;
+}
+
 async function run() {
   const scenario = fixture();
   const compressed = await Share.encodeScenario(scenario);
@@ -116,6 +190,22 @@ async function run() {
   const raw = await Share.encodeScenario(scenario, { compression: false });
   assert.match(raw, /^v1\.r\./);
   assert.deepEqual(await Share.decodeScenario(raw), scenario, "The dependency-free raw fallback must remain reversible.");
+  const comparison = comparisonFixture();
+  const comparisonToken = await Share.encodeScenario(comparison);
+  const comparisonDecoded = await Share.decodeScenario(comparisonToken);
+  assert.deepEqual(comparisonDecoded, comparison, "A complete comparison link must preserve shared history, branch point, Branch A, and Branch B.");
+  const comparisonImported = IO.deserializeScenario(comparisonDecoded, {
+    battleEngineVersion: BATTLE_ENGINE_VERSION,
+    isPokemonId: () => true,
+    isMoveId: () => true
+  });
+  assert.equal(comparisonImported.ok, true, comparisonImported.errors.join(", "));
+  assert.equal(comparisonImported.scenario.comparison.branches.length, 2);
+  assert.equal(comparisonImported.scenario.comparison.branchPoint.eventId, "event-1");
+  assert.deepEqual(
+    comparisonImported.scenario.comparison.branches.map(branch => branch.label),
+    ["Normal Resolution", "DRE Resolution"]
+  );
   const legacyJson = IO.stringifyScenario(scenario, 0);
   const legacyRaw = `v1.r.${Buffer.from(legacyJson).toString("base64url")}`;
   const legacyGzip = `v1.g.${gzipSync(Buffer.from(legacyJson)).toString("base64url")}`;
@@ -146,7 +236,7 @@ async function run() {
   console.log("Shareable Scenario URL encoding tests passed.");
 }
 
-module.exports = { fixture };
+module.exports = { fixture, comparisonFixture };
 
 if (require.main === module) {
   run().catch(error => {

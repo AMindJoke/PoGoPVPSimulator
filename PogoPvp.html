@@ -18257,6 +18257,15 @@
         : { state: "modified", label: "Modified", signature };
     }
 
+    function manualScenarioShareKind(payload = manualScenarioComparison) {
+      const comparison = payload?.comparison || payload;
+      return comparison?.branches?.length === 2 ? "comparison" : "scenario";
+    }
+
+    function manualScenarioShareButtonLabel(kind = manualScenarioShareKind()) {
+      return kind === "comparison" ? "Copy Comparison Link" : "Copy Share Link";
+    }
+
     function renderManualScenarioPanel() {
       const panel = $("manualScenarioPanel");
       const save = $("manualScenarioSave");
@@ -18270,6 +18279,11 @@
       save.disabled = !enabled || !manualScenarioLibrary;
       open.disabled = !manualScenarioLibrary;
       share.disabled = !enabled || !manualBranchRegistry || !window.PvPeakManualScenarioShare;
+      const shareKind = manualScenarioShareKind();
+      share.dataset.shareKind = shareKind;
+      if (share.getAttribute("aria-busy") !== "true" && !share.dataset.feedback) {
+        share.textContent = manualScenarioShareButtonLabel(shareKind);
+      }
       more.disabled = !enabled;
       const active = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry);
       compare.disabled = !enabled
@@ -18317,9 +18331,15 @@
       try {
         const payload = manualScenarioSnapshot();
         if (!payload) throw new Error("SCENARIO_NOT_READY");
+        const shareKind = manualScenarioShareKind(payload);
+        button.dataset.shareKind = shareKind;
         const url = await shareApi.buildScenarioUrl(payload, window.location);
         await writeManualScenarioLinkToClipboard(url);
-        showManualScenarioShareFeedback("success", "Link copied");
+        showManualScenarioShareFeedback(
+          "success",
+          shareKind === "comparison" ? "Comparison link copied" : "Link copied",
+          shareKind
+        );
         return true;
       } catch (_) {
         showManualScenarioShareFeedback("error", "Could not copy link");
@@ -18360,17 +18380,20 @@
       return true;
     }
 
-    function showManualScenarioShareFeedback(type, message) {
+    function showManualScenarioShareFeedback(type, message, shareKind = manualScenarioShareKind()) {
       const button = $("manualScenarioCopyLink");
       const status = $("manualScenarioShareFeedback");
       if (!button || !status) return;
       if (manualScenarioShareFeedbackTimer) clearTimeout(manualScenarioShareFeedbackTimer);
+      button.dataset.shareKind = shareKind;
       button.dataset.feedback = type;
-      button.textContent = type === "success" ? "✓ Link copied" : "Could not copy link";
+      button.textContent = type === "success"
+        ? shareKind === "comparison" ? "✓ Comparison link copied" : "✓ Link copied"
+        : "Could not copy link";
       status.textContent = message;
       manualScenarioShareFeedbackTimer = window.setTimeout(() => {
         delete button.dataset.feedback;
-        button.textContent = "Copy Share Link";
+        button.textContent = manualScenarioShareButtonLabel();
         status.textContent = "";
         manualScenarioShareFeedbackTimer = null;
       }, type === "success" ? 1800 : 2600);
@@ -18454,6 +18477,9 @@
       manualMobileSheetState = "collapsed";
       manualMobileReviewTab = "moves";
       manualMobileBattleStateSide = null;
+      manualMobileComparisonView = MANUAL_MOBILE_COMPARISON_VIEWS.includes(options.comparisonView)
+        ? options.comparisonView
+        : "A";
       restoreManualRuntimePayload(
         cloneTechnicalValue(scenarioDocument.state.runtimeState),
         cloneTechnicalValue(scenarioDocument.timeline.events)
@@ -18490,6 +18516,7 @@
         hideSharedScenarioLoadError();
         restoreCanonicalManualScenario(imported.scenario, {
           activateView: true,
+          comparisonView: imported.scenario.comparison?.branches?.length === 2 ? "diff" : "A",
           message: "Opened shared scenario."
         });
         return true;

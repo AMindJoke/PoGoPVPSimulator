@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 const IO = require("../src/battle/manual-scenario-io.js");
 const Share = require("../src/battle/manual-scenario-share.js");
 const { BATTLE_ENGINE_VERSION } = require("../src/reliability/battle-reliability.js");
-const { fixture } = require("./test-manual-scenario-share.js");
+const { fixture, comparisonFixture } = require("./test-manual-scenario-share.js");
 
 function clone(value) {
   return structuredClone(value);
@@ -132,7 +132,8 @@ async function run() {
     await measure("short", fixture(), 15_000),
     await measure("long", scenarioWithEvents(250), 20_000),
     await measure("dense", scenarioWithEvents(1_000), 60_000),
-    await measure("dre", dreScenario(), 15_000)
+    await measure("dre", dreScenario(), 15_000),
+    await measure("comparison", comparisonFixture(), 20_000)
   ];
   const truncated = (await Share.encodeScenario(dreScenario())).slice(0, -20);
   await assert.rejects(() => Share.decodeScenario(truncated), error => error.code === "INVALID_COMPRESSED_SCENARIO");

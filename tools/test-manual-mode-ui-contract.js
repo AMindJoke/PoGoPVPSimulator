@@ -430,6 +430,11 @@ assert.match(html, /id="sharedScenarioStartNew"[\s\S]{0,120}Start a new scenario
 assert.match(html, /id="manualScenarioCopyLink"[^>]*>Copy Share Link<\/button>/, "Scenario controls must expose a compact Copy Share Link action.");
 assert.match(html, /id="manualScenarioShareFeedback"[^>]+role="status"[^>]+aria-live="polite"/, "Share feedback must be announced accessibly.");
 assert.match(html, /function copyManualScenarioShareLink\(\)[\s\S]{0,700}manualScenarioSnapshot\(\)[\s\S]{0,260}buildScenarioUrl\(payload, window\.location\)[\s\S]{0,180}writeManualScenarioLinkToClipboard\(url\)/, "Copy Share Link must encode the current canonical Scenario Review and copy the resulting URL.");
+assert.match(html, /function manualScenarioShareButtonLabel\(kind[\s\S]{0,180}Copy Comparison Link/, "An active comparison must expose an explicit Copy Comparison Link label.");
+assert.match(html, /share\.dataset\.shareKind = shareKind[\s\S]{0,180}manualScenarioShareButtonLabel\(shareKind\)/, "Scenario controls must switch share affordance without adding a second serialization path.");
+assert.match(html, /copyManualScenarioShareLink\(\)[\s\S]{0,900}manualScenarioShareKind\(payload\)[\s\S]{0,500}Comparison link copied/, "Comparison sharing must use the canonical snapshot and provide specific success feedback.");
+assert.match(html, /restoreCanonicalManualScenario\(imported\.scenario,[\s\S]{0,180}comparisonView: imported\.scenario\.comparison\?\.branches\?\.length === 2 \? "diff" : "A"/, "Opening a shared comparison must enter the comparison presentation directly.");
+assert.match(html, /manualMobileComparisonView = MANUAL_MOBILE_COMPARISON_VIEWS\.includes\(options\.comparisonView\)[\s\S]{0,120}: "A"/, "Temporary mobile comparison view must be chosen at restore time rather than persisted canonically.");
 assert.match(html, /navigator\.clipboard\?\.writeText[\s\S]{0,800}document\.execCommand\("copy"\)/, "Clipboard API must have a dependency-free fallback.");
 assert.match(html, /manual-mobile-bottom-sheet-shell\[data-active-tab="scenario"\] \.manual-scenario-share\s*\{[^}]*grid-column: 1 \/ -1;/, "The shared Scenario control must span a readable mobile row inside the Scenario tab.");
 assert.match(html, /function openStoredManualScenario/);
