@@ -93,6 +93,34 @@ assert.equal(comparisonView.branches[0].pokemonRemaining, 1);
 assert.equal(comparisonView.branches[1].outcome, "Pokemon A wins");
 assert.equal(comparisonView.branches[1].pokemon.B.hp, 0);
 assert.equal(comparisonView.branches[1].pokemonRemaining, 1);
+assert.equal(comparisonView.difference.diverged, true);
+assert.equal(comparisonView.difference.firstDivergence.turn, 6);
+assert.equal(comparisonView.branches[0].events[0].difference, Comparison.EVENT_DIFFERENCE.ONLY_A);
+assert.equal(comparisonView.branches[0].events[0].firstDivergence, true);
+assert.equal(comparisonView.branches[1].events[0].difference, Comparison.EVENT_DIFFERENCE.ONLY_B);
+assert.equal(comparisonView.branches[1].events[0].firstDivergence, true);
+const semanticAlignment = Comparison.semanticEventAlignment([
+  event("branch-a-only", "A", "fast", 6, { damage: 4 }),
+  event("rejoined-a", "A", "fast", 10, { damage: 3 })
+], [
+  event("branch-b-only", "B", "fast", 6, { damage: 4 }),
+  event("rejoined-b", "A", "fast", 10, { damage: 3 })
+]);
+assert.equal(semanticAlignment.counts.onlyA, 1);
+assert.equal(semanticAlignment.counts.onlyB, 1);
+assert.equal(semanticAlignment.counts.shared, 1, "Equivalent semantic events with different technical IDs must realign.");
+assert.equal(semanticAlignment.branches.A[1].difference, Comparison.EVENT_DIFFERENCE.SHARED);
+const identicalAlignment = Comparison.semanticEventAlignment(
+  [event("same-a", "A", "fast", 14, { damage: 2 })],
+  [event("same-b", "A", "fast", 14, { damage: 2 })]
+);
+assert.equal(identicalAlignment.diverged, false);
+assert.equal(identicalAlignment.firstDivergence, null);
+assert.notEqual(
+  Comparison.semanticEventKey(event("damage-a", "A", "fast", 12, { damage: 2 })),
+  Comparison.semanticEventKey(event("damage-b", "A", "fast", 12, { damage: 3 })),
+  "Different battle results must remain divergent even when the action identity matches."
+);
 assert.equal(Comparison.stableStringify(comparison), Comparison.stableStringify(Comparison.deriveComparison({
   comparisonId: "comparison-1",
   sourceScenarioId: "scenario-1",

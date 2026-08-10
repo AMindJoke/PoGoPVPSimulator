@@ -9,6 +9,11 @@
   const MODE = "scenario-comparison";
   const BRANCH_SLOTS = Object.freeze(["A", "B"]);
   const BRANCH_BOUNDARIES = new Set(["BATTLE_START", "BEFORE_EVENT", "AFTER_EVENT"]);
+  const EVENT_DIFFERENCE = Object.freeze({
+    SHARED: "shared",
+    ONLY_A: "only-a",
+    ONLY_B: "only-b"
+  });
 
   function isRecord(value) {
     return !!value && typeof value === "object" && !Array.isArray(value);
@@ -168,13 +173,117 @@
     return Math.max(runtimeTurn, eventTurn);
   }
 
+  function semanticEventValue(event = {}) {
+    return {
+      kind: event.kind || null,
+      trainer: event.trainer || null,
+      start: Number(event.start || 0),
+      duration: Math.max(0, Number(event.duration || 0)),
+      move: event.move ? {
+        id: event.move.id || null,
+        name: event.move.name || null,
+        type: event.move.type || null,
+        energyCost: Number(event.move.energyCost || 0)
+      } : null,
+      damage: Number(event.damage || 0),
+      unshieldedDamage: Number(event.unshieldedDamage || 0),
+      absorbedDamage: Number(event.absorbedDamage || 0),
+      hpBefore: Number(event.hpBefore || 0),
+      hpAfter: Number(event.hpAfter || 0),
+      energyBefore: Number(event.energyBefore || 0),
+      energyAfter: Number(event.energyAfter || 0),
+      shielded: !!event.shielded,
+      faintedSide: event.faintedSide || null,
+      issueType: event.issueType || null,
+      drePending: !!event.drePending,
+      dreResolved: !!event.dreResolved,
+      dreDenied: !!event.dreDenied,
+      technicalLagPending: !!event.technicalLagPending,
+      technicalLagResolved: !!event.technicalLagResolved,
+      technicalLagDenied: !!event.technicalLagDenied,
+      fastImpactStatus: event.fastImpactStatus || null,
+      pendingFastEventId: event.pendingFastEventId ? "pending-fast" : null,
+      replacementPokemonId: event.replacementPokemonId || event.pokemonId || null,
+      technicalDetails: event.kind?.startsWith("technical-") ? {
+        label: event.label || null,
+        chargedMoveId: event.details?.chargedMoveId || null,
+        pendingFastMoveName: event.details?.pendingFastMoveName || null
+      } : null,
+      judgeEdit: event.kind === "judge-state-edit"
+        ? clone(event.changes || event.edit || { field: event.field || null, value: event.value ?? null })
+        : null
+    };
+  }
+
+  function semanticEventKey(event) {
+    return stableStringify(semanticEventValue(event));
+  }
+
+  function semanticEventAlignment(eventsA = [], eventsB = []) {
+    const keysA = eventsA.map(semanticEventKey);
+    const positionsB = new Map();
+    eventsB.forEach((event, index) => {
+      const key = semanticEventKey(event);
+      const positions = positionsB.get(key) || [];
+      positions.push(index);
+      positionsB.set(key, positions);
+    });
+    const matchedA = new Set();
+    const matchedB = new Set();
+    let bCursor = 0;
+    keysA.forEach((key, indexA) => {
+      const positions = positionsB.get(key) || [];
+      const indexB = positions.find(candidate => candidate >= bCursor);
+      if (indexB == null) return;
+      matchedA.add(indexA);
+      matchedB.add(indexB);
+      bCursor = indexB + 1;
+    });
+    const differenceA = eventsA.map((event, index) => ({
+      ...clone(event),
+      difference: matchedA.has(index) ? EVENT_DIFFERENCE.SHARED : EVENT_DIFFERENCE.ONLY_A,
+      firstDivergence: false
+    }));
+    const differenceB = eventsB.map((event, index) => ({
+      ...clone(event),
+      difference: matchedB.has(index) ? EVENT_DIFFERENCE.SHARED : EVENT_DIFFERENCE.ONLY_B,
+      firstDivergence: false
+    }));
+    const firstA = differenceA.findIndex(event => event.difference === EVENT_DIFFERENCE.ONLY_A);
+    const firstB = differenceB.findIndex(event => event.difference === EVENT_DIFFERENCE.ONLY_B);
+    if (firstA >= 0) differenceA[firstA].firstDivergence = true;
+    if (firstB >= 0) differenceB[firstB].firstDivergence = true;
+    const eventA = firstA >= 0 ? differenceA[firstA] : null;
+    const eventB = firstB >= 0 ? differenceB[firstB] : null;
+    const turns = [eventA, eventB].filter(Boolean).map(event => Number(event.start || 0));
+    return {
+      diverged: !!(eventA || eventB),
+      firstDivergence: eventA || eventB ? {
+        turn: Math.min(...turns),
+        A: clone(eventA),
+        B: clone(eventB)
+      } : null,
+      branches: { A: differenceA, B: differenceB },
+      counts: {
+        shared: matchedA.size,
+        onlyA: differenceA.length - matchedA.size,
+        onlyB: differenceB.length - matchedB.size
+      }
+    };
+  }
+
   function comparisonViewModel(comparison) {
     const errors = validateComparison(comparison);
     if (errors.length) throw new Error(errors.join(","));
+    const difference = semanticEventAlignment(
+      comparison.branches[0].events,
+      comparison.branches[1].events
+    );
     return {
       comparisonId: comparison.comparisonId || null,
       branchPoint: clone(comparison.branchPoint),
       sharedEvents: clone(comparison.base.events),
+      difference,
       branches: comparison.branches.map(branch => {
         const pokemon = {
           A: combatantSummary(branch.runtimeState, "A"),
@@ -191,7 +300,7 @@
           branchId: branch.branchId,
           sourceBranchId: branch.sourceBranchId,
           label: branch.label,
-          events: clone(branch.events),
+          events: clone(difference.branches[branch.slot]),
           outcome,
           finalTurn: branchFinalTurn(branch),
           pokemon,
@@ -241,12 +350,15 @@
     SCHEMA_VERSION,
     MODE,
     BRANCH_SLOTS,
+    EVENT_DIFFERENCE,
     deriveComparison,
     comparisonFromRegistry,
     validateComparison,
     branchById,
     materializeTimeline,
     materializeTimelineModel,
+    semanticEventKey,
+    semanticEventAlignment,
     comparisonViewModel,
     stableStringify
   });

@@ -14,6 +14,11 @@ assert.match(html, /id="manualComparisonPanel"[^>]+aria-labelledby="manualCompar
 assert.match(html, /function renderManualComparisonPanel\(\)[\s\S]{0,3200}comparisonViewModel\(comparison\)[\s\S]{0,3200}data-comparison-branch-id/, "The desktop comparison UI must render the canonical projection and reuse live branch switching.");
 assert.match(html, /Shared history and branch results/, "The comparison UI must distinguish shared history from branch results.");
 assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,220}manual-comparison-panel/, "Phase 7 comparison presentation must remain desktop-only.");
+assert.match(html, /function manualComparisonDivergenceMarkup\(viewModel\)[\s\S]{0,1700}First divergence/, "Comparison UI must expose the first divergence in text, not through color alone.");
+assert.match(html, /function manualComparisonDivergenceMarkup\(viewModel\)[\s\S]{0,1700}No corresponding event/, "Comparison UI must explain an unmatched branch event.");
+assert.match(html, /Only in A[\s\S]{0,80}Only in B/, "Comparison UI must label branch-exclusive event colors accessibly.");
+assert.match(html, /manual-comparison-event\.is-first-divergence/, "The first divergent events must receive explicit visual treatment.");
+assert.match(html, /event\.firstDivergence[\s\S]{0,80}"First divergence"/, "The first divergent event badge must identify itself in text.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [

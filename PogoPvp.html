@@ -5855,7 +5855,7 @@
       .manual-comparison-event {
         display: grid;
         flex: 0 0 auto;
-        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
         gap: 5px;
         min-width: 104px;
@@ -5874,6 +5874,102 @@
         color: var(--text);
         font-size: 9px;
         font-weight: 750;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .manual-comparison-event em {
+        padding: 2px 4px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--line) 60%, transparent);
+        color: var(--muted);
+        font-size: 7px;
+        font-style: normal;
+        font-weight: 900;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .manual-comparison-event.is-shared {
+        border-style: dashed;
+        background: color-mix(in srgb, var(--soft) 72%, var(--panel));
+        opacity: .67;
+      }
+      .manual-comparison-branch[data-comparison-slot="A"] .manual-comparison-event.is-branch-only {
+        border-color: color-mix(in srgb, #1683a2 58%, var(--line));
+        background: color-mix(in srgb, #1683a2 9%, var(--panel));
+      }
+      .manual-comparison-branch[data-comparison-slot="B"] .manual-comparison-event.is-branch-only {
+        border-color: color-mix(in srgb, #7654b5 58%, var(--line));
+        background: color-mix(in srgb, #7654b5 9%, var(--panel));
+      }
+      .manual-comparison-branch[data-comparison-slot="A"] .manual-comparison-event.is-branch-only em {
+        background: #1683a2;
+        color: #fff;
+      }
+      .manual-comparison-branch[data-comparison-slot="B"] .manual-comparison-event.is-branch-only em {
+        background: #7654b5;
+        color: #fff;
+      }
+      .manual-comparison-event.is-first-divergence {
+        border-color: #d9791f !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, #d9791f 30%, transparent);
+      }
+      .manual-comparison-event.is-first-divergence em {
+        background: #b95513 !important;
+        color: #fff !important;
+      }
+      .manual-comparison-diff-legend {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px;
+      }
+      .manual-comparison-diff-legend span {
+        padding: 2px 6px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 850;
+      }
+      .manual-comparison-diff-legend span:nth-child(2) { border-color: color-mix(in srgb, #1683a2 55%, var(--line)); color: #126d87; }
+      .manual-comparison-diff-legend span:nth-child(3) { border-color: color-mix(in srgb, #7654b5 55%, var(--line)); color: #65439f; }
+      .manual-comparison-divergence {
+        display: grid;
+        grid-template-columns: 145px repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 6px;
+        padding: 6px;
+        border: 1px solid color-mix(in srgb, #d9791f 62%, var(--line));
+        border-radius: 7px;
+        background: color-mix(in srgb, #d9791f 7%, var(--panel));
+        box-shadow: inset 3px 0 0 #d9791f;
+      }
+      .manual-comparison-divergence.is-aligned {
+        grid-template-columns: minmax(0, 1fr);
+        border-color: var(--line);
+        background: color-mix(in srgb, var(--soft) 62%, var(--panel));
+        box-shadow: none;
+      }
+      .manual-comparison-divergence-copy,
+      .manual-comparison-divergence-side {
+        display: grid;
+        align-content: center;
+        gap: 1px;
+        min-width: 0;
+      }
+      .manual-comparison-divergence-copy strong { color: #9d4912; font-size: 10px; text-transform: uppercase; }
+      .manual-comparison-divergence-copy small,
+      .manual-comparison-divergence-side small { color: var(--muted); font-size: 8px; font-weight: 800; }
+      .manual-comparison-divergence-side {
+        padding: 5px 7px;
+        border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+        border-radius: 5px;
+        background: var(--panel);
+      }
+      .manual-comparison-divergence-side strong {
+        overflow: hidden;
+        font-size: 9px;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -17524,12 +17620,39 @@
       return title(String(event.kind || "Battle event").replaceAll("-", " "));
     }
 
-    function manualComparisonEventsMarkup(events = [], emptyLabel = "No events") {
+    function manualComparisonEventsMarkup(events = [], emptyLabel = "No events", options = {}) {
       if (!events.length) return `<span class="manual-comparison-empty">${escapeHtml(emptyLabel)}</span>`;
       return events.map(event => {
         const turn = Math.max(0, Number(event.start || 0));
-        return `<span class="manual-comparison-event" role="listitem" title="${escapeHtml(manualComparisonEventLabel(event))}"><b>T${turn}</b><span>${escapeHtml(manualComparisonEventLabel(event))}</span></span>`;
+        const difference = options.forceShared ? "shared" : event.difference || "shared";
+        const shared = difference === "shared";
+        const status = event.firstDivergence
+          ? "First divergence"
+          : shared
+            ? "Shared"
+            : difference === "only-a"
+              ? "A only"
+              : "B only";
+        const classes = [
+          "manual-comparison-event",
+          shared ? "is-shared" : "is-branch-only",
+          event.firstDivergence ? "is-first-divergence" : ""
+        ].filter(Boolean).join(" ");
+        const label = manualComparisonEventLabel(event);
+        return `<span class="${classes}" role="listitem" aria-label="Turn ${turn}, ${escapeHtml(label)}, ${escapeHtml(status)}" title="${escapeHtml(label)} · ${escapeHtml(status)}"><b>T${turn}</b><span>${escapeHtml(label)}</span><em>${escapeHtml(status)}</em></span>`;
       }).join("");
+    }
+
+    function manualComparisonDivergenceMarkup(viewModel) {
+      const divergence = viewModel.difference?.firstDivergence;
+      if (!divergence) {
+        return `<div class="manual-comparison-divergence is-aligned"><span class="manual-comparison-divergence-copy"><strong>No divergence yet</strong><small>Branch A and Branch B currently resolve identically.</small></span></div>`;
+      }
+      const side = slot => {
+        const event = divergence[slot];
+        return `<span class="manual-comparison-divergence-side"><small>Branch ${slot}</small><strong>${event ? escapeHtml(manualComparisonEventLabel(event)) : "No corresponding event"}</strong></span>`;
+      };
+      return `<div class="manual-comparison-divergence" aria-label="First divergence at turn ${divergence.turn}"><span class="manual-comparison-divergence-copy"><strong>First divergence</strong><small>Turn ${divergence.turn}</small></span>${side("A")}${side("B")}</div>`;
     }
 
     function renderManualComparisonPanel() {
@@ -17563,7 +17686,9 @@
         </article>`;
       }).join("");
       panel.innerHTML = `<div class="manual-comparison-heading"><span><small>Scenario Comparison</small><strong id="manualComparisonTitle">Shared history and branch results</strong></span><small>Branch point · Turn ${branchPointTurn}</small></div>
-        <div class="manual-comparison-shared"><span class="manual-comparison-shared-copy"><strong>Shared history</strong><small>${viewModel.sharedEvents.length} common event${viewModel.sharedEvents.length === 1 ? "" : "s"}</small></span><div class="manual-comparison-events" role="list" aria-label="Shared history events">${manualComparisonEventsMarkup(viewModel.sharedEvents, "Battle start · no shared actions")}</div></div>
+        <div class="manual-comparison-diff-legend" aria-label="Comparison event legend"><span>Shared</span><span>Only in A</span><span>Only in B</span></div>
+        <div class="manual-comparison-shared"><span class="manual-comparison-shared-copy"><strong>Shared history</strong><small>${viewModel.sharedEvents.length} common event${viewModel.sharedEvents.length === 1 ? "" : "s"}</small></span><div class="manual-comparison-events" role="list" aria-label="Shared history events">${manualComparisonEventsMarkup(viewModel.sharedEvents, "Battle start · no shared actions", { forceShared: true })}</div></div>
+        ${manualComparisonDivergenceMarkup(viewModel)}
         <div class="manual-comparison-branches">${branchMarkup}</div>`;
       panel.querySelectorAll("[data-comparison-branch-id]").forEach(button => {
         button.onclick = () => switchLiveManualBranch(button.dataset.comparisonBranchId);
