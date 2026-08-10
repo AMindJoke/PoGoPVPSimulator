@@ -197,6 +197,7 @@ assert.match(html, /function handleManualMobileTabKeydown\(event\)/, "Mobile tab
 assert.match(html, /\["ArrowLeft", "ArrowRight", "Home", "End"\]/);
 assert.match(html, /@media \(max-width: 900px\) and \(prefers-reduced-motion: reduce\)[\s\S]{0,420}transition: none;[\s\S]{0,220}scroll-behavior: auto;/, "Reduced-motion users must not receive sheet or scroll animation.");
 assert.match(html, /timeline-zoom-control button \{ min-height: 40px; \}/, "Compact timeline zoom controls must remain touchable.");
+assert.match(html, /manual-mobile-bottom-sheet-shell \.actions button\[id\*="UseCharge"\]:disabled,[\s\S]{0,180}button\[id\*="UseCharge"\]\.build-available[\s\S]{0,80}display: none;/, "Mobile Charged buttons must appear only when the canonical action is legal and affordable.");
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);
 assert.match(html, /id="manualMobileSecondaryMount"/);
