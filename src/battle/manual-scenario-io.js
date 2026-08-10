@@ -1,11 +1,12 @@
 (function (root, factory) {
   const api = factory(
     typeof module === "object" && module.exports ? require("./manual-branches.js") : root.PvPeakManualBranches,
-    typeof module === "object" && module.exports ? require("./manual-mode.js") : root.PvPeakManualMode
+    typeof module === "object" && module.exports ? require("./manual-mode.js") : root.PvPeakManualMode,
+    typeof module === "object" && module.exports ? require("./scenario-comparison.js") : root.PvPeakScenarioComparison
   );
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakManualScenarioIO = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (Branches, ManualMode) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Branches, ManualMode, Comparison) {
   "use strict";
 
   const SCHEMA_ID = "pogo-pvp-scenario";
@@ -15,7 +16,8 @@
     "canonical-battle-state",
     "manual-engine",
     "semantic-timeline",
-    "technical-issues"
+    "technical-issues",
+    "scenario-comparison-v1"
   ]);
   const SIDES = Object.freeze(["A", "B"]);
   const EVENT_KINDS = new Set([
@@ -178,6 +180,7 @@
     const session = clone(input.manualSession || input.session || {});
     const battleVersion = String(input.battleEngineVersion || input.engine?.battleVersion || "");
     const terminalResult = clone(input.terminalResult ?? active?.terminalResult ?? null);
+    const comparison = clone(input.comparison || input.branchModel?.comparison || null);
     const document = {
       schema: SCHEMA_ID,
       version: SCHEMA_VERSION,
@@ -219,6 +222,7 @@
         originalBranchId: Branches.ORIGINAL_BRANCH_ID,
         registry: clone(registry)
       },
+      comparison,
       session: {
         controlMode: session.sessionControlMode || session.controlMode || null,
         originalRuntimeState: session.originalRuntimeState || null,
@@ -431,6 +435,17 @@
     if (!registry) errors.push("BRANCH_REGISTRY_MISSING");
     else errors.push(...Branches.validateRegistry(registry));
     if (document.branchModel?.activeBranchId !== registry?.activeBranchId) errors.push("ACTIVE_BRANCH_MISMATCH");
+    if (document.comparison != null) {
+      if (!Comparison) errors.push("COMPARISON_MODEL_UNAVAILABLE");
+      else {
+        errors.push(...Comparison.validateComparison(document.comparison));
+        (document.comparison.base?.events || []).forEach((event, index) => validateTimelineEvent(errors, event, `comparison-base-${index}`, options));
+        (document.comparison.branches || []).forEach(branch => {
+          (branch.events || []).forEach((event, index) => validateTimelineEvent(errors, event, `comparison-${branch.slot}-${index}`, options));
+          if (branch.sourceBranchId && !registry?.branches?.[branch.sourceBranchId]) errors.push(`COMPARISON_SOURCE_BRANCH_MISSING:${branch.slot}`);
+        });
+      }
+    }
     if (!Array.isArray(document.session?.snapshots)) errors.push("INVALID_SNAPSHOTS");
     else document.session.snapshots.forEach((snapshot, index) => validateSnapshot(errors, snapshot, index));
     return [...new Set(errors)];
