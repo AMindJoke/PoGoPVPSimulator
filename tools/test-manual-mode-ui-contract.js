@@ -197,6 +197,11 @@ assert.match(html, /function handleManualMobileTabKeydown\(event\)/, "Mobile tab
 assert.match(html, /\["ArrowLeft", "ArrowRight", "Home", "End"\]/);
 assert.match(html, /@media \(max-width: 900px\) and \(prefers-reduced-motion: reduce\)[\s\S]{0,420}transition: none;[\s\S]{0,220}scroll-behavior: auto;/, "Reduced-motion users must not receive sheet or scroll animation.");
 assert.match(html, /timeline-zoom-control button \{ min-height: 40px; \}/, "Compact timeline zoom controls must remain touchable.");
+assert.match(html, /const levels = \[50, 75, 100, 125, 150, 200\]/, "Timeline zoom must offer 50% and 75% overview levels.");
+assert.match(html, /Math\.max\(50, Math\.min\(200, number\)\)/, "Timeline zoom must retain the complete 50%-200% range.");
+assert.match(html, /timelineZoomOut"\)\.disabled = value <= 50/, "Timeline zoom-out must remain available below 100%.");
+assert.match(html, /classList\.toggle\("overview-mode", timelineZoomPercent\(\) < 100\)/, "Sub-100% zoom must activate the compact timeline overview.");
+assert.match(html, /timeline-scroll\.overview-mode \.timeline-token-label\s*\{\s*display: none;/, "Overview zoom must hide overlapping move text while preserving timeline events.");
 assert.match(html, /manual-mobile-bottom-sheet-shell \.actions button\[id\*="UseCharge"\]:disabled,[\s\S]{0,180}button\[id\*="UseCharge"\]\.build-available[\s\S]{0,80}display: none;/, "Mobile Charged buttons must appear only when the canonical action is legal and affordable.");
 assert.match(html, /event\.key !== "Escape" \|\| manualMobileSheetState === "collapsed"/, "Escape must collapse an open mobile sheet.");
 assert.match(html, /id="manualMobileFocusMount"/);

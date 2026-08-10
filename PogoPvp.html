@@ -7059,6 +7059,9 @@
     body.manual-mode-active .timeline-token-label {
       display: inline;
     }
+    body.manual-mode-active .timeline-scroll.overview-mode .timeline-token-label {
+      display: none;
+    }
     body.manual-mode-active .timeline-block.fast {
       border-radius: 3px;
     }
@@ -27131,6 +27134,7 @@
       const scroll = $("timelineScroll");
       const mobileManualScroll = manualMobileTimelineScrollEnabled();
       scroll.classList.toggle("fit-mode", isFit);
+      scroll.classList.toggle("overview-mode", timelineZoomPercent() < 100);
       scroll.classList.toggle("mobile-scroll-mode", mobileManualScroll);
       const turnPx = timelineTurnPixels(maxTurn, scroll);
       const previousScrollLeft = scroll.scrollLeft;
@@ -27223,7 +27227,7 @@
     }
 
     function timelineIsFit() {
-      return timelineZoomPercent() === 100;
+      return timelineZoomPercent() <= 100;
     }
 
     function timelineTurnPixels(maxTurn, scroll) {
@@ -27242,11 +27246,11 @@
       if (value === "fit") return 100;
       const number = Number(value || 100);
       if ([14, 24, 32].includes(number)) return 100;
-      return Math.max(100, Math.min(200, number));
+      return Math.max(50, Math.min(200, number));
     }
 
     function stepTimelineZoom(direction) {
-      const levels = [100, 125, 150, 200];
+      const levels = [50, 75, 100, 125, 150, 200];
       const current = timelineZoomPercent();
       const index = Math.max(0, levels.indexOf(current));
       const next = levels[Math.max(0, Math.min(levels.length - 1, index + direction))];
@@ -27258,7 +27262,7 @@
     function renderTimelineZoomControl() {
       const value = timelineZoomPercent();
       if ($("timelineZoomValue")) $("timelineZoomValue").textContent = `${value}%`;
-      if ($("timelineZoomOut")) $("timelineZoomOut").disabled = value <= 100;
+      if ($("timelineZoomOut")) $("timelineZoomOut").disabled = value <= 50;
       if ($("timelineZoomIn")) $("timelineZoomIn").disabled = value >= 200;
     }
 
@@ -27321,7 +27325,7 @@
         const textColor = isShield ? "#b245c5" : contrastText(color);
         const isCharge = event.kind === "charge";
         const editorLabel = isCharge ? timelineEditorMoveLabel(event.move) : "";
-        const width = isCharge && manualModeState?.enabled
+        const width = isCharge && manualModeState?.enabled && timelineZoomPercent() >= 100
           ? Math.max(timelineChargeWidth(turnPx), Math.min(72, editorLabel.length * 6 + 20))
           : isCharge ? timelineChargeWidth(turnPx) : timelineShieldWidth(turnPx);
         const baseTurn = isCharge
@@ -27550,7 +27554,8 @@
     }
 
     function timelineChargeWidth(turnPx) {
-      return 26;
+      const zoom = timelineZoomPercent();
+      return zoom < 100 ? Math.max(18, Math.round(26 * zoom / 100)) : 26;
     }
 
     function timelineShieldWidth(turnPx) {
