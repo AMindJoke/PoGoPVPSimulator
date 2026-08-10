@@ -32,6 +32,7 @@
   <script src="src/battle/manual-timeline.js"></script>
   <script src="src/battle/manual-branches.js"></script>
   <script src="src/battle/manual-scenario-io.js"></script>
+  <script src="src/battle/manual-scenario-share.js"></script>
   <script src="src/battle/manual-scenario-library.js"></script>
   <script src="src/battle/energy-trainer.js"></script>
   <script src="src/battle/manual-snapshots.js"></script>
@@ -7699,6 +7700,20 @@
       padding: 12px;
       display: none;
     }
+    .shared-scenario-error {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    .shared-scenario-error[hidden] { display: none; }
+    .shared-scenario-error button { flex: 0 0 auto; }
+    @media (max-width: 600px) {
+      .shared-scenario-error { align-items: stretch; flex-direction: column; }
+      .shared-scenario-error button { min-height: 44px; }
+    }
     /* Clarity UI visual hierarchy. */
     body.clarity-ui .trainer-card {
       background: rgba(255, 255, 255, .66);
@@ -11297,6 +11312,10 @@
   </header>
   <main>
     <div class="error" id="error"></div>
+    <div id="sharedScenarioError" class="error shared-scenario-error" role="alert" hidden>
+      <span>This shared scenario could not be loaded.</span>
+      <button id="sharedScenarioStartNew" class="secondary" type="button">Start a new scenario</button>
+    </div>
     <div id="simulatorView" class="app-view">
     <div class="toolbar">
       <div class="scenario-toolbar-copy">
@@ -12602,6 +12621,7 @@
       };
       $("manualScenarioLibraryImport").onclick = () => $("manualScenarioImportFile")?.click();
       $("manualScenarioImportFile").onchange = importManualScenarioFile;
+      $("sharedScenarioStartNew").onclick = startNewScenarioAfterSharedLoadError;
       document.addEventListener("click", event => {
         if (!event.target.closest(".manual-scenario-more, .manual-scenario-menu")) closeManualScenarioMenu();
       });
@@ -12760,6 +12780,7 @@
       resetBattleStateFromSetup();
       renderMetaRankings();
       updateBattleAvailability();
+      void loadSharedScenarioFromLocation();
       if (pagePerfRunId) {
         requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
           pokemon: allPokemon.length,
@@ -17561,48 +17582,112 @@
       if (!entry) return false;
       clearManualEnergyTrainerNextCycle();
       const imported = window.PvPeakManualScenarioIO?.deserializeScenario(entry.payload, manualScenarioValidationOptions());
-      const document = imported?.scenario;
-      if (!imported?.ok || !document?.state?.applicationState || !document?.session) {
+      const scenarioDocument = imported?.scenario;
+      if (!imported?.ok || !scenarioDocument?.state?.applicationState || !scenarioDocument?.session) {
         add(`Cannot open ${entry.name}: ${imported?.errors?.join(", ") || "invalid scenario data"}.`, "info");
         return false;
       }
       try {
-        restoreFullSimulatorState(cloneTechnicalValue(document.state.applicationState));
-        const restoredReview = cloneTechnicalValue(document.review);
-        scenarioReviewMode = normalizedScenarioReviewMode(restoredReview.mode);
-        scenarioState = restoredReview.state || null;
-        scenarioSegmentInitialState = restoredReview.segmentInitialState || null;
-        scenarioTimelineStart = Number(restoredReview.timelineStart || 0);
-        scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restoredReview.history?.A || []));
-        scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restoredReview.history?.B || []));
-        manualBranchRegistry = cloneTechnicalValue(document.branchModel.registry);
-        manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
-        manualSnapshotStore?.importEntries?.(document.session.snapshots || []);
-        manualOriginalRuntimeState = cloneTechnicalValue(document.session.originalRuntimeState);
-        manualRootSnapshotId = document.session.rootSnapshotId || null;
-        manualSessionControlMode = document.session.controlMode || null;
-        manualBattleRuntime = null;
-        manualModeMinimized = false;
-        manualMobileSheetState = "collapsed";
-        manualMobileReviewTab = "moves";
-        manualMobileBattleStateSide = null;
-        rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
-        manualPendingFastEvents = cloneTechnicalValue(document.state.pendingFastEvents || []);
-        technicalIssueInjection = cloneTechnicalValue(document.technicalIssues.active || null);
-        if (document.state.manualMode && !window.PvPeakManualMode.validateState(document.state.manualMode).length) {
-          manualModeState = cloneTechnicalValue(document.state.manualMode);
-        }
-        manualScenarioId = entry.id;
-        manualScenarioBaseline = JSON.stringify(entry.payload);
-        manualScenarioDraftName = null;
-        closeManualScenarioLibrary();
-        render();
-        add(`Opened scenario ${entry.name}.`, "info");
-        return true;
+        return restoreCanonicalManualScenario(scenarioDocument, {
+          scenarioId: entry.id,
+          closeLibrary: true,
+          message: `Opened scenario ${entry.name}.`
+        });
       } catch (error) {
         add(`Cannot restore ${entry.name}: ${error.message}.`, "info");
         return false;
       }
+    }
+
+    function restoreCanonicalManualScenario(scenarioDocument, options = {}) {
+      if (!scenarioDocument?.state?.applicationState || !scenarioDocument?.session) throw new Error("INVALID_CANONICAL_SCENARIO");
+      clearManualEnergyTrainerNextCycle();
+      restoreFullSimulatorState(cloneTechnicalValue(scenarioDocument.state.applicationState));
+      const restoredReview = cloneTechnicalValue(scenarioDocument.review);
+      scenarioReviewMode = normalizedScenarioReviewMode(restoredReview.mode);
+      scenarioState = restoredReview.state || null;
+      scenarioSegmentInitialState = restoredReview.segmentInitialState || null;
+      scenarioTimelineStart = Number(restoredReview.timelineStart || 0);
+      scenarioHistory.A.splice(0, scenarioHistory.A.length, ...(restoredReview.history?.A || []));
+      scenarioHistory.B.splice(0, scenarioHistory.B.length, ...(restoredReview.history?.B || []));
+      manualBranchRegistry = cloneTechnicalValue(scenarioDocument.branchModel.registry);
+      manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
+      manualSnapshotStore?.importEntries?.(scenarioDocument.session.snapshots || []);
+      manualOriginalRuntimeState = cloneTechnicalValue(scenarioDocument.session.originalRuntimeState);
+      manualRootSnapshotId = scenarioDocument.session.rootSnapshotId || null;
+      manualSessionControlMode = scenarioDocument.session.controlMode || null;
+      manualBattleRuntime = null;
+      manualModeMinimized = false;
+      manualMobileSheetState = "collapsed";
+      manualMobileReviewTab = "moves";
+      manualMobileBattleStateSide = null;
+      rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+      manualPendingFastEvents = cloneTechnicalValue(scenarioDocument.state.pendingFastEvents || []);
+      technicalIssueInjection = cloneTechnicalValue(scenarioDocument.technicalIssues.active || null);
+      if (scenarioDocument.state.manualMode && !window.PvPeakManualMode.validateState(scenarioDocument.state.manualMode).length) {
+        manualModeState = cloneTechnicalValue(scenarioDocument.state.manualMode);
+      }
+      manualScenarioId = options.scenarioId || null;
+      manualScenarioBaseline = options.scenarioId
+        ? window.PvPeakManualScenarioIO.stableStringify(scenarioDocument)
+        : null;
+      manualScenarioDraftName = null;
+      if (options.closeLibrary) closeManualScenarioLibrary();
+      if (options.activateView) setAppView("scenario-review");
+      else render();
+      if (options.message) add(options.message, "info");
+      return true;
+    }
+
+    async function loadSharedScenarioFromLocation() {
+      const shareApi = window.PvPeakManualScenarioShare;
+      const serializer = window.PvPeakManualScenarioIO;
+      const token = shareApi?.scenarioTokenFromLocation?.(window.location);
+      if (!token) return false;
+      const fallbackState = snapshotFullSimulatorState();
+      const fallbackView = document.body.dataset.view || "simulator";
+      try {
+        const payload = await shareApi.decodeScenario(token);
+        const imported = serializer.deserializeScenario(payload, manualScenarioValidationOptions());
+        if (!imported.ok) throw new Error(imported.errors.join(",") || "INVALID_SHARED_SCENARIO");
+        hideSharedScenarioLoadError();
+        restoreCanonicalManualScenario(imported.scenario, {
+          activateView: true,
+          message: "Opened shared scenario."
+        });
+        return true;
+      } catch (error) {
+        restoreFullSimulatorState(fallbackState);
+        resetBattleStateFromSetup();
+        setAppView(fallbackView);
+        showSharedScenarioLoadError(error);
+        return false;
+      }
+    }
+
+    function showSharedScenarioLoadError(error) {
+      const panel = $("sharedScenarioError");
+      if (!panel) return;
+      panel.dataset.reason = String(error?.code || error?.message || "INVALID_SHARED_SCENARIO");
+      panel.hidden = false;
+      requestAnimationFrame(() => $("sharedScenarioStartNew")?.focus({ preventScroll: true }));
+    }
+
+    function hideSharedScenarioLoadError() {
+      if ($("sharedScenarioError")) {
+        $("sharedScenarioError").hidden = true;
+        delete $("sharedScenarioError").dataset.reason;
+      }
+    }
+
+    function startNewScenarioAfterSharedLoadError() {
+      const shareApi = window.PvPeakManualScenarioShare;
+      hideSharedScenarioLoadError();
+      if (shareApi && window.history?.replaceState) {
+        window.history.replaceState(null, "", shareApi.locationWithoutScenario(window.location));
+      }
+      resetForManualBattle();
+      setAppView("scenario-review");
     }
 
     function toggleManualScenarioMenu() {
