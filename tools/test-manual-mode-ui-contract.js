@@ -44,6 +44,8 @@ for (const id of [
   "manualScenarioStatus",
   "manualScenarioOpen",
   "manualScenarioSave",
+  "manualScenarioCopyLink",
+  "manualScenarioShareFeedback",
   "manualScenarioMore",
   "manualScenarioMenu",
   "manualScenarioLibraryModal",
@@ -387,6 +389,11 @@ assert.match(html, /function loadSharedScenarioFromLocation\(\)[\s\S]{0,700}deco
 assert.match(html, /void loadSharedScenarioFromLocation\(\);/, "Shared Scenario loading must run after application initialization.");
 assert.match(html, /This shared scenario could not be loaded\./, "Invalid shared links need a clear user-facing error.");
 assert.match(html, /id="sharedScenarioStartNew"[\s\S]{0,120}Start a new scenario/, "Invalid shared links must provide a recovery action.");
+assert.match(html, /id="manualScenarioCopyLink"[^>]*>Copy Share Link<\/button>/, "Scenario controls must expose a compact Copy Share Link action.");
+assert.match(html, /id="manualScenarioShareFeedback"[^>]+role="status"[^>]+aria-live="polite"/, "Share feedback must be announced accessibly.");
+assert.match(html, /function copyManualScenarioShareLink\(\)[\s\S]{0,700}manualScenarioSnapshot\(\)[\s\S]{0,260}buildScenarioUrl\(payload, window\.location\)[\s\S]{0,180}writeManualScenarioLinkToClipboard\(url\)/, "Copy Share Link must encode the current canonical Scenario Review and copy the resulting URL.");
+assert.match(html, /navigator\.clipboard\?\.writeText[\s\S]{0,800}document\.execCommand\("copy"\)/, "Clipboard API must have a dependency-free fallback.");
+assert.match(html, /manual-mobile-bottom-sheet-shell\[data-active-tab="scenario"\] \.manual-scenario-share\s*\{[^}]*grid-column: 1 \/ -1;/, "The shared Scenario control must span a readable mobile row inside the Scenario tab.");
 assert.match(html, /function openStoredManualScenario/);
 assert.match(html, /localStorage/);
 assert.match(html, /manual-scenario-library\.js/);

@@ -1,6 +1,6 @@
 # Scenario Review URL format v1
 
-Phase 2 adds a transport format for opening a canonical Scenario Review document from a URL. It does not add the share-button UI; that belongs to the next phase.
+The share flow transports a canonical Scenario Review document entirely through a client-side URL, without an account, backend or server-side scenario storage.
 
 ## URL structure
 
@@ -23,3 +23,9 @@ The JSON is the same canonical document produced by `manual-scenario-io.js`. Dec
 When `#scenario=` is present, startup decodes and validates the document, restores the unified Manual Mode state and opens Scenario Review directly. A malformed, unsupported, oversized or incompatible token shows a controlled recovery panel. `Start a new scenario` removes the fragment and opens a clean Scenario Review setup.
 
 Temporary UI state is not encoded. Native `CompressionStream` and `DecompressionStream` are used when available; encoding falls back to raw UTF-8 JSON when compression is unavailable. Both the token and decompressed output have hard size limits, enforced while streaming.
+
+## Copy Share Link
+
+`Copy Share Link` serializes the current canonical Manual Mode state at click time, builds the versioned URL and writes it with the Clipboard API. A dependency-free `execCommand("copy")` path remains available when clipboard permissions or APIs are unavailable.
+
+Desktop renders the command compactly beside the existing Scenario controls. Mobile reuses the same element and handler inside the bottom sheet's Scenario tab. Successful copies show a brief `Link copied` acknowledgement and announce it through an ARIA live region.

@@ -5743,6 +5743,8 @@
     .manual-scenario-status[data-state="saved"]::after { content: "✓"; font-size: 10px; }
     .manual-scenario-actions { display: inline-flex; flex: 0 1 auto; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
     .manual-scenario-actions button { min-height: 34px; padding: 6px 13px; white-space: nowrap; }
+    .manual-scenario-share[data-feedback="success"] { border-color: #70bb8c; color: #167a3d; }
+    .manual-scenario-share[data-feedback="error"] { border-color: #d78d8d; color: var(--danger); }
     .manual-scenario-more { position: relative; z-index: 70; }
     .manual-scenario-more > button { min-width: 38px; padding-inline: 9px; font-size: 18px; letter-spacing: .08em; }
     .manual-scenario-menu {
@@ -9586,6 +9588,29 @@
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] #manualScenarioPanel {
         display: flex;
       }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-copy {
+        flex-basis: 100%;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
+        width: 100%;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-actions > button {
+        min-height: 44px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-share {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-more {
+        grid-column: 3;
+        grid-row: 1;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="scenario"] .manual-scenario-more > button {
+        width: 44px;
+        min-height: 44px;
+      }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-active-tab="moves"] #manualDecisionBanner {
         order: 2;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -11701,6 +11726,8 @@
                 <div class="manual-scenario-actions">
                   <button id="manualScenarioOpen" class="secondary" type="button">▱ Open</button>
                   <button id="manualScenarioSave" class="secondary" type="button">▣ Save</button>
+                  <button id="manualScenarioCopyLink" class="secondary manual-scenario-share" type="button">Copy Share Link</button>
+                  <span id="manualScenarioShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
                   <span class="manual-scenario-more"><button id="manualScenarioMore" class="secondary" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Scenario menu">…</button><span id="manualScenarioMenu" class="manual-scenario-menu" role="menu" hidden><button type="button" role="menuitem" data-scenario-command="rename">✎ Rename</button><button type="button" role="menuitem" data-scenario-command="duplicate">⧉ Duplicate</button><button type="button" role="menuitem" data-scenario-command="export">⇧ Export JSON</button><button type="button" role="menuitem" data-scenario-command="import">⇩ Import JSON</button><button type="button" role="menuitem" class="danger" data-scenario-command="delete">⌫ Delete</button></span></span>
                 </div>
               </section>
@@ -12170,6 +12197,7 @@
     let manualScenarioId = null;
     let manualScenarioBaseline = null;
     let manualScenarioDraftName = null;
+    let manualScenarioShareFeedbackTimer = null;
     let manualEnergyTrainerPrevious = null;
     let manualEnergyTrainerSuppressPop = true;
     let manualJudgeEventSequence = 0;
@@ -12606,6 +12634,7 @@
       document.addEventListener("keydown", handleManualBringNextKeydown);
       $("manualScenarioOpen").onclick = openManualScenarioLibrary;
       $("manualScenarioSave").onclick = saveManualScenario;
+      $("manualScenarioCopyLink").onclick = copyManualScenarioShareLink;
       $("manualScenarioMore").onclick = toggleManualScenarioMenu;
       $("manualScenarioMenu").onclick = event => {
         const command = event.target.closest("[data-scenario-command]")?.dataset.scenarioCommand;
@@ -17511,12 +17540,14 @@
       const panel = $("manualScenarioPanel");
       const save = $("manualScenarioSave");
       const open = $("manualScenarioOpen");
+      const share = $("manualScenarioCopyLink");
       const more = $("manualScenarioMore");
-      if (!panel || !save || !open || !more) return;
+      if (!panel || !save || !open || !share || !more) return;
       const enabled = !!manualModeState?.enabled;
       panel.hidden = !enabled;
       save.disabled = !enabled || !manualScenarioLibrary;
       open.disabled = !manualScenarioLibrary;
+      share.disabled = !enabled || !manualBranchRegistry || !window.PvPeakManualScenarioShare;
       more.disabled = !enabled;
       if (!enabled) return;
       const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
@@ -17545,6 +17576,75 @@
       add(`Scenario saved as ${saved.name}.`, "info");
       renderManualScenarioPanel();
       return true;
+    }
+
+    async function copyManualScenarioShareLink() {
+      const button = $("manualScenarioCopyLink");
+      const shareApi = window.PvPeakManualScenarioShare;
+      if (!button || button.getAttribute("aria-busy") === "true" || !shareApi) return false;
+      button.setAttribute("aria-busy", "true");
+      button.disabled = true;
+      button.textContent = "Creating link...";
+      try {
+        const payload = manualScenarioSnapshot();
+        if (!payload) throw new Error("SCENARIO_NOT_READY");
+        const url = await shareApi.buildScenarioUrl(payload, window.location);
+        await writeManualScenarioLinkToClipboard(url);
+        showManualScenarioShareFeedback("success", "Link copied");
+        return true;
+      } catch (_) {
+        showManualScenarioShareFeedback("error", "Could not copy link");
+        add("The share link could not be created or copied.", "info");
+        return false;
+      } finally {
+        button.removeAttribute("aria-busy");
+        button.disabled = !manualModeState?.enabled || !manualBranchRegistry || !window.PvPeakManualScenarioShare;
+      }
+    }
+
+    async function writeManualScenarioLinkToClipboard(text) {
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (_) {
+        // Fall through to the legacy copy path when permission is unavailable.
+      }
+      const previousFocus = document.activeElement;
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      document.body.append(textarea);
+      textarea.focus({ preventScroll: true });
+      textarea.select();
+      let copied = false;
+      try { copied = document.execCommand("copy"); }
+      finally {
+        textarea.remove();
+        previousFocus?.focus?.({ preventScroll: true });
+      }
+      if (!copied) throw new Error("CLIPBOARD_UNAVAILABLE");
+      return true;
+    }
+
+    function showManualScenarioShareFeedback(type, message) {
+      const button = $("manualScenarioCopyLink");
+      const status = $("manualScenarioShareFeedback");
+      if (!button || !status) return;
+      if (manualScenarioShareFeedbackTimer) clearTimeout(manualScenarioShareFeedbackTimer);
+      button.dataset.feedback = type;
+      button.textContent = type === "success" ? "✓ Link copied" : "Could not copy link";
+      status.textContent = message;
+      manualScenarioShareFeedbackTimer = window.setTimeout(() => {
+        delete button.dataset.feedback;
+        button.textContent = "Copy Share Link";
+        status.textContent = "";
+        manualScenarioShareFeedbackTimer = null;
+      }, type === "success" ? 1800 : 2600);
     }
 
     function openManualScenarioLibrary() {
