@@ -84,6 +84,15 @@ assert.deepEqual(Comparison.materializeTimeline(comparison, "A"), [...shared, ..
 assert.deepEqual(Comparison.materializeTimeline(comparison, "MANUAL-1"), [...shared, ...dreSuffix]);
 assert.deepEqual(Comparison.materializeTimelineModel(comparison, "B").terminalResult, branchB.timelineModel.terminalResult);
 assert.notEqual(comparison.branches[0].runtimeState, branchA.runtimeState, "Branch state must not alias live Manual Mode state.");
+const comparisonView = Comparison.comparisonViewModel(comparison);
+assert.equal(comparisonView.sharedEvents.length, 2);
+assert.equal(comparisonView.branches[0].outcome, "Pokemon B wins");
+assert.equal(comparisonView.branches[0].finalTurn, 8);
+assert.equal(comparisonView.branches[0].pokemon.A.hp, 0);
+assert.equal(comparisonView.branches[0].pokemonRemaining, 1);
+assert.equal(comparisonView.branches[1].outcome, "Pokemon A wins");
+assert.equal(comparisonView.branches[1].pokemon.B.hp, 0);
+assert.equal(comparisonView.branches[1].pokemonRemaining, 1);
 assert.equal(Comparison.stableStringify(comparison), Comparison.stableStringify(Comparison.deriveComparison({
   comparisonId: "comparison-1",
   sourceScenarioId: "scenario-1",

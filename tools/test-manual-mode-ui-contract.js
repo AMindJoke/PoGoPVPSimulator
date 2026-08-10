@@ -10,6 +10,10 @@ assert.match(html, /id="manualScenarioCompare"[^>]+data-scenario-command="compar
 assert.match(html, /function createManualScenarioComparison\(\)[\s\S]{0,2200}COMMAND_TYPE\.CREATE_COMPARISON/, "Create Comparison must use the atomic branch-registry command.");
 assert.match(html, /comparison: manualScenarioComparison/, "Scenario persistence must include the active comparison projection.");
 assert.match(html, /manualScenarioComparison = cloneTechnicalValue\(scenarioDocument\.comparison \|\| null\)/, "Opening a scenario must restore comparison state.");
+assert.match(html, /id="manualComparisonPanel"[^>]+aria-labelledby="manualComparisonTitle"[^>]+hidden/, "Desktop Manual Mode must expose one semantic comparison panel.");
+assert.match(html, /function renderManualComparisonPanel\(\)[\s\S]{0,3200}comparisonViewModel\(comparison\)[\s\S]{0,3200}data-comparison-branch-id/, "The desktop comparison UI must render the canonical projection and reuse live branch switching.");
+assert.match(html, /Shared history and branch results/, "The comparison UI must distinguish shared history from branch results.");
+assert.match(html, /@media \(min-width: 901px\)[\s\S]{0,220}manual-comparison-panel/, "Phase 7 comparison presentation must remain desktop-only.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [

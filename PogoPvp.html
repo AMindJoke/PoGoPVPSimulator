@@ -5776,6 +5776,189 @@
     .manual-scenario-library-item span { align-self: center; color: #198b47; font-size: 10px; font-weight: 800; }
     .manual-scenario-library-empty { padding: 18px 4px; color: var(--muted); font-size: 12px; text-align: center; }
     .manual-scenario-library-import { width: 100%; margin-top: 10px; }
+    .manual-comparison-panel { display: none; }
+    .manual-comparison-panel[hidden] { display: none !important; }
+    @media (min-width: 901px) {
+      body[data-view="scenario-review"].manual-mode-active .manual-comparison-panel {
+        display: grid;
+        gap: 7px;
+        width: 100%;
+        max-width: none;
+        margin-top: 7px;
+        padding: 7px 0 0;
+        border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 0;
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+      }
+      .manual-comparison-heading,
+      .manual-comparison-shared,
+      .manual-comparison-branch-head,
+      .manual-comparison-outcome,
+      .manual-comparison-pokemon {
+        display: flex;
+        align-items: center;
+      }
+      .manual-comparison-heading {
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .manual-comparison-heading span,
+      .manual-comparison-shared-copy,
+      .manual-comparison-branch-head span {
+        display: grid;
+        min-width: 0;
+        gap: 1px;
+      }
+      .manual-comparison-heading strong { font-size: 13px; }
+      .manual-comparison-heading small,
+      .manual-comparison-shared-copy small,
+      .manual-comparison-branch-head small {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 750;
+      }
+      .manual-comparison-heading > small {
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent) 9%, var(--soft));
+        color: var(--accent-dark);
+        white-space: nowrap;
+      }
+      .manual-comparison-shared {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr);
+        gap: 8px;
+        min-width: 0;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: color-mix(in srgb, var(--soft) 62%, var(--panel));
+      }
+      .manual-comparison-shared-copy strong {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+      }
+      .manual-comparison-events {
+        display: flex;
+        align-items: stretch;
+        gap: 5px;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+      .manual-comparison-event {
+        display: grid;
+        flex: 0 0 auto;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 5px;
+        min-width: 104px;
+        max-width: 180px;
+        padding: 5px 7px;
+        border: 1px solid color-mix(in srgb, var(--line) 84%, transparent);
+        border-radius: 6px;
+        background: var(--panel);
+      }
+      .manual-comparison-event b {
+        color: var(--accent-dark);
+        font-size: 8px;
+      }
+      .manual-comparison-event span {
+        overflow: hidden;
+        color: var(--text);
+        font-size: 9px;
+        font-weight: 750;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .manual-comparison-empty {
+        align-self: center;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 700;
+      }
+      .manual-comparison-branches {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .manual-comparison-branch {
+        display: grid;
+        min-width: 0;
+        gap: 6px;
+        padding: 7px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+      .manual-comparison-branch.is-active {
+        border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+      .manual-comparison-branch-head {
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .manual-comparison-branch-head strong { font-size: 12px; }
+      .manual-comparison-branch-head button {
+        min-height: 27px;
+        padding: 3px 8px;
+        font-size: 9px;
+        white-space: nowrap;
+      }
+      .manual-comparison-branch-events {
+        min-height: 34px;
+        padding: 5px;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--soft) 55%, var(--panel));
+      }
+      .manual-comparison-outcome {
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 5px;
+        border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      }
+      .manual-comparison-outcome strong { font-size: 11px; }
+      .manual-comparison-outcome small {
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .manual-comparison-pokemon-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+      }
+      .manual-comparison-pokemon {
+        justify-content: space-between;
+        gap: 6px;
+        min-width: 0;
+        padding: 5px 6px;
+        border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+        border-radius: 6px;
+      }
+      .manual-comparison-pokemon > span { display: grid; min-width: 0; gap: 1px; }
+      .manual-comparison-pokemon strong,
+      .manual-comparison-pokemon small {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .manual-comparison-pokemon strong { font-size: 9px; }
+      .manual-comparison-pokemon small { color: var(--muted); font-size: 8px; }
+      .manual-comparison-pokemon b {
+        color: var(--text);
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .manual-comparison-pokemon.is-fainted { opacity: .6; }
+    }
     .manual-editor-actions {
       grid-column: 1;
       grid-row: 2;
@@ -11653,6 +11836,7 @@
               <div class="timeline-track" id="p2Timeline"></div>
             </div>
           </div>
+          <section id="manualComparisonPanel" class="manual-comparison-panel" aria-labelledby="manualComparisonTitle" hidden></section>
           <div id="manualTechnicalIssuesMount" class="manual-technical-issues-mount" hidden></div>
           <div class="timeline-zoom-control" role="group" aria-label="Timeline zoom">
             <button id="timelineZoomOut" type="button" aria-label="Zoom timeline out">-</button>
@@ -17326,6 +17510,66 @@
       }
     }
 
+    function manualComparisonEventLabel(event = {}) {
+      const move = event.move?.name || event.moveName || null;
+      const actor = event.trainer ? `Pokemon ${event.trainer}` : null;
+      if (event.kind === "technical-dre") return move ? `DRE · ${move}` : "DRE window";
+      if (event.kind === "technical-lag") return move ? `1-Turn Lag · ${move}` : "1-Turn Lag";
+      if (event.kind === "fast") return `${actor || "Fast Move"}${move ? ` · ${move}` : ""}`;
+      if (event.kind === "charge") return `${actor || "Charged Move"}${move ? ` · ${move}` : ""}`;
+      if (event.kind === "shield" || event.kind === "form-protect") return `${actor || "Pokemon"} shields`;
+      if (event.kind === "faint") return `Pokemon ${event.faintedSide || event.trainer || ""} faints`.trim();
+      if (["entry", "replacement", "switch"].includes(event.kind)) return `${actor || "Pokemon"} enters`;
+      if (event.kind === "judge-state-edit") return "Judge state edit";
+      return title(String(event.kind || "Battle event").replaceAll("-", " "));
+    }
+
+    function manualComparisonEventsMarkup(events = [], emptyLabel = "No events") {
+      if (!events.length) return `<span class="manual-comparison-empty">${escapeHtml(emptyLabel)}</span>`;
+      return events.map(event => {
+        const turn = Math.max(0, Number(event.start || 0));
+        return `<span class="manual-comparison-event" role="listitem" title="${escapeHtml(manualComparisonEventLabel(event))}"><b>T${turn}</b><span>${escapeHtml(manualComparisonEventLabel(event))}</span></span>`;
+      }).join("");
+    }
+
+    function renderManualComparisonPanel() {
+      const panel = $("manualComparisonPanel");
+      const comparison = manualScenarioComparison;
+      const available = !!(
+        panel
+        && document.body.dataset.view === "scenario-review"
+        && manualModeState?.enabled
+        && comparison?.branches?.length === 2
+      );
+      if (!panel) return;
+      panel.hidden = !available;
+      if (!available) {
+        panel.innerHTML = "";
+        return;
+      }
+      const viewModel = window.PvPeakScenarioComparison.comparisonViewModel(comparison);
+      const branchPointTurn = Math.max(0, Number(viewModel.branchPoint?.turn || 0));
+      const activeBranchId = manualBranchRegistry?.activeBranchId || null;
+      const branchMarkup = viewModel.branches.map(branch => {
+        const pokemonA = branch.pokemon.A;
+        const pokemonB = branch.pokemon.B;
+        const pokemonMarkup = (side, pokemon) => `<div class="manual-comparison-pokemon${pokemon.active ? "" : " is-fainted"}"><span><strong>${escapeHtml(pokemon.name)}</strong><small>${pokemon.active ? "Active" : "Fainted"} · ${pokemon.energy} energy · ${pokemon.shields} shield${pokemon.shields === 1 ? "" : "s"}</small></span><b>${pokemon.hp} HP</b></div>`;
+        const active = branch.sourceBranchId === activeBranchId;
+        return `<article class="manual-comparison-branch${active ? " is-active" : ""}" data-comparison-slot="${escapeHtml(branch.slot)}">
+          <div class="manual-comparison-branch-head"><span><small>Outcome ${escapeHtml(branch.slot)}</small><strong>${escapeHtml(branch.label)}</strong></span><button type="button" class="secondary" data-comparison-branch-id="${escapeHtml(branch.sourceBranchId)}"${active ? " disabled" : ""}>${active ? "Editing now" : "View / Edit"}</button></div>
+          <div class="manual-comparison-events manual-comparison-branch-events" role="list" aria-label="Branch ${escapeHtml(branch.slot)} events">${manualComparisonEventsMarkup(branch.events, "No divergent actions yet")}</div>
+          <div class="manual-comparison-outcome"><strong>${escapeHtml(branch.outcome)}</strong><small>Turn ${branch.finalTurn} · ${branch.pokemonRemaining} Pokemon remaining</small></div>
+          <div class="manual-comparison-pokemon-grid">${pokemonMarkup("A", pokemonA)}${pokemonMarkup("B", pokemonB)}</div>
+        </article>`;
+      }).join("");
+      panel.innerHTML = `<div class="manual-comparison-heading"><span><small>Scenario Comparison</small><strong id="manualComparisonTitle">Shared history and branch results</strong></span><small>Branch point · Turn ${branchPointTurn}</small></div>
+        <div class="manual-comparison-shared"><span class="manual-comparison-shared-copy"><strong>Shared history</strong><small>${viewModel.sharedEvents.length} common event${viewModel.sharedEvents.length === 1 ? "" : "s"}</small></span><div class="manual-comparison-events" role="list" aria-label="Shared history events">${manualComparisonEventsMarkup(viewModel.sharedEvents, "Battle start · no shared actions")}</div></div>
+        <div class="manual-comparison-branches">${branchMarkup}</div>`;
+      panel.querySelectorAll("[data-comparison-branch-id]").forEach(button => {
+        button.onclick = () => switchLiveManualBranch(button.dataset.comparisonBranchId);
+      });
+    }
+
     async function createManualScenarioComparison() {
       const active = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry);
       const originalId = window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID;
@@ -18120,6 +18364,7 @@
       renderManualDuelHud();
       renderManualStateInspector(runtimeStatus);
       renderManualScenarioPanel();
+      renderManualComparisonPanel();
       updateManualTimelineEventMenu();
     }
 

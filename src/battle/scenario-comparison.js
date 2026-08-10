@@ -146,6 +146,61 @@
     };
   }
 
+  function combatantSummary(runtimeState, side) {
+    const combatant = side === "B" ? runtimeState?.right : runtimeState?.left;
+    return {
+      side,
+      name: combatant?.p?.name || `Pokemon ${side}`,
+      hp: Math.max(0, Number(combatant?.hp || 0)),
+      energy: Math.max(0, Number(combatant?.energy || 0)),
+      shields: Math.max(0, Number(combatant?.shields || 0)),
+      active: Number(combatant?.hp || 0) > 0
+    };
+  }
+
+  function branchFinalTurn(branch) {
+    const turns = branch?.runtimeState?.battleTurns || {};
+    const runtimeTurn = Math.max(Number(turns.A || 0), Number(turns.B || 0));
+    const eventTurn = (branch?.events || []).reduce((latest, event) => Math.max(
+      latest,
+      eventEndTurn(event)
+    ), 0);
+    return Math.max(runtimeTurn, eventTurn);
+  }
+
+  function comparisonViewModel(comparison) {
+    const errors = validateComparison(comparison);
+    if (errors.length) throw new Error(errors.join(","));
+    return {
+      comparisonId: comparison.comparisonId || null,
+      branchPoint: clone(comparison.branchPoint),
+      sharedEvents: clone(comparison.base.events),
+      branches: comparison.branches.map(branch => {
+        const pokemon = {
+          A: combatantSummary(branch.runtimeState, "A"),
+          B: combatantSummary(branch.runtimeState, "B")
+        };
+        const winner = branch.terminalResult?.winner;
+        const outcome = winner === "tie"
+          ? "Draw"
+          : ["A", "B"].includes(winner)
+            ? `${pokemon[winner].name} wins`
+            : "In progress";
+        return {
+          slot: branch.slot,
+          branchId: branch.branchId,
+          sourceBranchId: branch.sourceBranchId,
+          label: branch.label,
+          events: clone(branch.events),
+          outcome,
+          finalTurn: branchFinalTurn(branch),
+          pokemon,
+          pokemonRemaining: Object.values(pokemon).filter(candidate => candidate.active).length
+        };
+      })
+    };
+  }
+
   function validateComparison(comparison) {
     const errors = [];
     if (!isRecord(comparison)) return ["INVALID_COMPARISON"];
@@ -192,6 +247,7 @@
     branchById,
     materializeTimeline,
     materializeTimelineModel,
+    comparisonViewModel,
     stableStringify
   });
 });
