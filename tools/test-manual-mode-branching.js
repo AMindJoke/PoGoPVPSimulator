@@ -96,5 +96,48 @@ assert.throws(() => Branches.execute(registry, {
   payload: { branchId: Branches.ORIGINAL_BRANCH_ID, timelineModel: editedTimeline }
 }), /ORIGINAL_BRANCH_IMMUTABLE/);
 
+let comparisonRegistry = Branches.createRegistry({ timelineModel: originalTimeline, createdAt: "2026-01-01T00:00:00.000Z" });
+comparisonRegistry = Branches.execute(comparisonRegistry, {
+  id: "comparison-command",
+  type: Branches.COMMAND_TYPE.CREATE_COMPARISON,
+  payload: {
+    comparisonId: "comparison-1",
+    branchPoint: { eventId: "auto-1", boundary: "AFTER_EVENT", turn: 1 },
+    branches: [
+      { slot: "A", branchId: "COMPARE-A", label: "Branch A" },
+      { slot: "B", branchId: "COMPARE-B", label: "Branch B" }
+    ],
+    timelineModel: originalTimeline,
+    createdAt: "2026-01-01T00:03:00.000Z"
+  }
+});
+assert.equal(comparisonRegistry.activeBranchId, "COMPARE-A");
+assert.equal(comparisonRegistry.branches["COMPARE-A"].comparisonSlot, "A");
+assert.equal(comparisonRegistry.branches["COMPARE-B"].comparisonSlot, "B");
+assert.equal(comparisonRegistry.branches["COMPARE-A"].parentBranchId, Branches.ORIGINAL_BRANCH_ID);
+assert.notEqual(comparisonRegistry.branches["COMPARE-A"].timelineModel, comparisonRegistry.branches["COMPARE-B"].timelineModel);
+assert.equal(comparisonRegistry.history.length, 1, "Both comparison branches must be created by one atomic command.");
+assert.throws(() => Branches.execute(comparisonRegistry, {
+  type: Branches.COMMAND_TYPE.DELETE_BRANCH,
+  payload: { branchId: "COMPARE-A" }
+}), /COMPARISON_BRANCH_LOCKED/);
+assert.throws(() => Branches.execute(comparisonRegistry, {
+  type: Branches.COMMAND_TYPE.CREATE_COMPARISON,
+  payload: {}
+}), /COMPARISON_ALREADY_EXISTS/);
+const comparisonUndone = Branches.undo(comparisonRegistry);
+assert.equal(comparisonUndone.branches["COMPARE-A"], undefined);
+assert.equal(comparisonUndone.branches["COMPARE-B"], undefined);
+const comparisonRedone = Branches.redo(comparisonUndone);
+assert.equal(comparisonRedone.branches["COMPARE-A"].comparisonSlot, "A");
+assert.equal(comparisonRedone.branches["COMPARE-B"].comparisonSlot, "B");
+const duplicatedComparisonBranch = Branches.execute(comparisonRegistry, {
+  type: Branches.COMMAND_TYPE.DUPLICATE_BRANCH,
+  payload: { branchId: "COMPARE-A", newBranchId: "OUTSIDE-COMPARISON" }
+});
+assert.equal(duplicatedComparisonBranch.branches["OUTSIDE-COMPARISON"].comparisonId, null);
+assert.equal(duplicatedComparisonBranch.branches["OUTSIDE-COMPARISON"].classification, "CANONICAL");
+assert.deepEqual(Branches.validateRegistry(comparisonRegistry), []);
+
 assert.deepEqual(Branches.validateRegistry(registry), []);
 console.log("Manual Mode branching and undo/redo tests passed.");

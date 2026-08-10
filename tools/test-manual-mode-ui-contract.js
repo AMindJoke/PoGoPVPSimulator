@@ -6,6 +6,10 @@ const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 assert.match(html, /src\/battle\/manual-branches\.js[\s\S]{0,150}src\/battle\/scenario-comparison\.js[\s\S]{0,150}src\/battle\/manual-scenario-io\.js/, "Scenario Comparison must load between the branch registry and canonical Scenario IO.");
+assert.match(html, /id="manualScenarioCompare"[^>]+data-scenario-command="compare"[^>]*>[^<]*Create Comparison/, "Scenario controls must expose Create Comparison through the shared desktop/mobile Scenario panel.");
+assert.match(html, /function createManualScenarioComparison\(\)[\s\S]{0,2200}COMMAND_TYPE\.CREATE_COMPARISON/, "Create Comparison must use the atomic branch-registry command.");
+assert.match(html, /comparison: manualScenarioComparison/, "Scenario persistence must include the active comparison projection.");
+assert.match(html, /manualScenarioComparison = cloneTechnicalValue\(scenarioDocument\.comparison \|\| null\)/, "Opening a scenario must restore comparison state.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [
@@ -516,7 +520,7 @@ assert.match(html, /label: "Original simulation"/);
 assert.match(html, /label: "Current manual edit"/);
 assert.match(html, /Read-only automatic result/);
 assert.match(html, /from before the selected action/);
-assert.match(html, /\? "unchanged"[\s\S]{0,80}: "your changes"/);
+assert.match(html, /\? "unchanged"[\s\S]{0,180}\? `comparison \$\{branch\.comparisonSlot\}`[\s\S]{0,80}: "your changes"/);
 assert.doesNotMatch(html, /moves from external service|external planner policy/i);
 assert.match(html, /Need \$\{missingEnergy\} more energy/);
 assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);

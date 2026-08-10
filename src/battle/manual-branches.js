@@ -12,7 +12,8 @@
     SWITCH_BRANCH: "SWITCH_BRANCH",
     DUPLICATE_BRANCH: "DUPLICATE_BRANCH",
     DELETE_BRANCH: "DELETE_BRANCH",
-    UPDATE_BRANCH: "UPDATE_BRANCH"
+    UPDATE_BRANCH: "UPDATE_BRANCH",
+    CREATE_COMPARISON: "CREATE_COMPARISON"
   });
 
   function clone(value) {
@@ -33,7 +34,9 @@
       timelineModel: clone(input.timelineModel || null),
       terminalResult: clone(input.terminalResult ?? input.timelineModel?.terminalResult ?? null),
       stateHash: input.stateHash || input.timelineModel?.events?.at(-1)?.stateHashAfter || input.timelineModel?.initialStateHash || null,
-      classification: input.classification || "CANONICAL"
+      classification: input.classification || "CANONICAL",
+      comparisonId: input.comparisonId || null,
+      comparisonSlot: input.comparisonSlot || null
     };
   }
 
@@ -96,6 +99,39 @@
         next.activeBranchId = branchId;
         break;
       }
+      case COMMAND_TYPE.CREATE_COMPARISON: {
+        const parentBranchId = payload.parentBranchId || registry.activeBranchId;
+        const parent = next.branches[parentBranchId];
+        if (!parent) throw new Error("PARENT_BRANCH_NOT_FOUND");
+        if (Object.values(next.branches).some(candidate => candidate.comparisonId)) throw new Error("COMPARISON_ALREADY_EXISTS");
+        const definitions = payload.branches || [{ slot: "A", label: "Branch A" }, { slot: "B", label: "Branch B" }];
+        if (!Array.isArray(definitions) || definitions.length !== 2 || definitions[0]?.slot !== "A" || definitions[1]?.slot !== "B") {
+          throw new Error("COMPARISON_REQUIRES_BRANCH_A_AND_B");
+        }
+        const comparisonId = payload.comparisonId || `comparison-${Number(registry.revision || 0) + 1}`;
+        const created = definitions.map(definition => {
+          const branchId = definition.branchId || nextBranchId(next);
+          if (branchId === ORIGINAL_BRANCH_ID || next.branches[branchId]) throw new Error("BRANCH_ID_CONFLICT");
+          next.branches[branchId] = branch({
+            branchId,
+            parentBranchId,
+            branchPoint: payload.branchPoint,
+            label: definition.label || `Branch ${definition.slot}`,
+            labelSource: "COMPARISON",
+            createdAt: definition.createdAt || payload.createdAt,
+            edits: [],
+            timelineModel: payload.timelineModel || parent.timelineModel,
+            terminalResult: payload.terminalResult ?? parent.terminalResult,
+            stateHash: payload.stateHash || parent.stateHash,
+            classification: "COMPARISON_BRANCH",
+            comparisonId,
+            comparisonSlot: definition.slot
+          });
+          return branchId;
+        });
+        next.activeBranchId = payload.activeSlot === "B" ? created[1] : created[0];
+        break;
+      }
       case COMMAND_TYPE.RENAME_BRANCH: {
         const target = next.branches[payload.branchId];
         if (!target) throw new Error("BRANCH_NOT_FOUND");
@@ -118,7 +154,10 @@
           branchId,
           parentBranchId: source.branchId,
           label: payload.label || `${source.label} copy`,
-          createdAt: payload.createdAt
+          createdAt: payload.createdAt,
+          classification: "CANONICAL",
+          comparisonId: null,
+          comparisonSlot: null
         });
         next.activeBranchId = branchId;
         break;
@@ -126,6 +165,7 @@
       case COMMAND_TYPE.DELETE_BRANCH:
         if (payload.branchId === ORIGINAL_BRANCH_ID) throw new Error("ORIGINAL_BRANCH_IMMUTABLE");
         if (!next.branches[payload.branchId]) throw new Error("BRANCH_NOT_FOUND");
+        if (next.branches[payload.branchId].comparisonId) throw new Error("COMPARISON_BRANCH_LOCKED");
         delete next.branches[payload.branchId];
         if (next.activeBranchId === payload.branchId) next.activeBranchId = ORIGINAL_BRANCH_ID;
         break;
@@ -204,7 +244,20 @@
     for (const candidate of Object.values(registry?.branches || {})) {
       if (!candidate.branchId) errors.push("BRANCH_ID_MISSING");
       if (candidate.branchId !== ORIGINAL_BRANCH_ID && !registry.branches[candidate.parentBranchId]) errors.push(`PARENT_BRANCH_MISSING:${candidate.branchId}`);
+      if (candidate.comparisonId && !["A", "B"].includes(candidate.comparisonSlot)) errors.push(`COMPARISON_SLOT_INVALID:${candidate.branchId}`);
     }
+    const comparisonGroups = Object.values(registry?.branches || {}).reduce((groups, candidate) => {
+      if (!candidate.comparisonId) return groups;
+      const entries = groups.get(candidate.comparisonId) || [];
+      entries.push(candidate);
+      groups.set(candidate.comparisonId, entries);
+      return groups;
+    }, new Map());
+    comparisonGroups.forEach((entries, comparisonId) => {
+      if (entries.length !== 2) errors.push(`COMPARISON_BRANCH_COUNT_INVALID:${comparisonId}`);
+      if (new Set(entries.map(entry => entry.comparisonSlot)).size !== 2) errors.push(`COMPARISON_SLOTS_DUPLICATED:${comparisonId}`);
+      if (new Set(entries.map(entry => entry.parentBranchId)).size !== 1) errors.push(`COMPARISON_PARENT_MISMATCH:${comparisonId}`);
+    });
     return errors;
   }
 

@@ -11729,7 +11729,7 @@
                   <button id="manualScenarioSave" class="secondary" type="button">▣ Save</button>
                   <button id="manualScenarioCopyLink" class="secondary manual-scenario-share" type="button">Copy Share Link</button>
                   <span id="manualScenarioShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
-                  <span class="manual-scenario-more"><button id="manualScenarioMore" class="secondary" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Scenario menu">…</button><span id="manualScenarioMenu" class="manual-scenario-menu" role="menu" hidden><button type="button" role="menuitem" data-scenario-command="rename">✎ Rename</button><button type="button" role="menuitem" data-scenario-command="duplicate">⧉ Duplicate</button><button type="button" role="menuitem" data-scenario-command="export">⇧ Export JSON</button><button type="button" role="menuitem" data-scenario-command="import">⇩ Import JSON</button><button type="button" role="menuitem" class="danger" data-scenario-command="delete">⌫ Delete</button></span></span>
+                  <span class="manual-scenario-more"><button id="manualScenarioMore" class="secondary" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Scenario menu">…</button><span id="manualScenarioMenu" class="manual-scenario-menu" role="menu" hidden><button id="manualScenarioCompare" type="button" role="menuitem" data-scenario-command="compare">⇄ Create Comparison</button><button type="button" role="menuitem" data-scenario-command="rename">✎ Rename</button><button type="button" role="menuitem" data-scenario-command="duplicate">⧉ Duplicate</button><button type="button" role="menuitem" data-scenario-command="export">⇧ Export JSON</button><button type="button" role="menuitem" data-scenario-command="import">⇩ Import JSON</button><button type="button" role="menuitem" class="danger" data-scenario-command="delete">⌫ Delete</button></span></span>
                 </div>
               </section>
               <div class="manual-overlay-controls" role="group" aria-label="Manual editor controls">
@@ -12170,6 +12170,7 @@
     let manualBattleTrace = [];
     let manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
     let manualBranchRegistry = null;
+    let manualScenarioComparison = null;
     let manualOriginalRuntimeState = null;
     let manualRootSnapshotId = null;
     let manualModeMinimized = false;
@@ -15114,6 +15115,7 @@
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       manualBranchRegistry = null;
+      manualScenarioComparison = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
       manualSessionControlMode = null;
@@ -16869,6 +16871,7 @@
           terminalResult: currentManualTerminalResult()
         }
       });
+      manualScenarioComparison = null;
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
       manualModeMinimized = false;
       manualMobileSheetState = "collapsed";
@@ -16901,6 +16904,7 @@
       manualBattleRuntime = null;
       manualBattleTrace = [];
       manualBranchRegistry = null;
+      manualScenarioComparison = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
       manualModeMinimized = false;
@@ -17206,7 +17210,7 @@
       if (!manualBranchRegistry || !manualModeState?.enabled) return;
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       const hasNoEdits = !(active?.edits || []).length;
-      const automaticLabel = hasNoEdits ? automaticManualBranchLabel(action) : null;
+      const automaticLabel = hasNoEdits && !active?.comparisonId ? automaticManualBranchLabel(action) : null;
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.UPDATE_BRANCH,
         payload: {
@@ -17222,6 +17226,7 @@
           }
         }
       });
+      rebuildManualScenarioComparison();
     }
 
     function automaticManualBranchLabel(action = {}) {
@@ -17248,6 +17253,133 @@
       let index = 2;
       while (labels.has(`${base} ${index}`.toLocaleLowerCase())) index++;
       return `${base} ${index}`;
+    }
+
+    function manualComparisonRegistryBranches() {
+      const branches = Object.values(manualBranchRegistry?.branches || {}).filter(branch => branch.comparisonId);
+      if (!branches.length) return [];
+      const preferredId = manualScenarioComparison?.comparisonId;
+      const comparisonId = branches.some(branch => branch.comparisonId === preferredId)
+        ? preferredId
+        : branches[0].comparisonId;
+      return branches
+        .filter(branch => branch.comparisonId === comparisonId)
+        .sort((a, b) => String(a.comparisonSlot).localeCompare(String(b.comparisonSlot)));
+    }
+
+    function manualRuntimeSnapshotForBranch(branch) {
+      if (!branch) return null;
+      if (branch.branchId === manualBranchRegistry?.activeBranchId) return captureManualRuntimeSnapshot();
+      const events = branch.timelineModel?.events || [];
+      const event = [...events].reverse().find(candidate => manualSnapshotStore?.get(
+        candidate.timelineEventId || candidate.id,
+        window.PvPeakManualSnapshots.BOUNDARY.AFTER
+      ));
+      const snapshot = event
+        ? manualSnapshotStore?.get(event.timelineEventId || event.id, window.PvPeakManualSnapshots.BOUNDARY.AFTER)
+        : manualRootSnapshot();
+      return cloneTechnicalValue(snapshot?.state || null);
+    }
+
+    function rebuildManualScenarioComparison(options = {}) {
+      const comparisonApi = window.PvPeakScenarioComparison;
+      const branches = manualComparisonRegistryBranches();
+      if (!comparisonApi || branches.length !== 2 || branches[0].comparisonSlot !== "A" || branches[1].comparisonSlot !== "B") {
+        manualScenarioComparison = null;
+        return null;
+      }
+      const previous = manualScenarioComparison;
+      const branchStates = {};
+      branches.forEach(branch => {
+        const previousBranch = previous?.branches?.find(candidate => candidate.sourceBranchId === branch.branchId);
+        const runtimeState = manualRuntimeSnapshotForBranch(branch) || previousBranch?.runtimeState || null;
+        const active = branch.branchId === manualBranchRegistry.activeBranchId;
+        branchStates[branch.branchId] = {
+          runtimeState,
+          manualModeState: active ? cloneTechnicalValue(manualModeState) : cloneTechnicalValue(previousBranch?.manualModeState || null),
+          pendingFastEvents: cloneTechnicalValue(runtimeState?.manualPendingFastEvents || previousBranch?.pendingFastEvents || []),
+          technicalIssue: active ? cloneTechnicalValue(technicalIssueInjection) : cloneTechnicalValue(previousBranch?.technicalIssue || null)
+        };
+      });
+      const branchPoint = cloneTechnicalValue(branches[0].branchPoint || previous?.branchPoint || {});
+      const branchPointState = cloneTechnicalValue(
+        options.branchPointState
+        || previous?.branchPoint?.state
+        || branchStates[branches[0].branchId]?.runtimeState
+        || null
+      );
+      try {
+        manualScenarioComparison = comparisonApi.comparisonFromRegistry(manualBranchRegistry, {
+          comparisonId: branches[0].comparisonId,
+          sourceScenarioId: manualScenarioId || previous?.sourceScenarioId || null,
+          createdAt: previous?.createdAt || branches[0].createdAt || null,
+          branchIds: branches.map(branch => branch.branchId),
+          branchStates,
+          branchPoint: { ...branchPoint, state: branchPointState },
+          branchPointState
+        });
+        return manualScenarioComparison;
+      } catch (error) {
+        manualScenarioComparison = null;
+        add(`Comparison state could not be rebuilt (${error.message}).`, "info");
+        return null;
+      }
+    }
+
+    async function createManualScenarioComparison() {
+      const active = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry);
+      const originalId = window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID;
+      if (
+        !manualModeState?.enabled
+        || !manualBranchRegistry
+        || !window.PvPeakScenarioComparison
+        || !active
+        || active.branchId === originalId
+        || manualComparisonRegistryBranches().length
+      ) return false;
+      const accepted = await manualDecision(
+        "Create comparison",
+        "Use the <strong>current reconstructed state</strong> as the shared branch point?<br><small>Branch A and Branch B will start identically and can then be resolved independently.</small>",
+        "Create comparison",
+        "Cancel"
+      );
+      if (!accepted) return false;
+      const sourceRuntime = captureManualRuntimeSnapshot();
+      const sourceControlMode = manualModeState.controlMode;
+      const lastEvent = timeline.at(-1) || null;
+      const eventId = lastEvent?.timelineEventId || lastEvent?.id || null;
+      const branchPoint = {
+        boundary: eventId ? "AFTER_EVENT" : "BATTLE_START",
+        eventId,
+        turn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)),
+        stateHash: lastEvent?.stateHashAfter || window.PvPeakManualAction.stateHash(manualCanonicalState())
+      };
+      try {
+        manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
+          type: window.PvPeakManualBranches.COMMAND_TYPE.CREATE_COMPARISON,
+          payload: {
+            comparisonId: `comparison-${Date.now()}`,
+            parentBranchId: active.branchId,
+            branchPoint,
+            timelineModel: currentManualTimelineModel(),
+            terminalResult: currentManualTerminalResult(),
+            branches: [
+              { slot: "A", label: uniqueManualBranchLabel("Branch A") },
+              { slot: "B", label: uniqueManualBranchLabel("Branch B") }
+            ]
+          }
+        });
+        rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
+        manualModeState = window.PvPeakManualMode.setControlMode(manualModeState, sourceControlMode);
+        rebuildManualScenarioComparison({ branchPointState: sourceRuntime });
+        add("Comparison created. Branch A and Branch B now share this history and can be resolved independently.", "info");
+        render();
+        return true;
+      } catch (error) {
+        add(`Cannot create this comparison (${error.message}).`, "info");
+        render();
+        return false;
+      }
     }
 
     async function resumeAutomaticFromManualTimeline() {
@@ -17336,6 +17468,7 @@
         restoreManualRuntimePayload(snapshot.state, events);
       }
       rebuildManualModeStateForBranch(active);
+      rebuildManualScenarioComparison();
       manualTimelineFocusEventId = null;
       render();
       return true;
@@ -17370,6 +17503,7 @@
     function switchLiveManualBranch(requestedBranchId = null) {
       const branchId = typeof requestedBranchId === "string" ? requestedBranchId : $("manualBranchSelect")?.value;
       if (!manualBranchRegistry || !manualBranchRegistry.branches[branchId]) return false;
+      rebuildManualScenarioComparison();
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.SWITCH_BRANCH,
         payload: { branchId }
@@ -17390,6 +17524,7 @@
         type: window.PvPeakManualBranches.COMMAND_TYPE.RENAME_BRANCH,
         payload: { branchId: active.branchId, label: label.trim() }
       });
+      rebuildManualScenarioComparison();
       render();
       return true;
     }
@@ -17407,6 +17542,11 @@
     function deleteActiveManualTimeline() {
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       if (!active || active.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) return false;
+      if (active.comparisonId) {
+        add("Branch A and Branch B belong to the active comparison and cannot be deleted individually.", "info");
+        render();
+        return false;
+      }
       if (!window.confirm(`Delete "${active.label}"? This timeline version will be removed.`)) return false;
       manualBranchRegistry = window.PvPeakManualBranches.execute(manualBranchRegistry, {
         type: window.PvPeakManualBranches.COMMAND_TYPE.DELETE_BRANCH,
@@ -17467,6 +17607,7 @@
 
     function manualScenarioSnapshot() {
       if (!manualModeState?.enabled || !manualBranchRegistry || !window.PvPeakManualScenarioIO) return null;
+      rebuildManualScenarioComparison();
       const applicationState = snapshotFullSimulatorState();
       return window.PvPeakManualScenarioIO.serializeScenario({
         registry: manualBranchRegistry,
@@ -17484,6 +17625,7 @@
         manualModeState,
         pendingFastEvents: manualPendingFastEvents,
         technicalIssue: technicalIssueInjection,
+        comparison: manualScenarioComparison,
         manualSession: {
           sessionControlMode: manualSessionControlMode,
           originalRuntimeState: cloneTechnicalValue(manualOriginalRuntimeState),
@@ -17543,13 +17685,21 @@
       const open = $("manualScenarioOpen");
       const share = $("manualScenarioCopyLink");
       const more = $("manualScenarioMore");
-      if (!panel || !save || !open || !share || !more) return;
+      const compare = $("manualScenarioCompare");
+      if (!panel || !save || !open || !share || !more || !compare) return;
       const enabled = !!manualModeState?.enabled;
       panel.hidden = !enabled;
       save.disabled = !enabled || !manualScenarioLibrary;
       open.disabled = !manualScenarioLibrary;
       share.disabled = !enabled || !manualBranchRegistry || !window.PvPeakManualScenarioShare;
       more.disabled = !enabled;
+      const active = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry);
+      compare.disabled = !enabled
+        || !window.PvPeakScenarioComparison
+        || !active
+        || active.branchId === window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID
+        || !!manualComparisonRegistryBranches().length;
+      compare.textContent = manualScenarioComparison ? "✓ Comparison created" : "⇄ Create Comparison";
       if (!enabled) return;
       const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
       const status = manualScenarioStatus();
@@ -17736,6 +17886,7 @@
       if (scenarioDocument.state.manualMode && !window.PvPeakManualMode.validateState(scenarioDocument.state.manualMode).length) {
         manualModeState = cloneTechnicalValue(scenarioDocument.state.manualMode);
       }
+      manualScenarioComparison = cloneTechnicalValue(scenarioDocument.comparison || null);
       manualScenarioId = options.scenarioId || null;
       manualScenarioBaseline = options.scenarioId
         ? window.PvPeakManualScenarioIO.stableStringify(scenarioDocument)
@@ -17829,6 +17980,7 @@
     function runManualScenarioCommand(command) {
       closeManualScenarioMenu();
       const entry = manualScenarioId ? manualScenarioLibrary?.get(manualScenarioId) : null;
+      if (command === "compare") return createManualScenarioComparison();
       if (command === "export") return exportManualScenario();
       if (command === "import") return $("manualScenarioImportFile")?.click();
       if (command === "rename") {
@@ -18876,7 +19028,9 @@
           .map(branch => {
             const context = branch.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID
               ? "unchanged"
-              : "your changes";
+              : branch.comparisonSlot
+                ? `comparison ${branch.comparisonSlot}`
+                : "your changes";
             return `<option value="${escapeHtml(branch.branchId)}">${escapeHtml(branch.label)} \u00b7 ${context}</option>`;
           })
           .join("");
@@ -19131,14 +19285,14 @@
               : "from the current state";
         const detail = original
           ? "Read-only automatic result"
-          : `${branch.edits?.length || 0} manual action${branch.edits?.length === 1 ? "" : "s"} · ${origin}`;
+          : `${branch.comparisonSlot ? `Comparison branch ${branch.comparisonSlot} · ` : ""}${branch.edits?.length || 0} manual action${branch.edits?.length === 1 ? "" : "s"} · ${origin}`;
         return `<button type="button" role="treeitem" aria-selected="${active}" class="manual-version-node${active ? " active" : ""}" data-manual-version-id="${escapeHtml(branch.branchId)}" style="--branch-depth:${depthOf(branch)}">${escapeHtml(branch.label)}<small>${escapeHtml(detail)}</small></button>`;
       }).join("");
       const active = window.PvPeakManualBranches.activeBranch(manualBranchRegistry);
       const originalActive = active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID;
       $("manualReturnOriginal").disabled = originalActive;
       $("manualRenameVersion").disabled = !active || originalActive;
-      $("manualDeleteVersion").disabled = !active || originalActive;
+      $("manualDeleteVersion").disabled = !active || originalActive || !!active?.comparisonId;
       $("manualDuplicateVersion").disabled = !active;
     }
 
@@ -23289,6 +23443,7 @@
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       manualBranchRegistry = null;
+      manualScenarioComparison = null;
       manualOriginalRuntimeState = null;
       manualRootSnapshotId = null;
       battleInsights = [];
