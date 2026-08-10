@@ -385,6 +385,16 @@ assert.match(html, /pendingFastEvents: manualPendingFastEvents,[\s\S]{0,100}tech
 assert.match(html, /function openStoredManualScenario\(id\)[\s\S]{0,500}deserializeScenario\(entry\.payload, manualScenarioValidationOptions\(\)\)/, "Open Scenario must validate and deserialize before restoring application state.");
 assert.match(html, /src\/battle\/manual-scenario-share\.js/, "The client-side shared Scenario codec must load with Scenario Review.");
 assert.match(html, /function restoreCanonicalManualScenario\(scenarioDocument, options = \{\}\)/, "Stored and shared scenarios must use one canonical restore path.");
+assert.match(
+  html,
+  /restoreManualRuntimePayload\(\s*cloneTechnicalValue\(scenarioDocument\.state\.runtimeState\),\s*cloneTechnicalValue\(scenarioDocument\.timeline\.events\)\s*\)/,
+  "Canonical scenario restore must apply the saved Manual Mode runtime and semantic timeline."
+);
+assert.ok(
+  html.indexOf('if (options.activateView) setAppView("scenario-review");', html.indexOf("function restoreCanonicalManualScenario"))
+    < html.indexOf("restoreManualRuntimePayload(", html.indexOf("function restoreCanonicalManualScenario")),
+  "Scenario Review view activation must happen before restoring the canonical runtime."
+);
 assert.match(html, /function loadSharedScenarioFromLocation\(\)[\s\S]{0,700}decodeScenario\(token\)[\s\S]{0,500}deserializeScenario\(payload, manualScenarioValidationOptions\(\)\)/, "Shared links must decode and validate before restoration.");
 assert.match(html, /void loadSharedScenarioFromLocation\(\);/, "Shared Scenario loading must run after application initialization.");
 assert.match(html, /This shared scenario could not be loaded\./, "Invalid shared links need a clear user-facing error.");

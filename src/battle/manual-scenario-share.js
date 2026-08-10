@@ -11,6 +11,7 @@
   const HASH_KEY = "scenario";
   const MAX_TOKEN_LENGTH = 2_000_000;
   const MAX_JSON_BYTES = 4_000_000;
+  const PACK_KEY = "$pvpeakShare";
   const textEncoder = new TextEncoder();
   const textDecoder = new TextDecoder("utf-8", { fatal: true });
 
@@ -102,9 +103,103 @@
     }
   }
 
+  function packScenario(payload) {
+    const canonical = JSON.parse(ScenarioIO.stringifyScenario(payload, 0));
+    const timeline = canonical?.timeline?.events;
+    if (!Array.isArray(timeline) || !timeline.length) return canonical;
+    const serializedTimeline = JSON.stringify(timeline);
+    const references = [];
+    const visit = (value, path = []) => {
+      if (Array.isArray(value)) {
+        if (value.length === timeline.length && JSON.stringify(value) === serializedTimeline) {
+          references.push(path);
+          return null;
+        }
+        return value.map((child, index) => visit(child, [...path, index]));
+      }
+      if (!value || typeof value !== "object") return value;
+      return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, visit(child, [...path, key])]));
+    };
+    const packed = visit(canonical);
+    if (references.length < 2) return canonical;
+    const registryCandidates = new Map();
+    const collectRegistryStates = (value, path = []) => {
+      if (!value || typeof value !== "object") return;
+      if (
+        !Array.isArray(value)
+        && value.schemaVersion === 1
+        && typeof value.activeBranchId === "string"
+        && value.branches
+        && Number.isInteger(value.revision)
+        && !Object.hasOwn(value, "history")
+      ) {
+        const serialized = JSON.stringify(value);
+        const entries = registryCandidates.get(serialized) || [];
+        entries.push(path);
+        registryCandidates.set(serialized, entries);
+      }
+      Object.entries(value).forEach(([key, child]) => collectRegistryStates(child, [...path, key]));
+    };
+    collectRegistryStates(packed);
+    (packed.session?.snapshots || []).forEach((snapshot, snapshotIndex) => {
+      Object.entries(snapshot?.state || {}).forEach(([key, value]) => {
+        if (!value || typeof value !== "object") return;
+        const serialized = JSON.stringify(value);
+        if (serialized.length < 100) return;
+        const entries = registryCandidates.get(serialized) || [];
+        entries.push(["session", "snapshots", snapshotIndex, "state", key]);
+        registryCandidates.set(serialized, entries);
+      });
+    });
+    const objects = [];
+    const objectReferences = [];
+    registryCandidates.forEach((paths, serialized) => {
+      if (paths.length < 2) return;
+      const index = objects.length;
+      objects.push(JSON.parse(serialized));
+      paths.forEach(path => {
+        setPackedPath(packed, path, null);
+        objectReferences.push({ index, path });
+      });
+    });
+    return { [PACK_KEY]: 1, timeline, references, objects, objectReferences, scenario: packed };
+  }
+
+  function validPathSegment(segment) {
+    return ["string", "number"].includes(typeof segment) && !["__proto__", "prototype", "constructor"].includes(segment);
+  }
+
+  function setPackedPath(root, path, value) {
+    if (!Array.isArray(path) || !path.length) throw error("INVALID_SCENARIO_PACK");
+    let target = root;
+    path.slice(0, -1).forEach(segment => {
+      if (!validPathSegment(segment)) throw error("INVALID_SCENARIO_PACK");
+      target = target?.[segment];
+      if (!target || typeof target !== "object") throw error("INVALID_SCENARIO_PACK");
+    });
+    const finalSegment = path.at(-1);
+    if (!validPathSegment(finalSegment)) throw error("INVALID_SCENARIO_PACK");
+    target[finalSegment] = value;
+  }
+
+  function unpackScenario(payload) {
+    if (!payload || payload[PACK_KEY] !== 1) return payload;
+    if (!Array.isArray(payload.timeline) || !Array.isArray(payload.references) || !payload.scenario) throw error("INVALID_SCENARIO_PACK");
+    const scenario = payload.scenario;
+    if (!Array.isArray(payload.objects || []) || !Array.isArray(payload.objectReferences || [])) throw error("INVALID_SCENARIO_PACK");
+    (payload.objectReferences || []).forEach(reference => {
+      if (!reference || !Number.isInteger(reference.index) || reference.index < 0 || reference.index >= payload.objects.length) throw error("INVALID_SCENARIO_PACK");
+      setPackedPath(scenario, reference.path, JSON.parse(JSON.stringify(payload.objects[reference.index])));
+    });
+    payload.references.forEach(path => {
+      setPackedPath(scenario, path, JSON.parse(JSON.stringify(payload.timeline)));
+    });
+    return scenario;
+  }
+
   async function encodeScenario(payload, options = {}) {
     if (!ScenarioIO) throw error("SCENARIO_SERIALIZER_UNAVAILABLE");
-    const json = ScenarioIO.stringifyScenario(payload, 0);
+    const json = JSON.stringify(packScenario(payload));
     const raw = textEncoder.encode(json);
     if (raw.byteLength > MAX_JSON_BYTES) throw error("SHARED_SCENARIO_TOO_LARGE");
     const compressed = options.compression === false ? null : await gzip(raw);
@@ -127,8 +222,18 @@
     let json;
     try { json = textDecoder.decode(bytes); }
     catch (_) { throw error("INVALID_SCENARIO_TEXT"); }
-    try { return JSON.parse(json); }
+    let payload;
+    try { payload = JSON.parse(json); }
     catch (_) { throw error("INVALID_SCENARIO_JSON"); }
+    try {
+      const scenario = unpackScenario(payload);
+      if (textEncoder.encode(JSON.stringify(scenario)).byteLength > MAX_JSON_BYTES) throw error("SHARED_SCENARIO_TOO_LARGE");
+      return scenario;
+    }
+    catch (cause) {
+      if (["INVALID_SCENARIO_PACK", "SHARED_SCENARIO_TOO_LARGE"].includes(cause?.code)) throw cause;
+      throw error("INVALID_SCENARIO_PACK");
+    }
   }
 
   function scenarioTokenFromLocation(locationLike) {

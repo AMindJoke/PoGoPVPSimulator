@@ -116,6 +116,11 @@ async function run() {
   const raw = await Share.encodeScenario(scenario, { compression: false });
   assert.match(raw, /^v1\.r\./);
   assert.deepEqual(await Share.decodeScenario(raw), scenario, "The dependency-free raw fallback must remain reversible.");
+  const legacyJson = IO.stringifyScenario(scenario, 0);
+  const legacyRaw = `v1.r.${Buffer.from(legacyJson).toString("base64url")}`;
+  const legacyGzip = `v1.g.${gzipSync(Buffer.from(legacyJson)).toString("base64url")}`;
+  assert.deepEqual(await Share.decodeScenario(legacyRaw), scenario, "Existing unpacked raw v1 links must remain compatible.");
+  assert.deepEqual(await Share.decodeScenario(legacyGzip), scenario, "Existing unpacked gzip v1 links must remain compatible.");
 
   const url = await Share.buildScenarioUrl(scenario, {
     origin: "https://po-go-pvp-simulator.vercel.app",

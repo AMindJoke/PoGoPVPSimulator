@@ -17703,6 +17703,10 @@
       if (!scenarioDocument?.state?.applicationState || !scenarioDocument?.session) throw new Error("INVALID_CANONICAL_SCENARIO");
       clearManualEnergyTrainerNextCycle();
       restoreFullSimulatorState(cloneTechnicalValue(scenarioDocument.state.applicationState));
+      // Entering Scenario Review refreshes the setup controls, which rebuilds a
+      // clean battle. Do that before applying the canonical Manual Mode runtime
+      // so the view transition cannot erase the shared or stored battle state.
+      if (options.activateView) setAppView("scenario-review");
       const restoredReview = cloneTechnicalValue(scenarioDocument.review);
       scenarioReviewMode = normalizedScenarioReviewMode(restoredReview.mode);
       scenarioState = restoredReview.state || null;
@@ -17721,6 +17725,10 @@
       manualMobileSheetState = "collapsed";
       manualMobileReviewTab = "moves";
       manualMobileBattleStateSide = null;
+      restoreManualRuntimePayload(
+        cloneTechnicalValue(scenarioDocument.state.runtimeState),
+        cloneTechnicalValue(scenarioDocument.timeline.events)
+      );
       rebuildManualModeStateForBranch(window.PvPeakManualBranches.activeBranch(manualBranchRegistry));
       manualPendingFastEvents = cloneTechnicalValue(scenarioDocument.state.pendingFastEvents || []);
       technicalIssueInjection = cloneTechnicalValue(scenarioDocument.technicalIssues.active || null);
@@ -17733,8 +17741,7 @@
         : null;
       manualScenarioDraftName = null;
       if (options.closeLibrary) closeManualScenarioLibrary();
-      if (options.activateView) setAppView("scenario-review");
-      else render();
+      render();
       if (options.message) add(options.message, "info");
       return true;
     }
