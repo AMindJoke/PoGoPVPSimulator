@@ -84,7 +84,8 @@ for (const id of [
   "manualDuelHud",
   "manualHudPokemonSearchA",
   "manualHudPokemonSearchB",
-  "manualHudPokemonOptions",
+  "manualHudPokemonSuggestionsA",
+  "manualHudPokemonSuggestionsB",
   "manualHudMatchupDone",
   "manualHudSpriteA",
   "manualHudSpriteB",
@@ -158,7 +159,9 @@ assert.match(html, /body\.manual-mode-active \.modal\s*\{\s*z-index: 600/);
 assert.match(html, /body\.manual-mode-active \.manual-state-inspector\s*\{[\s\S]{0,80}grid-area: sidebar/);
 assert.match(html, /function renderManualDuelHud/);
 assert.match(html, /function resetForManualBattle\(\)[\s\S]{0,1100}keepDesktopScenarioWorkspace[\s\S]{0,1100}ensureScenarioReviewWorkspaceMode\(\)/, "Scenario Review reset must preserve the desktop Manual Mode workspace while Pokemon are changed.");
-assert.match(html, /function applyManualHudPokemonSelection\(side\)[\s\S]{0,1200}selectPokemon\(prefix, pokemon\.id, true\)/, "Inline HUD selection must reuse the canonical Pokemon setup flow.");
+assert.match(html, /function applyManualHudPokemonSelection\(side, pokemonId = null\)[\s\S]{0,1600}selectPokemon\(prefix, pokemon\.id, true\)/, "Inline HUD selection must reuse the canonical Pokemon setup flow.");
+assert.match(html, /function renderManualHudPokemonSuggestions\(side, list\)[\s\S]{0,1600}setPokemonImage\(button\.querySelector\("img"\), pokemon\)/, "Inline HUD suggestions must reuse Pokemon sprites, including Shadow presentation.");
+assert.match(html, /\.pokemon-suggestion img\.shadow-pokemon\s*\{[\s\S]{0,500}radial-gradient[\s\S]{0,500}drop-shadow/, "Shadow Pokemon suggestions must retain their purple aura treatment.");
 assert.match(html, /manualMatchupEditMode[\s\S]{0,700}button\.disabled = true[\s\S]{0,250}Finish choosing both Pokemon/, "Battle actions must remain unavailable while the desktop matchup is being edited.");
 assert.match(html, /setPokemonImage\(sprite, combatant\.p\)/);
 assert.match(html, /function finalFallbackImageUrl/);

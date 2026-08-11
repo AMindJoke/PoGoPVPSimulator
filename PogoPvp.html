@@ -5575,8 +5575,10 @@
     @media (min-width: 901px) {
       body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker {
         display: block;
+        position: relative;
         flex: 1 1 180px;
         min-width: 120px;
+        z-index: 95;
       }
       body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-name,
       body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-status {
@@ -5596,6 +5598,16 @@
       body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker input:focus {
         outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
         outline-offset: 1px;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker.open .pokemon-suggestions {
+        display: grid;
+        gap: 3px;
+        min-width: 260px;
+        text-align: left;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-side[data-side="B"] .manual-hud-pokemon-picker .pokemon-suggestions {
+        right: 0;
+        left: auto;
       }
       body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-matchup-done {
         display: inline-flex;
@@ -12315,7 +12327,7 @@
               <img id="manualHudSpriteA" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
-                  <label class="manual-hud-pokemon-picker" aria-label="Change Pokemon A"><input id="manualHudPokemonSearchA" type="search" list="manualHudPokemonOptions" autocomplete="off" placeholder="Choose Pokemon A"></label>
+                  <div class="manual-hud-pokemon-picker" data-manual-hud-picker="A"><label class="sr-only" for="manualHudPokemonSearchA">Change Pokemon A</label><input id="manualHudPokemonSearchA" type="search" autocomplete="off" placeholder="Choose Pokemon A" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="manualHudPokemonSuggestionsA"><div id="manualHudPokemonSuggestionsA" class="pokemon-suggestions" role="listbox"></div></div>
                   <strong id="manualHudNameA" class="manual-hud-name">Pokemon A</strong>
                   <span id="manualHudStatusA" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesA" class="manual-hud-types" aria-label="Pokemon A types"></span>
@@ -12344,7 +12356,7 @@
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
-                  <label class="manual-hud-pokemon-picker" aria-label="Change Pokemon B"><input id="manualHudPokemonSearchB" type="search" list="manualHudPokemonOptions" autocomplete="off" placeholder="Choose Pokemon B"></label>
+                  <div class="manual-hud-pokemon-picker" data-manual-hud-picker="B"><label class="sr-only" for="manualHudPokemonSearchB">Change Pokemon B</label><input id="manualHudPokemonSearchB" type="search" autocomplete="off" placeholder="Choose Pokemon B" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="manualHudPokemonSuggestionsB"><div id="manualHudPokemonSuggestionsB" class="pokemon-suggestions" role="listbox"></div></div>
                   <strong id="manualHudNameB" class="manual-hud-name">Pokemon B</strong>
                   <span id="manualHudStatusB" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesB" class="manual-hud-types" aria-label="Pokemon B types"></span>
@@ -12364,7 +12376,6 @@
               <label aria-label="Pokemon A shields"><span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
               <label aria-label="Pokemon B shields"><span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
             </div>
-            <datalist id="manualHudPokemonOptions"></datalist>
           </div>
           <div id="manualDecisionPanel" class="manual-decision-panel">
             <div id="manualDecisionBanner" class="manual-decision-banner">
@@ -13173,6 +13184,10 @@
           closePokemonSuggestions("p1");
           closePokemonSuggestions("p2");
         }
+        if (!event.target.closest(".manual-hud-pokemon-picker")) {
+          closeManualHudPokemonSuggestions("A");
+          closeManualHudPokemonSuggestions("B");
+        }
       });
       $("p1Pokemon").onchange = () => selectPokemon("p1", $("p1Pokemon").value, true);
       $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
@@ -13442,16 +13457,32 @@
       ["A", "B"].forEach(side => {
         const input = $(`manualHudPokemonSearch${side}`);
         if (!input) return;
-        input.onchange = () => applyManualHudPokemonSelection(side);
+        input.onfocus = () => openManualHudPokemonSuggestions(side, true);
+        input.onclick = () => openManualHudPokemonSuggestions(side, true);
+        input.oninput = () => openManualHudPokemonSuggestions(side, false);
         input.onkeydown = event => {
           if (event.key === "Escape") {
+            closeManualHudPokemonSuggestions(side);
             syncManualHudPokemonPicker(side);
             input.blur();
           }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            $(`manualHudPokemonSuggestions${side}`)?.querySelector(".pokemon-suggestion")?.focus();
+          }
           if (event.key === "Enter") {
             event.preventDefault();
-            applyManualHudPokemonSelection(side);
+            const first = $(`manualHudPokemonSuggestions${side}`)?.querySelector(".pokemon-suggestion");
+            if (first) first.click();
           }
+        };
+        input.onblur = () => {
+          window.setTimeout(() => {
+            if (!document.activeElement?.closest(`[data-manual-hud-picker="${side}"]`)) {
+              syncManualHudPokemonPicker(side);
+              closeManualHudPokemonSuggestions(side);
+            }
+          }, 120);
         };
       });
       $("manualHudMatchupDone").onclick = () => setManualMatchupEditMode(false);
@@ -19213,13 +19244,55 @@
       updateManualTimelineEventMenu();
     }
 
-    function refreshManualHudPokemonOptions() {
-      const options = $("manualHudPokemonOptions");
-      if (!options || !Array.isArray(allPokemon)) return;
-      const signature = `${allPokemon.length}:${allPokemon[0]?.id || ""}:${allPokemon.at(-1)?.id || ""}`;
-      if (options.dataset.signature === signature) return;
-      options.innerHTML = allPokemon.map(pokemon => `<option value="${escapeHtml(displayName(pokemon))}" label="${escapeHtml(pokemonPickerMeta(pokemon))}"></option>`).join("");
-      options.dataset.signature = signature;
+    function closeManualHudPokemonSuggestions(side) {
+      const picker = document.querySelector(`[data-manual-hud-picker="${side}"]`);
+      picker?.classList.remove("open");
+      $(`manualHudPokemonSearch${side}`)?.setAttribute("aria-expanded", "false");
+    }
+
+    function renderManualHudPokemonSuggestions(side, list) {
+      const box = $(`manualHudPokemonSuggestions${side}`);
+      if (!box) return;
+      if (!list.length) {
+        box.innerHTML = `<div class="pokemon-suggestion-empty">No Pokemon found</div>`;
+        return;
+      }
+      box.innerHTML = list.map(pokemon => `<button class="pokemon-suggestion" type="button" role="option" data-pokemon-id="${escapeHtml(pokemon.id)}"><img alt=""><span>${escapeHtml(displayName(pokemon))}<small>${escapeHtml(pokemonPickerMeta(pokemon))}</small></span></button>`).join("");
+      box.querySelectorAll(".pokemon-suggestion").forEach((button, index) => {
+        const pokemon = list[index];
+        setPokemonImage(button.querySelector("img"), pokemon);
+        button.onclick = () => applyManualHudPokemonSelection(side, pokemon.id);
+        button.onkeydown = event => {
+          if (!["ArrowDown", "ArrowUp", "Escape"].includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === "Escape") {
+            closeManualHudPokemonSuggestions(side);
+            $(`manualHudPokemonSearch${side}`)?.focus();
+            return;
+          }
+          const options = [...box.querySelectorAll(".pokemon-suggestion")];
+          const current = options.indexOf(button);
+          options[(current + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length]?.focus();
+        };
+      });
+    }
+
+    function openManualHudPokemonSuggestions(side, showAll = false) {
+      if (!manualMatchupEditMode || !window.matchMedia("(min-width: 901px)").matches) return false;
+      const input = $(`manualHudPokemonSearch${side}`);
+      const query = showAll ? "" : normalizeSearchText(input?.value || "");
+      let list = visiblePokemon.length ? visiblePokemon : allPokemon;
+      if (query) {
+        list = list
+          .map(pokemon => ({ pokemon, score: pokemonSearchScore(pokemon, query) }))
+          .filter(item => item.score < 100)
+          .sort((a, b) => a.score - b.score || a.pokemon.name.localeCompare(b.pokemon.name) || a.pokemon.id.localeCompare(b.pokemon.id))
+          .map(item => item.pokemon);
+      }
+      renderManualHudPokemonSuggestions(side, list.slice(0, 28));
+      document.querySelector(`[data-manual-hud-picker="${side}"]`)?.classList.add("open");
+      input?.setAttribute("aria-expanded", "true");
+      return true;
     }
 
     function syncManualHudPokemonPicker(side) {
@@ -19231,20 +19304,22 @@
       input.setCustomValidity("");
     }
 
-    function applyManualHudPokemonSelection(side) {
+    function applyManualHudPokemonSelection(side, pokemonId = null) {
       if (!manualMatchupEditMode || !window.matchMedia("(min-width: 901px)").matches) return false;
       const prefix = side === "B" ? "p2" : "p1";
       const input = $(`manualHudPokemonSearch${side}`);
       const query = normalizeSearchText(input?.value || "");
-      const pokemon = allPokemon.find(candidate =>
-        normalizeSearchText(candidate.id) === query || normalizeSearchText(displayName(candidate)) === query
-      );
+      const pokemon = pokemonId
+        ? findPokemon(pokemonId)
+        : allPokemon.find(candidate => normalizeSearchText(candidate.id) === query || normalizeSearchText(displayName(candidate)) === query);
       if (!pokemon) {
         input?.setCustomValidity("Choose a Pokemon from the list.");
         input?.reportValidity();
         return false;
       }
       input.setCustomValidity("");
+      input.value = displayName(pokemon);
+      closeManualHudPokemonSuggestions(side);
       manualMatchupEditMode = true;
       selectPokemon(prefix, pokemon.id, true);
       return true;
@@ -19268,7 +19343,6 @@
         && document.body.dataset.view === "scenario-review"
         && window.matchMedia("(min-width: 901px)").matches;
       document.body.classList.toggle("scenario-matchup-editing", matchupEditing);
-      refreshManualHudPokemonOptions();
       syncManualHudPokemonPicker("A");
       syncManualHudPokemonPicker("B");
       if ($("manualHudMatchupDone")) $("manualHudMatchupDone").disabled = !setupReadyForBattle();
