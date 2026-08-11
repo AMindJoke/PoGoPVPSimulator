@@ -28907,7 +28907,9 @@
       const pokemonId = state?.pokemonId || null;
       const combatant = side === "A" ? left : right;
       const catalogName = pokemonId ? combatant?.formCatalog?.[pokemonId]?.p?.name : null;
-      const mappedName = pokemonId ? pokemonMap.get(pokemonId)?.name : null;
+      const mappedName = pokemonId && Array.isArray(allPokemon)
+        ? allPokemon.find(candidate => candidate?.id === pokemonId)?.name
+        : null;
       return catalogName || mappedName || combatant?.p?.name || `Pokemon ${side}`;
     }
 

@@ -31,6 +31,7 @@ assert.match(html, /\(!divergence \|\| Number\(event\.start \|\| 0\) < forkTurn\
 assert.match(html, /visibleComparisonEvent\(event\) && !!divergence && Number\(event\.start \|\| 0\) >= forkTurn/, "Every visible post-divergence event must be rendered inside its own branch even when semantically repeated.");
 assert.match(html, /manual-comparison-fork-event\.is-fast\s*\{[^}]*width: 14px/, "Fast Moves must remain compact timeline tokens instead of overlapping text labels.");
 assert.match(html, /function timelineStateSummaryLines\(event\)[\s\S]{0,900}`\$\{side\} · \$\{timelineStatePokemonName\(side, sideState\)\}: \$\{hp\}\/\$\{maxHp\} HP · \$\{energy\} energy`/, "Timeline hover details must expose both Pokemon HP and energy at the selected event state.");
+assert.doesNotMatch(html, /pokemonMap\.get\(/, "Timeline tooltips must use an initialized Pokemon lookup source.");
 assert.match(html, /\["fast", "charge", "shield", "form-protect", "technical-lag", "technical-dre"\]/, "Manual timeline hover details must cover normal and technical battle events.");
 assert.match(html, /data-timeline-tooltip="\$\{escapeHtml\(tooltipSummary\)\}"/, "Branched comparison events must carry the same timeline state summary.");
 assert.match(html, /id="manualComparisonMoveTooltip" class="timeline-move-tooltip manual-comparison-move-tooltip"/, "Scenario Comparison must render a dedicated unclipped hover tooltip.");
