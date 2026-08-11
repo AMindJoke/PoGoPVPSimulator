@@ -16968,17 +16968,21 @@
           attacker.fast?.id || null
         );
       }
+      const timelineLengthBeforeRequest = timeline.length;
       const result = liveManualRuntime().request({
         side,
         actionType: window.PvPeakManualAction.ACTION_TYPE.FAST_MOVE,
         moveId: attacker.fast?.id || null
       });
-      if (!result.ok) {
+      const canonicalResolutionCommitted = timeline.length > timelineLengthBeforeRequest;
+      if (!result.ok && !canonicalResolutionCommitted) {
         add(`${side}: manual Fast rejected (${result.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
         render();
         return false;
       }
-      manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      if (manualModeState.status !== window.PvPeakManualMode.STATUS.RESOLVING) {
+        manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      }
       manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
         timeline,
         cursorTurn: manualCanonicalState()?.currentTurn || 0,
@@ -16987,7 +16991,12 @@
         terminalResult: battleEnded() ? { winner: left.hp > 0 ? "A" : right.hp > 0 ? "B" : "tie" } : null,
         pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
       });
-      syncManualBranchAfterAction(result.action);
+      syncManualBranchAfterAction(result.action || {
+        id: `manual-fast-resolution-${Date.now()}`,
+        actionType: window.PvPeakManualAction.ACTION_TYPE.FAST_MOVE,
+        side,
+        moveId: attacker.fast?.id || null
+      });
       render();
       return true;
     }
@@ -17292,6 +17301,7 @@
           label: "Current manual edit",
           branchPoint,
           timelineModel: currentManualTimelineModel(),
+          runtimeState: rootPayload,
           terminalResult: currentManualTerminalResult()
         }
       });
@@ -17565,6 +17575,7 @@
             labelSource: "AUTO",
             branchPoint: { boundary, eventId: event.timelineEventId, stateHash: plan.stateHash },
             timelineModel: currentManualTimelineModel(),
+            runtimeState: captureManualRuntimeSnapshot(),
             terminalResult: currentManualTerminalResult()
           }
         });
@@ -17640,6 +17651,7 @@
         payload: {
           branchId: manualBranchRegistry.activeBranchId,
           timelineModel: currentManualTimelineModel(),
+          runtimeState: captureManualRuntimeSnapshot(),
           terminalResult: currentManualTerminalResult(),
           ...(automaticLabel ? { label: uniqueManualBranchLabel(automaticLabel, active?.branchId), labelSource: "AUTO" } : {}),
           edit: {
@@ -17694,6 +17706,7 @@
     function manualRuntimeSnapshotForBranch(branch) {
       if (!branch) return null;
       if (branch.branchId === manualBranchRegistry?.activeBranchId) return captureManualRuntimeSnapshot();
+      if (branch.runtimeState) return cloneTechnicalValue(branch.runtimeState);
       const events = branch.timelineModel?.events || [];
       const event = [...events].reverse().find(candidate => manualSnapshotStore?.get(
         candidate.timelineEventId || candidate.id,
@@ -17722,7 +17735,7 @@
         // so looking them up again could make the untouched outcome drift.
         const runtimeState = active
           ? captureManualRuntimeSnapshot()
-          : previousBranch?.runtimeState || manualRuntimeSnapshotForBranch(branch) || null;
+          : branch.runtimeState || previousBranch?.runtimeState || manualRuntimeSnapshotForBranch(branch) || null;
         branchStates[branch.branchId] = {
           runtimeState,
           manualModeState: active ? cloneTechnicalValue(manualModeState) : cloneTechnicalValue(previousBranch?.manualModeState || null),
@@ -17954,6 +17967,7 @@
             parentBranchId: active.branchId,
             branchPoint,
             timelineModel: currentManualTimelineModel(),
+            runtimeState: sourceRuntime,
             terminalResult: currentManualTerminalResult(),
             activeSlot: options.activeSlot === "B" ? "B" : "A",
             branches: [
@@ -18073,23 +18087,27 @@
         restoreFullSimulatorState(cloneTechnicalValue(manualOriginalRuntimeState));
       } else {
         const events = active.timelineModel?.events || [];
-        const lastSnapshottedEvent = [...events].reverse().find(event =>
-          manualSnapshotStore.get(
-            event.timelineEventId || event.id,
-            window.PvPeakManualSnapshots.BOUNDARY.AFTER
-          )
-        );
-        const snapshot = lastSnapshottedEvent
-          ? manualSnapshotStore.get(
-            lastSnapshottedEvent.timelineEventId || lastSnapshottedEvent.id,
-            window.PvPeakManualSnapshots.BOUNDARY.AFTER
-          )
-          : manualRootSnapshot();
-        if (!snapshot) {
-          add("Cannot restore this branch: canonical runtime snapshot is missing.", "info");
-          return false;
+        if (active.runtimeState) {
+          restoreManualRuntimePayload(active.runtimeState, events);
+        } else {
+          const lastSnapshottedEvent = [...events].reverse().find(event =>
+            manualSnapshotStore.get(
+              event.timelineEventId || event.id,
+              window.PvPeakManualSnapshots.BOUNDARY.AFTER
+            )
+          );
+          const snapshot = lastSnapshottedEvent
+            ? manualSnapshotStore.get(
+              lastSnapshottedEvent.timelineEventId || lastSnapshottedEvent.id,
+              window.PvPeakManualSnapshots.BOUNDARY.AFTER
+            )
+            : manualRootSnapshot();
+          if (!snapshot) {
+            add("Cannot restore this branch: canonical runtime snapshot is missing.", "info");
+            return false;
+          }
+          restoreManualRuntimePayload(snapshot.state, events);
         }
-        restoreManualRuntimePayload(snapshot.state, events);
       }
       rebuildManualModeStateForBranch(active);
       rebuildManualScenarioComparison();
@@ -25073,6 +25091,7 @@
             payload: {
               branchId: sourceBranchId,
               timelineModel: currentManualTimelineModel(),
+              runtimeState: captureManualRuntimeSnapshot(),
               terminalResult: currentManualTerminalResult(),
               classification: sourceBranch.classification,
               edit: technicalEdit
@@ -25090,6 +25109,7 @@
                 stateHash: plan.stateHash
               },
               timelineModel: currentManualTimelineModel(),
+              runtimeState: captureManualRuntimeSnapshot(),
               terminalResult: currentManualTerminalResult(),
               edits: [technicalEdit]
             }

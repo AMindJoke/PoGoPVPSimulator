@@ -108,6 +108,7 @@ comparisonRegistry = Branches.execute(comparisonRegistry, {
       { slot: "B", branchId: "COMPARE-B", label: "Branch B" }
     ],
     timelineModel: originalTimeline,
+    runtimeState: { left: { hp: 14 }, right: { hp: 35 }, battleTurns: { A: 0, B: 0 } },
     createdAt: "2026-01-01T00:03:00.000Z"
   }
 });
@@ -117,6 +118,22 @@ assert.equal(comparisonRegistry.branches["COMPARE-B"].comparisonSlot, "B");
 assert.equal(comparisonRegistry.branches["COMPARE-A"].parentBranchId, Branches.ORIGINAL_BRANCH_ID);
 assert.notEqual(comparisonRegistry.branches["COMPARE-A"].timelineModel, comparisonRegistry.branches["COMPARE-B"].timelineModel);
 assert.equal(comparisonRegistry.history.length, 1, "Both comparison branches must be created by one atomic command.");
+assert.deepEqual(comparisonRegistry.branches["COMPARE-A"].runtimeState.left, { hp: 14 });
+assert.notEqual(comparisonRegistry.branches["COMPARE-A"].runtimeState, comparisonRegistry.branches["COMPARE-B"].runtimeState, "Each comparison branch must own its runtime snapshot.");
+const updatedRuntimeRegistry = Branches.execute(comparisonRegistry, {
+  type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+  payload: {
+    branchId: "COMPARE-A",
+    timelineModel: editedTimeline,
+    runtimeState: { left: { hp: 0 }, right: { hp: 21 }, battleTurns: { A: 5, B: 5 } },
+    terminalResult: { winner: "B" },
+    edit: { type: "FAST_MOVE" }
+  }
+});
+assert.equal(updatedRuntimeRegistry.branches["COMPARE-A"].runtimeState.left.hp, 0);
+assert.equal(updatedRuntimeRegistry.branches["COMPARE-B"].runtimeState.left.hp, 14, "Updating A must not mutate B runtime.");
+assert.equal(Branches.undo(updatedRuntimeRegistry).branches["COMPARE-A"].runtimeState.left.hp, 14, "Undo must restore the branch-owned runtime.");
+assert.equal(Branches.redo(Branches.undo(updatedRuntimeRegistry)).branches["COMPARE-A"].runtimeState.left.hp, 0, "Redo must restore the same branch-owned runtime.");
 let dreShortcutRegistry = Branches.createRegistry({ timelineModel: originalTimeline, createdAt: "2026-01-01T00:00:00.000Z" });
 dreShortcutRegistry = Branches.execute(dreShortcutRegistry, {
   type: Branches.COMMAND_TYPE.CREATE_COMPARISON,

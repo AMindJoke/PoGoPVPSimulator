@@ -93,6 +93,13 @@ assert.equal(comparisonView.branches[0].pokemonRemaining, 1);
 assert.equal(comparisonView.branches[1].outcome, "Pokemon A wins");
 assert.equal(comparisonView.branches[1].pokemon.B.hp, 0);
 assert.equal(comparisonView.branches[1].pokemonRemaining, 1);
+const segmentOutcomeComparison = structuredClone(comparison);
+segmentOutcomeComparison.branches[0].terminalResult = null;
+assert.equal(
+  Comparison.comparisonViewModel(segmentOutcomeComparison).branches[0].outcome,
+  "Pokemon B wins",
+  "A completed active matchup must report its winner even when Scenario Review still allows a replacement."
+);
 assert.equal(comparisonView.difference.diverged, true);
 assert.equal(comparisonView.difference.firstDivergence.turn, 6);
 assert.equal(comparisonView.branches[0].events[0].difference, Comparison.EVENT_DIFFERENCE.ONLY_A);

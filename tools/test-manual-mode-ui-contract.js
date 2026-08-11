@@ -373,7 +373,7 @@ assert.match(html, /style\.setProperty\("--timeline-side-zone-width", `\$\{reser
 assert.match(html, /style\.removeProperty\("--timeline-side-zone-width"\)/);
 assert.match(html, /Math\.ceil\(label\.scrollWidth \+ 10\)/);
 assert.match(html, /syncTimelineReplacementSpace\(\);/);
-assert.match(html, /syncManualBranchAfterAction\(result\.action\);\s*render\(\);\s*return true;/);
+assert.match(html, /syncManualBranchAfterAction\(result\.action \|\| \{[\s\S]{0,360}render\(\);\s*return true;/);
 assert.match(html, /@media \(max-width: 900px\) and \(max-height: 620px\)/);
 assert.match(html, /id="manualMobileVersionsToggle"/);
 assert.match(html, /function toggleManualMobileVersions/);
@@ -586,6 +586,9 @@ assert.match(html, /PvPeakManualBranches\.redo/);
 assert.match(html, /function resetBattleStateFromSetup\(\)\s*\{\s*clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function restoreManualRuntimePayload[\s\S]{0,180}clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function restoreActiveManualBranch[\s\S]{0,220}clearManualEnergyTrainerNextCycle\(\)/);
+assert.match(html, /function restoreActiveManualBranch[\s\S]{0,800}if \(active\.runtimeState\)[\s\S]{0,140}restoreManualRuntimePayload\(active\.runtimeState, events\)/, "Branch switching must restore the runtime owned by that branch before falling back to shared snapshots.");
+assert.match(html, /async function executeLiveManualFast[\s\S]{0,900}const canonicalResolutionCommitted = timeline\.length > timelineLengthBeforeRequest;[\s\S]{0,160}if \(!result\.ok && !canonicalResolutionCommitted\)/, "A terminal Fast resolution that mutates the canonical timeline must still be committed to its branch.");
+assert.match(html, /async function executeLiveManualFast[\s\S]{0,1800}syncManualBranchAfterAction\(result\.action \|\| \{/, "A terminal Fast resolution must persist its branch even when the runtime has no successful action envelope.");
 assert.match(html, /function exitLiveManualMode\(\)\s*\{\s*clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function openStoredManualScenario[\s\S]{0,180}clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function manualTechnicalIssuesMarkup/);
@@ -597,7 +600,7 @@ assert.match(html, /function manualDreComparisonShortcutEligibleEventIndexes\(\)
 assert.match(html, /function createManualDreComparisonShortcut\(\)[\s\S]{0,1000}branchALabel: "Normal Resolution"[\s\S]{0,120}branchBLabel: "DRE Resolution"/, "The shortcut must create the named normal and DRE branches.");
 assert.match(html, /function createManualDreComparisonShortcut\(\)[\s\S]{0,1300}setTechnicalReviewMode\(window\.PvPeakTechnicalReview\.ISSUE_TYPES\.DRE/, "The DRE branch must enter the existing reconstruction selection flow.");
 assert.match(html, /function createManualScenarioComparisonFromCurrent\(options = \{\}\)[\s\S]{0,2600}COMMAND_TYPE\.CREATE_COMPARISON/, "Generic and DRE comparison creation must share the atomic comparison command.");
-assert.match(html, /const runtimeState = active[\s\S]{0,180}previousBranch\?\.runtimeState \|\| manualRuntimeSnapshotForBranch\(branch\)/, "An inactive comparison outcome must retain its own canonical runtime while the other branch rewinds.");
+assert.match(html, /const runtimeState = active[\s\S]{0,220}branch\.runtimeState \|\| previousBranch\?\.runtimeState \|\| manualRuntimeSnapshotForBranch\(branch\)/, "An inactive comparison outcome must retain its own canonical runtime while the other branch rewinds.");
 assert.match(html, /const sourceBranch = manualBranchRegistry\?\.branches\?\.\[sourceBranchId\][\s\S]{0,1200}sourceBranch\?\.comparisonId[\s\S]{0,500}COMMAND_TYPE\.UPDATE_BRANCH/, "Technical reconstruction inside a comparison must update its existing branch.");
 assert.match(html, /Select the Fast Move affected by the one-turn lag\./);
 assert.match(html, /Select the Fast Move that created the DRE window\./);

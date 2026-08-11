@@ -32,6 +32,7 @@
       createdAt: input.createdAt || new Date().toISOString(),
       edits: clone(input.edits || []),
       timelineModel: clone(input.timelineModel || null),
+      runtimeState: clone(input.runtimeState || null),
       terminalResult: clone(input.terminalResult ?? input.timelineModel?.terminalResult ?? null),
       stateHash: input.stateHash || input.timelineModel?.events?.at(-1)?.stateHashAfter || input.timelineModel?.initialStateHash || null,
       classification: input.classification || "CANONICAL",
@@ -121,6 +122,7 @@
             createdAt: definition.createdAt || payload.createdAt,
             edits: [],
             timelineModel: payload.timelineModel || parent.timelineModel,
+            runtimeState: definition.runtimeState || payload.runtimeState || parent.runtimeState,
             terminalResult: payload.terminalResult ?? parent.terminalResult,
             stateHash: payload.stateHash || parent.stateHash,
             classification: "COMPARISON_BRANCH",
@@ -174,6 +176,9 @@
         if (!target) throw new Error("BRANCH_NOT_FOUND");
         if (target.branchId === ORIGINAL_BRANCH_ID) throw new Error("ORIGINAL_BRANCH_IMMUTABLE");
         target.timelineModel = clone(payload.timelineModel);
+        if (Object.prototype.hasOwnProperty.call(payload, "runtimeState")) {
+          target.runtimeState = clone(payload.runtimeState);
+        }
         target.terminalResult = clone(payload.terminalResult ?? payload.timelineModel?.terminalResult ?? null);
         target.edits = [...(target.edits || []), clone(payload.edit)].filter(Boolean);
         target.stateHash = payload.stateHash || payload.timelineModel?.events?.at(-1)?.stateHashAfter || payload.timelineModel?.initialStateHash || null;

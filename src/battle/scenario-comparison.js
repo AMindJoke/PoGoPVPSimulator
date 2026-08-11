@@ -173,6 +173,17 @@
     return Math.max(runtimeTurn, eventTurn);
   }
 
+  function comparisonWinner(branch, pokemon) {
+    const terminalWinner = branch.terminalResult?.winner;
+    if (["A", "B", "tie"].includes(terminalWinner)) return terminalWinner;
+    const activeA = pokemon.A.active;
+    const activeB = pokemon.B.active;
+    if (!activeA && !activeB) return "tie";
+    if (!activeA && activeB) return "B";
+    if (activeA && !activeB) return "A";
+    return null;
+  }
+
   function semanticEventValue(event = {}) {
     return {
       kind: event.kind || null,
@@ -300,7 +311,7 @@
           A: combatantSummary(branch.runtimeState, "A"),
           B: combatantSummary(branch.runtimeState, "B")
         };
-        const winner = branch.terminalResult?.winner;
+        const winner = comparisonWinner(branch, pokemon);
         const outcome = winner === "tie"
           ? "Draw"
           : ["A", "B"].includes(winner)
