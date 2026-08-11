@@ -5570,6 +5570,40 @@
     .manual-mobile-battle-state-nav { display: none; }
     .manual-hud-status,
     .manual-hud-mobile-actor { display: none; }
+    .manual-hud-pokemon-picker,
+    .manual-hud-matchup-done { display: none; }
+    @media (min-width: 901px) {
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker {
+        display: block;
+        flex: 1 1 180px;
+        min-width: 120px;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-name,
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-status {
+        display: none;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker input {
+        width: 100%;
+        min-height: 30px;
+        padding: 4px 8px;
+        border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+        border-radius: 7px;
+        background: var(--panel);
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-pokemon-picker input:focus {
+        outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+        outline-offset: 1px;
+      }
+      body[data-view="scenario-review"].manual-mode-active.scenario-matchup-editing .manual-hud-matchup-done {
+        display: inline-flex;
+        min-height: 27px;
+        padding: 3px 9px;
+        font-size: 9px;
+      }
+    }
     .manual-hud-sprite {
       width: 52px;
       height: 52px;
@@ -12281,6 +12315,7 @@
               <img id="manualHudSpriteA" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
+                  <label class="manual-hud-pokemon-picker" aria-label="Change Pokemon A"><input id="manualHudPokemonSearchA" type="search" list="manualHudPokemonOptions" autocomplete="off" placeholder="Choose Pokemon A"></label>
                   <strong id="manualHudNameA" class="manual-hud-name">Pokemon A</strong>
                   <span id="manualHudStatusA" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesA" class="manual-hud-types" aria-label="Pokemon A types"></span>
@@ -12303,11 +12338,13 @@
               <em id="manualHudActor">Choose an action</em>
               <em id="manualHudMobileActor" class="manual-hud-mobile-actor">A or B</em>
               <em id="manualHudComparisonView" class="manual-hud-comparison-view" hidden>Viewing: Branch A</em>
+              <button id="manualHudMatchupDone" class="manual-hud-matchup-done" type="button">Done</button>
             </div>
             <article class="manual-hud-side" data-side="B" data-manual-hud-side="B" role="button" tabindex="0" aria-controls="manualStateInspector" aria-expanded="false" aria-label="Open Pokemon B Battle State">
               <img id="manualHudSpriteB" class="manual-hud-sprite" alt="">
               <div class="manual-hud-copy">
                 <div class="manual-hud-name-row">
+                  <label class="manual-hud-pokemon-picker" aria-label="Change Pokemon B"><input id="manualHudPokemonSearchB" type="search" list="manualHudPokemonOptions" autocomplete="off" placeholder="Choose Pokemon B"></label>
                   <strong id="manualHudNameB" class="manual-hud-name">Pokemon B</strong>
                   <span id="manualHudStatusB" class="manual-hud-status" data-state="active">Active</span>
                   <span id="manualHudTypesB" class="manual-hud-types" aria-label="Pokemon B types"></span>
@@ -12327,6 +12364,7 @@
               <label aria-label="Pokemon A shields"><span id="manualMobileShieldControlA" class="manual-hud-shield-control" role="group" aria-label="Pokemon A shields"></span></label>
               <label aria-label="Pokemon B shields"><span id="manualMobileShieldControlB" class="manual-hud-shield-control" role="group" aria-label="Pokemon B shields"></span></label>
             </div>
+            <datalist id="manualHudPokemonOptions"></datalist>
           </div>
           <div id="manualDecisionPanel" class="manual-decision-panel">
             <div id="manualDecisionBanner" class="manual-decision-banner">
@@ -12914,6 +12952,7 @@
     let scenarioState = null;
     let scenarioReviewMode = window.PvPeakManualBattleState?.REVIEW_MODE?.MANUAL || "manual";
     let scenarioManualEntryPending = false;
+    let manualMatchupEditMode = false;
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13391,7 +13430,7 @@
       });
       document.querySelectorAll("[data-manual-hud-side]").forEach(hud => {
         hud.onclick = event => {
-          if (event.target.closest("button")) return;
+          if (event.target.closest("button,input,select,label")) return;
           openManualMobileBattleState(hud.dataset.manualHudSide);
         };
         hud.onkeydown = event => {
@@ -13400,6 +13439,22 @@
           openManualMobileBattleState(hud.dataset.manualHudSide);
         };
       });
+      ["A", "B"].forEach(side => {
+        const input = $(`manualHudPokemonSearch${side}`);
+        if (!input) return;
+        input.onchange = () => applyManualHudPokemonSelection(side);
+        input.onkeydown = event => {
+          if (event.key === "Escape") {
+            syncManualHudPokemonPicker(side);
+            input.blur();
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            applyManualHudPokemonSelection(side);
+          }
+        };
+      });
+      $("manualHudMatchupDone").onclick = () => setManualMatchupEditMode(false);
       document.querySelectorAll("[data-manual-battle-state-side]").forEach(button => {
         button.onclick = () => setManualMobileBattleStateSide(button.dataset.manualBattleStateSide, { focus: true });
       });
@@ -14047,7 +14102,10 @@
       const next = supportedViews.has(view) ? view : "simulator";
       const previous = document.body.dataset.view;
       document.body.dataset.view = next;
-      if (next !== "scenario-review") document.body.classList.remove("scenario-manual-setup");
+      if (next !== "scenario-review") {
+        document.body.classList.remove("scenario-manual-setup", "scenario-matchup-editing");
+        manualMatchupEditMode = false;
+      }
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.classList.toggle("active", button.dataset.viewTarget === next);
       });
@@ -17540,6 +17598,8 @@
       manualMobileReviewTab = "moves";
       manualMobileBattleStateSide = null;
       manualSessionControlMode = null;
+      manualMatchupEditMode = false;
+      document.body.classList.remove("scenario-matchup-editing");
       if ($("manualStartPoint")) $("manualStartPoint").value = "battle-start";
       selectedTimelineIndex = null;
       add("Returned to the immutable automatic timeline.", "info");
@@ -19153,8 +19213,65 @@
       updateManualTimelineEventMenu();
     }
 
+    function refreshManualHudPokemonOptions() {
+      const options = $("manualHudPokemonOptions");
+      if (!options || !Array.isArray(allPokemon)) return;
+      const signature = `${allPokemon.length}:${allPokemon[0]?.id || ""}:${allPokemon.at(-1)?.id || ""}`;
+      if (options.dataset.signature === signature) return;
+      options.innerHTML = allPokemon.map(pokemon => `<option value="${escapeHtml(displayName(pokemon))}" label="${escapeHtml(pokemonPickerMeta(pokemon))}"></option>`).join("");
+      options.dataset.signature = signature;
+    }
+
+    function syncManualHudPokemonPicker(side) {
+      const prefix = side === "B" ? "p2" : "p1";
+      const input = $(`manualHudPokemonSearch${side}`);
+      if (!input || document.activeElement === input) return;
+      const pokemon = findPokemon($(`${prefix}Pokemon`)?.value);
+      input.value = pokemon ? displayName(pokemon) : "";
+      input.setCustomValidity("");
+    }
+
+    function applyManualHudPokemonSelection(side) {
+      if (!manualMatchupEditMode || !window.matchMedia("(min-width: 901px)").matches) return false;
+      const prefix = side === "B" ? "p2" : "p1";
+      const input = $(`manualHudPokemonSearch${side}`);
+      const query = normalizeSearchText(input?.value || "");
+      const pokemon = allPokemon.find(candidate =>
+        normalizeSearchText(candidate.id) === query || normalizeSearchText(displayName(candidate)) === query
+      );
+      if (!pokemon) {
+        input?.setCustomValidity("Choose a Pokemon from the list.");
+        input?.reportValidity();
+        return false;
+      }
+      input.setCustomValidity("");
+      manualMatchupEditMode = true;
+      selectPokemon(prefix, pokemon.id, true);
+      return true;
+    }
+
+    function setManualMatchupEditMode(enabled, { renderNow = true, focusSide = null } = {}) {
+      manualMatchupEditMode = !!enabled
+        && document.body.dataset.view === "scenario-review"
+        && window.matchMedia("(min-width: 901px)").matches;
+      document.body.classList.toggle("scenario-matchup-editing", manualMatchupEditMode);
+      if (renderNow) render();
+      if (manualMatchupEditMode && focusSide) {
+        requestAnimationFrame(() => $(`manualHudPokemonSearch${focusSide}`)?.focus({ preventScroll: true }));
+      }
+      return manualMatchupEditMode;
+    }
+
     function renderManualDuelHud() {
       if (!manualModeState?.enabled || !left || !right) return;
+      const matchupEditing = manualMatchupEditMode
+        && document.body.dataset.view === "scenario-review"
+        && window.matchMedia("(min-width: 901px)").matches;
+      document.body.classList.toggle("scenario-matchup-editing", matchupEditing);
+      refreshManualHudPokemonOptions();
+      syncManualHudPokemonPicker("A");
+      syncManualHudPokemonPicker("B");
+      if ($("manualHudMatchupDone")) $("manualHudMatchupDone").disabled = !setupReadyForBattle();
       const runtimeStatus = manualRuntimeStatusPresentation();
       const pending = manualModeState.pendingDecision || {};
       const activeSide = pending.activeSide
@@ -19170,6 +19287,11 @@
       const renderSide = (side, combatant) => {
         const sideElement = document.querySelector(`.manual-hud-side[data-side="${side}"]`);
         sideElement?.classList.toggle("is-active-decision", activeSide === side);
+        if (sideElement) {
+          sideElement.setAttribute("role", matchupEditing ? "group" : "button");
+          sideElement.tabIndex = matchupEditing ? -1 : 0;
+          sideElement.setAttribute("aria-label", matchupEditing ? `Choose Pokemon ${side}` : `Open Pokemon ${side} Battle State`);
+        }
         const sprite = $(`manualHudSprite${side}`);
         if (sprite) setPokemonImage(sprite, combatant.p);
         if ($(`manualHudName${side}`)) $(`manualHudName${side}`).textContent = combatant.p?.name || `Pokemon ${side}`;
@@ -20113,9 +20235,12 @@
         const unavailable = !enabled
           || originalActive
           || battleEnded()
+          || manualMatchupEditMode
           || manualModeState.status === window.PvPeakManualMode.STATUS.RESOLVING;
         $("manualResumeAuto").disabled = unavailable;
-        $("manualResumeAuto").title = originalActive
+        $("manualResumeAuto").title = manualMatchupEditMode
+          ? "Finish choosing both Pokemon before continuing the battle."
+          : originalActive
           ? "The original result is read-only. Select an editable timeline version first."
           : battleEnded()
             ? "This timeline version has already reached the end of the battle."
@@ -20205,6 +20330,15 @@
             button.disabled = true;
             button.classList.remove("build-available");
             button.title = "The original simulation is read-only. Select an editable scenario to act.";
+          });
+        }
+        if (manualMatchupEditMode) {
+          ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
+            const button = $(id);
+            if (!button) return;
+            button.disabled = true;
+            button.classList.remove("build-available");
+            button.title = "Finish choosing both Pokemon before selecting a move.";
           });
         }
       }
@@ -24445,10 +24579,24 @@
 
     function resetForManualBattle() {
       if (!setupReadyForBattle()) return;
+      const keepDesktopScenarioWorkspace = document.body.dataset.view === "scenario-review"
+        && scenarioReviewMode === "manual"
+        && window.matchMedia("(min-width: 901px)").matches;
       document.body.classList.add("battle-results-visible");
       exitPreviewMode();
       endScenarioReview({ renderNow: false });
-      startBattle();
+      if (keepDesktopScenarioWorkspace) {
+        manualMatchupEditMode = true;
+        document.body.classList.add("scenario-matchup-editing");
+        startBattle({ skipRender: true });
+        ensureScenarioReviewWorkspaceMode();
+        render();
+        requestAnimationFrame(() => $("manualHudPokemonSearchA")?.focus({ preventScroll: true }));
+      } else {
+        manualMatchupEditMode = false;
+        document.body.classList.remove("scenario-matchup-editing");
+        startBattle();
+      }
       scrollTimelineIntoView();
     }
 
