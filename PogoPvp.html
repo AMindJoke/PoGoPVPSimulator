@@ -7391,6 +7391,26 @@
     .timeline-move-tooltip.show {
       opacity: 1;
     }
+    .manual-comparison-move-tooltip {
+      position: fixed;
+      z-index: 760;
+      min-width: 158px;
+      max-width: 220px;
+      background: color-mix(in srgb, var(--panel) 92%, var(--soft));
+      border-color: var(--line);
+      color: var(--text);
+    }
+    .timeline-move-tooltip span.timeline-tooltip-state {
+      margin-top: 3px;
+      padding-top: 3px;
+      border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      font-weight: 750;
+    }
+    .timeline-move-tooltip span.timeline-tooltip-state + span.timeline-tooltip-state {
+      margin-top: 0;
+      padding-top: 1px;
+      border-top: 0;
+    }
     body[data-theme="dark"] .timeline-scroll,
     body[data-theme="dark"] .timeline-track {
       background: var(--soft);
@@ -18057,11 +18077,35 @@
           ? kind === "technical-dre" ? "DRE" : "+1T"
           : event.move?.name || event.label || title(kind);
         const description = manualComparisonEventLabel(event);
+        const tooltipSummary = timelineMoveSummary(event);
         const kindClass = isTechnical ? "is-technical" : isShield ? "is-shield" : kind === "charge" ? "is-charge" : "is-fast";
         const left = Math.max(1, Math.min(99, turn / Math.max(1, maxTurn) * 100));
         const eventTop = (trainer === "A" ? 14 : 36) + Math.min(1, stack) * 9;
-        return `<span class="manual-comparison-fork-event ${kindClass}${event.firstDivergence ? " is-first" : ""}" role="listitem" aria-label="Turn ${turn}, ${escapeHtml(description)}${event.firstDivergence ? ", first divergence" : ""}" title="T${turn} - ${escapeHtml(description)}" style="--event-left:${left}%;--event-top:${eventTop}px;--event-color:${color};--event-text:${textColor}"><span>${escapeHtml(label)}</span></span>`;
+        return `<span class="manual-comparison-fork-event ${kindClass}${event.firstDivergence ? " is-first" : ""}" role="listitem" aria-label="Turn ${turn}, ${escapeHtml(description)}${event.firstDivergence ? ", first divergence" : ""}" data-timeline-tooltip="${escapeHtml(tooltipSummary)}" style="--event-left:${left}%;--event-top:${eventTop}px;--event-color:${color};--event-text:${textColor}"><span>${escapeHtml(label)}</span></span>`;
       }).join("");
+    }
+
+    function updateManualComparisonMoveTooltip(event) {
+      const token = event.target.closest(".manual-comparison-fork-event[data-timeline-tooltip]");
+      const tooltip = $("manualComparisonMoveTooltip");
+      if (!token || !tooltip) {
+        hideManualComparisonMoveTooltip();
+        return;
+      }
+      const rect = token.getBoundingClientRect();
+      const clientX = Number.isFinite(Number(event.clientX)) && Number(event.clientX) > 0 ? Number(event.clientX) : rect.right;
+      const clientY = Number.isFinite(Number(event.clientY)) && Number(event.clientY) > 0 ? Number(event.clientY) : rect.top;
+      tooltip.innerHTML = timelineTooltipSummaryHtml(token.dataset.timelineTooltip || "Battle event");
+      tooltip.classList.add("show");
+      const width = tooltip.offsetWidth || 190;
+      const height = tooltip.offsetHeight || 92;
+      const x = Math.max(8, Math.min(window.innerWidth - width - 8, clientX + 10));
+      const y = Math.max(8, Math.min(window.innerHeight - height - 8, clientY - height - 8));
+      tooltip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+
+    function hideManualComparisonMoveTooltip() {
+      $("manualComparisonMoveTooltip")?.classList.remove("show");
     }
 
     function manualComparisonForkLabel(branch, activeBranchId) {
@@ -18228,10 +18272,17 @@
               </div>
             </div>
           </div>
-        </section>`;
+        </section><div id="manualComparisonMoveTooltip" class="timeline-move-tooltip manual-comparison-move-tooltip" role="tooltip"></div>`;
       panel.querySelectorAll("[data-comparison-branch-id]").forEach(button => {
         button.onclick = () => switchLiveManualBranch(button.dataset.comparisonBranchId);
       });
+      panel.onpointerover = updateManualComparisonMoveTooltip;
+      panel.onpointermove = updateManualComparisonMoveTooltip;
+      panel.onpointerout = event => {
+        const token = event.target.closest(".manual-comparison-fork-event[data-timeline-tooltip]");
+        if (token && (!event.relatedTarget || !token.contains(event.relatedTarget))) hideManualComparisonMoveTooltip();
+      };
+      panel.onpointerleave = hideManualComparisonMoveTooltip;
     }
 
     async function createManualScenarioComparison() {
@@ -28466,7 +28517,7 @@
         return;
       }
       const timelineEvent = timeline[Number(block.dataset.eventIndex)];
-      if (!timelineEvent || !["fast", "charge", "shield", "form-protect"].includes(timelineEvent.kind)) {
+      if (!timelineEvent || !["fast", "charge", "shield", "form-protect", "technical-lag", "technical-dre"].includes(timelineEvent.kind)) {
         hideTimelineMoveTooltip();
         return;
       }
@@ -28843,35 +28894,66 @@
     }
 
     function timelineMoveTooltipHtml(event, isSwipe = false) {
-      const lines = timelineMoveSummary(event, isSwipe).split("\n");
+      return timelineTooltipSummaryHtml(timelineMoveSummary(event, isSwipe));
+    }
+
+    function timelineTooltipSummaryHtml(summary) {
+      const lines = String(summary || "").split("\n");
       return `<strong>${escapeHtml(lines[0] || "")}</strong>` +
-        lines.slice(1).filter(Boolean).map(line => `<span>${escapeHtml(line)}</span>`).join("");
+        lines.slice(1).filter(Boolean).map(line => `<span${line.startsWith("A · ") || line.startsWith("B · ") ? ' class="timeline-tooltip-state"' : ""}>${escapeHtml(line)}</span>`).join("");
+    }
+
+    function timelineStatePokemonName(side, state) {
+      const pokemonId = state?.pokemonId || null;
+      const combatant = side === "A" ? left : right;
+      const catalogName = pokemonId ? combatant?.formCatalog?.[pokemonId]?.p?.name : null;
+      const mappedName = pokemonId ? pokemonMap.get(pokemonId)?.name : null;
+      return catalogName || mappedName || combatant?.p?.name || `Pokemon ${side}`;
+    }
+
+    function timelineStateSummaryLines(event) {
+      const state = event?.state || event?.stateAfter || event?.stateBefore || null;
+      return ["A", "B"].flatMap(side => {
+        const sideState = state?.[side];
+        if (!sideState) return [];
+        const hp = Math.max(0, Number(sideState.hp || 0));
+        const maxHp = Math.max(hp, Number(sideState.maxHp || (side === "A" ? left?.maxHp : right?.maxHp) || hp));
+        const energy = Math.max(0, Number(sideState.energy || 0));
+        return [`${side} · ${timelineStatePokemonName(side, sideState)}: ${hp}/${maxHp} HP · ${energy} energy`];
+      });
     }
 
     function timelineMoveSummary(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
-      if (event.source === "judge-manual") return [event.label || "Judge edit", "Manual reconstruction"].join("\n");
+      const stateLines = timelineStateSummaryLines(event);
+      if (event.source === "judge-manual") return [event.label || "Judge edit", "Manual reconstruction", ...stateLines].join("\n");
+      if (event.kind === "technical-lag" || event.kind === "technical-dre") {
+        return [event.label || (event.kind === "technical-lag" ? "One-Turn Lag" : "DRE"), "Technical reconstruction", ...stateLines].join("\n");
+      }
       if (event.kind === "shield") {
         return [
           "Shield",
           event.move?.name ? `${event.move.name} blocked` : "Charged Move blocked",
-          `${event.absorbedDamage || 0} damage absorbed`
+          `${event.absorbedDamage || 0} damage absorbed`,
+          ...stateLines
         ].join("\n");
       }
       if (event.kind === "form-protect") {
         return [
           "Disguise broken",
-          `${event.absorbedDamage || 0} damage absorbed`
+          `${event.absorbedDamage || 0} damage absorbed`,
+          ...stateLines
         ].join("\n");
       }
-      if (!event.move) return "Battle event";
+      if (!event.move) return [event.label || "Battle event", ...stateLines].join("\n");
       const energy = event.kind === "fast"
         ? `+${event.move.energyGain || 0} energy`
         : `-${event.move.energyCost || 0} energy`;
       return [
         event.move.name,
         `${event.damage || 0} damage`,
-        energy
+        energy,
+        ...stateLines
       ].join("\n");
     }
 

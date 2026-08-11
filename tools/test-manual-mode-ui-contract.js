@@ -30,6 +30,10 @@ assert.match(html, /\$\{technicalFork\.type\} diverges at Turn \$\{forkTurn\} on
 assert.match(html, /\(!divergence \|\| Number\(event\.start \|\| 0\) < forkTurn\) && \(technicalFork \|\| event\.difference === "shared"\)/, "Shared history must stop permanently at the first divergence.");
 assert.match(html, /visibleComparisonEvent\(event\) && !!divergence && Number\(event\.start \|\| 0\) >= forkTurn/, "Every visible post-divergence event must be rendered inside its own branch even when semantically repeated.");
 assert.match(html, /manual-comparison-fork-event\.is-fast\s*\{[^}]*width: 14px/, "Fast Moves must remain compact timeline tokens instead of overlapping text labels.");
+assert.match(html, /function timelineStateSummaryLines\(event\)[\s\S]{0,900}`\$\{side\} · \$\{timelineStatePokemonName\(side, sideState\)\}: \$\{hp\}\/\$\{maxHp\} HP · \$\{energy\} energy`/, "Timeline hover details must expose both Pokemon HP and energy at the selected event state.");
+assert.match(html, /\["fast", "charge", "shield", "form-protect", "technical-lag", "technical-dre"\]/, "Manual timeline hover details must cover normal and technical battle events.");
+assert.match(html, /data-timeline-tooltip="\$\{escapeHtml\(tooltipSummary\)\}"/, "Branched comparison events must carry the same timeline state summary.");
+assert.match(html, /id="manualComparisonMoveTooltip" class="timeline-move-tooltip manual-comparison-move-tooltip"/, "Scenario Comparison must render a dedicated unclipped hover tooltip.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [
@@ -532,7 +536,7 @@ assert.match(html, /function setTimelineReplayRangeProgress/);
 assert.match(html, /The original simulation remains unchanged/);
 assert.match(html, /actionType: "RESUME_AUTO"/);
 assert.match(html, /function timelineMoveSummary/);
-assert.match(html, /timelineMoveSummary\(event, isSwipe\)\.split/);
+assert.match(html, /timelineTooltipSummaryHtml\(timelineMoveSummary\(event, isSwipe\)\)/);
 assert.match(html, /\$\{event\.move\.name\} blocked/);
 assert.match(html, /\+\$\{event\.move\.energyGain \|\| 0\} energy/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
