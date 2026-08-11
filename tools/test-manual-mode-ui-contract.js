@@ -23,7 +23,11 @@ assert.match(html, /manual-comparison-fork-viewport\s*\{[^}]*overflow-x: auto/, 
 assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,900}manual-comparison-fork-grid/, "The branched comparison must retain a dedicated compact mobile layout.");
 assert.match(html, /const visibleComparisonEvent = event => !event\.hiddenFromTimeline/, "Hidden judge setup edits must not pollute the visual branch timeline.");
 assert.match(html, /const forkTurn = divergence \? Math\.max\(0, Number\(divergence\.turn \|\| 0\)\) : branchPointTurn/, "Hidden judge edits must not push the visual split beyond the actual first divergent battle turn.");
-assert.match(html, /event\.difference === "shared" && \(!divergence \|\| Number\(event\.start \|\| 0\) < forkTurn\)/, "Shared history must stop permanently at the first divergence.");
+assert.match(html, /function manualComparisonTechnicalFork\(comparison, viewModel\)[\s\S]{0,1800}selectedEventId[\s\S]{0,900}actionOrdinal/, "A technical comparison must recover its selected Fast Move instead of using incidental runtime-state differences.");
+assert.match(html, /const technicalFork = manualComparisonTechnicalFork\(comparison, viewModel\);[\s\S]{0,100}const divergence = technicalFork \|\| semanticDivergence/, "DRE and 1-Turn Lag targets must take priority over generic semantic divergence.");
+assert.match(html, /technicalFork \|\| event\.difference === "shared"/, "All visible actions before an explicit technical issue must remain in shared history.");
+assert.match(html, /\$\{technicalFork\.type\} diverges at Turn \$\{forkTurn\} on \$\{technicalFork\.moveName\}/, "The branch header must identify the actual technical issue point and affected Fast Move.");
+assert.match(html, /\(!divergence \|\| Number\(event\.start \|\| 0\) < forkTurn\) && \(technicalFork \|\| event\.difference === "shared"\)/, "Shared history must stop permanently at the first divergence.");
 assert.match(html, /visibleComparisonEvent\(event\) && !!divergence && Number\(event\.start \|\| 0\) >= forkTurn/, "Every visible post-divergence event must be rendered inside its own branch even when semantically repeated.");
 assert.match(html, /manual-comparison-fork-event\.is-fast\s*\{[^}]*width: 14px/, "Fast Moves must remain compact timeline tokens instead of overlapping text labels.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);

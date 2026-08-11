@@ -18072,6 +18072,33 @@
       </button>`;
     }
 
+    function manualComparisonTechnicalFork(comparison, viewModel) {
+      const technicalBranch = comparison.branches.find(branch => (branch.edits || []).some(edit => ["INSERT_DRE", "INSERT_LAG"].includes(edit?.type)));
+      if (!technicalBranch) return null;
+      const edit = [...(technicalBranch.edits || [])].reverse().find(candidate => ["INSERT_DRE", "INSERT_LAG"].includes(candidate?.type));
+      const issue = edit?.issue || null;
+      if (!issue) return null;
+      const normalBranch = comparison.branches.find(branch => branch.slot !== technicalBranch.slot) || comparison.branches[0];
+      const normalEvents = [...(comparison.base?.events || []), ...(normalBranch?.events || [])];
+      const selectedEventId = issue.selectedEventId || null;
+      let target = selectedEventId
+        ? normalEvents.find(event => (event.timelineEventId || event.id) === selectedEventId)
+        : null;
+      if (!target && Number(issue.actionOrdinal || 0) > 0) {
+        target = normalEvents
+          .filter(event => event.kind === "fast" && event.trainer === issue.trainer && (!issue.energyFastName || event.move?.name === issue.energyFastName))
+          [Number(issue.actionOrdinal) - 1] || null;
+      }
+      const technicalProjection = viewModel.branches.find(branch => branch.slot === technicalBranch.slot);
+      const technicalEvent = (technicalProjection?.events || []).find(event => ["technical-dre", "technical-lag"].includes(event.kind));
+      return {
+        type: edit.type === "INSERT_DRE" ? "DRE" : "1-Turn Lag",
+        slot: technicalBranch.slot,
+        turn: Math.max(0, Number(target?.start ?? issue.turn ?? technicalEvent?.start ?? 0)),
+        moveName: issue.energyFastName || issue.moveName || target?.move?.name || "Fast Move"
+      };
+    }
+
     function renderManualComparisonPanelLegacy() {
       const panel = $("manualComparisonPanel");
       const comparison = manualScenarioComparison;
@@ -18157,7 +18184,9 @@
       manualMobileComparisonView = activeComparisonSlot;
       const timelineStage = $("manualTimelineStage");
       if (timelineStage) timelineStage.dataset.mobileComparisonView = activeComparisonSlot;
-      const divergence = viewModel.difference?.firstDivergence || null;
+      const semanticDivergence = viewModel.difference?.firstDivergence || null;
+      const technicalFork = manualComparisonTechnicalFork(comparison, viewModel);
+      const divergence = technicalFork || semanticDivergence;
       const forkTurn = divergence ? Math.max(0, Number(divergence.turn || 0)) : branchPointTurn;
       const allEvents = viewModel.branches.flatMap(branch => branch.events || []);
       const maxTurn = Math.max(
@@ -18168,12 +18197,16 @@
       const forkLeft = Math.max(2, Math.min(96, forkTurn / Math.max(1, maxTurn) * 100));
       const visibleComparisonEvent = event => !event.hiddenFromTimeline;
       const sharedContinuation = (viewModel.branches.find(branch => branch.slot === "A")?.events || [])
-        .filter(event => visibleComparisonEvent(event) && event.difference === "shared" && (!divergence || Number(event.start || 0) < forkTurn));
-      const sharedEvents = [...viewModel.sharedEvents.filter(visibleComparisonEvent), ...sharedContinuation];
+        .filter(event => visibleComparisonEvent(event) && (!divergence || Number(event.start || 0) < forkTurn) && (technicalFork || event.difference === "shared"));
+      const sharedEvents = [...viewModel.sharedEvents.filter(visibleComparisonEvent), ...sharedContinuation]
+        .map(event => ({ ...event, firstDivergence: false }));
       const branchEvents = slot => (viewModel.branches.find(branch => branch.slot === slot)?.events || [])
-        .filter(event => visibleComparisonEvent(event) && !!divergence && Number(event.start || 0) >= forkTurn);
-      const divergenceText = divergence
-        ? `First divergence at Turn ${forkTurn}: A ${divergence.A ? manualComparisonEventLabel(divergence.A) : "has no corresponding event"}; B ${divergence.B ? manualComparisonEventLabel(divergence.B) : "has no corresponding event"}.`
+        .filter(event => visibleComparisonEvent(event) && !!divergence && Number(event.start || 0) >= forkTurn)
+        .map(event => ({ ...event, firstDivergence: Number(event.start || 0) === forkTurn }));
+      const divergenceText = technicalFork
+        ? `${technicalFork.type} diverges at Turn ${forkTurn} on ${technicalFork.moveName}; Branch ${technicalFork.slot} contains the technical reconstruction.`
+        : divergence
+          ? `First divergence at Turn ${forkTurn}: A ${divergence.A ? manualComparisonEventLabel(divergence.A) : "has no corresponding event"}; B ${divergence.B ? manualComparisonEventLabel(divergence.B) : "has no corresponding event"}.`
         : `No divergence yet. Both branches still resolve identically from Turn ${branchPointTurn}.`;
       const branchA = viewModel.branches.find(branch => branch.slot === "A");
       const branchB = viewModel.branches.find(branch => branch.slot === "B");
