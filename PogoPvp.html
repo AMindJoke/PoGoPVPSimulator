@@ -6250,7 +6250,7 @@
       padding: 5px 7px 7px;
     }
     .manual-comparison-fork-labels,
-    .manual-comparison-fork-tracks { display: grid; grid-template-rows: repeat(3, 42px); min-width: 0; }
+    .manual-comparison-fork-tracks { display: grid; grid-template-rows: repeat(3, 54px); min-width: 0; }
     .manual-comparison-fork-label {
       display: flex;
       align-items: center;
@@ -6290,8 +6290,8 @@
     .manual-comparison-fork-connector {
       position: absolute;
       z-index: 1;
-      top: 21px;
-      bottom: 21px;
+      top: 27px;
+      bottom: 27px;
       left: var(--fork-left);
       width: 2px;
       transform: translateX(-1px);
@@ -6317,7 +6317,7 @@
       content: "";
       position: absolute;
       z-index: 0;
-      top: 20px;
+      top: 26px;
       height: 2px;
       border-radius: 999px;
       background: color-mix(in srgb, #77889a 62%, var(--line));
@@ -6328,14 +6328,14 @@
     .manual-comparison-fork-event {
       position: absolute;
       z-index: 2;
-      top: calc(15px + var(--event-stack, 0) * 10px);
+      top: var(--event-top, 18px);
       left: var(--event-left);
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      min-width: 12px;
-      max-width: 82px;
-      height: 14px;
+      min-width: 14px;
+      max-width: 76px;
+      height: 16px;
       padding: 1px 4px;
       transform: translate(-50%, -50%);
       overflow: hidden;
@@ -6344,14 +6344,16 @@
       background: color-mix(in srgb, var(--event-color) 76%, var(--panel));
       color: var(--event-text, #fff);
       box-shadow: 0 1px 2px rgba(23, 33, 47, .14);
-      font-size: 7px;
+      font-size: 8px;
       font-weight: 900;
       line-height: 1;
       white-space: nowrap;
     }
     .manual-comparison-fork-event > span { overflow: hidden; text-overflow: ellipsis; }
     .manual-comparison-fork-event::before { content: ""; width: 5px; height: 5px; flex: 0 0 5px; border: 1px solid currentColor; background: currentColor; }
-    .manual-comparison-fork-event.is-fast::before { border-radius: 1px; }
+    .manual-comparison-fork-event.is-fast { width: 14px; min-width: 14px; max-width: 14px; padding: 0; border-radius: 4px; }
+    .manual-comparison-fork-event.is-fast > span { display: none; }
+    .manual-comparison-fork-event.is-fast::before { width: 7px; height: 7px; flex-basis: 7px; border-radius: 1px; }
     .manual-comparison-fork-event.is-charge::before { border-radius: 50%; background: transparent; }
     .manual-comparison-fork-event.is-shield::before { transform: rotate(45deg); border-radius: 1px; }
     .manual-comparison-fork-event.is-technical { min-width: 26px; background: #8b3e82; color: #fff; }
@@ -18038,11 +18040,13 @@
     }
 
     function manualComparisonForkEventMarkup(events = [], maxTurn = 1) {
-      const eventsAtTurn = new Map();
+      const eventsAtTurnAndSide = new Map();
       return events.map(event => {
         const turn = Math.max(0, Number(event.start || 0));
-        const stack = eventsAtTurn.get(turn) || 0;
-        eventsAtTurn.set(turn, stack + 1);
+        const trainer = event.trainer === "B" ? "B" : "A";
+        const stackKey = `${turn}:${trainer}`;
+        const stack = eventsAtTurnAndSide.get(stackKey) || 0;
+        eventsAtTurnAndSide.set(stackKey, stack + 1);
         const kind = event.kind || "event";
         const isShield = kind === "shield" || kind === "form-protect";
         const isTechnical = kind === "technical-lag" || kind === "technical-dre";
@@ -18055,7 +18059,8 @@
         const description = manualComparisonEventLabel(event);
         const kindClass = isTechnical ? "is-technical" : isShield ? "is-shield" : kind === "charge" ? "is-charge" : "is-fast";
         const left = Math.max(1, Math.min(99, turn / Math.max(1, maxTurn) * 100));
-        return `<span class="manual-comparison-fork-event ${kindClass}${event.firstDivergence ? " is-first" : ""}" role="listitem" aria-label="Turn ${turn}, ${escapeHtml(description)}${event.firstDivergence ? ", first divergence" : ""}" title="T${turn} - ${escapeHtml(description)}" style="--event-left:${left}%;--event-stack:${Math.min(2, stack)};--event-color:${color};--event-text:${textColor}"><span>${escapeHtml(label)}</span></span>`;
+        const eventTop = (trainer === "A" ? 14 : 36) + Math.min(1, stack) * 9;
+        return `<span class="manual-comparison-fork-event ${kindClass}${event.firstDivergence ? " is-first" : ""}" role="listitem" aria-label="Turn ${turn}, ${escapeHtml(description)}${event.firstDivergence ? ", first divergence" : ""}" title="T${turn} - ${escapeHtml(description)}" style="--event-left:${left}%;--event-top:${eventTop}px;--event-color:${color};--event-text:${textColor}"><span>${escapeHtml(label)}</span></span>`;
       }).join("");
     }
 
@@ -18153,7 +18158,7 @@
       const timelineStage = $("manualTimelineStage");
       if (timelineStage) timelineStage.dataset.mobileComparisonView = activeComparisonSlot;
       const divergence = viewModel.difference?.firstDivergence || null;
-      const forkTurn = Math.max(branchPointTurn, Number(divergence?.turn ?? branchPointTurn));
+      const forkTurn = divergence ? Math.max(0, Number(divergence.turn || 0)) : branchPointTurn;
       const allEvents = viewModel.branches.flatMap(branch => branch.events || []);
       const maxTurn = Math.max(
         forkTurn + 4,
@@ -18161,11 +18166,12 @@
         ...allEvents.map(event => Number(event.start || 0) + Math.max(1, Number(event.duration || 1)))
       );
       const forkLeft = Math.max(2, Math.min(96, forkTurn / Math.max(1, maxTurn) * 100));
+      const visibleComparisonEvent = event => !event.hiddenFromTimeline;
       const sharedContinuation = (viewModel.branches.find(branch => branch.slot === "A")?.events || [])
-        .filter(event => event.difference === "shared");
-      const sharedEvents = [...viewModel.sharedEvents, ...sharedContinuation];
+        .filter(event => visibleComparisonEvent(event) && event.difference === "shared" && (!divergence || Number(event.start || 0) < forkTurn));
+      const sharedEvents = [...viewModel.sharedEvents.filter(visibleComparisonEvent), ...sharedContinuation];
       const branchEvents = slot => (viewModel.branches.find(branch => branch.slot === slot)?.events || [])
-        .filter(event => event.difference !== "shared");
+        .filter(event => visibleComparisonEvent(event) && !!divergence && Number(event.start || 0) >= forkTurn);
       const divergenceText = divergence
         ? `First divergence at Turn ${forkTurn}: A ${divergence.A ? manualComparisonEventLabel(divergence.A) : "has no corresponding event"}; B ${divergence.B ? manualComparisonEventLabel(divergence.B) : "has no corresponding event"}.`
         : `No divergence yet. Both branches still resolve identically from Turn ${branchPointTurn}.`;

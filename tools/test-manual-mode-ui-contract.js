@@ -21,6 +21,11 @@ assert.match(html, /manual-comparison-fork-event\.is-first/, "First divergent ev
 assert.match(html, /manualComparisonForkLabel\(branchA, activeBranchId\)[\s\S]{0,120}manualComparisonForkLabel\(branchB, activeBranchId\)/, "Both branch outcomes must remain directly selectable without a separate screen.");
 assert.match(html, /manual-comparison-fork-viewport\s*\{[^}]*overflow-x: auto/, "The full comparison must remain available through horizontal scrolling on narrow screens.");
 assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,900}manual-comparison-fork-grid/, "The branched comparison must retain a dedicated compact mobile layout.");
+assert.match(html, /const visibleComparisonEvent = event => !event\.hiddenFromTimeline/, "Hidden judge setup edits must not pollute the visual branch timeline.");
+assert.match(html, /const forkTurn = divergence \? Math\.max\(0, Number\(divergence\.turn \|\| 0\)\) : branchPointTurn/, "Hidden judge edits must not push the visual split beyond the actual first divergent battle turn.");
+assert.match(html, /event\.difference === "shared" && \(!divergence \|\| Number\(event\.start \|\| 0\) < forkTurn\)/, "Shared history must stop permanently at the first divergence.");
+assert.match(html, /visibleComparisonEvent\(event\) && !!divergence && Number\(event\.start \|\| 0\) >= forkTurn/, "Every visible post-divergence event must be rendered inside its own branch even when semantically repeated.");
+assert.match(html, /manual-comparison-fork-event\.is-fast\s*\{[^}]*width: 14px/, "Fast Moves must remain compact timeline tokens instead of overlapping text labels.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [
