@@ -82,7 +82,10 @@
       schemaVersion: SCHEMA_VERSION,
       league: normalizeLeague(input.league),
       team,
-      analysisConfig: clone(input.analysisConfig || { shields: "1-1", meta: null })
+      analysisConfig: {
+        shields: ["0-0", "1-1", "2-2"].includes(input.analysisConfig?.shields) ? input.analysisConfig.shields : "1-1",
+        meta: String(input.analysisConfig?.meta || "great-league-current")
+      }
     };
     const errors = validateState(state);
     if (errors.length) throw new Error(errors.join(","));
@@ -140,6 +143,13 @@
     return normalizeState({ ...clone(state), league });
   }
 
+  function setAnalysisConfig(state, changes = {}) {
+    return normalizeState({
+      ...clone(state),
+      analysisConfig: { ...clone(state.analysisConfig), ...clone(changes) }
+    });
+  }
+
   function validateState(state) {
     const errors = [];
     if (!state || typeof state !== "object") return ["TEAM_STATE_INVALID"];
@@ -172,6 +182,7 @@
     removeMember,
     updateMember,
     setLeague,
+    setAnalysisConfig,
     validateState
   });
 });

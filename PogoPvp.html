@@ -22,6 +22,7 @@
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
+  <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -1014,6 +1015,29 @@
     #teamBuilderView .team-builder-head { padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); color: var(--ink); box-shadow: 0 7px 20px var(--shadow); }
     #teamBuilderView .team-builder-head-copy > span { color: var(--accent); }
     #teamBuilderView .team-builder-head p { color: color-mix(in srgb, var(--muted) 88%, var(--ink)); }
+    .team-meta-setup { width: 100%; max-width: none; margin: 22px 0 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .team-meta-head { display: flex; align-items: start; justify-content: space-between; gap: 18px; margin-bottom: 15px; }
+    #teamBuilderView .team-meta-head { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
+    .team-meta-head h3 { margin: 0; font-size: 17px; }
+    .team-meta-head p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .team-meta-phase { padding: 4px 7px; border-radius: 999px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .team-meta-controls { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(250px, auto); gap: 18px; align-items: end; }
+    .team-meta-shields { display: grid; gap: 5px; }
+    .team-meta-shields > span { color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .team-meta-shield-options { display: grid; grid-template-columns: repeat(3, minmax(72px, 1fr)); gap: 6px; }
+    .team-meta-shield-options button { min-height: 40px; background: var(--subtle); color: var(--ink); }
+    .team-meta-shield-options button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .team-meta-roster { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--line); }
+    .team-meta-roster summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; color: var(--ink); font-size: 11px; font-weight: 900; list-style: none; }
+    #teamBuilderView .team-meta-roster summary { min-height: 36px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--subtle); color: var(--ink); box-shadow: none; }
+    .team-meta-roster summary::-webkit-details-marker { display: none; }
+    .team-meta-roster summary span { color: var(--muted); font-size: 9px; font-weight: 750; }
+    .team-meta-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; max-height: 280px; margin-top: 11px; overflow-y: auto; }
+    .team-meta-pokemon { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 7px; min-width: 0; padding: 6px 7px; border-radius: 8px; background: var(--subtle); }
+    .team-meta-pokemon img { width: 34px; height: 34px; object-fit: contain; }
+    .team-meta-pokemon img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.7)); }
+    .team-meta-pokemon span { overflow: hidden; font-size: 9px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .team-meta-status { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: 9px; font-weight: 750; }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -1035,6 +1059,9 @@
       .team-editor-identity { grid-template-columns: 64px minmax(0, 1fr); }
       .team-editor-identity img { width: 60px; height: 60px; }
       .team-shadow-toggle { grid-column: 1 / -1; width: 100%; }
+      .team-meta-setup { padding: 15px; }
+      .team-meta-controls { grid-template-columns: 1fr; gap: 12px; }
+      .team-meta-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 430px) {
       .team-roster-grid { grid-template-columns: 1fr; }
@@ -12811,6 +12838,15 @@
         <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderCount">0 of 6 selected</span></div>
         <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
+        <section class="team-meta-setup" aria-labelledby="teamMetaTitle">
+          <header class="team-meta-head"><div><h3 id="teamMetaTitle">Analysis setup</h3><p>Choose the competitive field and shield scenario to use in the next analysis phase.</p></div><span class="team-meta-phase">Definition only</span></header>
+          <div class="team-meta-controls">
+            <label class="team-builder-league"><span>Meta</span><select id="teamBuilderMeta" aria-label="Team Builder meta"></select></label>
+            <div class="team-meta-shields"><span>Shield scenario</span><div id="teamBuilderShieldScenarios" class="team-meta-shield-options" role="group" aria-label="Shield scenario"></div></div>
+          </div>
+          <details class="team-meta-roster"><summary>Current meta roster <span id="teamBuilderMetaCount">Loading…</span></summary><div id="teamBuilderMetaList" class="team-meta-list"></div></details>
+          <div id="teamBuilderMetaStatus" class="team-meta-status" role="status" aria-live="polite"></div>
+        </section>
       </section>
     </div>
   </main>
@@ -13121,6 +13157,9 @@
     let teamBuilderEditorSlot = null;
     let teamBuilderEditorDraft = null;
     let teamBuilderEditorReturnFocus = null;
+    const teamBuilderMetaRegistry = window.PvPeakTeamBuilderMeta?.createRegistry?.() || null;
+    let teamBuilderMetaDefinition = null;
+    let teamBuilderMetaLoadingId = null;
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13410,6 +13449,7 @@
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
+      $("teamBuilderMeta").onchange = event => setTeamBuilderMeta(event.target.value);
       $("teamBuilderPickerSearch").oninput = renderTeamBuilderPickerResults;
       $("teamBuilderPickerSearch").onkeydown = event => {
         if (event.key === "Escape") closeTeamBuilderPicker();
@@ -14477,6 +14517,7 @@
         const image = roster.querySelector(`[data-team-sprite="${slot}"]`);
         if (pokemon && image) setPokemonImage(image, pokemon);
       });
+      renderTeamBuilderMeta();
     }
 
     function teamBuilderFeedback(message = "") {
@@ -14492,6 +14533,74 @@
         teamBuilderFeedback("That league is not available yet.");
       }
       renderTeamBuilder();
+    }
+
+    function renderTeamBuilderMeta() {
+      if (!teamBuilderMetaRegistry || !teamBuilderState) return;
+      const providers = teamBuilderMetaRegistry.list(teamBuilderState.league);
+      const selectedId = providers.some(provider => provider.id === teamBuilderState.analysisConfig.meta)
+        ? teamBuilderState.analysisConfig.meta
+        : providers[0]?.id;
+      const select = $("teamBuilderMeta");
+      select.innerHTML = providers.map(provider => `<option value="${escapeHtml(provider.id)}">${escapeHtml(provider.name)}</option>`).join("");
+      if (selectedId) select.value = selectedId;
+      const scenarios = window.PvPeakTeamBuilderMeta.SHIELD_SCENARIOS;
+      $("teamBuilderShieldScenarios").innerHTML = scenarios.map(value => `<button type="button" data-team-shields="${value}" aria-pressed="${teamBuilderState.analysisConfig.shields === value}">${value}</button>`).join("");
+      $("teamBuilderShieldScenarios").querySelectorAll("[data-team-shields]").forEach(button => {
+        button.onclick = () => setTeamBuilderShieldScenario(button.dataset.teamShields);
+      });
+      if (!selectedId) {
+        $("teamBuilderMetaStatus").textContent = "No meta provider is available for this league.";
+        return;
+      }
+      if (teamBuilderState.analysisConfig.meta !== selectedId) {
+        teamBuilderState = window.PvPeakTeamBuilder.setAnalysisConfig(teamBuilderState, { meta: selectedId });
+        persistTeamBuilderState();
+      }
+      if (teamBuilderMetaDefinition?.providerId === selectedId) renderTeamBuilderMetaRoster(teamBuilderMetaDefinition);
+      else loadTeamBuilderMeta(selectedId);
+    }
+
+    async function loadTeamBuilderMeta(providerId) {
+      if (!teamBuilderMetaRegistry || teamBuilderMetaLoadingId === providerId) return;
+      teamBuilderMetaLoadingId = providerId;
+      $("teamBuilderMetaStatus").textContent = "Loading the current competitive field…";
+      $("teamBuilderMetaCount").textContent = "Loading…";
+      try {
+        const definition = await teamBuilderMetaRegistry.load(providerId);
+        if (teamBuilderState?.analysisConfig.meta !== providerId) return;
+        teamBuilderMetaDefinition = definition;
+        renderTeamBuilderMetaRoster(definition);
+      } catch (_) {
+        $("teamBuilderMetaStatus").textContent = "The current meta list could not be loaded.";
+        $("teamBuilderMetaCount").textContent = "Unavailable";
+      } finally {
+        if (teamBuilderMetaLoadingId === providerId) teamBuilderMetaLoadingId = null;
+      }
+    }
+
+    function renderTeamBuilderMetaRoster(definition) {
+      const pokemon = definition.pokemonIds.map(findPokemon).filter(Boolean);
+      $("teamBuilderMetaCount").textContent = `${pokemon.length} Pokémon`;
+      $("teamBuilderMetaStatus").textContent = `${definition.description} Matchups are not calculated yet.`;
+      const list = $("teamBuilderMetaList");
+      list.innerHTML = pokemon.map((entry, index) => `<div class="team-meta-pokemon" title="${escapeHtml(displayName(entry))}"><img data-team-meta-sprite="${index}" alt=""><span>${escapeHtml(displayName(entry))}</span></div>`).join("");
+      pokemon.forEach((entry, index) => setPokemonImage(list.querySelector(`[data-team-meta-sprite="${index}"]`), entry));
+    }
+
+    function setTeamBuilderMeta(providerId) {
+      if (!teamBuilderMetaRegistry?.get(providerId)) return;
+      teamBuilderState = window.PvPeakTeamBuilder.setAnalysisConfig(teamBuilderState, { meta: providerId });
+      teamBuilderMetaDefinition = null;
+      persistTeamBuilderState();
+      renderTeamBuilderMeta();
+    }
+
+    function setTeamBuilderShieldScenario(shields) {
+      const normalized = window.PvPeakTeamBuilderMeta.normalizeShieldScenario(shields);
+      teamBuilderState = window.PvPeakTeamBuilder.setAnalysisConfig(teamBuilderState, { shields: normalized });
+      persistTeamBuilderState();
+      renderTeamBuilderMeta();
     }
 
     function openTeamBuilderPicker(slot, trigger = null) {

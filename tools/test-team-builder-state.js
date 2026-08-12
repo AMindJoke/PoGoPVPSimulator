@@ -51,8 +51,13 @@ assert.equal(configured.team[1].pokemonId, "skarmory", "Editing one build must n
 assert.equal(great.team[2].fastMoveId, "FAST", "Build updates must remain immutable.");
 assert.throws(() => TeamBuilder.updateMember(great, 0, { fastMoveId: "FAST" }), /TEAM_MEMBER_MISSING/);
 
-const serialized = JSON.parse(JSON.stringify(configured));
-assert.deepEqual(TeamBuilder.normalizeState(serialized), configured, "Movesets and build profiles must survive serialization.");
+const analysisConfigured = TeamBuilder.setAnalysisConfig(configured, { meta: "great-league-current", shields: "2-2" });
+assert.deepEqual(analysisConfigured.analysisConfig, { meta: "great-league-current", shields: "2-2" });
+assert.equal(configured.analysisConfig.shields, "1-1", "Analysis configuration updates must remain immutable.");
+assert.equal(TeamBuilder.setAnalysisConfig(configured, { shields: "invalid" }).analysisConfig.shields, "1-1");
+
+const serialized = JSON.parse(JSON.stringify(analysisConfigured));
+assert.deepEqual(TeamBuilder.normalizeState(serialized), analysisConfigured, "Movesets, builds and analysis configuration must survive serialization.");
 assert.notEqual(great.team[2].chargedMoveIds, great.team[1]?.chargedMoveIds, "Member move arrays must not share mutable references.");
 
 console.log("Team Builder state tests passed.");
