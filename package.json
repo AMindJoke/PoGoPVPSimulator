@@ -67,6 +67,7 @@
     "test:iv-stat-sensitivity": "node tools/test-iv-stat-sensitivity.js",
     "test:perf-debug": "node tools/test-perf-debug.js",
     "test:ux-presenters": "node tools/test-ux-presenters.js",
+    "test:team-builder": "node tools/test-team-builder-state.js && node tools/test-team-builder-ui-contract.js",
     "build:ranking-details": "node tools/build-ranking-details.js",
     "test:hp-swing": "node tools/test-hp-swing-analysis.js",
     "scan:battle-contradictions": "node tools/scan-battle-contradictions.js",

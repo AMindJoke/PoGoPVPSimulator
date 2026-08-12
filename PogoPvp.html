@@ -21,6 +21,7 @@
   <script src="src/analysis/ranking-details.js"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
+  <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -939,8 +940,73 @@
     .analysis-matchup-result button:hover,
     .analysis-iv-profiles button:hover { border-color: var(--accent); transform: translateY(-1px); }
 
-    .team-builder-placeholder { width: min(100%, 800px); margin: 38px auto; padding: 32px; text-align: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-    .team-builder-placeholder h2 { margin: 0 0 7px; }.team-builder-placeholder p { margin: 0; color: var(--muted); }
+    .team-builder-view { --team-type: var(--accent); width: 100%; }
+    .team-builder-shell { width: min(1120px, calc(100% - 28px)); max-width: none; margin: 24px auto 40px; padding: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; }
+    .team-builder-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+    .team-builder-head-copy > span { display: block; margin-bottom: 5px; color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .team-builder-head h2 { margin: 0; font-size: clamp(26px, 3vw, 38px); line-height: 1; letter-spacing: -.035em; }
+    .team-builder-head p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .team-builder-league { display: grid; gap: 5px; min-width: 180px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .team-builder-league select { width: 100%; min-height: 40px; font-size: 12px; font-weight: 850; text-transform: none; }
+    .team-builder-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
+    .team-builder-summary strong { font-size: 15px; }
+    .team-builder-summary span { color: var(--muted); font-size: 11px; font-weight: 750; }
+    .team-roster-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .team-slot { position: relative; min-width: 0; min-height: 188px; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .team-slot::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--team-type, transparent); opacity: .9; }
+    .team-slot-empty { display: grid; place-items: center; width: 100%; height: 100%; min-height: 188px; padding: 24px; border: 0; background: transparent; color: var(--muted); }
+    .team-slot-empty span { display: grid; place-items: center; gap: 9px; }
+    .team-slot-empty b { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 50%; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--accent); font-size: 25px; font-weight: 500; }
+    .team-slot-empty strong { color: var(--ink); font-size: 14px; }
+    .team-slot-empty small { font-size: 10px; }
+    .team-slot-empty:hover { background: color-mix(in srgb, var(--accent) 4%, var(--panel)); }
+    .team-card { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 12px; height: 100%; padding: 16px; }
+    .team-card-sprite-wrap { position: relative; display: grid; place-items: center; align-self: center; width: 86px; height: 108px; border-radius: 44px; background: radial-gradient(circle, color-mix(in srgb, var(--team-type) 13%, transparent), transparent 70%); }
+    .team-card-sprite { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 5px 5px rgba(23,33,47,.16)); }
+    .team-card-sprite.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.24), transparent 68%); filter: drop-shadow(0 0 7px rgba(143,79,184,.9)) drop-shadow(0 5px 6px rgba(23,33,47,.2)); }
+    .team-card-shadow { position: absolute; bottom: 2px; padding: 3px 6px; border-radius: 999px; background: #6f3fa2; color: #fff; font-size: 8px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+    .team-card-copy { display: grid; align-content: start; min-width: 0; }
+    .team-card-heading { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+    .team-card-heading h3 { overflow: hidden; margin: 2px 0 0; font-size: 16px; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+    .team-card-slot-number { color: var(--muted); font-size: 9px; font-weight: 900; }
+    .team-card-types { display: flex; gap: 4px; margin-top: 6px; }
+    .team-card-types .type-badge { font-size: 8px; }
+    .team-card-moves { display: grid; gap: 5px; margin: 12px 0 13px; }
+    .team-card-move { display: grid; grid-template-columns: 7px minmax(0, 1fr); align-items: center; gap: 6px; color: var(--muted); font-size: 10px; font-weight: 780; }
+    .team-card-move i { width: 7px; height: 7px; border-radius: 50%; background: var(--move-type); }
+    .team-card-move:first-child { color: var(--ink); font-weight: 850; }
+    .team-card-actions { display: flex; gap: 6px; margin-top: auto; }
+    .team-card-actions button { min-height: 30px; padding: 4px 9px; font-size: 9px; }
+    .team-card-actions .team-remove { width: 31px; padding: 0; color: var(--danger); }
+    .team-builder-feedback { min-height: 20px; margin: 10px 0 0; color: var(--danger); font-size: 11px; font-weight: 800; }
+    .team-picker-modal .modal-card { width: min(620px, calc(100vw - 28px)); max-height: min(760px, calc(100vh - 32px)); overflow: hidden; }
+    .team-picker-copy { margin: 0 0 14px; color: var(--muted); font-size: 11px; }
+    .team-picker-search { width: 100%; min-height: 44px; margin-bottom: 10px; font-size: 14px; }
+    .team-picker-results { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; max-height: min(530px, 58vh); overflow-y: auto; padding: 4px; }
+    .team-picker-results .pokemon-suggestion { max-width: none; }
+    .team-picker-results .pokemon-suggestion[disabled] { opacity: .4; cursor: not-allowed; }
+    .team-builder-view button:focus-visible, .team-builder-view select:focus-visible, .team-picker-modal button:focus-visible, .team-picker-modal input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 2px; }
+    @media (max-width: 760px) {
+      .team-builder-shell { width: min(100% - 20px, 680px); margin-top: 16px; }
+      .team-builder-head { align-items: stretch; flex-direction: column; gap: 14px; }
+      .team-builder-league { min-width: 0; }
+      .team-roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .team-slot, .team-slot-empty { min-height: 174px; }
+      .team-card { grid-template-columns: 64px minmax(0, 1fr); gap: 8px; padding: 11px; }
+      .team-card-sprite-wrap { width: 64px; height: 92px; }
+      .team-card-sprite { width: 62px; height: 62px; }
+      .team-card-heading h3 { font-size: 13px; }
+      .team-card-actions { grid-column: 1 / -1; }
+      .team-card-actions button:first-child { flex: 1; }
+      .team-picker-results { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 430px) {
+      .team-roster-grid { grid-template-columns: 1fr; }
+      .team-slot, .team-slot-empty { min-height: 158px; }
+      .team-card { grid-template-columns: 76px minmax(0, 1fr); }
+      .team-card-sprite-wrap { width: 76px; height: 94px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .team-builder-view *, .team-picker-modal * { scroll-behavior: auto !important; transition: none !important; } }
     .toolbar, .setup { display: grid; gap: 12px; }
     .toolbar {
       grid-template-columns: auto minmax(280px, auto) minmax(0, 1fr) auto;
@@ -12700,15 +12766,28 @@
       <div id="analysisContent" class="analysis-content"></div>
     </div>
 
-    <div id="teamBuilderView" class="app-view">
-      <section class="team-builder-placeholder">
-        <h2>Team Builder</h2>
-        <p>This workspace is reserved for the future 3v3 team construction and decision engine.</p>
+    <div id="teamBuilderView" class="app-view team-builder-view">
+      <section class="team-builder-shell" aria-labelledby="teamBuilderTitle">
+        <header class="team-builder-head">
+          <div class="team-builder-head-copy"><span>Competitive roster</span><h2 id="teamBuilderTitle">Build your Show 6</h2><p>Build a team of six and prepare it for matchup analysis.</p></div>
+          <label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label>
+        </header>
+        <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderCount">0 of 6 selected</span></div>
+        <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
+        <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
       </section>
     </div>
   </main>
 
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
+
+  <div class="modal team-picker-modal" id="teamBuilderPickerModal" role="dialog" aria-modal="true" aria-labelledby="teamBuilderPickerTitle" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head"><div><h2 id="teamBuilderPickerTitle">Add Pokemon</h2><p class="team-picker-copy">Choose a league-ready Pokemon. Species already on the team cannot be selected twice.</p></div><button id="teamBuilderPickerClose" class="modal-close" type="button" aria-label="Close Pokemon picker">x</button></div>
+      <input id="teamBuilderPickerSearch" class="team-picker-search" type="search" autocomplete="off" placeholder="Search Pokemon, form, or Shadow" aria-label="Search Pokemon">
+      <div id="teamBuilderPickerResults" class="team-picker-results" role="listbox" aria-label="Pokemon results"></div>
+    </div>
+  </div>
 
   <div class="modal" id="eventModal" aria-hidden="true">
     <div class="modal-card">
@@ -12964,6 +13043,10 @@
     let scenarioReviewMode = window.PvPeakManualBattleState?.REVIEW_MODE?.MANUAL || "manual";
     let scenarioManualEntryPending = false;
     let manualMatchupEditMode = false;
+    const TEAM_BUILDER_STORAGE_KEY = "pvpeak-team-builder-v1";
+    let teamBuilderState = window.PvPeakTeamBuilder?.createState?.() || null;
+    let teamBuilderPickerSlot = null;
+    let teamBuilderPickerReturnFocus = null;
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13252,6 +13335,32 @@
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
+      $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
+      $("teamBuilderPickerSearch").oninput = renderTeamBuilderPickerResults;
+      $("teamBuilderPickerSearch").onkeydown = event => {
+        if (event.key === "Escape") closeTeamBuilderPicker();
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          $("teamBuilderPickerResults")?.querySelector(".pokemon-suggestion:not([disabled])")?.focus();
+        }
+      };
+      $("teamBuilderPickerClose").onclick = closeTeamBuilderPicker;
+      $("teamBuilderPickerModal").onclick = event => { if (event.target === $("teamBuilderPickerModal")) closeTeamBuilderPicker(); };
+      $("teamBuilderPickerModal").onkeydown = event => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeTeamBuilderPicker();
+          return;
+        }
+        if (event.key !== "Tab") return;
+        const focusable = [...$("teamBuilderPickerModal").querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(element => element.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      };
+      restoreTeamBuilderState();
       $("analysisPokemon").onchange = () => renderPokemonAnalysis($("analysisPokemon").value);
       $("analysisBackToMeta").onclick = () => setAppView("meta");
       $("metaSearch").oninput = scheduleMetaFilterRender;
@@ -14144,6 +14253,7 @@
         renderMetaRankings();
       }
       if (next === "analysis") renderPokemonAnalysis();
+      if (next === "team-builder") renderTeamBuilder();
       if (next === "simulator") {
         if (previous !== next) refreshPokemonLists();
         render();
@@ -14162,6 +14272,156 @@
         }
       }
       updateMetaBackToTop();
+    }
+
+    function restoreTeamBuilderState() {
+      if (!window.PvPeakTeamBuilder) return false;
+      try {
+        const saved = JSON.parse(window.localStorage.getItem(TEAM_BUILDER_STORAGE_KEY) || "null");
+        teamBuilderState = window.PvPeakTeamBuilder.normalizeState(saved || {});
+      } catch (_) {
+        teamBuilderState = window.PvPeakTeamBuilder.createState();
+      }
+      return true;
+    }
+
+    function persistTeamBuilderState() {
+      if (!teamBuilderState) return;
+      try { window.localStorage.setItem(TEAM_BUILDER_STORAGE_KEY, JSON.stringify(teamBuilderState)); } catch (_) {}
+    }
+
+    function teamBuilderDefaultMember(pokemon) {
+      const moves = metaMovesForPokemon(pokemon);
+      if (!moves.fast || !moves.charged?.length) return null;
+      return {
+        pokemonId: pokemon.id,
+        dex: pokemon.dex,
+        name: pokemon.name,
+        types: pokemon.types,
+        shadow: isShadow(pokemon),
+        fastMoveId: moves.fast.id,
+        chargedMoveIds: moves.charged.map(move => move.id).slice(0, 2),
+        build: { profile: "default", league: teamBuilderState?.league || "great" }
+      };
+    }
+
+    function teamBuilderMemberPokemon(member) {
+      return member ? findPokemon(member.pokemonId) : null;
+    }
+
+    function teamBuilderMoveLine(moveId, fallback = "Move unavailable") {
+      const move = moveMap.get(moveId);
+      if (!move) return `<span class="team-card-move"><i style="--move-type:#8a8f96"></i>${escapeHtml(fallback)}</span>`;
+      const color = typeColors[move.type] || "#8a8f96";
+      return `<span class="team-card-move"><i style="--move-type:${color}"></i>${escapeHtml(move.name)}</span>`;
+    }
+
+    function renderTeamBuilderSlot(member, slot) {
+      if (!member) {
+        return `<article class="team-slot is-empty" data-team-slot="${slot}"><button class="team-slot-empty" type="button" data-team-add="${slot}" aria-label="Add Pokemon to slot ${slot + 1}"><span><b aria-hidden="true">+</b><strong>Add Pokemon</strong><small>Slot ${slot + 1}</small></span></button></article>`;
+      }
+      const pokemon = teamBuilderMemberPokemon(member);
+      if (!pokemon) return renderTeamBuilderSlot(null, slot);
+      const primaryColor = typeColors[pokemon.types?.[0]] || "var(--accent)";
+      const types = pokemon.types.map(type => `<span class="type-badge" style="background:${typeColors[type] || "#66788c"};color:${contrastText(typeColors[type] || "#66788c")}">${title(type)}</span>`).join("");
+      return `<article class="team-slot" data-team-slot="${slot}" style="--team-type:${primaryColor}"><div class="team-card"><div class="team-card-sprite-wrap"><img class="team-card-sprite" data-team-sprite="${slot}" alt="">${member.shadow ? '<span class="team-card-shadow">Shadow</span>' : ""}</div><div class="team-card-copy"><div class="team-card-heading"><h3>${escapeHtml(pokemon.name)}</h3><span class="team-card-slot-number">#${slot + 1}</span></div><div class="team-card-types">${types}</div><div class="team-card-moves">${teamBuilderMoveLine(member.fastMoveId)}${member.chargedMoveIds.map(moveId => teamBuilderMoveLine(moveId)).join("")}</div><div class="team-card-actions"><button class="secondary" type="button" data-team-replace="${slot}">Replace</button><button class="secondary team-remove" type="button" data-team-remove="${slot}" aria-label="Remove ${escapeHtml(pokemon.name)} from slot ${slot + 1}" title="Remove">×</button></div></div></div></article>`;
+    }
+
+    function renderTeamBuilder() {
+      if (!window.PvPeakTeamBuilder || !teamBuilderState) return;
+      const league = $("teamBuilderLeague");
+      if (league) {
+        league.innerHTML = Object.values(window.PvPeakTeamBuilder.LEAGUES).map(item => `<option value="${item.id}"${item.available ? "" : " disabled"}>${escapeHtml(item.name)}${item.cpCap ? ` · CP ${item.cpCap}` : ""}${item.available ? "" : " · Coming later"}</option>`).join("");
+        league.value = teamBuilderState.league;
+      }
+      const selected = teamBuilderState.team.filter(Boolean).length;
+      $("teamBuilderCount").textContent = `${selected} of ${window.PvPeakTeamBuilder.TEAM_SIZE} selected`;
+      const roster = $("teamBuilderRoster");
+      roster.innerHTML = teamBuilderState.team.map(renderTeamBuilderSlot).join("");
+      roster.querySelectorAll("[data-team-add],[data-team-replace]").forEach(button => {
+        button.onclick = () => openTeamBuilderPicker(Number(button.dataset.teamAdd ?? button.dataset.teamReplace), button);
+      });
+      roster.querySelectorAll("[data-team-remove]").forEach(button => {
+        button.onclick = () => removeTeamBuilderMember(Number(button.dataset.teamRemove));
+      });
+      teamBuilderState.team.forEach((member, slot) => {
+        const pokemon = teamBuilderMemberPokemon(member);
+        const image = roster.querySelector(`[data-team-sprite="${slot}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      });
+    }
+
+    function teamBuilderFeedback(message = "") {
+      if ($("teamBuilderFeedback")) $("teamBuilderFeedback").textContent = message;
+    }
+
+    function setTeamBuilderLeague(league) {
+      try {
+        teamBuilderState = window.PvPeakTeamBuilder.setLeague(teamBuilderState, league);
+        persistTeamBuilderState();
+        teamBuilderFeedback();
+      } catch (_) {
+        teamBuilderFeedback("That league is not available yet.");
+      }
+      renderTeamBuilder();
+    }
+
+    function openTeamBuilderPicker(slot, trigger = null) {
+      teamBuilderPickerSlot = slot;
+      teamBuilderPickerReturnFocus = trigger || document.activeElement;
+      $("teamBuilderPickerTitle").textContent = teamBuilderState.team[slot] ? `Replace slot ${slot + 1}` : `Add Pokemon · Slot ${slot + 1}`;
+      $("teamBuilderPickerSearch").value = "";
+      renderTeamBuilderPickerResults();
+      $("teamBuilderPickerModal").classList.add("open");
+      $("teamBuilderPickerModal").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => $("teamBuilderPickerSearch").focus());
+    }
+
+    function closeTeamBuilderPicker() {
+      $("teamBuilderPickerModal").classList.remove("open");
+      $("teamBuilderPickerModal").setAttribute("aria-hidden", "true");
+      teamBuilderPickerSlot = null;
+      teamBuilderPickerReturnFocus?.focus?.({ preventScroll: true });
+      teamBuilderPickerReturnFocus = null;
+    }
+
+    function renderTeamBuilderPickerResults() {
+      if (!teamBuilderState || teamBuilderPickerSlot == null) return;
+      const query = normalizeSearchText($("teamBuilderPickerSearch")?.value || "");
+      let list = visiblePokemon.length ? visiblePokemon : allPokemon;
+      if (query) {
+        list = list.map(pokemon => ({ pokemon, score: pokemonSearchScore(pokemon, query) }))
+          .filter(item => item.score < 100)
+          .sort((a, b) => a.score - b.score || a.pokemon.name.localeCompare(b.pokemon.name))
+          .map(item => item.pokemon);
+      }
+      const duplicate = pokemon => window.PvPeakTeamBuilder.duplicateSlot(teamBuilderState, { pokemonId: pokemon.id, dex: pokemon.dex }, teamBuilderPickerSlot) >= 0;
+      renderPokemonSuggestionList($("teamBuilderPickerResults"), list.slice(0, 80), {
+        isDisabled: duplicate,
+        disabledText: () => "Already on team · Species Clause",
+        onSelect: addTeamBuilderMember
+      });
+    }
+
+    function addTeamBuilderMember(pokemon) {
+      const member = teamBuilderDefaultMember(pokemon);
+      if (!member) return teamBuilderFeedback("A valid competitive moveset could not be prepared for this Pokemon.");
+      try {
+        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderPickerSlot, member);
+        persistTeamBuilderState();
+        teamBuilderFeedback();
+        closeTeamBuilderPicker();
+        renderTeamBuilder();
+      } catch (error) {
+        teamBuilderFeedback(error?.message === "TEAM_SPECIES_DUPLICATE" ? "Species Clause: that Pokemon species is already on your team." : "This Pokemon could not be added.");
+      }
+    }
+
+    function removeTeamBuilderMember(slot) {
+      teamBuilderState = window.PvPeakTeamBuilder.removeMember(teamBuilderState, slot);
+      persistTeamBuilderState();
+      teamBuilderFeedback();
+      renderTeamBuilder();
     }
 
     function analysisRankingEntries() {
@@ -15439,20 +15699,24 @@
 
     function renderPokemonSuggestions(prefix, list) {
       const box = $(`${prefix}PokemonSuggestions`);
+      renderPokemonSuggestionList(box, list, { onSelect: pokemon => selectPokemon(prefix, pokemon.id, true) });
+    }
+
+    function renderPokemonSuggestionList(box, list, options = {}) {
+      if (!box) return;
       if (!list.length) {
         box.innerHTML = `<div class="pokemon-suggestion-empty">No Pokemon found</div>`;
         return;
       }
-      box.innerHTML = list.map(p => `
-        <button class="pokemon-suggestion" type="button" data-pokemon-id="${p.id}">
-          <img alt="">
-          <span>${escapeHtml(displayName(p))}<small>${escapeHtml(pokemonPickerMeta(p))}</small></span>
-        </button>
-      `).join("");
+      box.innerHTML = list.map(pokemon => {
+        const disabled = !!options.isDisabled?.(pokemon);
+        const detail = disabled && options.disabledText ? options.disabledText(pokemon) : pokemonPickerMeta(pokemon);
+        return `<button class="pokemon-suggestion" type="button" role="option" data-pokemon-id="${escapeHtml(pokemon.id)}"${disabled ? ` disabled aria-disabled="true" aria-label="${escapeHtml(displayName(pokemon))}, ${detail}"` : ""}><img alt=""><span>${escapeHtml(displayName(pokemon))}<small>${escapeHtml(detail)}</small></span></button>`;
+      }).join("");
       box.querySelectorAll(".pokemon-suggestion").forEach((button, index) => {
-        const p = list[index];
-        setPokemonImage(button.querySelector("img"), p);
-        button.onclick = () => selectPokemon(prefix, p.id, true);
+        const pokemon = list[index];
+        setPokemonImage(button.querySelector("img"), pokemon);
+        if (!button.disabled) button.onclick = () => options.onSelect?.(pokemon);
       });
     }
 
@@ -19253,15 +19517,8 @@
     function renderManualHudPokemonSuggestions(side, list) {
       const box = $(`manualHudPokemonSuggestions${side}`);
       if (!box) return;
-      if (!list.length) {
-        box.innerHTML = `<div class="pokemon-suggestion-empty">No Pokemon found</div>`;
-        return;
-      }
-      box.innerHTML = list.map(pokemon => `<button class="pokemon-suggestion" type="button" role="option" data-pokemon-id="${escapeHtml(pokemon.id)}"><img alt=""><span>${escapeHtml(displayName(pokemon))}<small>${escapeHtml(pokemonPickerMeta(pokemon))}</small></span></button>`).join("");
-      box.querySelectorAll(".pokemon-suggestion").forEach((button, index) => {
-        const pokemon = list[index];
-        setPokemonImage(button.querySelector("img"), pokemon);
-        button.onclick = () => applyManualHudPokemonSelection(side, pokemon.id);
+      renderPokemonSuggestionList(box, list, { onSelect: pokemon => applyManualHudPokemonSelection(side, pokemon.id) });
+      box.querySelectorAll(".pokemon-suggestion").forEach(button => {
         button.onkeydown = event => {
           if (!["ArrowDown", "ArrowUp", "Escape"].includes(event.key)) return;
           event.preventDefault();
