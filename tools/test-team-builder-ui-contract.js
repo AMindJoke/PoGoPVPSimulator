@@ -73,7 +73,10 @@ assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
 assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,1500}#7b8490[\s\S]{0,300}#075c31[\s\S]{0,500}#8d1e30/, "Neutral, favorable, and unfavorable tiers must have clearly distinct gray, green, and red palettes.");
 assert.match(html, /--result-fill:\$\{palette\.fill\}[\s\S]{0,120}--result-border:\$\{palette\.border\}/, "Result severity must strengthen fill and border as well as hue.");
-assert.match(html, /class="team-matchup-symbol"[^>]+aria-hidden="true"[^>]*>\$\{visual\.symbol\}/, "Coverage cells must include a non-textual win, neutral, or loss symbol without duplicating the accessible label.");
+assert.match(html, /function teamBuilderGaugeHtml\(score\)[\s\S]{0,350}\/ 1000 \* 270[\s\S]{0,250}class="team-matchup-gauge"/, "The compact gauge must map the full 0–1000 battle rating continuously onto its arc.");
+assert.match(html, /\.team-matchup-gauge::before[^}]+conic-gradient[^}]+--gauge-angle/, "Coverage gauges must be rendered as lightweight code-native arcs.");
+assert.match(html, /class="team-coverage-rank">\$\{row \+ 1\}/, "Coverage rows must expose a clear visual rank.");
+assert.doesNotMatch(html, /<strong>\$\{gauge\}\$\{result\.score\}<\/strong><small>\$\{label\}/, "Desktop cells must not repeat Win or Loss beneath every score.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
 assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");
 assert.match(html, /function openTeamBuilderMatchup[\s\S]{0,2600}Battle rating[\s\S]{0,1000}teamBuilderBuildLabel/, "Every prepared cell must expose simulation and build detail.");

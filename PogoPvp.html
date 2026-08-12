@@ -1059,25 +1059,28 @@
     .team-coverage-head p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
     .team-coverage-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; color: var(--muted); font-size: 8px; font-weight: 850; }
     .team-coverage-legend span { display: inline-flex; align-items: center; gap: 4px; }
-    .team-coverage-legend i { display: inline-grid; width: 15px; height: 15px; place-items: center; border-radius: 50%; background: var(--result-color); color: #fff; font-size: 7px; font-style: normal; line-height: 1; }
+    .team-coverage-legend .team-matchup-gauge { width: 20px; height: 13px; }
+    .team-coverage-legend .team-matchup-gauge::before { width: 20px; height: 20px; }
     .team-coverage-desktop { max-height: min(680px, 68vh); overflow: auto; border: 1px solid var(--line); border-radius: 9px; }
     .team-coverage-table { width: 100%; min-width: 840px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
     .team-coverage-table th, .team-coverage-table td { padding: 6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); text-align: center; }
     .team-coverage-table tr:last-child td, .team-coverage-table tr:last-child th { border-bottom: 0; }
     .team-coverage-table th:last-child, .team-coverage-table td:last-child { border-right: 0; }
-    .team-coverage-table thead th { position: sticky; top: 0; z-index: 4; height: 66px; background: var(--subtle); }
-    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 6; width: 166px; text-align: left; }
-    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 3; width: 166px; background: var(--panel); text-align: left; }
-    .team-coverage-pokemon-head, .team-coverage-opponent { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 7px; min-width: 0; }
-    .team-coverage-pokemon-head img, .team-coverage-opponent img { width: 42px; height: 42px; object-fit: contain; }
+    .team-coverage-table thead th { position: sticky; top: 0; z-index: 4; height: 58px; background: var(--subtle); }
+    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 6; width: 180px; text-align: left; }
+    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 3; width: 180px; background: var(--panel); text-align: left; }
+    .team-coverage-pokemon-head { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; min-width: 0; }
+    .team-coverage-opponent { display: grid; grid-template-columns: 20px 34px minmax(0, 1fr); align-items: center; gap: 6px; min-width: 0; }
+    .team-coverage-pokemon-head img, .team-coverage-opponent img { width: 34px; height: 34px; object-fit: contain; }
     .team-coverage-pokemon-head img.shadow-pokemon, .team-coverage-opponent img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
     .team-coverage-pokemon-head span, .team-coverage-opponent span { overflow: hidden; font-size: 9px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
-    .team-coverage-opponent-copy { min-width: 0; }.team-coverage-opponent-copy span, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy small { margin-top: 3px; color: var(--muted); font-size: 7px; font-weight: 750; }
-    .team-matchup-cell { display: grid; place-items: center; gap: 2px; width: 100%; min-height: 46px; padding: 4px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 19%), var(--panel)); color: var(--ink); box-shadow: none; }
+    .team-coverage-rank { color: var(--muted); font-size: 10px; font-weight: 900; text-align: right; }
+    .team-coverage-opponent-copy { min-width: 0; }.team-coverage-opponent-copy span, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy small { margin-top: 2px; color: var(--muted); font-size: 7px; font-weight: 750; }
+    .team-matchup-cell { display: grid; place-items: center; width: 100%; min-height: 36px; padding: 3px 5px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 9px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 19%), var(--panel)); color: var(--ink); box-shadow: none; }
     .team-matchup-cell:hover { border-color: var(--result-color); transform: translateY(-1px); }
-    .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; }
-    .team-matchup-cell small { color: var(--muted); font-size: 8px; font-weight: 850; }
-    .team-matchup-symbol { display: inline-grid; width: 15px; height: 15px; place-items: center; border-radius: 50%; background: var(--result-color); color: #fff; font-size: 8px; font-weight: 950; line-height: 1; }
+    .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; }
+    .team-matchup-gauge { position: relative; display: inline-block; flex: none; width: 23px; height: 15px; overflow: hidden; }
+    .team-matchup-gauge::before { position: absolute; top: 0; left: 0; width: 23px; height: 23px; border-radius: 50%; background: conic-gradient(from 225deg, var(--result-color) 0deg var(--gauge-angle), color-mix(in srgb, var(--result-color) 18%, var(--panel)) var(--gauge-angle) 270deg, transparent 270deg 360deg); content: ""; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); }
     .team-matchup-cell.is-pending { --result-color: #97a2af; opacity: .58; }
     .team-coverage-mobile { display: none; }
     .team-mobile-opponent-nav { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -1087,11 +1090,11 @@
     .team-mobile-opponent-current strong { display: block; font-size: 13px; }
     .team-mobile-opponent-current small { color: var(--muted); font-size: 9px; }
     .team-mobile-matchups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .team-mobile-matchup { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 72px; padding: 8px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 9px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 18%), var(--panel)); color: var(--ink); text-align: left; box-shadow: none; }
-    .team-mobile-matchup img { width: 48px; height: 48px; object-fit: contain; }
+    .team-mobile-matchup { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 64px; padding: 7px 8px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 10px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 18%), var(--panel)); color: var(--ink); text-align: left; box-shadow: none; }
+    .team-mobile-matchup img { width: 42px; height: 42px; object-fit: contain; }
     .team-mobile-pending-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--subtle); color: var(--muted); font-weight: 900; }
     .team-mobile-matchup strong, .team-mobile-matchup span, .team-mobile-matchup small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .team-mobile-matchup strong { font-size: 11px; }.team-mobile-matchup span { font-size: 10px; font-weight: 900; }.team-mobile-matchup small { color: var(--muted); font-size: 8px; }.team-mobile-matchup .team-mobile-result-line { display: flex; align-items: center; gap: 5px; }
+    .team-mobile-matchup strong { font-size: 11px; }.team-mobile-matchup span { font-size: 10px; font-weight: 900; }.team-mobile-matchup small { color: var(--muted); font-size: 8px; }.team-mobile-matchup .team-mobile-result-line { display: flex; align-items: center; gap: 6px; }
     .team-matchup-modal .modal-card { width: min(560px, calc(100vw - 28px)); }
     .team-matchup-versus { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; margin: 8px 0 18px; }
     .team-matchup-side { display: grid; justify-items: center; gap: 5px; min-width: 0; text-align: center; }
@@ -12992,12 +12995,12 @@
           </div>
         </section>
         <div id="teamBuilderThreatCoverage" class="team-coverage is-primary" aria-labelledby="teamBuilderThreatCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i style="--result-color:#2f9a5f" aria-hidden="true">▲</i>Win · above 500</span><span><i style="--result-color:#7b8490" aria-hidden="true">◆</i>Neutral · 500</span><span><i style="--result-color:#c7505d" aria-hidden="true">▼</i>Loss · below 500</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i class="team-matchup-gauge" style="--result-color:#2f9a5f;--gauge-angle:243deg" aria-hidden="true"></i>Win · above 500</span><span><i class="team-matchup-gauge" style="--result-color:#7b8490;--gauge-angle:135deg" aria-hidden="true"></i>Neutral · 500</span><span><i class="team-matchup-gauge" style="--result-color:#c7505d;--gauge-angle:35deg" aria-hidden="true"></i>Loss · below 500</span></div></header>
           <div id="teamBuilderThreatCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderThreatMobilePrev" class="secondary" type="button" aria-label="Previous ranked threat">‹</button><div id="teamBuilderThreatMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderThreatMobileNext" class="secondary" type="button" aria-label="Next ranked threat">›</button></div><div id="teamBuilderThreatMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
         <div id="teamBuilderCoverage" class="team-coverage is-secondary" aria-labelledby="teamBuilderCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i style="--result-color:#2f9a5f" aria-hidden="true">▲</i>Win · above 500</span><span><i style="--result-color:#7b8490" aria-hidden="true">◆</i>Neutral · 500</span><span><i style="--result-color:#c7505d" aria-hidden="true">▼</i>Loss · below 500</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i class="team-matchup-gauge" style="--result-color:#2f9a5f;--gauge-angle:243deg" aria-hidden="true"></i>Win · above 500</span><span><i class="team-matchup-gauge" style="--result-color:#7b8490;--gauge-angle:135deg" aria-hidden="true"></i>Neutral · 500</span><span><i class="team-matchup-gauge" style="--result-color:#c7505d;--gauge-angle:35deg" aria-hidden="true"></i>Loss · below 500</span></div></header>
           <div id="teamBuilderCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderMobilePrev" class="secondary" type="button" aria-label="Previous meta opponent">‹</button><div id="teamBuilderMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderMobileNext" class="secondary" type="button" aria-label="Next meta opponent">›</button></div><div id="teamBuilderMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
@@ -15224,6 +15227,11 @@
       return { ...presentation, ...palette, style: `--result-color:${palette.color};--result-fill:${palette.fill};--result-border:${palette.border}` };
     }
 
+    function teamBuilderGaugeHtml(score) {
+      const angle = (Math.max(0, Math.min(1000, Number(score ?? 500))) / 1000 * 270).toFixed(1);
+      return `<i class="team-matchup-gauge" style="--gauge-angle:${angle}deg" aria-hidden="true"></i>`;
+    }
+
     function renderTeamBuilderCoverage() {
       const coverage = $("teamBuilderCoverage");
       const threatCoverage = $("teamBuilderThreatCoverage");
@@ -15269,9 +15277,9 @@
       const pokemon = member && findPokemon(member.pokemonId);
       const visual = teamBuilderResultVisual(result);
       const accessible = `${pokemon?.name || `Team slot ${slot + 1}`} versus ${findPokemon(opponentId)?.name || opponentId}: ${label}, battle rating ${result.score}`;
-      const symbol = `<i class="team-matchup-symbol" aria-hidden="true">${visual.symbol}</i>`;
-      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${symbol}${label}</span><small>Rating ${result.score}</small></span></button>`;
-      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><strong>${symbol}${result.score}</strong><small>${label}</small></button>`;
+      const gauge = teamBuilderGaugeHtml(result.score);
+      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${gauge}<b>${result.score}</b></span></span></button>`;
+      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><strong>${gauge}${result.score}</strong></button>`;
     }
 
     function renderTeamBuilderCoverageDesktop(groups, options = {}) {
@@ -15287,7 +15295,7 @@
         const opponent = findPokemon(group.opponentId);
         const summary = options.showThreatSummary ? group.threatSummary : null;
         const detail = summary ? `${summary.answerCount} strong answers · avg ${summary.averageScore}` : options.showThreatSummary ? "Preparing row…" : "";
-        return `<tr><th scope="row"><div class="team-coverage-opponent"><img data-team-coverage-${spritePrefix}-opponent-sprite="${row}" alt=""><span class="team-coverage-opponent-copy"><span>${escapeHtml(opponent?.name || group.opponentId)}</span>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</span></div></th>${group.cells.map((result, slot) => `<td>${teamBuilderCoverageCell(result, slot, group.opponentId)}</td>`).join("")}</tr>`;
+        return `<tr><th scope="row"><div class="team-coverage-opponent"><b class="team-coverage-rank">${row + 1}</b><img data-team-coverage-${spritePrefix}-opponent-sprite="${row}" alt=""><span class="team-coverage-opponent-copy"><span>${escapeHtml(opponent?.name || group.opponentId)}</span>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</span></div></th>${group.cells.map((result, slot) => `<td>${teamBuilderCoverageCell(result, slot, group.opponentId)}</td>`).join("")}</tr>`;
       }).join("");
       const box = $(boxId);
       box.innerHTML = `<table class="team-coverage-table"><thead><tr><th class="team-coverage-opponent-head" scope="col">${escapeHtml(opponentHeader)}</th>${header}</tr></thead><tbody>${rows}</tbody></table>`;

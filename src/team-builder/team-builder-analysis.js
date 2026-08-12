@@ -115,16 +115,14 @@
 
   function resultPresentation(result) {
     const score = Math.max(0, Math.min(1000, Number(result?.score ?? 500)));
-    if (score === 500) return Object.freeze({ tone: "neutral", tier: "neutral", symbol: "◆" });
+    if (score === 500) return Object.freeze({ tone: "neutral", tier: "neutral" });
     if (score > 500) return Object.freeze({
       tone: "favorable",
-      tier: score >= 751 ? "dominant" : score >= 651 ? "clear" : "slight",
-      symbol: "▲"
+      tier: score >= 751 ? "dominant" : score >= 651 ? "clear" : "slight"
     });
     return Object.freeze({
       tone: "unfavorable",
-      tier: score <= 249 ? "dominant" : score <= 349 ? "clear" : "slight",
-      symbol: "▼"
+      tier: score <= 249 ? "dominant" : score <= 349 ? "clear" : "slight"
     });
   }
 
