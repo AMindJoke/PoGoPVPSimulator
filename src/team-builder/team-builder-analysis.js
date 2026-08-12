@@ -130,6 +130,58 @@
     return [...groups.values()].map(group => Object.freeze({ opponentId: group.opponentId, cells: Object.freeze(group.cells) }));
   }
 
+  function summarizeOpponent(group) {
+    const cells = Array.isArray(group?.cells) ? group.cells : [];
+    if (!cells.length || cells.some(result => !result)) return null;
+    const scores = cells.map(result => Math.max(0, Math.min(1000, Number(result.score ?? 500))));
+    const answerSlots = [];
+    const closeSlots = [];
+    const hardLossSlots = [];
+    scores.forEach((score, slot) => {
+      if (score >= 600) answerSlots.push(slot);
+      else if (score <= 400) hardLossSlots.push(slot);
+      else closeSlots.push(slot);
+    });
+    const teamSize = scores.length;
+    const averageScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / teamSize);
+    const effectiveAnswers = answerSlots.length + (closeSlots.length * 0.5);
+    const answerGap = 1 - (effectiveAnswers / teamSize);
+    const lossIntensity = scores.reduce((sum, score) => sum + Math.max(0, 500 - score) / 500, 0) / teamSize;
+    const severity = Math.max(0, Math.min(100, Math.round((answerGap * 65) + (lossIntensity * 35))));
+    const severityLabel = severity >= 75 ? "Critical" : severity >= 55 ? "Major" : severity >= 35 ? "Moderate" : "Low";
+    return Object.freeze({
+      opponentId: group.opponentId,
+      teamSize,
+      answerCount: answerSlots.length,
+      closeCount: closeSlots.length,
+      hardLossCount: hardLossSlots.length,
+      answerSlots: Object.freeze(answerSlots),
+      closeSlots: Object.freeze(closeSlots),
+      hardLossSlots: Object.freeze(hardLossSlots),
+      averageScore,
+      worstScore: Math.min(...scores),
+      bestScore: Math.max(...scores),
+      severity,
+      severityLabel
+    });
+  }
+
+  function analyzeCoverage(groups) {
+    const summaries = (groups || []).map(summarizeOpponent).filter(Boolean);
+    const threats = [...summaries].sort((a, b) =>
+      b.severity - a.severity || a.answerCount - b.answerCount || a.averageScore - b.averageScore || a.opponentId.localeCompare(b.opponentId)
+    );
+    const bestCovered = [...summaries].sort((a, b) =>
+      b.answerCount - a.answerCount || b.averageScore - a.averageScore || a.severity - b.severity || a.opponentId.localeCompare(b.opponentId)
+    );
+    return Object.freeze({
+      completedOpponents: summaries.length,
+      noAnswerCount: summaries.filter(summary => summary.answerCount === 0).length,
+      threats: Object.freeze(threats),
+      bestCovered: Object.freeze(bestCovered)
+    });
+  }
+
   return Object.freeze({
     SCHEMA_VERSION,
     STORAGE_KEY,
@@ -142,6 +194,8 @@
     planProgress,
     resultTone,
     resultLabel,
-    groupResults
+    groupResults,
+    summarizeOpponent,
+    analyzeCoverage
   });
 });

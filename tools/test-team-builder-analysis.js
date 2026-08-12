@@ -48,4 +48,24 @@ assert.equal(grouped.length, 2, "Coverage results must group by unique meta oppo
 assert.equal(grouped[0].cells.length, 6, "Every opponent row must preserve all six team slots.");
 assert.deepEqual(grouped[0].cells[0], normalized);
 
+const scoreGroup = (opponentId, scores) => ({ opponentId, cells: scores.map(score => score == null ? null : ({ score })) });
+const critical = Analysis.summarizeOpponent(scoreGroup("critical", [200, 200, 200, 200, 200, 200]));
+assert.deepEqual(
+  { answers: critical.answerCount, close: critical.closeCount, losses: critical.hardLossCount, average: critical.averageScore, severity: critical.severity, label: critical.severityLabel },
+  { answers: 0, close: 0, losses: 6, average: 200, severity: 86, label: "Critical" },
+  "Threat severity must combine missing answers with the magnitude of simulated losses."
+);
+assert.equal(Analysis.summarizeOpponent(scoreGroup("pending", [700, null, 500, 500, 500, 500])), null, "Partial rows must not produce misleading insights.");
+const coverageInsights = Analysis.analyzeCoverage([
+  scoreGroup("balanced", [700, 650, 550, 500, 350, 300]),
+  scoreGroup("covered", [800, 750, 700, 650, 590, 580]),
+  scoreGroup("critical", [200, 200, 200, 200, 200, 200]),
+  scoreGroup("pending", [700, null, 500, 500, 500, 500])
+]);
+assert.equal(coverageInsights.completedOpponents, 3, "Only complete opponent rows may enter threat analysis.");
+assert.equal(coverageInsights.noAnswerCount, 1);
+assert.equal(coverageInsights.threats[0].opponentId, "critical", "The most severe simulated weakness must rank first.");
+assert.equal(coverageInsights.bestCovered[0].opponentId, "covered", "The opponent with the most strong answers must rank first in best covered.");
+assert.deepEqual(coverageInsights.bestCovered[0].answerSlots, [0, 1, 2, 3]);
+
 console.log("Team Builder analysis planning tests passed.");

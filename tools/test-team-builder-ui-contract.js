@@ -28,6 +28,9 @@ assert.match(html, /id="teamBuilderCoverageDesktop" class="team-coverage-desktop
 assert.match(html, /id="teamBuilderMobileOpponent" class="team-mobile-opponent-current"/);
 assert.match(html, /id="teamBuilderMobileMatchups" class="team-mobile-matchups"/);
 assert.match(html, /id="teamBuilderMatchupModal"[^>]+role="dialog"[^>]+aria-modal="true"/);
+assert.match(html, /id="teamBuilderInsights" class="team-insights"[^>]+aria-labelledby="teamBuilderInsightsTitle"/);
+assert.match(html, /id="teamBuilderThreatList" class="team-insight-list"/);
+assert.match(html, /id="teamBuilderCoveredList" class="team-insight-list"/);
 assert.match(html, /function renderTeamBuilderSlot\(member, slot\)[\s\S]{0,700}data-team-add/);
 assert.match(html, /teamBuilderState\.team\.map\(renderTeamBuilderSlot\)/, "The UI must render the six semantic state slots.");
 assert.match(html, /renderPokemonSuggestionList\(\$\("teamBuilderPickerResults"\)/, "Team Builder must reuse the simulator Pokemon result component.");
@@ -48,6 +51,11 @@ assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,2200}team-
 assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");
 assert.match(html, /function openTeamBuilderMatchup[\s\S]{0,2600}Battle rating[\s\S]{0,1000}teamBuilderBuildLabel/, "Every prepared cell must expose simulation and build detail.");
 assert.match(html, /aria-label="\$\{escapeHtml\(accessible\)\}"/, "Matrix cells must expose text-based result labels for accessibility.");
+assert.match(html, /function renderTeamBuilderInsights\(groups\)[\s\S]{0,500}analyzeCoverage\(groups\)/, "Team insights must derive from the deterministic coverage model.");
+assert.match(html, /insights\.threats\.slice\(0, 5\)[\s\S]{0,200}insights\.bestCovered\.slice\(0, 5\)/, "Threat and best-covered summaries must remain intentionally compact.");
+assert.match(html, /No favorable matchup[\s\S]{0,300}hard losses[\s\S]{0,100}Avg/, "Threat rows must explain missing answers and hard losses without relying on severity color.");
+assert.match(html, /#teamBuilderView \.team-insights \{[^}]*max-width: none/, "Global section sizing must not compress Team Insights.");
+assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,3600}team-insights-grid[^}]*grid-template-columns: 1fr/, "Team Insights must stack cleanly on mobile.");
 assert.match(html, /Species Clause: that Pokemon species is already on your team/);
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,900}team-roster-grid[\s\S]{0,100}repeat\(2/ , "Common mobile widths must use two comfortable columns.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\s\S]{0,80}1fr/, "The mobile build editor must stack move controls instead of compressing them.");

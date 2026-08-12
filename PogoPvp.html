@@ -1097,6 +1097,25 @@
     .team-matchup-builds { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .team-matchup-builds > div { padding: 10px; border: 1px solid var(--line); border-radius: 8px; }
     .team-matchup-builds b { display: block; margin-bottom: 5px; font-size: 9px; }.team-matchup-builds span { display: block; color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .team-insights { display: none; width: 100%; margin-top: 22px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    #teamBuilderView .team-insights { max-width: none; }
+    .team-insights.is-visible { display: block; }
+    .team-insights-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+    .team-insights-head h3 { margin: 0; font-size: 18px; }.team-insights-head p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+    .team-insights-summary { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+    .team-insights-summary span { padding: 5px 8px; border-radius: 999px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; }
+    .team-insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .team-insight-panel { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--subtle) 45%, var(--panel)); }
+    .team-insight-panel-title { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .team-insight-panel-title h4 { margin: 0; font-size: 13px; }.team-insight-panel-title span { color: var(--muted); font-size: 8px; font-weight: 800; }
+    .team-insight-list { display: grid; gap: 6px; }
+    .team-insight-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 58px; padding: 7px 9px; border: 1px solid color-mix(in srgb, var(--insight-color) 28%, var(--line)); border-radius: 8px; background: var(--panel); }
+    .team-insight-row img { width: 42px; height: 42px; object-fit: contain; }
+    .team-insight-row img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
+    .team-insight-copy { min-width: 0; }.team-insight-copy strong, .team-insight-copy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .team-insight-copy strong { font-size: 10px; }.team-insight-copy span { margin-top: 2px; color: var(--muted); font-size: 8px; }
+    .team-insight-metric { min-width: 62px; padding: 5px 7px; border-radius: 7px; background: color-mix(in srgb, var(--insight-color) 12%, var(--panel)); text-align: center; }
+    .team-insight-metric strong, .team-insight-metric small { display: block; }.team-insight-metric strong { color: var(--insight-color); font-size: 12px; }.team-insight-metric small { margin-top: 1px; color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -1129,6 +1148,7 @@
       .team-coverage-desktop { display: none; }
       .team-coverage-mobile { display: block; }
       .team-mobile-matchups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .team-insights { padding: 15px; }.team-insights-head { align-items: start; flex-direction: column; }.team-insights-summary { justify-content: start; }.team-insights-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 430px) {
       .team-roster-grid { grid-template-columns: 1fr; }
@@ -12925,6 +12945,13 @@
           <div id="teamBuilderCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderMobilePrev" class="secondary" type="button" aria-label="Previous meta opponent">‹</button><div id="teamBuilderMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderMobileNext" class="secondary" type="button" aria-label="Next meta opponent">›</button></div><div id="teamBuilderMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
+        <section id="teamBuilderInsights" class="team-insights" aria-labelledby="teamBuilderInsightsTitle">
+          <div class="team-insights-head"><div><h3 id="teamBuilderInsightsTitle">Team insights</h3><p id="teamBuilderInsightsSubtitle">Deterministic findings from completed matchup rows.</p></div><div id="teamBuilderInsightsSummary" class="team-insights-summary"></div></div>
+          <div class="team-insights-grid">
+            <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Biggest threats</h4><span>Missing answers + loss severity</span></div><div id="teamBuilderThreatList" class="team-insight-list"></div></article>
+            <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Best covered</h4><span>Strong answers + average rating</span></div><div id="teamBuilderCoveredList" class="team-insight-list"></div></article>
+          </div>
+        </section>
       </section>
     </div>
   </main>
@@ -14938,16 +14965,21 @@
       const coverage = $("teamBuilderCoverage");
       if (!coverage || !teamBuilderAnalysisPlan.length) {
         coverage?.classList.remove("is-visible");
+        $("teamBuilderInsights")?.classList.remove("is-visible");
         return;
       }
       const groups = window.PvPeakTeamBuilderAnalysis.groupResults(teamBuilderAnalysisPlan, teamBuilderAnalysisCache);
       const ready = groups.reduce((count, group) => count + group.cells.filter(Boolean).length, 0);
       coverage.classList.toggle("is-visible", ready > 0);
-      if (!ready) return;
+      if (!ready) {
+        $("teamBuilderInsights")?.classList.remove("is-visible");
+        return;
+      }
       $("teamBuilderCoverageSubtitle").textContent = `${ready} of ${teamBuilderAnalysisPlan.length} battle ratings ready · ${teamBuilderState.analysisConfig.shields} shields.`;
       renderTeamBuilderCoverageDesktop(groups);
       teamBuilderMobileOpponentIndex = Math.max(0, Math.min(groups.length - 1, teamBuilderMobileOpponentIndex));
       renderTeamBuilderCoverageMobile(groups);
+      renderTeamBuilderInsights(groups);
     }
 
     function teamBuilderCoverageCell(result, slot, opponentId, mobile = false) {
@@ -15007,6 +15039,48 @@
       bindTeamBuilderMatchupButtons(box);
       $("teamBuilderMobilePrev").disabled = resolvedGroups.length < 2;
       $("teamBuilderMobileNext").disabled = resolvedGroups.length < 2;
+    }
+
+    function teamBuilderSeverityColor(label) {
+      return label === "Critical" ? "#bd3348" : label === "Major" ? "#d1682f" : label === "Moderate" ? "#b2861f" : "#287f75";
+    }
+
+    function teamBuilderAnswerNames(summary) {
+      return summary.answerSlots.map(slot => findPokemon(teamBuilderState.team[slot]?.pokemonId)?.name).filter(Boolean);
+    }
+
+    function teamBuilderInsightRow(summary, listName, index, covered = false) {
+      const opponent = findPokemon(summary.opponentId);
+      const answers = teamBuilderAnswerNames(summary);
+      const answerText = answers.length ? `Answers: ${answers.join(", ")}` : "No favorable matchup";
+      const detail = covered ? `${answerText} · Avg ${summary.averageScore}` : `${answerText} · ${summary.hardLossCount} hard losses · Avg ${summary.averageScore}`;
+      const color = covered ? "#2f8e62" : teamBuilderSeverityColor(summary.severityLabel);
+      const metric = covered ? `${summary.answerCount}/${summary.teamSize}` : String(summary.severity);
+      const metricLabel = covered ? "Answers" : summary.severityLabel;
+      return `<div class="team-insight-row" style="--insight-color:${color}"><img data-team-insight-sprite="${listName}-${index}" alt=""><div class="team-insight-copy"><strong>${escapeHtml(opponent?.name || summary.opponentId)}</strong><span title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></div><div class="team-insight-metric"><strong>${metric}</strong><small>${escapeHtml(metricLabel)}</small></div></div>`;
+    }
+
+    function renderTeamBuilderInsights(groups) {
+      const insights = window.PvPeakTeamBuilderAnalysis.analyzeCoverage(groups);
+      const section = $("teamBuilderInsights");
+      section.classList.toggle("is-visible", insights.completedOpponents > 0);
+      if (!insights.completedOpponents) return;
+      $("teamBuilderInsightsSubtitle").textContent = `${insights.completedOpponents} of ${groups.length} opponents have complete six-Pokémon results.`;
+      $("teamBuilderInsightsSummary").innerHTML = `<span>${insights.noAnswerCount} without a strong answer</span><span>${insights.completedOpponents} opponents analyzed</span>`;
+      const threats = insights.threats.slice(0, 5);
+      const covered = insights.bestCovered.slice(0, 5);
+      $("teamBuilderThreatList").innerHTML = threats.map((summary, index) => teamBuilderInsightRow(summary, "threat", index)).join("");
+      $("teamBuilderCoveredList").innerHTML = covered.map((summary, index) => teamBuilderInsightRow(summary, "covered", index, true)).join("");
+      threats.forEach((summary, index) => {
+        const pokemon = findPokemon(summary.opponentId);
+        const image = section.querySelector(`[data-team-insight-sprite="threat-${index}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      });
+      covered.forEach((summary, index) => {
+        const pokemon = findPokemon(summary.opponentId);
+        const image = section.querySelector(`[data-team-insight-sprite="covered-${index}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      });
     }
 
     function moveTeamBuilderMobileOpponent(direction) {
