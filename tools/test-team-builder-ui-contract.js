@@ -71,7 +71,7 @@ assert.match(html, /function simulateTeamBuilderMatchupCell[\s\S]{0,1600}runAuto
 assert.match(html, /All \$\{total\} deterministic matchups are ready from cache/, "Phase 4 must report prepared engine data without rendering the Phase 5 matrix.");
 assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_BUILDER_THREAT_POOL_SIZE/, "Threat coverage must extend the selected meta with the local ranked competitive field.");
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
-assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,2200}#92918b[\s\S]{0,350}#245d10[\s\S]{0,650}#8c2024/, "The seven-level scale must include a distinct gray midpoint and dominant green and red endpoints.");
+assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,2200}#777772[\s\S]{0,350}#277a43[\s\S]{0,650}#b33b4d/, "The seven-level scale must include a calm gray midpoint and balanced green and red endpoints.");
 assert.match(html, /--result-surface:\$\{palette\.surface\}[\s\S]{0,180}--result-text:\$\{palette\.text\}[\s\S]{0,180}--gauge-track:\$\{palette\.track\}/, "Every result tier must coordinate surface, text, and gauge contrast.");
 assert.match(html, /function teamBuilderGaugeHtml\(score\)[\s\S]{0,350}\/ 1000 \* 270[\s\S]{0,250}class="team-matchup-gauge"/, "The compact gauge must map the full 0–1000 battle rating continuously onto its arc.");
 assert.equal((html.match(/class="team-coverage-scale-bar"/g) || []).length, 2, "Both coverage matrices must explain the same seven-level palette.");
