@@ -7,7 +7,7 @@
 
   const SCHEMA_VERSION = 1;
   const STORAGE_KEY = "pvpeak-team-builder-analysis-v1";
-  const MAX_CACHE_ENTRIES = 2400;
+  const MAX_CACHE_ENTRIES = 4800;
 
   function memberSignature(member) {
     if (!member) return "empty";
@@ -67,7 +67,7 @@
       pokemonId: job.member.pokemonId,
       opponentId: job.opponentId,
       shields: job.shields,
-      score: Math.max(0, Math.min(1000, Math.round(Number(result.score || 500)))),
+      score: Math.max(0, Math.min(1000, Math.round(Number(result.score ?? 500)))),
       winner,
       teamHpRatio: Math.max(0, Math.min(1, Number(Number(result.details?.aHp || 0).toFixed(3)))),
       metaHpRatio: Math.max(0, Math.min(1, Number(Number(result.details?.bHp || 0).toFixed(3)))),
@@ -235,6 +235,50 @@
     });
   }
 
+  function scoreReplacementCandidate(candidateId, baselineByOpponent, candidateByOpponent) {
+    const targets = Object.keys(baselineByOpponent || {});
+    if (!targets.length || targets.some(opponentId => !baselineByOpponent[opponentId] || !candidateByOpponent?.[opponentId])) return null;
+    let baselineTotal = 0;
+    let candidateTotal = 0;
+    let favorableGained = 0;
+    let hardLossesFixed = 0;
+    let newHardLosses = 0;
+    const changes = targets.map(opponentId => {
+      const baselineScore = Number(baselineByOpponent[opponentId].score ?? 500);
+      const candidateScore = Number(candidateByOpponent[opponentId].score ?? 500);
+      baselineTotal += baselineScore;
+      candidateTotal += candidateScore;
+      if (baselineScore < 600 && candidateScore >= 600) favorableGained += 1;
+      if (baselineScore <= 400 && candidateScore > 400) hardLossesFixed += 1;
+      if (baselineScore > 400 && candidateScore <= 400) newHardLosses += 1;
+      return Object.freeze({ opponentId, baselineScore, candidateScore, delta: candidateScore - baselineScore });
+    }).sort((a, b) => b.delta - a.delta || a.opponentId.localeCompare(b.opponentId));
+    const baselineAverage = Math.round(baselineTotal / targets.length);
+    const candidateAverage = Math.round(candidateTotal / targets.length);
+    const averageDelta = candidateAverage - baselineAverage;
+    const replacementScore = averageDelta + (hardLossesFixed * 40) + (favorableGained * 25) - (newHardLosses * 50);
+    return Object.freeze({
+      candidateId,
+      targetCount: targets.length,
+      baselineAverage,
+      candidateAverage,
+      averageDelta,
+      favorableGained,
+      hardLossesFixed,
+      newHardLosses,
+      replacementScore,
+      changes: Object.freeze(changes)
+    });
+  }
+
+  function rankReplacementCandidates(input = {}) {
+    return Object.entries(input.candidates || {}).map(([candidateId, results]) =>
+      scoreReplacementCandidate(candidateId, input.baselineByOpponent || {}, results)
+    ).filter(Boolean).sort((a, b) =>
+      b.replacementScore - a.replacementScore || b.averageDelta - a.averageDelta || b.hardLossesFixed - a.hardLossesFixed || a.newHardLosses - b.newHardLosses || a.candidateId.localeCompare(b.candidateId)
+    );
+  }
+
   return Object.freeze({
     SCHEMA_VERSION,
     STORAGE_KEY,
@@ -250,6 +294,8 @@
     groupResults,
     summarizeOpponent,
     analyzeCoverage,
-    analyzeCores
+    analyzeCores,
+    scoreReplacementCandidate,
+    rankReplacementCandidates
   });
 });

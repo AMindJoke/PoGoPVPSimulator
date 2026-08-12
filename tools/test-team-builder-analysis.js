@@ -1,5 +1,6 @@
 const assert = require("node:assert/strict");
 const Analysis = require("../src/team-builder/team-builder-analysis.js");
+assert.ok(Analysis.MAX_CACHE_ENTRIES >= 4000, "The cache must retain a practical replacement-candidate field without immediate churn.");
 
 const member = (pokemonId, fastMoveId = "FAST") => ({
   pokemonId,
@@ -33,6 +34,7 @@ const normalized = Analysis.normalizeResult(plan[0], {
   provenance: { currentEngineVersion: "engine-test" }
 });
 assert.deepEqual({ winner: normalized.winner, score: normalized.score, teamHpRatio: normalized.teamHpRatio, metaHpRatio: normalized.metaHpRatio }, { winner: "team", score: 731, teamHpRatio: 0.625, metaHpRatio: 0 });
+assert.equal(Analysis.normalizeResult(plan[0], { score: 0 }).score, 0, "A decisive zero rating must not be normalized to neutral.");
 cache.set(plan[0].key, normalized);
 cache.persist();
 const restored = Analysis.createCache(storage);
@@ -83,5 +85,25 @@ assert.deepEqual(
   { opponent: coreInsights.fragileAnswers[0].opponentId, answer: coreInsights.fragileAnswers[0].answerSlot, backup: coreInsights.fragileAnswers[0].backupSlot, backupScore: coreInsights.fragileAnswers[0].backupScore },
   { opponent: "fragile", answer: 0, backup: 4, backupScore: 450 }
 );
+
+const replacementBaseline = { threatA: { score: 300 }, threatB: { score: 450 }, threatC: { score: 650 } };
+const replacement = Analysis.scoreReplacementCandidate("candidate-a", replacementBaseline, {
+  threatA: { score: 700 }, threatB: { score: 620 }, threatC: { score: 350 }
+});
+assert.deepEqual(
+  { baseline: replacement.baselineAverage, candidate: replacement.candidateAverage, delta: replacement.averageDelta, gained: replacement.favorableGained, fixed: replacement.hardLossesFixed, newLosses: replacement.newHardLosses, score: replacement.replacementScore },
+  { baseline: 467, candidate: 557, delta: 90, gained: 2, fixed: 1, newLosses: 1, score: 130 },
+  "Replacement scoring must transparently reward simulated gains and penalize newly introduced hard losses."
+);
+assert.equal(Analysis.scoreReplacementCandidate("incomplete", replacementBaseline, { threatA: { score: 700 } }), null, "Incomplete candidate simulations must not enter the ranking.");
+const replacementRanking = Analysis.rankReplacementCandidates({
+  baselineByOpponent: replacementBaseline,
+  candidates: {
+    "candidate-a": { threatA: { score: 700 }, threatB: { score: 620 }, threatC: { score: 350 } },
+    "candidate-b": { threatA: { score: 650 }, threatB: { score: 650 }, threatC: { score: 700 } },
+    incomplete: { threatA: { score: 900 } }
+  }
+});
+assert.deepEqual(replacementRanking.map(item => item.candidateId), ["candidate-b", "candidate-a"], "Candidates must rank by deterministic targeted improvement.");
 
 console.log("Team Builder analysis planning tests passed.");
