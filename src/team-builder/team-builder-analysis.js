@@ -111,14 +111,14 @@
 
   function resultTone(result) {
     const score = Number(result?.score ?? 500);
-    if (score >= 600) return "favorable";
-    if (score <= 400) return "unfavorable";
-    return "close";
+    if (score > 500) return "favorable";
+    if (score < 500) return "unfavorable";
+    return "neutral";
   }
 
   function resultLabel(result) {
     const tone = resultTone(result);
-    return tone === "favorable" ? "Win" : tone === "unfavorable" ? "Loss" : "Close";
+    return tone === "favorable" ? "Win" : tone === "unfavorable" ? "Loss" : "Neutral";
   }
 
   function groupResults(plan, cache) {
@@ -180,6 +180,19 @@
       threats: Object.freeze(threats),
       bestCovered: Object.freeze(bestCovered)
     });
+  }
+
+  function rankThreatGroups(groups) {
+    return Object.freeze((groups || []).map((group, index) => ({ group, index, summary: summarizeOpponent(group) })).sort((a, b) => {
+      if (a.summary && !b.summary) return -1;
+      if (!a.summary && b.summary) return 1;
+      if (!a.summary && !b.summary) return a.index - b.index;
+      return b.summary.severity - a.summary.severity
+        || a.summary.answerCount - b.summary.answerCount
+        || a.summary.bestScore - b.summary.bestScore
+        || a.summary.averageScore - b.summary.averageScore
+        || a.group.opponentId.localeCompare(b.group.opponentId);
+    }).map(item => Object.freeze({ ...item.group, threatSummary: item.summary })));
   }
 
   function analyzeCores(groups, teamSize = 6) {
@@ -339,6 +352,7 @@
     groupResults,
     summarizeOpponent,
     analyzeCoverage,
+    rankThreatGroups,
     analyzeCores,
     scoreReplacementCandidate,
     rankReplacementCandidates,

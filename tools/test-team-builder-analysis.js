@@ -40,11 +40,12 @@ cache.persist();
 const restored = Analysis.createCache(storage);
 assert.deepEqual(restored.get(plan[0].key), normalized, "Compact matchup results must survive local cache restoration.");
 assert.deepEqual(Analysis.planProgress(plan, restored), { total: 4, cached: 1, pending: 3 });
-assert.equal(Analysis.resultTone({ score: 600 }), "favorable");
-assert.equal(Analysis.resultTone({ score: 599 }), "close");
-assert.equal(Analysis.resultTone({ score: 400 }), "unfavorable");
+assert.equal(Analysis.resultTone({ score: 501 }), "favorable");
+assert.equal(Analysis.resultTone({ score: 500 }), "neutral", "Only a true 500 tie may use the neutral presentation.");
+assert.equal(Analysis.resultTone({ score: 499 }), "unfavorable");
 assert.equal(Analysis.resultTone({ score: 0 }), "unfavorable", "A zero rating must not fall back to the neutral default.");
 assert.equal(Analysis.resultLabel({ score: 731 }), "Win", "Result labels must make matrix meaning accessible without color.");
+assert.equal(Analysis.resultLabel({ score: 500 }), "Neutral");
 const grouped = Analysis.groupResults(plan, restored);
 assert.equal(grouped.length, 2, "Coverage results must group by unique meta opponent.");
 assert.equal(grouped[0].cells.length, 6, "Every opponent row must preserve all six team slots.");
@@ -69,6 +70,14 @@ assert.equal(coverageInsights.noAnswerCount, 1);
 assert.equal(coverageInsights.threats[0].opponentId, "critical", "The most severe simulated weakness must rank first.");
 assert.equal(coverageInsights.bestCovered[0].opponentId, "covered", "The opponent with the most strong answers must rank first in best covered.");
 assert.deepEqual(coverageInsights.bestCovered[0].answerSlots, [0, 1, 2, 3]);
+const rankedThreatGroups = Analysis.rankThreatGroups([
+  scoreGroup("comfortable", [800, 760, 720, 690, 650, 610]),
+  scoreGroup("pending", [700, null, 500, 500, 500, 500]),
+  scoreGroup("dangerous", [240, 280, 320, 350, 390, 420]),
+  scoreGroup("mixed", [720, 580, 520, 470, 410, 330])
+]);
+assert.deepEqual(rankedThreatGroups.map(group => group.opponentId), ["dangerous", "mixed", "comfortable", "pending"], "Threat coverage must put the most troublesome complete opponent first and partial rows last.");
+assert.equal(rankedThreatGroups[0].threatSummary.answerCount, 0);
 
 const coreInsights = Analysis.analyzeCores([
   scoreGroup("shared-a", [250, 300, 700, 650, 500, 450]),
