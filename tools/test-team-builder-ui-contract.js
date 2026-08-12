@@ -71,9 +71,11 @@ assert.match(html, /function simulateTeamBuilderMatchupCell[\s\S]{0,1600}runAuto
 assert.match(html, /All \$\{total\} deterministic matchups are ready from cache/, "Phase 4 must report prepared engine data without rendering the Phase 5 matrix.");
 assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_BUILDER_THREAT_POOL_SIZE/, "Threat coverage must extend the selected meta with the local ranked competitive field.");
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
-assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,1500}#7b8490[\s\S]{0,300}#075c31[\s\S]{0,500}#8d1e30/, "Neutral, favorable, and unfavorable tiers must have clearly distinct gray, green, and red palettes.");
-assert.match(html, /--result-fill:\$\{palette\.fill\}[\s\S]{0,120}--result-border:\$\{palette\.border\}/, "Result severity must strengthen fill and border as well as hue.");
+assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,2200}#92918b[\s\S]{0,350}#245d10[\s\S]{0,650}#8c2024/, "The seven-level scale must include a distinct gray midpoint and dominant green and red endpoints.");
+assert.match(html, /--result-surface:\$\{palette\.surface\}[\s\S]{0,180}--result-text:\$\{palette\.text\}[\s\S]{0,180}--gauge-track:\$\{palette\.track\}/, "Every result tier must coordinate surface, text, and gauge contrast.");
 assert.match(html, /function teamBuilderGaugeHtml\(score\)[\s\S]{0,350}\/ 1000 \* 270[\s\S]{0,250}class="team-matchup-gauge"/, "The compact gauge must map the full 0–1000 battle rating continuously onto its arc.");
+assert.equal((html.match(/class="team-coverage-scale-bar"/g) || []).length, 2, "Both coverage matrices must explain the same seven-level palette.");
+assert.match(html, /Seven result levels from dominant loss, clear loss, slight loss, neutral, slight win, clear win, to dominant win/, "The compact visual scale must remain fully accessible.");
 assert.match(html, /\.team-matchup-gauge::before[^}]+conic-gradient[^}]+--gauge-angle/, "Coverage gauges must be rendered as lightweight code-native arcs.");
 assert.match(html, /class="team-coverage-rank">\$\{row \+ 1\}/, "Coverage rows must expose a clear visual rank.");
 assert.doesNotMatch(html, /<strong>\$\{gauge\}\$\{result\.score\}<\/strong><small>\$\{label\}/, "Desktop cells must not repeat Win or Loss beneath every score.");

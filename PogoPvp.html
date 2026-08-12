@@ -1061,6 +1061,10 @@
     .team-coverage-legend span { display: inline-flex; align-items: center; gap: 4px; }
     .team-coverage-legend .team-matchup-gauge { width: 20px; height: 13px; }
     .team-coverage-legend .team-matchup-gauge::before { width: 20px; height: 20px; }
+    .team-coverage-scale { display: grid; width: min(330px, 42vw); gap: 4px; }
+    .team-coverage-scale-bar { display: grid; grid-template-columns: repeat(7, minmax(20px, 1fr)); gap: 3px; }
+    .team-coverage-scale-bar i { display: block; height: 9px; border-radius: 999px; background: var(--scale-color); }
+    .team-coverage-scale-labels { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 7px; font-weight: 850; }
     .team-coverage-desktop { max-height: min(680px, 68vh); overflow: auto; border: 1px solid var(--line); border-radius: 9px; }
     .team-coverage-table { width: 100%; min-width: 840px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
     .team-coverage-table th, .team-coverage-table td { padding: 6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); text-align: center; }
@@ -1076,11 +1080,11 @@
     .team-coverage-pokemon-head span, .team-coverage-opponent span { overflow: hidden; font-size: 9px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
     .team-coverage-rank { color: var(--muted); font-size: 10px; font-weight: 900; text-align: right; }
     .team-coverage-opponent-copy { min-width: 0; }.team-coverage-opponent-copy span, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy small { margin-top: 2px; color: var(--muted); font-size: 7px; font-weight: 750; }
-    .team-matchup-cell { display: grid; place-items: center; width: 100%; min-height: 36px; padding: 3px 5px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 9px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 19%), var(--panel)); color: var(--ink); box-shadow: none; }
+    .team-matchup-cell { display: grid; place-items: center; width: 100%; min-height: 36px; padding: 3px 5px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 9px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: none; }
     .team-matchup-cell:hover { border-color: var(--result-color); transform: translateY(-1px); }
     .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; }
     .team-matchup-gauge { position: relative; display: inline-block; flex: none; width: 23px; height: 15px; overflow: hidden; }
-    .team-matchup-gauge::before { position: absolute; top: 0; left: 0; width: 23px; height: 23px; border-radius: 50%; background: conic-gradient(from 225deg, var(--result-color) 0deg var(--gauge-angle), color-mix(in srgb, var(--result-color) 18%, var(--panel)) var(--gauge-angle) 270deg, transparent 270deg 360deg); content: ""; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); }
+    .team-matchup-gauge::before { position: absolute; top: 0; left: 0; width: 23px; height: 23px; border-radius: 50%; background: conic-gradient(from 225deg, var(--gauge-color, var(--result-color)) 0deg var(--gauge-angle), var(--gauge-track, color-mix(in srgb, var(--result-color) 18%, var(--panel))) var(--gauge-angle) 270deg, transparent 270deg 360deg); content: ""; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px)); }
     .team-matchup-cell.is-pending { --result-color: #97a2af; opacity: .58; }
     .team-coverage-mobile { display: none; }
     .team-mobile-opponent-nav { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -1090,7 +1094,7 @@
     .team-mobile-opponent-current strong { display: block; font-size: 13px; }
     .team-mobile-opponent-current small { color: var(--muted); font-size: 9px; }
     .team-mobile-matchups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .team-mobile-matchup { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 64px; padding: 7px 8px; border: 1px solid color-mix(in srgb, var(--result-color) var(--result-border, 54%), var(--line)); border-radius: 10px; background: color-mix(in srgb, var(--result-color) var(--result-fill, 18%), var(--panel)); color: var(--ink); text-align: left; box-shadow: none; }
+    .team-mobile-matchup { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 64px; padding: 7px 8px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 10px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); text-align: left; box-shadow: none; }
     .team-mobile-matchup img { width: 42px; height: 42px; object-fit: contain; }
     .team-mobile-pending-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--subtle); color: var(--muted); font-weight: 900; }
     .team-mobile-matchup strong, .team-mobile-matchup span, .team-mobile-matchup small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1198,6 +1202,7 @@
       .team-coverage { padding: 15px; }
       .team-coverage-head { align-items: start; flex-direction: column; }
       .team-coverage-legend { justify-content: start; }
+      .team-coverage-scale { width: 100%; }
       .team-coverage-desktop { display: none; }
       .team-coverage-mobile { display: block; }
       .team-mobile-matchups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -12995,12 +13000,12 @@
           </div>
         </section>
         <div id="teamBuilderThreatCoverage" class="team-coverage is-primary" aria-labelledby="teamBuilderThreatCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i class="team-matchup-gauge" style="--result-color:#2f9a5f;--gauge-angle:243deg" aria-hidden="true"></i>Win · above 500</span><span><i class="team-matchup-gauge" style="--result-color:#7b8490;--gauge-angle:135deg" aria-hidden="true"></i>Neutral · 500</span><span><i class="team-matchup-gauge" style="--result-color:#c7505d;--gauge-angle:35deg" aria-hidden="true"></i>Loss · below 500</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-scale" role="img" aria-label="Seven result levels from dominant loss, clear loss, slight loss, neutral, slight win, clear win, to dominant win"><div class="team-coverage-scale-bar" aria-hidden="true"><i style="--scale-color:#8c2024"></i><i style="--scale-color:#d9686a"></i><i style="--scale-color:#f2c9c9"></i><i style="--scale-color:#e1e0db"></i><i style="--scale-color:#dbeac8"></i><i style="--scale-color:#76a844"></i><i style="--scale-color:#245d10"></i></div><div class="team-coverage-scale-labels" aria-hidden="true"><span>Dominant loss</span><span>Neutral · 500</span><span>Dominant win</span></div></div></header>
           <div id="teamBuilderThreatCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderThreatMobilePrev" class="secondary" type="button" aria-label="Previous ranked threat">‹</button><div id="teamBuilderThreatMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderThreatMobileNext" class="secondary" type="button" aria-label="Next ranked threat">›</button></div><div id="teamBuilderThreatMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
         <div id="teamBuilderCoverage" class="team-coverage is-secondary" aria-labelledby="teamBuilderCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-legend" aria-label="Matchup result legend"><span><i class="team-matchup-gauge" style="--result-color:#2f9a5f;--gauge-angle:243deg" aria-hidden="true"></i>Win · above 500</span><span><i class="team-matchup-gauge" style="--result-color:#7b8490;--gauge-angle:135deg" aria-hidden="true"></i>Neutral · 500</span><span><i class="team-matchup-gauge" style="--result-color:#c7505d;--gauge-angle:35deg" aria-hidden="true"></i>Loss · below 500</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-scale" role="img" aria-label="Seven result levels from dominant loss, clear loss, slight loss, neutral, slight win, clear win, to dominant win"><div class="team-coverage-scale-bar" aria-hidden="true"><i style="--scale-color:#8c2024"></i><i style="--scale-color:#d9686a"></i><i style="--scale-color:#f2c9c9"></i><i style="--scale-color:#e1e0db"></i><i style="--scale-color:#dbeac8"></i><i style="--scale-color:#76a844"></i><i style="--scale-color:#245d10"></i></div><div class="team-coverage-scale-labels" aria-hidden="true"><span>Dominant loss</span><span>Neutral · 500</span><span>Dominant win</span></div></div></header>
           <div id="teamBuilderCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderMobilePrev" class="secondary" type="button" aria-label="Previous meta opponent">‹</button><div id="teamBuilderMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderMobileNext" class="secondary" type="button" aria-label="Next meta opponent">›</button></div><div id="teamBuilderMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
@@ -15212,19 +15217,23 @@
     function teamBuilderResultVisual(result) {
       const presentation = window.PvPeakTeamBuilderAnalysis.resultPresentation(result);
       const palette = presentation.tone === "neutral"
-        ? { color: "#7b8490", fill: "13%", border: "48%" }
+        ? { color: "#92918b", surface: "#e1e0db", border: "#aaa9a3", text: "#282824", gauge: "#686863", track: "#c9c8c2" }
         : presentation.tone === "favorable"
           ? presentation.tier === "dominant"
-            ? { color: "#075c31", fill: "46%", border: "92%" }
+            ? { color: "#245d10", surface: "#245d10", border: "#194609", text: "#ffffff", gauge: "#ffffff", track: "rgba(255,255,255,.28)" }
             : presentation.tier === "clear"
-              ? { color: "#258149", fill: "34%", border: "76%" }
-              : { color: "#5ba66f", fill: "23%", border: "58%" }
+              ? { color: "#4f8c18", surface: "#76a844", border: "#4f7f22", text: "#102008", gauge: "#245d10", track: "rgba(255,255,255,.42)" }
+              : { color: "#5d9d20", surface: "#dbeac8", border: "#9dbd78", text: "#213016", gauge: "#5d9d20", track: "#b9d29a" }
           : presentation.tier === "dominant"
-            ? { color: "#8d1e30", fill: "46%", border: "92%" }
+            ? { color: "#8c2024", surface: "#8c2024", border: "#6d1519", text: "#ffffff", gauge: "#ffffff", track: "rgba(255,255,255,.28)" }
             : presentation.tier === "clear"
-              ? { color: "#b83f4d", fill: "34%", border: "76%" }
-              : { color: "#cf6972", fill: "23%", border: "58%" };
-      return { ...presentation, ...palette, style: `--result-color:${palette.color};--result-fill:${palette.fill};--result-border:${palette.border}` };
+              ? { color: "#b52f32", surface: "#d9686a", border: "#ad3d40", text: "#2e0c0d", gauge: "#8c2024", track: "rgba(255,255,255,.42)" }
+              : { color: "#eb4b4d", surface: "#f2c9c9", border: "#df898b", text: "#381516", gauge: "#c63a3d", track: "#e8a9aa" };
+      return {
+        ...presentation,
+        ...palette,
+        style: `--result-color:${palette.color};--result-surface:${palette.surface};--result-border-color:${palette.border};--result-text:${palette.text};--gauge-color:${palette.gauge};--gauge-track:${palette.track}`
+      };
     }
 
     function teamBuilderGaugeHtml(score) {
