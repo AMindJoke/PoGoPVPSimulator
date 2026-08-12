@@ -24,6 +24,7 @@
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/team-builder/team-builder-analysis.js"></script>
+  <script src="src/team-builder/team-builder-share.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -950,6 +951,8 @@
     .team-builder-head p { margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
     .team-builder-league { display: grid; gap: 5px; min-width: 180px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .team-builder-league select { width: 100%; min-height: 40px; font-size: 12px; font-weight: 850; text-transform: none; }
+    .team-builder-head-actions { display: flex; align-items: end; gap: 8px; }.team-builder-share { min-height: 40px; white-space: nowrap; }.team-builder-share[data-feedback="success"] { border-color: #70bb8c; color: #167a3d; }.team-builder-share[data-feedback="error"] { border-color: #d78d8d; color: var(--danger); }
+    .team-builder-share-error { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -10px 0 18px; padding: 10px 12px; border: 1px solid #d78d8d; border-radius: 9px; background: color-mix(in srgb, var(--danger) 7%, var(--panel)); color: var(--danger); font-size: 10px; font-weight: 800; }.team-builder-share-error[hidden] { display: none; }.team-builder-share-error button { min-height: 32px; padding: 5px 9px; }
     .team-builder-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
     .team-builder-summary strong { font-size: 15px; }
     .team-builder-summary span { color: var(--muted); font-size: 11px; font-weight: 750; }
@@ -1166,7 +1169,7 @@
     @media (max-width: 760px) {
       .team-builder-shell { width: min(100% - 20px, 680px); margin-top: 16px; }
       .team-builder-head { align-items: stretch; flex-direction: column; gap: 14px; }
-      .team-builder-league { min-width: 0; }
+      .team-builder-head-actions { align-items: stretch; flex-direction: column; }.team-builder-league { min-width: 0; }.team-builder-share { min-height: 44px; }
       .team-roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
       .team-slot, .team-slot-empty { min-height: 174px; }
       .team-card { grid-template-columns: 64px minmax(0, 1fr); gap: 8px; padding: 11px; }
@@ -12965,8 +12968,9 @@
       <section class="team-builder-shell" aria-labelledby="teamBuilderTitle">
         <header class="team-builder-head">
           <div class="team-builder-head-copy"><span>Competitive roster</span><h2 id="teamBuilderTitle">Build your Show 6 team</h2><p>Build a team of six and prepare it for matchup analysis.</p></div>
-          <label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label>
+          <div class="team-builder-head-actions"><label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label><button id="teamBuilderCopyLink" class="secondary team-builder-share" type="button">Copy Team Link</button><span id="teamBuilderShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span></div>
         </header>
+        <div id="teamBuilderShareError" class="team-builder-share-error" role="alert" hidden><span>This shared team could not be loaded. The link may be invalid or incompatible.</span><button id="teamBuilderShareErrorDismiss" class="secondary" type="button">Use my current team</button></div>
         <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderCount">0 of 6 selected</span></div>
         <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
@@ -13347,6 +13351,7 @@
     let teamBuilderComparisonBaselinePlan = [];
     let teamBuilderComparisonPlan = [];
     let teamBuilderComparisonSourceSignature = "";
+    let teamBuilderShareFeedbackTimer = null;
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13636,6 +13641,8 @@
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
+      $("teamBuilderCopyLink").onclick = copyTeamBuilderShareLink;
+      $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
       $("teamBuilderMeta").onchange = event => setTeamBuilderMeta(event.target.value);
       $("teamBuilderAnalyze").onclick = startTeamBuilderAnalysis;
       $("teamBuilderAnalysisCancel").onclick = cancelTeamBuilderAnalysis;
@@ -13953,6 +13960,7 @@
       renderMetaRankings();
       updateBattleAvailability();
       void loadSharedScenarioFromLocation();
+      void loadSharedTeamFromLocation();
       if (pagePerfRunId) {
         requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
           pokemon: allPokemon.length,
@@ -14715,6 +14723,7 @@
       }
       const selected = teamBuilderState.team.filter(Boolean).length;
       $("teamBuilderCount").textContent = `${selected} of ${window.PvPeakTeamBuilder.TEAM_SIZE} selected`;
+      $("teamBuilderCopyLink").disabled = selected !== window.PvPeakTeamBuilder.TEAM_SIZE || !window.PvPeakTeamBuilderShare;
       const roster = $("teamBuilderRoster");
       roster.innerHTML = teamBuilderState.team.map(renderTeamBuilderSlot).join("");
       roster.querySelectorAll("[data-team-add],[data-team-replace]").forEach(button => {
@@ -14736,6 +14745,91 @@
 
     function teamBuilderFeedback(message = "") {
       if ($("teamBuilderFeedback")) $("teamBuilderFeedback").textContent = message;
+    }
+
+    function teamBuilderSharePayload() {
+      return { schemaVersion: 1, state: teamBuilderState, comparisonBaseline: teamBuilderComparisonBaseline };
+    }
+
+    function validateSharedTeamForRuntime(payload) {
+      const members = [...payload.state.team, ...(payload.comparisonBaseline || [])].filter(Boolean);
+      members.forEach(member => {
+        const pokemon = findPokemon(member.pokemonId);
+        if (!pokemon) throw new Error("SHARED_TEAM_POKEMON_UNKNOWN");
+        if (!pokemon.fast.includes(member.fastMoveId) || !member.chargedMoveIds.every(id => pokemon.charged.includes(id))) throw new Error("SHARED_TEAM_MOVESET_INVALID");
+      });
+      const provider = teamBuilderMetaRegistry?.get(payload.state.analysisConfig.meta);
+      if (!provider || provider.league !== payload.state.league) throw new Error("SHARED_TEAM_META_INVALID");
+      return payload;
+    }
+
+    async function copyTeamBuilderShareLink() {
+      const button = $("teamBuilderCopyLink");
+      const shareApi = window.PvPeakTeamBuilderShare;
+      if (!button || !shareApi || button.getAttribute("aria-busy") === "true" || !teamBuilderState.team.every(Boolean)) return false;
+      button.setAttribute("aria-busy", "true");
+      button.disabled = true;
+      button.textContent = "Creating link...";
+      try {
+        const url = shareApi.buildTeamUrl(teamBuilderSharePayload(), window.location);
+        await writeManualScenarioLinkToClipboard(url);
+        showTeamBuilderShareFeedback("success", "Team link copied");
+        return true;
+      } catch (_) {
+        showTeamBuilderShareFeedback("error", "Could not copy team link");
+        return false;
+      } finally {
+        button.removeAttribute("aria-busy");
+        button.disabled = !teamBuilderState.team.every(Boolean) || !window.PvPeakTeamBuilderShare;
+      }
+    }
+
+    function showTeamBuilderShareFeedback(type, message) {
+      const button = $("teamBuilderCopyLink");
+      const status = $("teamBuilderShareFeedback");
+      if (!button || !status) return;
+      if (teamBuilderShareFeedbackTimer) clearTimeout(teamBuilderShareFeedbackTimer);
+      button.dataset.feedback = type;
+      button.textContent = type === "success" ? "✓ Team link copied" : "Could not copy link";
+      status.textContent = message;
+      teamBuilderShareFeedbackTimer = window.setTimeout(() => {
+        delete button.dataset.feedback;
+        button.textContent = "Copy Team Link";
+        status.textContent = "";
+        teamBuilderShareFeedbackTimer = null;
+      }, type === "success" ? 1800 : 2600);
+    }
+
+    async function loadSharedTeamFromLocation() {
+      const shareApi = window.PvPeakTeamBuilderShare;
+      const token = shareApi?.teamTokenFromLocation?.(window.location);
+      if (!token) return false;
+      try {
+        const payload = validateSharedTeamForRuntime(shareApi.decodeTeam(token));
+        teamBuilderState = window.PvPeakTeamBuilder.normalizeState(payload.state);
+        teamBuilderComparisonBaseline = payload.comparisonBaseline ? JSON.parse(JSON.stringify(payload.comparisonBaseline)) : null;
+        persistTeamBuilderState();
+        persistTeamBuilderComparisonBaseline();
+        $("teamBuilderShareError").hidden = true;
+        setAppView("team-builder");
+        teamBuilderFeedback("Shared team opened.");
+        return true;
+      } catch (error) {
+        setAppView("team-builder");
+        const panel = $("teamBuilderShareError");
+        panel.dataset.reason = String(error?.code || error?.message || "INVALID_SHARED_TEAM");
+        panel.hidden = false;
+        requestAnimationFrame(() => $("teamBuilderShareErrorDismiss")?.focus({ preventScroll: true }));
+        return false;
+      }
+    }
+
+    function dismissTeamBuilderShareError() {
+      const panel = $("teamBuilderShareError");
+      panel.hidden = true;
+      delete panel.dataset.reason;
+      if (window.history?.replaceState && window.PvPeakTeamBuilderShare) window.history.replaceState(null, "", window.PvPeakTeamBuilderShare.locationWithoutTeam(window.location));
+      $("teamBuilderCopyLink")?.focus({ preventScroll: true });
     }
 
     function setTeamBuilderLeague(league) {
