@@ -944,8 +944,8 @@
     .team-builder-shell { width: min(1120px, calc(100% - 28px)); max-width: none; margin: 24px auto 40px; padding: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; }
     .team-builder-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
     .team-builder-head-copy > span { display: block; margin-bottom: 5px; color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-    .team-builder-head h2 { margin: 0; font-size: clamp(26px, 3vw, 38px); line-height: 1; letter-spacing: -.035em; }
-    .team-builder-head p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .team-builder-head h2 { margin: 0; padding-bottom: 2px; font-size: clamp(26px, 3vw, 38px); line-height: 1.12; letter-spacing: -.035em; }
+    .team-builder-head p { margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
     .team-builder-league { display: grid; gap: 5px; min-width: 180px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .team-builder-league select { width: 100%; min-height: 40px; font-size: 12px; font-weight: 850; text-transform: none; }
     .team-builder-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
@@ -1011,6 +1011,9 @@
     .team-editor-feedback { min-height: 18px; margin: 4px 0; color: var(--danger); font-size: 10px; font-weight: 800; }
     .team-editor-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
     .team-card-build { margin-top: -7px; color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
+    #teamBuilderView .team-builder-head { padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); color: var(--ink); box-shadow: 0 7px 20px var(--shadow); }
+    #teamBuilderView .team-builder-head-copy > span { color: var(--accent); }
+    #teamBuilderView .team-builder-head p { color: color-mix(in srgb, var(--muted) 88%, var(--ink)); }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -12802,7 +12805,7 @@
     <div id="teamBuilderView" class="app-view team-builder-view">
       <section class="team-builder-shell" aria-labelledby="teamBuilderTitle">
         <header class="team-builder-head">
-          <div class="team-builder-head-copy"><span>Competitive roster</span><h2 id="teamBuilderTitle">Build your Show 6</h2><p>Build a team of six and prepare it for matchup analysis.</p></div>
+          <div class="team-builder-head-copy"><span>Competitive roster</span><h2 id="teamBuilderTitle">Build your Show 6 team</h2><p>Build a team of six and prepare it for matchup analysis.</p></div>
           <label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label>
         </header>
         <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderCount">0 of 6 selected</span></div>
