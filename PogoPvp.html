@@ -23,6 +23,7 @@
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
+  <script src="src/team-builder/team-builder-analysis.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -1038,6 +1039,13 @@
     .team-meta-pokemon img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.7)); }
     .team-meta-pokemon span { overflow: hidden; font-size: 9px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
     .team-meta-status { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: 9px; font-weight: 750; }
+    .team-analysis-engine { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line); }
+    .team-analysis-progress { display: grid; gap: 6px; }
+    .team-analysis-progress-copy { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 9px; font-weight: 800; }
+    .team-analysis-progress-track { height: 7px; overflow: hidden; border-radius: 999px; background: var(--subtle); }
+    .team-analysis-progress-track i { display: block; width: var(--analysis-progress, 0%); height: 100%; border-radius: inherit; background: var(--accent); transition: width .18s ease-out; }
+    .team-analysis-actions { display: flex; gap: 7px; }
+    .team-analysis-actions button { min-height: 38px; }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -1062,6 +1070,8 @@
       .team-meta-setup { padding: 15px; }
       .team-meta-controls { grid-template-columns: 1fr; gap: 12px; }
       .team-meta-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .team-analysis-engine { grid-template-columns: 1fr; }
+      .team-analysis-actions button:first-child { flex: 1; }
     }
     @media (max-width: 430px) {
       .team-roster-grid { grid-template-columns: 1fr; }
@@ -12839,13 +12849,17 @@
         <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
         <section class="team-meta-setup" aria-labelledby="teamMetaTitle">
-          <header class="team-meta-head"><div><h3 id="teamMetaTitle">Analysis setup</h3><p>Choose the competitive field and shield scenario to use in the next analysis phase.</p></div><span class="team-meta-phase">Definition only</span></header>
+          <header class="team-meta-head"><div><h3 id="teamMetaTitle">Analysis setup</h3><p>Choose the competitive field and shield scenario, then prepare deterministic matchup results.</p></div><span class="team-meta-phase">Engine ready</span></header>
           <div class="team-meta-controls">
             <label class="team-builder-league"><span>Meta</span><select id="teamBuilderMeta" aria-label="Team Builder meta"></select></label>
             <div class="team-meta-shields"><span>Shield scenario</span><div id="teamBuilderShieldScenarios" class="team-meta-shield-options" role="group" aria-label="Shield scenario"></div></div>
           </div>
           <details class="team-meta-roster"><summary>Current meta roster <span id="teamBuilderMetaCount">Loading…</span></summary><div id="teamBuilderMetaList" class="team-meta-list"></div></details>
           <div id="teamBuilderMetaStatus" class="team-meta-status" role="status" aria-live="polite"></div>
+          <div class="team-analysis-engine">
+            <div class="team-analysis-progress"><div class="team-analysis-progress-copy"><span id="teamBuilderAnalysisStatus">Complete all six team slots to prepare analysis.</span><span id="teamBuilderAnalysisCount">0 / 0</span></div><div id="teamBuilderAnalysisProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Team matchup analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div>
+            <div class="team-analysis-actions"><button id="teamBuilderAnalyze" type="button">Prepare matchups</button><button id="teamBuilderAnalysisCancel" class="secondary" type="button" hidden>Cancel</button></div>
+          </div>
         </section>
       </section>
     </div>
@@ -13160,6 +13174,15 @@
     const teamBuilderMetaRegistry = window.PvPeakTeamBuilderMeta?.createRegistry?.() || null;
     let teamBuilderMetaDefinition = null;
     let teamBuilderMetaLoadingId = null;
+    const teamBuilderAnalysisCache = window.PvPeakTeamBuilderAnalysis?.createCache?.(window.localStorage) || null;
+    let teamBuilderAnalysisPlan = [];
+    let teamBuilderAnalysisQueue = [];
+    let teamBuilderAnalysisActive = false;
+    let teamBuilderAnalysisDone = 0;
+    let teamBuilderAnalysisCacheHits = 0;
+    let teamBuilderAnalysisFailed = 0;
+    let teamBuilderAnalysisRunToken = 0;
+    const teamBuilderAnalysisPending = new Map();
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13450,6 +13473,8 @@
       });
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
       $("teamBuilderMeta").onchange = event => setTeamBuilderMeta(event.target.value);
+      $("teamBuilderAnalyze").onclick = startTeamBuilderAnalysis;
+      $("teamBuilderAnalysisCancel").onclick = cancelTeamBuilderAnalysis;
       $("teamBuilderPickerSearch").oninput = renderTeamBuilderPickerResults;
       $("teamBuilderPickerSearch").onkeydown = event => {
         if (event.key === "Escape") closeTeamBuilderPicker();
@@ -14310,7 +14335,7 @@
               ? "offline"
               : normalizedSource.includes("scenario") ? "scenario-review"
                 : normalizedSource.includes("preview") ? "preview"
-                  : normalizedSource.includes("matrix") || normalizedSource.includes("meta") ? "matrix" : "battle";
+                  : normalizedSource.includes("matrix") || normalizedSource.includes("meta") || normalizedSource.includes("team-builder") ? "matrix" : "battle";
             if (config && signature) {
               matrixConfigCache.set(signature, config);
               while (matrixConfigCache.size > 12) matrixConfigCache.delete(matrixConfigCache.keys().next().value);
@@ -14525,6 +14550,7 @@
     }
 
     function setTeamBuilderLeague(league) {
+      cancelTeamBuilderAnalysis(false);
       try {
         teamBuilderState = window.PvPeakTeamBuilder.setLeague(teamBuilderState, league);
         persistTeamBuilderState();
@@ -14586,10 +14612,12 @@
       const list = $("teamBuilderMetaList");
       list.innerHTML = pokemon.map((entry, index) => `<div class="team-meta-pokemon" title="${escapeHtml(displayName(entry))}"><img data-team-meta-sprite="${index}" alt=""><span>${escapeHtml(displayName(entry))}</span></div>`).join("");
       pokemon.forEach((entry, index) => setPokemonImage(list.querySelector(`[data-team-meta-sprite="${index}"]`), entry));
+      refreshTeamBuilderAnalysisPlan();
     }
 
     function setTeamBuilderMeta(providerId) {
       if (!teamBuilderMetaRegistry?.get(providerId)) return;
+      cancelTeamBuilderAnalysis(false);
       teamBuilderState = window.PvPeakTeamBuilder.setAnalysisConfig(teamBuilderState, { meta: providerId });
       teamBuilderMetaDefinition = null;
       persistTeamBuilderState();
@@ -14597,10 +14625,229 @@
     }
 
     function setTeamBuilderShieldScenario(shields) {
+      cancelTeamBuilderAnalysis(false);
       const normalized = window.PvPeakTeamBuilderMeta.normalizeShieldScenario(shields);
       teamBuilderState = window.PvPeakTeamBuilder.setAnalysisConfig(teamBuilderState, { shields: normalized });
       persistTeamBuilderState();
       renderTeamBuilderMeta();
+    }
+
+    function refreshTeamBuilderAnalysisPlan() {
+      if (!window.PvPeakTeamBuilderAnalysis || !teamBuilderMetaDefinition || !teamBuilderState) return;
+      const opponentSignatures = {};
+      teamBuilderMetaDefinition.pokemonIds.forEach(id => {
+        const opponent = findPokemon(id);
+        if (opponent) opponentSignatures[id] = matrixCombatantSignature(createMetaCombatant(opponent, "B"));
+      });
+      teamBuilderAnalysisPlan = window.PvPeakTeamBuilderAnalysis.createPlan({
+        engineVersion: battleEngineVersion,
+        providerId: teamBuilderState.analysisConfig.meta,
+        shields: teamBuilderState.analysisConfig.shields,
+        team: teamBuilderState.team,
+        opponentIds: teamBuilderMetaDefinition.pokemonIds.filter(id => !!findPokemon(id)),
+        opponentSignatures
+      });
+      renderTeamBuilderAnalysisProgress();
+    }
+
+    function renderTeamBuilderAnalysisProgress() {
+      const completeTeam = teamBuilderState?.team?.filter(Boolean).length === window.PvPeakTeamBuilder?.TEAM_SIZE;
+      const total = teamBuilderAnalysisPlan.length;
+      const cached = teamBuilderAnalysisPlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache?.has(job.key)), 0);
+      const done = teamBuilderAnalysisActive ? Math.min(total, teamBuilderAnalysisDone) : cached;
+      const progress = total ? Math.round(done / total * 100) : 0;
+      const status = $("teamBuilderAnalysisStatus");
+      if (!completeTeam) status.textContent = "Complete all six team slots to prepare analysis.";
+      else if (!teamBuilderMetaDefinition) status.textContent = "Waiting for the selected meta definition.";
+      else if (teamBuilderAnalysisActive) status.textContent = `Running canonical battle simulations${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
+      else if (total && cached === total) status.textContent = `All ${total} deterministic matchups are ready from cache.`;
+      else status.textContent = `${cached} cached · ${Math.max(0, total - cached)} matchups to prepare.`;
+      $("teamBuilderAnalysisCount").textContent = `${done} / ${total}`;
+      const bar = $("teamBuilderAnalysisProgress");
+      bar.style.setProperty("--analysis-progress", `${progress}%`);
+      bar.setAttribute("aria-valuemax", String(total));
+      bar.setAttribute("aria-valuenow", String(done));
+      $("teamBuilderAnalyze").disabled = !completeTeam || !total || teamBuilderAnalysisActive || cached === total;
+      $("teamBuilderAnalyze").textContent = cached ? "Prepare remaining" : "Prepare matchups";
+      $("teamBuilderAnalysisCancel").hidden = !teamBuilderAnalysisActive;
+    }
+
+    function startTeamBuilderAnalysis() {
+      refreshTeamBuilderAnalysisPlan();
+      if (teamBuilderState.team.filter(Boolean).length !== window.PvPeakTeamBuilder.TEAM_SIZE || !teamBuilderAnalysisPlan.length || teamBuilderAnalysisActive) return;
+      teamBuilderAnalysisRunToken++;
+      teamBuilderAnalysisQueue = teamBuilderAnalysisPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
+      teamBuilderAnalysisCacheHits = teamBuilderAnalysisPlan.length - teamBuilderAnalysisQueue.length;
+      teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
+      teamBuilderAnalysisFailed = 0;
+      teamBuilderAnalysisActive = teamBuilderAnalysisQueue.length > 0;
+      renderTeamBuilderAnalysisProgress();
+      if (teamBuilderAnalysisActive) processTeamBuilderAnalysisQueue(teamBuilderAnalysisRunToken);
+    }
+
+    function processTeamBuilderAnalysisQueue(token) {
+      if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      const job = teamBuilderAnalysisQueue.shift();
+      if (!job) {
+        finishTeamBuilderAnalysis();
+        return;
+      }
+      if (!matrixComputeWorker) initMatrixComputeWorker();
+      if (!requestTeamBuilderMatchupCompute(job, token)) {
+        try {
+          storeTeamBuilderAnalysisResult(job, simulateTeamBuilderMatchupCell(job));
+        } catch (_) {
+          teamBuilderAnalysisFailed++;
+        }
+        teamBuilderAnalysisDone++;
+        renderTeamBuilderAnalysisProgress();
+        setTimeout(() => processTeamBuilderAnalysisQueue(token), 0);
+      }
+    }
+
+    function requestTeamBuilderMatchupCompute(job, token) {
+      if (!matrixComputeWorker) return false;
+      const config = createTeamBuilderBattleConfig(job);
+      if (!config) return false;
+      const [aShields, bShields] = job.shields.split("-").map(Number);
+      try {
+        const requestId = ++matrixComputeWorkerSeq;
+        const timeout = setTimeout(() => {
+          const pending = teamBuilderAnalysisPending.get(job.key);
+          if (!pending || pending.token !== token) return;
+          teamBuilderAnalysisPending.delete(job.key);
+          teamBuilderAnalysisFailed++;
+          teamBuilderAnalysisDone++;
+          renderTeamBuilderAnalysisProgress();
+          processTeamBuilderAnalysisQueue(token);
+        }, 6000);
+        teamBuilderAnalysisPending.set(job.key, { job, token, timeout });
+        matrixComputeWorker.postMessage({
+          id: requestId,
+          source: "team-builder",
+          key: job.key,
+          signature: job.key,
+          aShields,
+          bShields,
+          includeSwing: false,
+          config
+        });
+        return true;
+      } catch (_) {
+        const pending = teamBuilderAnalysisPending.get(job.key);
+        if (pending?.timeout) clearTimeout(pending.timeout);
+        teamBuilderAnalysisPending.delete(job.key);
+        return false;
+      }
+    }
+
+    function createTeamBuilderBattleConfig(job) {
+      const opponent = findPokemon(job.opponentId);
+      if (!opponent) return null;
+      return {
+        left: createTeamBuilderCombatant(job.member, "A"),
+        right: createMetaCombatant(opponent, "B"),
+        startEnergyA: 0,
+        startEnergyB: 0
+      };
+    }
+
+    function createTeamBuilderCombatant(member, trainer) {
+      const pokemon = findPokemon(member.pokemonId);
+      if (!pokemon) throw new Error("TEAM_ANALYSIS_POKEMON_MISSING");
+      const build = member.build || {};
+      const stats = statsForIvSpread(pokemon, clampIv(build.ivAtk), clampIv(build.ivDef), clampIv(build.ivHp));
+      const fast = moveMap.get(member.fastMoveId);
+      const charged = member.chargedMoveIds.map(id => moveMap.get(id)).filter(Boolean);
+      if (!fast || charged.length < 2) throw new Error("TEAM_ANALYSIS_MOVESET_INVALID");
+      return initializeCombatantForms({
+        trainer,
+        p: cloneMatrixPokemon(pokemon),
+        fast: cloneMatrixMove(fast),
+        charged: charged.slice(0, 2).map(cloneMatrixMove),
+        level: stats.level,
+        cp: stats.cp,
+        ivAtk: stats.ivAtk,
+        ivDef: stats.ivDef,
+        ivHp: stats.ivHp,
+        rank: stats.rank,
+        rankPercent: stats.rankPercent,
+        statProduct: stats.statProduct,
+        maxHp: stats.hp,
+        hp: stats.hp,
+        energy: 0,
+        shields: 1,
+        baiting: "selective",
+        shieldMode: "smart",
+        chargedTaken: 0,
+        attack: stats.attack,
+        defense: stats.defense,
+        attackStage: 0,
+        defenseStage: 0,
+        lastFastStart: null,
+        shadowAtkMult: isShadow(pokemon) ? shadowAtkMultiplier : 1,
+        shadowDefMult: isShadow(pokemon) ? shadowDefMultiplier : 1
+      }, pokemon);
+    }
+
+    function simulateTeamBuilderMatchupCell(job) {
+      const snapshot = snapshotBattleState();
+      const config = createTeamBuilderBattleConfig(job);
+      const [aShields, bShields] = job.shields.split("-").map(Number);
+      const previousContext = battleIntelligenceRuntimeContext;
+      try {
+        left = cloneMatrixCombatant(config.left);
+        right = cloneMatrixCombatant(config.right);
+        left.shields = aShields;
+        right.shields = bShields;
+        log = [];
+        timeline = [];
+        initialTimelineState = battleSnapshot();
+        battleTurns = { A: 0, B: 0 };
+        battleIntelligenceRuntimeContext = "matrix";
+        suppressRender = true;
+        runAutomaticBattleToEnd(1000);
+        return scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
+      } finally {
+        restoreBattleState(snapshot);
+        battleIntelligenceRuntimeContext = previousContext;
+        suppressRender = false;
+      }
+    }
+
+    function handleTeamBuilderComputeWorkerMessage(message) {
+      const pending = teamBuilderAnalysisPending.get(message.key);
+      if (!pending) return;
+      clearTimeout(pending.timeout);
+      teamBuilderAnalysisPending.delete(message.key);
+      if (!teamBuilderAnalysisActive || pending.token !== teamBuilderAnalysisRunToken) return;
+      if (message.type === "matrixCellResult" && message.result) storeTeamBuilderAnalysisResult(pending.job, message.result);
+      else teamBuilderAnalysisFailed++;
+      teamBuilderAnalysisDone++;
+      renderTeamBuilderAnalysisProgress();
+      setTimeout(() => processTeamBuilderAnalysisQueue(pending.token), 0);
+    }
+
+    function storeTeamBuilderAnalysisResult(job, result) {
+      const normalized = window.PvPeakTeamBuilderAnalysis.normalizeResult(job, result);
+      teamBuilderAnalysisCache.set(job.key, normalized);
+      if (teamBuilderAnalysisDone % 12 === 0) teamBuilderAnalysisCache.persist();
+    }
+
+    function finishTeamBuilderAnalysis() {
+      teamBuilderAnalysisActive = false;
+      teamBuilderAnalysisCache.persist();
+      refreshTeamBuilderAnalysisPlan();
+    }
+
+    function cancelTeamBuilderAnalysis(renderProgress = true) {
+      teamBuilderAnalysisRunToken++;
+      teamBuilderAnalysisActive = false;
+      teamBuilderAnalysisQueue = [];
+      teamBuilderAnalysisPending.forEach(pending => clearTimeout(pending.timeout));
+      teamBuilderAnalysisPending.clear();
+      teamBuilderAnalysisCache?.persist?.();
+      if (renderProgress) renderTeamBuilderAnalysisProgress();
     }
 
     function openTeamBuilderPicker(slot, trigger = null) {
@@ -14777,6 +15024,7 @@
         return;
       }
       try {
+        cancelTeamBuilderAnalysis(false);
         teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderEditorSlot, { ...draft, chargedMoveIds: charged });
         persistTeamBuilderState();
         closeTeamBuilderEditor();
@@ -14809,6 +15057,7 @@
       const member = teamBuilderDefaultMember(pokemon);
       if (!member) return teamBuilderFeedback("A valid competitive moveset could not be prepared for this Pokemon.");
       try {
+        cancelTeamBuilderAnalysis(false);
         teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderPickerSlot, member);
         persistTeamBuilderState();
         teamBuilderFeedback();
@@ -14820,6 +15069,7 @@
     }
 
     function removeTeamBuilderMember(slot) {
+      cancelTeamBuilderAnalysis(false);
       teamBuilderState = window.PvPeakTeamBuilder.removeMember(teamBuilderState, slot);
       persistTeamBuilderState();
       teamBuilderFeedback();
@@ -27906,6 +28156,10 @@
     function handleMatrixComputeWorkerMessage(event) {
       const message = event.data || {};
       completeWorkerPerfRequest(message);
+      if (message.source === "team-builder") {
+        handleTeamBuilderComputeWorkerMessage(message);
+        return;
+      }
       if (message.source === "meta") {
         handleMetaComputeWorkerMessage(message);
         return;

@@ -6,6 +6,7 @@ const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8")
 
 assert.match(html, /src="src\/team-builder\/team-builder-state\.js"/);
 assert.match(html, /src="src\/team-builder\/team-builder-meta\.js"/);
+assert.match(html, /src="src\/team-builder\/team-builder-analysis\.js"/);
 assert.match(html, /id="teamBuilderTab"[^>]+data-view-target="team-builder"/);
 assert.match(html, /id="teamBuilderView" class="app-view team-builder-view"/);
 assert.match(html, /id="teamBuilderRoster" class="team-roster-grid"/);
@@ -19,6 +20,9 @@ assert.match(html, /id="teamBuilderShadowToggle"[^>]+aria-pressed="false"/);
 assert.match(html, /id="teamBuilderMeta"[^>]+aria-label="Team Builder meta"/);
 assert.match(html, /id="teamBuilderShieldScenarios"[^>]+role="group"[^>]+aria-label="Shield scenario"/);
 assert.match(html, /id="teamBuilderMetaList" class="team-meta-list"/);
+assert.match(html, /id="teamBuilderAnalysisProgress"[^>]+role="progressbar"/);
+assert.match(html, /id="teamBuilderAnalyze"/);
+assert.match(html, /id="teamBuilderAnalysisCancel"/);
 assert.match(html, /function renderTeamBuilderSlot\(member, slot\)[\s\S]{0,700}data-team-add/);
 assert.match(html, /teamBuilderState\.team\.map\(renderTeamBuilderSlot\)/, "The UI must render the six semantic state slots.");
 assert.match(html, /renderPokemonSuggestionList\(\$\("teamBuilderPickerResults"\)/, "Team Builder must reuse the simulator Pokemon result component.");
@@ -30,6 +34,11 @@ assert.match(html, /charged\.length !== 2/, "The editor must require two distinc
 assert.match(html, /function loadTeamBuilderMeta[\s\S]{0,1200}teamBuilderMetaRegistry\.load/, "Meta definitions must load through the provider registry.");
 assert.match(html, /function setTeamBuilderShieldScenario[\s\S]{0,500}setAnalysisConfig/, "Shield scenario must persist in semantic Team Builder state.");
 assert.match(html, /Matchups are not calculated yet/, "Phase 3 must clearly avoid presenting definition data as completed analysis.");
+assert.match(html, /function createTeamBuilderBattleConfig[\s\S]{0,900}createTeamBuilderCombatant[\s\S]{0,300}createMetaCombatant/, "Team × Meta jobs must reuse canonical combatant builders.");
+assert.match(html, /source: "team-builder"[\s\S]{0,300}includeSwing: false[\s\S]{0,300}config/, "Team analysis must route canonical configurations through the existing matrix worker.");
+assert.match(html, /function handleMatrixComputeWorkerMessage[\s\S]{0,500}handleTeamBuilderComputeWorkerMessage/, "The existing worker result path must route Team Builder jobs semantically.");
+assert.match(html, /function simulateTeamBuilderMatchupCell[\s\S]{0,1600}runAutomaticBattleToEnd\(1000\)[\s\S]{0,300}scoreShieldMatrixResult/, "Fallback computation must still use the canonical automatic engine and scoring.");
+assert.match(html, /All \$\{total\} deterministic matchups are ready from cache/, "Phase 4 must report prepared engine data without rendering the Phase 5 matrix.");
 assert.match(html, /Species Clause: that Pokemon species is already on your team/);
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,900}team-roster-grid[\s\S]{0,100}repeat\(2/ , "Common mobile widths must use two comfortable columns.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\s\S]{0,80}1fr/, "The mobile build editor must stack move controls instead of compressing them.");
