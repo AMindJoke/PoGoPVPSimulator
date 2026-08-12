@@ -39,8 +39,20 @@ const great = TeamBuilder.setLeague(shadow, "great");
 assert.equal(great.league, "great", "League state must persist through normalization.");
 assert.throws(() => TeamBuilder.setLeague(great, "ultra"), /TEAM_LEAGUE_UNAVAILABLE/, "Unavailable league providers must not be silently selected.");
 
-const serialized = JSON.parse(JSON.stringify(great));
-assert.deepEqual(TeamBuilder.normalizeState(serialized), great, "Team Builder state must be serializable for future sharing.");
+const configured = TeamBuilder.updateMember(great, 2, {
+  fastMoveId: "SHADOW_CLAW",
+  chargedMoveIds: ["HYDRO_CANNON", "ICE_BEAM"],
+  build: { profile: "custom", ivAtk: 2, ivDef: 14, ivHp: 15, level: 24.5, cp: 1499, rank: 37 }
+});
+assert.equal(configured.team[2].fastMoveId, "SHADOW_CLAW", "Fast Move editing must update only the chosen member.");
+assert.deepEqual(configured.team[2].chargedMoveIds, ["HYDRO_CANNON", "ICE_BEAM"], "Both Charged Move slots must persist in order.");
+assert.deepEqual(configured.team[2].build, { profile: "custom", league: "great", ivAtk: 2, ivDef: 14, ivHp: 15, level: 24.5, cp: 1499, rank: 37 });
+assert.equal(configured.team[1].pokemonId, "skarmory", "Editing one build must not affect another slot.");
+assert.equal(great.team[2].fastMoveId, "FAST", "Build updates must remain immutable.");
+assert.throws(() => TeamBuilder.updateMember(great, 0, { fastMoveId: "FAST" }), /TEAM_MEMBER_MISSING/);
+
+const serialized = JSON.parse(JSON.stringify(configured));
+assert.deepEqual(TeamBuilder.normalizeState(serialized), configured, "Movesets and build profiles must survive serialization.");
 assert.notEqual(great.team[2].chargedMoveIds, great.team[1]?.chargedMoveIds, "Member move arrays must not share mutable references.");
 
 console.log("Team Builder state tests passed.");

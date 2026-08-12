@@ -8,6 +8,7 @@
   const SCHEMA_VERSION = 1;
   const TEAM_SIZE = 6;
   const DEFAULT_LEAGUE = "great";
+  const BUILD_PROFILES = Object.freeze(["default", "rank1", "custom"]);
   const LEAGUES = Object.freeze({
     great: Object.freeze({ id: "great", name: "Great League", cpCap: 1500, available: true }),
     ultra: Object.freeze({ id: "ultra", name: "Ultra League", cpCap: 2500, available: false }),
@@ -36,6 +37,27 @@
       .replace(/_(alolan|galarian|hisuian|paldean|mega|primal)$/g, "") || null;
   }
 
+  function clampInteger(value, minimum, maximum, fallback) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return fallback;
+    return Math.max(minimum, Math.min(maximum, Math.round(numeric)));
+  }
+
+  function normalizeBuild(build = {}) {
+    const profile = BUILD_PROFILES.includes(build.profile) ? build.profile : "default";
+    const normalized = {
+      profile,
+      league: String(build.league || DEFAULT_LEAGUE),
+      ivAtk: clampInteger(build.ivAtk, 0, 15, 0),
+      ivDef: clampInteger(build.ivDef, 0, 15, 15),
+      ivHp: clampInteger(build.ivHp, 0, 15, 15)
+    };
+    if (Number.isFinite(Number(build.level))) normalized.level = Math.max(1, Number(build.level));
+    if (Number.isFinite(Number(build.cp))) normalized.cp = Math.max(10, Math.round(Number(build.cp)));
+    if (Number.isFinite(Number(build.rank))) normalized.rank = clampInteger(build.rank, 1, 4096, 4096);
+    return Object.freeze(normalized);
+  }
+
   function normalizeMember(member) {
     if (!member?.pokemonId) throw new Error("TEAM_MEMBER_POKEMON_REQUIRED");
     const chargedMoveIds = [...new Set((member.chargedMoveIds || []).filter(Boolean))].slice(0, 2);
@@ -49,7 +71,7 @@
       shadow: !!member.shadow,
       fastMoveId: String(member.fastMoveId),
       chargedMoveIds: Object.freeze(chargedMoveIds.map(String)),
-      build: Object.freeze(clone(member.build || { profile: "default" }))
+      build: normalizeBuild(member.build)
     });
   }
 
@@ -102,6 +124,17 @@
     return normalizeState(next);
   }
 
+  function updateMember(state, slot, changes = {}) {
+    const index = validateSlot(slot);
+    const current = normalizeState(state).team[index];
+    if (!current) throw new Error("TEAM_MEMBER_MISSING");
+    return setMember(state, index, {
+      ...clone(current),
+      ...clone(changes),
+      build: changes.build ? { ...clone(current.build), ...clone(changes.build) } : clone(current.build)
+    });
+  }
+
   function setLeague(state, league) {
     if (!LEAGUES[league]?.available) throw new Error("TEAM_LEAGUE_UNAVAILABLE");
     return normalizeState({ ...clone(state), league });
@@ -128,6 +161,7 @@
     SCHEMA_VERSION,
     TEAM_SIZE,
     DEFAULT_LEAGUE,
+    BUILD_PROFILES,
     LEAGUES,
     createState,
     normalizeState,
@@ -136,6 +170,7 @@
     duplicateSlot,
     setMember,
     removeMember,
+    updateMember,
     setLeague,
     validateState
   });
