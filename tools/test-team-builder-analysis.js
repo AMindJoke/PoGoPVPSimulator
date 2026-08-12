@@ -38,5 +38,14 @@ cache.persist();
 const restored = Analysis.createCache(storage);
 assert.deepEqual(restored.get(plan[0].key), normalized, "Compact matchup results must survive local cache restoration.");
 assert.deepEqual(Analysis.planProgress(plan, restored), { total: 4, cached: 1, pending: 3 });
+assert.equal(Analysis.resultTone({ score: 600 }), "favorable");
+assert.equal(Analysis.resultTone({ score: 599 }), "close");
+assert.equal(Analysis.resultTone({ score: 400 }), "unfavorable");
+assert.equal(Analysis.resultTone({ score: 0 }), "unfavorable", "A zero rating must not fall back to the neutral default.");
+assert.equal(Analysis.resultLabel({ score: 731 }), "Win", "Result labels must make matrix meaning accessible without color.");
+const grouped = Analysis.groupResults(plan, restored);
+assert.equal(grouped.length, 2, "Coverage results must group by unique meta opponent.");
+assert.equal(grouped[0].cells.length, 6, "Every opponent row must preserve all six team slots.");
+assert.deepEqual(grouped[0].cells[0], normalized);
 
 console.log("Team Builder analysis planning tests passed.");

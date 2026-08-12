@@ -109,6 +109,27 @@
     return Object.freeze({ total: plan.length, cached, pending: plan.length - cached });
   }
 
+  function resultTone(result) {
+    const score = Number(result?.score ?? 500);
+    if (score >= 600) return "favorable";
+    if (score <= 400) return "unfavorable";
+    return "close";
+  }
+
+  function resultLabel(result) {
+    const tone = resultTone(result);
+    return tone === "favorable" ? "Win" : tone === "unfavorable" ? "Loss" : "Close";
+  }
+
+  function groupResults(plan, cache) {
+    const groups = new Map();
+    plan.forEach(job => {
+      if (!groups.has(job.opponentId)) groups.set(job.opponentId, { opponentId: job.opponentId, cells: Array(6).fill(null) });
+      groups.get(job.opponentId).cells[job.slot] = cache?.get(job.key) || null;
+    });
+    return [...groups.values()].map(group => Object.freeze({ opponentId: group.opponentId, cells: Object.freeze(group.cells) }));
+  }
+
   return Object.freeze({
     SCHEMA_VERSION,
     STORAGE_KEY,
@@ -118,6 +139,9 @@
     createPlan,
     normalizeResult,
     createCache,
-    planProgress
+    planProgress,
+    resultTone,
+    resultLabel,
+    groupResults
   });
 });
