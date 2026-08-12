@@ -1153,6 +1153,12 @@
     .team-replacement-result { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 82px; padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
     .team-replacement-result > img { width: 54px; height: 54px; object-fit: contain; }.team-replacement-result-copy { min-width: 0; }.team-replacement-result-copy strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }.team-replacement-result-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; }.team-replacement-result-copy b { color: #2f8e62; }
     .team-replacement-result-action { display: grid; gap: 5px; justify-items: end; }.team-replacement-result-action strong { color: #2f8e62; font-size: 13px; }.team-replacement-result-action button { min-height: 31px; padding: 5px 8px; font-size: 8px; }
+    .team-comparison { display: none; width: 100%; max-width: none; margin-top: 22px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .team-comparison.is-visible { display: block; }.team-comparison-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }.team-comparison-head h3 { margin: 0; font-size: 18px; }.team-comparison-head p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }.team-comparison-head-actions { display: flex; gap: 7px; }.team-comparison-head-actions button { min-height: 34px; padding: 6px 10px; font-size: 8px; }
+    .team-comparison-rosters { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; }.team-comparison-vs { display: grid; place-items: center; color: var(--muted); font-size: 10px; font-weight: 950; }.team-comparison-roster { min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--subtle) 42%, var(--panel)); }.team-comparison-roster h4 { margin: 0 0 8px; font-size: 11px; }.team-comparison-team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }.team-comparison-member { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 5px; min-width: 0; padding: 5px; border-radius: 7px; background: var(--panel); }.team-comparison-member.is-changed { outline: 2px solid color-mix(in srgb, var(--comparison-color) 55%, transparent); }.team-comparison-member img { width: 32px; height: 32px; object-fit: contain; }.team-comparison-member span { overflow: hidden; font-size: 8px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .team-comparison-empty { display: grid; min-height: 74px; place-items: center; padding: 12px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 9px; text-align: center; }.team-comparison-engine { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; margin-top: 12px; padding: 12px 13px; border-radius: 10px; background: var(--subtle); }.team-comparison-actions { display: flex; gap: 7px; }.team-comparison-actions button { min-height: 38px; }
+    .team-comparison-results { display: none; margin-top: 14px; }.team-comparison-results.is-visible { display: block; }.team-comparison-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin-bottom: 12px; }.team-comparison-kpi { padding: 9px; border-radius: 8px; background: var(--subtle); text-align: center; }.team-comparison-kpi span, .team-comparison-kpi strong, .team-comparison-kpi small { display: block; }.team-comparison-kpi span { color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }.team-comparison-kpi strong { margin-top: 3px; font-size: 13px; }.team-comparison-kpi small { margin-top: 2px; color: var(--comparison-color); font-size: 8px; font-weight: 900; }
+    .team-comparison-changes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }.team-comparison-change-panel { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }.team-comparison-change-panel h4 { margin: 0 0 8px; font-size: 12px; }.team-comparison-change-list { display: grid; gap: 6px; }.team-comparison-change { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 52px; padding: 6px 8px; border: 1px solid color-mix(in srgb, var(--change-color) 30%, var(--line)); border-radius: 8px; }.team-comparison-change img { width: 38px; height: 38px; object-fit: contain; }.team-comparison-change-copy { min-width: 0; }.team-comparison-change-copy strong, .team-comparison-change-copy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-comparison-change-copy strong { font-size: 9px; }.team-comparison-change-copy span { margin-top: 2px; color: var(--muted); font-size: 8px; }.team-comparison-change > b { color: var(--change-color); font-size: 11px; }.team-comparison-no-change { padding: 12px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 9px; }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -1185,7 +1191,7 @@
       .team-coverage-desktop { display: none; }
       .team-coverage-mobile { display: block; }
       .team-mobile-matchups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .team-insights, .team-replacement { padding: 15px; }.team-insights-head, .team-replacement-head { align-items: start; flex-direction: column; }.team-insights-summary { justify-content: start; }.team-insights-grid, .team-core-grid, .team-replacement-steps, .team-replacement-ranking { grid-template-columns: 1fr; }.team-replacement-members { grid-template-columns: repeat(2, minmax(0, 1fr)); }.team-replacement-engine { grid-template-columns: 1fr; }.team-replacement-actions button:first-child { flex: 1; }
+      .team-insights, .team-replacement, .team-comparison { padding: 15px; }.team-insights-head, .team-replacement-head, .team-comparison-head { align-items: start; flex-direction: column; }.team-insights-summary { justify-content: start; }.team-insights-grid, .team-core-grid, .team-replacement-steps, .team-replacement-ranking, .team-comparison-changes { grid-template-columns: 1fr; }.team-replacement-members { grid-template-columns: repeat(2, minmax(0, 1fr)); }.team-replacement-engine, .team-comparison-engine { grid-template-columns: 1fr; }.team-replacement-actions button:first-child, .team-comparison-actions button:first-child { flex: 1; }.team-comparison-rosters { grid-template-columns: 1fr; }.team-comparison-vs { min-height: 24px; }.team-comparison-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 430px) {
       .team-roster-grid { grid-template-columns: 1fr; }
@@ -12996,6 +13002,12 @@
           <div class="team-replacement-engine"><div class="team-replacement-progress"><div class="team-replacement-progress-copy"><span id="teamBuilderReplacementStatus">Choose a member and at least one threat.</span><span id="teamBuilderReplacementCount">0 / 0</span></div><div id="teamBuilderReplacementProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Replacement candidate analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div><div class="team-replacement-actions"><button id="teamBuilderReplacementAnalyze" type="button">Evaluate replacements</button><button id="teamBuilderReplacementCancel" class="secondary" type="button" hidden>Cancel</button></div></div>
           <div id="teamBuilderReplacementResults" class="team-replacement-results"><h4>Best replacements</h4><p id="teamBuilderReplacementResultsCopy">Ranked by targeted simulated improvement.</p><p class="team-replacement-formula">Ranking score = average rating delta + 40 per hard loss fixed + 25 per favorable answer gained − 50 per new hard loss.</p><div id="teamBuilderReplacementRanking" class="team-replacement-ranking"></div></div>
         </section>
+        <section id="teamBuilderComparison" class="team-comparison" aria-labelledby="teamBuilderComparisonTitle">
+          <div class="team-comparison-head"><div><h3 id="teamBuilderComparisonTitle">Team comparison</h3><p>Compare a saved baseline with the current roster using canonical matchup coverage.</p></div><div class="team-comparison-head-actions"><button id="teamBuilderComparisonSetBaseline" class="secondary" type="button">Set current as Team A</button><button id="teamBuilderComparisonClear" class="secondary" type="button" hidden>Clear</button></div></div>
+          <div class="team-comparison-rosters"><article class="team-comparison-roster"><h4>Team A · Baseline</h4><div id="teamBuilderComparisonTeamA"></div></article><div class="team-comparison-vs">VS</div><article class="team-comparison-roster"><h4>Team B · Current</h4><div id="teamBuilderComparisonTeamB"></div></article></div>
+          <div class="team-comparison-engine"><div class="team-replacement-progress"><div class="team-replacement-progress-copy"><span id="teamBuilderComparisonStatus">Save the current roster as Team A to begin.</span><span id="teamBuilderComparisonCount">0 / 0</span></div><div id="teamBuilderComparisonProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Team comparison analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div><div class="team-comparison-actions"><button id="teamBuilderComparisonPrepare" type="button">Prepare comparison</button><button id="teamBuilderComparisonCancel" class="secondary" type="button" hidden>Cancel</button></div></div>
+          <div id="teamBuilderComparisonResults" class="team-comparison-results"><div id="teamBuilderComparisonKpis" class="team-comparison-kpis"></div><div class="team-comparison-changes"><article class="team-comparison-change-panel"><h4>Coverage gained</h4><div id="teamBuilderComparisonGains" class="team-comparison-change-list"></div></article><article class="team-comparison-change-panel"><h4>Coverage lost</h4><div id="teamBuilderComparisonLosses" class="team-comparison-change-list"></div></article></div></div>
+        </section>
       </section>
     </div>
   </main>
@@ -13304,6 +13316,7 @@
     let scenarioManualEntryPending = false;
     let manualMatchupEditMode = false;
     const TEAM_BUILDER_STORAGE_KEY = "pvpeak-team-builder-v1";
+    const TEAM_BUILDER_COMPARISON_STORAGE_KEY = "pvpeak-team-builder-comparison-v1";
     let teamBuilderState = window.PvPeakTeamBuilder?.createState?.() || null;
     let teamBuilderPickerSlot = null;
     let teamBuilderPickerReturnFocus = null;
@@ -13330,6 +13343,10 @@
     let teamBuilderReplacementPlan = [];
     let teamBuilderReplacementSourceSignature = "";
     const teamBuilderReplacementCandidates = new Map();
+    let teamBuilderComparisonBaseline = null;
+    let teamBuilderComparisonBaselinePlan = [];
+    let teamBuilderComparisonPlan = [];
+    let teamBuilderComparisonSourceSignature = "";
     let scenarioSegmentInitialState = null;
     let scenarioTimelineStart = 0;
     let scenarioApplyingTransition = false;
@@ -13624,6 +13641,10 @@
       $("teamBuilderAnalysisCancel").onclick = cancelTeamBuilderAnalysis;
       $("teamBuilderReplacementAnalyze").onclick = startTeamBuilderReplacementAnalysis;
       $("teamBuilderReplacementCancel").onclick = () => cancelTeamBuilderAnalysis(true);
+      $("teamBuilderComparisonSetBaseline").onclick = () => captureTeamBuilderComparisonBaseline(true);
+      $("teamBuilderComparisonClear").onclick = clearTeamBuilderComparisonBaseline;
+      $("teamBuilderComparisonPrepare").onclick = startTeamBuilderComparisonAnalysis;
+      $("teamBuilderComparisonCancel").onclick = () => cancelTeamBuilderAnalysis(true);
       $("teamBuilderMobilePrev").onclick = () => moveTeamBuilderMobileOpponent(-1);
       $("teamBuilderMobileNext").onclick = () => moveTeamBuilderMobileOpponent(1);
       $("teamBuilderMatchupClose").onclick = closeTeamBuilderMatchup;
@@ -14589,12 +14610,25 @@
       } catch (_) {
         teamBuilderState = window.PvPeakTeamBuilder.createState();
       }
+      try {
+        const comparison = JSON.parse(window.localStorage.getItem(TEAM_BUILDER_COMPARISON_STORAGE_KEY) || "null");
+        teamBuilderComparisonBaseline = Array.isArray(comparison?.team)
+          ? window.PvPeakTeamBuilder.normalizeState({ ...teamBuilderState, team: comparison.team }).team
+          : null;
+      } catch (_) { teamBuilderComparisonBaseline = null; }
       return true;
     }
 
     function persistTeamBuilderState() {
       if (!teamBuilderState) return;
       try { window.localStorage.setItem(TEAM_BUILDER_STORAGE_KEY, JSON.stringify(teamBuilderState)); } catch (_) {}
+    }
+
+    function persistTeamBuilderComparisonBaseline() {
+      try {
+        if (teamBuilderComparisonBaseline) window.localStorage.setItem(TEAM_BUILDER_COMPARISON_STORAGE_KEY, JSON.stringify({ schemaVersion: 1, team: teamBuilderComparisonBaseline }));
+        else window.localStorage.removeItem(TEAM_BUILDER_COMPARISON_STORAGE_KEY);
+      } catch (_) {}
     }
 
     function teamBuilderDefaultMember(pokemon) {
@@ -14787,23 +14821,29 @@
       renderTeamBuilderMeta();
     }
 
-    function refreshTeamBuilderAnalysisPlan() {
-      if (!window.PvPeakTeamBuilderAnalysis || !teamBuilderMetaDefinition || !teamBuilderState) return;
+    function createTeamBuilderPlanForTeam(team) {
+      if (!window.PvPeakTeamBuilderAnalysis || !teamBuilderMetaDefinition || !teamBuilderState) return [];
       const opponentSignatures = {};
       teamBuilderMetaDefinition.pokemonIds.forEach(id => {
         const opponent = findPokemon(id);
         if (opponent) opponentSignatures[id] = matrixCombatantSignature(createMetaCombatant(opponent, "B"));
       });
-      teamBuilderAnalysisPlan = window.PvPeakTeamBuilderAnalysis.createPlan({
+      return window.PvPeakTeamBuilderAnalysis.createPlan({
         engineVersion: battleEngineVersion,
         providerId: teamBuilderState.analysisConfig.meta,
         shields: teamBuilderState.analysisConfig.shields,
-        team: teamBuilderState.team,
+        team,
         opponentIds: teamBuilderMetaDefinition.pokemonIds.filter(id => !!findPokemon(id)),
         opponentSignatures
       });
+    }
+
+    function refreshTeamBuilderAnalysisPlan() {
+      if (!window.PvPeakTeamBuilderAnalysis || !teamBuilderMetaDefinition || !teamBuilderState) return;
+      teamBuilderAnalysisPlan = createTeamBuilderPlanForTeam(teamBuilderState.team);
       renderTeamBuilderAnalysisProgress();
       renderTeamBuilderCoverage();
+      renderTeamBuilderComparison();
     }
 
     function renderTeamBuilderAnalysisProgress() {
@@ -14816,6 +14856,7 @@
       if (!completeTeam) status.textContent = "Complete all six team slots to prepare analysis.";
       else if (!teamBuilderMetaDefinition) status.textContent = "Waiting for the selected meta definition.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "replacement") status.textContent = "Replacement analysis is running below.";
+      else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "comparison") status.textContent = "Team comparison is running below.";
       else if (teamBuilderAnalysisActive) status.textContent = `Running canonical battle simulations${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
       else if (total && cached === total) status.textContent = `All ${total} deterministic matchups are ready from cache.`;
       else status.textContent = `${cached} cached · ${Math.max(0, total - cached)} matchups to prepare.`;
@@ -14999,6 +15040,9 @@
       if (completedContext === "replacement") {
         renderTeamBuilderReplacementProgress();
         renderTeamBuilderReplacementRanking();
+      } else if (completedContext === "comparison") {
+        renderTeamBuilderComparisonProgress();
+        renderTeamBuilderComparisonResults();
       } else refreshTeamBuilderAnalysisPlan();
     }
 
@@ -15012,6 +15056,7 @@
       teamBuilderAnalysisCache?.persist?.();
       if (renderProgress) {
         if (cancelledContext === "replacement") renderTeamBuilderReplacementProgress();
+        else if (cancelledContext === "comparison") renderTeamBuilderComparisonProgress();
         else {
           renderTeamBuilderAnalysisProgress();
           renderTeamBuilderCoverage();
@@ -15021,6 +15066,7 @@
 
     function renderTeamBuilderActiveAnalysisProgress() {
       if (teamBuilderAnalysisContext === "replacement") renderTeamBuilderReplacementProgress();
+      else if (teamBuilderAnalysisContext === "comparison") renderTeamBuilderComparisonProgress();
       else renderTeamBuilderAnalysisProgress();
     }
 
@@ -15371,6 +15417,7 @@
     function applyTeamBuilderReplacement(candidateId) {
       const member = teamBuilderReplacementCandidates.get(candidateId);
       if (!member || teamBuilderAnalysisActive) return;
+      if (!teamBuilderComparisonBaseline) captureTeamBuilderComparisonBaseline(false);
       try {
         teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderReplacementSlot, member);
       } catch (_) { return; }
@@ -15378,6 +15425,172 @@
       teamBuilderReplacementTargets = [];
       resetTeamBuilderReplacementEvaluation();
       renderTeamBuilder();
+    }
+
+    function teamBuilderTeamsMatch(teamA, teamB) {
+      if (!Array.isArray(teamA) || !Array.isArray(teamB) || teamA.length !== teamB.length) return false;
+      return teamA.every((member, slot) => window.PvPeakTeamBuilderAnalysis.memberSignature(member) === window.PvPeakTeamBuilderAnalysis.memberSignature(teamB[slot]));
+    }
+
+    function teamBuilderComparisonSignature() {
+      const baseline = (teamBuilderComparisonBaseline || []).map(window.PvPeakTeamBuilderAnalysis.memberSignature).join(";");
+      const current = teamBuilderState.team.map(window.PvPeakTeamBuilderAnalysis.memberSignature).join(";");
+      return `${baseline}|${current}|${teamBuilderState.analysisConfig.meta}|${teamBuilderState.analysisConfig.shields}|${battleEngineVersion}`;
+    }
+
+    function captureTeamBuilderComparisonBaseline(renderNow = true) {
+      if (teamBuilderAnalysisActive || !teamBuilderState?.team?.every(Boolean)) return;
+      teamBuilderComparisonBaseline = JSON.parse(JSON.stringify(teamBuilderState.team));
+      teamBuilderComparisonBaselinePlan = [];
+      teamBuilderComparisonPlan = [];
+      teamBuilderComparisonSourceSignature = "";
+      persistTeamBuilderComparisonBaseline();
+      if (renderNow) renderTeamBuilderComparison();
+    }
+
+    function clearTeamBuilderComparisonBaseline() {
+      if (teamBuilderAnalysisActive) return;
+      teamBuilderComparisonBaseline = null;
+      teamBuilderComparisonBaselinePlan = [];
+      teamBuilderComparisonPlan = [];
+      teamBuilderComparisonSourceSignature = "";
+      persistTeamBuilderComparisonBaseline();
+      renderTeamBuilderComparison();
+    }
+
+    function renderTeamBuilderComparisonRoster(containerId, team, comparisonTeam = null, tone = "#2f8e62") {
+      const box = $(containerId);
+      if (!Array.isArray(team)) {
+        box.innerHTML = `<div class="team-comparison-empty">Save the current complete roster to create Team A.</div>`;
+        return;
+      }
+      box.innerHTML = `<div class="team-comparison-team">${team.map((member, slot) => {
+        const pokemon = member && findPokemon(member.pokemonId);
+        const changed = comparisonTeam && window.PvPeakTeamBuilderAnalysis.memberSignature(member) !== window.PvPeakTeamBuilderAnalysis.memberSignature(comparisonTeam[slot]);
+        return `<div class="team-comparison-member${changed ? " is-changed" : ""}" style="--comparison-color:${tone}"><img data-team-comparison-sprite="${containerId}-${slot}" alt=""><span>${escapeHtml(pokemon?.name || member?.name || `Slot ${slot + 1}`)}</span></div>`;
+      }).join("")}</div>`;
+      team.forEach((member, slot) => {
+        const pokemon = member && findPokemon(member.pokemonId);
+        const image = box.querySelector(`[data-team-comparison-sprite="${containerId}-${slot}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      });
+    }
+
+    function prepareTeamBuilderComparisonPlan() {
+      if (!teamBuilderComparisonBaseline || !teamBuilderMetaDefinition) return;
+      teamBuilderComparisonBaselinePlan = createTeamBuilderPlanForTeam(teamBuilderComparisonBaseline);
+      const currentPlan = createTeamBuilderPlanForTeam(teamBuilderState.team);
+      const uniqueJobs = new Map();
+      [...teamBuilderComparisonBaselinePlan, ...currentPlan].forEach(job => uniqueJobs.set(job.key, job));
+      teamBuilderComparisonPlan = [...uniqueJobs.values()];
+      teamBuilderComparisonSourceSignature = teamBuilderComparisonSignature();
+    }
+
+    function renderTeamBuilderComparison() {
+      const section = $("teamBuilderComparison");
+      const visible = !!teamBuilderMetaDefinition && !!teamBuilderState?.team?.every(Boolean);
+      section.classList.toggle("is-visible", visible);
+      if (!visible) return;
+      renderTeamBuilderComparisonRoster("teamBuilderComparisonTeamA", teamBuilderComparisonBaseline, teamBuilderState.team, "#bd5260");
+      renderTeamBuilderComparisonRoster("teamBuilderComparisonTeamB", teamBuilderState.team, teamBuilderComparisonBaseline, "#2f8e62");
+      $("teamBuilderComparisonSetBaseline").textContent = teamBuilderComparisonBaseline ? "Update Team A" : "Set current as Team A";
+      $("teamBuilderComparisonClear").hidden = !teamBuilderComparisonBaseline;
+      const sameTeam = teamBuilderComparisonBaseline && teamBuilderTeamsMatch(teamBuilderComparisonBaseline, teamBuilderState.team);
+      if (!teamBuilderComparisonBaseline || sameTeam) {
+        teamBuilderComparisonPlan = [];
+        teamBuilderComparisonSourceSignature = "";
+        $("teamBuilderComparisonResults").classList.remove("is-visible");
+      } else if (teamBuilderComparisonSourceSignature !== teamBuilderComparisonSignature()) prepareTeamBuilderComparisonPlan();
+      renderTeamBuilderComparisonProgress();
+      if (teamBuilderComparisonPlan.length && teamBuilderComparisonPlan.every(job => teamBuilderAnalysisCache.has(job.key))) renderTeamBuilderComparisonResults();
+    }
+
+    function startTeamBuilderComparisonAnalysis() {
+      if (teamBuilderAnalysisActive || !teamBuilderComparisonBaseline || teamBuilderTeamsMatch(teamBuilderComparisonBaseline, teamBuilderState.team)) return;
+      prepareTeamBuilderComparisonPlan();
+      if (!teamBuilderComparisonPlan.length) return;
+      teamBuilderAnalysisContext = "comparison";
+      teamBuilderAnalysisRunToken++;
+      teamBuilderAnalysisQueue = teamBuilderComparisonPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
+      teamBuilderAnalysisCacheHits = teamBuilderComparisonPlan.length - teamBuilderAnalysisQueue.length;
+      teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
+      teamBuilderAnalysisFailed = 0;
+      teamBuilderAnalysisActive = teamBuilderAnalysisQueue.length > 0;
+      $("teamBuilderComparisonResults").classList.remove("is-visible");
+      renderTeamBuilderComparisonProgress();
+      renderTeamBuilderReplacementProgress();
+      if (teamBuilderAnalysisActive) processTeamBuilderAnalysisQueue(teamBuilderAnalysisRunToken);
+      else renderTeamBuilderComparisonResults();
+    }
+
+    function renderTeamBuilderComparisonProgress() {
+      const total = teamBuilderComparisonPlan.length;
+      const cached = total ? teamBuilderComparisonPlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache.has(job.key)), 0) : 0;
+      const comparisonActive = teamBuilderAnalysisActive && teamBuilderAnalysisContext === "comparison";
+      const done = comparisonActive ? Math.min(total, teamBuilderAnalysisDone) : cached;
+      const sameTeam = teamBuilderComparisonBaseline && teamBuilderTeamsMatch(teamBuilderComparisonBaseline, teamBuilderState.team);
+      const status = $("teamBuilderComparisonStatus");
+      if (!teamBuilderComparisonBaseline) status.textContent = "Save the current roster as Team A to begin.";
+      else if (sameTeam) status.textContent = "Team B currently matches Team A. Change the roster or apply a replacement.";
+      else if (comparisonActive) status.textContent = `Preparing both teams${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
+      else if (total && cached === total) status.textContent = "Both teams are ready for a full meta comparison.";
+      else status.textContent = `${cached} cached · ${Math.max(0, total - cached)} matchup results needed.`;
+      $("teamBuilderComparisonCount").textContent = `${done} / ${total}`;
+      const bar = $("teamBuilderComparisonProgress");
+      const progress = total ? Math.round(done / total * 100) : 0;
+      bar.style.setProperty("--analysis-progress", `${progress}%`);
+      bar.setAttribute("aria-valuemax", String(total));
+      bar.setAttribute("aria-valuenow", String(done));
+      $("teamBuilderComparisonPrepare").disabled = teamBuilderAnalysisActive || !teamBuilderComparisonBaseline || !!sameTeam || !total || cached === total;
+      $("teamBuilderComparisonCancel").hidden = !comparisonActive;
+      $("teamBuilderComparisonSetBaseline").disabled = teamBuilderAnalysisActive;
+      $("teamBuilderComparisonClear").disabled = teamBuilderAnalysisActive;
+      if (!comparisonActive) renderTeamBuilderAnalysisProgress();
+    }
+
+    function teamBuilderComparisonDelta(value, invert = false) {
+      const favorable = invert ? value < 0 : value > 0;
+      const unfavorable = invert ? value > 0 : value < 0;
+      return { text: `${value > 0 ? "+" : ""}${value}`, color: favorable ? "#2f8e62" : unfavorable ? "#bd5260" : "#7c8795" };
+    }
+
+    function renderTeamBuilderComparisonChange(item, index, listName, gain) {
+      const pokemon = findPokemon(item.opponentId);
+      const color = gain ? "#2f8e62" : "#bd5260";
+      const delta = `${item.bestScoreDelta > 0 ? "+" : ""}${item.bestScoreDelta}`;
+      return `<div class="team-comparison-change" style="--change-color:${color}"><img data-team-comparison-change-sprite="${listName}-${index}" alt=""><div class="team-comparison-change-copy"><strong>${escapeHtml(pokemon?.name || item.opponentId)}</strong><span>Answers ${item.answerCountA} → ${item.answerCountB} · Best ${item.bestScoreA} → ${item.bestScoreB}</span></div><b>${delta}</b></div>`;
+    }
+
+    function renderTeamBuilderComparisonResults() {
+      if (!teamBuilderComparisonBaseline || !teamBuilderComparisonPlan.length || !teamBuilderComparisonPlan.every(job => teamBuilderAnalysisCache.has(job.key))) return;
+      const groupsA = window.PvPeakTeamBuilderAnalysis.groupResults(teamBuilderComparisonBaselinePlan, teamBuilderAnalysisCache);
+      const currentPlan = createTeamBuilderPlanForTeam(teamBuilderState.team);
+      const groupsB = window.PvPeakTeamBuilderAnalysis.groupResults(currentPlan, teamBuilderAnalysisCache);
+      const comparison = window.PvPeakTeamBuilderAnalysis.compareTeamCoverage(groupsA, groupsB);
+      if (!comparison.comparableOpponents) return;
+      const results = $("teamBuilderComparisonResults");
+      results.classList.add("is-visible");
+      const metrics = [
+        ["Coverage rating", comparison.teamA.coverageRating, comparison.teamB.coverageRating, comparison.deltas.coverageRating, false],
+        ["Average rating", comparison.teamA.averageRating, comparison.teamB.averageRating, comparison.deltas.averageRating, false],
+        ["Strong answers", comparison.teamA.favorableMatchups, comparison.teamB.favorableMatchups, comparison.deltas.favorableMatchups, false],
+        ["Unhandled threats", comparison.teamA.noAnswerCount, comparison.teamB.noAnswerCount, comparison.deltas.noAnswerCount, true]
+      ];
+      $("teamBuilderComparisonKpis").innerHTML = metrics.map(([label, before, after, delta, invert]) => {
+        const change = teamBuilderComparisonDelta(delta, invert);
+        return `<div class="team-comparison-kpi" style="--comparison-color:${change.color}"><span>${label}</span><strong>${before} → ${after}</strong><small>${change.text}</small></div>`;
+      }).join("");
+      const gains = comparison.gains.slice(0, 6);
+      const losses = comparison.losses.slice(0, 6);
+      const gainBox = $("teamBuilderComparisonGains");
+      const lossBox = $("teamBuilderComparisonLosses");
+      gainBox.innerHTML = gains.length ? gains.map((item, index) => renderTeamBuilderComparisonChange(item, index, "gain", true)).join("") : `<div class="team-comparison-no-change">No measurable coverage gains.</div>`;
+      lossBox.innerHTML = losses.length ? losses.map((item, index) => renderTeamBuilderComparisonChange(item, index, "loss", false)).join("") : `<div class="team-comparison-no-change">No measurable coverage losses.</div>`;
+      [[gains, gainBox, "gain"], [losses, lossBox, "loss"]].forEach(([items, box, name]) => items.forEach((item, index) => {
+        const pokemon = findPokemon(item.opponentId);
+        const image = box.querySelector(`[data-team-comparison-change-sprite="${name}-${index}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      }));
     }
 
     function moveTeamBuilderMobileOpponent(direction) {

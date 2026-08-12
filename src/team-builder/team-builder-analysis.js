@@ -279,6 +279,51 @@
     );
   }
 
+  function summarizeTeamCoverage(groups) {
+    const opponents = (groups || []).map(group => {
+      const summary = summarizeOpponent(group);
+      if (!summary) return null;
+      return Object.freeze({ ...summary, bestScore: Math.max(...group.cells.map(result => Number(result.score ?? 500))) });
+    }).filter(Boolean);
+    if (!opponents.length) return Object.freeze({ opponentCount: 0, coverageRating: 0, averageRating: 0, favorableMatchups: 0, noAnswerCount: 0, opponents: Object.freeze([]) });
+    const cellCount = opponents.reduce((count, item) => count + item.teamSize, 0);
+    return Object.freeze({
+      opponentCount: opponents.length,
+      coverageRating: Math.round(opponents.reduce((sum, item) => sum + item.bestScore, 0) / opponents.length),
+      averageRating: Math.round(opponents.reduce((sum, item) => sum + (item.averageScore * item.teamSize), 0) / cellCount),
+      favorableMatchups: opponents.reduce((sum, item) => sum + item.answerCount, 0),
+      noAnswerCount: opponents.filter(item => item.answerCount === 0).length,
+      opponents: Object.freeze(opponents)
+    });
+  }
+
+  function compareTeamCoverage(groupsA, groupsB) {
+    const teamA = summarizeTeamCoverage(groupsA);
+    const teamB = summarizeTeamCoverage(groupsB);
+    const byA = new Map(teamA.opponents.map(item => [item.opponentId, item]));
+    const byB = new Map(teamB.opponents.map(item => [item.opponentId, item]));
+    const changes = [...byA.keys()].filter(id => byB.has(id)).map(opponentId => {
+      const a = byA.get(opponentId);
+      const b = byB.get(opponentId);
+      const answerDelta = b.answerCount - a.answerCount;
+      const bestScoreDelta = b.bestScore - a.bestScore;
+      const averageDelta = b.averageScore - a.averageScore;
+      const impact = (answerDelta * 100) + bestScoreDelta;
+      return Object.freeze({ opponentId, answerCountA: a.answerCount, answerCountB: b.answerCount, bestScoreA: a.bestScore, bestScoreB: b.bestScore, answerDelta, bestScoreDelta, averageDelta, impact });
+    });
+    const gains = changes.filter(item => item.impact > 0).sort((a, b) => b.impact - a.impact || b.bestScoreDelta - a.bestScoreDelta || a.opponentId.localeCompare(b.opponentId));
+    const losses = changes.filter(item => item.impact < 0).sort((a, b) => a.impact - b.impact || a.bestScoreDelta - b.bestScoreDelta || a.opponentId.localeCompare(b.opponentId));
+    return Object.freeze({
+      comparableOpponents: changes.length,
+      teamA,
+      teamB,
+      deltas: Object.freeze({ coverageRating: teamB.coverageRating - teamA.coverageRating, averageRating: teamB.averageRating - teamA.averageRating, favorableMatchups: teamB.favorableMatchups - teamA.favorableMatchups, noAnswerCount: teamB.noAnswerCount - teamA.noAnswerCount }),
+      gains: Object.freeze(gains),
+      losses: Object.freeze(losses),
+      unchangedCount: changes.filter(item => item.impact === 0).length
+    });
+  }
+
   return Object.freeze({
     SCHEMA_VERSION,
     STORAGE_KEY,
@@ -296,6 +341,8 @@
     analyzeCoverage,
     analyzeCores,
     scoreReplacementCandidate,
-    rankReplacementCandidates
+    rankReplacementCandidates,
+    summarizeTeamCoverage,
+    compareTeamCoverage
   });
 });

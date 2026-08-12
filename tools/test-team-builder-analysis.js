@@ -106,4 +106,25 @@ const replacementRanking = Analysis.rankReplacementCandidates({
 });
 assert.deepEqual(replacementRanking.map(item => item.candidateId), ["candidate-b", "candidate-a"], "Candidates must rank by deterministic targeted improvement.");
 
+const comparisonA = [
+  scoreGroup("gain", [300, 350, 450, 500, 550, 580]),
+  scoreGroup("loss", [700, 650, 500, 450, 400, 350])
+];
+const comparisonB = [
+  scoreGroup("gain", [700, 650, 600, 500, 550, 580]),
+  scoreGroup("loss", [450, 430, 500, 450, 400, 350]),
+  scoreGroup("incomplete", [700, null, 500, 500, 500, 500])
+];
+const comparison = Analysis.compareTeamCoverage(comparisonA, comparisonB);
+assert.equal(comparison.comparableOpponents, 2, "Only opponents complete for both teams may enter comparison.");
+assert.equal(comparison.gains[0].opponentId, "gain");
+assert.equal(comparison.gains[0].answerDelta, 3);
+assert.equal(comparison.losses[0].opponentId, "loss");
+assert.deepEqual(
+  comparison.deltas,
+  { coverageRating: -40, averageRating: 32, favorableMatchups: 1, noAnswerCount: 0 },
+  "Team comparison must expose deterministic aggregate deltas."
+);
+assert.equal(Analysis.summarizeTeamCoverage(comparisonA).favorableMatchups, 2);
+
 console.log("Team Builder analysis planning tests passed.");
