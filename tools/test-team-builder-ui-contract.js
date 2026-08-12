@@ -85,6 +85,10 @@ assert.match(html, /data-result-tooltip="\$\{escapeHtml\(`\$\{category\} · Rati
 assert.match(html, /function teamBuilderThreatFilteredGroups\(\)[\s\S]{0,1400}uncovered[\s\S]{0,300}hard-losses[\s\S]{0,300}close/, "Threat Coverage must support search and the All, Uncovered, Hard losses, and Close matchups filters.");
 assert.match(html, /function teamBuilderThreatVisibleGroups\(\)[\s\S]{0,250}slice\(0, 20\)[\s\S]{0,900}Show top 20[\s\S]{0,100}Show all/, "Threat Coverage must default to the top 20 while allowing the full filtered list to expand.");
 assert.match(html, /function bindTeamBuilderCoverageFocus\(box\)[\s\S]{0,1000}is-row-focus[\s\S]{0,300}is-column-focus/, "Pointer focus must link the active matchup to its row and team column.");
+assert.match(html, /\.team-coverage-opponent img \{[^}]+width: 36px[^}]+height: 36px/, "Threat identity rows must retain readable opponent sprites.");
+assert.match(html, /\.team-coverage-opponent-copy strong \{ font-size: 8\.5px/, "Threat identity rows must keep the Pokemon name readable.");
+assert.match(html, /\.team-coverage-opponent-copy small \{ color: var\(--muted\); font-size: 6\.5px/, "Threat identity rows must keep a distinct compact summary line beneath the name.");
+assert.match(html, /\.team-matchup-cell \.team-matchup-mark \{[^}]+color: var\(--result-color\) !important[^}]+opacity: 1/, "Every non-neutral heatmap outcome, including close matchups, must keep a fully visible directional arrow whose tier is conveyed by its semantic shade.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
 assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");
 assert.match(html, /function openTeamBuilderMatchup[\s\S]{0,2600}Battle rating[\s\S]{0,1000}teamBuilderBuildLabel/, "Every prepared cell must expose simulation and build detail.");
