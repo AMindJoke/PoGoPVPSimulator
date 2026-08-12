@@ -68,4 +68,20 @@ assert.equal(coverageInsights.threats[0].opponentId, "critical", "The most sever
 assert.equal(coverageInsights.bestCovered[0].opponentId, "covered", "The opponent with the most strong answers must rank first in best covered.");
 assert.deepEqual(coverageInsights.bestCovered[0].answerSlots, [0, 1, 2, 3]);
 
+const coreInsights = Analysis.analyzeCores([
+  scoreGroup("shared-a", [250, 300, 700, 650, 500, 450]),
+  scoreGroup("shared-b", [350, 150, 680, 620, 480, 410]),
+  scoreGroup("fragile", [700, 350, 300, 250, 450, 390]),
+  scoreGroup("pending", [200, 200, 500, 500, null, 500])
+]);
+assert.equal(coreInsights.completedOpponents, 3, "Core analysis must ignore incomplete matchup rows.");
+assert.deepEqual(coreInsights.weakCores[0].slots, [0, 1], "The pair sharing the most hard losses must rank as the weakest core.");
+assert.equal(coreInsights.weakCores[0].sharedLossCount, 2);
+assert.deepEqual(coreInsights.weakCores[0].opponents.map(item => item.opponentId), ["shared-b", "shared-a"], "Shared threats must rank by simulated loss severity.");
+assert.equal(coreInsights.fragileAnswers.length, 1, "Only opponents with exactly one favorable answer are structurally fragile.");
+assert.deepEqual(
+  { opponent: coreInsights.fragileAnswers[0].opponentId, answer: coreInsights.fragileAnswers[0].answerSlot, backup: coreInsights.fragileAnswers[0].backupSlot, backupScore: coreInsights.fragileAnswers[0].backupScore },
+  { opponent: "fragile", answer: 0, backup: 4, backupScore: 450 }
+);
+
 console.log("Team Builder analysis planning tests passed.");

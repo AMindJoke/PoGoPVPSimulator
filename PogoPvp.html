@@ -1116,6 +1116,20 @@
     .team-insight-copy strong { font-size: 10px; }.team-insight-copy span { margin-top: 2px; color: var(--muted); font-size: 8px; }
     .team-insight-metric { min-width: 62px; padding: 5px 7px; border-radius: 7px; background: color-mix(in srgb, var(--insight-color) 12%, var(--panel)); text-align: center; }
     .team-insight-metric strong, .team-insight-metric small { display: block; }.team-insight-metric strong { color: var(--insight-color); font-size: 12px; }.team-insight-metric small { margin-top: 1px; color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
+    .team-core-analysis { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .team-core-analysis-head { margin-bottom: 9px; }.team-core-analysis-head h4 { margin: 0; font-size: 14px; }.team-core-analysis-head p { margin: 4px 0 0; color: var(--muted); font-size: 9px; }
+    .team-core-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .team-core-list { display: grid; gap: 6px; }
+    .team-core-row { display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 60px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .team-core-sprites { display: flex; align-items: center; min-width: 68px; }
+    .team-core-sprites img { width: 42px; height: 42px; object-fit: contain; }
+    .team-core-sprites img + img { margin-left: -16px; }
+    .team-core-sprites img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
+    .team-core-copy { min-width: 0; }.team-core-copy strong, .team-core-copy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .team-core-copy strong { font-size: 10px; }.team-core-copy span { margin-top: 2px; color: var(--muted); font-size: 8px; }
+    .team-core-metric { min-width: 65px; padding: 5px 7px; border-radius: 7px; background: color-mix(in srgb, var(--core-color) 12%, var(--panel)); text-align: center; }
+    .team-core-metric strong, .team-core-metric small { display: block; }.team-core-metric strong { color: var(--core-color); font-size: 12px; }.team-core-metric small { margin-top: 1px; color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
+    .team-core-empty { min-height: 60px; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 9px; }
     #teamBuilderEditorModal .team-editor-section { width: 100%; max-width: none; margin: 0; padding: 15px 0; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; background: transparent; box-shadow: none; }
     #teamBuilderEditorModal .team-editor-section > header { padding: 0; border: 0; background: transparent; color: var(--ink); box-shadow: none; }
     #teamBuilderEditorModal .team-editor-field select, #teamBuilderEditorModal .team-editor-field input { width: 100% !important; max-width: none; }
@@ -1148,7 +1162,7 @@
       .team-coverage-desktop { display: none; }
       .team-coverage-mobile { display: block; }
       .team-mobile-matchups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .team-insights { padding: 15px; }.team-insights-head { align-items: start; flex-direction: column; }.team-insights-summary { justify-content: start; }.team-insights-grid { grid-template-columns: 1fr; }
+      .team-insights { padding: 15px; }.team-insights-head { align-items: start; flex-direction: column; }.team-insights-summary { justify-content: start; }.team-insights-grid, .team-core-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 430px) {
       .team-roster-grid { grid-template-columns: 1fr; }
@@ -12951,6 +12965,7 @@
             <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Biggest threats</h4><span>Missing answers + loss severity</span></div><div id="teamBuilderThreatList" class="team-insight-list"></div></article>
             <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Best covered</h4><span>Strong answers + average rating</span></div><div id="teamBuilderCoveredList" class="team-insight-list"></div></article>
           </div>
+          <div class="team-core-analysis"><div class="team-core-analysis-head"><h4>Core analysis</h4><p>Shared hard losses and opponents that depend on a single reliable answer.</p></div><div class="team-core-grid"><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Weak cores</h4><span>Pairs sharing hard losses</span></div><div id="teamBuilderWeakCoreList" class="team-core-list"></div></article><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Fragile answers</h4><span>Only one favorable matchup</span></div><div id="teamBuilderFragileAnswerList" class="team-core-list"></div></article></div></div>
         </section>
       </section>
     </div>
@@ -15080,6 +15095,42 @@
         const pokemon = findPokemon(summary.opponentId);
         const image = section.querySelector(`[data-team-insight-sprite="covered-${index}"]`);
         if (pokemon && image) setPokemonImage(image, pokemon);
+      });
+      renderTeamBuilderCoreAnalysis(groups);
+    }
+
+    function renderTeamBuilderCoreAnalysis(groups) {
+      const analysis = window.PvPeakTeamBuilderAnalysis.analyzeCores(groups, teamBuilderState.team.length);
+      const weakCores = analysis.weakCores.slice(0, 5);
+      const fragileAnswers = analysis.fragileAnswers.slice(0, 5);
+      const weakList = $("teamBuilderWeakCoreList");
+      const fragileList = $("teamBuilderFragileAnswerList");
+      weakList.innerHTML = weakCores.length ? weakCores.map((core, index) => {
+        const first = findPokemon(teamBuilderState.team[core.slots[0]]?.pokemonId);
+        const second = findPokemon(teamBuilderState.team[core.slots[1]]?.pokemonId);
+        const opponentNames = core.opponents.slice(0, 3).map(item => findPokemon(item.opponentId)?.name || item.opponentId);
+        const detail = `${opponentNames.join(", ")}${core.sharedLossCount > opponentNames.length ? ` +${core.sharedLossCount - opponentNames.length}` : ""} · Avg ${core.averageLossScore}`;
+        return `<div class="team-core-row" style="--core-color:#bd5260"><div class="team-core-sprites"><img data-team-core-sprite="weak-${index}-0" alt=""><img data-team-core-sprite="weak-${index}-1" alt=""></div><div class="team-core-copy"><strong>${escapeHtml(first?.name || `Slot ${core.slots[0] + 1}`)} + ${escapeHtml(second?.name || `Slot ${core.slots[1] + 1}`)}</strong><span title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></div><div class="team-core-metric"><strong>${core.sharedLossCount}</strong><small>Shared losses</small></div></div>`;
+      }).join("") : `<div class="team-core-empty">No pair shares a hard loss in the completed matchup field.</div>`;
+      fragileList.innerHTML = fragileAnswers.length ? fragileAnswers.map((item, index) => {
+        const opponent = findPokemon(item.opponentId);
+        const answer = findPokemon(teamBuilderState.team[item.answerSlot]?.pokemonId);
+        const backup = item.backupSlot == null ? null : findPokemon(teamBuilderState.team[item.backupSlot]?.pokemonId);
+        const detail = `Only ${answer?.name || `slot ${item.answerSlot + 1}`} wins · Best backup ${backup?.name || "none"} ${item.backupScore}`;
+        return `<div class="team-core-row" style="--core-color:${teamBuilderSeverityColor(item.severityLabel)}"><div class="team-core-sprites"><img data-team-core-sprite="fragile-${index}-0" alt=""><img data-team-core-sprite="fragile-${index}-1" alt=""></div><div class="team-core-copy"><strong>${escapeHtml(opponent?.name || item.opponentId)}</strong><span title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></div><div class="team-core-metric"><strong>${item.hardLossCount}</strong><small>Hard losses</small></div></div>`;
+      }).join("") : `<div class="team-core-empty">No opponent currently depends on a single favorable answer.</div>`;
+      weakCores.forEach((core, index) => core.slots.forEach((slot, spriteIndex) => {
+        const pokemon = findPokemon(teamBuilderState.team[slot]?.pokemonId);
+        const image = weakList.querySelector(`[data-team-core-sprite="weak-${index}-${spriteIndex}"]`);
+        if (pokemon && image) setPokemonImage(image, pokemon);
+      }));
+      fragileAnswers.forEach((item, index) => {
+        const pokemon = findPokemon(item.opponentId);
+        const answer = findPokemon(teamBuilderState.team[item.answerSlot]?.pokemonId);
+        const opponentImage = fragileList.querySelector(`[data-team-core-sprite="fragile-${index}-0"]`);
+        const answerImage = fragileList.querySelector(`[data-team-core-sprite="fragile-${index}-1"]`);
+        if (pokemon && opponentImage) setPokemonImage(opponentImage, pokemon);
+        if (answer && answerImage) setPokemonImage(answerImage, answer);
       });
     }
 

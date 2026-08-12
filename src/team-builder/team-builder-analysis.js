@@ -182,6 +182,59 @@
     });
   }
 
+  function analyzeCores(groups, teamSize = 6) {
+    const completeGroups = (groups || []).filter(group =>
+      Array.isArray(group?.cells) && group.cells.length >= teamSize && group.cells.slice(0, teamSize).every(Boolean)
+    );
+    const weakCores = [];
+    for (let firstSlot = 0; firstSlot < teamSize; firstSlot += 1) {
+      for (let secondSlot = firstSlot + 1; secondSlot < teamSize; secondSlot += 1) {
+        const sharedLosses = completeGroups.map(group => {
+          const firstScore = Number(group.cells[firstSlot].score ?? 500);
+          const secondScore = Number(group.cells[secondSlot].score ?? 500);
+          if (firstScore > 400 || secondScore > 400) return null;
+          return Object.freeze({
+            opponentId: group.opponentId,
+            averageScore: Math.round((firstScore + secondScore) / 2),
+            severity: Math.round(((500 - firstScore) + (500 - secondScore)) / 10)
+          });
+        }).filter(Boolean).sort((a, b) => b.severity - a.severity || a.averageScore - b.averageScore || a.opponentId.localeCompare(b.opponentId));
+        if (!sharedLosses.length) continue;
+        weakCores.push(Object.freeze({
+          slots: Object.freeze([firstSlot, secondSlot]),
+          sharedLossCount: sharedLosses.length,
+          averageLossScore: Math.round(sharedLosses.reduce((sum, loss) => sum + loss.averageScore, 0) / sharedLosses.length),
+          opponents: Object.freeze(sharedLosses)
+        }));
+      }
+    }
+    weakCores.sort((a, b) => b.sharedLossCount - a.sharedLossCount || a.averageLossScore - b.averageLossScore || a.slots[0] - b.slots[0] || a.slots[1] - b.slots[1]);
+
+    const fragileAnswers = completeGroups.map(group => {
+      const summary = summarizeOpponent(group);
+      if (!summary || summary.answerCount !== 1) return null;
+      const answerSlot = summary.answerSlots[0];
+      const answerScore = Number(group.cells[answerSlot].score ?? 500);
+      const alternatives = group.cells.map((result, slot) => ({ slot, score: Number(result.score ?? 500) })).filter(item => item.slot !== answerSlot).sort((a, b) => b.score - a.score);
+      return Object.freeze({
+        opponentId: group.opponentId,
+        answerSlot,
+        answerScore,
+        backupSlot: alternatives[0]?.slot ?? null,
+        backupScore: alternatives[0]?.score ?? 0,
+        hardLossCount: summary.hardLossCount,
+        severity: summary.severity,
+        severityLabel: summary.severityLabel
+      });
+    }).filter(Boolean).sort((a, b) => b.severity - a.severity || b.hardLossCount - a.hardLossCount || a.backupScore - b.backupScore || a.opponentId.localeCompare(b.opponentId));
+
+    return Object.freeze({
+      completedOpponents: completeGroups.length,
+      weakCores: Object.freeze(weakCores),
+      fragileAnswers: Object.freeze(fragileAnswers)
+    });
+  }
+
   return Object.freeze({
     SCHEMA_VERSION,
     STORAGE_KEY,
@@ -196,6 +249,7 @@
     resultLabel,
     groupResults,
     summarizeOpponent,
-    analyzeCoverage
+    analyzeCoverage,
+    analyzeCores
   });
 });
