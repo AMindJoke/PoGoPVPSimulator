@@ -1079,9 +1079,10 @@
     .team-matchup-cell { display: grid; place-items: center; width: 100%; min-height: 34px; padding: 3px 5px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 999px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.46); }
     .team-matchup-cell:hover, .team-matchup-cell:focus-visible { border-color: var(--result-color); background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.5), 0 2px 8px color-mix(in srgb, var(--result-color) 16%, transparent); transform: translateY(-1px); }
     .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; }
-    .team-matchup-mark { display: inline-grid; flex: none; min-width: 31px; height: 19px; padding: 0 6px; place-items: center; border-radius: 999px; background: var(--result-mark, var(--result-color)); color: #fff; font-size: 9px; font-style: normal; font-weight: 950; letter-spacing: -1px; line-height: 1; box-shadow: inset 0 1px rgba(255,255,255,.24); }
-    .team-matchup-mark.is-dominant { min-width: 37px; }
-    .team-matchup-mark.is-neutral { letter-spacing: 0; }
+    .team-matchup-mark { display: inline-grid; flex: none; width: 34px; height: 19px; place-items: center; border-radius: 999px; background: var(--result-mark, var(--result-color)); color: rgba(255,255,255,.76); font-size: 9px; font-style: normal; font-weight: 950; line-height: 1; box-shadow: inset 0 1px rgba(255,255,255,.2); }
+    .team-matchup-mark.is-slight { color: rgba(255,255,255,.46); }
+    .team-matchup-mark.is-dominant { color: #fff; text-shadow: 0 0 1px rgba(255,255,255,.35); }
+    .team-matchup-mark.is-neutral { color: rgba(255,255,255,.88); }
     .team-matchup-cell.is-pending { --result-color: #97a2af; opacity: .58; }
     .team-coverage-mobile { display: none; }
     .team-mobile-opponent-nav { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -12999,12 +13000,12 @@
           </div>
         </section>
         <div id="teamBuilderThreatCoverage" class="team-coverage is-primary" aria-labelledby="teamBuilderThreatCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-status-legend" role="img" aria-label="Seven result levels: double down is dominant loss, down is loss, outlined down is slight loss, dash is neutral, outlined up is slight win, up is win, and double up is dominant win"><span><i class="team-matchup-mark is-dominant" style="--result-mark:#c94229" aria-hidden="true">▼▼</i>Hard loss</span><span><i class="team-matchup-mark" style="--result-mark:#e85c3c" aria-hidden="true">▼</i>Loss</span><span><i class="team-matchup-mark is-neutral" style="--result-mark:#9a9690" aria-hidden="true">—</i>Neutral</span><span><i class="team-matchup-mark" style="--result-mark:#0e7c86" aria-hidden="true">▲</i>Win</span><span><i class="team-matchup-mark is-dominant" style="--result-mark:#075f68" aria-hidden="true">▲▲</i>Hard win</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderThreatCoverageTitle">Threats Coverage</h3><p id="teamBuilderThreatCoverageSubtitle">The broader competitive field, ordered from the hardest opponent for this team.</p></div><div class="team-coverage-status-legend" role="img" aria-label="Seven result levels: a faded arrow is slight, a medium arrow is clear, a bright arrow is dominant, and a dash is neutral"><span><i class="team-matchup-mark is-dominant" style="--result-mark:#c94229" aria-hidden="true">▼</i>Hard loss</span><span><i class="team-matchup-mark is-clear" style="--result-mark:#e85c3c" aria-hidden="true">▼</i>Loss</span><span><i class="team-matchup-mark is-neutral" style="--result-mark:#9a9690" aria-hidden="true">—</i>Neutral</span><span><i class="team-matchup-mark is-clear" style="--result-mark:#0e7c86" aria-hidden="true">▲</i>Win</span><span><i class="team-matchup-mark is-dominant" style="--result-mark:#075f68" aria-hidden="true">▲</i>Hard win</span></div></header>
           <div id="teamBuilderThreatCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderThreatMobilePrev" class="secondary" type="button" aria-label="Previous ranked threat">‹</button><div id="teamBuilderThreatMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderThreatMobileNext" class="secondary" type="button" aria-label="Next ranked threat">›</button></div><div id="teamBuilderThreatMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
         <div id="teamBuilderCoverage" class="team-coverage is-secondary" aria-labelledby="teamBuilderCoverageTitle">
-          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-status-legend" role="img" aria-label="Seven result levels: double down is dominant loss, down is loss, outlined down is slight loss, dash is neutral, outlined up is slight win, up is win, and double up is dominant win"><span><i class="team-matchup-mark is-dominant" style="--result-mark:#c94229" aria-hidden="true">▼▼</i>Hard loss</span><span><i class="team-matchup-mark" style="--result-mark:#e85c3c" aria-hidden="true">▼</i>Loss</span><span><i class="team-matchup-mark is-neutral" style="--result-mark:#9a9690" aria-hidden="true">—</i>Neutral</span><span><i class="team-matchup-mark" style="--result-mark:#0e7c86" aria-hidden="true">▲</i>Win</span><span><i class="team-matchup-mark is-dominant" style="--result-mark:#075f68" aria-hidden="true">▲▲</i>Hard win</span></div></header>
+          <header class="team-coverage-head"><div><h3 id="teamBuilderCoverageTitle">Meta Coverage</h3><p id="teamBuilderCoverageSubtitle">The selected meta field, kept as a focused reference.</p></div><div class="team-coverage-status-legend" role="img" aria-label="Seven result levels: a faded arrow is slight, a medium arrow is clear, a bright arrow is dominant, and a dash is neutral"><span><i class="team-matchup-mark is-dominant" style="--result-mark:#c94229" aria-hidden="true">▼</i>Hard loss</span><span><i class="team-matchup-mark is-clear" style="--result-mark:#e85c3c" aria-hidden="true">▼</i>Loss</span><span><i class="team-matchup-mark is-neutral" style="--result-mark:#9a9690" aria-hidden="true">—</i>Neutral</span><span><i class="team-matchup-mark is-clear" style="--result-mark:#0e7c86" aria-hidden="true">▲</i>Win</span><span><i class="team-matchup-mark is-dominant" style="--result-mark:#075f68" aria-hidden="true">▲</i>Hard win</span></div></header>
           <div id="teamBuilderCoverageDesktop" class="team-coverage-desktop"></div>
           <div class="team-coverage-mobile"><div class="team-mobile-opponent-nav"><button id="teamBuilderMobilePrev" class="secondary" type="button" aria-label="Previous meta opponent">‹</button><div id="teamBuilderMobileOpponent" class="team-mobile-opponent-current"></div><button id="teamBuilderMobileNext" class="secondary" type="button" aria-label="Next meta opponent">›</button></div><div id="teamBuilderMobileMatchups" class="team-mobile-matchups"></div></div>
         </div>
@@ -15238,10 +15239,8 @@
     function teamBuilderResultMarkHtml(visual) {
       const symbol = visual.tone === "neutral"
         ? "&mdash;"
-        : visual.tone === "favorable"
-          ? visual.tier === "dominant" ? "&#9650;&#9650;" : visual.tier === "clear" ? "&#9650;" : "&#9651;"
-          : visual.tier === "dominant" ? "&#9660;&#9660;" : visual.tier === "clear" ? "&#9660;" : "&#9661;";
-      const classes = `team-matchup-mark${visual.tier === "dominant" ? " is-dominant" : ""}${visual.tone === "neutral" ? " is-neutral" : ""}`;
+        : visual.tone === "favorable" ? "&#9650;" : "&#9660;";
+      const classes = `team-matchup-mark is-${visual.tier}`;
       return `<i class="${classes}" aria-hidden="true">${symbol}</i>`;
     }
 
@@ -15296,8 +15295,8 @@
       const visual = teamBuilderResultVisual(result);
       const accessible = `${pokemon?.name || `Team slot ${slot + 1}`} versus ${findPokemon(opponentId)?.name || opponentId}: ${teamBuilderResultCategory(visual)}, battle rating ${result.score}`;
       const mark = teamBuilderResultMarkHtml(visual);
-      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}<b>${result.score}</b></span></span></button>`;
-      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><strong>${mark}${result.score}</strong></button>`;
+      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
+      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><strong>${mark}</strong></button>`;
     }
 
     function renderTeamBuilderCoverageDesktop(groups, options = {}) {

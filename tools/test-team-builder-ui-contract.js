@@ -73,12 +73,12 @@ assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
 assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,2200}#9a9690[\s\S]{0,350}#075f68[\s\S]{0,650}#c94229/, "The seven-level scale must use the requested gray, teal, and coral family with stronger endpoints.");
 assert.match(html, /--result-surface:\$\{palette\.surface\}[\s\S]{0,180}--result-text:\$\{palette\.text\}[\s\S]{0,180}--result-mark:\$\{palette\.mark\}/, "Every result tier must coordinate surface, text, and categorical mark contrast.");
-assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,900}9650[\s\S]{0,120}9651[\s\S]{0,160}9660[\s\S]{0,120}9661/, "Categorical capsules must distinguish slight, clear, and dominant wins and losses without reading a continuous gauge.");
+assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,500}9650[^\n]+9660[\s\S]{0,250}is-\$\{visual\.tier\}/, "Categorical capsules must use one directional mark whose visual intensity follows the result tier.");
 assert.equal((html.match(/class="team-coverage-status-legend"/g) || []).length, 2, "Both coverage matrices must explain the same categorical marks.");
-assert.match(html, /Seven result levels: double down is dominant loss[^\"]+double up is dominant win/, "The compact categorical legend must remain fully accessible.");
-assert.match(html, /\.team-matchup-mark \{[^}]+border-radius: 999px[^}]+--result-mark[^}]+color: #fff/, "Coverage results must use high-contrast capsule marks.");
+assert.match(html, /Seven result levels: a faded arrow is slight[^\"]+bright arrow is dominant[^\"]+dash is neutral/, "The compact categorical legend must remain fully accessible.");
+assert.match(html, /\.team-matchup-mark\.is-slight \{[^}]+rgba\(255,255,255,\.46\)[^}]*\}[\s\S]{0,100}\.team-matchup-mark\.is-dominant \{[^}]+color: #fff/, "Coverage marks must communicate severity through symbol intensity, with dominant outcomes strongest.");
 assert.match(html, /class="team-coverage-rank">\$\{row \+ 1\}/, "Coverage rows must expose a clear visual rank.");
-assert.doesNotMatch(html, /<strong>\$\{mark\}\$\{result\.score\}<\/strong><small>/, "Desktop cells must not repeat a word label beneath every score.");
+assert.doesNotMatch(html, /team-mobile-result-line">\$\{mark\}<b>\$\{result\.score\}|<strong>\$\{mark\}\$\{result\.score\}<\/strong>/, "Coverage cells must keep numeric battle ratings in the detail view instead of the matrix.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
 assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");
 assert.match(html, /function openTeamBuilderMatchup[\s\S]{0,2600}Battle rating[\s\S]{0,1000}teamBuilderBuildLabel/, "Every prepared cell must expose simulation and build detail.");
