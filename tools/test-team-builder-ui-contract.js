@@ -78,6 +78,8 @@ assert.equal((html.match(/class="team-coverage-status-legend"/g) || []).length, 
 assert.match(html, /Seven result levels: a faded arrow is slight[^\"]+bright arrow is dominant[^\"]+dash is neutral/, "The compact categorical legend must remain fully accessible.");
 assert.match(html, /\.team-matchup-mark\.is-slight \{[^}]+rgba\(255,255,255,\.46\)[^}]*\}[\s\S]{0,100}\.team-matchup-mark\.is-dominant \{[^}]+color: #fff/, "Coverage marks must communicate severity through symbol intensity, with dominant outcomes strongest.");
 assert.match(html, /class="team-coverage-rank">\$\{row \+ 1\}/, "Coverage rows must expose a clear visual rank.");
+assert.match(html, /\.team-coverage-table thead \{[^}]+position: sticky[^}]+z-index: 30[^}]+isolation: isolate[\s\S]{0,500}\.team-coverage-table tbody \{[^}]+z-index: 0/, "The complete Pokemon header row must remain in a higher stacking context than matchup cells while the matrix scrolls.");
+assert.match(html, /\.team-coverage-pokemon-head span \{[^}]+max-height: 2\.3em[^}]+text-overflow: clip[^}]+white-space: normal[^}]+word-break: normal/, "Long roster names such as Shadow forms must wrap on natural spaces across two header lines without compression.");
 assert.doesNotMatch(html, /team-mobile-result-line">\$\{mark\}<b>\$\{result\.score\}|<strong>\$\{mark\}\$\{result\.score\}<\/strong>/, "Coverage cells must keep numeric battle ratings in the detail view instead of the matrix.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
 assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");

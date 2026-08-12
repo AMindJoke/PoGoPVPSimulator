@@ -1066,17 +1066,22 @@
     .team-coverage-table th, .team-coverage-table td { padding: 5px 6px; border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 62%, transparent); background: var(--panel); text-align: center; }
     .team-coverage-table tr:last-child td, .team-coverage-table tr:last-child th { border-bottom: 0; }
     .team-coverage-table th:last-child, .team-coverage-table td:last-child { border-right: 0; }
-    .team-coverage-table thead th { position: sticky; top: 0; z-index: 4; height: 58px; background: var(--subtle); }
-    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 6; width: 180px; text-align: left; }
-    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 3; width: 180px; background: var(--panel); text-align: left; }
+    .team-coverage-table thead { position: sticky; top: 0; z-index: 30; isolation: isolate; background: var(--subtle, var(--soft)); }
+    .team-coverage-table thead th { position: sticky; top: 0; z-index: 31; height: 64px; background: var(--subtle, var(--soft)); box-shadow: 0 1px 0 var(--line); }
+    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 32; width: 180px; text-align: left; }
+    .team-coverage-table tbody { position: relative; z-index: 0; }
+    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 2; width: 180px; background: var(--panel); text-align: left; }
+    .team-coverage-table tbody td { position: relative; z-index: 0; }
     .team-coverage-pokemon-head { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; min-width: 0; }
     .team-coverage-opponent { display: grid; grid-template-columns: 20px 34px minmax(0, 1fr); align-items: center; gap: 6px; min-width: 0; }
     .team-coverage-pokemon-head img, .team-coverage-opponent img { width: 34px; height: 34px; object-fit: contain; }
     .team-coverage-pokemon-head img.shadow-pokemon, .team-coverage-opponent img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
-    .team-coverage-pokemon-head span, .team-coverage-opponent span { overflow: hidden; font-size: 9px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .team-coverage-pokemon-head span, .team-coverage-opponent span { overflow: hidden; font-size: 9px; font-weight: 900; text-overflow: ellipsis; }
+    .team-coverage-pokemon-head span { display: block; max-height: 2.3em; line-height: 1.15; overflow-wrap: normal; text-overflow: clip; white-space: normal; word-break: normal; }
+    .team-coverage-opponent span { white-space: nowrap; }
     .team-coverage-rank { color: var(--muted); font-size: 10px; font-weight: 900; text-align: right; }
     .team-coverage-opponent-copy { min-width: 0; }.team-coverage-opponent-copy span, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy small { margin-top: 2px; color: var(--muted); font-size: 7px; font-weight: 750; }
-    .team-matchup-cell { display: grid; place-items: center; width: 100%; min-height: 34px; padding: 3px 5px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 999px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.46); }
+    .team-matchup-cell { position: relative; z-index: 0; display: grid; place-items: center; width: 100%; min-height: 34px; padding: 3px 5px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 999px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.46); }
     .team-matchup-cell:hover, .team-matchup-cell:focus-visible { border-color: var(--result-color); background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.5), 0 2px 8px color-mix(in srgb, var(--result-color) 16%, transparent); transform: translateY(-1px); }
     .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; }
     .team-matchup-mark { display: inline-grid; flex: none; width: 34px; height: 19px; place-items: center; border-radius: 999px; background: var(--result-mark, var(--result-color)); color: rgba(255,255,255,.76); font-size: 9px; font-style: normal; font-weight: 950; line-height: 1; box-shadow: inset 0 1px rgba(255,255,255,.2); }
