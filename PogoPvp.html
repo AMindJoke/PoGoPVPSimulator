@@ -959,14 +959,30 @@
     .team-builder-summary span { color: var(--muted); font-size: 11px; font-weight: 750; }
     .team-roster-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .team-slot { position: relative; min-width: 0; min-height: 188px; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
-    .team-slot::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--team-type, transparent); opacity: .9; }
+    .team-slot::before { content: ""; position: absolute; z-index: 2; inset: 0 auto 0 0; width: 4px; background: var(--team-type, transparent); opacity: .9; }
+    .team-slot:not(.is-empty)::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      right: -29px;
+      width: 154px;
+      height: 154px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, transparent 0 18px, color-mix(in srgb, var(--team-type) 13%, white) 19px 29px, transparent 30px),
+        linear-gradient(transparent 45%, color-mix(in srgb, var(--team-type) 13%, white) 45% 55%, transparent 55%),
+        radial-gradient(circle at center, transparent 0 53px, color-mix(in srgb, var(--team-type) 13%, white) 54px 66px, transparent 67px);
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
     .team-slot-empty { display: grid; place-items: center; width: 100%; height: 100%; min-height: 188px; padding: 24px; border: 0; background: transparent; color: var(--muted); }
     .team-slot-empty span { display: grid; place-items: center; gap: 9px; }
     .team-slot-empty b { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 50%; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--accent); font-size: 25px; font-weight: 500; }
     .team-slot-empty strong { color: var(--ink); font-size: 14px; }
     .team-slot-empty small { font-size: 10px; }
     .team-slot-empty:hover { background: color-mix(in srgb, var(--accent) 4%, var(--panel)); }
-    .team-card { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 12px; height: 100%; padding: 16px; }
+    .team-card { position: relative; z-index: 1; display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 12px; height: 100%; padding: 16px; }
     .team-card-sprite-wrap { position: relative; display: grid; place-items: center; align-self: center; width: 86px; height: 108px; border-radius: 44px; background: radial-gradient(circle, color-mix(in srgb, var(--team-type) 13%, transparent), transparent 70%); }
     .team-card-sprite { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 5px 5px rgba(23,33,47,.16)); }
     .team-card-sprite.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.24), transparent 68%); filter: drop-shadow(0 0 7px rgba(143,79,184,.9)) drop-shadow(0 5px 6px rgba(23,33,47,.2)); }

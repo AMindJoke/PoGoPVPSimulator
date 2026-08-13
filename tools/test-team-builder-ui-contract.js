@@ -55,6 +55,8 @@ assert.match(html, /id="teamBuilderShareError"[^>]+role="alert"[^>]+hidden/);
 assert.match(html, /\.team-builder-share-error\[hidden\] \{ display: none; \}/, "The invalid-link recovery panel must remain absent until a load actually fails.");
 assert.match(html, /function renderTeamBuilderSlot\(member, slot\)[\s\S]{0,700}data-team-add/);
 assert.match(html, /teamBuilderState\.team\.map\(renderTeamBuilderSlot\)/, "The UI must render the six semantic state slots.");
+assert.match(html, /\.team-slot:not\(\.is-empty\)::after\s*\{/, "Selected team cards must render the decorative type-colored background mark.");
+assert.match(html, /\.team-slot:not\(\.is-empty\)::after\s*\{[\s\S]{0,900}pointer-events:\s*none;/, "The selected-card background mark must not intercept Team Builder interactions.");
 assert.match(html, /renderPokemonSuggestionList\(\$\("teamBuilderPickerResults"\)/, "Team Builder must reuse the simulator Pokemon result component.");
 assert.match(html, /teamBuilderDefaultMember[\s\S]{0,700}metaMovesForPokemon\(pokemon\)/, "Cards must use the existing default competitive moveset resolution.");
 assert.match(html, /function teamBuilderResolvedBuild[\s\S]{0,1400}rankingsForPokemon\(pokemon\)[\s\S]{0,1400}statsForIvSpread\(pokemon/, "Team Builder must reuse the simulator's IV optimization and stat calculation.");
