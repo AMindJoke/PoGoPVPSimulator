@@ -26461,8 +26461,17 @@
     function deterministicShieldCoversChargedThreat(combatant, opponent) {
       if (!combatant || Number(combatant.shields || 0) <= 0) return false;
       const mode = String(combatant.shieldMode || "always").toLowerCase();
+      const opponentCharged = opponent
+        ? validChargedMoves(opponent)
+          .filter(move => Number(opponent.energy || 0) >= Number(move.energyCost || 0)
+            || Number(opponent.energy || 0) + Number(opponent.fast?.energyGain || 0) >= Number(move.energyCost || 0))
+          .sort((a, b) => estimate(opponent, combatant, b) - estimate(opponent, combatant, a)
+            || Number(a.energyCost || 0) - Number(b.energyCost || 0))[0] || null
+        : null;
       const willShield = mode === "always"
-        || (mode === "no-first" && Number(combatant.chargedTaken || 0) > 0);
+        || (mode === "no-first" && Number(combatant.chargedTaken || 0) > 0)
+        || (mode === "smart" && opponentCharged
+          && shouldShield(combatant, opponentCharged, estimate(opponent, combatant, opponentCharged), opponent));
       if (!willShield || !opponent) return false;
       if (Number(opponent.shields || 0) <= 0) return true;
       const straight = validChargedMoves(combatant)
