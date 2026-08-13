@@ -14173,6 +14173,8 @@
         effectiveness,
         estimate,
         combatantForChargedEstimate,
+        pokemonStatsAtLevel,
+        combatantStatsForForm,
         damageModifier,
         effectiveAttack,
         effectiveDefense,
@@ -14366,6 +14368,7 @@
         const damageBonus = ${damageBonus};
         const shadowAtkMultiplier = ${shadowAtkMultiplier};
         const shadowDefMultiplier = ${shadowDefMultiplier};
+        const cpMultipliers = ${JSON.stringify(cpMultipliers)};
         const strong = ${JSON.stringify(strong)};
         const weak = ${JSON.stringify(weak)};
         const immune = ${JSON.stringify(immune)};
@@ -18566,12 +18569,63 @@
       const rule = formChangeRule(combatant, "activate_charged", move);
       const target = combatant.formCatalog?.[formChangeTargetId(combatant, rule)];
       if (!target?.p) return combatant;
-      const cpm = Number(combatant.cpm || combatant.attack / Math.max(1, combatant.p.atk + combatant.ivAtk));
+      const stats = combatantStatsForForm(combatant, target.p);
       return {
         ...combatant,
         p: target.p,
-        attack: (target.p.atk + combatant.ivAtk) * cpm
+        attack: stats.attack,
+        defense: stats.defense
       };
+    }
+
+    function combatantStatsForForm(combatant, targetPokemon) {
+      const originalCpm = Number(combatant.cpm || combatant.attack / Math.max(1, combatant.p.atk + combatant.ivAtk));
+      let targetLevel = Number(combatant.level || 1);
+      const isDifferentFromInitialForm = combatant.initialFormId && combatant.initialFormId !== targetPokemon.id;
+
+      // Aegislash's in-battle formes use league-adjusted effective levels. The
+      // original level remains the Shield/Blade build level and HP is preserved.
+      if (isDifferentFromInitialForm && targetPokemon.id === "aegislash_blade") {
+        targetLevel = Math.ceil(targetLevel * 0.5) + 1;
+      } else if (isDifferentFromInitialForm && targetPokemon.id === "aegislash_shield") {
+        targetLevel = (targetLevel / 0.5) + 2;
+      } else {
+        return pokemonStatsAtLevel(
+          targetPokemon,
+          combatant.ivAtk,
+          combatant.ivDef,
+          combatant.ivHp,
+          targetLevel,
+          originalCpm
+        );
+      }
+
+      let stats = null;
+      while (targetLevel >= 1) {
+        const cpm = cpMultipliers.find(([level]) => Math.abs(level - targetLevel) < .001)?.[1];
+        if (!cpm) {
+          targetLevel -= 1;
+          continue;
+        }
+        stats = pokemonStatsAtLevel(
+          targetPokemon,
+          combatant.ivAtk,
+          combatant.ivDef,
+          combatant.ivHp,
+          targetLevel,
+          cpm
+        );
+        if (stats.cp <= 1500) return stats;
+        targetLevel -= 1;
+      }
+      return stats || pokemonStatsAtLevel(
+        targetPokemon,
+        combatant.ivAtk,
+        combatant.ivDef,
+        combatant.ivHp,
+        combatant.level,
+        originalCpm
+      );
     }
 
     function matrixCombatantSignature(combatant) {
@@ -18639,15 +18693,12 @@
       const target = combatant?.formCatalog?.[targetId];
       if (!combatant || !target || combatant.p.id === targetId) return null;
       const previous = combatant.p;
-      const damageTaken = Math.max(0, combatant.maxHp - combatant.hp);
-      const cpm = Number(combatant.cpm || combatant.attack / Math.max(1, previous.atk + combatant.ivAtk));
+      const stats = combatantStatsForForm(combatant, target.p);
       combatant.p = JSON.parse(JSON.stringify(target.p));
       combatant.fast = equivalentFormMove(combatant.fast, target.fastMoves) || target.fastMoves[0] || combatant.fast;
       combatant.charged = combatant.charged.map(move => equivalentFormMove(move, target.chargedMoves));
-      combatant.attack = (combatant.p.atk + combatant.ivAtk) * cpm;
-      combatant.defense = (combatant.p.def + combatant.ivDef) * cpm;
-      combatant.maxHp = Math.max(10, Math.floor((combatant.p.hp + combatant.ivHp) * cpm));
-      combatant.hp = Math.max(0, combatant.maxHp - damageTaken);
+      combatant.attack = stats.attack;
+      combatant.defense = stats.defense;
       combatant.shadowAtkMult = combatant.p.id.includes("_shadow") ? shadowAtkMultiplier : 1;
       combatant.shadowDefMult = combatant.p.id.includes("_shadow") ? shadowDefMultiplier : 1;
       return {

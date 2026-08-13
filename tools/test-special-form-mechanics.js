@@ -63,9 +63,11 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   const config = battleConfig("aegislash_shield", "snorlax");
   setSingleCharged(config.left, "SHADOW_BALL");
   config.left.energy = config.startEnergyA = 100;
+  const shieldMaxHp = config.left.maxHp;
   const result = simulate(config, 0, 0, "aegislash-charged-stance");
   assert.equal(result.decisionTrace.finalState.A.pokemonId, "aegislash_blade");
-  assert.ok(result.decisionTrace.decisions[0].chosenCandidate.immediateDamage > 20);
+  assert.equal(result.decisionTrace.decisions[0].chosenCandidate.immediateDamage, 52);
+  assert.equal(result.decisionTrace.finalState.A.maxHp, shieldMaxHp);
 }
 
 {
