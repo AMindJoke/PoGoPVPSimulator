@@ -48,6 +48,7 @@
     "test:quagsire-corsola-default": "node tools/test-quagsire-corsola-default-pvpoke.js",
     "test:feraligatr-cradily": "node tools/test-feraligatr-cradily-rock-tomb.js",
     "test:tinkaton-shadow-dusclops": "node tools/test-tinkaton-shadow-dusclops-line.js",
+    "test:lickilicky-shadow-froslass": "node tools/test-lickilicky-shadow-froslass-line.js",
     "test:battle-principles": "node tools/test-battle-principles-registry.js",
     "test:principle-trace": "node tools/test-principle-trace-contract.js",
     "test:principle-engine-complete-migration": "node tools/test-principle-engine-complete-migration.js",

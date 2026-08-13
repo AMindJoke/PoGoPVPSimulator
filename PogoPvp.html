@@ -14256,6 +14256,7 @@
         principleDamageAtStages,
         principleSurvivalProjection,
         compactRouteSurvivalProjection,
+        interruptedTimingRisksDominantChargedRoute,
         selectBattleIntelligenceAction,
         recordBattleIntelligenceDecision,
         recordBattleIntelligenceTimingDecision,
@@ -22706,6 +22707,7 @@
       attacker.timingPlanMoveId = null;
       attacker.timingPlanFastMovesRemaining = 0;
       attacker.timingContinuationCount = 0;
+      attacker.timingContinuationLastFastStart = null;
       const formChanges = [];
       const chargedActivationChange = applyFormChange(attacker, "activate_charged", move);
       if (chargedActivationChange) formChanges.push(chargedActivationChange);
@@ -24408,6 +24410,33 @@
       return { turnsToFaint: turn || Infinity, damageTaken, opponentChargedCount: chargedCount };
     }
 
+    function interruptedTimingRisksDominantChargedRoute(attacker, defender) {
+      if (Number(attacker?.timingContinuationCount || 0) <= 0) return false;
+      if (attacker?.timingContinuationLastFastStart == null) return false;
+      const interrupted = (timeline || []).some(event =>
+        event?.kind === "charge"
+        && event.trainer === defender?.trainer
+        && Number(event.start || 0) > Number(attacker.timingContinuationLastFastStart || 0)
+      );
+      if (!interrupted) return false;
+      const affordable = validChargedMoves(attacker)
+        .filter(move => Number(attacker.energy || 0) >= Number(move.energyCost || 0))
+        .map(move => ({ move, damage: estimate(attacker, defender, move) }))
+        .sort((a, b) => b.damage - a.damage || Number(a.move.energyCost || 0) - Number(b.move.energyCost || 0));
+      if (affordable.length < 2) return false;
+      const strongestRoute = affordable[0];
+      const weakestRoute = affordable[affordable.length - 1];
+      const strongest = strongestRoute.damage;
+      const weakest = weakestRoute.damage;
+      // Re-plan immediately when an opposing Charged Move interrupts a timing
+      // continuation and one ready route is materially stronger than the bait.
+      // Otherwise the old micro-plan can keep farming and later fall back to a
+      // resisted cheap move even though the straight closing line was ready.
+      return Number(strongestRoute.move.energyCost || 0) > Number(weakestRoute.move.energyCost || 0)
+        && strongest >= weakest + 10
+        && strongest >= weakest * 1.5;
+    }
+
     function selectBattleIntelligenceAction(attacker, defender, legalActions) {
       const api = typeof PvPeakBattleIntelligence !== "undefined"
         ? PvPeakBattleIntelligence
@@ -24430,7 +24459,7 @@
         plannerMode: "CANONICAL",
         context: {
           callerContext: battleIntelligenceCallerContext(),
-          chargedTimingOptimization: true,
+          chargedTimingOptimization: !interruptedTimingRisksDominantChargedRoute(attacker, defender),
           canonicalOpponentLethalBeforeNextWindow: opponentPressureForcesThrow(attacker, defender),
           estimateFastDamage(side) {
             return side === "opponent"
@@ -25004,6 +25033,7 @@
           options: { source: "battle-intelligence" },
           beforeExecute() {
             if (isPrincipleTimingSelection(intelligenceSelection)) {
+              attacker.timingContinuationLastFastStart = Number(battleTurns[attacker.trainer] || 0);
               attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
               attacker.timingPlanFastMovesRemaining = 0;
               attacker.timingPlanMoveId = null;
