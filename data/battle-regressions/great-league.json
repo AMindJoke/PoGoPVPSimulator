@@ -127,12 +127,9 @@
       "policy": { "baiting": "selective", "shieldMode": "always" },
       "expectations": {
         "selectedMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "AURA_SPHERE" },
-        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "WILD_CHARGE" },
-        "requiredReasonCodes": ["AVOID_EARLY_SELF_DEBUFF"],
-        "requiredPatternIds": ["delay-self-debuff"],
-        "minimumPatternConfidence": { "delay-self-debuff": "high" }
+        "forbiddenMoveAtDecision": { "side": "A", "occurrence": 0, "moveId": "WILD_CHARGE" }
       },
-      "notes": "The fixture checks sequencing, not a hardcoded winner."
+      "notes": "The fixture checks the selected sequence, not a hardcoded winner or an over-specific causal label when Aura Sphere also has the best immediate damage."
     },
     {
       "id": "swampert-abomasnow-equal-cost-dominance-1s",
@@ -197,7 +194,7 @@
     },
     {
       "id": "shadow-quagsire-galarian-corsola-default-0s",
-      "description": "Shadow Quagsire should throw Mud Bomb when the current charged sequence wins the default-IV no-shield matchup.",
+      "description": "Shadow Quagsire should preserve the winning default-IV no-shield charged sequence.",
       "category": ["charged-move-choice", "timing", "energy-management"],
       "league": "great",
       "pokemonA": { "id": "quagsire_shadow", "moves": { "fast": "MUD_SHOT", "charged": ["AQUA_TAIL", "MUD_BOMB"] }, "ivPreset": "default", "hp": "full", "energy": 0, "shields": 0 },
@@ -205,9 +202,9 @@
       "policy": { "baiting": "selective", "shieldMode": "always" },
       "expectations": {
         "winner": "A",
-        "chargedMoveSequence": { "side": "A", "moves": ["MUD_BOMB", "AQUA_TAIL", "AQUA_TAIL"] }
+        "chargedMoveSequence": { "side": "A", "moves": ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"] }
       },
-      "notes": "Regression for local timing pressure overriding a later full charged-sequence win."
+      "notes": "Matches the dedicated default-IV regression: Aqua Tail is the only affordable Charged Move at the first action window, followed by Mud Bomb and Aqua Tail."
     },
     {
       "id": "shadow-sableye-mirror-simultaneous-fast-ko-0s",
