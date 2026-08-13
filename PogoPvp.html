@@ -1074,24 +1074,25 @@
     .team-coverage-table tr:last-child td, .team-coverage-table tr:last-child th { border-bottom: 0; }
     .team-coverage-table th:last-child, .team-coverage-table td:last-child { border-right: 0; }
     .team-coverage-table thead { position: sticky; top: 0; z-index: 30; isolation: isolate; background: var(--subtle, var(--soft)); }
-    .team-coverage-table thead th { position: sticky; top: 0; z-index: 31; height: 58px; background: var(--subtle, var(--soft)); box-shadow: 0 1px 0 var(--line); }
-    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 32; width: 205px; text-align: left; }
+    .team-coverage-table thead th { position: sticky; top: 0; z-index: 31; height: 70px; background: var(--subtle, var(--soft)); box-shadow: 0 1px 0 var(--line); }
+    .team-coverage-table .team-coverage-opponent-head { left: 0; z-index: 32; width: 225px; text-align: left; }
     .team-coverage-table tbody { position: relative; z-index: 0; }
-    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 2; width: 205px; background: var(--panel); text-align: left; }
+    .team-coverage-table tbody th { position: sticky; left: 0; z-index: 2; width: 225px; background: var(--panel); text-align: left; }
     .team-coverage-table tbody td { position: relative; z-index: 0; }
     .team-coverage-pokemon-head { display: grid; justify-items: center; gap: 1px; min-width: 0; text-align: center; }
-    .team-coverage-opponent { display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 7px; min-width: 0; }
+    .team-coverage-opponent { display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-width: 0; }
     .team-coverage-opponent-sprite { position: relative; display: grid; place-items: center; }
-    .team-coverage-pokemon-head img { width: 31px; height: 31px; object-fit: contain; }
-    .team-coverage-opponent img { width: 36px; height: 36px; object-fit: contain; }
+    .team-coverage-pokemon-head img { width: 40px; height: 40px; object-fit: contain; }
+    .team-coverage-opponent img { width: 48px; height: 48px; object-fit: contain; }
     .team-coverage-pokemon-head img.shadow-pokemon, .team-coverage-opponent img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
     .team-coverage-pokemon-head span, .team-coverage-opponent span { overflow: hidden; font-size: 8px; font-weight: 900; text-overflow: ellipsis; }
     .team-coverage-pokemon-head span { display: block; max-width: 100%; line-height: 1.1; overflow-wrap: normal; text-overflow: clip; white-space: nowrap; word-break: normal; }
     .team-coverage-form-badge { padding: 1px 5px; border-radius: 999px; background: rgba(126,61,174,.13); color: #7741a0; font-size: 6px; font-weight: 900; letter-spacing: .03em; line-height: 1.25; text-transform: uppercase; }
     .team-coverage-opponent span { white-space: nowrap; }
     .team-coverage-rank { position: absolute; top: -3px; left: -3px; display: grid; min-width: 15px; height: 15px; padding: 0 3px; place-items: center; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--muted); font-size: 6px; font-weight: 900; }
-    .team-coverage-opponent-copy { display: grid; gap: 2px; min-width: 0; }.team-coverage-opponent-copy strong, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy strong { font-size: 8.5px; font-weight: 900; }.team-coverage-opponent-copy small { color: var(--muted); font-size: 6.5px; font-weight: 750; }
-    .team-matchup-cell { position: relative; z-index: 0; display: grid; place-items: center; width: 100%; min-height: 25px; padding: 1px 3px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 6px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.36); }
+    .team-coverage-opponent-copy { display: grid; gap: 3px; min-width: 0; }.team-coverage-opponent-copy strong, .team-coverage-opponent-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.team-coverage-opponent-copy strong { font-size: 10px; font-weight: 900; }.team-coverage-opponent-copy small { color: var(--muted); font-size: 7.5px; font-weight: 750; }
+    .team-coverage-answer-count { min-width: 35px; color: var(--ink); font-size: 9px; font-weight: 950; text-align: right; white-space: nowrap; }
+    .team-matchup-cell { position: relative; z-index: 0; display: grid; place-items: center; width: 100%; min-height: 32px; padding: 2px 3px; border: 1px solid var(--result-border-color, var(--result-color)); border-radius: 6px; background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.36); }
     .team-matchup-cell:hover, .team-matchup-cell:focus-visible { border-color: var(--result-color); background: var(--result-surface, var(--panel)); color: var(--result-text, var(--ink)); box-shadow: inset 0 1px rgba(255,255,255,.5), 0 2px 8px color-mix(in srgb, var(--result-color) 16%, transparent); transform: translateY(-1px); }
     .team-matchup-cell strong { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; }
     .team-matchup-cell .team-matchup-mark { width: 19px; height: 17px; background: transparent; color: var(--result-color) !important; font-size: 11px; box-shadow: none; opacity: 1; }
@@ -1101,6 +1102,11 @@
     .team-coverage-table tr.is-row-focus > th, .team-coverage-table tr.is-row-focus > td { background: color-mix(in srgb, var(--accent) 4%, var(--panel)); }
     .team-coverage-table th.is-column-focus, .team-coverage-table td.is-column-focus { background: color-mix(in srgb, var(--accent) 6%, var(--panel)); }
     .team-coverage-table td.is-column-focus .team-matchup-cell { box-shadow: inset 0 1px rgba(255,255,255,.36), 0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent); }
+    .team-answer-divider td { position: relative; z-index: 1; height: 18px; padding: 0 8px; border-bottom: 0; background: var(--panel); }
+    .team-answer-divider span { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 7px; font-weight: 900; letter-spacing: .055em; line-height: 18px; white-space: nowrap; }
+    .team-answer-divider span::before, .team-answer-divider span::after { height: 1px; flex: 1; background: color-mix(in srgb, var(--line) 82%, transparent); content: ""; }
+    .team-mobile-answer-group { display: flex; align-items: center; gap: 6px; margin-top: 3px; color: var(--muted); font-size: 7px; font-style: normal; font-weight: 900; letter-spacing: .04em; white-space: nowrap; }
+    .team-mobile-answer-group::before, .team-mobile-answer-group::after { height: 1px; flex: 1; background: var(--line); content: ""; }
     .team-matchup-mark { display: inline-grid; flex: none; width: 34px; height: 19px; place-items: center; border-radius: 999px; background: var(--result-mark, var(--result-color)); color: rgba(255,255,255,.76); font-size: 9px; font-style: normal; font-weight: 950; line-height: 1; box-shadow: inset 0 1px rgba(255,255,255,.2); }
     .team-matchup-mark.is-slight { color: rgba(255,255,255,.46); }
     .team-matchup-mark.is-dominant { color: #fff; text-shadow: 0 0 1px rgba(255,255,255,.35); }
@@ -13020,7 +13026,7 @@
           <details class="team-meta-roster"><summary>Current meta roster <span id="teamBuilderMetaCount">Loading…</span></summary><div id="teamBuilderMetaList" class="team-meta-list"></div></details>
           <div id="teamBuilderMetaStatus" class="team-meta-status" role="status" aria-live="polite"></div>
           <div class="team-analysis-engine">
-            <div class="team-analysis-progress"><div class="team-analysis-progress-copy"><span id="teamBuilderAnalysisStatus">Complete all six team slots to prepare analysis.</span><span id="teamBuilderAnalysisCount">0 / 0</span></div><div id="teamBuilderAnalysisProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Team matchup analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div>
+            <div class="team-analysis-progress"><div class="team-analysis-progress-copy"><span id="teamBuilderAnalysisStatus">Add at least one Pokémon to prepare coverage.</span><span id="teamBuilderAnalysisCount">0 / 0</span></div><div id="teamBuilderAnalysisProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Team matchup analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div>
             <div class="team-analysis-actions"><button id="teamBuilderAnalyze" type="button">Prepare matchups</button><button id="teamBuilderAnalysisCancel" class="secondary" type="button" hidden>Cancel</button></div>
           </div>
         </section>
@@ -15035,26 +15041,27 @@
     }
 
     function renderTeamBuilderAnalysisProgress() {
-      const completeTeam = teamBuilderState?.team?.filter(Boolean).length === window.PvPeakTeamBuilder?.TEAM_SIZE;
+      const selectedCount = teamBuilderState?.team?.filter(Boolean).length || 0;
+      const hasTeam = selectedCount > 0;
       const coveragePlan = teamBuilderCombinedCoveragePlan();
       const total = coveragePlan.length;
       const cached = coveragePlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache?.has(job.key)), 0);
       const done = teamBuilderAnalysisActive ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
       const status = $("teamBuilderAnalysisStatus");
-      if (!completeTeam) status.textContent = "Complete all six team slots to prepare analysis.";
+      if (!hasTeam) status.textContent = "Add at least one Pokémon to prepare coverage.";
       else if (!teamBuilderMetaDefinition) status.textContent = "Waiting for the selected meta definition.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "replacement") status.textContent = "Replacement analysis is running below.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "comparison") status.textContent = "Team comparison is running below.";
       else if (teamBuilderAnalysisActive) status.textContent = `Running canonical battle simulations${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
-      else if (total && cached === total) status.textContent = `All ${total} deterministic matchups are ready from cache.`;
+      else if (total && cached === total) status.textContent = `All ${total} deterministic matchups are ready from cache${selectedCount < window.PvPeakTeamBuilder.TEAM_SIZE ? ` for ${selectedCount}/6 team members` : ""}.`;
       else status.textContent = `${cached} cached · ${Math.max(0, total - cached)} matchups to prepare.`;
       $("teamBuilderAnalysisCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderAnalysisProgress");
       bar.style.setProperty("--analysis-progress", `${progress}%`);
       bar.setAttribute("aria-valuemax", String(total));
       bar.setAttribute("aria-valuenow", String(done));
-      $("teamBuilderAnalyze").disabled = !completeTeam || !total || teamBuilderAnalysisActive || cached === total;
+      $("teamBuilderAnalyze").disabled = !hasTeam || !total || teamBuilderAnalysisActive || cached === total;
       $("teamBuilderAnalyze").textContent = cached ? "Prepare remaining" : "Prepare matchups";
       $("teamBuilderAnalysisCancel").hidden = !teamBuilderAnalysisActive || teamBuilderAnalysisContext !== "coverage";
     }
@@ -15062,7 +15069,7 @@
     function startTeamBuilderAnalysis() {
       refreshTeamBuilderAnalysisPlan();
       const coveragePlan = teamBuilderCombinedCoveragePlan();
-      if (teamBuilderState.team.filter(Boolean).length !== window.PvPeakTeamBuilder.TEAM_SIZE || !coveragePlan.length || teamBuilderAnalysisActive) return;
+      if (!teamBuilderState.team.filter(Boolean).length || !coveragePlan.length || teamBuilderAnalysisActive) return;
       teamBuilderAnalysisContext = "coverage";
       teamBuilderAnalysisRunToken++;
       teamBuilderAnalysisQueue = coveragePlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
@@ -15364,6 +15371,10 @@
       return teamBuilderThreatShowAll ? filtered : filtered.slice(0, 20);
     }
 
+    function teamBuilderAnswerGroupLabel(answerCount) {
+      return `${answerCount} ${answerCount === 1 ? "ANSWER" : "ANSWERS"}`;
+    }
+
     function renderTeamBuilderThreatView() {
       const filtered = teamBuilderThreatFilteredGroups();
       const visible = teamBuilderThreatVisibleGroups();
@@ -15390,23 +15401,32 @@
       const spritePrefix = options.spritePrefix || "meta";
       const opponentHeader = options.opponentHeader || "Meta opponent";
       const team = teamBuilderState.team;
-      const header = team.map((member, slot) => {
+      const teamEntries = team.map((member, slot) => member ? { member, slot } : null).filter(Boolean);
+      const header = teamEntries.map(({ member, slot }) => {
         const pokemon = member && findPokemon(member.pokemonId);
         const fullName = pokemon?.name || `Slot ${slot + 1}`;
         const shadow = /\s*\(Shadow\)$/i.test(fullName);
         const displayName = shadow ? fullName.replace(/\s*\(Shadow\)$/i, "") : fullName;
-        return `<th scope="col"><div class="team-coverage-pokemon-head"><img data-team-coverage-${spritePrefix}-header-sprite="${slot}" alt=""><span title="${escapeHtml(fullName)}">${escapeHtml(displayName)}</span>${shadow ? `<b class="team-coverage-form-badge">Shadow</b>` : ""}</div></th>`;
+        return `<th scope="col" data-team-coverage-column-head="${slot}"><div class="team-coverage-pokemon-head"><img data-team-coverage-${spritePrefix}-header-sprite="${slot}" alt=""><span title="${escapeHtml(fullName)}">${escapeHtml(displayName)}</span>${shadow ? `<b class="team-coverage-form-badge">Shadow</b>` : ""}</div></th>`;
       }).join("");
+      let previousAnswerCount = null;
       const rows = groups.map((group, row) => {
         const opponent = findPokemon(group.opponentId);
         const summary = options.showThreatSummary ? group.threatSummary : null;
-        const detail = summary ? `${summary.answerCount} answers · avg ${summary.averageScore}` : options.showThreatSummary ? "Preparing…" : "";
+        const detail = summary ? `Average ${summary.averageScore}` : options.showThreatSummary ? "Preparing…" : "";
         const rank = options.showThreatSummary ? teamBuilderThreatGroups.findIndex(item => item.opponentId === group.opponentId) + 1 : row + 1;
-        return `<tr><th scope="row"><div class="team-coverage-opponent"><span class="team-coverage-opponent-sprite"><b class="team-coverage-rank">${rank}</b><img data-team-coverage-${spritePrefix}-opponent-sprite="${row}" alt=""></span><span class="team-coverage-opponent-copy" title="${escapeHtml(`${opponent?.name || group.opponentId}${detail ? ` · ${detail}` : ""}`)}"><strong>${escapeHtml(opponent?.name || group.opponentId)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</span></div></th>${group.cells.map((result, slot) => `<td data-team-coverage-column="${slot}">${teamBuilderCoverageCell(result, slot, group.opponentId)}</td>`).join("")}</tr>`;
+        const answerCount = summary?.answerCount ?? 0;
+        const divider = options.showThreatSummary && answerCount !== previousAnswerCount
+          ? `<tr class="team-answer-divider" aria-label="${escapeHtml(teamBuilderAnswerGroupLabel(answerCount))}"><td colspan="${teamEntries.length + 1}"><span>${escapeHtml(teamBuilderAnswerGroupLabel(answerCount))}</span></td></tr>`
+          : "";
+        if (options.showThreatSummary) previousAnswerCount = answerCount;
+        const answerText = summary ? `${summary.answerCount}/${summary.teamSize}` : "—";
+        const cells = teamEntries.map(({ slot }) => `<td data-team-coverage-column="${slot}">${teamBuilderCoverageCell(group.cells[slot], slot, group.opponentId)}</td>`).join("");
+        return `${divider}<tr><th scope="row"><div class="team-coverage-opponent"><span class="team-coverage-opponent-sprite"><b class="team-coverage-rank">${rank}</b><img data-team-coverage-${spritePrefix}-opponent-sprite="${row}" alt=""></span><span class="team-coverage-opponent-copy" title="${escapeHtml(`${opponent?.name || group.opponentId}${detail ? ` · ${detail}` : ""}`)}"><strong>${escapeHtml(opponent?.name || group.opponentId)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</span>${options.showThreatSummary ? `<b class="team-coverage-answer-count" aria-label="${answerText} answers">${answerText}</b>` : ""}</div></th>${cells}</tr>`;
       }).join("");
       const box = $(boxId);
       box.innerHTML = `<table class="team-coverage-table"><thead><tr><th class="team-coverage-opponent-head" scope="col">${escapeHtml(opponentHeader)}</th>${header}</tr></thead><tbody>${rows}</tbody></table>`;
-      team.forEach((member, slot) => {
+      teamEntries.forEach(({ member, slot }) => {
         const pokemon = member && findPokemon(member.pokemonId);
         const image = box.querySelector(`[data-team-coverage-${spritePrefix}-header-sprite="${slot}"]`);
         if (pokemon && image) setPokemonImage(image, pokemon);
@@ -15427,7 +15447,7 @@
         const slot = Number(cell.dataset.teamMatchupSlot);
         cell.closest("tr")?.classList.add("is-row-focus");
         box.querySelectorAll(`[data-team-coverage-column="${slot}"]`).forEach(item => item.classList.add("is-column-focus"));
-        box.querySelector(`thead th:nth-child(${slot + 2})`)?.classList.add("is-column-focus");
+        box.querySelector(`[data-team-coverage-column-head="${slot}"]`)?.classList.add("is-column-focus");
       };
       box.onpointerout = event => {
         if (event.relatedTarget?.closest?.(".team-matchup-cell") === event.target.closest(".team-matchup-cell")) return;
@@ -15450,10 +15470,12 @@
       const opponentId = threatMode ? "teamBuilderThreatMobileOpponent" : "teamBuilderMobileOpponent";
       const spriteId = threatMode ? "teamBuilderThreatMobileOpponentSprite" : "teamBuilderMobileOpponentSprite";
       const boxId = threatMode ? "teamBuilderThreatMobileMatchups" : "teamBuilderMobileMatchups";
-      $(opponentId).innerHTML = `<img id="${spriteId}" alt=""><span><strong>${escapeHtml(opponent?.name || group.opponentId)}</strong><small>${index + 1} of ${resolvedGroups.length} ${threatMode ? "ranked threats" : "meta opponents"}</small></span>`;
+      const summary = threatMode ? group.threatSummary : null;
+      $(opponentId).innerHTML = `<img id="${spriteId}" alt=""><span><strong>${escapeHtml(opponent?.name || group.opponentId)}</strong><small>${summary ? `${summary.answerCount}/${summary.teamSize} answers · ` : ""}${index + 1} of ${resolvedGroups.length} ${threatMode ? "ranked threats" : "meta opponents"}</small>${summary ? `<em class="team-mobile-answer-group">${escapeHtml(teamBuilderAnswerGroupLabel(summary.answerCount))}</em>` : ""}</span>`;
       if (opponent) setPokemonImage($(spriteId), opponent);
       const box = $(boxId);
-      box.innerHTML = group.cells.map((result, slot) => teamBuilderCoverageCell(result, slot, group.opponentId, true)).join("");
+      const activeEntries = teamBuilderState.team.map((member, slot) => member ? { member, slot } : null).filter(Boolean);
+      box.innerHTML = activeEntries.map(({ slot }) => teamBuilderCoverageCell(group.cells[slot], slot, group.opponentId, true)).join("");
       teamBuilderState.team.forEach((member, slot) => {
         const pokemon = member && findPokemon(member.pokemonId);
         const image = box.querySelector(`[data-team-mobile-slot-sprite="${slot}"]`);
@@ -15488,7 +15510,8 @@
       const section = $("teamBuilderInsights");
       section.classList.toggle("is-visible", insights.completedOpponents > 0);
       if (!insights.completedOpponents) return;
-      $("teamBuilderInsightsSubtitle").textContent = `${insights.completedOpponents} of ${groups.length} opponents have complete six-Pokémon results.`;
+      const activeTeamSize = teamBuilderState.team.filter(Boolean).length;
+      $("teamBuilderInsightsSubtitle").textContent = `${insights.completedOpponents} of ${groups.length} opponents have complete ${activeTeamSize}-Pokémon team results.`;
       $("teamBuilderInsightsSummary").innerHTML = `<span>${insights.noAnswerCount} without a strong answer</span><span>${insights.completedOpponents} opponents analyzed</span>`;
       const threats = insights.threats.slice(0, 5);
       const covered = insights.bestCovered.slice(0, 5);

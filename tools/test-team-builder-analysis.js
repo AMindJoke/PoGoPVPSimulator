@@ -60,6 +60,7 @@ assert.deepEqual(Analysis.resultPresentation({ score: 249 }), { tone: "unfavorab
 const grouped = Analysis.groupResults(plan, restored);
 assert.equal(grouped.length, 2, "Coverage results must group by unique meta opponent.");
 assert.equal(grouped[0].cells.length, 6, "Every opponent row must preserve all six team slots.");
+assert.deepEqual(grouped[0].activeSlots, [0, 1], "Coverage groups must identify populated slots so incomplete teams can be summarized safely.");
 assert.deepEqual(grouped[0].cells[0], normalized);
 
 const scoreGroup = (opponentId, scores) => ({ opponentId, cells: scores.map(score => score == null ? null : ({ score })) });
@@ -89,6 +90,20 @@ const rankedThreatGroups = Analysis.rankThreatGroups([
 ]);
 assert.deepEqual(rankedThreatGroups.map(group => group.opponentId), ["dangerous", "mixed", "comfortable", "pending"], "Threat coverage must put the most troublesome complete opponent first and partial rows last.");
 assert.equal(rankedThreatGroups[0].threatSummary.answerCount, 0);
+const activeScoreGroup = (opponentId, scores, activeSlots) => ({ opponentId, cells: scores.map(score => score == null ? null : ({ score })), activeSlots });
+const incompleteFour = Analysis.summarizeOpponent(activeScoreGroup("four", [700, 300, 650, 450, null, null], [0, 1, 2, 3]));
+const incompleteFive = Analysis.summarizeOpponent(activeScoreGroup("five", [700, 300, 650, 450, 620, null], [0, 1, 2, 3, 4]));
+const completeSix = Analysis.summarizeOpponent(activeScoreGroup("six", [700, 300, 650, 450, 620, 610], [0, 1, 2, 3, 4, 5]));
+assert.deepEqual({ answers: incompleteFour.answerCount, size: incompleteFour.teamSize }, { answers: 2, size: 4 }, "Four-member teams must expose answers against the populated denominator.");
+assert.deepEqual({ answers: incompleteFive.answerCount, size: incompleteFive.teamSize }, { answers: 3, size: 5 }, "Five-member teams must expose answers against the populated denominator.");
+assert.deepEqual({ answers: completeSix.answerCount, size: completeSix.teamSize }, { answers: 4, size: 6 }, "Full teams must preserve six-member answer summaries.");
+assert.equal(Analysis.summarizeOpponent(activeScoreGroup("active-pending", [700, null, 650, null, null, null], [0, 1, 2])), null, "A missing result for a populated slot must remain pending rather than becoming an incomplete-team summary.");
+const answerFirstGroups = Analysis.rankThreatGroups([
+  activeScoreGroup("one-less-severe", [700, 520, 500, 480, 450, null], [0, 1, 2, 3, 4]),
+  activeScoreGroup("two-more-severe", [610, 600, 200, 200, 200, null], [0, 1, 2, 3, 4]),
+  activeScoreGroup("one-more-severe", [620, 250, 300, 350, 410, null], [0, 1, 2, 3, 4])
+]);
+assert.deepEqual(answerFirstGroups.map(group => group.opponentId), ["one-more-severe", "one-less-severe", "two-more-severe"], "Threats must sort by answer count first and by severity within the same answer-count group.");
 
 const coreInsights = Analysis.analyzeCores([
   scoreGroup("shared-a", [250, 300, 700, 650, 500, 450]),

@@ -133,21 +133,26 @@
 
   function groupResults(plan, cache) {
     const groups = new Map();
+    const activeSlots = [...new Set((plan || []).map(job => job.slot).filter(Number.isInteger))].sort((a, b) => a - b);
     plan.forEach(job => {
       if (!groups.has(job.opponentId)) groups.set(job.opponentId, { opponentId: job.opponentId, cells: Array(6).fill(null) });
       groups.get(job.opponentId).cells[job.slot] = cache?.get(job.key) || null;
     });
-    return [...groups.values()].map(group => Object.freeze({ opponentId: group.opponentId, cells: Object.freeze(group.cells) }));
+    return [...groups.values()].map(group => Object.freeze({ opponentId: group.opponentId, cells: Object.freeze(group.cells), activeSlots: Object.freeze([...activeSlots]) }));
   }
 
   function summarizeOpponent(group) {
     const cells = Array.isArray(group?.cells) ? group.cells : [];
-    if (!cells.length || cells.some(result => !result)) return null;
-    const scores = cells.map(result => Math.max(0, Math.min(1000, Number(result.score ?? 500))));
+    const activeSlots = Array.isArray(group?.activeSlots) ? group.activeSlots : cells.map((_, slot) => slot);
+    if (!activeSlots.length || activeSlots.some(slot => !cells[slot])) return null;
+    const completed = activeSlots.map(slot => Object.freeze({ result: cells[slot], slot }));
+    if (!completed.length) return null;
+    const scores = completed.map(item => Math.max(0, Math.min(1000, Number(item.result.score ?? 500))));
     const answerSlots = [];
     const closeSlots = [];
     const hardLossSlots = [];
-    scores.forEach((score, slot) => {
+    scores.forEach((score, index) => {
+      const slot = completed[index].slot;
       if (score >= 600) answerSlots.push(slot);
       else if (score <= 400) hardLossSlots.push(slot);
       else closeSlots.push(slot);
@@ -197,8 +202,8 @@
       if (a.summary && !b.summary) return -1;
       if (!a.summary && b.summary) return 1;
       if (!a.summary && !b.summary) return a.index - b.index;
-      return b.summary.severity - a.summary.severity
-        || a.summary.answerCount - b.summary.answerCount
+      return a.summary.answerCount - b.summary.answerCount
+        || b.summary.severity - a.summary.severity
         || a.summary.bestScore - b.summary.bestScore
         || a.summary.averageScore - b.summary.averageScore
         || a.group.opponentId.localeCompare(b.group.opponentId);
