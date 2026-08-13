@@ -25,6 +25,7 @@
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/team-builder/team-builder-analysis.js"></script>
   <script src="src/team-builder/team-builder-share.js"></script>
+  <script src="src/team-builder/team-builder-battle-link.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -14033,8 +14034,11 @@
       resetBattleStateFromSetup();
       renderMetaRankings();
       updateBattleAvailability();
-      void loadSharedScenarioFromLocation();
-      void loadSharedTeamFromLocation();
+      const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
+      if (!directTeamBuilderBattle) {
+        void loadSharedScenarioFromLocation();
+        void loadSharedTeamFromLocation();
+      }
       if (pagePerfRunId) {
         requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
           pokemon: allPokemon.length,
@@ -15348,8 +15352,9 @@
       const category = teamBuilderResultCategory(visual);
       const accessible = `${pokemon?.name || `Team slot ${slot + 1}`} versus ${findPokemon(opponentId)?.name || opponentId}: ${category}, battle rating ${result.score}`;
       const mark = teamBuilderResultMarkHtml(visual);
-      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(accessible)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
-      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score}`)}" aria-label="${escapeHtml(accessible)}"><strong>${mark}</strong></button>`;
+      const launchLabel = `${accessible}. Opens Battle simulation in a new tab.`;
+      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(launchLabel)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
+      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score} · Open Battle ↗`)}" aria-label="${escapeHtml(launchLabel)}"><strong>${mark}</strong></button>`;
     }
 
     function teamBuilderThreatFilteredGroups() {
@@ -15940,24 +15945,86 @@
       });
     }
 
-    function openTeamBuilderMatchup(slot, opponentId, trigger) {
+    function teamBuilderBattleLaunchSide(combatant, shields) {
+      return {
+        pokemonId: combatant.p.id,
+        fastMoveId: combatant.fast.id,
+        chargedMoveIds: combatant.charged.filter(Boolean).map(move => move.id),
+        ivAtk: combatant.ivAtk,
+        ivDef: combatant.ivDef,
+        ivHp: combatant.ivHp,
+        shields,
+        baiting: combatant.baiting,
+        shieldMode: combatant.shieldMode,
+        startEnergy: combatant.energy || 0
+      };
+    }
+
+    function teamBuilderBattleLaunchPayload(job) {
+      const api = window.PvPeakTeamBuilderBattleLink;
+      const config = createTeamBuilderBattleConfig(job);
+      if (!api || !config?.left || !config?.right) return null;
+      const [leftShields, rightShields] = String(job.shields || "1-1").split("-").map(Number);
+      return api.normalizePayload({
+        version: api.VERSION,
+        left: teamBuilderBattleLaunchSide(config.left, leftShields),
+        right: teamBuilderBattleLaunchSide(config.right, rightShields)
+      });
+    }
+
+    function openTeamBuilderMatchup(slot, opponentId) {
       const job = [...teamBuilderThreatAnalysisPlan, ...teamBuilderAnalysisPlan].find(candidate => candidate.slot === slot && candidate.opponentId === opponentId);
       const result = job && teamBuilderAnalysisCache.get(job.key);
-      const member = teamBuilderState.team[slot];
-      const teamPokemon = member && findPokemon(member.pokemonId);
-      const opponent = findPokemon(opponentId);
-      if (!result || !teamPokemon || !opponent) return;
-      const opponentMoves = metaMovesForPokemon(opponent);
-      const label = window.PvPeakTeamBuilderAnalysis.resultLabel(result);
-      const winner = result.winner === "team" ? teamPokemon.name : result.winner === "meta" ? opponent.name : "Draw";
-      $("teamBuilderMatchupTitle").textContent = `${teamPokemon.name} vs ${opponent.name}`;
-      $("teamBuilderMatchupContent").innerHTML = `<div class="team-matchup-versus"><div class="team-matchup-side"><img id="teamBuilderMatchupTeamSprite" alt=""><strong>${escapeHtml(teamPokemon.name)}</strong></div><b>VS</b><div class="team-matchup-side"><img id="teamBuilderMatchupMetaSprite" alt=""><strong>${escapeHtml(opponent.name)}</strong></div></div><div class="team-matchup-result-summary"><div><span>Outcome</span><strong>${escapeHtml(label)}</strong></div><div><span>Battle rating</span><strong>${result.score}</strong></div><div><span>Winner</span><strong>${escapeHtml(winner)}</strong></div><div><span>Team HP left</span><strong>${Math.round(result.teamHpRatio * 100)}%</strong></div><div><span>Meta HP left</span><strong>${Math.round(result.metaHpRatio * 100)}%</strong></div><div><span>Shields</span><strong>${escapeHtml(result.shields)}</strong></div></div><div class="team-matchup-builds"><div><b>${escapeHtml(teamPokemon.name)} build</b><span>${escapeHtml(moveMap.get(member.fastMoveId)?.name || member.fastMoveId)}</span>${member.chargedMoveIds.map(id => `<span>${escapeHtml(moveMap.get(id)?.name || id)}</span>`).join("")}<span>${escapeHtml(teamBuilderBuildLabel(member.build))}</span></div><div><b>${escapeHtml(opponent.name)} meta build</b><span>${escapeHtml(opponentMoves.fast?.name || "—")}</span>${opponentMoves.charged.map(move => `<span>${escapeHtml(move.name)}</span>`).join("")}<span>Rank 1 meta profile</span></div></div>`;
-      setPokemonImage($("teamBuilderMatchupTeamSprite"), teamPokemon);
-      setPokemonImage($("teamBuilderMatchupMetaSprite"), opponent);
-      teamBuilderMatchupReturnFocus = trigger || document.activeElement;
-      $("teamBuilderMatchupModal").classList.add("open");
-      $("teamBuilderMatchupModal").setAttribute("aria-hidden", "false");
-      requestAnimationFrame(() => $("teamBuilderMatchupDone").focus());
+      const payload = job && result ? teamBuilderBattleLaunchPayload(job) : null;
+      if (!payload) return;
+      const url = window.PvPeakTeamBuilderBattleLink.createUrl(window.location.href, payload);
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function validTeamBuilderBattleSide(side) {
+      const pokemon = findPokemon(side?.pokemonId);
+      const charged = Array.isArray(side?.chargedMoveIds) ? side.chargedMoveIds : [];
+      const ivs = [side?.ivAtk, side?.ivDef, side?.ivHp];
+      return !!pokemon
+        && pokemon.fast.includes(side.fastMoveId)
+        && charged.length > 0
+        && charged.every(moveId => pokemon.charged.includes(moveId))
+        && ivs.every(value => Number.isInteger(value) && value >= 0 && value <= 15)
+        && Number.isInteger(side.shields) && side.shields >= 0 && side.shields <= 2
+        && ["off", "selective", "on"].includes(side.baiting)
+        && ["always", "smart", "no-first"].includes(side.shieldMode)
+        && Number.isInteger(side.startEnergy) && side.startEnergy >= 0 && side.startEnergy <= 100;
+    }
+
+    function applyTeamBuilderBattleSide(prefix, side) {
+      setPokemonSelection(prefix, side.pokemonId);
+      $(`${prefix}Fast`).value = side.fastMoveId;
+      $(`${prefix}Charged1`).value = side.chargedMoveIds[0] || "";
+      $(`${prefix}Charged2`).value = side.chargedMoveIds[1] || "";
+      colorMoveSelect(`${prefix}Fast`);
+      colorMoveSelect(`${prefix}Charged1`);
+      colorMoveSelect(`${prefix}Charged2`);
+      $(`${prefix}IvAtk`).value = side.ivAtk;
+      $(`${prefix}IvDef`).value = side.ivDef;
+      $(`${prefix}IvHp`).value = side.ivHp;
+      setIvProfileState(prefix, "custom");
+      setBaiting(prefix, side.baiting);
+      setShieldMode(prefix, side.shieldMode);
+      $(`${prefix}Shields`).value = String(side.shields);
+      renderShields(prefix);
+      setStartEnergy(prefix, side.startEnergy);
+      syncSelection(prefix);
+    }
+
+    function loadTeamBuilderBattleFromLocation() {
+      const payload = window.PvPeakTeamBuilderBattleLink?.readLocation?.(window.location);
+      if (!payload || !validTeamBuilderBattleSide(payload.left) || !validTeamBuilderBattleSide(payload.right)) return false;
+      setAppView("simulator");
+      applyTeamBuilderBattleSide("p1", payload.left);
+      applyTeamBuilderBattleSide("p2", payload.right);
+      resetBattleStateFromSetup();
+      runBattleToEnd({ runtimeContext: "matrix", scrollTarget: "timeline" });
+      return true;
     }
 
     function closeTeamBuilderMatchup() {
@@ -26564,9 +26631,15 @@
       battleDecisionTraceEnabled = true;
       battleDecisionCounterfactualsEnabled = false;
       beginBattleDecisionTrace({ source: "live-interactive" });
+      const previousRuntimeContext = battleIntelligenceRuntimeContext;
+      if (options.runtimeContext) battleIntelligenceRuntimeContext = options.runtimeContext;
       suppressRender = true;
-      runAutomaticBattleToEnd(1000);
-      suppressRender = false;
+      try {
+        runAutomaticBattleToEnd(1000);
+      } finally {
+        suppressRender = false;
+        battleIntelligenceRuntimeContext = previousRuntimeContext;
+      }
       lastBattleDecisionTrace = completeBattleDecisionTrace();
       battleDecisionTraceEnabled = false;
       battleDecisionCounterfactualsEnabled = false;
