@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-20T08:55:04.468Z",
-  "sourceRankingGeneratedAt": "2026-07-20T08:54:31.616Z",
+  "generatedAt": "2026-08-13T11:32:50.852Z",
+  "sourceRankingGeneratedAt": "2026-08-13T11:30:49.578Z",
   "entries": {
     "mimikyu": {
       "ratings": {
@@ -2925,42 +2925,42 @@
     },
     "aegislash_shield": {
       "ratings": {
-        "overall": 3,
-        "consistency": 0,
+        "overall": 2,
+        "consistency": 1,
         "shieldDependence": 5,
-        "technicalDifficulty": 4,
+        "technicalDifficulty": 5,
         "closingPotential": 3
       },
       "wins": [
         {
-          "id": "cradily",
-          "name": "Cradily",
-          "rank": 7,
-          "score": 800
-        },
-        {
           "id": "charjabug",
           "name": "Charjabug",
           "rank": 10,
-          "score": 628
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 11,
-          "score": 705
+          "score": 581
         },
         {
           "id": "medicham",
           "name": "Medicham",
           "rank": 14,
-          "score": 689
+          "score": 639
         },
         {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 15,
-          "score": 712
+          "id": "pelipper",
+          "name": "Pelipper",
+          "rank": 25,
+          "score": 554
+        },
+        {
+          "id": "abomasnow",
+          "name": "Abomasnow",
+          "rank": 34,
+          "score": 615
+        },
+        {
+          "id": "carbink",
+          "name": "Carbink",
+          "rank": 40,
+          "score": 787
         }
       ],
       "losses": [
@@ -2968,31 +2968,31 @@
           "id": "mimikyu",
           "name": "Mimikyu",
           "rank": 1,
-          "score": 245
+          "score": 235
         },
         {
           "id": "morpeko_full_belly",
           "name": "Morpeko (Full Belly)",
           "rank": 2,
-          "score": 146
+          "score": 107
         },
         {
           "id": "forretress",
           "name": "Forretress",
           "rank": 3,
-          "score": 346
+          "score": 129
         },
         {
           "id": "forretress_shadow",
           "name": "Forretress (Shadow)",
           "rank": 4,
-          "score": 162
+          "score": 123
         },
         {
           "id": "guzzlord",
           "name": "Guzzlord",
           "rank": 5,
-          "score": 240
+          "score": 75
         }
       ]
     },

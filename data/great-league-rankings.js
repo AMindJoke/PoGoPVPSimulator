@@ -3,7 +3,7 @@ window.GREAT_LEAGUE_RANKINGS = {
   "league": "great",
   "metadata": {
     "datasetVersion": 1,
-    "generatedAt": "2026-07-20T08:54:31.616Z",
+    "generatedAt": "2026-08-13T11:30:49.578Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "matrixVersion": "battle-planner-v6",
@@ -56,7 +56,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "writes": 27702,
       "filesRead": 1541,
       "filesWritten": 1541,
-      "recursiveReads": 7119420
+      "recursiveReads": 4620
     },
     "generationDurationSeconds": 171,
     "theoreticalSimulations": 7119420,
@@ -144,19 +144,19 @@ window.GREAT_LEAGUE_RANKINGS = {
       }
     },
     "validationPassed": true,
-    "validationGeneratedAt": "2026-07-20T08:54:31.756Z",
+    "validationGeneratedAt": "2026-08-13T11:31:19.189Z",
     "validationReport": "data/reports/great-league-quality-report.md",
     "gameMasterHash": "759e0ae4405c4acc",
-    "gitCommitSha": null,
-    "recursiveWeightPasses": 12,
+    "gitCommitSha": "245e194",
+    "recursiveWeightPasses": 20,
     "recursiveWeighting": {
       "model": "competitive-meta-v2",
       "passes": 4,
       "metaSeedCount": 127,
       "curatedMetaWeightCount": 118,
       "curatedMetaSchemaVersion": 2,
-      "cellsRead": 7119420,
-      "filesRead": 1541,
+      "cellsRead": 4620,
+      "filesRead": 1,
       "parameters": {
         "version": 2,
         "label": "competitive-meta-v2",
@@ -187,6 +187,15 @@ window.GREAT_LEAGUE_RANKINGS = {
         "consistencyPenalty": 0.25,
         "maxConsistencyPenalty": 80
       }
+    },
+    "selectiveRefresh": {
+      "pokemonIds": [
+        "aegislash_shield"
+      ],
+      "engineVersion": "battle-planner-v32",
+      "refreshedAt": "2026-08-13T11:30:49.579Z",
+      "cellsRead": 4620,
+      "note": "Only matchups involving the listed changed Pokemon were regenerated; unaffected ranking rows retain their prior simulations."
     }
   },
   "entries": [
@@ -7544,190 +7553,6 @@ window.GREAT_LEAGUE_RANKINGS = {
     },
     {
       "rank": 41,
-      "id": "aegislash_shield",
-      "name": "Aegislash (Shield)",
-      "profile": "rank1",
-      "averageScore": 591,
-      "externalWeightedAverageScore": 504,
-      "weightedAverageScore": 546,
-      "rawScore": 579,
-      "weightedScore": 546,
-      "competitiveScore": 528,
-      "overallScore": 528,
-      "categoryScores": {
-        "closer": {
-          "label": "0 Shields",
-          "weight": 1,
-          "averageScore": 776,
-          "dampenedScore": 647,
-          "weightedScore": 644,
-          "metaScore": 619,
-          "consistencyScore": 631,
-          "competitiveScore": 625,
-          "rawRating": 78,
-          "weightedRating": 64,
-          "metaRating": 62,
-          "competitiveRating": 63,
-          "score": 63,
-          "matchups": 1540,
-          "metaMatchups": 127,
-          "wins": 1486,
-          "losses": 54,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
-                "uses": 1540
-              }
-            ],
-            "charged": [
-              {
-                "id": "GYRO_BALL",
-                "uses": 1540
-              },
-              {
-                "id": "SHADOW_BALL",
-                "uses": 1540
-              }
-            ]
-          }
-        },
-        "core": {
-          "label": "1 Shield",
-          "weight": 1,
-          "averageScore": 529,
-          "dampenedScore": 525,
-          "weightedScore": 520,
-          "metaScore": 472,
-          "consistencyScore": 484,
-          "competitiveScore": 483,
-          "rawRating": 53,
-          "weightedRating": 52,
-          "metaRating": 47,
-          "competitiveRating": 48,
-          "score": 48,
-          "matchups": 1540,
-          "metaMatchups": 127,
-          "wins": 941,
-          "losses": 599,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
-                "uses": 1540
-              }
-            ],
-            "charged": [
-              {
-                "id": "GYRO_BALL",
-                "uses": 1540
-              },
-              {
-                "id": "SHADOW_BALL",
-                "uses": 1540
-              }
-            ]
-          }
-        },
-        "lead": {
-          "label": "2 Shields",
-          "weight": 1,
-          "averageScore": 469,
-          "dampenedScore": 490,
-          "weightedScore": 485,
-          "metaScore": 438,
-          "consistencyScore": 449,
-          "competitiveScore": 449,
-          "rawRating": 47,
-          "weightedRating": 49,
-          "metaRating": 44,
-          "competitiveRating": 45,
-          "score": 45,
-          "matchups": 1540,
-          "metaMatchups": 127,
-          "wins": 750,
-          "losses": 790,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
-                "uses": 1540
-              }
-            ],
-            "charged": [
-              {
-                "id": "GYRO_BALL",
-                "uses": 1540
-              },
-              {
-                "id": "SHADOW_BALL",
-                "uses": 1540
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 138.83,
-      "matchups": 4620,
-      "wins": 3177,
-      "losses": 1443,
-      "ties": 0,
-      "winRate": 0.6877,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 776,
-          "dampenedScore": 647,
-          "weightedScore": 644,
-          "metaScore": 619,
-          "matchups": 1540,
-          "wins": 1486,
-          "losses": 54,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 529,
-          "dampenedScore": 525,
-          "weightedScore": 520,
-          "metaScore": 472,
-          "matchups": 1540,
-          "wins": 941,
-          "losses": 599,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 469,
-          "dampenedScore": 490,
-          "weightedScore": 485,
-          "metaScore": 438,
-          "matchups": 1540,
-          "wins": 750,
-          "losses": 790,
-          "ties": 0
-        }
-      },
-      "types": [
-        "steel",
-        "ghost"
-      ],
-      "dex": 681,
-      "moveset": {
-        "fast": "AEGISLASH_CHARGE_PSYCHO_CUT",
-        "charged": [
-          "SHADOW_BALL",
-          "GYRO_BALL"
-        ]
-      },
-      "dampenedAverageScore": 554,
-      "metaScore": 504,
-      "simulationCompetitiveScore": 514,
-      "candidatePriorScore": 563,
-      "candidateMetaTier": "core"
-    },
-    {
-      "rank": 42,
       "id": "sealeo_shadow",
       "name": "Sealeo (Shadow)",
       "profile": "rank1",
@@ -7911,7 +7736,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 43,
+      "rank": 42,
       "id": "empoleon",
       "name": "Empoleon",
       "profile": "rank1",
@@ -8095,7 +7920,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 44,
+      "rank": 43,
       "id": "feraligatr",
       "name": "Feraligatr",
       "profile": "rank1",
@@ -8278,7 +8103,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 45,
+      "rank": 44,
       "id": "mantine",
       "name": "Mantine",
       "profile": "rank1",
@@ -8462,7 +8287,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 46,
+      "rank": 45,
       "id": "abomasnow_shadow",
       "name": "Abomasnow (Shadow)",
       "profile": "rank1",
@@ -8646,7 +8471,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 47,
+      "rank": 46,
       "id": "machoke_shadow",
       "name": "Machoke (Shadow)",
       "profile": "rank1",
@@ -8829,7 +8654,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 48,
+      "rank": 47,
       "id": "pangoro",
       "name": "Pangoro",
       "profile": "rank1",
@@ -9013,7 +8838,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 49,
+      "rank": 48,
       "id": "swanna_shadow",
       "name": "Swanna (Shadow)",
       "profile": "rank1",
@@ -9197,7 +9022,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 50,
+      "rank": 49,
       "id": "araquanid",
       "name": "Araquanid",
       "profile": "rank1",
@@ -9381,7 +9206,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 51,
+      "rank": 50,
       "id": "turtonator",
       "name": "Turtonator",
       "profile": "rank1",
@@ -9565,7 +9390,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 52,
+      "rank": 51,
       "id": "walrein",
       "name": "Walrein",
       "profile": "rank1",
@@ -9749,7 +9574,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 53,
+      "rank": 52,
       "id": "typhlosion_shadow",
       "name": "Typhlosion (Shadow)",
       "profile": "rank1",
@@ -9932,7 +9757,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 54,
+      "rank": 53,
       "id": "quagsire",
       "name": "Quagsire",
       "profile": "rank1",
@@ -10116,7 +9941,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 55,
+      "rank": 54,
       "id": "talonflame_shadow",
       "name": "Talonflame (Shadow)",
       "profile": "rank1",
@@ -10300,7 +10125,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 56,
+      "rank": 55,
       "id": "fearow",
       "name": "Fearow",
       "profile": "rank1",
@@ -10484,7 +10309,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 57,
+      "rank": 56,
       "id": "furret",
       "name": "Furret",
       "profile": "rank1",
@@ -10667,7 +10492,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 58,
+      "rank": 57,
       "id": "togekiss",
       "name": "Togekiss",
       "profile": "rank1",
@@ -10851,7 +10676,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 59,
+      "rank": 58,
       "id": "quagsire_shadow",
       "name": "Quagsire (Shadow)",
       "profile": "rank1",
@@ -11035,7 +10860,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 60,
+      "rank": 59,
       "id": "altaria",
       "name": "Altaria",
       "profile": "rank1",
@@ -11219,7 +11044,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 61,
+      "rank": 60,
       "id": "sableye_shadow",
       "name": "Sableye (Shadow)",
       "profile": "rank1",
@@ -11403,7 +11228,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 62,
+      "rank": 61,
       "id": "swampert",
       "name": "Swampert",
       "profile": "rank1",
@@ -11587,7 +11412,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 63,
+      "rank": 62,
       "id": "politoed_shadow",
       "name": "Politoed (Shadow)",
       "profile": "rank1",
@@ -11770,7 +11595,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 64,
+      "rank": 63,
       "id": "feraligatr_shadow",
       "name": "Feraligatr (Shadow)",
       "profile": "rank1",
@@ -11953,7 +11778,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 65,
+      "rank": 64,
       "id": "dusclops",
       "name": "Dusclops",
       "profile": "rank1",
@@ -12136,7 +11961,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 66,
+      "rank": 65,
       "id": "regidrago",
       "name": "Regidrago",
       "profile": "rank1",
@@ -12319,7 +12144,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 67,
+      "rank": 66,
       "id": "sealeo",
       "name": "Sealeo",
       "profile": "rank1",
@@ -12503,7 +12328,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 68,
+      "rank": 67,
       "id": "hypno",
       "name": "Hypno",
       "profile": "rank1",
@@ -12686,7 +12511,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 69,
+      "rank": 68,
       "id": "umbreon",
       "name": "Umbreon",
       "profile": "rank1",
@@ -12869,7 +12694,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 70,
+      "rank": 69,
       "id": "bastiodon",
       "name": "Bastiodon",
       "profile": "rank1",
@@ -13053,7 +12878,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 71,
+      "rank": 70,
       "id": "azumarill",
       "name": "Azumarill",
       "profile": "rank1",
@@ -13237,7 +13062,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 72,
+      "rank": 71,
       "id": "gastrodon",
       "name": "Gastrodon",
       "profile": "rank1",
@@ -13421,7 +13246,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 73,
+      "rank": 72,
       "id": "ninetales_alolan_shadow",
       "name": "Ninetales (Alolan) (Shadow)",
       "profile": "rank1",
@@ -13605,7 +13430,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 74,
+      "rank": 73,
       "id": "gliscor_shadow",
       "name": "Gliscor (Shadow)",
       "profile": "rank1",
@@ -13789,7 +13614,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 75,
+      "rank": 74,
       "id": "goodra",
       "name": "Goodra",
       "profile": "rank1",
@@ -13972,7 +13797,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 76,
+      "rank": 75,
       "id": "dragonair",
       "name": "Dragonair",
       "profile": "rank1",
@@ -14155,7 +13980,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 77,
+      "rank": 76,
       "id": "dusclops_shadow",
       "name": "Dusclops (Shadow)",
       "profile": "rank1",
@@ -14338,7 +14163,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 78,
+      "rank": 77,
       "id": "lumineon",
       "name": "Lumineon",
       "profile": "rank1",
@@ -14521,7 +14346,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 79,
+      "rank": 78,
       "id": "oranguru",
       "name": "Oranguru",
       "profile": "rank1",
@@ -14705,7 +14530,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 80,
+      "rank": 79,
       "id": "swanna",
       "name": "Swanna",
       "profile": "rank1",
@@ -14889,7 +14714,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 81,
+      "rank": 80,
       "id": "drifblim",
       "name": "Drifblim",
       "profile": "rank1",
@@ -15073,7 +14898,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 82,
+      "rank": 81,
       "id": "walrein_shadow",
       "name": "Walrein (Shadow)",
       "profile": "rank1",
@@ -15257,7 +15082,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 83,
+      "rank": 82,
       "id": "cradily_b",
       "name": "Cradily",
       "profile": "rank1",
@@ -15441,7 +15266,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 84,
+      "rank": 83,
       "id": "magnezone_shadow",
       "name": "Magnezone (Shadow)",
       "profile": "rank1",
@@ -15625,7 +15450,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 85,
+      "rank": 84,
       "id": "pachirisu",
       "name": "Pachirisu",
       "profile": "rank1",
@@ -15808,7 +15633,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 86,
+      "rank": 85,
       "id": "sliggoo",
       "name": "Sliggoo",
       "profile": "rank1",
@@ -15991,7 +15816,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 87,
+      "rank": 86,
       "id": "mewtwo_armored",
       "name": "Mewtwo (Armored)",
       "profile": "rank1",
@@ -16174,7 +15999,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 88,
+      "rank": 87,
       "id": "miltank",
       "name": "Miltank",
       "profile": "rank1",
@@ -16357,7 +16182,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 89,
+      "rank": 88,
       "id": "diggersby",
       "name": "Diggersby",
       "profile": "rank1",
@@ -16541,7 +16366,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 90,
+      "rank": 89,
       "id": "slowbro",
       "name": "Slowbro",
       "profile": "rank1",
@@ -16725,7 +16550,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 91,
+      "rank": 90,
       "id": "togedemaru",
       "name": "Togedemaru",
       "profile": "rank1",
@@ -16909,7 +16734,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 92,
+      "rank": 91,
       "id": "araquanid_shadow",
       "name": "Araquanid (Shadow)",
       "profile": "rank1",
@@ -17093,7 +16918,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 93,
+      "rank": 92,
       "id": "girafarig",
       "name": "Girafarig",
       "profile": "rank1",
@@ -17277,7 +17102,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 94,
+      "rank": 93,
       "id": "girafarig_shadow",
       "name": "Girafarig (Shadow)",
       "profile": "rank1",
@@ -17461,7 +17286,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 95,
+      "rank": 94,
       "id": "clefable",
       "name": "Clefable",
       "profile": "rank1",
@@ -17644,7 +17469,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 96,
+      "rank": 95,
       "id": "ninetales_alolan",
       "name": "Ninetales (Alolan)",
       "profile": "rank1",
@@ -17828,7 +17653,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 97,
+      "rank": 96,
       "id": "castform",
       "name": "Castform",
       "profile": "rank1",
@@ -18011,7 +17836,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 98,
+      "rank": 97,
       "id": "magnezone",
       "name": "Magnezone",
       "profile": "rank1",
@@ -18195,7 +18020,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 99,
+      "rank": 98,
       "id": "spiritomb",
       "name": "Spiritomb",
       "profile": "rank1",
@@ -18379,7 +18204,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 100,
+      "rank": 99,
       "id": "uxie",
       "name": "Uxie",
       "profile": "rank1",
@@ -18562,7 +18387,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 101,
+      "rank": 100,
       "id": "hypno_shadow",
       "name": "Hypno (Shadow)",
       "profile": "rank1",
@@ -18745,7 +18570,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 102,
+      "rank": 101,
       "id": "swampert_shadow",
       "name": "Swampert (Shadow)",
       "profile": "rank1",
@@ -18929,7 +18754,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 103,
+      "rank": 102,
       "id": "slowbro_shadow",
       "name": "Slowbro (Shadow)",
       "profile": "rank1",
@@ -19113,7 +18938,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 104,
+      "rank": 103,
       "id": "suicune",
       "name": "Suicune",
       "profile": "rank1",
@@ -19296,7 +19121,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 105,
+      "rank": 104,
       "id": "stunfisk_galarian",
       "name": "Stunfisk (Galarian)",
       "profile": "rank1",
@@ -19480,7 +19305,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 106,
+      "rank": 105,
       "id": "dragonair_shadow",
       "name": "Dragonair (Shadow)",
       "profile": "rank1",
@@ -19663,7 +19488,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 107,
+      "rank": 106,
       "id": "seismitoad",
       "name": "Seismitoad",
       "profile": "rank1",
@@ -19847,7 +19672,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 108,
+      "rank": 107,
       "id": "articuno",
       "name": "Articuno",
       "profile": "rank1",
@@ -20031,7 +19856,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 109,
+      "rank": 108,
       "id": "bellibolt",
       "name": "Bellibolt",
       "profile": "rank1",
@@ -20214,7 +20039,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 110,
+      "rank": 109,
       "id": "cradily_shadow",
       "name": "Cradily (Shadow)",
       "profile": "rank1",
@@ -20398,7 +20223,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 111,
+      "rank": 110,
       "id": "bronzong",
       "name": "Bronzong",
       "profile": "rank1",
@@ -20582,7 +20407,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 112,
+      "rank": 111,
       "id": "blastoise",
       "name": "Blastoise",
       "profile": "rank1",
@@ -20765,7 +20590,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 113,
+      "rank": 112,
       "id": "zeraora",
       "name": "Zeraora",
       "profile": "rank1",
@@ -20948,7 +20773,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 114,
+      "rank": 113,
       "id": "melmetal",
       "name": "Melmetal",
       "profile": "rank1",
@@ -21131,7 +20956,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 115,
+      "rank": 114,
       "id": "spidops",
       "name": "Spidops",
       "profile": "rank1",
@@ -21314,7 +21139,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 116,
+      "rank": 115,
       "id": "drifblim_shadow",
       "name": "Drifblim (Shadow)",
       "profile": "rank1",
@@ -21498,7 +21323,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 117,
+      "rank": 116,
       "id": "corviknight_shadow",
       "name": "Corviknight (Shadow)",
       "profile": "rank1",
@@ -21682,7 +21507,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 118,
+      "rank": 117,
       "id": "zweilous_shadow",
       "name": "Zweilous (Shadow)",
       "profile": "rank1",
@@ -21866,7 +21691,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 119,
+      "rank": 118,
       "id": "dusknoir_shadow",
       "name": "Dusknoir (Shadow)",
       "profile": "rank1",
@@ -22049,7 +21874,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 120,
+      "rank": 119,
       "id": "jirachi",
       "name": "Jirachi",
       "profile": "rank1",
@@ -22233,7 +22058,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 121,
+      "rank": 120,
       "id": "politoed",
       "name": "Politoed",
       "profile": "rank1",
@@ -22416,7 +22241,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 122,
+      "rank": 121,
       "id": "nidorina",
       "name": "Nidorina",
       "profile": "rank1",
@@ -22599,7 +22424,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 123,
+      "rank": 122,
       "id": "swoobat",
       "name": "Swoobat",
       "profile": "rank1",
@@ -22783,7 +22608,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 124,
+      "rank": 123,
       "id": "machamp_shadow",
       "name": "Machamp (Shadow)",
       "profile": "rank1",
@@ -22966,7 +22791,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 125,
+      "rank": 124,
       "id": "steelix",
       "name": "Steelix",
       "profile": "rank1",
@@ -23150,7 +22975,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 126,
+      "rank": 125,
       "id": "ludicolo",
       "name": "Ludicolo",
       "profile": "rank1",
@@ -23334,7 +23159,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 127,
+      "rank": 126,
       "id": "thievul",
       "name": "Thievul",
       "profile": "rank1",
@@ -23517,7 +23342,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 128,
+      "rank": 127,
       "id": "toxtricity",
       "name": "Toxtricity",
       "profile": "rank1",
@@ -23701,7 +23526,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 129,
+      "rank": 128,
       "id": "rapidash",
       "name": "Rapidash",
       "profile": "rank1",
@@ -23884,7 +23709,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 130,
+      "rank": 129,
       "id": "typhlosion",
       "name": "Typhlosion",
       "profile": "rank1",
@@ -24067,7 +23892,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 131,
+      "rank": 130,
       "id": "greninja_shadow",
       "name": "Greninja (Shadow)",
       "profile": "rank1",
@@ -24251,7 +24076,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 132,
+      "rank": 131,
       "id": "castform_snowy",
       "name": "Castform (Snowy)",
       "profile": "rank1",
@@ -24434,7 +24259,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 133,
+      "rank": 132,
       "id": "shelgon",
       "name": "Shelgon",
       "profile": "rank1",
@@ -24617,7 +24442,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 134,
+      "rank": 133,
       "id": "shelgon_shadow",
       "name": "Shelgon (Shadow)",
       "profile": "rank1",
@@ -24800,7 +24625,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 135,
+      "rank": 134,
       "id": "hydreigon_shadow",
       "name": "Hydreigon (Shadow)",
       "profile": "rank1",
@@ -24984,7 +24809,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 136,
+      "rank": 135,
       "id": "lanturn",
       "name": "Lanturn",
       "profile": "rank1",
@@ -25168,7 +24993,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 137,
+      "rank": 136,
       "id": "rapidash_shadow",
       "name": "Rapidash (Shadow)",
       "profile": "rank1",
@@ -25351,7 +25176,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 138,
+      "rank": 137,
       "id": "hakamo_o",
       "name": "Hakamo-o",
       "profile": "rank1",
@@ -25535,7 +25360,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 139,
+      "rank": 138,
       "id": "suicune_shadow",
       "name": "Suicune (Shadow)",
       "profile": "rank1",
@@ -25718,7 +25543,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 140,
+      "rank": 139,
       "id": "ampharos_shadow",
       "name": "Ampharos (Shadow)",
       "profile": "rank1",
@@ -25901,7 +25726,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 141,
+      "rank": 140,
       "id": "steelix_shadow",
       "name": "Steelix (Shadow)",
       "profile": "rank1",
@@ -26085,7 +25910,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 142,
+      "rank": 141,
       "id": "mightyena_shadow",
       "name": "Mightyena (Shadow)",
       "profile": "rank1",
@@ -26268,7 +26093,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 143,
+      "rank": 142,
       "id": "wigglytuff",
       "name": "Wigglytuff",
       "profile": "rank1",
@@ -26452,7 +26277,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 144,
+      "rank": 143,
       "id": "greninja",
       "name": "Greninja",
       "profile": "rank1",
@@ -26636,7 +26461,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 145,
+      "rank": 144,
       "id": "aurorus",
       "name": "Aurorus",
       "profile": "rank1",
@@ -26820,7 +26645,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 146,
+      "rank": 145,
       "id": "cetoddle",
       "name": "Cetoddle",
       "profile": "rank1",
@@ -27003,7 +26828,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 147,
+      "rank": 146,
       "id": "emolga",
       "name": "Emolga",
       "profile": "rank1",
@@ -27187,7 +27012,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 148,
+      "rank": 147,
       "id": "toucannon",
       "name": "Toucannon",
       "profile": "rank1",
@@ -27371,7 +27196,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 149,
+      "rank": 148,
       "id": "articuno_shadow",
       "name": "Articuno (Shadow)",
       "profile": "rank1",
@@ -27555,7 +27380,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 150,
+      "rank": 149,
       "id": "gourgeist_super",
       "name": "Gourgeist (Super)",
       "profile": "rank1",
@@ -27739,7 +27564,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 151,
+      "rank": 150,
       "id": "latias",
       "name": "Latias",
       "profile": "rank1",
@@ -27923,7 +27748,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 152,
+      "rank": 151,
       "id": "toucannon_shadow",
       "name": "Toucannon (Shadow)",
       "profile": "rank1",
@@ -28107,7 +27932,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 153,
+      "rank": 152,
       "id": "cresselia",
       "name": "Cresselia",
       "profile": "rank1",
@@ -28290,7 +28115,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 154,
+      "rank": 153,
       "id": "morgrem",
       "name": "Morgrem",
       "profile": "rank1",
@@ -28474,7 +28299,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 155,
+      "rank": 154,
       "id": "sylveon",
       "name": "Sylveon",
       "profile": "rank1",
@@ -28657,7 +28482,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 156,
+      "rank": 155,
       "id": "gourgeist_large",
       "name": "Gourgeist (Large)",
       "profile": "rank1",
@@ -28841,7 +28666,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 157,
+      "rank": 156,
       "id": "gourgeist_average",
       "name": "Gourgeist (Average)",
       "profile": "rank1",
@@ -29025,7 +28850,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 158,
+      "rank": 157,
       "id": "gourgeist_small",
       "name": "Gourgeist (Small)",
       "profile": "rank1",
@@ -29209,7 +29034,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 159,
+      "rank": 158,
       "id": "ampharos",
       "name": "Ampharos",
       "profile": "rank1",
@@ -29392,7 +29217,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 160,
+      "rank": 159,
       "id": "magcargo",
       "name": "Magcargo",
       "profile": "rank1",
@@ -29576,7 +29401,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 161,
+      "rank": 160,
       "id": "bastiodon_shadow",
       "name": "Bastiodon (Shadow)",
       "profile": "rank1",
@@ -29760,7 +29585,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 162,
+      "rank": 161,
       "id": "registeel",
       "name": "Registeel",
       "profile": "rank1",
@@ -29943,7 +29768,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 163,
+      "rank": 162,
       "id": "kommo_o",
       "name": "Kommo-o",
       "profile": "rank1",
@@ -30127,7 +29952,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 164,
+      "rank": 163,
       "id": "grumpig",
       "name": "Grumpig",
       "profile": "rank1",
@@ -30310,7 +30135,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 165,
+      "rank": 164,
       "id": "lapras_shadow",
       "name": "Lapras (Shadow)",
       "profile": "rank1",
@@ -30494,7 +30319,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 166,
+      "rank": 165,
       "id": "urshifu_single_strike",
       "name": "Urshifu (Single Strike)",
       "profile": "rank1",
@@ -30678,7 +30503,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 167,
+      "rank": 166,
       "id": "muk_alolan_shadow",
       "name": "Muk (Alolan) (Shadow)",
       "profile": "rank1",
@@ -30862,7 +30687,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 168,
+      "rank": 167,
       "id": "flygon_shadow",
       "name": "Flygon (Shadow)",
       "profile": "rank1",
@@ -31046,7 +30871,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 169,
+      "rank": 168,
       "id": "weezing_galarian_shadow",
       "name": "Weezing (Galarian) (Shadow)",
       "profile": "rank1",
@@ -31230,7 +31055,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 170,
+      "rank": 169,
       "id": "raikou_shadow",
       "name": "Raikou (Shadow)",
       "profile": "rank1",
@@ -31413,7 +31238,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 171,
+      "rank": 170,
       "id": "dondozo",
       "name": "Dondozo",
       "profile": "rank1",
@@ -31596,7 +31421,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 172,
+      "rank": 171,
       "id": "blastoise_shadow",
       "name": "Blastoise (Shadow)",
       "profile": "rank1",
@@ -31779,7 +31604,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 173,
+      "rank": 172,
       "id": "gallade_shadow",
       "name": "Gallade (Shadow)",
       "profile": "rank1",
@@ -31963,7 +31788,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 174,
+      "rank": 173,
       "id": "poliwrath",
       "name": "Poliwrath",
       "profile": "rank1",
@@ -32147,7 +31972,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 175,
+      "rank": 174,
       "id": "pawmot",
       "name": "Pawmot",
       "profile": "rank1",
@@ -32331,7 +32156,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 176,
+      "rank": 175,
       "id": "aromatisse",
       "name": "Aromatisse",
       "profile": "rank1",
@@ -32514,7 +32339,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 177,
+      "rank": 176,
       "id": "linoone",
       "name": "Linoone",
       "profile": "rank1",
@@ -32697,7 +32522,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 178,
+      "rank": 177,
       "id": "qwilfish_shadow",
       "name": "Qwilfish (Shadow)",
       "profile": "rank1",
@@ -32881,7 +32706,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 179,
+      "rank": 178,
       "id": "latias_shadow",
       "name": "Latias (Shadow)",
       "profile": "rank1",
@@ -33065,7 +32890,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 180,
+      "rank": 179,
       "id": "dusknoir",
       "name": "Dusknoir",
       "profile": "rank1",
@@ -33248,7 +33073,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 181,
+      "rank": 180,
       "id": "malamar_shadow",
       "name": "Malamar (Shadow)",
       "profile": "rank1",
@@ -33432,7 +33257,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 182,
+      "rank": 181,
       "id": "doublade",
       "name": "Doublade",
       "profile": "rank1",
@@ -33616,7 +33441,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 183,
+      "rank": 182,
       "id": "castform_sunny",
       "name": "Castform (Sunny)",
       "profile": "rank1",
@@ -33799,7 +33624,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 184,
+      "rank": 183,
       "id": "orthworm",
       "name": "Orthworm",
       "profile": "rank1",
@@ -33982,7 +33807,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 185,
+      "rank": 184,
       "id": "dudunsparce",
       "name": "Dudunsparce",
       "profile": "rank1",
@@ -34165,7 +33990,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 186,
+      "rank": 185,
       "id": "slowbro_galarian",
       "name": "Slowbro (Galarian)",
       "profile": "rank1",
@@ -34349,7 +34174,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 187,
+      "rank": 186,
       "id": "aurorus_shadow",
       "name": "Aurorus (Shadow)",
       "profile": "rank1",
@@ -34533,7 +34358,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 188,
+      "rank": 187,
       "id": "golbat",
       "name": "Golbat",
       "profile": "rank1",
@@ -34717,7 +34542,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 189,
+      "rank": 188,
       "id": "muk_alolan",
       "name": "Muk (Alolan)",
       "profile": "rank1",
@@ -34901,7 +34726,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 190,
+      "rank": 189,
       "id": "flygon",
       "name": "Flygon",
       "profile": "rank1",
@@ -35085,7 +34910,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 191,
+      "rank": 190,
       "id": "annihilape_shadow",
       "name": "Annihilape (Shadow)",
       "profile": "rank1",
@@ -35269,7 +35094,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 192,
+      "rank": 191,
       "id": "mightyena",
       "name": "Mightyena",
       "profile": "rank1",
@@ -35452,7 +35277,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 193,
+      "rank": 192,
       "id": "toxapex",
       "name": "Toxapex",
       "profile": "rank1",
@@ -35636,7 +35461,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 194,
+      "rank": 193,
       "id": "lickitung",
       "name": "Lickitung",
       "profile": "rank1",
@@ -35819,7 +35644,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 195,
+      "rank": 194,
       "id": "weezing_galarian",
       "name": "Weezing (Galarian)",
       "profile": "rank1",
@@ -36003,7 +35828,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 196,
+      "rank": 195,
       "id": "virizion",
       "name": "Virizion",
       "profile": "rank1",
@@ -36187,7 +36012,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 197,
+      "rank": 196,
       "id": "raikou",
       "name": "Raikou",
       "profile": "rank1",
@@ -36370,7 +36195,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 198,
+      "rank": 197,
       "id": "skeledirge",
       "name": "Skeledirge",
       "profile": "rank1",
@@ -36554,7 +36379,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 199,
+      "rank": 198,
       "id": "electrode_shadow",
       "name": "Electrode (Shadow)",
       "profile": "rank1",
@@ -36737,7 +36562,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 200,
+      "rank": 199,
       "id": "electrode",
       "name": "Electrode",
       "profile": "rank1",
@@ -36920,7 +36745,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 201,
+      "rank": 200,
       "id": "murkrow_shadow",
       "name": "Murkrow (Shadow)",
       "profile": "rank1",
@@ -37104,7 +36929,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 202,
+      "rank": 201,
       "id": "grumpig_shadow",
       "name": "Grumpig (Shadow)",
       "profile": "rank1",
@@ -37287,7 +37112,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 203,
+      "rank": 202,
       "id": "sandslash_alolan",
       "name": "Sandslash (Alolan)",
       "profile": "rank1",
@@ -37471,7 +37296,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 204,
+      "rank": 203,
       "id": "sandslash_alolan_shadow",
       "name": "Sandslash (Alolan) (Shadow)",
       "profile": "rank1",
@@ -37655,7 +37480,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 205,
+      "rank": 204,
       "id": "solrock",
       "name": "Solrock",
       "profile": "rank1",
@@ -37839,7 +37664,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 206,
+      "rank": 205,
       "id": "drapion_shadow",
       "name": "Drapion (Shadow)",
       "profile": "rank1",
@@ -38023,7 +37848,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 207,
+      "rank": 206,
       "id": "giratina_altered_shadow",
       "name": "Giratina (Altered) (Shadow)",
       "profile": "rank1",
@@ -38207,7 +38032,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 208,
+      "rank": 207,
       "id": "altaria_shadow",
       "name": "Altaria (Shadow)",
       "profile": "rank1",
@@ -38391,7 +38216,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 209,
+      "rank": 208,
       "id": "drapion",
       "name": "Drapion",
       "profile": "rank1",
@@ -38575,7 +38400,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 210,
+      "rank": 209,
       "id": "salazzle",
       "name": "Salazzle",
       "profile": "rank1",
@@ -38759,7 +38584,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 211,
+      "rank": 210,
       "id": "hydreigon",
       "name": "Hydreigon",
       "profile": "rank1",
@@ -38943,7 +38768,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 212,
+      "rank": 211,
       "id": "marowak_alolan_shadow",
       "name": "Marowak (Alolan) (Shadow)",
       "profile": "rank1",
@@ -39127,7 +38952,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 213,
+      "rank": 212,
       "id": "cresselia_shadow",
       "name": "Cresselia (Shadow)",
       "profile": "rank1",
@@ -39310,7 +39135,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 214,
+      "rank": 213,
       "id": "dedenne",
       "name": "Dedenne",
       "profile": "rank1",
@@ -39494,7 +39319,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 215,
+      "rank": 214,
       "id": "charizard_shadow",
       "name": "Charizard (Shadow)",
       "profile": "rank1",
@@ -39678,7 +39503,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 216,
+      "rank": 215,
       "id": "gyarados_shadow",
       "name": "Gyarados (Shadow)",
       "profile": "rank1",
@@ -39862,7 +39687,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 217,
+      "rank": 216,
       "id": "milotic_shadow",
       "name": "Milotic (Shadow)",
       "profile": "rank1",
@@ -40045,7 +39870,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 218,
+      "rank": 217,
       "id": "gallade",
       "name": "Gallade",
       "profile": "rank1",
@@ -40229,7 +40054,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 219,
+      "rank": 218,
       "id": "slurpuff",
       "name": "Slurpuff",
       "profile": "rank1",
@@ -40412,7 +40237,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 220,
+      "rank": 219,
       "id": "lurantis",
       "name": "Lurantis",
       "profile": "rank1",
@@ -40595,7 +40420,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 221,
+      "rank": 220,
       "id": "crustle",
       "name": "Crustle",
       "profile": "rank1",
@@ -40779,7 +40604,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 222,
+      "rank": 221,
       "id": "metang_shadow",
       "name": "Metang (Shadow)",
       "profile": "rank1",
@@ -40963,7 +40788,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 223,
+      "rank": 222,
       "id": "torkoal",
       "name": "Torkoal",
       "profile": "rank1",
@@ -41146,7 +40971,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 224,
+      "rank": 223,
       "id": "milotic",
       "name": "Milotic",
       "profile": "rank1",
@@ -41329,7 +41154,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 225,
+      "rank": 224,
       "id": "mawile_shadow",
       "name": "Mawile (Shadow)",
       "profile": "rank1",
@@ -41513,7 +41338,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 226,
+      "rank": 225,
       "id": "wailmer",
       "name": "Wailmer",
       "profile": "rank1",
@@ -41696,7 +41521,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 227,
+      "rank": 226,
       "id": "torterra",
       "name": "Torterra",
       "profile": "rank1",
@@ -41880,7 +41705,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 228,
+      "rank": 227,
       "id": "slowpoke_shadow",
       "name": "Slowpoke (Shadow)",
       "profile": "rank1",
@@ -42064,7 +41889,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 229,
+      "rank": 228,
       "id": "metang",
       "name": "Metang",
       "profile": "rank1",
@@ -42248,7 +42073,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 230,
+      "rank": 229,
       "id": "lunatone",
       "name": "Lunatone",
       "profile": "rank1",
@@ -42432,7 +42257,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 231,
+      "rank": 230,
       "id": "qwilfish",
       "name": "Qwilfish",
       "profile": "rank1",
@@ -42616,7 +42441,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 232,
+      "rank": 231,
       "id": "dachsbun",
       "name": "Dachsbun",
       "profile": "rank1",
@@ -42799,7 +42624,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 233,
+      "rank": 232,
       "id": "palossand",
       "name": "Palossand",
       "profile": "rank1",
@@ -42983,7 +42808,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 234,
+      "rank": 233,
       "id": "golbat_shadow",
       "name": "Golbat (Shadow)",
       "profile": "rank1",
@@ -43167,7 +42992,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 235,
+      "rank": 234,
       "id": "torterra_shadow",
       "name": "Torterra (Shadow)",
       "profile": "rank1",
@@ -43351,7 +43176,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 236,
+      "rank": 235,
       "id": "rufflet",
       "name": "Rufflet",
       "profile": "rank1",
@@ -43535,7 +43360,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 237,
+      "rank": 236,
       "id": "dewgong",
       "name": "Dewgong",
       "profile": "rank1",
@@ -43719,7 +43544,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 238,
+      "rank": 237,
       "id": "dewgong_shadow",
       "name": "Dewgong (Shadow)",
       "profile": "rank1",
@@ -43903,7 +43728,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 239,
+      "rank": 238,
       "id": "froslass",
       "name": "Froslass",
       "profile": "rank1",
@@ -44087,7 +43912,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 240,
+      "rank": 239,
       "id": "marowak_alolan",
       "name": "Marowak (Alolan)",
       "profile": "rank1",
@@ -44271,7 +44096,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 241,
+      "rank": 240,
       "id": "dodrio",
       "name": "Dodrio",
       "profile": "rank1",
@@ -44455,7 +44280,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 242,
+      "rank": 241,
       "id": "starmie_shadow",
       "name": "Starmie (Shadow)",
       "profile": "rank1",
@@ -44639,7 +44464,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 243,
+      "rank": 242,
       "id": "bellossom",
       "name": "Bellossom",
       "profile": "rank1",
@@ -44822,7 +44647,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 244,
+      "rank": 243,
       "id": "hariyama_shadow",
       "name": "Hariyama (Shadow)",
       "profile": "rank1",
@@ -45005,7 +44830,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 245,
+      "rank": 244,
       "id": "bellossom_shadow",
       "name": "Bellossom (Shadow)",
       "profile": "rank1",
@@ -45188,7 +45013,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 246,
+      "rank": 245,
       "id": "blaziken_shadow",
       "name": "Blaziken (Shadow)",
       "profile": "rank1",
@@ -45372,7 +45197,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 247,
+      "rank": 246,
       "id": "armarouge",
       "name": "Armarouge",
       "profile": "rank1",
@@ -45556,7 +45381,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 248,
+      "rank": 247,
       "id": "murkrow",
       "name": "Murkrow",
       "profile": "rank1",
@@ -45740,7 +45565,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 249,
+      "rank": 248,
       "id": "diggersby_shadow",
       "name": "Diggersby (Shadow)",
       "profile": "rank1",
@@ -45924,7 +45749,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 250,
+      "rank": 249,
       "id": "gyarados",
       "name": "Gyarados",
       "profile": "rank1",
@@ -46108,7 +45933,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 251,
+      "rank": 250,
       "id": "nidoqueen_shadow",
       "name": "Nidoqueen (Shadow)",
       "profile": "rank1",
@@ -46292,7 +46117,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 252,
+      "rank": 251,
       "id": "wailmer_shadow",
       "name": "Wailmer (Shadow)",
       "profile": "rank1",
@@ -46475,7 +46300,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 253,
+      "rank": 252,
       "id": "greedent",
       "name": "Greedent",
       "profile": "rank1",
@@ -46658,7 +46483,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 254,
+      "rank": 253,
       "id": "nidoqueen",
       "name": "Nidoqueen",
       "profile": "rank1",
@@ -46842,7 +46667,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 255,
+      "rank": 254,
       "id": "oinkologne_female",
       "name": "Oinkologne (Female)",
       "profile": "rank1",
@@ -47025,7 +46850,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 256,
+      "rank": 255,
       "id": "charizard",
       "name": "Charizard",
       "profile": "rank1",
@@ -47209,7 +47034,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 257,
+      "rank": 256,
       "id": "salamence_shadow",
       "name": "Salamence (Shadow)",
       "profile": "rank1",
@@ -47393,7 +47218,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 258,
+      "rank": 257,
       "id": "marowak",
       "name": "Marowak",
       "profile": "rank1",
@@ -47576,7 +47401,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 259,
+      "rank": 258,
       "id": "dragalge",
       "name": "Dragalge",
       "profile": "rank1",
@@ -47760,7 +47585,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 260,
+      "rank": 259,
       "id": "poipole",
       "name": "Poipole",
       "profile": "rank1",
@@ -47943,7 +47768,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 261,
+      "rank": 260,
       "id": "venusaur",
       "name": "Venusaur",
       "profile": "rank1",
@@ -48127,7 +47952,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 262,
+      "rank": 261,
       "id": "venusaur_shadow",
       "name": "Venusaur (Shadow)",
       "profile": "rank1",
@@ -48311,7 +48136,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 263,
+      "rank": 262,
       "id": "gogoat",
       "name": "Gogoat",
       "profile": "rank1",
@@ -48494,7 +48319,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 264,
+      "rank": 263,
       "id": "victreebel",
       "name": "Victreebel",
       "profile": "rank1",
@@ -48678,7 +48503,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 265,
+      "rank": 264,
       "id": "roserade",
       "name": "Roserade",
       "profile": "rank1",
@@ -48862,7 +48687,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 266,
+      "rank": 265,
       "id": "starmie",
       "name": "Starmie",
       "profile": "rank1",
@@ -49046,7 +48871,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 267,
+      "rank": 266,
       "id": "victreebel_shadow",
       "name": "Victreebel (Shadow)",
       "profile": "rank1",
@@ -49230,7 +49055,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 268,
+      "rank": 267,
       "id": "samurott",
       "name": "Samurott",
       "profile": "rank1",
@@ -49413,7 +49238,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 269,
+      "rank": 268,
       "id": "mawile",
       "name": "Mawile",
       "profile": "rank1",
@@ -49597,7 +49422,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 270,
+      "rank": 269,
       "id": "dartrix",
       "name": "Dartrix",
       "profile": "rank1",
@@ -49781,7 +49606,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 271,
+      "rank": 270,
       "id": "machamp",
       "name": "Machamp",
       "profile": "rank1",
@@ -49964,7 +49789,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 272,
+      "rank": 271,
       "id": "magnemite_shadow",
       "name": "Magnemite (Shadow)",
       "profile": "rank1",
@@ -50148,7 +49973,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 273,
+      "rank": 272,
       "id": "zapdos_shadow",
       "name": "Zapdos (Shadow)",
       "profile": "rank1",
@@ -50332,7 +50157,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 274,
+      "rank": 273,
       "id": "celebi",
       "name": "Celebi",
       "profile": "rank1",
@@ -50516,7 +50341,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 275,
+      "rank": 274,
       "id": "conkeldurr",
       "name": "Conkeldurr",
       "profile": "rank1",
@@ -50699,7 +50524,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 276,
+      "rank": 275,
       "id": "toedscruel",
       "name": "Toedscruel",
       "profile": "rank1",
@@ -50883,7 +50708,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 277,
+      "rank": 276,
       "id": "golem_alolan_shadow",
       "name": "Golem (Alolan) (Shadow)",
       "profile": "rank1",
@@ -51067,7 +50892,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 278,
+      "rank": 277,
       "id": "slowpoke",
       "name": "Slowpoke",
       "profile": "rank1",
@@ -51251,7 +51076,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 279,
+      "rank": 278,
       "id": "nidorina_shadow",
       "name": "Nidorina (Shadow)",
       "profile": "rank1",
@@ -51434,7 +51259,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 280,
+      "rank": 279,
       "id": "whimsicott",
       "name": "Whimsicott",
       "profile": "rank1",
@@ -51618,7 +51443,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 281,
+      "rank": 280,
       "id": "electivire_shadow",
       "name": "Electivire (Shadow)",
       "profile": "rank1",
@@ -51801,7 +51626,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 282,
+      "rank": 281,
       "id": "marowak_shadow",
       "name": "Marowak (Shadow)",
       "profile": "rank1",
@@ -51984,7 +51809,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 283,
+      "rank": 282,
       "id": "drampa",
       "name": "Drampa",
       "profile": "rank1",
@@ -52168,7 +51993,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 284,
+      "rank": 283,
       "id": "klefki",
       "name": "Klefki",
       "profile": "rank1",
@@ -52352,7 +52177,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 285,
+      "rank": 284,
       "id": "sandshrew_alolan_shadow",
       "name": "Sandshrew (Alolan) (Shadow)",
       "profile": "rank1",
@@ -52536,7 +52361,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 286,
+      "rank": 285,
       "id": "amaura_shadow",
       "name": "Amaura (Shadow)",
       "profile": "rank1",
@@ -52720,7 +52545,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 287,
+      "rank": 286,
       "id": "trumbeak_shadow",
       "name": "Trumbeak (Shadow)",
       "profile": "rank1",
@@ -52904,7 +52729,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 288,
+      "rank": 287,
       "id": "sandshrew_alolan",
       "name": "Sandshrew (Alolan)",
       "profile": "rank1",
@@ -53088,7 +52913,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 289,
+      "rank": 288,
       "id": "poliwrath_shadow",
       "name": "Poliwrath (Shadow)",
       "profile": "rank1",
@@ -53272,7 +53097,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 290,
+      "rank": 289,
       "id": "fletchinder_shadow",
       "name": "Fletchinder (Shadow)",
       "profile": "rank1",
@@ -53456,7 +53281,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 291,
+      "rank": 290,
       "id": "conkeldurr_shadow",
       "name": "Conkeldurr (Shadow)",
       "profile": "rank1",
@@ -53639,7 +53464,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 292,
+      "rank": 291,
       "id": "drifloon",
       "name": "Drifloon",
       "profile": "rank1",
@@ -53823,7 +53648,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 293,
+      "rank": 292,
       "id": "swalot",
       "name": "Swalot",
       "profile": "rank1",
@@ -54006,7 +53831,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 294,
+      "rank": 293,
       "id": "dubwool",
       "name": "Dubwool",
       "profile": "rank1",
@@ -54189,7 +54014,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 295,
+      "rank": 294,
       "id": "giratina_altered",
       "name": "Giratina (Altered)",
       "profile": "rank1",
@@ -54373,7 +54198,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 296,
+      "rank": 295,
       "id": "golisopod",
       "name": "Golisopod",
       "profile": "rank1",
@@ -54557,7 +54382,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 297,
+      "rank": 296,
       "id": "ledian",
       "name": "Ledian",
       "profile": "rank1",
@@ -54741,7 +54566,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 298,
+      "rank": 297,
       "id": "claydol",
       "name": "Claydol",
       "profile": "rank1",
@@ -54925,7 +54750,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 299,
+      "rank": 298,
       "id": "dragonite_shadow",
       "name": "Dragonite (Shadow)",
       "profile": "rank1",
@@ -55109,7 +54934,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 300,
+      "rank": 299,
       "id": "seaking",
       "name": "Seaking",
       "profile": "rank1",
@@ -55292,7 +55117,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 301,
+      "rank": 300,
       "id": "crustle_shadow",
       "name": "Crustle (Shadow)",
       "profile": "rank1",
@@ -55476,7 +55301,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 302,
+      "rank": 301,
       "id": "wormadam_trash",
       "name": "Wormadam (Trash)",
       "profile": "rank1",
@@ -55660,7 +55485,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 303,
+      "rank": 302,
       "id": "gligar_shadow",
       "name": "Gligar (Shadow)",
       "profile": "rank1",
@@ -55844,7 +55669,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 304,
+      "rank": 303,
       "id": "arctibax",
       "name": "Arctibax",
       "profile": "rank1",
@@ -56028,7 +55853,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 305,
+      "rank": 304,
       "id": "serperior_shadow",
       "name": "Serperior (Shadow)",
       "profile": "rank1",
@@ -56211,7 +56036,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 306,
+      "rank": 305,
       "id": "tinkatuff",
       "name": "Tinkatuff",
       "profile": "rank1",
@@ -56395,7 +56220,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 307,
+      "rank": 306,
       "id": "togetic",
       "name": "Togetic",
       "profile": "rank1",
@@ -56579,7 +56404,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 308,
+      "rank": 307,
       "id": "servine",
       "name": "Servine",
       "profile": "rank1",
@@ -56762,7 +56587,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 309,
+      "rank": 308,
       "id": "scrafty",
       "name": "Scrafty",
       "profile": "rank1",
@@ -56946,7 +56771,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 310,
+      "rank": 309,
       "id": "avalugg",
       "name": "Avalugg",
       "profile": "rank1",
@@ -57129,7 +56954,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 311,
+      "rank": 310,
       "id": "samurott_shadow",
       "name": "Samurott (Shadow)",
       "profile": "rank1",
@@ -57312,7 +57137,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 312,
+      "rank": 311,
       "id": "primarina",
       "name": "Primarina",
       "profile": "rank1",
@@ -57496,7 +57321,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 313,
+      "rank": 312,
       "id": "gurdurr",
       "name": "Gurdurr",
       "profile": "rank1",
@@ -57679,7 +57504,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 314,
+      "rank": 313,
       "id": "trevenant",
       "name": "Trevenant",
       "profile": "rank1",
@@ -57863,7 +57688,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 315,
+      "rank": 314,
       "id": "zapdos",
       "name": "Zapdos",
       "profile": "rank1",
@@ -58047,7 +57872,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 316,
+      "rank": 315,
       "id": "tentacruel",
       "name": "Tentacruel",
       "profile": "rank1",
@@ -58231,7 +58056,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 317,
+      "rank": 316,
       "id": "drifloon_shadow",
       "name": "Drifloon (Shadow)",
       "profile": "rank1",
@@ -58415,7 +58240,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 318,
+      "rank": 317,
       "id": "castform_rainy",
       "name": "Castform (Rainy)",
       "profile": "rank1",
@@ -58598,7 +58423,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 319,
+      "rank": 318,
       "id": "slowking",
       "name": "Slowking",
       "profile": "rank1",
@@ -58782,7 +58607,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 320,
+      "rank": 319,
       "id": "cetitan",
       "name": "Cetitan",
       "profile": "rank1",
@@ -58965,7 +58790,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 321,
+      "rank": 320,
       "id": "amaura",
       "name": "Amaura",
       "profile": "rank1",
@@ -59149,7 +58974,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 322,
+      "rank": 321,
       "id": "kecleon",
       "name": "Kecleon",
       "profile": "rank1",
@@ -59332,7 +59157,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 323,
+      "rank": 322,
       "id": "magneton",
       "name": "Magneton",
       "profile": "rank1",
@@ -59516,7 +59341,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 324,
+      "rank": 323,
       "id": "galvantula_shadow",
       "name": "Galvantula (Shadow)",
       "profile": "rank1",
@@ -59700,7 +59525,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 325,
+      "rank": 324,
       "id": "ledian_shadow",
       "name": "Ledian (Shadow)",
       "profile": "rank1",
@@ -59884,7 +59709,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 326,
+      "rank": 325,
       "id": "registeel_shadow",
       "name": "Registeel (Shadow)",
       "profile": "rank1",
@@ -60067,7 +59892,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 327,
+      "rank": 326,
       "id": "crocalor",
       "name": "Crocalor",
       "profile": "rank1",
@@ -60250,7 +60075,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 328,
+      "rank": 327,
       "id": "trumbeak",
       "name": "Trumbeak",
       "profile": "rank1",
@@ -60434,7 +60259,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 329,
+      "rank": 328,
       "id": "magnemite",
       "name": "Magnemite",
       "profile": "rank1",
@@ -60618,7 +60443,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 330,
+      "rank": 329,
       "id": "serperior",
       "name": "Serperior",
       "profile": "rank1",
@@ -60801,7 +60626,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 331,
+      "rank": 330,
       "id": "whiscash",
       "name": "Whiscash",
       "profile": "rank1",
@@ -60985,7 +60810,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 332,
+      "rank": 331,
       "id": "froslass_shadow",
       "name": "Froslass (Shadow)",
       "profile": "rank1",
@@ -61169,7 +60994,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 333,
+      "rank": 332,
       "id": "whiscash_shadow",
       "name": "Whiscash (Shadow)",
       "profile": "rank1",
@@ -61353,7 +61178,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 334,
+      "rank": 333,
       "id": "hariyama",
       "name": "Hariyama",
       "profile": "rank1",
@@ -61536,7 +61361,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 335,
+      "rank": 334,
       "id": "golem_alolan",
       "name": "Golem (Alolan)",
       "profile": "rank1",
@@ -61720,7 +61545,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 336,
+      "rank": 335,
       "id": "camerupt_shadow",
       "name": "Camerupt (Shadow)",
       "profile": "rank1",
@@ -61904,7 +61729,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 337,
+      "rank": 336,
       "id": "electivire",
       "name": "Electivire",
       "profile": "rank1",
@@ -62087,7 +61912,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 338,
+      "rank": 337,
       "id": "claydol_shadow",
       "name": "Claydol (Shadow)",
       "profile": "rank1",
@@ -62271,7 +62096,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 339,
+      "rank": 338,
       "id": "wyrdeer",
       "name": "Wyrdeer",
       "profile": "rank1",
@@ -62455,7 +62280,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 340,
+      "rank": 339,
       "id": "bruxish",
       "name": "Bruxish",
       "profile": "rank1",
@@ -62639,7 +62464,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 341,
+      "rank": 340,
       "id": "graveler_alolan",
       "name": "Graveler (Alolan)",
       "profile": "rank1",
@@ -62823,7 +62648,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 342,
+      "rank": 341,
       "id": "trevenant_shadow",
       "name": "Trevenant (Shadow)",
       "profile": "rank1",
@@ -63007,7 +62832,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 343,
+      "rank": 342,
       "id": "ariados",
       "name": "Ariados",
       "profile": "rank1",
@@ -63191,7 +63016,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 344,
+      "rank": 343,
       "id": "palkia_shadow",
       "name": "Palkia (Shadow)",
       "profile": "rank1",
@@ -63375,7 +63200,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 345,
+      "rank": 344,
       "id": "vikavolt_shadow",
       "name": "Vikavolt (Shadow)",
       "profile": "rank1",
@@ -63559,7 +63384,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 346,
+      "rank": 345,
       "id": "glalie",
       "name": "Glalie",
       "profile": "rank1",
@@ -63742,7 +63567,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 347,
+      "rank": 346,
       "id": "squawkabilly",
       "name": "Squawkabilly",
       "profile": "rank1",
@@ -63926,7 +63751,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 348,
+      "rank": 347,
       "id": "tentacruel_shadow",
       "name": "Tentacruel (Shadow)",
       "profile": "rank1",
@@ -64110,7 +63935,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 349,
+      "rank": 348,
       "id": "manectric",
       "name": "Manectric",
       "profile": "rank1",
@@ -64293,7 +64118,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 350,
+      "rank": 349,
       "id": "ferrothorn",
       "name": "Ferrothorn",
       "profile": "rank1",
@@ -64477,7 +64302,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 351,
+      "rank": 350,
       "id": "orbeetle",
       "name": "Orbeetle",
       "profile": "rank1",
@@ -64661,7 +64486,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 352,
+      "rank": 351,
       "id": "latios",
       "name": "Latios",
       "profile": "rank1",
@@ -64845,7 +64670,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 353,
+      "rank": 352,
       "id": "piloswine",
       "name": "Piloswine",
       "profile": "rank1",
@@ -65029,7 +64854,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 354,
+      "rank": 353,
       "id": "amoonguss",
       "name": "Amoonguss",
       "profile": "rank1",
@@ -65213,7 +65038,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 355,
+      "rank": 354,
       "id": "latios_shadow",
       "name": "Latios (Shadow)",
       "profile": "rank1",
@@ -65397,7 +65222,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 356,
+      "rank": 355,
       "id": "lugia",
       "name": "Lugia",
       "profile": "rank1",
@@ -65581,7 +65406,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 357,
+      "rank": 356,
       "id": "coalossal",
       "name": "Coalossal",
       "profile": "rank1",
@@ -65765,7 +65590,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 358,
+      "rank": 357,
       "id": "camerupt",
       "name": "Camerupt",
       "profile": "rank1",
@@ -65949,7 +65774,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 359,
+      "rank": 358,
       "id": "golduck_shadow",
       "name": "Golduck (Shadow)",
       "profile": "rank1",
@@ -66132,7 +65957,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 360,
+      "rank": 359,
       "id": "kingambit",
       "name": "Kingambit",
       "profile": "rank1",
@@ -66316,7 +66141,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 361,
+      "rank": 360,
       "id": "litleo",
       "name": "Litleo",
       "profile": "rank1",
@@ -66500,7 +66325,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 362,
+      "rank": 361,
       "id": "volcanion",
       "name": "Volcanion",
       "profile": "rank1",
@@ -66684,7 +66509,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 363,
+      "rank": 362,
       "id": "zygarde",
       "name": "Zygarde (50% Forme)",
       "profile": "rank1",
@@ -66868,7 +66693,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 364,
+      "rank": 363,
       "id": "grimmsnarl",
       "name": "Grimmsnarl",
       "profile": "rank1",
@@ -67052,7 +66877,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 365,
+      "rank": 364,
       "id": "lucario",
       "name": "Lucario",
       "profile": "rank1",
@@ -67236,7 +67061,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 366,
+      "rank": 365,
       "id": "amoonguss_shadow",
       "name": "Amoonguss (Shadow)",
       "profile": "rank1",
@@ -67420,7 +67245,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 367,
+      "rank": 366,
       "id": "dewott_shadow",
       "name": "Dewott (Shadow)",
       "profile": "rank1",
@@ -67603,7 +67428,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 368,
+      "rank": 367,
       "id": "qwilfish_hisuian",
       "name": "Qwilfish (Hisuian)",
       "profile": "rank1",
@@ -67787,7 +67612,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 369,
+      "rank": 368,
       "id": "gligar",
       "name": "Gligar",
       "profile": "rank1",
@@ -67971,7 +67796,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 370,
+      "rank": 369,
       "id": "regieleki",
       "name": "Regieleki",
       "profile": "rank1",
@@ -68154,7 +67979,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 371,
+      "rank": 370,
       "id": "slowking_shadow",
       "name": "Slowking (Shadow)",
       "profile": "rank1",
@@ -68338,7 +68163,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 372,
+      "rank": 371,
       "id": "piloswine_shadow",
       "name": "Piloswine (Shadow)",
       "profile": "rank1",
@@ -68522,7 +68347,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 373,
+      "rank": 372,
       "id": "meowscarada",
       "name": "Meowscarada",
       "profile": "rank1",
@@ -68706,7 +68531,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 374,
+      "rank": 373,
       "id": "blaziken",
       "name": "Blaziken",
       "profile": "rank1",
@@ -68890,7 +68715,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 375,
+      "rank": 374,
       "id": "mew",
       "name": "Mew",
       "profile": "rank1",
@@ -69073,7 +68898,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 376,
+      "rank": 375,
       "id": "klang",
       "name": "Klang",
       "profile": "rank1",
@@ -69256,7 +69081,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 377,
+      "rank": 376,
       "id": "lileep",
       "name": "Lileep",
       "profile": "rank1",
@@ -69440,7 +69265,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 378,
+      "rank": 377,
       "id": "fletchinder",
       "name": "Fletchinder",
       "profile": "rank1",
@@ -69624,7 +69449,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 379,
+      "rank": 378,
       "id": "gurdurr_shadow",
       "name": "Gurdurr (Shadow)",
       "profile": "rank1",
@@ -69807,7 +69632,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 380,
+      "rank": 379,
       "id": "quaquaval",
       "name": "Quaquaval",
       "profile": "rank1",
@@ -69991,7 +69816,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 381,
+      "rank": 380,
       "id": "hippowdon_shadow",
       "name": "Hippowdon (Shadow)",
       "profile": "rank1",
@@ -70174,7 +69999,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 382,
+      "rank": 381,
       "id": "dragonite",
       "name": "Dragonite",
       "profile": "rank1",
@@ -70358,7 +70183,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 383,
+      "rank": 382,
       "id": "sandygast",
       "name": "Sandygast",
       "profile": "rank1",
@@ -70542,7 +70367,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 384,
+      "rank": 383,
       "id": "golisopodsh",
       "name": "Golisopod",
       "profile": "rank1",
@@ -70726,7 +70551,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 385,
+      "rank": 384,
       "id": "vikavolt",
       "name": "Vikavolt",
       "profile": "rank1",
@@ -70910,7 +70735,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 386,
+      "rank": 385,
       "id": "golduck",
       "name": "Golduck",
       "profile": "rank1",
@@ -71093,7 +70918,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 387,
+      "rank": 386,
       "id": "decidueye_hisuian",
       "name": "Decidueye (Hisuian)",
       "profile": "rank1",
@@ -71277,7 +71102,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 388,
+      "rank": 387,
       "id": "arcanine_shadow",
       "name": "Arcanine (Shadow)",
       "profile": "rank1",
@@ -71460,7 +71285,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 389,
+      "rank": 388,
       "id": "overqwil",
       "name": "Overqwil",
       "profile": "rank1",
@@ -71644,7 +71469,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 390,
+      "rank": 389,
       "id": "barbaracle",
       "name": "Barbaracle",
       "profile": "rank1",
@@ -71828,7 +71653,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 391,
+      "rank": 390,
       "id": "slowpoke_galarian",
       "name": "Slowpoke (Galarian)",
       "profile": "rank1",
@@ -72011,7 +71836,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 392,
+      "rank": 391,
       "id": "tyranitar_shadow",
       "name": "Tyranitar (Shadow)",
       "profile": "rank1",
@@ -72195,7 +72020,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 393,
+      "rank": 392,
       "id": "noctowl_shadow",
       "name": "Noctowl (Shadow)",
       "profile": "rank1",
@@ -72379,7 +72204,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 394,
+      "rank": 393,
       "id": "slowking_galarian",
       "name": "Slowking (Galarian)",
       "profile": "rank1",
@@ -72563,7 +72388,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 395,
+      "rank": 394,
       "id": "zygarde_complete",
       "name": "Zygarde (Complete Forme)",
       "profile": "rank1",
@@ -72747,7 +72572,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 396,
+      "rank": 395,
       "id": "shiftry_shadow",
       "name": "Shiftry (Shadow)",
       "profile": "rank1",
@@ -72931,7 +72756,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 397,
+      "rank": 396,
       "id": "ferrothorn_shadow",
       "name": "Ferrothorn (Shadow)",
       "profile": "rank1",
@@ -73115,7 +72940,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 398,
+      "rank": 397,
       "id": "galvantula",
       "name": "Galvantula",
       "profile": "rank1",
@@ -73299,7 +73124,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 399,
+      "rank": 398,
       "id": "flamigo",
       "name": "Flamigo",
       "profile": "rank1",
@@ -73483,7 +73308,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 400,
+      "rank": 399,
       "id": "timburr",
       "name": "Timburr",
       "profile": "rank1",
@@ -73666,7 +73491,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 401,
+      "rank": 400,
       "id": "cacturne_shadow",
       "name": "Cacturne (Shadow)",
       "profile": "rank1",
@@ -73850,7 +73675,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 402,
+      "rank": 401,
       "id": "pawmo",
       "name": "Pawmo",
       "profile": "rank1",
@@ -74034,7 +73859,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 403,
+      "rank": 402,
       "id": "meganium",
       "name": "Meganium",
       "profile": "rank1",
@@ -74217,7 +74042,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 404,
+      "rank": 403,
       "id": "meloetta_aria",
       "name": "Meloetta (Aria)",
       "profile": "rank1",
@@ -74401,7 +74226,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 405,
+      "rank": 404,
       "id": "graveler_alolan_shadow",
       "name": "Graveler (Alolan) (Shadow)",
       "profile": "rank1",
@@ -74585,7 +74410,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 406,
+      "rank": 405,
       "id": "magneton_shadow",
       "name": "Magneton (Shadow)",
       "profile": "rank1",
@@ -74769,7 +74594,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 407,
+      "rank": 406,
       "id": "machoke",
       "name": "Machoke",
       "profile": "rank1",
@@ -74939,7 +74764,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 408,
+      "rank": 407,
       "id": "keldeo_resolute",
       "name": "Keldeo (Resolute)",
       "profile": "rank1",
@@ -75123,7 +74948,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 409,
+      "rank": 408,
       "id": "kartana",
       "name": "Kartana",
       "profile": "rank1",
@@ -75307,7 +75132,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 410,
+      "rank": 409,
       "id": "blacephalon",
       "name": "Blacephalon",
       "profile": "rank1",
@@ -75491,7 +75316,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 411,
+      "rank": 410,
       "id": "hawlucha",
       "name": "Hawlucha",
       "profile": "rank1",
@@ -75675,7 +75500,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 412,
+      "rank": 411,
       "id": "meowstic_female",
       "name": "Meowstic (Female)",
       "profile": "rank1",
@@ -75858,7 +75683,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 413,
+      "rank": 412,
       "id": "rapidash_galarian",
       "name": "Rapidash (Galarian)",
       "profile": "rank1",
@@ -76042,7 +75867,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 414,
+      "rank": 413,
       "id": "shiinotic_shadow",
       "name": "Shiinotic (Shadow)",
       "profile": "rank1",
@@ -76226,7 +76051,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 415,
+      "rank": 414,
       "id": "giratina_origin",
       "name": "Giratina (Origin)",
       "profile": "rank1",
@@ -76410,7 +76235,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 416,
+      "rank": 415,
       "id": "tyranitar",
       "name": "Tyranitar",
       "profile": "rank1",
@@ -76594,7 +76419,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 417,
+      "rank": 416,
       "id": "kangaskhan",
       "name": "Kangaskhan",
       "profile": "rank1",
@@ -76777,7 +76602,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 418,
+      "rank": 417,
       "id": "samurott_hisuian",
       "name": "Samurott (Hisuian)",
       "profile": "rank1",
@@ -76961,7 +76786,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 419,
+      "rank": 418,
       "id": "regirock",
       "name": "Regirock",
       "profile": "rank1",
@@ -77144,7 +76969,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 420,
+      "rank": 419,
       "id": "cofagrigus",
       "name": "Cofagrigus",
       "profile": "rank1",
@@ -77314,7 +77139,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 421,
+      "rank": 420,
       "id": "arcanine",
       "name": "Arcanine",
       "profile": "rank1",
@@ -77497,7 +77322,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 422,
+      "rank": 421,
       "id": "hippowdon",
       "name": "Hippowdon",
       "profile": "rank1",
@@ -77680,7 +77505,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 423,
+      "rank": 422,
       "id": "bombirdier",
       "name": "Bombirdier",
       "profile": "rank1",
@@ -77864,7 +77689,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 424,
+      "rank": 423,
       "id": "hattrem",
       "name": "Hattrem",
       "profile": "rank1",
@@ -78047,7 +77872,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 425,
+      "rank": 424,
       "id": "pumpkaboo_super",
       "name": "Pumpkaboo (Super)",
       "profile": "rank1",
@@ -78231,7 +78056,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 426,
+      "rank": 425,
       "id": "lairon_shadow",
       "name": "Lairon (Shadow)",
       "profile": "rank1",
@@ -78415,7 +78240,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 427,
+      "rank": 426,
       "id": "salamence",
       "name": "Salamence",
       "profile": "rank1",
@@ -78599,7 +78424,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 428,
+      "rank": 427,
       "id": "espeon",
       "name": "Espeon",
       "profile": "rank1",
@@ -78782,7 +78607,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 429,
+      "rank": 428,
       "id": "skarmory",
       "name": "Skarmory",
       "profile": "rank1",
@@ -78966,7 +78791,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 430,
+      "rank": 429,
       "id": "servine_shadow",
       "name": "Servine (Shadow)",
       "profile": "rank1",
@@ -79149,7 +78974,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 431,
+      "rank": 430,
       "id": "meganium_shadow",
       "name": "Meganium (Shadow)",
       "profile": "rank1",
@@ -79332,7 +79157,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 432,
+      "rank": 431,
       "id": "spinda",
       "name": "Spinda",
       "profile": "rank1",
@@ -79515,7 +79340,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 433,
+      "rank": 432,
       "id": "cacturne",
       "name": "Cacturne",
       "profile": "rank1",
@@ -79699,7 +79524,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 434,
+      "rank": 433,
       "id": "oinkologne",
       "name": "Oinkologne",
       "profile": "rank1",
@@ -79882,7 +79707,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 435,
+      "rank": 434,
       "id": "sirfetchd",
       "name": "Sirfetch'd",
       "profile": "rank1",
@@ -80065,7 +79890,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 436,
+      "rank": 435,
       "id": "lugia_shadow",
       "name": "Lugia (Shadow)",
       "profile": "rank1",
@@ -80249,7 +80074,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 437,
+      "rank": 436,
       "id": "pyroar",
       "name": "Pyroar",
       "profile": "rank1",
@@ -80433,7 +80258,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 438,
+      "rank": 437,
       "id": "shiinotic",
       "name": "Shiinotic",
       "profile": "rank1",
@@ -80617,7 +80442,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 439,
+      "rank": 438,
       "id": "timburr_shadow",
       "name": "Timburr (Shadow)",
       "profile": "rank1",
@@ -80800,7 +80625,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 440,
+      "rank": 439,
       "id": "cofagrigus_shadow",
       "name": "Cofagrigus (Shadow)",
       "profile": "rank1",
@@ -80983,7 +80808,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 441,
+      "rank": 440,
       "id": "dewott",
       "name": "Dewott",
       "profile": "rank1",
@@ -81166,7 +80991,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 442,
+      "rank": 441,
       "id": "genesect",
       "name": "Genesect",
       "profile": "rank1",
@@ -81350,7 +81175,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 443,
+      "rank": 442,
       "id": "xatu_shadow",
       "name": "Xatu (Shadow)",
       "profile": "rank1",
@@ -81534,7 +81359,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 444,
+      "rank": 443,
       "id": "espurr",
       "name": "Espurr",
       "profile": "rank1",
@@ -81717,7 +81542,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 445,
+      "rank": 444,
       "id": "crawdaunt_shadow",
       "name": "Crawdaunt (Shadow)",
       "profile": "rank1",
@@ -81901,7 +81726,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 446,
+      "rank": 445,
       "id": "mamoswine_shadow",
       "name": "Mamoswine (Shadow)",
       "profile": "rank1",
@@ -82085,7 +81910,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 447,
+      "rank": 446,
       "id": "lileep_shadow",
       "name": "Lileep (Shadow)",
       "profile": "rank1",
@@ -82269,7 +82094,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 448,
+      "rank": 447,
       "id": "ursaring_shadow",
       "name": "Ursaring (Shadow)",
       "profile": "rank1",
@@ -82452,7 +82277,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 449,
+      "rank": 448,
       "id": "druddigon",
       "name": "Druddigon",
       "profile": "rank1",
@@ -82635,7 +82460,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 450,
+      "rank": 449,
       "id": "incineroar",
       "name": "Incineroar",
       "profile": "rank1",
@@ -82819,7 +82644,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 451,
+      "rank": 450,
       "id": "dipplin",
       "name": "Dipplin",
       "profile": "rank1",
@@ -83003,7 +82828,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 452,
+      "rank": 451,
       "id": "alomomola",
       "name": "Alomomola",
       "profile": "rank1",
@@ -83186,7 +83011,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 453,
+      "rank": 452,
       "id": "skarmory_shadow",
       "name": "Skarmory (Shadow)",
       "profile": "rank1",
@@ -83370,7 +83195,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "common"
     },
     {
-      "rank": 454,
+      "rank": 453,
       "id": "decidueye",
       "name": "Decidueye",
       "profile": "rank1",
@@ -83554,7 +83379,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 455,
+      "rank": 454,
       "id": "heracross",
       "name": "Heracross",
       "profile": "rank1",
@@ -83738,7 +83563,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 456,
+      "rank": 455,
       "id": "gothitelle",
       "name": "Gothitelle",
       "profile": "rank1",
@@ -83921,7 +83746,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 457,
+      "rank": 456,
       "id": "machop_shadow",
       "name": "Machop (Shadow)",
       "profile": "rank1",
@@ -84104,7 +83929,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 458,
+      "rank": 457,
       "id": "bibarel",
       "name": "Bibarel",
       "profile": "rank1",
@@ -84288,7 +84113,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 459,
+      "rank": 458,
       "id": "lairon",
       "name": "Lairon",
       "profile": "rank1",
@@ -84472,7 +84297,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 460,
+      "rank": 459,
       "id": "aron_shadow",
       "name": "Aron (Shadow)",
       "profile": "rank1",
@@ -84656,7 +84481,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 461,
+      "rank": 460,
       "id": "noctowl",
       "name": "Noctowl",
       "profile": "rank1",
@@ -84827,7 +84652,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 462,
+      "rank": 461,
       "id": "houndstone",
       "name": "Houndstone",
       "profile": "rank1",
@@ -85010,7 +84835,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 463,
+      "rank": 462,
       "id": "meowstic",
       "name": "Meowstic (Male)",
       "profile": "rank1",
@@ -85193,7 +85018,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 464,
+      "rank": 463,
       "id": "vespiquen",
       "name": "Vespiquen",
       "profile": "rank1",
@@ -85377,7 +85202,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 465,
+      "rank": 464,
       "id": "pumpkaboo_large",
       "name": "Pumpkaboo (Large)",
       "profile": "rank1",
@@ -85561,7 +85386,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 466,
+      "rank": 465,
       "id": "dhelmise",
       "name": "Dhelmise",
       "profile": "rank1",
@@ -85745,7 +85570,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 467,
+      "rank": 466,
       "id": "xatu",
       "name": "Xatu",
       "profile": "rank1",
@@ -85929,7 +85754,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 468,
+      "rank": 467,
       "id": "ceruledge",
       "name": "Ceruledge",
       "profile": "rank1",
@@ -86113,7 +85938,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 469,
+      "rank": 468,
       "id": "centiskorch",
       "name": "Centiskorch",
       "profile": "rank1",
@@ -86297,7 +86122,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 470,
+      "rank": 469,
       "id": "gothitelle_shadow",
       "name": "Gothitelle (Shadow)",
       "profile": "rank1",
@@ -86480,7 +86305,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 471,
+      "rank": 470,
       "id": "darmanitan_standard_shadow",
       "name": "Darmanitan (Standard) (Shadow)",
       "profile": "rank1",
@@ -86663,7 +86488,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 472,
+      "rank": 471,
       "id": "baxcalibur",
       "name": "Baxcalibur",
       "profile": "rank1",
@@ -86847,7 +86672,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 473,
+      "rank": 472,
       "id": "ho_oh_shadow",
       "name": "Ho-Oh (Shadow)",
       "profile": "rank1",
@@ -87031,7 +86856,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 474,
+      "rank": 473,
       "id": "vibrava_shadow",
       "name": "Vibrava (Shadow)",
       "profile": "rank1",
@@ -87215,7 +87040,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 475,
+      "rank": 474,
       "id": "tauros_aqua",
       "name": "Tauros (Aqua)",
       "profile": "rank1",
@@ -87399,7 +87224,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 476,
+      "rank": 475,
       "id": "bibarel_shadow",
       "name": "Bibarel (Shadow)",
       "profile": "rank1",
@@ -87583,7 +87408,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 477,
+      "rank": 476,
       "id": "marshtomp_shadow",
       "name": "Marshtomp (Shadow)",
       "profile": "rank1",
@@ -87767,7 +87592,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 478,
+      "rank": 477,
       "id": "excadrill_shadow",
       "name": "Excadrill (Shadow)",
       "profile": "rank1",
@@ -87951,7 +87776,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 479,
+      "rank": 478,
       "id": "leavanny",
       "name": "Leavanny",
       "profile": "rank1",
@@ -88135,7 +87960,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 480,
+      "rank": 479,
       "id": "sceptile_shadow",
       "name": "Sceptile (Shadow)",
       "profile": "rank1",
@@ -88318,7 +88143,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 481,
+      "rank": 480,
       "id": "lopunny",
       "name": "Lopunny",
       "profile": "rank1",
@@ -88501,7 +88326,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 482,
+      "rank": 481,
       "id": "throh",
       "name": "Throh",
       "profile": "rank1",
@@ -88684,7 +88509,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 483,
+      "rank": 482,
       "id": "heatran_shadow",
       "name": "Heatran (Shadow)",
       "profile": "rank1",
@@ -88868,7 +88693,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 484,
+      "rank": 483,
       "id": "frillish",
       "name": "Frillish",
       "profile": "rank1",
@@ -89052,7 +88877,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 485,
+      "rank": 484,
       "id": "aggron",
       "name": "Aggron",
       "profile": "rank1",
@@ -89236,7 +89061,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 486,
+      "rank": 485,
       "id": "aron",
       "name": "Aron",
       "profile": "rank1",
@@ -89420,7 +89245,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 487,
+      "rank": 486,
       "id": "golurk_shadow",
       "name": "Golurk (Shadow)",
       "profile": "rank1",
@@ -89604,7 +89429,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 488,
+      "rank": 487,
       "id": "mamoswine",
       "name": "Mamoswine",
       "profile": "rank1",
@@ -89788,7 +89613,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 489,
+      "rank": 488,
       "id": "marshadow",
       "name": "Marshadow",
       "profile": "rank1",
@@ -89972,7 +89797,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 490,
+      "rank": 489,
       "id": "scizor_shadow",
       "name": "Scizor (Shadow)",
       "profile": "rank1",
@@ -90156,7 +89981,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 491,
+      "rank": 490,
       "id": "hydrapple",
       "name": "Hydrapple",
       "profile": "rank1",
@@ -90340,7 +90165,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 492,
+      "rank": 491,
       "id": "heliolisk",
       "name": "Heliolisk",
       "profile": "rank1",
@@ -90524,7 +90349,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 493,
+      "rank": 492,
       "id": "regirock_shadow",
       "name": "Regirock (Shadow)",
       "profile": "rank1",
@@ -90707,7 +90532,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 494,
+      "rank": 493,
       "id": "mesprit",
       "name": "Mesprit",
       "profile": "rank1",
@@ -90890,7 +90715,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 495,
+      "rank": 494,
       "id": "glalie_shadow",
       "name": "Glalie (Shadow)",
       "profile": "rank1",
@@ -91073,7 +90898,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 496,
+      "rank": 495,
       "id": "toxicroak_shadow",
       "name": "Toxicroak (Shadow)",
       "profile": "rank1",
@@ -91257,7 +91082,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 497,
+      "rank": 496,
       "id": "gardevoir_shadow",
       "name": "Gardevoir (Shadow)",
       "profile": "rank1",
@@ -91441,7 +91266,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 498,
+      "rank": 497,
       "id": "luxray_shadow",
       "name": "Luxray (Shadow)",
       "profile": "rank1",
@@ -91624,7 +91449,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 499,
+      "rank": 498,
       "id": "nidoking",
       "name": "Nidoking",
       "profile": "rank1",
@@ -91808,7 +91633,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 500,
+      "rank": 499,
       "id": "pawniard",
       "name": "Pawniard",
       "profile": "rank1",
@@ -91992,7 +91817,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 501,
+      "rank": 500,
       "id": "vullaby",
       "name": "Vullaby",
       "profile": "rank1",
@@ -92176,7 +92001,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 502,
+      "rank": 501,
       "id": "furfrou",
       "name": "Furfrou",
       "profile": "rank1",
@@ -92359,7 +92184,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 503,
+      "rank": 502,
       "id": "chandelure_shadow",
       "name": "Chandelure (Shadow)",
       "profile": "rank1",
@@ -92543,7 +92368,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 504,
+      "rank": 503,
       "id": "darmanitan_standard",
       "name": "Darmanitan (Standard)",
       "profile": "rank1",
@@ -92726,7 +92551,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 505,
+      "rank": 504,
       "id": "vibrava",
       "name": "Vibrava",
       "profile": "rank1",
@@ -92910,7 +92735,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 506,
+      "rank": 505,
       "id": "wartortle",
       "name": "Wartortle",
       "profile": "rank1",
@@ -93093,7 +92918,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 507,
+      "rank": 506,
       "id": "heliolisk_shadow",
       "name": "Heliolisk (Shadow)",
       "profile": "rank1",
@@ -93277,7 +93102,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 508,
+      "rank": 507,
       "id": "shiftry",
       "name": "Shiftry",
       "profile": "rank1",
@@ -93461,7 +93286,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 509,
+      "rank": 508,
       "id": "machop",
       "name": "Machop",
       "profile": "rank1",
@@ -93644,7 +93469,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 510,
+      "rank": 509,
       "id": "electabuzz_shadow",
       "name": "Electabuzz (Shadow)",
       "profile": "rank1",
@@ -93827,7 +93652,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 511,
+      "rank": 510,
       "id": "quilladin",
       "name": "Quilladin",
       "profile": "rank1",
@@ -94010,7 +93835,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 512,
+      "rank": 511,
       "id": "kubfu",
       "name": "Kubfu",
       "profile": "rank1",
@@ -94193,7 +94018,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 513,
+      "rank": 512,
       "id": "throh_shadow",
       "name": "Throh (Shadow)",
       "profile": "rank1",
@@ -94376,7 +94201,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 514,
+      "rank": 513,
       "id": "espathra",
       "name": "Espathra",
       "profile": "rank1",
@@ -94559,7 +94384,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 515,
+      "rank": 514,
       "id": "crawdaunt",
       "name": "Crawdaunt",
       "profile": "rank1",
@@ -94743,7 +94568,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 516,
+      "rank": 515,
       "id": "muk_shadow",
       "name": "Muk (Shadow)",
       "profile": "rank1",
@@ -94926,7 +94751,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 517,
+      "rank": 516,
       "id": "krookodile",
       "name": "Krookodile",
       "profile": "rank1",
@@ -95110,7 +94935,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 518,
+      "rank": 517,
       "id": "toxicroak",
       "name": "Toxicroak",
       "profile": "rank1",
@@ -95294,7 +95119,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 519,
+      "rank": 518,
       "id": "scolipede",
       "name": "Scolipede",
       "profile": "rank1",
@@ -95478,7 +95303,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 520,
+      "rank": 519,
       "id": "raticate_alolan_shadow",
       "name": "Raticate (Alolan) (Shadow)",
       "profile": "rank1",
@@ -95662,7 +95487,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 521,
+      "rank": 520,
       "id": "growlithe_shadow",
       "name": "Growlithe (Shadow)",
       "profile": "rank1",
@@ -95845,7 +95670,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 522,
+      "rank": 521,
       "id": "rhyperior_shadow",
       "name": "Rhyperior (Shadow)",
       "profile": "rank1",
@@ -96029,7 +95854,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 523,
+      "rank": 522,
       "id": "wartortle_shadow",
       "name": "Wartortle (Shadow)",
       "profile": "rank1",
@@ -96212,7 +96037,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 524,
+      "rank": 523,
       "id": "swadloon",
       "name": "Swadloon",
       "profile": "rank1",
@@ -96396,7 +96221,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 525,
+      "rank": 524,
       "id": "quilladin_shadow",
       "name": "Quilladin (Shadow)",
       "profile": "rank1",
@@ -96579,7 +96404,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 526,
+      "rank": 525,
       "id": "grimer_alolan",
       "name": "Grimer (Alolan)",
       "profile": "rank1",
@@ -96763,7 +96588,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 527,
+      "rank": 526,
       "id": "skuntank",
       "name": "Skuntank",
       "profile": "rank1",
@@ -96947,7 +96772,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 528,
+      "rank": 527,
       "id": "lokix",
       "name": "Lokix",
       "profile": "rank1",
@@ -97131,7 +96956,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 529,
+      "rank": 528,
       "id": "garchomp_shadow",
       "name": "Garchomp (Shadow)",
       "profile": "rank1",
@@ -97315,7 +97140,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 530,
+      "rank": 529,
       "id": "nidoking_shadow",
       "name": "Nidoking (Shadow)",
       "profile": "rank1",
@@ -97499,7 +97324,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 531,
+      "rank": 530,
       "id": "misdreavus_shadow",
       "name": "Misdreavus (Shadow)",
       "profile": "rank1",
@@ -97682,7 +97507,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 532,
+      "rank": 531,
       "id": "gardevoir",
       "name": "Gardevoir",
       "profile": "rank1",
@@ -97866,7 +97691,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 533,
+      "rank": 532,
       "id": "farfetchd",
       "name": "Farfetch'd",
       "profile": "rank1",
@@ -98050,7 +97875,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 534,
+      "rank": 533,
       "id": "fraxure_shadow",
       "name": "Fraxure (Shadow)",
       "profile": "rank1",
@@ -98233,7 +98058,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 535,
+      "rank": 534,
       "id": "golurk",
       "name": "Golurk",
       "profile": "rank1",
@@ -98417,7 +98242,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 536,
+      "rank": 535,
       "id": "venomoth",
       "name": "Venomoth",
       "profile": "rank1",
@@ -98601,7 +98426,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 537,
+      "rank": 536,
       "id": "escavalier_shadow",
       "name": "Escavalier (Shadow)",
       "profile": "rank1",
@@ -98785,7 +98610,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 538,
+      "rank": 537,
       "id": "garchomp",
       "name": "Garchomp",
       "profile": "rank1",
@@ -98969,7 +98794,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 539,
+      "rank": 538,
       "id": "dolliv",
       "name": "Dolliv",
       "profile": "rank1",
@@ -99153,7 +98978,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 540,
+      "rank": 539,
       "id": "eelektross",
       "name": "Eelektross",
       "profile": "rank1",
@@ -99336,7 +99161,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 541,
+      "rank": 540,
       "id": "sandaconda",
       "name": "Sandaconda",
       "profile": "rank1",
@@ -99519,7 +99344,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 542,
+      "rank": 541,
       "id": "geodude_alolan_shadow",
       "name": "Geodude (Alolan) (Shadow)",
       "profile": "rank1",
@@ -99703,7 +99528,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 543,
+      "rank": 542,
       "id": "farfetchd_galarian",
       "name": "Farfetch'd (Galarian)",
       "profile": "rank1",
@@ -99886,7 +99711,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 544,
+      "rank": 543,
       "id": "luxray",
       "name": "Luxray",
       "profile": "rank1",
@@ -100069,7 +99894,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 545,
+      "rank": 544,
       "id": "bayleef_shadow",
       "name": "Bayleef (Shadow)",
       "profile": "rank1",
@@ -100252,7 +100077,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 546,
+      "rank": 545,
       "id": "breloom",
       "name": "Breloom",
       "profile": "rank1",
@@ -100436,7 +100261,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 547,
+      "rank": 546,
       "id": "scizor",
       "name": "Scizor",
       "profile": "rank1",
@@ -100620,7 +100445,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 548,
+      "rank": 547,
       "id": "pumpkaboo_average",
       "name": "Pumpkaboo (Average)",
       "profile": "rank1",
@@ -100804,7 +100629,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 549,
+      "rank": 548,
       "id": "grimer_alolan_shadow",
       "name": "Grimer (Alolan) (Shadow)",
       "profile": "rank1",
@@ -100988,7 +100813,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 550,
+      "rank": 549,
       "id": "grimer_shadow",
       "name": "Grimer (Shadow)",
       "profile": "rank1",
@@ -101171,7 +100996,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 551,
+      "rank": 550,
       "id": "delphox_shadow",
       "name": "Delphox (Shadow)",
       "profile": "rank1",
@@ -101355,7 +101180,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 552,
+      "rank": 551,
       "id": "passimian",
       "name": "Passimian",
       "profile": "rank1",
@@ -101538,7 +101363,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 553,
+      "rank": 552,
       "id": "carkol",
       "name": "Carkol",
       "profile": "rank1",
@@ -101722,7 +101547,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 554,
+      "rank": 553,
       "id": "chandelure",
       "name": "Chandelure",
       "profile": "rank1",
@@ -101906,7 +101731,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 555,
+      "rank": 554,
       "id": "lampent_shadow",
       "name": "Lampent (Shadow)",
       "profile": "rank1",
@@ -102090,7 +101915,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 556,
+      "rank": 555,
       "id": "parasect",
       "name": "Parasect",
       "profile": "rank1",
@@ -102274,7 +102099,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 557,
+      "rank": 556,
       "id": "sceptile",
       "name": "Sceptile",
       "profile": "rank1",
@@ -102457,7 +102282,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 558,
+      "rank": 557,
       "id": "kilowattrel",
       "name": "Kilowattrel",
       "profile": "rank1",
@@ -102641,7 +102466,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 559,
+      "rank": 558,
       "id": "wormadam_plant",
       "name": "Wormadam (Plant)",
       "profile": "rank1",
@@ -102825,7 +102650,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 560,
+      "rank": 559,
       "id": "metagross",
       "name": "Metagross",
       "profile": "rank1",
@@ -103009,7 +102834,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 561,
+      "rank": 560,
       "id": "probopass",
       "name": "Probopass",
       "profile": "rank1",
@@ -103193,7 +103018,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 562,
+      "rank": 561,
       "id": "prinplup",
       "name": "Prinplup",
       "profile": "rank1",
@@ -103376,7 +103201,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 563,
+      "rank": 562,
       "id": "urshifu_rapid_strike",
       "name": "Urshifu (Rapid Strike)",
       "profile": "rank1",
@@ -103560,7 +103385,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 564,
+      "rank": 563,
       "id": "gengar_shadow",
       "name": "Gengar (Shadow)",
       "profile": "rank1",
@@ -103744,7 +103569,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 565,
+      "rank": 564,
       "id": "tropius",
       "name": "Tropius",
       "profile": "rank1",
@@ -103928,7 +103753,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 566,
+      "rank": 565,
       "id": "obstagoon_shadow",
       "name": "Obstagoon (Shadow)",
       "profile": "rank1",
@@ -104112,7 +103937,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 567,
+      "rank": 566,
       "id": "linoone_galarian",
       "name": "Linoone (Galarian)",
       "profile": "rank1",
@@ -104296,7 +104121,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 568,
+      "rank": 567,
       "id": "excadrill",
       "name": "Excadrill",
       "profile": "rank1",
@@ -104480,7 +104305,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 569,
+      "rank": 568,
       "id": "gabite_shadow",
       "name": "Gabite (Shadow)",
       "profile": "rank1",
@@ -104664,7 +104489,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 570,
+      "rank": 569,
       "id": "mudsdale",
       "name": "Mudsdale",
       "profile": "rank1",
@@ -104847,7 +104672,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 571,
+      "rank": 570,
       "id": "lampent",
       "name": "Lampent",
       "profile": "rank1",
@@ -105031,7 +104856,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 572,
+      "rank": 571,
       "id": "munchlax",
       "name": "Munchlax",
       "profile": "rank1",
@@ -105214,7 +105039,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 573,
+      "rank": 572,
       "id": "runerigus",
       "name": "Runerigus",
       "profile": "rank1",
@@ -105398,7 +105223,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 574,
+      "rank": 573,
       "id": "corvisquire",
       "name": "Corvisquire",
       "profile": "rank1",
@@ -105581,7 +105406,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 575,
+      "rank": 574,
       "id": "articuno_galarian",
       "name": "Articuno (Galarian)",
       "profile": "rank1",
@@ -105765,7 +105590,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 576,
+      "rank": 575,
       "id": "skuntank_shadow",
       "name": "Skuntank (Shadow)",
       "profile": "rank1",
@@ -105949,7 +105774,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 577,
+      "rank": 576,
       "id": "corvisquire_shadow",
       "name": "Corvisquire (Shadow)",
       "profile": "rank1",
@@ -106132,7 +105957,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 578,
+      "rank": 577,
       "id": "escavalier",
       "name": "Escavalier",
       "profile": "rank1",
@@ -106316,7 +106141,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 579,
+      "rank": 578,
       "id": "grimer",
       "name": "Grimer",
       "profile": "rank1",
@@ -106499,7 +106324,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 580,
+      "rank": 579,
       "id": "kabutops",
       "name": "Kabutops",
       "profile": "rank1",
@@ -106683,7 +106508,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 581,
+      "rank": 580,
       "id": "staravia",
       "name": "Staravia",
       "profile": "rank1",
@@ -106867,7 +106692,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 582,
+      "rank": 581,
       "id": "manectric_shadow",
       "name": "Manectric (Shadow)",
       "profile": "rank1",
@@ -107050,7 +106875,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 583,
+      "rank": 582,
       "id": "regice",
       "name": "Regice",
       "profile": "rank1",
@@ -107233,7 +107058,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 584,
+      "rank": 583,
       "id": "gothorita_shadow",
       "name": "Gothorita (Shadow)",
       "profile": "rank1",
@@ -107416,7 +107241,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 585,
+      "rank": 584,
       "id": "donphan_shadow",
       "name": "Donphan (Shadow)",
       "profile": "rank1",
@@ -107599,7 +107424,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 586,
+      "rank": 585,
       "id": "obstagoon",
       "name": "Obstagoon",
       "profile": "rank1",
@@ -107783,7 +107608,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 587,
+      "rank": 586,
       "id": "growlithe_hisuian",
       "name": "Growlithe (Hisuian)",
       "profile": "rank1",
@@ -107967,7 +107792,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 588,
+      "rank": 587,
       "id": "relicanth",
       "name": "Relicanth",
       "profile": "rank1",
@@ -108151,7 +107976,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 589,
+      "rank": 588,
       "id": "wailord",
       "name": "Wailord",
       "profile": "rank1",
@@ -108321,7 +108146,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 590,
+      "rank": 589,
       "id": "avalugg_hisuian",
       "name": "Avalugg (Hisuian)",
       "profile": "rank1",
@@ -108505,7 +108330,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 591,
+      "rank": 590,
       "id": "exeggutor_shadow",
       "name": "Exeggutor (Shadow)",
       "profile": "rank1",
@@ -108689,7 +108514,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 592,
+      "rank": 591,
       "id": "gabite",
       "name": "Gabite",
       "profile": "rank1",
@@ -108873,7 +108698,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 593,
+      "rank": 592,
       "id": "pumpkaboo_small",
       "name": "Pumpkaboo (Small)",
       "profile": "rank1",
@@ -109057,7 +108882,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 594,
+      "rank": 593,
       "id": "geodude_alolan",
       "name": "Geodude (Alolan)",
       "profile": "rank1",
@@ -109241,7 +109066,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 595,
+      "rank": 594,
       "id": "ponyta_shadow",
       "name": "Ponyta (Shadow)",
       "profile": "rank1",
@@ -109422,6 +109247,190 @@ window.GREAT_LEAGUE_RANKINGS = {
       "simulationCompetitiveScore": 467,
       "candidatePriorScore": 495,
       "candidateMetaTier": "unweighted"
+    },
+    {
+      "rank": 595,
+      "id": "aegislash_shield",
+      "name": "Aegislash (Shield)",
+      "profile": "rank1",
+      "averageScore": 506,
+      "externalWeightedAverageScore": 421,
+      "weightedAverageScore": 498,
+      "rawScore": 482,
+      "weightedScore": 498,
+      "competitiveScore": 475,
+      "overallScore": 475,
+      "categoryScores": {
+        "closer": {
+          "label": "0 Shields",
+          "weight": 1,
+          "averageScore": 723,
+          "dampenedScore": 619,
+          "weightedScore": 609,
+          "metaScore": 530,
+          "consistencyScore": 586,
+          "competitiveScore": 551,
+          "rawRating": 72,
+          "weightedRating": 61,
+          "metaRating": 53,
+          "competitiveRating": 55,
+          "score": 55,
+          "matchups": 1540,
+          "metaMatchups": 127,
+          "wins": 1335,
+          "losses": 204,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
+                "uses": 1540
+              }
+            ],
+            "charged": [
+              {
+                "id": "GYRO_BALL",
+                "uses": 1540
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 1540
+              }
+            ]
+          }
+        },
+        "core": {
+          "label": "1 Shield",
+          "weight": 1,
+          "averageScore": 419,
+          "dampenedScore": 467,
+          "weightedScore": 459,
+          "metaScore": 384,
+          "consistencyScore": 423,
+          "competitiveScore": 403,
+          "rawRating": 42,
+          "weightedRating": 46,
+          "metaRating": 38,
+          "competitiveRating": 40,
+          "score": 40,
+          "matchups": 1540,
+          "metaMatchups": 127,
+          "wins": 645,
+          "losses": 888,
+          "ties": 7,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
+                "uses": 1540
+              }
+            ],
+            "charged": [
+              {
+                "id": "GYRO_BALL",
+                "uses": 1540
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 1540
+              }
+            ]
+          }
+        },
+        "lead": {
+          "label": "2 Shields",
+          "weight": 1,
+          "averageScore": 374,
+          "dampenedScore": 446,
+          "weightedScore": 439,
+          "metaScore": 371,
+          "consistencyScore": 404,
+          "competitiveScore": 388,
+          "rawRating": 37,
+          "weightedRating": 44,
+          "metaRating": 37,
+          "competitiveRating": 39,
+          "score": 39,
+          "matchups": 1540,
+          "metaMatchups": 127,
+          "wins": 543,
+          "losses": 995,
+          "ties": 2,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "AEGISLASH_CHARGE_PSYCHO_CUT",
+                "uses": 1540
+              }
+            ],
+            "charged": [
+              {
+                "id": "GYRO_BALL",
+                "uses": 1540
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 1540
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 148.81,
+      "matchups": 4620,
+      "wins": 2523,
+      "losses": 2087,
+      "ties": 10,
+      "winRate": 0.5461,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 723,
+          "dampenedScore": 619,
+          "weightedScore": 609,
+          "metaScore": 530,
+          "matchups": 1540,
+          "wins": 1335,
+          "losses": 204,
+          "ties": 1
+        },
+        "1-1": {
+          "averageScore": 419,
+          "dampenedScore": 467,
+          "weightedScore": 459,
+          "metaScore": 384,
+          "matchups": 1540,
+          "wins": 645,
+          "losses": 888,
+          "ties": 7
+        },
+        "2-2": {
+          "averageScore": 374,
+          "dampenedScore": 446,
+          "weightedScore": 439,
+          "metaScore": 371,
+          "matchups": 1540,
+          "wins": 543,
+          "losses": 995,
+          "ties": 2
+        }
+      },
+      "types": [
+        "steel",
+        "ghost"
+      ],
+      "dex": 681,
+      "moveset": {
+        "fast": "AEGISLASH_CHARGE_PSYCHO_CUT",
+        "charged": [
+          "SHADOW_BALL",
+          "GYRO_BALL"
+        ]
+      },
+      "dampenedAverageScore": 510,
+      "metaScore": 421,
+      "simulationCompetitiveScore": 441,
+      "candidatePriorScore": 563,
+      "candidateMetaTier": "core"
     },
     {
       "rank": 596,

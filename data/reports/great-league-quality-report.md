@@ -1,13 +1,13 @@
 # Great League Dataset Quality Report
 
 Status: **Dataset VALID**
-Generated: 2026-07-20T08:54:31.756Z
+Generated: 2026-08-13T11:31:19.189Z
 
 ## Generation
 - Dataset version: 1
 - Simulator version: battle-planner-v6
 - Game Master hash: 759e0ae4405c4acc
-- Git commit: unknown
+- Git commit: 245e194
 
 ## Coverage
 - Pokemon included: 1541
@@ -21,13 +21,15 @@ Generated: 2026-07-20T08:54:31.756Z
 - Skipped simulations: 0
 
 ## Output
-- data/great-league-rankings.json: 6,946,048 bytes
-- data/great-league-rankings.js: 6,946,080 bytes
-- data/rankings/great-league-full.json: 6,946,048 bytes
-- Total dataset size: 20,838,176 bytes
+- data/great-league-rankings.json: 6.946.398 bytes
+- data/great-league-rankings.js: 6.946.430 bytes
+- data/rankings/great-league-full.json: 6.946.398 bytes
+- Total dataset size: 20.839.226 bytes
 
 ## Validation
 - No blocking issues found.
+### Warnings
+- Dataset planner version is stale: battle-planner-v6; current battle-planner-v32.
 
 ## Sanity Check
 ### Top 50
@@ -71,16 +73,16 @@ Generated: 2026-07-20T08:54:31.756Z
 - #38 Zweilous: 529
 - #39 Lapras: 529
 - #40 Carbink: 529
-- #41 Aegislash (Shield): 528
-- #42 Sealeo (Shadow): 527
-- #43 Empoleon: 527
-- #44 Feraligatr: 527
-- #45 Mantine: 526
-- #46 Abomasnow (Shadow): 526
-- #47 Machoke (Shadow): 526
-- #48 Pangoro: 526
-- #49 Swanna (Shadow): 525
-- #50 Araquanid: 525
+- #41 Sealeo (Shadow): 527
+- #42 Empoleon: 527
+- #43 Feraligatr: 527
+- #44 Mantine: 526
+- #45 Abomasnow (Shadow): 526
+- #46 Machoke (Shadow): 526
+- #47 Pangoro: 526
+- #48 Swanna (Shadow): 525
+- #49 Araquanid: 525
+- #50 Turtonator: 525
 
 ### Bottom 20
 - #1541 Zigzagoon (Galarian) (Shadow): 381
@@ -105,7 +107,7 @@ Generated: 2026-07-20T08:54:31.756Z
 - #1522 Cranidos: 383
 
 ### Biggest 0-0 / 1-1 / 2-2 Differences
-- #41 Aegislash (Shield): spread 307 (0-0 776, 1-1 529, 2-2 469)
+- #595 Aegislash (Shield): spread 349 (0-0 723, 1-1 419, 2-2 374)
 - #1207 Zamazenta (Hero): spread 232 (0-0 523, 1-1 420, 2-2 291)
 - #1193 Zacian (Hero): spread 227 (0-0 537, 1-1 447, 2-2 310)
 - #970 Rotom (Heat): spread 216 (0-0 587, 1-1 444, 2-2 371)

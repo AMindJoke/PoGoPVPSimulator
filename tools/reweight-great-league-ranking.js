@@ -212,7 +212,12 @@ function emptyCategory(label) {
 function parseCacheCellKey(key) {
   const [opponentSignature, shieldState] = key.split("|");
   if (!opponentSignature || !shieldState) return null;
-  const opponentId = opponentSignature.split(":")[0];
+  let opponentId = opponentSignature.split(":")[0];
+  if (opponentSignature.startsWith("{")) {
+    try {
+      opponentId = JSON.parse(opponentSignature).id || opponentId;
+    } catch (_) {}
+  }
   return { opponentId, shieldState };
 }
 
@@ -221,13 +226,14 @@ function cellScore(value) {
   return Number(value && value.score);
 }
 
-function accumulateRows(ranking, weights, metaIds, entryMeta = new Map()) {
+function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), selectiveIds = null) {
   const knownIds = new Set(ranking.entries.map(entry => entry.id));
   const rows = [];
   let filesRead = 0;
   let cellsRead = 0;
 
   for (const base of ranking.entries) {
+    if (selectiveIds && !selectiveIds.has(base.id)) continue;
     const file = path.join(CACHE_DIR, `${base.id}.json`);
     if (!fs.existsSync(file)) continue;
     const cache = readJson(file);
@@ -380,6 +386,9 @@ function accumulateRows(ranking, weights, metaIds, entryMeta = new Map()) {
 
 function run(options = {}) {
   const passes = Math.max(1, Number(options.passes || MODEL.passes));
+  const selectiveIds = options.pokemonIds instanceof Set && options.pokemonIds.size
+    ? options.pokemonIds
+    : null;
   const ranking = readJson(RANKING_PATH);
   const meta = fs.existsSync(META_PATH) ? readJson(META_PATH) : { pokemon: [] };
   const metaWeightConfig = loadMetaWeightConfig();
@@ -392,8 +401,26 @@ function run(options = {}) {
 
   for (let pass = 1; pass <= passes; pass++) {
     const workingRanking = { ...ranking, entries: current };
-    last = accumulateRows(workingRanking, weights, metaIds, metaWeightConfig.entryMeta);
-    current = last.rows;
+    last = accumulateRows(workingRanking, weights, metaIds, metaWeightConfig.entryMeta, selectiveIds);
+    if (selectiveIds) {
+      const refreshedById = new Map(last.rows.map(entry => [entry.id, entry]));
+      const missingIds = [...selectiveIds].filter(id => !refreshedById.has(id));
+      if (missingIds.length) {
+        throw new Error(`Selective ranking refresh is missing complete cache data for: ${missingIds.join(", ")}`);
+      }
+      current = current
+        .map(entry => refreshedById.get(entry.id) || entry)
+        .sort((a, b) =>
+          (b.overallScore || 0) - (a.overallScore || 0) ||
+          (b.metaScore || 0) - (a.metaScore || 0) ||
+          (b.weightedScore || 0) - (a.weightedScore || 0) ||
+          (b.winRate || 0) - (a.winRate || 0) ||
+          a.name.localeCompare(b.name)
+        );
+      current.forEach((entry, index) => entry.rank = index + 1);
+    } else {
+      current = last.rows;
+    }
     weights = buildWeights(current, metaIds, metaWeights, weights);
     summaries.push({
       pass,
@@ -458,6 +485,15 @@ function run(options = {}) {
         filesRead: last ? last.filesRead : 0,
         parameters: MODEL
       },
+      ...(selectiveIds ? {
+        selectiveRefresh: {
+          pokemonIds: [...selectiveIds],
+          engineVersion: require("../src/reliability/battle-reliability").BATTLE_ENGINE_VERSION,
+          refreshedAt: new Date().toISOString(),
+          cellsRead: last ? last.cellsRead : 0,
+          note: "Only matchups involving the listed changed Pokemon were regenerated; unaffected ranking rows retain their prior simulations."
+        }
+      } : {}),
       matchupCache: {
         ...(ranking.metadata && ranking.metadata.matchupCache || {}),
         enabled: true,
@@ -485,7 +521,12 @@ function run(options = {}) {
 if (require.main === module) {
   const passesArg = process.argv.find(arg => arg.startsWith("--passes="));
   const passes = passesArg ? Number(passesArg.split("=")[1]) : MODEL.passes;
-  const result = run({ passes });
+  const pokemonArg = process.argv.find(arg => arg.startsWith("--pokemon="));
+  const pokemonIds = new Set((pokemonArg ? pokemonArg.split("=").slice(1).join("=") : "")
+    .split(",")
+    .map(value => value.trim())
+    .filter(Boolean));
+  const result = run({ passes, pokemonIds });
   console.log(JSON.stringify(result, null, 2));
 }
 

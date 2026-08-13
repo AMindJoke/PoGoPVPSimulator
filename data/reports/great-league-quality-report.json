@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-07-20T08:54:31.756Z",
+  "generatedAt": "2026-08-13T11:31:19.189Z",
   "status": "VALID",
   "generation": {
     "datasetVersion": 1,
     "simulatorVersion": "battle-planner-v6",
-    "currentEngineVersion": "battle-planner-v6",
+    "currentEngineVersion": "battle-planner-v32",
     "provenance": {
       "source": "offline-generated",
-      "currentEngineVersion": "battle-planner-v6",
+      "currentEngineVersion": "battle-planner-v32",
       "datasetEngineVersion": "battle-planner-v6",
       "datasetVersion": 1,
-      "generatedAt": "2026-07-20T08:54:31.616Z",
-      "stale": false,
-      "staleReason": null
+      "generatedAt": "2026-08-13T11:30:49.578Z",
+      "stale": true,
+      "staleReason": "ENGINE_VERSION_MISMATCH"
     },
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "gameMasterHash": "759e0ae4405c4acc",
-    "gitCommitSha": null,
-    "datasetGeneratedAt": "2026-07-20T08:54:31.616Z"
+    "gitCommitSha": "245e194",
+    "datasetGeneratedAt": "2026-08-13T11:30:49.578Z"
   },
   "coverage": {
     "pokemonIncluded": 1541,
@@ -68,23 +68,25 @@
     "files": [
       {
         "path": "data/great-league-rankings.json",
-        "bytes": 6946048
+        "bytes": 6946398
       },
       {
         "path": "data/great-league-rankings.js",
-        "bytes": 6946080
+        "bytes": 6946430
       },
       {
         "path": "data/rankings/great-league-full.json",
-        "bytes": 6946048
+        "bytes": 6946398
       }
     ],
-    "totalBytes": 20838176
+    "totalBytes": 20839226
   },
   "validation": {
     "valid": true,
     "issues": [],
-    "warnings": [],
+    "warnings": [
+      "Dataset planner version is stale: battle-planner-v6; current battle-planner-v32."
+    ],
     "expected": {
       "entries": 1541,
       "matchupsPerEntry": 4620,
@@ -420,14 +422,6 @@
       },
       {
         "rank": 41,
-        "name": "Aegislash (Shield)",
-        "score": 528,
-        "rawScore": 579,
-        "competitiveScore": 528,
-        "winRate": 0.6877
-      },
-      {
-        "rank": 42,
         "name": "Sealeo (Shadow)",
         "score": 527,
         "rawScore": 659,
@@ -435,7 +429,7 @@
         "winRate": 0.7972
       },
       {
-        "rank": 43,
+        "rank": 42,
         "name": "Empoleon",
         "score": 527,
         "rawScore": 636,
@@ -443,7 +437,7 @@
         "winRate": 0.7649
       },
       {
-        "rank": 44,
+        "rank": 43,
         "name": "Feraligatr",
         "score": 527,
         "rawScore": 610,
@@ -451,7 +445,7 @@
         "winRate": 0.7297
       },
       {
-        "rank": 45,
+        "rank": 44,
         "name": "Mantine",
         "score": 526,
         "rawScore": 647,
@@ -459,7 +453,7 @@
         "winRate": 0.7896
       },
       {
-        "rank": 46,
+        "rank": 45,
         "name": "Abomasnow (Shadow)",
         "score": 526,
         "rawScore": 630,
@@ -467,7 +461,7 @@
         "winRate": 0.7307
       },
       {
-        "rank": 47,
+        "rank": 46,
         "name": "Machoke (Shadow)",
         "score": 526,
         "rawScore": 613,
@@ -475,7 +469,7 @@
         "winRate": 0.7271
       },
       {
-        "rank": 48,
+        "rank": 47,
         "name": "Pangoro",
         "score": 526,
         "rawScore": 636,
@@ -483,7 +477,7 @@
         "winRate": 0.7864
       },
       {
-        "rank": 49,
+        "rank": 48,
         "name": "Swanna (Shadow)",
         "score": 525,
         "rawScore": 670,
@@ -491,12 +485,20 @@
         "winRate": 0.7818
       },
       {
-        "rank": 50,
+        "rank": 49,
         "name": "Araquanid",
         "score": 525,
         "rawScore": 683,
         "competitiveScore": 525,
         "winRate": 0.8457
+      },
+      {
+        "rank": 50,
+        "name": "Turtonator",
+        "score": 525,
+        "rawScore": 693,
+        "competitiveScore": 525,
+        "winRate": 0.8147
       }
     ],
     "bottom20": [
@@ -663,12 +665,12 @@
     ],
     "largestShieldDifferences": [
       {
-        "rank": 41,
+        "rank": 595,
         "name": "Aegislash (Shield)",
-        "zero": 776,
-        "one": 529,
-        "two": 469,
-        "spread": 307
+        "zero": 723,
+        "one": 419,
+        "two": 374,
+        "spread": 349
       },
       {
         "rank": 1207,
@@ -799,7 +801,7 @@
         "spread": 182
       },
       {
-        "rank": 583,
+        "rank": 582,
         "name": "Regice",
         "zero": 611,
         "one": 529,
