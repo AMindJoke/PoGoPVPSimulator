@@ -153,7 +153,7 @@
     const hardLossSlots = [];
     scores.forEach((score, index) => {
       const slot = completed[index].slot;
-      if (score >= 600) answerSlots.push(slot);
+      if (score > 500) answerSlots.push(slot);
       else if (score <= 400) hardLossSlots.push(slot);
       else closeSlots.push(slot);
     });

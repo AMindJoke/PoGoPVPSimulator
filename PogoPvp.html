@@ -15512,7 +15512,7 @@
       if (!insights.completedOpponents) return;
       const activeTeamSize = teamBuilderState.team.filter(Boolean).length;
       $("teamBuilderInsightsSubtitle").textContent = `${insights.completedOpponents} of ${groups.length} opponents have complete ${activeTeamSize}-Pokémon team results.`;
-      $("teamBuilderInsightsSummary").innerHTML = `<span>${insights.noAnswerCount} without a strong answer</span><span>${insights.completedOpponents} opponents analyzed</span>`;
+      $("teamBuilderInsightsSummary").innerHTML = `<span>${insights.noAnswerCount} without a winning answer</span><span>${insights.completedOpponents} opponents analyzed</span>`;
       const threats = insights.threats.slice(0, 5);
       const covered = insights.bestCovered.slice(0, 5);
       $("teamBuilderThreatList").innerHTML = threats.map((summary, index) => teamBuilderInsightRow(summary, "threat", index)).join("");

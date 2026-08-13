@@ -80,8 +80,11 @@ const coverageInsights = Analysis.analyzeCoverage([
 assert.equal(coverageInsights.completedOpponents, 3, "Only complete opponent rows may enter threat analysis.");
 assert.equal(coverageInsights.noAnswerCount, 1);
 assert.equal(coverageInsights.threats[0].opponentId, "critical", "The most severe simulated weakness must rank first.");
-assert.equal(coverageInsights.bestCovered[0].opponentId, "covered", "The opponent with the most strong answers must rank first in best covered.");
-assert.deepEqual(coverageInsights.bestCovered[0].answerSlots, [0, 1, 2, 3]);
+assert.equal(coverageInsights.bestCovered[0].opponentId, "covered", "The opponent with the most winning answers must rank first in best covered.");
+assert.deepEqual(coverageInsights.bestCovered[0].answerSlots, [0, 1, 2, 3, 4, 5]);
+const slightWinSummary = Analysis.summarizeOpponent(scoreGroup("slight-wins", [501, 520, 599, 500, 499, 300]));
+assert.deepEqual(slightWinSummary.answerSlots, [0, 1, 2], "Every slight win above neutral must count as an answer.");
+assert.equal(slightWinSummary.answerCount, 3, "Several slight wins must contribute individually to the answer count.");
 const rankedThreatGroups = Analysis.rankThreatGroups([
   scoreGroup("comfortable", [800, 760, 720, 690, 650, 610]),
   scoreGroup("pending", [700, null, 500, 500, 500, 500]),
@@ -99,7 +102,7 @@ assert.deepEqual({ answers: incompleteFive.answerCount, size: incompleteFive.tea
 assert.deepEqual({ answers: completeSix.answerCount, size: completeSix.teamSize }, { answers: 4, size: 6 }, "Full teams must preserve six-member answer summaries.");
 assert.equal(Analysis.summarizeOpponent(activeScoreGroup("active-pending", [700, null, 650, null, null, null], [0, 1, 2])), null, "A missing result for a populated slot must remain pending rather than becoming an incomplete-team summary.");
 const answerFirstGroups = Analysis.rankThreatGroups([
-  activeScoreGroup("one-less-severe", [700, 520, 500, 480, 450, null], [0, 1, 2, 3, 4]),
+  activeScoreGroup("one-less-severe", [700, 500, 500, 480, 450, null], [0, 1, 2, 3, 4]),
   activeScoreGroup("two-more-severe", [610, 600, 200, 200, 200, null], [0, 1, 2, 3, 4]),
   activeScoreGroup("one-more-severe", [620, 250, 300, 350, 410, null], [0, 1, 2, 3, 4])
 ]);
@@ -157,9 +160,9 @@ assert.equal(comparison.gains[0].answerDelta, 3);
 assert.equal(comparison.losses[0].opponentId, "loss");
 assert.deepEqual(
   comparison.deltas,
-  { coverageRating: -40, averageRating: 32, favorableMatchups: 1, noAnswerCount: 0 },
+  { coverageRating: -40, averageRating: 32, favorableMatchups: 1, noAnswerCount: 1 },
   "Team comparison must expose deterministic aggregate deltas."
 );
-assert.equal(Analysis.summarizeTeamCoverage(comparisonA).favorableMatchups, 2);
+assert.equal(Analysis.summarizeTeamCoverage(comparisonA).favorableMatchups, 4);
 
 console.log("Team Builder analysis planning tests passed.");
