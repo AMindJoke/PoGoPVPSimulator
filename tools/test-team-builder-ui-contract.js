@@ -116,6 +116,7 @@ assert.match(html, /hard losses fixed[\s\S]{0,200}answers gained[\s\S]{0,200}new
 assert.match(html, /Ranking score = average rating delta \+ 40 per hard loss fixed \+ 25 per favorable answer gained − 50 per new hard loss/, "Replacement scoring must be transparent to the user.");
 assert.match(html, /function applyTeamBuilderReplacement\(candidateId\)[\s\S]{0,700}PvPeakTeamBuilder\.setMember/, "A selected recommendation must update the canonical Team Builder state.");
 assert.match(html, /id="teamBuilderFinalSlot" class="team-final-slot"[^>]+aria-labelledby="teamBuilderFinalSlotTitle"/, "Final Slot Finder must use a native contextual Team Builder section.");
+assert.match(html, /\.team-final-slot \{[^}]*width: 100%;[^}]*max-width: none;[^}]*padding: 0;/, "The global battle-section width must not collapse Final Slot Finder on desktop.");
 assert.match(html, /function renderTeamBuilderFinalSlotFinder\(\)[\s\S]{0,500}selected >= 1 && selected < window\.PvPeakTeamBuilder\.TEAM_SIZE/, "Final Slot Finder must appear only for incomplete 1/6 through 5/6 teams.");
 assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,800}teamBuilderMetaDefinition\?\.pokemonIds[\s\S]{0,500}speciesKey/, "Final-slot and replacement candidates must share the league/meta pool and Species Clause filtering.");
 assert.match(html, /function prepareTeamBuilderFinalSlotPlan\(\)[\s\S]{0,1800}PvPeakTeamBuilderAnalysis\.createPlan[\s\S]{0,500}finalSlotCandidateId/, "Final Slot Finder must reuse canonical cached matchup jobs.");
