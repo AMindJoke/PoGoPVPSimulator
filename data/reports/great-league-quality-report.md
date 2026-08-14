@@ -1,13 +1,13 @@
 # Great League Dataset Quality Report
 
 Status: **Dataset VALID**
-Generated: 2026-08-13T11:31:19.189Z
+Generated: 2026-08-14T10:08:56.321Z
 
 ## Generation
 - Dataset version: 1
-- Simulator version: battle-planner-v6
-- Game Master hash: 759e0ae4405c4acc
-- Git commit: 245e194
+- Simulator version: battle-planner-v32
+- Game Master hash: 92ecf66df22498f5
+- Git commit: d2f86a6
 
 ## Coverage
 - Pokemon included: 1541
@@ -21,114 +21,112 @@ Generated: 2026-08-13T11:31:19.189Z
 - Skipped simulations: 0
 
 ## Output
-- data/great-league-rankings.json: 6.946.398 bytes
-- data/great-league-rankings.js: 6.946.430 bytes
-- data/rankings/great-league-full.json: 6.946.398 bytes
-- Total dataset size: 20.839.226 bytes
+- data/great-league-rankings.json: 6.949.999 bytes
+- data/great-league-rankings.js: 6.950.031 bytes
+- data/rankings/great-league-full.json: 6.949.999 bytes
+- Total dataset size: 20.850.029 bytes
 
 ## Validation
 - No blocking issues found.
-### Warnings
-- Dataset planner version is stale: battle-planner-v6; current battle-planner-v32.
 
 ## Sanity Check
 ### Top 50
-- #1 Mimikyu: 563
-- #2 Morpeko (Full Belly): 558
-- #3 Forretress: 554
-- #4 Forretress (Shadow): 551
-- #5 Guzzlord: 549
-- #6 Lickilicky: 549
-- #7 Cradily: 546
-- #8 Mandibuzz: 544
-- #9 Jellicent: 544
-- #10 Charjabug: 541
-- #11 Tinkaton: 541
-- #12 Corsola (Galarian): 539
-- #13 Corviknight: 539
-- #14 Medicham: 537
-- #15 Florges: 536
-- #16 Primeape (Shadow): 535
-- #17 Charjabug (Shadow): 534
-- #18 Talonflame: 534
-- #19 Sableye: 534
-- #20 Moltres (Galarian): 534
-- #21 Empoleon (Shadow): 532
-- #22 Ninetales (Shadow): 532
-- #23 Ninetales: 532
-- #24 Dunsparce: 531
-- #25 Pelipper: 531
-- #26 Clodsire: 531
-- #27 Annihilape: 531
-- #28 Pidgeot (Shadow): 530
-- #29 Pidgeot: 530
-- #30 Primeape: 530
-- #31 Stunfisk: 530
-- #32 Jumpluff: 530
+- #1 Mimikyu: 558
+- #2 Forretress: 556
+- #3 Morpeko (Full Belly): 553
+- #4 Cradily: 551
+- #5 Forretress (Shadow): 551
+- #6 Jellicent: 546
+- #7 Guzzlord: 546
+- #8 Corsola (Galarian): 544
+- #9 Tinkaton: 541
+- #10 Mandibuzz: 541
+- #11 Charjabug: 539
+- #12 Malamar: 539
+- #13 Lickilicky: 539
+- #14 Clodsire: 539
+- #15 Sableye: 537
+- #16 Carbink: 536
+- #17 Talonflame (Shadow): 536
+- #18 Charjabug (Shadow): 534
+- #19 Medicham: 534
+- #20 Florges: 534
+- #21 Corviknight: 534
+- #22 Empoleon (Shadow): 532
+- #23 Altaria: 532
+- #24 Jumpluff: 532
+- #25 Sableye (Shadow): 532
+- #26 Dunsparce: 531
+- #27 Gliscor: 531
+- #28 Azumarill: 531
+- #29 Lapras: 531
+- #30 Annihilape: 531
+- #31 Pidgeot (Shadow): 530
+- #32 Swanna (Shadow): 530
 - #33 Jumpluff (Shadow): 530
-- #34 Abomasnow: 529
-- #35 Kingdra (Shadow): 529
-- #36 Kingdra: 529
-- #37 Gliscor: 529
-- #38 Zweilous: 529
-- #39 Lapras: 529
-- #40 Carbink: 529
-- #41 Sealeo (Shadow): 527
-- #42 Empoleon: 527
-- #43 Feraligatr: 527
-- #44 Mantine: 526
-- #45 Abomasnow (Shadow): 526
-- #46 Machoke (Shadow): 526
-- #47 Pangoro: 526
-- #48 Swanna (Shadow): 525
-- #49 Araquanid: 525
-- #50 Turtonator: 525
+- #34 Empoleon: 530
+- #35 Stunfisk: 530
+- #36 Feraligatr: 530
+- #37 Mantine: 529
+- #38 Bastiodon: 529
+- #39 Moltres (Galarian): 529
+- #40 Talonflame: 529
+- #41 Furret: 529
+- #42 Mewtwo (Armored): 527
+- #43 Primeape (Shadow): 526
+- #44 Primeape: 526
+- #45 Cradily: 525
+- #46 Oranguru: 525
+- #47 Togekiss: 525
+- #48 Feraligatr (Shadow): 525
+- #49 Fearow: 525
+- #50 Ninetales (Shadow): 525
 
 ### Bottom 20
-- #1541 Zigzagoon (Galarian) (Shadow): 381
-- #1540 Weedle (Shadow): 381
-- #1539 Wynaut: 381
-- #1538 Happiny: 381
-- #1537 Bidoof: 381
-- #1536 Bidoof (Shadow): 381
-- #1535 Kricketot: 381
-- #1534 Caterpie: 383
-- #1533 Zigzagoon (Galarian): 383
-- #1532 Weedle: 383
-- #1531 Wooloo: 383
-- #1530 Igglybuff: 383
-- #1529 Pawmi: 383
-- #1528 Snom: 383
-- #1527 Cleffa: 383
-- #1526 Caterpie (Shadow): 383
-- #1525 Nymble: 383
-- #1524 Luvdisc: 383
-- #1523 Cranidos (Shadow): 383
-- #1522 Cranidos: 383
+- #1541 Azurill: 383
+- #1540 Finneon: 383
+- #1539 Wiglett: 383
+- #1538 Pichu: 383
+- #1537 Luvdisc: 383
+- #1536 Shuckle (Shadow): 383
+- #1535 Shuckle: 383
+- #1534 Togepi: 383
+- #1533 Trubbish (Shadow): 383
+- #1532 Cranidos: 383
+- #1531 Slaking: 386
+- #1530 Trubbish: 386
+- #1529 Rookidee (Shadow): 386
+- #1528 Rattata: 386
+- #1527 Pikipek (Shadow): 386
+- #1526 Wynaut: 386
+- #1525 Igglybuff: 386
+- #1524 Lechonk: 386
+- #1523 Slakoth (Shadow): 386
+- #1522 Slakoth: 386
 
 ### Biggest 0-0 / 1-1 / 2-2 Differences
-- #595 Aegislash (Shield): spread 349 (0-0 723, 1-1 419, 2-2 374)
-- #1207 Zamazenta (Hero): spread 232 (0-0 523, 1-1 420, 2-2 291)
-- #1193 Zacian (Hero): spread 227 (0-0 537, 1-1 447, 2-2 310)
-- #970 Rotom (Heat): spread 216 (0-0 587, 1-1 444, 2-2 371)
-- #823 Typhlosion (Hisuian): spread 215 (0-0 618, 1-1 502, 2-2 403)
-- #689 Regice (Shadow): spread 206 (0-0 595, 1-1 482, 2-2 389)
-- #1120 Zebstrika: spread 205 (0-0 549, 1-1 413, 2-2 344)
-- #859 Gigalith (Shadow): spread 202 (0-0 596, 1-1 502, 2-2 394)
-- #857 Mewtwo (Shadow): spread 193 (0-0 599, 1-1 493, 2-2 406)
-- #1297 Blissey: spread 188 (0-0 496, 1-1 354, 2-2 308)
+- #574 Aegislash (Shield): spread 349 (0-0 723, 1-1 419, 2-2 374)
+- #1161 Magikarp (Shadow): spread 240 (0-0 150, 1-1 308, 2-2 390)
+- #1235 Magikarp: spread 238 (0-0 135, 1-1 276, 2-2 373)
+- #1083 Zamazenta (Hero): spread 237 (0-0 552, 1-1 446, 2-2 315)
+- #1010 Zacian (Hero): spread 225 (0-0 572, 1-1 500, 2-2 347)
+- #853 Regice (Shadow): spread 220 (0-0 590, 1-1 439, 2-2 370)
+- #123 Girafarig (Shadow): spread 214 (0-0 541, 1-1 693, 2-2 755)
+- #1193 Feebas (Shadow): spread 203 (0-0 149, 1-1 285, 2-2 352)
+- #109 Girafarig: spread 202 (0-0 551, 1-1 676, 2-2 753)
+- #671 Regice: spread 201 (0-0 609, 1-1 480, 2-2 408)
 
 ### Largest Ranking Surprises
-- #1461 Feebas (Shadow): raw 103, competitive 390, delta 287
-- #1460 Feebas: raw 110, competitive 390, delta 280
-- #1462 Magikarp (Shadow): raw 114, competitive 390, delta 276
-- #1459 Magikarp: raw 114, competitive 390, delta 276
-- #1496 Blipbug: raw 109, competitive 383, delta 274
-- #1535 Kricketot: raw 129, competitive 381, delta 252
-- #1539 Wynaut: raw 129, competitive 381, delta 252
-- #1538 Happiny: raw 132, competitive 381, delta 249
-- #1540 Weedle (Shadow): raw 136, competitive 381, delta 245
-- #1532 Weedle: raw 139, competitive 383, delta 244
+- #1498 Weedle (Shadow): raw 122, competitive 388, delta 266
+- #1489 Weedle: raw 128, competitive 388, delta 260
+- #1497 Happiny: raw 143, competitive 388, delta 245
+- #1426 Kakuna (Shadow): raw 149, competitive 393, delta 244
+- #1526 Wynaut: raw 143, competitive 386, delta 243
+- #1427 Zigzagoon (Galarian) (Shadow): raw 153, competitive 393, delta 240
+- #1430 Zigzagoon (Galarian): raw 153, competitive 393, delta 240
+- #1397 Kakuna: raw 163, competitive 396, delta 233
+- #1340 Kricketot: raw 175, competitive 404, delta 229
+- #1424 Cascoon: raw 166, competitive 393, delta 227
 
 ## Golden Matchups
 - Configured: 3
