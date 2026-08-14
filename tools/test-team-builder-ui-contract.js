@@ -115,6 +115,13 @@ assert.match(html, /function renderTeamBuilderReplacementRanking\(\)[\s\S]{0,180
 assert.match(html, /hard losses fixed[\s\S]{0,200}answers gained[\s\S]{0,200}new hard losses/, "Replacement results must expose the scoring tradeoffs.");
 assert.match(html, /Ranking score = average rating delta \+ 40 per hard loss fixed \+ 25 per favorable answer gained − 50 per new hard loss/, "Replacement scoring must be transparent to the user.");
 assert.match(html, /function applyTeamBuilderReplacement\(candidateId\)[\s\S]{0,700}PvPeakTeamBuilder\.setMember/, "A selected recommendation must update the canonical Team Builder state.");
+assert.match(html, /id="teamBuilderFinalSlot" class="team-final-slot"[^>]+aria-labelledby="teamBuilderFinalSlotTitle"/, "Final Slot Finder must use a native contextual Team Builder section.");
+assert.match(html, /function renderTeamBuilderFinalSlotFinder\(\)[\s\S]{0,500}selected >= 1 && selected < window\.PvPeakTeamBuilder\.TEAM_SIZE/, "Final Slot Finder must appear only for incomplete 1/6 through 5/6 teams.");
+assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,800}teamBuilderMetaDefinition\?\.pokemonIds[\s\S]{0,500}speciesKey/, "Final-slot and replacement candidates must share the league/meta pool and Species Clause filtering.");
+assert.match(html, /function prepareTeamBuilderFinalSlotPlan\(\)[\s\S]{0,1800}PvPeakTeamBuilderAnalysis\.createPlan[\s\S]{0,500}finalSlotCandidateId/, "Final Slot Finder must reuse canonical cached matchup jobs.");
+assert.match(html, /function teamBuilderFinalSlotRanking\(\)[\s\S]{0,1400}rankTeamCandidates\([\s\S]{0,200}mode: "append"/, "Final-slot results must use the shared deterministic optimization layer.");
+assert.match(html, /function applyTeamBuilderFinalSlot\(candidateId\)[\s\S]{0,300}findIndex\(candidate => !candidate\)[\s\S]{0,500}PvPeakTeamBuilder\.setMember/, "Add to team must fill the next empty canonical slot.");
+assert.match(html, /No team member has been changed/, "Candidate results must make their non-mutating status explicit before Add to team.");
 assert.match(html, /function captureTeamBuilderComparisonBaseline\(renderNow = true\)[\s\S]{0,700}persistTeamBuilderComparisonBaseline/, "Team A must be a persistent semantic roster snapshot.");
 assert.match(html, /function prepareTeamBuilderComparisonPlan\(\)[\s\S]{0,900}createTeamBuilderPlanForTeam\(teamBuilderComparisonBaseline\)[\s\S]{0,300}uniqueJobs/, "Team comparison must reuse and deduplicate canonical matchup jobs.");
 assert.match(html, /function renderTeamBuilderComparisonResults\(\)[\s\S]{0,1600}compareTeamCoverage\(groupsA, groupsB\)/, "Comparison results must derive from the deterministic analysis model.");
@@ -131,6 +138,7 @@ assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,3600}team-insights-grid[
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,3800}team-core-grid[^}]*grid-template-columns: 1fr/, "Core Analysis must stack cleanly on mobile.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,4300}team-replacement-steps[^}]*grid-template-columns: 1fr/, "Replacement controls must stack cleanly on mobile.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,4700}team-comparison-changes[^}]*grid-template-columns: 1fr/, "Team comparison changes must stack cleanly on mobile.");
+assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,6500}team-final-slot-ranking[^}]*grid-template-columns: 1fr/, "Final Slot Finder candidates must stack as readable mobile cards.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,5200}team-builder-share[^}]*min-height: 44px/, "The share control must remain a comfortable mobile target.");
 assert.match(html, /Species Clause: that Pokemon species is already on your team/);
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,900}team-roster-grid[\s\S]{0,100}repeat\(2/ , "Common mobile widths must use two comfortable columns.");

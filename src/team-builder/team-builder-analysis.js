@@ -7,7 +7,14 @@
 
   const SCHEMA_VERSION = 1;
   const STORAGE_KEY = "pvpeak-team-builder-analysis-v1";
-  const MAX_CACHE_ENTRIES = 4800;
+  const MAX_CACHE_ENTRIES = 12000;
+  const OPTIMIZATION_WEIGHTS = Object.freeze({
+    zeroToOne: 120,
+    oneToTwo: 70,
+    criticalFixed: 35,
+    favorableAnswer: 12,
+    coveragePoint: 0.08
+  });
 
   function memberSignature(member) {
     if (!member) return "empty";
@@ -263,7 +270,16 @@
     });
   }
 
-  function scoreReplacementCandidate(candidateId, baselineByOpponent, candidateByOpponent) {
+  function evaluateCandidateForTeam(input = {}) {
+    const mode = input.mode || "append";
+    if (mode === "replace") return evaluateReplacementCandidate(input);
+    return evaluateAppendCandidate(input);
+  }
+
+  function evaluateReplacementCandidate(input = {}) {
+    const candidateId = input.candidateId;
+    const baselineByOpponent = input.baselineByOpponent || {};
+    const candidateByOpponent = input.candidateByOpponent || {};
     const targets = Object.keys(baselineByOpponent || {});
     if (!targets.length || targets.some(opponentId => !baselineByOpponent[opponentId] || !candidateByOpponent?.[opponentId])) return null;
     let baselineTotal = 0;
@@ -299,12 +315,110 @@
     });
   }
 
-  function rankReplacementCandidates(input = {}) {
-    return Object.entries(input.candidates || {}).map(([candidateId, results]) =>
-      scoreReplacementCandidate(candidateId, input.baselineByOpponent || {}, results)
-    ).filter(Boolean).sort((a, b) =>
-      b.replacementScore - a.replacementScore || b.averageDelta - a.averageDelta || b.hardLossesFixed - a.hardLossesFixed || a.newHardLosses - b.newHardLosses || a.candidateId.localeCompare(b.candidateId)
+  function evaluateAppendCandidate(input = {}) {
+    const candidateId = String(input.candidateId || "");
+    const baselineGroups = Array.isArray(input.baselineGroups) ? input.baselineGroups : [];
+    const candidateByOpponent = input.candidateByOpponent || {};
+    if (!candidateId || !baselineGroups.length) return null;
+    const baseline = baselineGroups.map(group => ({ group, summary: summarizeOpponent(group) }));
+    if (baseline.some(item => !item.summary || !candidateByOpponent[item.group.opponentId])) return null;
+    let zeroAnswerBefore = 0;
+    let zeroAnswerAfter = 0;
+    let oneAnswerBefore = 0;
+    let oneAnswerAfter = 0;
+    let zeroToOne = 0;
+    let oneToTwo = 0;
+    let criticalThreatsFixed = 0;
+    let favorableGained = 0;
+    let coverageDelta = 0;
+    let newHardLosses = 0;
+    const changes = baseline.map(({ group, summary }) => {
+      const result = candidateByOpponent[group.opponentId];
+      const score = Math.max(0, Math.min(1000, Number(result.score ?? 500)));
+      const addsAnswer = score > 500;
+      const answerCountAfter = summary.answerCount + Number(addsAnswer);
+      zeroAnswerBefore += Number(summary.answerCount === 0);
+      zeroAnswerAfter += Number(answerCountAfter === 0);
+      oneAnswerBefore += Number(summary.answerCount === 1);
+      oneAnswerAfter += Number(answerCountAfter === 1);
+      if (summary.answerCount === 0 && answerCountAfter >= 1) zeroToOne += 1;
+      if (summary.answerCount === 1 && answerCountAfter >= 2) oneToTwo += 1;
+      if (addsAnswer) favorableGained += 1;
+      if (addsAnswer && summary.severityLabel === "Critical") criticalThreatsFixed += 1;
+      if (score <= 400) newHardLosses += 1;
+      const bestBefore = Math.max(...group.cells.filter(Boolean).map(cell => Number(cell.score ?? 500)));
+      const bestAfter = Math.max(bestBefore, score);
+      coverageDelta += bestAfter - bestBefore;
+      return Object.freeze({
+        opponentId: group.opponentId,
+        score,
+        answerCountBefore: summary.answerCount,
+        answerCountAfter,
+        answerDelta: answerCountAfter - summary.answerCount,
+        bestScoreBefore: bestBefore,
+        bestScoreAfter: bestAfter,
+        severity: summary.severity,
+        severityLabel: summary.severityLabel
+      });
+    }).sort((a, b) =>
+      b.answerDelta - a.answerDelta || b.severity - a.severity || b.score - a.score || a.opponentId.localeCompare(b.opponentId)
     );
+    const averageCoverageDelta = Math.round(coverageDelta / baseline.length);
+    const weightedImprovement = (
+      zeroToOne * OPTIMIZATION_WEIGHTS.zeroToOne
+      + oneToTwo * OPTIMIZATION_WEIGHTS.oneToTwo
+      + criticalThreatsFixed * OPTIMIZATION_WEIGHTS.criticalFixed
+      + favorableGained * OPTIMIZATION_WEIGHTS.favorableAnswer
+      + coverageDelta * OPTIMIZATION_WEIGHTS.coveragePoint
+    );
+    const optimizationScore = Math.round(weightedImprovement / baseline.length) / 10;
+    return Object.freeze({
+      candidateId,
+      targetCount: baseline.length,
+      zeroAnswerBefore,
+      zeroAnswerAfter,
+      oneAnswerBefore,
+      oneAnswerAfter,
+      zeroToOne,
+      oneToTwo,
+      criticalThreatsFixed,
+      favorableGained,
+      newHardLosses: 0,
+      candidateHardLosses: newHardLosses,
+      averageCoverageDelta,
+      optimizationScore,
+      changes: Object.freeze(changes)
+    });
+  }
+
+  function rankTeamCandidates(input = {}) {
+    const mode = input.mode || "append";
+    return Object.entries(input.candidates || {}).map(([candidateId, candidateByOpponent]) => evaluateCandidateForTeam({
+      ...input,
+      mode,
+      candidateId,
+      candidateByOpponent
+    })).filter(Boolean).sort((a, b) => mode === "replace"
+      ? b.replacementScore - a.replacementScore || b.averageDelta - a.averageDelta || b.hardLossesFixed - a.hardLossesFixed || a.newHardLosses - b.newHardLosses || a.candidateId.localeCompare(b.candidateId)
+      : b.zeroToOne - a.zeroToOne
+        || b.oneToTwo - a.oneToTwo
+        || b.criticalThreatsFixed - a.criticalThreatsFixed
+        || b.optimizationScore - a.optimizationScore
+        || b.averageCoverageDelta - a.averageCoverageDelta
+        || a.candidateId.localeCompare(b.candidateId)
+    );
+  }
+
+  function scoreReplacementCandidate(candidateId, baselineByOpponent, candidateByOpponent) {
+    return evaluateCandidateForTeam({ mode: "replace", candidateId, baselineByOpponent, candidateByOpponent });
+  }
+
+  function rankReplacementCandidates(input = {}) {
+    return rankTeamCandidates({
+      mode: "replace",
+      baselineByOpponent: input.baselineByOpponent || {},
+      candidates: input.candidates || {}
+    });
   }
 
   function summarizeTeamCoverage(groups) {
@@ -356,6 +470,7 @@
     SCHEMA_VERSION,
     STORAGE_KEY,
     MAX_CACHE_ENTRIES,
+    OPTIMIZATION_WEIGHTS,
     memberSignature,
     jobKey,
     createPlan,
@@ -370,6 +485,8 @@
     analyzeCoverage,
     rankThreatGroups,
     analyzeCores,
+    evaluateCandidateForTeam,
+    rankTeamCandidates,
     scoreReplacementCandidate,
     rankReplacementCandidates,
     summarizeTeamCoverage,

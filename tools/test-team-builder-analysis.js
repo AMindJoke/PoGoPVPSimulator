@@ -144,6 +144,51 @@ const replacementRanking = Analysis.rankReplacementCandidates({
 });
 assert.deepEqual(replacementRanking.map(item => item.candidateId), ["candidate-b", "candidate-a"], "Candidates must rank by deterministic targeted improvement.");
 
+const appendBaseline = [
+  scoreGroup("zero-answer", [300, 350, 400, 450, 500]),
+  scoreGroup("one-answer", [650, 350, 400, 450, 500]),
+  scoreGroup("covered", [650, 620, 400, 450, 500])
+];
+const finalSlotCandidate = Analysis.evaluateCandidateForTeam({
+  mode: "append",
+  candidateId: "candidate-final",
+  baselineGroups: appendBaseline,
+  candidateByOpponent: {
+    "zero-answer": { score: 620 },
+    "one-answer": { score: 680 },
+    covered: { score: 300 }
+  }
+});
+assert.deepEqual(
+  {
+    zero: [finalSlotCandidate.zeroAnswerBefore, finalSlotCandidate.zeroAnswerAfter],
+    one: [finalSlotCandidate.oneAnswerBefore, finalSlotCandidate.oneAnswerAfter],
+    fixed: finalSlotCandidate.zeroToOne,
+    reinforced: finalSlotCandidate.oneToTwo,
+    newWeaknesses: finalSlotCandidate.newHardLosses
+  },
+  { zero: [1, 0], one: [1, 1], fixed: 1, reinforced: 1, newWeaknesses: 0 },
+  "Adding a final member must score structural answer transitions without pretending that an extra member introduces losses."
+);
+assert.equal(Analysis.evaluateCandidateForTeam({ mode: "append", candidateId: "incomplete", baselineGroups: appendBaseline, candidateByOpponent: { covered: { score: 800 } } }), null);
+const finalSlotRanking = Analysis.rankTeamCandidates({
+  mode: "append",
+  baselineGroups: appendBaseline,
+  candidates: {
+    "only-one-to-two": { "zero-answer": { score: 400 }, "one-answer": { score: 700 }, covered: { score: 800 } },
+    "fixes-zero": { "zero-answer": { score: 501 }, "one-answer": { score: 400 }, covered: { score: 300 } }
+  }
+});
+assert.deepEqual(finalSlotRanking.map(item => item.candidateId), ["fixes-zero", "only-one-to-two"], "A deterministic 0-to-1 repair must outrank broader but less structural gains.");
+assert.deepEqual(
+  Analysis.rankTeamCandidates({ mode: "append", baselineGroups: appendBaseline, candidates: Object.fromEntries(Object.entries({
+    "only-one-to-two": { "zero-answer": { score: 400 }, "one-answer": { score: 700 }, covered: { score: 800 } },
+    "fixes-zero": { "zero-answer": { score: 501 }, "one-answer": { score: 400 }, covered: { score: 300 } }
+  }).reverse()) }).map(item => item.candidateId),
+  finalSlotRanking.map(item => item.candidateId),
+  "Candidate input order must not change the final ranking."
+);
+
 const comparisonA = [
   scoreGroup("gain", [300, 350, 450, 500, 550, 580]),
   scoreGroup("loss", [700, 650, 500, 450, 400, 350])
