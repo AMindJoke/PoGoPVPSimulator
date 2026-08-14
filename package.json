@@ -26,6 +26,7 @@
     "test:battle-regressions": "node tools/run-battle-regressions.js",
     "test:battle-reliability": "node tools/test-battle-reliability.js",
     "test:special-forms": "node tools/test-special-form-mechanics.js",
+    "test:ranking-cache-refresh": "node tools/test-ranking-cache-refresh.js",
     "test:scenario-model": "node tools/test-scenario-model.js",
     "test:manual-battle-state": "node tools/test-manual-battle-state.js",
     "test:turn-engine": "node tools/test-turn-resolution-engine.js",

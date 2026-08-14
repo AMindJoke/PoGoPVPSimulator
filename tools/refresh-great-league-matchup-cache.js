@@ -14,11 +14,23 @@ function option(name, fallback = "") {
 }
 
 function pokemonIdFromSignature(signature) {
-  return String(signature || "").split(":", 1)[0];
+  const value = String(signature || "").trim();
+  if (!value) return "";
+  if (value.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(value);
+      return String(parsed.id || parsed.pokemonId || parsed.formId || "");
+    } catch (_) {
+      // Fall through to the legacy colon-delimited signature.
+    }
+  }
+  return value.split(":", 1)[0];
 }
 
 function cellTargetsPokemon(cellKey, pokemonIds) {
-  const defenderId = String(cellKey || "").split(":", 1)[0];
+  const value = String(cellKey || "");
+  const signature = value.startsWith("{") ? value.split("|", 1)[0] : value;
+  const defenderId = pokemonIdFromSignature(signature);
   return pokemonIds.has(defenderId);
 }
 

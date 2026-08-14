@@ -71,6 +71,33 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
 }
 
 {
+  const config = battleConfig("aegislash_shield", "feraligatr");
+  const result = simulate(config, 1, 1, "aegislash-banks-before-blade");
+  const aegislashDecisions = result.decisionTrace.decisions.filter(decision => decision.side === "A");
+  const firstShield = aegislashDecisions.find(decision => decision.decisionType === "shield-decision");
+  const charged = aegislashDecisions.filter(decision => decision.decisionType === "charged-move-selection");
+
+  assert.equal(firstShield.chosenCandidate.action, "NO_SHIELD");
+  assert.equal(firstShield.reasonCode, "SHIELD_RESERVED_FOR_FORM_RESTORE");
+  assert.equal(charged[0].stateBefore.actor.energy, 100);
+  assert.equal(charged[1].turn, charged[0].turn + 1);
+  assert.equal(result.details.outcome, "A");
+}
+
+{
+  const config = battleConfig("aegislash_shield", "cradily");
+  const result = simulate(config, 2, 2, "aegislash-preserves-final-form-shield");
+  const aegislashDecisions = result.decisionTrace.decisions.filter(decision => decision.side === "A");
+  const shields = aegislashDecisions.filter(decision => decision.decisionType === "shield-decision");
+  const firstChargedTurn = aegislashDecisions.find(decision => decision.decisionType === "charged-move-selection").turn;
+
+  assert.equal(shields[0].chosenCandidate.action, "SHIELD");
+  assert.equal(shields[1].chosenCandidate.action, "NO_SHIELD");
+  assert.ok(shields.some(decision => decision.turn > firstChargedTurn && decision.chosenCandidate.action === "SHIELD"));
+  assert.equal(result.details.outcome, "A");
+}
+
+{
   const config = battleConfig("swampert", "aegislash_blade");
   setSingleCharged(config.left, "HYDRO_CANNON");
   config.left.energy = config.startEnergyA = 100;

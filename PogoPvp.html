@@ -14182,6 +14182,7 @@
         formChangeRule,
         formChangeMatches,
         formChangeTargetId,
+        formTransitionBattleStrategy,
         equivalentFormMove,
         transitionCombatantForm,
         applyFormChange,
@@ -18682,6 +18683,51 @@
       return rule.alternativeFormId || null;
     }
 
+    function formTransitionBattleStrategy(combatant) {
+      if (!combatant?.p || !combatant.formCatalog) return null;
+      const currentDefense = Math.max(1, Number(combatant.defense || 1));
+      const chargedRule = formChangeRule(combatant, "activate_charged");
+      const chargedTargetId = formChangeTargetId(combatant, chargedRule);
+      const chargedTarget = chargedTargetId ? combatant.formCatalog?.[chargedTargetId] : null;
+      if (chargedTarget?.p) {
+        const chargedStats = combatantStatsForForm(combatant, chargedTarget.p);
+        const defenseRatio = Number(chargedStats?.defense || currentDefense) / currentDefense;
+        const shieldRule = chargedTarget.p.formChange;
+        const shieldRestoresCurrent = shieldRule?.trigger === "activate_shield"
+          && shieldRule?.alternativeFormId === combatant.p.id;
+        const chargedCosts = (combatant.charged || [])
+          .filter(Boolean)
+          .map(move => Math.max(1, Number(move.energyCost || 1)));
+        const minimumCost = chargedCosts.length ? Math.min(...chargedCosts) : 100;
+        if (defenseRatio <= .72) {
+          return {
+            phase: "defensive",
+            currentFormId: combatant.p.id,
+            exposedFormId: chargedTargetId,
+            defenseRatio,
+            shieldRestoresDefensiveForm: shieldRestoresCurrent,
+            bankEnergyTarget: Math.min(100, minimumCost * 2)
+          };
+        }
+      }
+
+      const shieldRule = formChangeRule(combatant, "activate_shield");
+      const shieldTargetId = formChangeTargetId(combatant, shieldRule);
+      const shieldTarget = shieldTargetId ? combatant.formCatalog?.[shieldTargetId] : null;
+      if (!shieldTarget?.p) return null;
+      const shieldStats = combatantStatsForForm(combatant, shieldTarget.p);
+      const restoredDefenseRatio = Number(shieldStats?.defense || currentDefense) / currentDefense;
+      if (restoredDefenseRatio < 1.4) return null;
+      return {
+        phase: "exposed",
+        currentFormId: combatant.p.id,
+        defensiveFormId: shieldTargetId,
+        restoredDefenseRatio,
+        shieldRestoresDefensiveForm: true,
+        bankEnergyTarget: null
+      };
+    }
+
     function equivalentFormMove(currentMove, availableMoves) {
       if (!currentMove || !Array.isArray(availableMoves)) return null;
       return availableMoves.find(move => move.id === currentMove.id)
@@ -23074,6 +23120,7 @@
         return { shield: false, reason: "", reasonCode: "LEGACY_NO_INTELLIGENCE_API", sourceRuleIds: [] };
       }
       const policy = policyOverride || defender.shieldMode || "always";
+      const formTransition = formTransitionBattleStrategy(defender);
       const needsSmartThreat = policy === "smart";
       const entersFarmRange = needsSmartThreat && !!attacker
         ? entersFarmRangeAfterDamage(defender, attacker, unshieldedDamage)
@@ -23090,7 +23137,8 @@
           shields: defender.shields,
           chargedTaken: defender.chargedTaken,
           hp: defender.hp,
-          maxHp: defender.maxHp
+          maxHp: defender.maxHp,
+          mechanicState: { formTransition }
         },
         threat: {
           damage: unshieldedDamage,
@@ -24027,6 +24075,7 @@
             timingPlanMoveId: combatant.timingPlanMoveId || null,
             timingContinuationCount: Number(combatant.timingContinuationCount || 0),
             farmEnergy: combatant.linePolicy === "farm-energy",
+            formTransition: formTransitionBattleStrategy(combatant),
             chargedProtection: {
               active: chargedProtectionRule?.effect === "protect",
               capability: chargedProtectionRule?.effect === "protect" ? "charged-damage-protection" : null

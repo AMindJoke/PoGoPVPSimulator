@@ -936,6 +936,24 @@ function createPvPeakBattleIntelligenceApi() {
     }
     rejected.push("SPECIAL-010_PROTECTION_FORM_MECHANIC_BREAKER");
 
+    const formTransition = canonicalFormTransitionDecision({
+      actor,
+      opponent,
+      moves,
+      fast,
+      chargedCandidates,
+      context
+    });
+    if (formTransition?.candidate) {
+      triggered.push(...formTransition.triggered);
+      rejected.push(...formTransition.rejected);
+      return finish(formTransition.candidate, "route", formTransition.intent, {
+        sourceBranch: "form-aware charged resource planning",
+        survival,
+        formTransition: formTransition.evidence
+      });
+    }
+
     const timing = canonicalTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival });
     triggered.push(...timing.triggered);
     rejected.push(...timing.rejected);
@@ -1019,6 +1037,58 @@ function createPvPeakBattleIntelligenceApi() {
       };
     });
     return moves.sort((a, b) => a.energyCost - b.energyCost || a.index - b.index);
+  }
+
+  function canonicalFormTransitionDecision({ actor, opponent, moves, fast, chargedCandidates, context }) {
+    const strategy = actor.mechanicState?.formTransition;
+    if (!strategy || !fast) return null;
+
+    if (strategy.phase === "defensive" && numeric(opponent.shields) > 0 && chargedCandidates.length) {
+      const targetEnergy = clamp(numeric(strategy.bankEnergyTarget), 0, 100);
+      const currentEnergy = numeric(actor.energy);
+      const nextEnergy = Math.min(100, currentEnergy + Math.max(0, numeric(actor.fastMove?.energyGain)));
+      if (targetEnergy > currentEnergy && nextEnergy > currentEnergy) {
+        return {
+          candidate: fast,
+          intent: "BANK_BEFORE_EXPOSED_FORM",
+          triggered: ["ROUTE-026_BUILD_TO_SELECTED_MOVE", "SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE"],
+          rejected: [],
+          evidence: {
+            phase: strategy.phase,
+            currentFormId: strategy.currentFormId,
+            exposedFormId: strategy.exposedFormId,
+            defenseRatio: strategy.defenseRatio,
+            currentEnergy,
+            targetEnergy,
+            nextEnergy,
+            shieldRestoresDefensiveForm: strategy.shieldRestoresDefensiveForm === true
+          }
+        };
+      }
+    }
+
+    if (strategy.phase === "exposed" && chargedCandidates.length) {
+      const selected = [...chargedCandidates].sort((a, b) =>
+        damageFor(b, context) - damageFor(a, context)
+        || actionEnergyCost(a.action) - actionEnergyCost(b.action)
+        || stableCandidateOrder(a, b)
+      )[0];
+      return {
+        candidate: selected,
+        intent: "THROW_FROM_EXPOSED_FORM",
+        triggered: ["TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT", "ROUTE-026_BUILD_TO_SELECTED_MOVE"],
+        rejected: [],
+        evidence: {
+          phase: strategy.phase,
+          currentFormId: strategy.currentFormId,
+          defensiveFormId: strategy.defensiveFormId,
+          restoredDefenseRatio: strategy.restoredDefenseRatio,
+          selectedMoveId: selected.action.moveId,
+          shieldRestoresDefensiveForm: strategy.shieldRestoresDefensiveForm === true
+        }
+      };
+    }
+    return null;
   }
 
   function canonicalMoveFlags(move = {}) {
@@ -4014,9 +4084,24 @@ function createPvPeakBattleIntelligenceApi() {
     const maxHp = Math.max(1, numeric(state.maxHp, hp || 1));
     const damage = Math.max(0, numeric(threat.damage));
     const energyCost = Math.max(0, numeric(threat.energyCost));
+    const formTransition = state.mechanicState?.formTransition || null;
 
     const done = result => finalizeShieldResult(result, input, policy);
     if (!shields) return done(shieldResult(false, "NO_SHIELD_AVAILABLE", "No shield is available.", .99));
+    if (policy === "always"
+      && shields === 1
+      && formTransition?.phase === "defensive"
+      && formTransition?.shieldRestoresDefensiveForm === true
+      && damage < hp
+      && damage / maxHp < .55) {
+      return done(shieldResult(
+        false,
+        "SHIELD_RESERVED_FOR_FORM_RESTORE",
+        "The final shield is reserved to restore the defensive form after its Charged sequence.",
+        .96,
+        { formTransition }
+      ));
+    }
     if (policy === "no-first" && chargedTaken === 0) {
       return done(shieldResult(false, "SHIELD_POLICY_NO_FIRST", "No First shield logic lets the first charged move through.", .99));
     }
