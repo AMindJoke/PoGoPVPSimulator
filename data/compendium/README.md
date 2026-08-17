@@ -48,3 +48,7 @@ Entries explicitly marked `unlisted` in the canonical source are omitted from th
 ## Global search index
 
 The runtime combines normalized Move Reference records with validated Mechanics, Rulings, and Glossary entries. Search ranking prioritizes exact titles, title prefixes, title matches, keywords, and finally full structured content. Results retain their source item so selecting a move opens its canonical detail and selecting written content opens the shared article renderer.
+
+## Quick Reference
+
+`src/compendium/quick-reference.js` derives the floor-friendly summary from battle settings, canonical move durations, and enforced engine limits. Duration shortcuts route into the Move Reference with the corresponding Fast Move filter already selected. Values absent from canonical project data are intentionally omitted.

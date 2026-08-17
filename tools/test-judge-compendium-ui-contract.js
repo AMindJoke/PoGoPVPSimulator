@@ -22,6 +22,7 @@ includes('aria-selected="${category.id === compendiumActiveCategory}"');
 includes('window.PvPeakJudgeCompendium?.search(compendiumSearchIndex, normalized)');
 includes('data/compendium/${type}.json');
 includes('src/compendium/move-reference.js');
+includes('src/compendium/quick-reference.js');
 includes('api.createReference(gm.moves');
 includes('window.PvPeakMoveReference.filterMoves(reference');
 includes('window.PvPeakMoveReference.searchEntries(reference)');
@@ -43,6 +44,15 @@ includes('event.key === "End"');
 includes('event.key === "Enter"');
 includes('function openCompendiumSearchResult(index)');
 includes('selectCompendiumCategory("moves")');
+includes('function ensureCompendiumQuickReference()');
+includes('window.PvPeakQuickReference.create({ settings: gm.settings, rawMoves: gm.moves, reference, maxEnergy: 100, maxShields: 2 })');
+includes('Judge Quick Reference');
+includes('Fast Move durations');
+includes('Maximum energy');
+includes('Protect Shields');
+includes('Attack and Defense stages');
+includes('data-quick-duration="${item.turns}"');
+includes('function openQuickReferenceDuration(turns)');
 
 includes('id="compendiumArticle"');
 includes('window.PvPeakJudgeCompendium?.articleView(type, entry)');
@@ -62,6 +72,8 @@ includes('.move-reference-row { grid-template-columns: minmax(0, 1fr) auto;');
 includes('.move-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
 includes('.compendium-search-results { display: grid; gap: 6px; max-height: min(430px, 55vh);');
 includes('.compendium-search-result[aria-selected="true"]');
+includes('.judge-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
+includes('.judge-duration-list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; max-width: 100%;');
 
 for (const view of ["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]) {
   includes(`data-view-target="${view}"`, `Navigation target missing: ${view}`);
