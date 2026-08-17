@@ -26,6 +26,7 @@
   <script src="src/team-builder/team-builder-analysis.js"></script>
   <script src="src/team-builder/team-builder-share.js"></script>
   <script src="src/team-builder/team-builder-battle-link.js"></script>
+  <script src="src/compendium/compendium-model.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -374,12 +375,80 @@
     body[data-view="scenario-review"] #counts {
       display: none;
     }
-    #simulatorView, #metaView, #analysisView, #teamBuilderView { display: none; }
+    #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView { display: none; }
     body[data-view="simulator"] #simulatorView,
     body[data-view="scenario-review"] #simulatorView,
     body[data-view="meta"] #metaView,
     body[data-view="analysis"] #analysisView,
-    body[data-view="team-builder"] #teamBuilderView { display: grid; }
+    body[data-view="team-builder"] #teamBuilderView,
+    body[data-view="compendium"] #compendiumView { display: grid; }
+
+    .compendium-view { width: min(100%, 1120px); min-width: 0; margin: 0 auto; gap: 12px; }
+    #compendiumView section, #compendiumView article { width: 100%; max-width: none; }
+    .compendium-hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); box-shadow: 0 7px 20px var(--shadow); }
+    .compendium-eyebrow { margin: 0 0 5px; color: var(--accent-dark); font-size: 10px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+    .compendium-hero h2 { margin: 0; font-size: clamp(25px, 3vw, 36px); letter-spacing: -.035em; }
+    .compendium-hero p:last-child { max-width: 660px; margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .compendium-hero-mark { flex: 0 0 auto; display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: 16px; background: color-mix(in srgb, var(--accent) 9%, var(--panel)); color: var(--accent-dark); font-size: 25px; font-weight: 900; }
+    .compendium-search-panel { position: relative; z-index: 3; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .compendium-search-wrap { position: relative; }
+    .compendium-search-wrap::before { content: "\2315"; position: absolute; left: 15px; top: 50%; color: var(--muted); font-size: 20px; transform: translateY(-52%) rotate(-20deg); pointer-events: none; }
+    #compendiumSearch { width: 100%; max-width: none; min-height: 50px; padding: 10px 45px; border-radius: 10px; background: var(--soft); color: var(--ink); font-size: 15px; font-weight: 700; }
+    .compendium-search-clear { position: absolute; right: 7px; top: 7px; min-width: 36px; min-height: 36px; padding: 5px; border: 0; background: transparent; color: var(--muted); box-shadow: none; }
+    .compendium-search-status { margin: 8px 2px 0; color: var(--muted); font-size: 10px; font-weight: 750; }
+    .compendium-search-results { display: grid; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .compendium-search-results[hidden] { display: none; }
+    .compendium-search-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; min-height: 48px; padding: 9px 11px; text-align: left; background: var(--soft); color: var(--ink); box-shadow: none; }
+    .compendium-search-result span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .compendium-search-result small { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .compendium-categories { display: flex; gap: 7px; max-width: 100%; padding: 3px 1px 5px; overflow-x: auto; scrollbar-width: thin; }
+    .compendium-category { flex: 0 0 auto; min-height: 40px; padding: 8px 14px; border-color: var(--line); background: var(--panel); color: var(--muted); box-shadow: none; }
+    .compendium-category[aria-selected="true"] { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 11%, var(--panel)); color: var(--accent-dark); }
+    .compendium-stage { min-height: 330px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .compendium-stage[hidden] { display: none; }
+    .compendium-stage-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
+    .compendium-stage-head h3 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+    .compendium-stage-head p { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .compendium-foundation-badge { padding: 5px 8px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; white-space: nowrap; }
+    .compendium-quick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .compendium-quick-card { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 92px; padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); color: var(--ink); text-align: left; box-shadow: none; }
+    .compendium-quick-card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-1px); }
+    .compendium-quick-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 12%, var(--panel)); color: var(--accent-dark); font-size: 17px; }
+    .compendium-quick-card strong { display: block; font-size: 13px; }
+    .compendium-quick-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 9.5px; line-height: 1.35; }
+    .compendium-empty { display: grid; place-items: center; min-height: 220px; padding: 24px; border: 1px dashed var(--line); border-radius: 11px; background: var(--soft); text-align: center; }
+    .compendium-empty > div { max-width: 480px; }
+    .compendium-empty strong { display: block; margin-bottom: 7px; font-size: 15px; }
+    .compendium-empty p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .compendium-entry-list { display: grid; gap: 7px; }
+    .compendium-entry-button { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 12px; padding: 12px; text-align: left; background: var(--soft); color: var(--ink); box-shadow: none; }
+    .compendium-entry-button small { color: var(--muted); }
+    .compendium-article { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .compendium-article[hidden] { display: none; }
+    .compendium-article-back { margin-bottom: 15px; }
+    .compendium-article h2 { margin: 3px 0 7px; font-size: clamp(23px,3vw,32px); }
+    .compendium-article-summary { max-width: 760px; color: var(--muted); line-height: 1.55; }
+    .compendium-article-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+    .compendium-article-meta span { padding: 5px 8px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 9px; font-weight: 850; }
+    .compendium-article-source { padding: 11px; border-left: 3px solid var(--accent); border-radius: 6px; background: var(--soft); font-size: 11px; }
+    .compendium-article-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .compendium-article-section h3 { margin: 0 0 8px; }
+    .compendium-article-section p { color: var(--ink); line-height: 1.65; }
+    .compendium-view button:focus-visible, .compendium-view input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 2px; }
+    @media (max-width: 760px) {
+      .compendium-view { width: 100%; gap: 9px; }
+      .compendium-hero { align-items: center; flex-direction: row; padding: 16px; }
+      .compendium-hero-mark { width: 46px; height: 46px; border-radius: 12px; font-size: 20px; }
+      .compendium-hero h2 { font-size: 24px; }
+      .compendium-hero p:last-child { font-size: 11px; }
+      .compendium-search-panel { padding: 9px; }
+      #compendiumSearch { min-height: 46px; font-size: 14px; }
+      .compendium-category { min-height: 44px; }
+      .compendium-stage, .compendium-article { min-height: 0; padding: 14px; }
+      .compendium-quick-grid { grid-template-columns: 1fr; }
+      .compendium-quick-card { min-height: 72px; }
+      .compendium-stage-head { align-items: start; flex-direction: column; gap: 7px; }
+    }
 
     .analysis-view {
       width: min(100%, 1180px);
@@ -9383,7 +9452,7 @@
       .app-tabs {
         margin-left: 0;
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         width: 100%;
         overflow: hidden;
       }
@@ -12333,6 +12402,7 @@
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
       <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
       <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
+      <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
     </nav>
   </header>
   <main>
@@ -13100,6 +13170,22 @@
         </section>
       </section>
     </div>
+
+    <div id="compendiumView" class="app-view compendium-view">
+      <header class="compendium-hero">
+        <div><p class="compendium-eyebrow">Judge tools</p><h2 id="compendiumTitle">Judge Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and move data.</p></div>
+        <div class="compendium-hero-mark" aria-hidden="true">JC</div>
+      </header>
+      <section class="compendium-search-panel" aria-label="Search the Judge Compendium">
+        <label class="sr-only" for="compendiumSearch">Search moves, mechanics, rulings, and glossary terms</label>
+        <div class="compendium-search-wrap"><input id="compendiumSearch" type="search" autocomplete="off" placeholder="Search moves, mechanics, rulings..."><button id="compendiumSearchClear" class="compendium-search-clear" type="button" aria-label="Clear Compendium search" hidden>&times;</button></div>
+        <div id="compendiumSearchStatus" class="compendium-search-status" role="status" aria-live="polite">Reference index ready.</div>
+        <div id="compendiumSearchResults" class="compendium-search-results" role="listbox" aria-label="Compendium search results" hidden></div>
+      </section>
+      <nav id="compendiumCategories" class="compendium-categories" aria-label="Compendium categories" role="tablist"></nav>
+      <section id="compendiumStage" class="compendium-stage" aria-live="polite"></section>
+      <article id="compendiumArticle" class="compendium-article" aria-labelledby="compendiumArticleTitle" hidden></article>
+    </div>
   </main>
 
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
@@ -13739,6 +13825,11 @@
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
+      $("compendiumSearch").oninput = event => updateCompendiumSearch(event.target.value);
+      $("compendiumSearch").onkeydown = event => {
+        if (event.key === "Escape") clearCompendiumSearch(true);
+      };
+      $("compendiumSearchClear").onclick = () => clearCompendiumSearch(true);
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
       $("teamBuilderCopyLink").onclick = copyTeamBuilderShareLink;
       $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
@@ -14701,8 +14792,144 @@
       return p.name;
     }
 
+    let compendiumActiveCategory = "quick-reference";
+    let compendiumDatasets = Object.freeze({ mechanics: Object.freeze([]), rulings: Object.freeze([]), glossary: Object.freeze([]) });
+    let compendiumSearchIndex = Object.freeze([]);
+    let compendiumLoadPromise = null;
+
+    function loadJudgeCompendiumContent() {
+      if (compendiumLoadPromise) return compendiumLoadPromise;
+      const api = window.PvPeakJudgeCompendium;
+      if (!api) return Promise.reject(new Error("COMPENDIUM_MODEL_UNAVAILABLE"));
+      const types = api.CONTENT_TYPES;
+      compendiumLoadPromise = Promise.all(types.map(type => fetch(`data/compendium/${type}.json`).then(response => {
+        if (!response.ok) throw new Error(`COMPENDIUM_${type.toUpperCase()}_LOAD_FAILED`);
+        return response.json();
+      }).then(dataset => [type, dataset]))).then(entries => {
+        compendiumDatasets = api.normalizeDatasets(Object.fromEntries(entries));
+        compendiumSearchIndex = api.buildSearchIndex(compendiumDatasets);
+        return compendiumDatasets;
+      }).catch(error => {
+        compendiumLoadPromise = null;
+        throw error;
+      });
+      return compendiumLoadPromise;
+    }
+
+    function renderJudgeCompendium() {
+      const api = window.PvPeakJudgeCompendium;
+      if (!api) {
+        $("compendiumStage").innerHTML = `<div class="compendium-empty"><div><strong>Reference model unavailable</strong><p>The Compendium shell could not initialize.</p></div></div>`;
+        return;
+      }
+      renderCompendiumCategories();
+      renderCompendiumCategory(compendiumActiveCategory);
+      $("compendiumSearchStatus").textContent = compendiumLoadPromise ? "Reference index ready." : "Preparing the reference index...";
+      loadJudgeCompendiumContent().then(() => {
+        $("compendiumSearchStatus").textContent = compendiumSearchIndex.length ? `${compendiumSearchIndex.length} reference entries indexed.` : "Reference structure ready. Editorial entries will be added progressively.";
+        renderCompendiumCategory(compendiumActiveCategory);
+        updateCompendiumSearch($("compendiumSearch").value);
+      }).catch(() => {
+        $("compendiumSearchStatus").textContent = "The reference files could not be loaded. Try refreshing the page.";
+      });
+    }
+
+    function renderCompendiumCategories() {
+      const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
+      $("compendiumCategories").innerHTML = categories.map(category => `<button class="compendium-category" type="button" role="tab" data-compendium-category="${category.id}" aria-selected="${category.id === compendiumActiveCategory}">${escapeHtml(category.label)}</button>`).join("");
+      $("compendiumCategories").querySelectorAll("[data-compendium-category]").forEach(button => {
+        button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCategory);
+      });
+    }
+
+    function selectCompendiumCategory(categoryId) {
+      const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
+      if (!categories.some(category => category.id === categoryId)) return;
+      compendiumActiveCategory = categoryId;
+      $("compendiumArticle").hidden = true;
+      $("compendiumStage").hidden = false;
+      renderCompendiumCategories();
+      renderCompendiumCategory(categoryId);
+    }
+
+    function compendiumCategoryEntries(categoryId) {
+      if (categoryId === "mechanics") return compendiumDatasets.mechanics || [];
+      if (categoryId === "rulings") return compendiumDatasets.rulings || [];
+      if (categoryId === "glossary") return compendiumDatasets.glossary || [];
+      return [];
+    }
+
+    function renderCompendiumLanding() {
+      const cards = [
+        { id: "moves", icon: "\u21c5", title: "Moves", copy: "Fast and Charged Move reference workspace." },
+        { id: "mechanics", icon: "\u2699", title: "Mechanics", copy: "Battle timing and interaction explanations." },
+        { id: "rulings", icon: "\u2696", title: "Rulings", copy: "Clearly sourced tournament guidance." }
+      ];
+      return `<div class="compendium-stage-head"><div><h3>Quick Reference</h3><p>Start with a topic or use the structured search above.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><div class="compendium-quick-grid">${cards.map(card => `<button class="compendium-quick-card" type="button" data-compendium-card="${card.id}"><span class="compendium-quick-icon" aria-hidden="true">${card.icon}</span><span><strong>${card.title}</strong><small>${card.copy}</small></span><span aria-hidden="true">\u203a</span></button>`).join("")}</div>`;
+    }
+
+    function renderCompendiumCategory(categoryId) {
+      const category = (window.PvPeakJudgeCompendium?.CATEGORIES || []).find(item => item.id === categoryId);
+      const stage = $("compendiumStage");
+      if (!category || categoryId === "quick-reference") {
+        stage.innerHTML = renderCompendiumLanding();
+        stage.querySelectorAll("[data-compendium-card]").forEach(button => button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCard));
+        return;
+      }
+      if (categoryId === "moves") {
+        stage.innerHTML = `<div class="compendium-stage-head"><div><h3>Moves</h3><p>${escapeHtml(category.summary)}</p></div><span class="compendium-foundation-badge">Data layer prepared</span></div><div class="compendium-empty"><div><strong>Move reference is ready for canonical data</strong><p>The search, category, and article architecture is in place. Move records will be connected without changing this interface.</p></div></div>`;
+        return;
+      }
+      const entries = compendiumCategoryEntries(categoryId);
+      const entryType = categoryId;
+      stage.innerHTML = `<div class="compendium-stage-head"><div><h3>${escapeHtml(category.label)}</h3><p>${escapeHtml(category.summary)}</p></div><span class="compendium-foundation-badge">${entries.length} indexed</span></div>${entries.length ? `<div class="compendium-entry-list">${entries.map(entry => `<button class="compendium-entry-button" type="button" data-compendium-entry="${entry.id}" data-compendium-type="${entryType}"><span><strong>${escapeHtml(entry.term || entry.title)}</strong><small>${escapeHtml(entry.definition || entry.summary)}</small></span><span aria-hidden="true">\u203a</span></button>`).join("")}</div>` : `<div class="compendium-empty"><div><strong>${escapeHtml(category.label)} structure ready</strong><p>Curated entries can now be added through the validated external data files, without embedding editorial content in the interface.</p></div></div>`}`;
+      stage.querySelectorAll("[data-compendium-entry]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.compendiumType, button.dataset.compendiumEntry));
+    }
+
+    function updateCompendiumSearch(query) {
+      const normalized = String(query || "").trim();
+      const resultsBox = $("compendiumSearchResults");
+      $("compendiumSearchClear").hidden = !normalized;
+      if (!normalized) {
+        resultsBox.hidden = true;
+        resultsBox.innerHTML = "";
+        return;
+      }
+      const results = window.PvPeakJudgeCompendium?.search(compendiumSearchIndex, normalized) || [];
+      resultsBox.hidden = false;
+      if (!results.length) {
+        resultsBox.innerHTML = `<div class="compendium-empty"><div><strong>No indexed reference found</strong><p>Try a different term. The Compendium data library is ready to grow without changing the search UI.</p></div></div>`;
+        $("compendiumSearchStatus").textContent = `No results for ${normalized}.`;
+        return;
+      }
+      resultsBox.innerHTML = results.map(result => `<button class="compendium-search-result" type="button" role="option" data-compendium-entry="${result.id}" data-compendium-type="${result.type}"><span><strong>${escapeHtml(result.title)}</strong><small>${escapeHtml(result.summary)}</small></span><small>${escapeHtml(result.type)}</small></button>`).join("");
+      resultsBox.querySelectorAll("[data-compendium-entry]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.compendiumType, button.dataset.compendiumEntry));
+      $("compendiumSearchStatus").textContent = `${results.length} result${results.length === 1 ? "" : "s"}.`;
+    }
+
+    function clearCompendiumSearch(returnFocus) {
+      $("compendiumSearch").value = "";
+      updateCompendiumSearch("");
+      $("compendiumSearchStatus").textContent = compendiumSearchIndex.length ? `${compendiumSearchIndex.length} reference entries indexed.` : "Reference structure ready. Editorial entries will be added progressively.";
+      if (returnFocus) $("compendiumSearch").focus();
+    }
+
+    function openCompendiumArticle(type, entryId) {
+      const entry = (compendiumDatasets[type] || []).find(item => item.id === entryId);
+      const article = window.PvPeakJudgeCompendium?.articleView(type, entry);
+      if (!article) return;
+      const source = article.source ? `<div class="compendium-article-source"><strong>${article.sourceType === "official" ? "Official source" : article.sourceType === "mixed" ? "Mixed sources" : "Compendium explanation"}:</strong> ${escapeHtml(article.source)}</div>` : "";
+      const updated = article.lastUpdated ? `<span>Updated ${escapeHtml(article.lastUpdated)}</span>` : "";
+      const related = article.related.length ? `<span>${article.related.length} related reference${article.related.length === 1 ? "" : "s"}</span>` : "";
+      $("compendiumArticle").innerHTML = `<button class="secondary compendium-article-back" type="button">\u2190 Back to ${escapeHtml((window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium")}</button><p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${updated}${related}</div>${source}${article.sections.map(section => `<section class="compendium-article-section" data-section-id="${section.id}"><h3>${escapeHtml(section.heading)}</h3>${section.body.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("")}</section>`).join("")}`;
+      $("compendiumStage").hidden = true;
+      $("compendiumArticle").hidden = false;
+      $("compendiumArticle").querySelector(".compendium-article-back").onclick = () => selectCompendiumCategory(type);
+      $("compendiumArticleTitle").focus?.();
+    }
+
     function setAppView(view) {
-      const supportedViews = new Set(["simulator", "scenario-review", "meta", "analysis", "team-builder"]);
+      const supportedViews = new Set(["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]);
       const next = supportedViews.has(view) ? view : "simulator";
       const previous = document.body.dataset.view;
       document.body.dataset.view = next;
@@ -14718,6 +14945,7 @@
       }
       if (next === "analysis") renderPokemonAnalysis();
       if (next === "team-builder") renderTeamBuilder();
+      if (next === "compendium") renderJudgeCompendium();
       if (next === "simulator") {
         if (previous !== next) refreshPokemonLists();
         render();
