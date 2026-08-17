@@ -13,7 +13,8 @@ includes('data-view-target="compendium"');
 includes('id="compendiumView"');
 includes('body[data-view="compendium"] #compendiumView { display: grid; }');
 includes('"team-builder", "compendium"');
-includes('if (next === "compendium") renderJudgeCompendium();');
+includes('if (next === "compendium") {');
+includes('renderJudgeCompendium();');
 
 includes('placeholder="Search moves, mechanics, rulings..."');
 includes('role="status" aria-live="polite"');
@@ -23,6 +24,7 @@ includes('window.PvPeakJudgeCompendium?.search(compendiumSearchIndex, normalized
 includes('data/compendium/${type}.json');
 includes('src/compendium/move-reference.js');
 includes('src/compendium/quick-reference.js');
+includes('src/compendium/compendium-routing.js');
 includes('api.createReference(gm.moves');
 includes('window.PvPeakMoveReference.filterMoves(reference');
 includes('window.PvPeakMoveReference.searchEntries(reference)');
@@ -76,6 +78,16 @@ includes('data-section-kind="${kind}"');
 includes('class="compendium-article-steps"');
 includes('class="compendium-related-button"');
 includes('data-related-id="${item.entry.id}"');
+includes('function loadCompendiumFromLocation()');
+includes('window.PvPeakCompendiumRouting?.readLocation?.(window.location)');
+includes('function applyCompendiumRoute(route)');
+includes('window.addEventListener("popstate"');
+includes('function copyCompendiumLink()');
+includes('aria-label="Copy a direct link to this reference"');
+includes('class="compendium-copy-feedback" role="status" aria-live="polite"');
+includes('syncCompendiumRoute({ category: "moves", item: compendiumSelectedMoveId })');
+includes('syncCompendiumRoute({ category: type, item: entryId })');
+includes('else loadCompendiumFromLocation();');
 
 includes('.compendium-categories { display: flex;');
 includes('overflow-x: auto;');

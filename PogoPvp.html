@@ -29,6 +29,7 @@
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
+  <script src="src/compendium/compendium-routing.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
@@ -486,7 +487,9 @@
     .move-reference-open { color: var(--muted); font-size: 18px; }
     .move-reference-empty { min-height: 180px; }
     .move-detail { --move-color: #66788c; display: grid; gap: 16px; }
-    .move-detail-back { justify-self: start; }
+    .compendium-detail-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .compendium-detail-actions .secondary { min-height: 38px; }
+    .compendium-copy-feedback { min-height: 16px; color: var(--accent-dark); font-size: 9px; font-weight: 850; }
     .move-detail-head { position: relative; display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: center; gap: 14px; padding: 16px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--move-color) 34%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--move-color) 7%, var(--panel)); }
     .move-detail-head::after { content: ""; position: absolute; right: -24px; width: 120px; height: 120px; border: 19px solid color-mix(in srgb, var(--move-color) 10%, transparent); border-radius: 50%; }
     .move-detail-head .move-reference-symbol { width: 54px; height: 54px; border-width: 7px; font-size: 15px; }
@@ -501,7 +504,7 @@
     .move-detail-effects ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; color: var(--ink); font-size: 11px; }
     .compendium-article { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-article[hidden] { display: none; }
-    .compendium-article-back { margin-bottom: 15px; }
+    .compendium-article .compendium-detail-actions { margin-bottom: 15px; }
     .compendium-article h2 { margin: 3px 0 7px; font-size: clamp(23px,3vw,32px); }
     .compendium-article-summary { max-width: 760px; color: var(--muted); line-height: 1.55; }
     .compendium-article-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
@@ -573,6 +576,9 @@
       .move-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .move-detail-head { grid-template-columns: 50px minmax(0, 1fr); padding: 13px; }
       .move-detail-head .move-reference-symbol { width: 48px; height: 48px; }
+      .compendium-detail-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .compendium-detail-actions .secondary { min-height: 44px; }
+      .compendium-copy-feedback { grid-column: 1 / -1; }
     }
 
     .analysis-view {
@@ -13950,6 +13956,18 @@
       document.querySelectorAll("[data-view-target]").forEach(button => {
         button.onclick = () => setAppView(button.dataset.viewTarget);
       });
+      window.addEventListener("popstate", event => {
+        const route = window.PvPeakCompendiumRouting?.readLocation?.(window.location);
+        if (route) {
+          void applyCompendiumRoute(route);
+          return;
+        }
+        if (document.body.dataset.view === "compendium") {
+          compendiumHistorySyncing = true;
+          setAppView(event.state?.appView || "simulator");
+          compendiumHistorySyncing = false;
+        }
+      });
       $("compendiumSearch").oninput = event => updateCompendiumSearch(event.target.value);
       $("compendiumSearch").onkeydown = handleCompendiumSearchKeydown;
       $("compendiumSearchClear").onclick = () => clearCompendiumSearch(true);
@@ -14295,8 +14313,11 @@
       updateBattleAvailability();
       const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
       if (!directTeamBuilderBattle) {
-        void loadSharedScenarioFromLocation();
-        void loadSharedTeamFromLocation();
+        const hasSharedScenario = Boolean(window.PvPeakManualScenarioShare?.scenarioTokenFromLocation?.(window.location));
+        const hasSharedTeam = Boolean(window.PvPeakTeamBuilderShare?.teamTokenFromLocation?.(window.location));
+        if (hasSharedScenario) void loadSharedScenarioFromLocation();
+        else if (hasSharedTeam) void loadSharedTeamFromLocation();
+        else loadCompendiumFromLocation();
       }
       if (pagePerfRunId) {
         requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
@@ -14926,6 +14947,101 @@
     let compendiumMoveFilters = { query: "", type: "all", turns: "all", sort: "name" };
     let compendiumSelectedMoveId = null;
     let compendiumQuickReference = null;
+    let compendiumOpenArticle = null;
+    let compendiumHistorySyncing = false;
+    let compendiumCopyFeedbackTimer = null;
+
+    function currentCompendiumRoute() {
+      return { category: compendiumActiveCategory, item: compendiumSelectedMoveId || compendiumOpenArticle?.id || null };
+    }
+
+    function syncCompendiumRoute(route = currentCompendiumRoute(), options = {}) {
+      const api = window.PvPeakCompendiumRouting;
+      if (!api || compendiumHistorySyncing || !window.history?.pushState) return;
+      const url = api.buildUrl(window.location, route);
+      const method = options.replace ? "replaceState" : "pushState";
+      if (url !== window.location.href) window.history[method]({ compendiumRoute: true }, "", url);
+    }
+
+    function clearCompendiumRoute(options = {}) {
+      const api = window.PvPeakCompendiumRouting;
+      if (!api || compendiumHistorySyncing || !window.history?.pushState) return;
+      const url = api.locationWithoutCompendium(window.location);
+      const method = options.replace ? "replaceState" : "pushState";
+      if (url !== window.location.href) window.history[method]({ appView: options.appView || "simulator" }, "", url);
+    }
+
+    function compendiumRouteItemExists(route) {
+      if (!route?.item) return true;
+      if (route.category === "moves") return Boolean(ensureCompendiumMoveReference()?.byId.get(route.item));
+      return Boolean((compendiumDatasets[route.category] || []).some(entry => entry.id === route.item));
+    }
+
+    async function applyCompendiumRoute(route) {
+      const normalized = window.PvPeakCompendiumRouting?.normalizeRoute(route);
+      if (!normalized) return false;
+      compendiumHistorySyncing = true;
+      compendiumActiveCategory = normalized.category;
+      compendiumSelectedMoveId = null;
+      compendiumOpenArticle = null;
+      try {
+        $("compendiumArticle").hidden = true;
+        $("compendiumStage").hidden = false;
+        setAppView("compendium");
+        await loadJudgeCompendiumContent();
+        if (normalized.item && compendiumRouteItemExists(normalized)) {
+          if (normalized.category === "moves") {
+            const move = ensureCompendiumMoveReference().byId.get(normalized.item);
+            compendiumMoveKind = move.kind;
+            compendiumSelectedMoveId = move.id;
+            renderCompendiumCategory("moves");
+          } else {
+            openCompendiumArticle(normalized.category, normalized.item, { skipHistory: true });
+          }
+        } else {
+          renderCompendiumCategory(normalized.category);
+          if (normalized.item) {
+            $("compendiumSearchStatus").textContent = "That reference is no longer available. The category has been opened instead.";
+            compendiumHistorySyncing = false;
+            syncCompendiumRoute({ category: normalized.category, item: null }, { replace: true });
+            compendiumHistorySyncing = true;
+          }
+        }
+        return true;
+      } finally {
+        compendiumHistorySyncing = false;
+      }
+    }
+
+    function loadCompendiumFromLocation() {
+      const route = window.PvPeakCompendiumRouting?.readLocation?.(window.location);
+      if (!route) return false;
+      void applyCompendiumRoute(route);
+      return true;
+    }
+
+    async function copyCompendiumLink() {
+      const activeContainer = $("compendiumArticle").hidden ? $("compendiumStage") : $("compendiumArticle");
+      const feedback = activeContainer.querySelector(".compendium-copy-feedback");
+      try {
+        const url = window.PvPeakCompendiumRouting.buildUrl(window.location, currentCompendiumRoute());
+        await writeManualScenarioLinkToClipboard(url);
+        if (feedback) feedback.textContent = "Link copied";
+      } catch (_) {
+        if (feedback) feedback.textContent = "Could not copy the link";
+      }
+      clearTimeout(compendiumCopyFeedbackTimer);
+      compendiumCopyFeedbackTimer = setTimeout(() => { if (feedback) feedback.textContent = ""; }, 2600);
+    }
+
+    function compendiumDetailActions(backLabel) {
+      return `<div class="compendium-detail-actions"><button class="secondary compendium-detail-back" type="button">${escapeHtml(backLabel)}</button><button class="secondary compendium-copy-link" type="button" aria-label="Copy a direct link to this reference">Copy link</button><span class="compendium-copy-feedback" role="status" aria-live="polite"></span></div>`;
+    }
+
+    function bindCompendiumDetailActions(container, onBack) {
+      container.querySelector(".compendium-detail-back").onclick = onBack;
+      container.querySelector(".compendium-copy-link").onclick = copyCompendiumLink;
+    }
 
     function loadJudgeCompendiumContent() {
       if (compendiumLoadPromise) return compendiumLoadPromise;
@@ -14979,14 +15095,17 @@
       });
     }
 
-    function selectCompendiumCategory(categoryId) {
+    function selectCompendiumCategory(categoryId, options = {}) {
       const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
       if (!categories.some(category => category.id === categoryId)) return;
       compendiumActiveCategory = categoryId;
+      compendiumSelectedMoveId = null;
+      compendiumOpenArticle = null;
       $("compendiumArticle").hidden = true;
       $("compendiumStage").hidden = false;
       renderCompendiumCategories();
       renderCompendiumCategory(categoryId);
+      if (!options.skipHistory) syncCompendiumRoute({ category: categoryId, item: null });
     }
 
     function compendiumCategoryEntries(categoryId) {
@@ -15122,6 +15241,7 @@
       container.querySelectorAll("[data-move-id]").forEach(button => button.onclick = () => {
         compendiumSelectedMoveId = button.dataset.moveId;
         renderCompendiumMoveReference();
+        syncCompendiumRoute({ category: "moves", item: compendiumSelectedMoveId });
         $("compendiumStage").scrollIntoView?.({ block: "start" });
       });
     }
@@ -15133,9 +15253,9 @@
       const effects = move.effects.length
         ? `<div class="move-detail-effects"><h4>Move effect</h4><ul>${move.effects.map(effect => `<li>${escapeHtml(window.PvPeakMoveReference.effectLabel(effect))}</li>`).join("")}</ul></div>`
         : `<div class="move-detail-effects"><h4>Move effect</h4><ul><li>No stat-stage effect in the canonical move data.</li></ul></div>`;
-      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}"><button class="secondary move-detail-back" type="button">← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Moves</button><div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Move" : "Charged Move"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>${effects}</div>`;
-      stage.querySelector(".move-detail-back").onclick = () => { compendiumSelectedMoveId = null; renderCompendiumMoveReference(); };
-      stage.querySelector(".move-detail-back").focus();
+      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}">${compendiumDetailActions(`← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Moves`)}<div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Move" : "Charged Move"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>${effects}</div>`;
+      bindCompendiumDetailActions(stage, () => selectCompendiumCategory("moves"));
+      stage.querySelector(".compendium-detail-back").focus();
     }
 
     function updateCompendiumSearch(query) {
@@ -15220,12 +15340,18 @@
         compendiumMoveKind = result.item.kind;
         compendiumSelectedMoveId = result.item.id;
         clearCompendiumSearch(false);
-        selectCompendiumCategory("moves");
+        compendiumActiveCategory = "moves";
+        compendiumOpenArticle = null;
+        $("compendiumArticle").hidden = true;
+        $("compendiumStage").hidden = false;
+        renderCompendiumCategories();
+        renderCompendiumMoveReference();
+        syncCompendiumRoute({ category: "moves", item: result.item.id });
         return;
       }
       if (["mechanics", "rulings", "glossary"].includes(result.type)) {
         clearCompendiumSearch(false);
-        selectCompendiumCategory(result.type);
+        selectCompendiumCategory(result.type, { skipHistory: true });
         openCompendiumArticle(result.type, result.id);
       }
     }
@@ -15278,10 +15404,14 @@
       return `<aside class="compendium-article-source" data-source-type="${escapeHtml(article.sourceType)}"><div class="compendium-source-head"><span class="compendium-source-badge">${badge}</span>${section}${sourceDate}</div><p class="compendium-source-title">${escapeHtml(article.source)}</p><p class="compendium-source-note">${escapeHtml(note)}</p>${link}</aside>`;
     }
 
-    function openCompendiumArticle(type, entryId) {
+    function openCompendiumArticle(type, entryId, options = {}) {
       const entry = (compendiumDatasets[type] || []).find(item => item.id === entryId);
       const article = window.PvPeakJudgeCompendium?.articleView(type, entry);
       if (!article) return;
+      compendiumActiveCategory = type;
+      compendiumSelectedMoveId = null;
+      compendiumOpenArticle = { type, id: entryId };
+      renderCompendiumCategories();
       const source = renderCompendiumSource(article);
       const updated = article.lastUpdated ? `<span>Updated ${escapeHtml(article.lastUpdated)}</span>` : "";
       const related = article.related.length ? `<span>${article.related.length} related reference${article.related.length === 1 ? "" : "s"}</span>` : "";
@@ -15290,11 +15420,12 @@
         : "";
       const relatedEntries = article.related.map(compendiumRelatedEntry).filter(Boolean);
       const relatedHtml = relatedEntries.length ? `<section class="compendium-related"><h3>Related references</h3><div class="compendium-related-list">${relatedEntries.map(item => `<button class="compendium-related-button" type="button" data-related-type="${item.type}" data-related-id="${item.entry.id}">${escapeHtml(item.entry.term || item.entry.title)}</button>`).join("")}</div></section>` : "";
-      $("compendiumArticle").innerHTML = `<button class="secondary compendium-article-back" type="button">\u2190 Back to ${escapeHtml((window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium")}</button><p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${glossaryMeta}${updated}${related}</div>${source}${article.sections.map(renderCompendiumArticleSection).join("")}${relatedHtml}`;
+      $("compendiumArticle").innerHTML = `${compendiumDetailActions(`← Back to ${(window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium"}`)}<p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${glossaryMeta}${updated}${related}</div>${source}${article.sections.map(renderCompendiumArticleSection).join("")}${relatedHtml}`;
       $("compendiumStage").hidden = true;
       $("compendiumArticle").hidden = false;
-      $("compendiumArticle").querySelector(".compendium-article-back").onclick = () => selectCompendiumCategory(type);
+      bindCompendiumDetailActions($("compendiumArticle"), () => selectCompendiumCategory(type));
       $("compendiumArticle").querySelectorAll("[data-related-id]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.relatedType, button.dataset.relatedId));
+      if (!options.skipHistory) syncCompendiumRoute({ category: type, item: entryId });
       $("compendiumArticleTitle").focus?.();
     }
 
@@ -15302,6 +15433,10 @@
       const supportedViews = new Set(["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]);
       const next = supportedViews.has(view) ? view : "simulator";
       const previous = document.body.dataset.view;
+      if (next === "compendium" && previous !== "compendium" && !compendiumHistorySyncing && window.history?.replaceState) {
+        window.history.replaceState({ ...(window.history.state || {}), appView: previous || "simulator" }, "", window.location.href);
+      }
+      if (previous === "compendium" && next !== "compendium") clearCompendiumRoute({ appView: next });
       document.body.dataset.view = next;
       if (next !== "scenario-review") {
         document.body.classList.remove("scenario-manual-setup", "scenario-matchup-editing");
@@ -15315,7 +15450,10 @@
       }
       if (next === "analysis") renderPokemonAnalysis();
       if (next === "team-builder") renderTeamBuilder();
-      if (next === "compendium") renderJudgeCompendium();
+      if (next === "compendium") {
+        renderJudgeCompendium();
+        if (previous !== "compendium") syncCompendiumRoute(currentCompendiumRoute());
+      }
       if (next === "simulator") {
         if (previous !== next) refreshPokemonLists();
         render();
