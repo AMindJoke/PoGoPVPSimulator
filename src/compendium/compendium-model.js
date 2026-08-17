@@ -12,7 +12,7 @@
     Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast and Charged Move data.", status: "phase-2" }),
     Object.freeze({ id: "mechanics", label: "Mechanics", summary: "Learn how Pokémon GO PvP timing and actions work.", status: "phase-5" }),
     Object.freeze({ id: "rulings", label: "Rulings", summary: "Find sourced guidance for tournament situations.", status: "phase-6" }),
-    Object.freeze({ id: "glossary", label: "Glossary", summary: "Decode common competitive and judge terminology.", status: "content-pending" })
+    Object.freeze({ id: "glossary", label: "Glossary", summary: "Decode common competitive and judge terminology.", status: "phase-7" })
   ]);
 
   function isStableId(value) {
@@ -63,6 +63,9 @@
     if (type === "glossary") {
       if (typeof entry.term !== "string" || !entry.term.trim()) errors.push("GLOSSARY_TERM_REQUIRED");
       if (typeof entry.definition !== "string" || !entry.definition.trim()) errors.push("GLOSSARY_DEFINITION_REQUIRED");
+      if (entry.category != null && (typeof entry.category !== "string" || !entry.category.trim())) errors.push("GLOSSARY_CATEGORY_INVALID");
+      if (entry.aliases != null && !stringArray(entry.aliases)) errors.push("GLOSSARY_ALIASES_INVALID");
+      if (entry.usage != null && !["official", "judge", "competitive", "simulator"].includes(entry.usage)) errors.push("GLOSSARY_USAGE_INVALID");
       if (entry.related != null && !stringArray(entry.related)) errors.push("GLOSSARY_RELATED_INVALID");
       return errors;
     }
@@ -133,13 +136,14 @@
     const summary = type === "glossary" ? entry.definition : entry.summary;
     const sectionText = (entry.content || []).flatMap(section => [section.heading, ...(section.body || [])]);
     const expanded = type === "glossary" ? entry.expanded || "" : "";
-    const text = normalizeSearchText([title, expanded, summary, ...(entry.keywords || []), ...sectionText].join(" "));
+    const aliases = type === "glossary" ? entry.aliases || [] : [];
+    const text = normalizeSearchText([title, expanded, summary, ...aliases, ...(entry.keywords || []), ...sectionText].join(" "));
     return Object.freeze({
       id: entry.id,
       type,
       title,
       summary,
-      keywords: Object.freeze([...(entry.keywords || [])]),
+      keywords: Object.freeze([...(entry.keywords || []), ...aliases]),
       relatedItems: Object.freeze([...(entry.related || entry.relatedMechanics || []), ...(entry.relatedRulings || [])]),
       text,
       item: entry
@@ -209,6 +213,8 @@
       sourceUrl: type === "rulings" ? entry.sourceUrl || "" : "",
       sourceSection: type === "rulings" ? entry.sourceSection || "" : "",
       sourceUpdated: type === "rulings" ? entry.sourceUpdated || "" : "",
+      aliases: Object.freeze(glossary ? [...(entry.aliases || [])] : []),
+      usage: glossary ? entry.usage || "competitive" : "",
       lastUpdated: entry.lastUpdated || ""
     });
   }

@@ -39,7 +39,7 @@ const rulings = {
 const glossary = {
   schemaVersion: 1,
   contentType: "glossary",
-  items: [{ id: "cmp", term: "CMP", expanded: "Charged Move Priority", definition: "A fixture glossary definition.", keywords: ["priority"], related: ["fast-move-timing"] }]
+  items: [{ id: "cmp", term: "CMP", expanded: "Charged Move Priority", definition: "A fixture glossary definition.", category: "Timing", usage: "competitive", aliases: ["Charged Attack Priority"], keywords: ["priority"], related: ["fast-move-timing"] }]
 };
 
 assert.strictEqual(model.SCHEMA_VERSION, 1);
@@ -65,12 +65,16 @@ assert.ok(model.validateDataset("mechanics", invalidTimeline).errors.some(error 
 const duplicate = structuredClone(glossary);
 duplicate.items.push(structuredClone(duplicate.items[0]));
 assert.ok(model.validateDataset("glossary", duplicate).errors.some(error => error.includes("ENTRY_ID_DUPLICATE")));
+const invalidUsage = structuredClone(glossary);
+invalidUsage.items[0].usage = "unknown";
+assert.ok(model.validateDataset("glossary", invalidUsage).errors.some(error => error.includes("GLOSSARY_USAGE_INVALID")));
 
 const normalized = model.normalizeDatasets({ mechanics, rulings, glossary });
 const index = model.buildSearchIndex(normalized);
 assert.strictEqual(index.length, 3);
 assert.strictEqual(model.search(index, "DRE")[0].id, "dre-window");
 assert.strictEqual(model.search(index, "charged move priority")[0].id, "cmp");
+assert.strictEqual(model.search(index, "charged attack priority")[0].id, "cmp");
 assert.deepStrictEqual(model.search(index, "missing"), []);
 assert.strictEqual(model.normalizeSearchText("Pokémon – Timing"), "pokemon timing");
 
@@ -87,5 +91,9 @@ assert.strictEqual(article.sourceSection, "Section 1.2");
 assert.strictEqual(article.sourceUpdated, "2026-05-21");
 assert.strictEqual(article.sections[0].id, "judge-note");
 assert.deepStrictEqual(article.related, ["fast-move-timing"]);
+
+const glossaryArticle = model.articleView("glossary", normalized.glossary[0]);
+assert.deepStrictEqual(glossaryArticle.aliases, ["Charged Attack Priority"]);
+assert.strictEqual(glossaryArticle.usage, "competitive");
 
 console.log("Judge Compendium model tests passed.");

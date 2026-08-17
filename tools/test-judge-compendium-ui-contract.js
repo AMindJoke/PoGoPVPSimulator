@@ -61,11 +61,15 @@ includes('Compendium explanation');
 includes('article.lastUpdated');
 includes('article.related.length');
 includes('function renderCompendiumEntryButton(entry, entryType)');
+includes('entryType === "glossary"');
+includes('class="compendium-glossary-expanded"');
+includes('data-usage="${escapeHtml(entry.usage || "competitive")}"');
 includes('data-source-type="${escapeHtml(entry.sourceType || "compendium")}"');
 includes('function renderCompendiumSource(article)');
 includes('The linked document is official. This article is a concise Compendium summary, not an official quotation.');
 includes('target="_blank" rel="noopener noreferrer"');
 includes('Source revised ${escapeHtml(article.sourceUpdated)}');
+includes('article.aliases.join(" · ")');
 includes('function renderCompendiumTimelineDiagram(diagram)');
 includes('window.PvPeakJudgeCompendium?.validTimelineDiagram(diagram)');
 includes('data-section-kind="${kind}"');
@@ -91,6 +95,8 @@ includes('overflow-x: auto; overscroll-behavior-inline: contain;');
 includes('.mechanics-timeline-track { display: grid; grid-template-columns: repeat(var(--mechanic-turns), minmax(34px, 1fr));');
 includes('.compendium-article-source { display: grid; gap: 7px;');
 includes('.compendium-source-badge { padding: 4px 7px;');
+includes('.compendium-entry-list.is-glossary { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
+includes('.compendium-entry-list.is-glossary { grid-template-columns: 1fr; }');
 
 for (const view of ["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]) {
   includes(`data-view-target="${view}"`, `Navigation target missing: ${view}`);

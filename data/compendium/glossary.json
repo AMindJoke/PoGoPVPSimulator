@@ -1,5 +1,182 @@
 {
   "schemaVersion": 1,
   "contentType": "glossary",
-  "items": []
+  "items": [
+    {
+      "id": "alignment",
+      "term": "Alignment",
+      "expanded": "Fast Move alignment",
+      "definition": "The repeating relationship between two Fast Move durations and the turns on which each Pokémon becomes ready to act.",
+      "category": "Timing",
+      "usage": "competitive",
+      "aliases": ["move alignment"],
+      "keywords": ["timing", "duration", "realign", "cycle"],
+      "related": ["fast-move-duration", "battle-turns"]
+    },
+    {
+      "id": "catch",
+      "term": "Catch",
+      "expanded": "Catch a Charged Move",
+      "definition": "Competitive shorthand for switching Pokémon so the incoming Charged Move is received by the new active Pokémon.",
+      "category": "Strategy",
+      "usage": "competitive",
+      "aliases": ["move catch", "catching"],
+      "keywords": ["switch", "charged move", "damage"],
+      "related": []
+    },
+    {
+      "id": "charged-move",
+      "term": "Charged Move",
+      "expanded": "Charged Attack",
+      "definition": "An energy-spending battle action. The official tournament handbook uses “Charge Attack”; the simulator uses “Charged Move.”",
+      "category": "Actions",
+      "usage": "simulator",
+      "aliases": ["Charge Attack", "CM"],
+      "keywords": ["charged", "energy cost", "attack"],
+      "related": ["energy-generation", "charged-move-priority"]
+    },
+    {
+      "id": "cmp",
+      "term": "CMP",
+      "expanded": "Charged Move Priority",
+      "definition": "The ordering used when both Pokémon register a Charged Move in the same decision window; current Attack determines which resolves first.",
+      "category": "Timing",
+      "usage": "competitive",
+      "aliases": ["Charged Attack Priority", "CMP tie"],
+      "keywords": ["priority", "attack", "simultaneous charged"],
+      "related": ["charged-move-priority", "stat-stages"]
+    },
+    {
+      "id": "dre",
+      "term": "DRE",
+      "expanded": "Damage Registration Error",
+      "definition": "Community shorthand for a technical timing issue in which Fast Move damage incorrectly prevents an available Charged Move from resolving.",
+      "category": "Technical issues",
+      "usage": "judge",
+      "aliases": ["damage registration error", "Fast Attack prevents Charged Attack"],
+      "keywords": ["pending fast damage", "technical review", "knockout"],
+      "related": ["fast-attack-prevents-charged-attack", "fast-move-impact"]
+    },
+    {
+      "id": "energy-cap",
+      "term": "Energy cap",
+      "expanded": "Maximum stored energy",
+      "definition": "The 100-energy storage limit. Energy generated above that limit is not retained.",
+      "category": "Energy",
+      "usage": "simulator",
+      "aliases": ["max energy", "overcap"],
+      "keywords": ["100 energy", "energy limit"],
+      "related": ["energy-generation"]
+    },
+    {
+      "id": "farm-down",
+      "term": "Farm down",
+      "expanded": "Fast Move knockout",
+      "definition": "Using Fast Moves to finish the opposing Pokémon while retaining accumulated energy for a later Charged Move.",
+      "category": "Strategy",
+      "usage": "competitive",
+      "aliases": ["farmdown"],
+      "keywords": ["fast move", "knockout", "retain energy"],
+      "related": ["energy-generation", "fast-move-impact"]
+    },
+    {
+      "id": "fast-move",
+      "term": "Fast Move",
+      "expanded": "Fast Attack",
+      "definition": "A battle action with a fixed turn duration that generates energy and deals damage at its impact. The official handbook uses “Fast Attack.”",
+      "category": "Actions",
+      "usage": "simulator",
+      "aliases": ["Fast Attack", "FM"],
+      "keywords": ["duration", "energy gain", "impact"],
+      "related": ["fast-move-duration", "fast-move-impact"]
+    },
+    {
+      "id": "impact-turn",
+      "term": "Impact turn",
+      "expanded": "Fast Move impact",
+      "definition": "The turn when a Fast Move's damage and energy gain are applied; the simulator calculates it as start turn + duration − 1.",
+      "category": "Timing",
+      "usage": "simulator",
+      "aliases": ["damage registration turn"],
+      "keywords": ["resolve turn", "fast damage", "energy registration"],
+      "related": ["fast-move-impact", "battle-turns"]
+    },
+    {
+      "id": "one-turn-lag",
+      "term": "One-turn lag",
+      "expanded": "1-Turn Lag",
+      "definition": "The simulator's reconstruction label for an affected Pokémon losing exactly one turn before its selected Fast Move. The official handbook addresses action delay more broadly as General Lag.",
+      "category": "Technical issues",
+      "usage": "simulator",
+      "aliases": ["1-turn lag", "technical lag", "General Lag"],
+      "keywords": ["lost turn", "input delay", "technical review"],
+      "related": ["general-lag-review", "battle-turns"]
+    },
+    {
+      "id": "overfarm",
+      "term": "Overfarm",
+      "expanded": "Build beyond Charged access",
+      "definition": "Continuing to use Fast Moves after reaching a Charged Move's cost in order to store additional energy before throwing.",
+      "category": "Strategy",
+      "usage": "competitive",
+      "aliases": ["overfarming"],
+      "keywords": ["energy", "charged access", "fast move"],
+      "related": ["energy-generation"]
+    },
+    {
+      "id": "shield-scenario",
+      "term": "Shield scenario",
+      "expanded": "Protect Shield configuration",
+      "definition": "A matchup notation describing how many Protect Shields each side has, such as 1–1 or 0–2.",
+      "category": "Battle state",
+      "usage": "competitive",
+      "aliases": ["shield state", "1-1 shields"],
+      "keywords": ["protect shield", "matchup", "zero shield", "one shield", "two shield"],
+      "related": []
+    },
+    {
+      "id": "sneak",
+      "term": "Sneak",
+      "expanded": "Fast Move sneak",
+      "definition": "Competitive shorthand for a Fast Move that registers around an opposing Charged Move window and is allowed to complete afterward.",
+      "category": "Timing",
+      "usage": "competitive",
+      "aliases": ["sneaked Fast Move", "Fast Attack sneak"],
+      "keywords": ["charged timing", "fast registration", "alignment"],
+      "related": ["fast-move-duration", "fast-move-impact"]
+    },
+    {
+      "id": "stat-stage",
+      "term": "Stat stage",
+      "expanded": "Attack or Defense stage",
+      "definition": "A bounded battle modifier applied independently to Attack or Defense, ranging from −4 through +4.",
+      "category": "Battle state",
+      "usage": "simulator",
+      "aliases": ["buff stage", "debuff stage"],
+      "keywords": ["buff", "debuff", "modifier", "attack", "defense"],
+      "related": ["stat-stages", "charged-move-priority"]
+    },
+    {
+      "id": "turn",
+      "term": "Turn",
+      "expanded": "Battle turn",
+      "definition": "The simulator's smallest battle-timing unit. One turn lasts 0.5 seconds.",
+      "category": "Timing",
+      "usage": "simulator",
+      "aliases": ["0.5 seconds", "half second"],
+      "keywords": ["timing unit", "duration"],
+      "related": ["battle-turns"]
+    },
+    {
+      "id": "undercharge",
+      "term": "Undercharge",
+      "expanded": "Reduced Charged Move damage",
+      "definition": "Intentionally completing less of the Charged Move minigame so the move deals reduced damage, often to preserve the opponent for additional energy farming.",
+      "category": "Strategy",
+      "usage": "competitive",
+      "aliases": ["undercharging"],
+      "keywords": ["charged move", "reduced damage", "farm"],
+      "related": ["energy-generation"]
+    }
+  ]
 }
