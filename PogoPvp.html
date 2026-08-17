@@ -448,7 +448,9 @@
     .compendium-empty p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     .compendium-entry-list { display: grid; gap: 7px; }
     .compendium-entry-button { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 12px; padding: 12px; text-align: left; background: var(--soft); color: var(--ink); box-shadow: none; }
-    .compendium-entry-button small { color: var(--muted); }
+    .compendium-entry-button small { display: block; margin-top: 3px; color: var(--muted); }
+    .compendium-entry-context { align-self: center; padding: 4px 7px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; white-space: nowrap; }
+    .compendium-entry-context[data-source-type="official"] { background: color-mix(in srgb, #3b8f68 12%, var(--panel)); color: #28704e; }
     .compendium-moves { display: grid; gap: 12px; }
     .move-reference-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .move-kind-switch { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--subtle); }
@@ -500,7 +502,14 @@
     .compendium-article-summary { max-width: 760px; color: var(--muted); line-height: 1.55; }
     .compendium-article-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
     .compendium-article-meta span { padding: 5px 8px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 9px; font-weight: 850; }
-    .compendium-article-source { padding: 11px; border-left: 3px solid var(--accent); border-radius: 6px; background: var(--soft); font-size: 11px; }
+    .compendium-article-source { display: grid; gap: 7px; padding: 12px 14px; border: 1px solid color-mix(in srgb, #3b8f68 28%, var(--line)); border-left: 4px solid #3b8f68; border-radius: 9px; background: color-mix(in srgb, #3b8f68 6%, var(--panel)); font-size: 11px; }
+    .compendium-source-head { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+    .compendium-source-badge { padding: 4px 7px; border-radius: 99px; background: #3b8f68; color: #fff; font-size: 8px; font-weight: 950; letter-spacing: .04em; text-transform: uppercase; }
+    .compendium-source-section, .compendium-source-date { color: var(--muted); font-size: 9px; font-weight: 800; }
+    .compendium-source-title { margin: 0; color: var(--ink); font-weight: 900; }
+    .compendium-source-note { margin: 0; color: var(--muted); line-height: 1.45; }
+    .compendium-source-link { justify-self: start; color: var(--accent-dark); font-weight: 900; text-decoration: none; }
+    .compendium-source-link:hover { text-decoration: underline; }
     .compendium-article-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
     .compendium-article-section h3 { margin: 0 0 8px; }
     .compendium-article-section p { color: var(--ink); line-height: 1.65; }
@@ -15004,6 +15013,13 @@
       selectCompendiumCategory("moves");
     }
 
+    function renderCompendiumEntryButton(entry, entryType) {
+      const context = entryType === "rulings"
+        ? `<span class="compendium-entry-context" data-source-type="${escapeHtml(entry.sourceType || "compendium")}">${entry.sourceType === "official" ? "Official source" : entry.sourceType === "mixed" ? "Mixed sources" : "Compendium"}</span>`
+        : `<span aria-hidden="true">\u203a</span>`;
+      return `<button class="compendium-entry-button" type="button" data-compendium-entry="${entry.id}" data-compendium-type="${entryType}"><span><strong>${escapeHtml(entry.term || entry.title)}</strong><small>${escapeHtml(entry.definition || entry.summary)}</small></span>${context}</button>`;
+    }
+
     function renderCompendiumCategory(categoryId) {
       const category = (window.PvPeakJudgeCompendium?.CATEGORIES || []).find(item => item.id === categoryId);
       const stage = $("compendiumStage");
@@ -15018,7 +15034,7 @@
       }
       const entries = compendiumCategoryEntries(categoryId);
       const entryType = categoryId;
-      stage.innerHTML = `<div class="compendium-stage-head"><div><h3>${escapeHtml(category.label)}</h3><p>${escapeHtml(category.summary)}</p></div><span class="compendium-foundation-badge">${entries.length} indexed</span></div>${entries.length ? `<div class="compendium-entry-list">${entries.map(entry => `<button class="compendium-entry-button" type="button" data-compendium-entry="${entry.id}" data-compendium-type="${entryType}"><span><strong>${escapeHtml(entry.term || entry.title)}</strong><small>${escapeHtml(entry.definition || entry.summary)}</small></span><span aria-hidden="true">\u203a</span></button>`).join("")}</div>` : `<div class="compendium-empty"><div><strong>${escapeHtml(category.label)} structure ready</strong><p>Curated entries can now be added through the validated external data files, without embedding editorial content in the interface.</p></div></div>`}`;
+      stage.innerHTML = `<div class="compendium-stage-head"><div><h3>${escapeHtml(category.label)}</h3><p>${escapeHtml(category.summary)}</p></div><span class="compendium-foundation-badge">${entries.length} indexed</span></div>${entries.length ? `<div class="compendium-entry-list">${entries.map(entry => renderCompendiumEntryButton(entry, entryType)).join("")}</div>` : `<div class="compendium-empty"><div><strong>${escapeHtml(category.label)} structure ready</strong><p>Curated entries can now be added through the validated external data files, without embedding editorial content in the interface.</p></div></div>`}`;
       stage.querySelectorAll("[data-compendium-entry]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.compendiumType, button.dataset.compendiumEntry));
     }
 
@@ -15240,11 +15256,25 @@
       return null;
     }
 
+    function renderCompendiumSource(article) {
+      if (!article.source) return "";
+      const badge = article.sourceType === "official" ? "Official source" : article.sourceType === "mixed" ? "Mixed sources" : "Compendium explanation";
+      const section = article.sourceSection ? `<span class="compendium-source-section">${escapeHtml(article.sourceSection)}</span>` : "";
+      const sourceDate = article.sourceUpdated ? `<span class="compendium-source-date">Source revised ${escapeHtml(article.sourceUpdated)}</span>` : "";
+      const note = article.sourceType === "official"
+        ? "The linked document is official. This article is a concise Compendium summary, not an official quotation."
+        : article.sourceType === "mixed"
+          ? "This article combines sourced guidance with clearly identified Compendium explanation."
+          : "This is explanatory Compendium guidance and is not presented as official tournament wording.";
+      const link = article.sourceUrl ? `<a class="compendium-source-link" href="${escapeHtml(article.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open source document \u2197</a>` : "";
+      return `<aside class="compendium-article-source" data-source-type="${escapeHtml(article.sourceType)}"><div class="compendium-source-head"><span class="compendium-source-badge">${badge}</span>${section}${sourceDate}</div><p class="compendium-source-title">${escapeHtml(article.source)}</p><p class="compendium-source-note">${escapeHtml(note)}</p>${link}</aside>`;
+    }
+
     function openCompendiumArticle(type, entryId) {
       const entry = (compendiumDatasets[type] || []).find(item => item.id === entryId);
       const article = window.PvPeakJudgeCompendium?.articleView(type, entry);
       if (!article) return;
-      const source = article.source ? `<div class="compendium-article-source"><strong>${article.sourceType === "official" ? "Official source" : article.sourceType === "mixed" ? "Mixed sources" : "Compendium explanation"}:</strong> ${escapeHtml(article.source)}</div>` : "";
+      const source = renderCompendiumSource(article);
       const updated = article.lastUpdated ? `<span>Updated ${escapeHtml(article.lastUpdated)}</span>` : "";
       const related = article.related.length ? `<span>${article.related.length} related reference${article.related.length === 1 ? "" : "s"}</span>` : "";
       const relatedEntries = article.related.map(compendiumRelatedEntry).filter(Boolean);

@@ -28,7 +28,11 @@ const rulings = {
     content: [{ id: "judge-note", heading: "Judge note", kind: "key-point", body: ["Fixture copy."] }],
     source: "Fixture source",
     sourceType: "official",
+    sourceUrl: "https://example.com/rules.pdf",
+    sourceSection: "Section 1.2",
+    sourceUpdated: "2026-05-21",
     relatedMechanics: ["fast-move-timing"],
+    relatedRulings: [],
     lastUpdated: "2026-08-17"
   }]
 };
@@ -52,6 +56,9 @@ assert.ok(model.validateDataset("mechanics", invalidId).errors.some(error => err
 const invalidSource = structuredClone(rulings);
 invalidSource.items[0].sourceType = "unknown";
 assert.ok(model.validateDataset("rulings", invalidSource).errors.some(error => error.includes("RULING_SOURCE_TYPE_INVALID")));
+const invalidSourceUrl = structuredClone(rulings);
+invalidSourceUrl.items[0].sourceUrl = "http://example.com/rules.pdf";
+assert.ok(model.validateDataset("rulings", invalidSourceUrl).errors.some(error => error.includes("RULING_SOURCE_URL_INVALID")));
 const invalidTimeline = structuredClone(mechanics);
 invalidTimeline.items[0].content[0].diagram.rows[0].segments[0].duration = 4;
 assert.ok(model.validateDataset("mechanics", invalidTimeline).errors.some(error => error.includes("MECHANICS_CONTENT_INVALID")));
@@ -76,6 +83,8 @@ assert.deepStrictEqual(model.search(rankedIndex, "incinerate").slice(0, 2).map(e
 const article = model.articleView("rulings", normalized.rulings[0]);
 assert.strictEqual(article.id, "dre-window");
 assert.strictEqual(article.sourceType, "official");
+assert.strictEqual(article.sourceSection, "Section 1.2");
+assert.strictEqual(article.sourceUpdated, "2026-05-21");
 assert.strictEqual(article.sections[0].id, "judge-note");
 assert.deepStrictEqual(article.related, ["fast-move-timing"]);
 

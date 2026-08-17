@@ -1,5 +1,216 @@
 {
   "schemaVersion": 1,
   "contentType": "rulings",
-  "items": []
+  "items": [
+    {
+      "id": "technical-review-request",
+      "title": "Requesting a technical review",
+      "summary": "When and how a gameplay technical issue reaches a Judge review.",
+      "category": "Technical reviews",
+      "keywords": ["technical issue", "review", "judge call", "rematch", "appeal"],
+      "content": [
+        {
+          "id": "initiate-review",
+          "heading": "A Judge must preside",
+          "kind": "text",
+          "body": ["A competitor who believes a technical issue caused a disadvantage must initiate a Judge review for a rematch to be considered. The competitors cannot settle the review result between themselves.", "The Judge examines the available gameplay footage, identifies the issue, and evaluates its possible effect on the game outcome."]
+        },
+        {
+          "id": "floor-sequence",
+          "heading": "Floor sequence",
+          "kind": "steps",
+          "body": ["Call a Judge when the issue is identified.", "Preserve and review the full-screen battle recording when available.", "Identify the technical issue and the affected competitor.", "Evaluate whether the issue changed the likely outcome.", "Communicate the finding and ruling to both competitors."]
+        },
+        {
+          "id": "authority",
+          "heading": "Authority",
+          "kind": "key-point",
+          "body": ["A review may be appealed to the Head Judge. The Head Judge's review ruling is final."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Sections 6.7 and 6.7.1",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": ["battle-turns", "fast-move-impact"],
+      "relatedRulings": ["technical-review-resolution", "screen-recording-evidence"]
+    },
+    {
+      "id": "technical-review-resolution",
+      "title": "Resolving a technical review",
+      "summary": "How impact on the game outcome determines whether the result stands or the game is replayed.",
+      "category": "Technical reviews",
+      "keywords": ["review resolution", "void game", "new game", "rematch", "significant impact", "result stands"],
+      "content": [
+        {
+          "id": "impact-test",
+          "heading": "Evaluate advantage and outcome impact",
+          "kind": "text",
+          "body": ["The Judge uses the available knowledge and resources to determine whether a technical issue gave either competitor an advantage or disadvantage.", "If the issue had a significant impact on the outcome, the game is considered void and a new game must be played. If the evidence does not support that conclusion, the recorded result stands."]
+        },
+        {
+          "id": "not-automatic",
+          "heading": "A known issue is not an automatic rematch",
+          "kind": "key-point",
+          "body": ["Recognizing a known technical issue does not replace the impact analysis. The ruling depends on what the issue changed in this game."]
+        },
+        {
+          "id": "communication",
+          "heading": "Communicate the ruling",
+          "kind": "steps",
+          "body": ["State the issue that was identified.", "Explain the resulting advantage or disadvantage.", "State whether the game result stands or the game is void.", "Remind competitors that the review may be appealed to the Head Judge."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Section 6.7.1",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": ["battle-turns"],
+      "relatedRulings": ["technical-review-request", "technical-review-reporting"]
+    },
+    {
+      "id": "screen-recording-evidence",
+      "title": "Screen recording as review evidence",
+      "summary": "Why a complete battle recording matters and how it should be handled.",
+      "category": "Evidence",
+      "keywords": ["screen recording", "footage", "evidence", "full screen", "recording required"],
+      "content": [
+        {
+          "id": "requirements",
+          "heading": "Recording expectations",
+          "kind": "text",
+          "body": ["At events using provided devices, competitors are required to record each match. When competitors use their own devices, screen-recording capability is highly recommended.", "Recordings should be played back only in the presence of a staff member and should remain unmodified."]
+        },
+        {
+          "id": "complete-footage",
+          "heading": "The complete battle matters",
+          "kind": "key-point",
+          "body": ["Without a full-screen recording of the entire battle, a Judge may be unable to determine the issue's effect. In that case, the game result stands."]
+        },
+        {
+          "id": "review-use",
+          "heading": "Use during review",
+          "kind": "steps",
+          "body": ["Confirm the recording covers the entire battle and the full screen.", "Review it with tournament staff present.", "Use visible actions and timing as evidence; do not treat an edited or partial clip as a complete reconstruction."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Sections 4.1.4 and 6.7",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": ["battle-turns"],
+      "relatedRulings": ["technical-review-request", "technical-review-resolution"]
+    },
+    {
+      "id": "fast-attack-prevents-charged-attack",
+      "title": "Fast Attack prevents Charged Attack",
+      "summary": "Reviewing the known major issue often discussed as a damage registration error.",
+      "category": "Known major issues",
+      "keywords": ["dre", "damage registration error", "fast attack prevents charged attack", "charged attack", "knockout", "pending damage"],
+      "content": [
+        {
+          "id": "official-description",
+          "heading": "Known major issue",
+          "kind": "text",
+          "body": ["The handbook lists a situation where one competitor attempts a Charged Attack while the opponent uses a Fast Attack, and the Fast Attack incorrectly knocks out the Charged Attack user's Pokémon.", "This belongs to the handbook's major-issue category because it can create an unfair advantage or disadvantage and usually affects the outcome."]
+        },
+        {
+          "id": "review-focus",
+          "heading": "Review focus",
+          "kind": "steps",
+          "body": ["Confirm the attempted Charged Attack and opposing Fast Attack in the recording.", "Establish the relevant registration and impact timing.", "Determine whether the knockout occurred incorrectly.", "Compare the observed outcome with the outcome absent the technical issue.", "Apply the general review-resolution standard to the demonstrated impact."]
+        },
+        {
+          "id": "tool-boundary",
+          "heading": "Reconstruction is evidence support",
+          "kind": "key-point",
+          "body": ["Scenario Review can help test the corrected battle state, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, the issue, and its significant impact."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Sections 6.7.1 and 6.7.3.2",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": ["fast-move-impact", "charged-move-priority", "energy-generation"],
+      "relatedRulings": ["technical-review-resolution", "screen-recording-evidence"]
+    },
+    {
+      "id": "general-lag-review",
+      "title": "Lag affecting an action",
+      "summary": "Distinguishing action delay from visual-only lag during a technical review.",
+      "category": "Known technical issues",
+      "keywords": ["general lag", "one-turn lag", "1-turn lag", "weak connection", "visual lag", "input delay", "action delay"],
+      "content": [
+        {
+          "id": "distinction",
+          "heading": "Action delay versus visual delay",
+          "kind": "text",
+          "body": ["The handbook treats General Lag as a major issue when there is a delay between a competitor's input and the associated game action. A weak-connection notice may accompany it.", "Visual Lag is listed separately as a minor issue when graphics are delayed but the underlying actions occur normally."]
+        },
+        {
+          "id": "review-focus",
+          "heading": "Review focus",
+          "kind": "steps",
+          "body": ["Identify the input or action alleged to have been delayed.", "Use the full recording to distinguish a gameplay delay from an animation-only delay.", "Reconstruct the affected timing window when it helps measure the consequence.", "Determine whether the delay significantly changed the outcome."]
+        },
+        {
+          "id": "not-by-label",
+          "heading": "Do not rule from the label alone",
+          "kind": "key-point",
+          "body": ["Calling an incident “one-turn lag” does not by itself establish a rematch. The Judge must verify an actual delayed action and its impact on this game."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Sections 6.7.1, 6.7.3.1 and 6.7.3.2",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": ["battle-turns", "fast-move-duration", "fast-move-impact"],
+      "relatedRulings": ["technical-review-resolution", "screen-recording-evidence"]
+    },
+    {
+      "id": "technical-review-reporting",
+      "title": "Reporting technical reviews",
+      "summary": "The information and deadline for the Tournament Review Summary Report.",
+      "category": "Tournament administration",
+      "keywords": ["review report", "reporting", "seven days", "tournament review summary", "technical review record"],
+      "content": [
+        {
+          "id": "report-every-review",
+          "heading": "Record every requested review",
+          "kind": "text",
+          "body": ["Play! Pokémon tracks review history, so Judge reviews should be reported whenever they occur. A new row is completed for each review request in the Tournament Review Summary Report."]
+        },
+        {
+          "id": "minimum-record",
+          "heading": "Information to preserve",
+          "kind": "steps",
+          "body": ["Tournament identifiers and round information.", "Competitor and Judge names and Player IDs.", "A detailed description of the incident and staff response.", "The battle recording or a link when available.", "The review outcome and any appeal information."]
+        },
+        {
+          "id": "deadline",
+          "heading": "Submission deadline",
+          "kind": "key-point",
+          "body": ["The handbook requires Review Reports to be submitted to the listed Play! Pokémon contact within seven days after the tournament concludes."]
+        }
+      ],
+      "source": "Play! Pokémon Pokémon GO Tournament Handbook",
+      "sourceType": "official",
+      "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
+      "sourceSection": "Section 6.7.2",
+      "sourceUpdated": "2026-05-21",
+      "lastUpdated": "2026-08-17",
+      "relatedMechanics": [],
+      "relatedRulings": ["technical-review-request", "technical-review-resolution"]
+    }
+  ]
 }

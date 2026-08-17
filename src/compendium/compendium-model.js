@@ -11,7 +11,7 @@
     Object.freeze({ id: "quick-reference", label: "Quick Reference", summary: "Essential battle and tournament facts at a glance.", status: "foundation" }),
     Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast and Charged Move data.", status: "phase-2" }),
     Object.freeze({ id: "mechanics", label: "Mechanics", summary: "Learn how Pokémon GO PvP timing and actions work.", status: "phase-5" }),
-    Object.freeze({ id: "rulings", label: "Rulings", summary: "Find sourced guidance for tournament situations.", status: "content-pending" }),
+    Object.freeze({ id: "rulings", label: "Rulings", summary: "Find sourced guidance for tournament situations.", status: "phase-6" }),
     Object.freeze({ id: "glossary", label: "Glossary", summary: "Decode common competitive and judge terminology.", status: "content-pending" })
   ]);
 
@@ -75,7 +75,11 @@
     if (type === "rulings") {
       if (typeof entry.source !== "string") errors.push("RULING_SOURCE_REQUIRED");
       if (!['official', 'compendium', 'mixed'].includes(entry.sourceType)) errors.push("RULING_SOURCE_TYPE_INVALID");
+      if (entry.sourceUrl != null && !/^https:\/\//.test(entry.sourceUrl)) errors.push("RULING_SOURCE_URL_INVALID");
+      if (entry.sourceSection != null && (typeof entry.sourceSection !== "string" || !entry.sourceSection.trim())) errors.push("RULING_SOURCE_SECTION_INVALID");
+      if (entry.sourceUpdated != null && !/^\d{4}-\d{2}-\d{2}$/.test(entry.sourceUpdated)) errors.push("RULING_SOURCE_UPDATED_INVALID");
       if (entry.relatedMechanics != null && !stringArray(entry.relatedMechanics)) errors.push("RULING_RELATED_MECHANICS_INVALID");
+      if (entry.relatedRulings != null && !stringArray(entry.relatedRulings)) errors.push("RULING_RELATED_RULINGS_INVALID");
     }
     return errors;
   }
@@ -136,7 +140,7 @@
       title,
       summary,
       keywords: Object.freeze([...(entry.keywords || [])]),
-      relatedItems: Object.freeze([...(entry.related || entry.relatedMechanics || [])]),
+      relatedItems: Object.freeze([...(entry.related || entry.relatedMechanics || []), ...(entry.relatedRulings || [])]),
       text,
       item: entry
     });
@@ -199,9 +203,12 @@
       eyebrow: glossary ? (entry.expanded || "Glossary") : entry.category,
       summary: glossary ? entry.definition : entry.summary,
       sections: Object.freeze(glossary ? [] : [...entry.content]),
-      related: Object.freeze([...(entry.related || entry.relatedMechanics || [])]),
+      related: Object.freeze([...(entry.related || entry.relatedMechanics || []), ...(entry.relatedRulings || [])]),
       source: type === "rulings" ? entry.source : "",
       sourceType: type === "rulings" ? entry.sourceType : "",
+      sourceUrl: type === "rulings" ? entry.sourceUrl || "" : "",
+      sourceSection: type === "rulings" ? entry.sourceSection || "" : "",
+      sourceUpdated: type === "rulings" ? entry.sourceUpdated || "" : "",
       lastUpdated: entry.lastUpdated || ""
     });
   }
