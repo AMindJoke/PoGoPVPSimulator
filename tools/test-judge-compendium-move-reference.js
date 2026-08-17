@@ -24,6 +24,13 @@ assert.deepStrictEqual(model.filterMoves(reference, { kind: "charged", type: "wa
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "fast", sort: "energy" }).map(move => move.id), ["incinerate", "mud-shot"]);
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "charged", query: "icy" }).map(move => move.id), ["icy-wind"]);
 assert.strictEqual(model.normalizeMove(fixture[4]), null);
+const searchEntries = model.searchEntries(reference);
+assert.strictEqual(searchEntries.length, 4);
+assert.deepStrictEqual(
+  Object.fromEntries(["id", "type", "title", "summary"].map(field => [field, searchEntries.find(entry => entry.id === "incinerate")[field]])),
+  { id: "incinerate", type: "fast-move", title: "Incinerate", summary: "Fire · 20 damage · +20 energy · 5 turns" }
+);
+assert.ok(searchEntries.find(entry => entry.id === "icy-wind").summary.includes("Opponent Attack -1 · 100%"));
 
 global.window = {};
 require("../battle-data.js");

@@ -44,3 +44,7 @@ Move records are intentionally not duplicated in this directory. `src/compendium
 - structured stat-stage effects and their canonical activation chance.
 
 Entries explicitly marked `unlisted` in the canonical source are omitted from the public reference.
+
+## Global search index
+
+The runtime combines normalized Move Reference records with validated Mechanics, Rulings, and Glossary entries. Search ranking prioritizes exact titles, title prefixes, title matches, keywords, and finally full structured content. Results retain their source item so selecting a move opens its canonical detail and selecting written content opens the shared article renderer.

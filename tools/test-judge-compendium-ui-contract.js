@@ -24,6 +24,8 @@ includes('data/compendium/${type}.json');
 includes('src/compendium/move-reference.js');
 includes('api.createReference(gm.moves');
 includes('window.PvPeakMoveReference.filterMoves(reference');
+includes('window.PvPeakMoveReference.searchEntries(reference)');
+includes('rebuildCompendiumSearchIndex();');
 includes('Fast Moves · ${reference.fast.length}');
 includes('Charged Moves · ${reference.charged.length}');
 includes('data-move-turns="${value}"');
@@ -31,6 +33,16 @@ includes('id="compendiumMoveType"');
 includes('id="compendiumMoveSort"');
 includes('renderCompendiumMoveDetail(selected)');
 includes('No stat-stage effect in the canonical move data.');
+includes('role="combobox"');
+includes('aria-controls="compendiumSearchResults"');
+includes('function handleCompendiumSearchKeydown(event)');
+includes('event.key === "ArrowDown"');
+includes('event.key === "ArrowUp"');
+includes('event.key === "Home"');
+includes('event.key === "End"');
+includes('event.key === "Enter"');
+includes('function openCompendiumSearchResult(index)');
+includes('selectCompendiumCategory("moves")');
 
 includes('id="compendiumArticle"');
 includes('window.PvPeakJudgeCompendium?.articleView(type, entry)');
@@ -48,6 +60,8 @@ includes('.compendium-view { width: min(100%, 1120px); min-width: 0;');
 includes('.move-reference-toolbar { grid-template-columns: minmax(0, 1fr) minmax(0, .75fr); }');
 includes('.move-reference-row { grid-template-columns: minmax(0, 1fr) auto;');
 includes('.move-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
+includes('.compendium-search-results { display: grid; gap: 6px; max-height: min(430px, 55vh);');
+includes('.compendium-search-result[aria-selected="true"]');
 
 for (const view of ["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]) {
   includes(`data-view-target="${view}"`, `Navigation target missing: ${view}`);

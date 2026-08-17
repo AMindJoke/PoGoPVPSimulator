@@ -61,6 +61,13 @@ assert.strictEqual(index.length, 3);
 assert.strictEqual(model.search(index, "DRE")[0].id, "dre-window");
 assert.strictEqual(model.search(index, "charged move priority")[0].id, "cmp");
 assert.deepStrictEqual(model.search(index, "missing"), []);
+assert.strictEqual(model.normalizeSearchText("Pokémon – Timing"), "pokemon timing");
+
+const rankedIndex = model.buildSearchIndex(normalized, [
+  { id: "incinerate-guide", type: "mechanics", title: "Understanding Incinerate", summary: "Timing guide", keywords: ["incinerate"] },
+  { id: "incinerate", type: "fast-move", title: "Incinerate", summary: "20 damage", keywords: ["fire"] }
+]);
+assert.deepStrictEqual(model.search(rankedIndex, "incinerate").slice(0, 2).map(entry => entry.id), ["incinerate", "incinerate-guide"]);
 
 const article = model.articleView("rulings", normalized.rulings[0]);
 assert.strictEqual(article.id, "dre-window");

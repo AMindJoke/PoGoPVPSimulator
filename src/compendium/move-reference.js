@@ -103,5 +103,23 @@
     return `${target} ${stat} ${delta} · ${chance}`;
   }
 
-  return Object.freeze({ SORTS, stableMoveId, normalizeMove, createReference, filterMoves, effectLabel });
+  function searchEntries(reference) {
+    return Object.freeze((reference?.all || []).map(move => {
+      const type = move.type.charAt(0).toUpperCase() + move.type.slice(1);
+      const summary = move.kind === "fast"
+        ? `${type} · ${move.power} damage · +${move.energyGain} energy · ${move.turns} turn${move.turns === 1 ? "" : "s"}`
+        : `${type} · ${move.power} damage · ${move.energyCost} energy · ${move.dpe.toFixed(2)} DPE${move.effects.length ? ` · ${move.effects.map(effectLabel).join("; ")}` : ""}`;
+      return Object.freeze({
+        id: move.id,
+        type: `${move.kind}-move`,
+        title: move.name,
+        summary,
+        keywords: Object.freeze([move.sourceId, move.type, move.kind, `${move.kind} move`, ...(move.kind === "fast" ? [`${move.turns} turn`, `${move.turns}t`, "dpt", "ept"] : ["dpe", "charged move"])]),
+        relatedItems: Object.freeze([]),
+        item: move
+      });
+    }));
+  }
+
+  return Object.freeze({ SORTS, stableMoveId, normalizeMove, createReference, filterMoves, effectLabel, searchEntries });
 });

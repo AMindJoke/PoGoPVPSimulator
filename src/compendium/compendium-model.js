@@ -92,7 +92,7 @@
     const summary = type === "glossary" ? entry.definition : entry.summary;
     const sectionText = (entry.content || []).flatMap(section => [section.heading, ...(section.body || [])]);
     const expanded = type === "glossary" ? entry.expanded || "" : "";
-    const text = [title, expanded, summary, ...(entry.keywords || []), ...sectionText].join(" ").toLocaleLowerCase();
+    const text = normalizeSearchText([title, expanded, summary, ...(entry.keywords || []), ...sectionText].join(" "));
     return Object.freeze({
       id: entry.id,
       type,
@@ -116,21 +116,38 @@
         summary: entry.summary || "",
         keywords: Object.freeze([...(entry.keywords || [])]),
         relatedItems: Object.freeze([...(entry.relatedItems || [])]),
-        text: [entry.title, entry.summary, ...(entry.keywords || [])].join(" ").toLocaleLowerCase(),
+        text: normalizeSearchText([entry.title, entry.summary, ...(entry.keywords || [])].join(" ")),
         item: entry.item || entry
       }));
     });
     return Object.freeze(entries.sort((a, b) => a.type.localeCompare(b.type) || a.title.localeCompare(b.title) || a.id.localeCompare(b.id)));
   }
 
+  function normalizeSearchText(value) {
+    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().replace(/[^a-z0-9+.-]+/g, " ").trim();
+  }
+
+  function searchScore(entry, normalized, terms) {
+    const title = normalizeSearchText(entry.title);
+    const keywords = (entry.keywords || []).map(normalizeSearchText);
+    const type = normalizeSearchText(entry.type);
+    if (title === normalized) return 0;
+    if (title.startsWith(normalized)) return 10;
+    if (title.includes(normalized)) return 20;
+    if (keywords.includes(normalized)) return 30;
+    if (keywords.some(keyword => keyword.startsWith(normalized))) return 35;
+    if (terms.every(term => title.includes(term))) return 40;
+    if (type === normalized || type.replace(/-/g, " ") === normalized) return 50;
+    return 60 + Math.min(20, terms.reduce((score, term) => score + Math.max(0, entry.text.indexOf(term)), 0) / 1000);
+  }
+
   function search(index, query, limit = 12) {
-    const normalized = String(query || "").trim().toLocaleLowerCase();
+    const normalized = normalizeSearchText(query);
     if (!normalized) return Object.freeze([]);
     const terms = normalized.split(/\s+/).filter(Boolean);
     return Object.freeze((index || []).map(entry => {
       if (!terms.every(term => entry.text.includes(term))) return null;
-      const title = entry.title.toLocaleLowerCase();
-      const score = title === normalized ? 0 : title.startsWith(normalized) ? 1 : title.includes(normalized) ? 2 : 3;
+      const score = searchScore(entry, normalized, terms);
       return { entry, score };
     }).filter(Boolean).sort((a, b) => a.score - b.score || a.entry.title.localeCompare(b.entry.title) || a.entry.id.localeCompare(b.entry.id)).slice(0, limit).map(result => result.entry));
   }
@@ -161,6 +178,8 @@
     validateDataset,
     normalizeDatasets,
     buildSearchIndex,
+    normalizeSearchText,
+    searchScore,
     search,
     articleView
   });
