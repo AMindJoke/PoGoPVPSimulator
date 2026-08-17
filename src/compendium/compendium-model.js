@@ -10,7 +10,7 @@
   const CATEGORIES = Object.freeze([
     Object.freeze({ id: "quick-reference", label: "Quick Reference", summary: "Essential battle and tournament facts at a glance.", status: "foundation" }),
     Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast and Charged Move data.", status: "phase-2" }),
-    Object.freeze({ id: "mechanics", label: "Mechanics", summary: "Learn how Pokémon GO PvP timing and actions work.", status: "content-pending" }),
+    Object.freeze({ id: "mechanics", label: "Mechanics", summary: "Learn how Pokémon GO PvP timing and actions work.", status: "phase-5" }),
     Object.freeze({ id: "rulings", label: "Rulings", summary: "Find sourced guidance for tournament situations.", status: "content-pending" }),
     Object.freeze({ id: "glossary", label: "Glossary", summary: "Decode common competitive and judge terminology.", status: "content-pending" })
   ]);
@@ -23,12 +23,36 @@
     return Array.isArray(value) && value.every(item => typeof item === "string");
   }
 
+  function validTimelineDiagram(diagram) {
+    if (!diagram || typeof diagram !== "object") return false;
+    const turnCount = Number(diagram.turnCount);
+    if (!Number.isInteger(turnCount) || turnCount < 1 || turnCount > 24) return false;
+    if (!Array.isArray(diagram.rows) || !diagram.rows.length) return false;
+    return diagram.rows.every(row => row
+      && typeof row.label === "string"
+      && row.label.trim()
+      && Array.isArray(row.segments)
+      && row.segments.every(segment => {
+        const start = Number(segment?.start);
+        const duration = Number(segment?.duration);
+        return segment
+          && Number.isInteger(start)
+          && Number.isInteger(duration)
+          && start >= 1
+          && duration >= 1
+          && start + duration - 1 <= turnCount
+          && (!segment.label || typeof segment.label === "string")
+          && (!segment.tone || ["fast", "impact", "charged", "neutral"].includes(segment.tone));
+      }));
+  }
+
   function validContentSections(value) {
     return Array.isArray(value) && value.every(section => section
       && isStableId(section.id)
       && typeof section.heading === "string"
       && stringArray(section.body)
-      && (!section.kind || ["text", "key-point", "example", "steps"].includes(section.kind)));
+      && (!section.kind || ["text", "key-point", "example", "steps", "timeline"].includes(section.kind))
+      && (section.kind !== "timeline" || validTimelineDiagram(section.diagram)));
   }
 
   function entryErrors(type, entry) {
@@ -82,7 +106,20 @@
         error.details = validation.errors;
         throw error;
       }
-      result[type] = Object.freeze(dataset.items.map(entry => Object.freeze({ ...entry, content: entry.content ? Object.freeze(entry.content.map(section => Object.freeze({ ...section, body: Object.freeze([...section.body]) }))) : undefined })));
+      result[type] = Object.freeze(dataset.items.map(entry => Object.freeze({
+        ...entry,
+        content: entry.content ? Object.freeze(entry.content.map(section => Object.freeze({
+          ...section,
+          body: Object.freeze([...section.body]),
+          diagram: section.diagram ? Object.freeze({
+            ...section.diagram,
+            rows: Object.freeze(section.diagram.rows.map(row => Object.freeze({
+              ...row,
+              segments: Object.freeze(row.segments.map(segment => Object.freeze({ ...segment })))
+            })))
+          }) : undefined
+        }))) : undefined
+      })));
     });
     return Object.freeze(result);
   }
@@ -174,6 +211,7 @@
     CONTENT_TYPES,
     CATEGORIES,
     isStableId,
+    validTimelineDiagram,
     entryErrors,
     validateDataset,
     normalizeDatasets,

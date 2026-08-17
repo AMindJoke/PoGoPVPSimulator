@@ -1,5 +1,225 @@
 {
   "schemaVersion": 1,
   "contentType": "mechanics",
-  "items": []
+  "items": [
+    {
+      "id": "battle-turns",
+      "title": "Battle turns",
+      "summary": "The half-second timing units used to register and resolve battle actions.",
+      "category": "Timing",
+      "keywords": ["turn", "timing", "half second", "0.5 seconds", "registration"],
+      "content": [
+        {
+          "id": "definition",
+          "heading": "The smallest timing unit",
+          "kind": "text",
+          "body": ["The simulator measures battle timing in turns. One turn lasts 0.5 seconds, and Fast Move durations are expressed as whole turns.", "An action can be selected only when its Pokémon is ready. A Fast Move keeps that Pokémon occupied for its full duration before another action can be registered."]
+        },
+        {
+          "id": "read-the-timeline",
+          "heading": "Read the timeline",
+          "kind": "timeline",
+          "body": ["Each numbered cell is one turn. The same six turns equal three seconds of battle time."],
+          "diagram": {
+            "turnCount": 6,
+            "rows": [
+              { "label": "Turns", "segments": [
+                { "start": 1, "duration": 1, "label": "1", "tone": "neutral" },
+                { "start": 2, "duration": 1, "label": "2", "tone": "neutral" },
+                { "start": 3, "duration": 1, "label": "3", "tone": "neutral" },
+                { "start": 4, "duration": 1, "label": "4", "tone": "neutral" },
+                { "start": 5, "duration": 1, "label": "5", "tone": "neutral" },
+                { "start": 6, "duration": 1, "label": "6", "tone": "neutral" }
+              ] },
+              { "label": "Time", "segments": [
+                { "start": 1, "duration": 2, "label": "1.0s", "tone": "fast" },
+                { "start": 3, "duration": 2, "label": "2.0s", "tone": "fast" },
+                { "start": 5, "duration": 2, "label": "3.0s", "tone": "fast" }
+              ] }
+            ]
+          }
+        },
+        {
+          "id": "key-point",
+          "heading": "Key point",
+          "kind": "key-point",
+          "body": ["Turn numbers describe ordering. Seconds describe elapsed time. Keep the two separate when reconstructing an incident."]
+        }
+      ],
+      "related": ["fast-move-duration", "fast-move-impact"],
+      "lastUpdated": "2026-08-17"
+    },
+    {
+      "id": "fast-move-duration",
+      "title": "Fast Move duration",
+      "summary": "How a Fast Move's duration controls action availability and alignment.",
+      "category": "Fast Moves",
+      "keywords": ["fast move", "duration", "cooldown", "alignment", "turns"],
+      "content": [
+        {
+          "id": "duration",
+          "heading": "Duration locks the user",
+          "kind": "text",
+          "body": ["A Fast Move starts on its registration turn and occupies the user for the move's listed duration. A 2-turn move and a 3-turn move therefore reach their next action windows at different times."]
+        },
+        {
+          "id": "alignment-example",
+          "heading": "Two-turn versus three-turn alignment",
+          "kind": "timeline",
+          "body": ["The rows begin together. They realign after six turns, when three 2-turn moves and two 3-turn moves have completed."],
+          "diagram": {
+            "turnCount": 6,
+            "rows": [
+              { "label": "2-turn", "segments": [
+                { "start": 1, "duration": 2, "label": "Fast 1", "tone": "fast" },
+                { "start": 3, "duration": 2, "label": "Fast 2", "tone": "fast" },
+                { "start": 5, "duration": 2, "label": "Fast 3", "tone": "fast" }
+              ] },
+              { "label": "3-turn", "segments": [
+                { "start": 1, "duration": 3, "label": "Fast 1", "tone": "charged" },
+                { "start": 4, "duration": 3, "label": "Fast 2", "tone": "charged" }
+              ] }
+            ]
+          }
+        },
+        {
+          "id": "judge-use",
+          "heading": "Why it matters",
+          "kind": "key-point",
+          "body": ["Duration determines both the next legal action window and where Fast Move impact appears on the reconstructed timeline."]
+        }
+      ],
+      "related": ["battle-turns", "fast-move-impact", "energy-generation"],
+      "lastUpdated": "2026-08-17"
+    },
+    {
+      "id": "fast-move-impact",
+      "title": "Fast Move impact",
+      "summary": "When Fast Move damage and energy register in the simulator timeline.",
+      "category": "Fast Moves",
+      "keywords": ["fast move", "impact", "damage registration", "energy registration", "simultaneous"],
+      "content": [
+        {
+          "id": "impact-rule",
+          "heading": "Impact turn",
+          "kind": "text",
+          "body": ["The impact turn is calculated as start turn + duration − 1. At that impact, the move's damage and energy gain are resolved together.", "Fast Move events that impact on the same turn are evaluated from the state at the start of that impact phase, so simultaneous damage can produce a simultaneous knockout."]
+        },
+        {
+          "id": "three-turn-example",
+          "heading": "Three-turn Fast Move",
+          "kind": "timeline",
+          "body": ["A move registered on turn 1 with duration 3 reaches its impact on turn 3."],
+          "diagram": {
+            "turnCount": 4,
+            "rows": [
+              { "label": "Action", "segments": [
+                { "start": 1, "duration": 3, "label": "Fast Move", "tone": "fast" },
+                { "start": 3, "duration": 1, "label": "Impact", "tone": "impact" }
+              ] },
+              { "label": "Result", "segments": [
+                { "start": 3, "duration": 1, "label": "DMG + energy", "tone": "impact" },
+                { "start": 4, "duration": 1, "label": "Ready", "tone": "neutral" }
+              ] }
+            ]
+          }
+        },
+        {
+          "id": "key-point",
+          "heading": "Key point",
+          "kind": "key-point",
+          "body": ["Registration, impact, and the next ready turn are separate facts. Use the event marker and state snapshot together when reviewing timing."]
+        }
+      ],
+      "related": ["battle-turns", "fast-move-duration", "energy-generation"],
+      "lastUpdated": "2026-08-17"
+    },
+    {
+      "id": "energy-generation",
+      "title": "Energy generation and spending",
+      "summary": "How Fast Move energy is gained, capped, and spent on Charged Moves.",
+      "category": "Energy",
+      "keywords": ["energy", "energy gain", "energy cost", "charged move", "100 energy", "overcap"],
+      "content": [
+        {
+          "id": "gain-and-cap",
+          "heading": "Gain at Fast Move impact",
+          "kind": "text",
+          "body": ["Fast Move energy is added when that Fast Move reaches its impact. Stored energy is capped at 100; any gain beyond the cap is not retained.", "A Charged Move becomes available only when the Pokémon is ready to act and has at least the move's energy cost. Resolving that action spends the listed cost."]
+        },
+        {
+          "id": "example",
+          "heading": "Example",
+          "kind": "example",
+          "body": ["A Pokémon at 96 energy uses a Fast Move that grants 8 energy. The resulting total is 100, not 104. A 45-energy Charged Move would then leave 55 energy."]
+        },
+        {
+          "id": "key-point",
+          "heading": "Key point",
+          "kind": "key-point",
+          "body": ["Having enough energy is necessary but not sufficient: the Pokémon must also be at a legal action window."]
+        }
+      ],
+      "related": ["fast-move-impact", "charged-move-priority"],
+      "lastUpdated": "2026-08-17"
+    },
+    {
+      "id": "charged-move-priority",
+      "title": "Charged Move Priority (CMP)",
+      "summary": "How simultaneous Charged Move registrations are ordered by current Attack.",
+      "category": "Charged Moves",
+      "keywords": ["cmp", "charged move priority", "attack", "simultaneous charged"],
+      "content": [
+        {
+          "id": "comparison",
+          "heading": "Compare current Attack",
+          "kind": "text",
+          "body": ["When both sides register a Charged Move in the same decision window, the simulator orders the Pokémon with the higher current Attack first. The comparison uses battle Attack after active stat-stage modifiers.", "A displayed CP value does not decide CMP. The relevant value is the Pokémon's calculated Attack in the reconstructed state."]
+        },
+        {
+          "id": "sequence",
+          "heading": "Resolution order",
+          "kind": "steps",
+          "body": ["Both Charged Moves are registered in the same window.", "Current Attack is compared and the higher-Attack side resolves first.", "The battle state is checked before the second registered action continues."]
+        },
+        {
+          "id": "tie-note",
+          "heading": "Equal Attack",
+          "kind": "key-point",
+          "body": ["Equal calculated Attack is retained as a tied-CMP condition in review metadata. Treat the tie itself as relevant evidence rather than inferring an advantage from species name or CP."]
+        }
+      ],
+      "related": ["stat-stages", "battle-turns"],
+      "lastUpdated": "2026-08-17"
+    },
+    {
+      "id": "stat-stages",
+      "title": "Attack and Defense stages",
+      "summary": "The bounded battle modifiers applied to Attack and Defense.",
+      "category": "Battle state",
+      "keywords": ["buff", "debuff", "attack stage", "defense stage", "modifier", "minus four", "plus four"],
+      "content": [
+        {
+          "id": "range",
+          "heading": "Stage range",
+          "kind": "text",
+          "body": ["Attack and Defense stages are tracked independently from −4 through +4. Effects cannot raise or lower a stat beyond those limits.", "Positive Attack stages increase outgoing damage calculations. Positive Defense stages increase the defending value; negative stages act in the opposite direction."]
+        },
+        {
+          "id": "multipliers",
+          "heading": "Multiplier pattern",
+          "kind": "example",
+          "body": ["The simulator uses (4 + stage) / 4 for non-negative stages and 4 / (4 − stage) for negative stages. For example, +1 is 1.25× and −1 is 0.8×."]
+        },
+        {
+          "id": "cmp-effect",
+          "heading": "CMP interaction",
+          "kind": "key-point",
+          "body": ["Because CMP compares current Attack, an Attack buff or debuff can change which side resolves a simultaneous Charged Move first."]
+        }
+      ],
+      "related": ["charged-move-priority"],
+      "lastUpdated": "2026-08-17"
+    }
+  ]
 }

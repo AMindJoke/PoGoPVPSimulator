@@ -60,6 +60,12 @@ includes('Official source');
 includes('Compendium explanation');
 includes('article.lastUpdated');
 includes('article.related.length');
+includes('function renderCompendiumTimelineDiagram(diagram)');
+includes('window.PvPeakJudgeCompendium?.validTimelineDiagram(diagram)');
+includes('data-section-kind="${kind}"');
+includes('class="compendium-article-steps"');
+includes('class="compendium-related-button"');
+includes('data-related-id="${item.entry.id}"');
 
 includes('.compendium-categories { display: flex;');
 includes('overflow-x: auto;');
@@ -74,6 +80,9 @@ includes('.compendium-search-results { display: grid; gap: 6px; max-height: min(
 includes('.compendium-search-result[aria-selected="true"]');
 includes('.judge-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
 includes('.judge-duration-list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; max-width: 100%;');
+includes('.mechanics-timeline-scroll { width: 100%; min-width: 0; max-width: 100%;');
+includes('overflow-x: auto; overscroll-behavior-inline: contain;');
+includes('.mechanics-timeline-track { display: grid; grid-template-columns: repeat(var(--mechanic-turns), minmax(34px, 1fr));');
 
 for (const view of ["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]) {
   includes(`data-view-target="${view}"`, `Navigation target missing: ${view}`);

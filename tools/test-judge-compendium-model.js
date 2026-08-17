@@ -11,7 +11,7 @@ const mechanics = {
     summary: "A fixture for the reusable mechanics schema.",
     category: "Timing",
     keywords: ["turn", "fast move"],
-    content: [{ id: "overview", heading: "Overview", kind: "text", body: ["Fixture copy."] }],
+    content: [{ id: "overview", heading: "Overview", kind: "timeline", body: ["Fixture copy."], diagram: { turnCount: 3, rows: [{ label: "Fast", segments: [{ start: 1, duration: 3, label: "Move", tone: "fast" }] }] } }],
     related: ["damage-registration"],
     lastUpdated: "2026-08-17"
   }]
@@ -42,6 +42,7 @@ assert.strictEqual(model.SCHEMA_VERSION, 1);
 assert.deepStrictEqual(model.CONTENT_TYPES, ["mechanics", "rulings", "glossary"]);
 assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["quick-reference", "moves", "mechanics", "rulings", "glossary"]);
 assert.strictEqual(model.validateDataset("mechanics", mechanics).valid, true);
+assert.strictEqual(model.validTimelineDiagram(mechanics.items[0].content[0].diagram), true);
 assert.strictEqual(model.validateDataset("rulings", rulings).valid, true);
 assert.strictEqual(model.validateDataset("glossary", glossary).valid, true);
 
@@ -51,6 +52,9 @@ assert.ok(model.validateDataset("mechanics", invalidId).errors.some(error => err
 const invalidSource = structuredClone(rulings);
 invalidSource.items[0].sourceType = "unknown";
 assert.ok(model.validateDataset("rulings", invalidSource).errors.some(error => error.includes("RULING_SOURCE_TYPE_INVALID")));
+const invalidTimeline = structuredClone(mechanics);
+invalidTimeline.items[0].content[0].diagram.rows[0].segments[0].duration = 4;
+assert.ok(model.validateDataset("mechanics", invalidTimeline).errors.some(error => error.includes("MECHANICS_CONTENT_INVALID")));
 const duplicate = structuredClone(glossary);
 duplicate.items.push(structuredClone(duplicate.items[0]));
 assert.ok(model.validateDataset("glossary", duplicate).errors.some(error => error.includes("ENTRY_ID_DUPLICATE")));

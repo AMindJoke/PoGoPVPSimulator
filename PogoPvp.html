@@ -386,7 +386,7 @@
     body[data-view="compendium"] #compendiumView { display: grid; }
 
     .compendium-view { width: min(100%, 1120px); min-width: 0; margin: 0 auto; gap: 12px; }
-    #compendiumView section, #compendiumView article { width: 100%; max-width: none; }
+    #compendiumView section, #compendiumView article { box-sizing: border-box; width: 100%; min-width: 0; max-width: none; }
     .compendium-hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-eyebrow { margin: 0 0 5px; color: var(--accent-dark); font-size: 10px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
     .compendium-hero h2 { margin: 0; font-size: clamp(25px, 3vw, 36px); letter-spacing: -.035em; }
@@ -504,6 +504,24 @@
     .compendium-article-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
     .compendium-article-section h3 { margin: 0 0 8px; }
     .compendium-article-section p { color: var(--ink); line-height: 1.65; }
+    .compendium-article-section[data-section-kind="key-point"] { padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); }
+    .compendium-article-section[data-section-kind="key-point"] h3 { color: var(--accent-dark); }
+    .compendium-article-section[data-section-kind="example"] { padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+    .compendium-article-steps { display: grid; gap: 8px; margin: 10px 0 0; padding-left: 24px; }
+    .compendium-article-steps li { padding-left: 4px; color: var(--ink); line-height: 1.55; }
+    .mechanics-timeline-scroll { width: 100%; min-width: 0; max-width: 100%; margin-top: 12px; overflow-x: auto; overscroll-behavior-inline: contain; }
+    .mechanics-timeline { display: grid; gap: 6px; min-width: 440px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+    .mechanics-timeline-row { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 8px; align-items: stretch; }
+    .mechanics-timeline-label { display: flex; align-items: center; color: var(--muted); font-size: 9px; font-weight: 900; }
+    .mechanics-timeline-track { display: grid; grid-template-columns: repeat(var(--mechanic-turns), minmax(34px, 1fr)); gap: 3px; min-height: 34px; }
+    .mechanics-timeline-segment { display: grid; place-items: center; min-width: 0; padding: 4px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); font-size: 9px; font-weight: 850; text-align: center; }
+    .mechanics-timeline-segment[data-tone="fast"] { border-color: color-mix(in srgb, #78a23b 55%, var(--line)); background: color-mix(in srgb, #91b957 18%, var(--panel)); }
+    .mechanics-timeline-segment[data-tone="charged"] { border-color: color-mix(in srgb, #d45056 52%, var(--line)); background: color-mix(in srgb, #d45056 12%, var(--panel)); }
+    .mechanics-timeline-segment[data-tone="impact"] { border-color: color-mix(in srgb, var(--accent) 68%, var(--line)); background: var(--accent); color: #fff; }
+    .compendium-related { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .compendium-related h3 { margin: 0 0 9px; font-size: 14px; }
+    .compendium-related-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .compendium-related-button { min-height: 36px; padding: 7px 10px; background: var(--soft); color: var(--ink); box-shadow: none; }
     .compendium-view button:focus-visible, .compendium-view input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 2px; }
     @media (max-width: 760px) {
       .compendium-view { width: 100%; gap: 9px; }
@@ -514,6 +532,8 @@
       .compendium-search-panel { padding: 9px; }
       #compendiumSearch { min-height: 46px; font-size: 14px; }
       .compendium-category { min-height: 44px; }
+      .mechanics-timeline { min-width: 390px; }
+      .mechanics-timeline-row { grid-template-columns: 66px minmax(0, 1fr); }
       .compendium-stage, .compendium-article { min-height: 0; padding: 14px; }
       .compendium-quick-grid { grid-template-columns: 1fr; }
       .compendium-quick-card { min-height: 72px; }
@@ -15193,6 +15213,33 @@
       if (returnFocus) $("compendiumSearch").focus();
     }
 
+    function renderCompendiumTimelineDiagram(diagram) {
+      if (!window.PvPeakJudgeCompendium?.validTimelineDiagram(diagram)) return "";
+      const rows = diagram.rows.map(row => {
+        const segments = row.segments.map(segment => `<span class="mechanics-timeline-segment" data-tone="${escapeHtml(segment.tone || "neutral")}" style="grid-column:${segment.start} / span ${segment.duration}">${escapeHtml(segment.label || "")}</span>`).join("");
+        return `<div class="mechanics-timeline-row"><span class="mechanics-timeline-label">${escapeHtml(row.label)}</span><div class="mechanics-timeline-track" style="--mechanic-turns:${diagram.turnCount}">${segments}</div></div>`;
+      }).join("");
+      const accessible = diagram.rows.map(row => `${row.label}: ${row.segments.map(segment => `${segment.label || "event"}, turn ${segment.start} for ${segment.duration}`).join("; ")}`).join(". ");
+      return `<div class="mechanics-timeline-scroll" role="img" aria-label="${escapeHtml(accessible)}"><div class="mechanics-timeline">${rows}</div></div>`;
+    }
+
+    function renderCompendiumArticleSection(section) {
+      const kind = section.kind || "text";
+      const copy = kind === "steps"
+        ? `<ol class="compendium-article-steps">${section.body.map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`
+        : section.body.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("");
+      const diagram = kind === "timeline" ? renderCompendiumTimelineDiagram(section.diagram) : "";
+      return `<section class="compendium-article-section" data-section-id="${section.id}" data-section-kind="${kind}"><h3>${escapeHtml(section.heading)}</h3>${copy}${diagram}</section>`;
+    }
+
+    function compendiumRelatedEntry(entryId) {
+      for (const type of ["mechanics", "rulings", "glossary"]) {
+        const entry = (compendiumDatasets[type] || []).find(item => item.id === entryId);
+        if (entry) return { type, entry };
+      }
+      return null;
+    }
+
     function openCompendiumArticle(type, entryId) {
       const entry = (compendiumDatasets[type] || []).find(item => item.id === entryId);
       const article = window.PvPeakJudgeCompendium?.articleView(type, entry);
@@ -15200,10 +15247,13 @@
       const source = article.source ? `<div class="compendium-article-source"><strong>${article.sourceType === "official" ? "Official source" : article.sourceType === "mixed" ? "Mixed sources" : "Compendium explanation"}:</strong> ${escapeHtml(article.source)}</div>` : "";
       const updated = article.lastUpdated ? `<span>Updated ${escapeHtml(article.lastUpdated)}</span>` : "";
       const related = article.related.length ? `<span>${article.related.length} related reference${article.related.length === 1 ? "" : "s"}</span>` : "";
-      $("compendiumArticle").innerHTML = `<button class="secondary compendium-article-back" type="button">\u2190 Back to ${escapeHtml((window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium")}</button><p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${updated}${related}</div>${source}${article.sections.map(section => `<section class="compendium-article-section" data-section-id="${section.id}"><h3>${escapeHtml(section.heading)}</h3>${section.body.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("")}</section>`).join("")}`;
+      const relatedEntries = article.related.map(compendiumRelatedEntry).filter(Boolean);
+      const relatedHtml = relatedEntries.length ? `<section class="compendium-related"><h3>Related references</h3><div class="compendium-related-list">${relatedEntries.map(item => `<button class="compendium-related-button" type="button" data-related-type="${item.type}" data-related-id="${item.entry.id}">${escapeHtml(item.entry.term || item.entry.title)}</button>`).join("")}</div></section>` : "";
+      $("compendiumArticle").innerHTML = `<button class="secondary compendium-article-back" type="button">\u2190 Back to ${escapeHtml((window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium")}</button><p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${updated}${related}</div>${source}${article.sections.map(renderCompendiumArticleSection).join("")}${relatedHtml}`;
       $("compendiumStage").hidden = true;
       $("compendiumArticle").hidden = false;
       $("compendiumArticle").querySelector(".compendium-article-back").onclick = () => selectCompendiumCategory(type);
+      $("compendiumArticle").querySelectorAll("[data-related-id]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.relatedType, button.dataset.relatedId));
       $("compendiumArticleTitle").focus?.();
     }
 
