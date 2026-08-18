@@ -7,8 +7,8 @@
 
   const CATEGORY_PARAM = "compendium";
   const ITEM_PARAM = "item";
-  const CATEGORIES = Object.freeze(["quick-reference", "moves", "mechanics", "rulings", "glossary"]);
-  const ITEM_CATEGORIES = Object.freeze(["moves", "mechanics", "rulings", "glossary"]);
+  const CATEGORIES = Object.freeze(["quick-reference", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
+  const ITEM_CATEGORIES = Object.freeze(["moves", "pokemon", "mechanics", "rulings", "glossary"]);
   const ITEM_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
   function parseUrl(locationLike) {

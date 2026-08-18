@@ -6,6 +6,14 @@ assert.deepEqual(
   { category: "moves", item: "incinerate" }
 );
 assert.deepEqual(
+  Routing.readLocation({ href: "https://example.test/PogoPvp.html?compendium=pokemon&item=azumarill" }),
+  { category: "pokemon", item: "azumarill" }
+);
+assert.deepEqual(
+  Routing.readLocation({ href: "https://example.test/PogoPvp.html?compendium=timing-visualizer&item=ignored" }),
+  { category: "timing-visualizer", item: null }
+);
+assert.deepEqual(
   Routing.readLocation({ search: "?debugBattle=1&compendium=glossary&item=dre", pathname: "/PogoPvp.html" }),
   { category: "glossary", item: "dre" }
 );

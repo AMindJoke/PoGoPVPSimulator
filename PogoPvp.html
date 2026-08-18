@@ -29,6 +29,8 @@
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
+  <script src="src/compendium/pokemon-reference.js"></script>
+  <script src="src/compendium/fast-move-timing.js"></script>
   <script src="src/compendium/compendium-routing.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
@@ -386,13 +388,18 @@
     body[data-view="team-builder"] #teamBuilderView,
     body[data-view="compendium"] #compendiumView { display: grid; }
 
-    .compendium-view { width: min(100%, 1120px); min-width: 0; margin: 0 auto; gap: 12px; }
+    .compendium-view { width: min(100%, 1260px); min-width: 0; margin: 0 auto; gap: 12px; }
     #compendiumView section, #compendiumView article { box-sizing: border-box; width: 100%; min-width: 0; max-width: none; }
-    .compendium-hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); box-shadow: 0 7px 20px var(--shadow); }
+    .compendium-workspace { display: grid; grid-template-columns: 210px minmax(0, 1fr); align-items: start; gap: 12px; min-width: 0; }
+    .compendium-sidebar { position: sticky; top: 10px; z-index: 4; display: grid; gap: 10px; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--ink) 94%, #163c53); color: #fff; box-shadow: 0 7px 20px var(--shadow); }
+    .compendium-content { display: grid; gap: 12px; min-width: 0; }
+    .compendium-hero { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 9px; padding: 3px; color: #fff; }
     .compendium-eyebrow { margin: 0 0 5px; color: var(--accent-dark); font-size: 10px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
-    .compendium-hero h2 { margin: 0; font-size: clamp(25px, 3vw, 36px); letter-spacing: -.035em; }
-    .compendium-hero p:last-child { max-width: 660px; margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .compendium-hero-mark { flex: 0 0 auto; display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: 16px; background: color-mix(in srgb, var(--accent) 9%, var(--panel)); color: var(--accent-dark); font-size: 25px; font-weight: 900; }
+    .compendium-hero .compendium-eyebrow { margin: 0; color: color-mix(in srgb, #fff 65%, var(--accent)); font-size: 7px; }
+    .compendium-hero h2 { margin: 1px 0 0; color: #fff; font-size: 14px; letter-spacing: -.02em; }
+    .compendium-hero p:last-child { display: none; }
+    .compendium-hero-mark { grid-column: 1; grid-row: 1; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.16); border-radius: 9px; background: rgba(255,255,255,.08); color: #fff; font-size: 12px; font-weight: 900; }
+    .compendium-nav-toggle { display: none; min-height: 38px; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); color: #fff; box-shadow: none; }
     .compendium-search-panel { position: relative; z-index: 3; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
     .compendium-search-wrap { position: relative; }
     .compendium-search-wrap::before { content: "\2315"; position: absolute; left: 15px; top: 50%; color: var(--muted); font-size: 20px; transform: translateY(-52%) rotate(-20deg); pointer-events: none; }
@@ -409,9 +416,11 @@
     .compendium-result-copy strong, .compendium-result-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .compendium-result-copy small { margin-top: 3px; color: var(--muted); font-size: 9px; text-transform: none; }
     .compendium-result-kind { padding: 4px 7px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; white-space: nowrap; }
-    .compendium-categories { display: flex; gap: 7px; max-width: 100%; padding: 3px 1px 5px; overflow-x: auto; scrollbar-width: thin; }
-    .compendium-category { flex: 0 0 auto; min-height: 40px; padding: 8px 14px; border-color: var(--line); background: var(--panel); color: var(--muted); box-shadow: none; }
-    .compendium-category[aria-selected="true"] { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 11%, var(--panel)); color: var(--accent-dark); }
+    .compendium-categories { display: grid; gap: 4px; max-width: 100%; padding: 0; }
+    .compendium-category { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 7px; width: 100%; min-height: 39px; padding: 7px 9px; border-color: transparent; background: transparent; color: rgba(255,255,255,.72); text-align: left; box-shadow: none; }
+    .compendium-category-icon { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,.07); color: currentColor; font-size: 11px; font-weight: 950; }
+    .compendium-category[aria-selected="true"] { border-color: color-mix(in srgb, var(--accent) 75%, transparent); background: var(--accent); color: #fff; }
+    .compendium-category:hover { background: rgba(255,255,255,.1); color: #fff; }
     .compendium-stage { min-height: 330px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-stage[hidden] { display: none; }
     .compendium-stage-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
@@ -483,6 +492,63 @@
     .move-detail-effects { padding: 14px; border-left: 4px solid var(--move-color); border-radius: 8px; background: var(--soft); }
     .move-detail-effects h4 { margin: 0 0 8px; font-size: 12px; }
     .move-detail-effects ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; color: var(--ink); font-size: 11px; }
+    .compendium-detail-columns { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(240px, .75fr); gap: 12px; align-items: start; }
+    .compendium-detail-card { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+    .compendium-detail-card h4 { margin: 0 0 10px; font-size: 12px; }
+    .pokemon-reference { display: grid; gap: 12px; }
+    .pokemon-reference-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 180px; gap: 8px; }
+    .pokemon-reference-toolbar label { display: grid; gap: 4px; color: var(--muted); font-size: 8px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .pokemon-reference-toolbar input, .pokemon-reference-toolbar select { width: 100%; max-width: none; min-height: 42px; color: var(--ink); font-size: 11px; text-transform: none; }
+    .pokemon-reference-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .pokemon-reference-card { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 82px; padding: 10px; border-color: var(--line); background: var(--panel); color: var(--ink); text-align: left; box-shadow: none; }
+    .pokemon-reference-card:hover { border-color: color-mix(in srgb, var(--accent) 48%, var(--line)); background: color-mix(in srgb, var(--accent) 4%, var(--panel)); }
+    .pokemon-reference-sprite { width: 58px; height: 58px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(22,44,57,.12)); }
+    .pokemon-reference-sprite.shadow-pokemon { filter: drop-shadow(0 0 8px rgba(126,66,178,.65)); }
+    .pokemon-reference-card strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .pokemon-reference-number { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; font-weight: 800; }
+    .pokemon-type-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .pokemon-type-row .type-badge { margin: 0; font-size: 7px; }
+    .pokemon-detail { display: grid; gap: 14px; }
+    .pokemon-detail-head { position: relative; display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; gap: 16px; min-height: 150px; padding: 16px; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: linear-gradient(135deg, color-mix(in srgb, var(--pokemon-color) 11%, var(--panel)), var(--panel)); }
+    .pokemon-detail-head::after { content: ""; position: absolute; right: -38px; width: 170px; height: 170px; border: 25px solid color-mix(in srgb, var(--pokemon-color) 10%, transparent); border-radius: 50%; }
+    .pokemon-detail-sprite { position: relative; z-index: 1; width: 130px; height: 130px; object-fit: contain; }
+    .pokemon-detail-copy { position: relative; z-index: 1; }
+    .pokemon-detail-copy h3 { margin: 0; font-size: clamp(24px, 4vw, 34px); }
+    .pokemon-detail-actions { position: relative; z-index: 1; align-self: start; }
+    .pokemon-base-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 12px; }
+    .pokemon-base-stats div { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: color-mix(in srgb, var(--panel) 88%, transparent); }
+    .pokemon-base-stats span { display: block; color: var(--muted); font-size: 7px; font-weight: 900; text-transform: uppercase; }
+    .pokemon-base-stats strong { display: block; margin-top: 3px; font-size: 15px; }
+    .pokemon-move-groups { display: grid; gap: 12px; }
+    .pokemon-move-list { display: grid; gap: 6px; }
+    .pokemon-move-link { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 44px; padding: 8px 10px; background: var(--panel); color: var(--ink); text-align: left; box-shadow: none; }
+    .pokemon-move-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--move-color); }
+    .pokemon-move-link small { color: var(--muted); font-size: 8px; }
+    .move-learners { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+    .move-learner { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 7px; min-height: 58px; padding: 7px; background: var(--panel); color: var(--ink); text-align: left; box-shadow: none; }
+    .move-learner img { width: 42px; height: 42px; object-fit: contain; }
+    .move-learner span { overflow: hidden; font-size: 9px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+    .timing-visualizer { display: grid; gap: 13px; }
+    .timing-toolbar { display: grid; grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr) auto; align-items: end; gap: 9px; }
+    .timing-toolbar label { display: grid; gap: 4px; color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+    .timing-toolbar select { width: 100%; max-width: none; min-height: 42px; color: var(--ink); font-size: 11px; text-transform: none; }
+    .timing-vs { align-self: end; display: grid; place-items: center; width: 38px; height: 42px; color: var(--muted); font-weight: 950; }
+    .timing-board-scroll { max-width: 100%; overflow-x: auto; }
+    .timing-board { display: grid; gap: 8px; min-width: 720px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+    .timing-turns, .timing-row { display: grid; grid-template-columns: 118px repeat(var(--timing-turns), minmax(34px, 1fr)); gap: 3px; align-items: stretch; }
+    .timing-turns span { display: grid; place-items: center; min-height: 22px; color: var(--muted); font-size: 8px; font-weight: 900; }
+    .timing-row-label { display: grid; align-content: center; padding: 7px; border-radius: 7px; background: var(--panel); }
+    .timing-row-label strong, .timing-row-label small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .timing-row-label strong { font-size: 9px; }
+    .timing-row-label small { margin-top: 2px; color: var(--muted); font-size: 7px; }
+    .timing-segment { position: relative; display: grid; place-items: center; min-height: 48px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 8px; font-weight: 900; }
+    .timing-segment::after { content: ""; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translateY(-50%); }
+    .timing-window { display: grid; place-items: center; min-height: 28px; border-radius: 6px; color: var(--muted); font-size: 8px; font-weight: 900; }
+    .timing-window.is-candidate { border: 1px solid color-mix(in srgb, #3b8f68 48%, var(--line)); background: color-mix(in srgb, #3b8f68 13%, var(--panel)); color: #28704e; }
+    .timing-insights { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .65fr); gap: 10px; }
+    .timing-insights > div { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+    .timing-insights h4 { margin: 0 0 6px; font-size: 11px; }
+    .timing-insights p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
     .compendium-article { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-article[hidden] { display: none; }
     .compendium-article .compendium-detail-actions { margin-bottom: 15px; }
@@ -519,13 +585,18 @@
     .compendium-related h3 { margin: 0 0 9px; font-size: 14px; }
     .compendium-related-list { display: flex; flex-wrap: wrap; gap: 7px; }
     .compendium-related-button { min-height: 36px; padding: 7px 10px; background: var(--soft); color: var(--ink); box-shadow: none; }
-    .compendium-view button:focus-visible, .compendium-view input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 2px; }
+    .compendium-view button:focus-visible, .compendium-view input:focus-visible, .compendium-view select:focus-visible, .compendium-view summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 2px; }
+    @media (max-width: 900px) {
+      .compendium-workspace { grid-template-columns: 1fr; }
+      .compendium-sidebar { position: relative; top: auto; grid-template-columns: minmax(0, 1fr) auto; }
+      .compendium-nav-toggle { display: block; }
+      .compendium-categories { display: none; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .compendium-sidebar.is-open .compendium-categories { display: grid; }
+      .compendium-search-panel { position: sticky; top: 0; }
+    }
     @media (max-width: 760px) {
       .compendium-view { width: 100%; gap: 9px; }
-      .compendium-hero { align-items: center; flex-direction: row; padding: 16px; }
-      .compendium-hero-mark { width: 46px; height: 46px; border-radius: 12px; font-size: 20px; }
-      .compendium-hero h2 { font-size: 24px; }
-      .compendium-hero p:last-child { font-size: 11px; }
+      .compendium-sidebar { padding: 9px; }
       .compendium-search-panel { padding: 9px; }
       #compendiumSearch { min-height: 46px; font-size: 14px; }
       .compendium-category { min-height: 44px; }
@@ -552,6 +623,22 @@
       .compendium-detail-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .compendium-detail-actions .secondary { min-height: 44px; }
       .compendium-copy-feedback { grid-column: 1 / -1; }
+      .compendium-detail-columns, .timing-insights { grid-template-columns: 1fr; }
+      .pokemon-reference-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pokemon-detail-head { grid-template-columns: 92px minmax(0, 1fr); min-height: 120px; padding: 12px; }
+      .pokemon-detail-sprite { width: 92px; height: 92px; }
+      .pokemon-detail-actions { grid-column: 1 / -1; width: 100%; }
+      .pokemon-detail-actions button { width: 100%; min-height: 44px; }
+      .move-learners { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .timing-toolbar { grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr); }
+      .timing-toolbar > button { grid-column: 1 / -1; min-height: 44px; }
+    }
+    @media (max-width: 520px) {
+      .compendium-categories { grid-template-columns: 1fr; }
+      .pokemon-reference-toolbar { grid-template-columns: 1fr; }
+      .pokemon-reference-list { grid-template-columns: 1fr; }
+      .pokemon-base-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .move-learners { grid-template-columns: 1fr; }
     }
 
     .analysis-view {
@@ -13276,19 +13363,26 @@
     </div>
 
     <div id="compendiumView" class="app-view compendium-view">
-      <header class="compendium-hero">
-        <div><p class="compendium-eyebrow">Judge tools</p><h2 id="compendiumTitle">Judge Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and move data.</p></div>
-        <div class="compendium-hero-mark" aria-hidden="true">JC</div>
-      </header>
-      <section class="compendium-search-panel" aria-label="Search the Judge Compendium">
-        <label class="sr-only" for="compendiumSearch">Search moves, mechanics, rulings, and glossary terms</label>
-        <div class="compendium-search-wrap"><input id="compendiumSearch" type="search" role="combobox" autocomplete="off" placeholder="Search moves, mechanics, rulings..." aria-autocomplete="list" aria-controls="compendiumSearchResults" aria-expanded="false"><button id="compendiumSearchClear" class="compendium-search-clear" type="button" aria-label="Clear Compendium search" hidden>&times;</button></div>
-        <div id="compendiumSearchStatus" class="compendium-search-status" role="status" aria-live="polite">Reference index ready.</div>
-        <div id="compendiumSearchResults" class="compendium-search-results" role="listbox" aria-label="Compendium search results" hidden></div>
-      </section>
-      <nav id="compendiumCategories" class="compendium-categories" aria-label="Compendium categories" role="tablist"></nav>
-      <section id="compendiumStage" class="compendium-stage" aria-live="polite"></section>
-      <article id="compendiumArticle" class="compendium-article" aria-labelledby="compendiumArticleTitle" hidden></article>
+      <div class="compendium-workspace">
+        <aside id="compendiumSidebar" class="compendium-sidebar">
+          <header class="compendium-hero">
+            <div><p class="compendium-eyebrow">Judge tools</p><h2 id="compendiumTitle">Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and canonical battle data.</p></div>
+            <div class="compendium-hero-mark" aria-hidden="true">JC</div>
+          </header>
+          <button id="compendiumNavToggle" class="compendium-nav-toggle" type="button" aria-expanded="false" aria-controls="compendiumCategories">Sections</button>
+          <nav id="compendiumCategories" class="compendium-categories" aria-label="Compendium categories" role="tablist"></nav>
+        </aside>
+        <div class="compendium-content">
+          <section class="compendium-search-panel" aria-label="Search the Judge Compendium">
+            <label class="sr-only" for="compendiumSearch">Search moves, Pokémon, mechanics, rulings, and glossary terms</label>
+            <div class="compendium-search-wrap"><input id="compendiumSearch" type="search" role="combobox" autocomplete="off" placeholder="Search the Compendium..." aria-autocomplete="list" aria-controls="compendiumSearchResults" aria-expanded="false"><button id="compendiumSearchClear" class="compendium-search-clear" type="button" aria-label="Clear Compendium search" hidden>&times;</button></div>
+            <div id="compendiumSearchStatus" class="compendium-search-status" role="status" aria-live="polite">Reference index ready.</div>
+            <div id="compendiumSearchResults" class="compendium-search-results" role="listbox" aria-label="Compendium search results" hidden></div>
+          </section>
+          <section id="compendiumStage" class="compendium-stage" aria-live="polite"></section>
+          <article id="compendiumArticle" class="compendium-article" aria-labelledby="compendiumArticleTitle" hidden></article>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -13944,6 +14038,10 @@
       $("compendiumSearch").oninput = event => updateCompendiumSearch(event.target.value);
       $("compendiumSearch").onkeydown = handleCompendiumSearchKeydown;
       $("compendiumSearchClear").onclick = () => clearCompendiumSearch(true);
+      $("compendiumNavToggle").onclick = event => {
+        const open = $("compendiumSidebar").classList.toggle("is-open");
+        event.currentTarget.setAttribute("aria-expanded", String(open));
+      };
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
       $("teamBuilderCopyLink").onclick = copyTeamBuilderShareLink;
       $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
@@ -14919,13 +15017,18 @@
     let compendiumMoveKind = "fast";
     let compendiumMoveFilters = { query: "", type: "all", turns: "all", sort: "name" };
     let compendiumSelectedMoveId = null;
+    let compendiumPokemonReference = null;
+    let compendiumPokemonFilters = { query: "", type: "all" };
+    let compendiumPokemonVisibleCount = 120;
+    let compendiumSelectedPokemonId = null;
+    let compendiumTimingSelection = { moveA: null, moveB: null, turnCount: 12 };
     let compendiumQuickReference = null;
     let compendiumOpenArticle = null;
     let compendiumHistorySyncing = false;
     let compendiumCopyFeedbackTimer = null;
 
     function currentCompendiumRoute() {
-      return { category: compendiumActiveCategory, item: compendiumSelectedMoveId || compendiumOpenArticle?.id || null };
+      return { category: compendiumActiveCategory, item: compendiumSelectedMoveId || compendiumSelectedPokemonId || compendiumOpenArticle?.id || null };
     }
 
     function syncCompendiumRoute(route = currentCompendiumRoute(), options = {}) {
@@ -14947,6 +15050,7 @@
     function compendiumRouteItemExists(route) {
       if (!route?.item) return true;
       if (route.category === "moves") return Boolean(ensureCompendiumMoveReference()?.byId.get(route.item));
+      if (route.category === "pokemon") return Boolean(ensureCompendiumPokemonReference()?.byId.get(route.item));
       return Boolean((compendiumDatasets[route.category] || []).some(entry => entry.id === route.item));
     }
 
@@ -14956,6 +15060,7 @@
       compendiumHistorySyncing = true;
       compendiumActiveCategory = normalized.category;
       compendiumSelectedMoveId = null;
+      compendiumSelectedPokemonId = null;
       compendiumOpenArticle = null;
       try {
         $("compendiumArticle").hidden = true;
@@ -14968,6 +15073,9 @@
             compendiumMoveKind = move.kind;
             compendiumSelectedMoveId = move.id;
             renderCompendiumCategory("moves");
+          } else if (normalized.category === "pokemon") {
+            compendiumSelectedPokemonId = normalized.item;
+            renderCompendiumCategory("pokemon");
           } else {
             openCompendiumArticle(normalized.category, normalized.item, { skipHistory: true });
           }
@@ -15038,7 +15146,9 @@
     function rebuildCompendiumSearchIndex() {
       const reference = ensureCompendiumMoveReference();
       const moveEntries = reference && window.PvPeakMoveReference?.searchEntries ? window.PvPeakMoveReference.searchEntries(reference) : [];
-      compendiumSearchIndex = window.PvPeakJudgeCompendium.buildSearchIndex(compendiumDatasets, moveEntries);
+      const pokemonReference = ensureCompendiumPokemonReference();
+      const pokemonEntries = pokemonReference && window.PvPeakPokemonReference?.searchEntries ? window.PvPeakPokemonReference.searchEntries(pokemonReference) : [];
+      compendiumSearchIndex = window.PvPeakJudgeCompendium.buildSearchIndex(compendiumDatasets, [...moveEntries, ...pokemonEntries]);
       return compendiumSearchIndex;
     }
 
@@ -15062,7 +15172,8 @@
 
     function renderCompendiumCategories() {
       const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
-      $("compendiumCategories").innerHTML = categories.map(category => `<button class="compendium-category" type="button" role="tab" data-compendium-category="${category.id}" aria-selected="${category.id === compendiumActiveCategory}">${escapeHtml(category.label)}</button>`).join("");
+      const icons = { "quick-reference": "⌂", moves: "⇅", pokemon: "◉", "timing-visualizer": "◷", mechanics: "⚙", rulings: "⚖", glossary: "Aa" };
+      $("compendiumCategories").innerHTML = categories.map(category => `<button class="compendium-category" type="button" role="tab" data-compendium-category="${category.id}" aria-selected="${category.id === compendiumActiveCategory}"><span class="compendium-category-icon" aria-hidden="true">${icons[category.id] || "•"}</span><span>${escapeHtml(category.label)}</span></button>`).join("");
       $("compendiumCategories").querySelectorAll("[data-compendium-category]").forEach(button => {
         button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCategory);
       });
@@ -15073,11 +15184,14 @@
       if (!categories.some(category => category.id === categoryId)) return;
       compendiumActiveCategory = categoryId;
       compendiumSelectedMoveId = null;
+      compendiumSelectedPokemonId = null;
       compendiumOpenArticle = null;
       $("compendiumArticle").hidden = true;
       $("compendiumStage").hidden = false;
       renderCompendiumCategories();
       renderCompendiumCategory(categoryId);
+      $("compendiumSidebar")?.classList.remove("is-open");
+      $("compendiumNavToggle")?.setAttribute("aria-expanded", "false");
       if (!options.skipHistory) syncCompendiumRoute({ category: categoryId, item: null });
     }
 
@@ -15091,6 +15205,8 @@
     function renderCompendiumLanding() {
       const cards = [
         { id: "moves", icon: "⇅", title: "Moves", copy: "Fast and Charged Move reference workspace." },
+        { id: "pokemon", icon: "◉", title: "Pokémon", copy: "Species, typing, stats, and canonical learnable moves." },
+        { id: "timing-visualizer", icon: "◷", title: "Timing Visualizer", copy: "Compare Fast Move durations, impacts, and alignment." },
         { id: "mechanics", icon: "⚙", title: "Mechanics", copy: "Battle timing and interaction explanations." },
         { id: "rulings", icon: "⚖", title: "Rulings", copy: "Clearly sourced tournament guidance." },
         { id: "glossary", icon: "Aa", title: "Glossary", copy: "Competitive terminology and judge-facing definitions." }
@@ -15135,6 +15251,14 @@
         renderCompendiumMoveReference();
         return;
       }
+      if (categoryId === "pokemon") {
+        renderCompendiumPokemonReference();
+        return;
+      }
+      if (categoryId === "timing-visualizer") {
+        renderCompendiumTimingVisualizer();
+        return;
+      }
       const entries = compendiumCategoryEntries(categoryId);
       const entryType = categoryId;
       stage.innerHTML = `<div class="compendium-stage-head"><div><h3>${escapeHtml(category.label)}</h3><p>${escapeHtml(category.summary)}</p></div><span class="compendium-foundation-badge">${entries.length} indexed</span></div>${entries.length ? `<div class="compendium-entry-list${entryType === "glossary" ? " is-glossary" : ""}">${entries.map(entry => renderCompendiumEntryButton(entry, entryType)).join("")}</div>` : `<div class="compendium-empty"><div><strong>${escapeHtml(category.label)} structure ready</strong><p>Curated entries can now be added through the validated external data files, without embedding editorial content in the interface.</p></div></div>`}`;
@@ -15149,6 +15273,158 @@
         displayName: name => window.PvPeakEnergyTrainer?.displayMoveName?.(name) || name
       });
       return compendiumMoveReference;
+    }
+
+    function compendiumMoveBySourceId(sourceId) {
+      return ensureCompendiumMoveReference()?.all.find(move => move.sourceId === sourceId) || null;
+    }
+
+    function ensureCompendiumPokemonReference() {
+      if (compendiumPokemonReference) return compendiumPokemonReference;
+      const api = window.PvPeakPokemonReference;
+      const moves = ensureCompendiumMoveReference();
+      if (!api || !Array.isArray(allPokemon) || !moves) return null;
+      compendiumPokemonReference = api.createReference(allPokemon, new Map(moves.all.map(move => [move.sourceId, move])));
+      return compendiumPokemonReference;
+    }
+
+    function compendiumPokemonSource(pokemon) {
+      return allPokemon.find(item => item.id === pokemon?.sourceId) || null;
+    }
+
+    function compendiumTypeBadges(types) {
+      return `<span class="pokemon-type-row">${(types || []).map(type => {
+        const color = typeColors[type] || "#66788c";
+        return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(type))}</span>`;
+      }).join("")}</span>`;
+    }
+
+    function bindCompendiumPokemonImages(container) {
+      container.querySelectorAll("[data-pokemon-sprite]").forEach(img => {
+        const source = allPokemon.find(item => item.id === img.dataset.pokemonSprite);
+        if (source) setPokemonImage(img, source);
+      });
+    }
+
+    function openCompendiumPokemon(pokemonId, options = {}) {
+      const reference = ensureCompendiumPokemonReference();
+      if (!reference?.byId.has(pokemonId)) return;
+      compendiumActiveCategory = "pokemon";
+      compendiumSelectedMoveId = null;
+      compendiumSelectedPokemonId = pokemonId;
+      compendiumOpenArticle = null;
+      $("compendiumArticle").hidden = true;
+      $("compendiumStage").hidden = false;
+      renderCompendiumCategories();
+      renderCompendiumPokemonReference();
+      if (!options.skipHistory) syncCompendiumRoute({ category: "pokemon", item: pokemonId });
+    }
+
+    function openCompendiumMove(moveId, options = {}) {
+      const move = ensureCompendiumMoveReference()?.byId.get(moveId);
+      if (!move) return;
+      compendiumActiveCategory = "moves";
+      compendiumMoveKind = move.kind;
+      compendiumSelectedPokemonId = null;
+      compendiumSelectedMoveId = move.id;
+      compendiumOpenArticle = null;
+      $("compendiumArticle").hidden = true;
+      $("compendiumStage").hidden = false;
+      renderCompendiumCategories();
+      renderCompendiumMoveReference();
+      if (!options.skipHistory) syncCompendiumRoute({ category: "moves", item: move.id });
+    }
+
+    function openCompendiumPokemonInBattle(sourceId) {
+      setPokemonSelection("p1", sourceId);
+      resetBattleStateFromSetup();
+      setAppView("simulator");
+      window.scrollTo?.({ top: 0, behavior: "smooth" });
+    }
+
+    function renderCompendiumPokemonReference() {
+      const reference = ensureCompendiumPokemonReference();
+      const stage = $("compendiumStage");
+      if (!reference) {
+        stage.innerHTML = `<div class="compendium-empty"><div><strong>Pokémon data unavailable</strong><p>The canonical simulator data could not be prepared for reference use.</p></div></div>`;
+        return;
+      }
+      if (compendiumSelectedPokemonId) {
+        const selected = reference.byId.get(compendiumSelectedPokemonId);
+        if (selected) return renderCompendiumPokemonDetail(selected);
+        compendiumSelectedPokemonId = null;
+      }
+      const types = [...new Set(reference.all.flatMap(pokemon => pokemon.types))].sort();
+      const pokemon = window.PvPeakPokemonReference.filter(reference, compendiumPokemonFilters);
+      const visible = pokemon.slice(0, compendiumPokemonVisibleCount);
+      stage.innerHTML = `<div class="pokemon-reference"><div class="compendium-stage-head"><div><h3>Pokémon Reference</h3><p>Canonical species, base stats, typing, and learnable moves from the simulator.</p></div><span class="compendium-foundation-badge">${visible.length} of ${pokemon.length}</span></div><div class="pokemon-reference-toolbar"><label>Find a Pokémon<input id="compendiumPokemonSearch" type="search" autocomplete="off" placeholder="Name, number, or form..." value="${escapeHtml(compendiumPokemonFilters.query)}"></label><label>Type<select id="compendiumPokemonType"><option value="all">All types</option>${types.map(type => `<option value="${type}" ${compendiumPokemonFilters.type === type ? "selected" : ""}>${escapeHtml(title(type))}</option>`).join("")}</select></label></div><div class="pokemon-reference-list">${visible.map(item => `<button class="pokemon-reference-card" type="button" data-pokemon-id="${item.id}" aria-label="Open ${escapeHtml(item.name)} reference"><img class="pokemon-reference-sprite" data-pokemon-sprite="${escapeHtml(item.sourceId)}" alt=""><span><strong>${escapeHtml(item.name)}</strong><span class="pokemon-reference-number">#${item.dex || "—"}${item.shadow ? " · Shadow" : ""}</span>${compendiumTypeBadges(item.types)}</span><span aria-hidden="true">›</span></button>`).join("")}</div>${visible.length < pokemon.length ? `<button class="secondary" id="compendiumPokemonMore" type="button">Show ${Math.min(120, pokemon.length - visible.length)} more</button>` : ""}</div>`;
+      bindCompendiumPokemonImages(stage);
+      $("compendiumPokemonSearch").oninput = event => { compendiumPokemonFilters.query = event.target.value; compendiumPokemonVisibleCount = 120; renderCompendiumPokemonReference(); $("compendiumPokemonSearch")?.focus(); };
+      $("compendiumPokemonType").onchange = event => { compendiumPokemonFilters.type = event.target.value; compendiumPokemonVisibleCount = 120; renderCompendiumPokemonReference(); };
+      if ($("compendiumPokemonMore")) $("compendiumPokemonMore").onclick = () => { compendiumPokemonVisibleCount += 120; renderCompendiumPokemonReference(); };
+      stage.querySelectorAll("[data-pokemon-id]").forEach(button => button.onclick = () => openCompendiumPokemon(button.dataset.pokemonId));
+    }
+
+    function renderCompendiumPokemonMoveList(moveIds, kind) {
+      const moves = moveIds.map(compendiumMoveBySourceId).filter(move => move?.kind === kind);
+      if (!moves.length) return `<p class="muted">No listed ${kind === "fast" ? "Fast" : "Charged"} Moves.</p>`;
+      return `<div class="pokemon-move-list">${moves.map(move => {
+        const color = compendiumMoveColor(move);
+        const detail = move.kind === "fast" ? `${move.power} damage · +${move.energyGain} energy · ${move.turns}T` : `${move.power} damage · ${move.energyCost} energy`;
+        return `<button class="pokemon-move-link" type="button" data-linked-move="${move.id}" style="--move-color:${color}"><span class="pokemon-move-dot" aria-hidden="true"></span><strong>${escapeHtml(move.name)}</strong><small>${escapeHtml(detail)} ›</small></button>`;
+      }).join("")}</div>`;
+    }
+
+    function renderCompendiumPokemonDetail(pokemon) {
+      const stage = $("compendiumStage");
+      const source = compendiumPokemonSource(pokemon);
+      const primary = typeColors[pokemon.types[0]] || "#66788c";
+      stage.innerHTML = `<div class="pokemon-detail" style="--pokemon-color:${primary}">${compendiumDetailActions("← Back to Pokémon")}<div class="pokemon-detail-head"><img class="pokemon-detail-sprite" data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><div class="pokemon-detail-copy"><p class="compendium-eyebrow">#${pokemon.dex || "—"}${pokemon.shadow ? " · Shadow Pokémon" : ""}</p><h3>${escapeHtml(pokemon.name)}</h3>${compendiumTypeBadges(pokemon.types)}<div class="pokemon-base-stats"><div><span>Attack</span><strong>${pokemon.atk}</strong></div><div><span>Defense</span><strong>${pokemon.def}</strong></div><div><span>Stamina</span><strong>${pokemon.hp}</strong></div></div></div><div class="pokemon-detail-actions"><button class="primary" id="compendiumOpenPokemonBattle" type="button">Open in Battle</button></div></div><div class="compendium-detail-columns"><div class="pokemon-move-groups"><section class="compendium-detail-card"><h4>Fast Moves</h4>${renderCompendiumPokemonMoveList(pokemon.fastMoveIds, "fast")}</section><section class="compendium-detail-card"><h4>Charged Moves</h4>${renderCompendiumPokemonMoveList(pokemon.chargedMoveIds, "charged")}</section></div><aside class="compendium-detail-card"><h4>About this reference</h4><p class="muted">This page uses the same typing, base stats, and move pool as the battle simulator. Descriptive Pokédex text, height, and weight are not present in the canonical battle dataset, so they are intentionally not fabricated here.</p><p class="muted"><strong>${pokemon.fastMoveIds.length}</strong> Fast Move entries · <strong>${pokemon.chargedMoveIds.length}</strong> Charged Move entries.</p></aside></div></div>`;
+      bindCompendiumPokemonImages(stage);
+      bindCompendiumDetailActions(stage, () => selectCompendiumCategory("pokemon"));
+      $("compendiumOpenPokemonBattle").onclick = () => openCompendiumPokemonInBattle(source?.id || pokemon.sourceId);
+      stage.querySelectorAll("[data-linked-move]").forEach(button => button.onclick = () => openCompendiumMove(button.dataset.linkedMove));
+      stage.querySelector(".compendium-detail-back")?.focus();
+    }
+
+    function compendiumTimingDefaults(reference) {
+      const find = name => reference.fast.find(move => move.name.toLowerCase() === name);
+      if (!compendiumTimingSelection.moveA) compendiumTimingSelection.moveA = (find("incinerate") || reference.fast[0])?.id || null;
+      if (!compendiumTimingSelection.moveB) compendiumTimingSelection.moveB = (find("sucker punch") || reference.fast[1] || reference.fast[0])?.id || null;
+    }
+
+    function compendiumTimingOptions(reference, selected) {
+      return reference.fast.map(move => `<option value="${move.id}" ${move.id === selected ? "selected" : ""}>${escapeHtml(move.name)} · ${move.turns}T · +${move.energyGain}</option>`).join("");
+    }
+
+    function renderCompendiumTimingBoard(model) {
+      const headings = `<div class="timing-turns" style="--timing-turns:${model.turnCount}"><span>Turn</span>${Array.from({ length: model.turnCount }, (_, index) => `<span>${index + 1}</span>`).join("")}</div>`;
+      const rows = model.rows.map(row => {
+        const color = typeColors[row.move.type] || "#66788c";
+        const events = row.events.map(event => `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${event.duration};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, ${event.energyAfter} cumulative energy"><span>+${event.energyAfter}</span></span>`).join("");
+        return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
+      }).join("");
+      const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>One turn before Move B impacts</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
+      return `<div class="timing-board-scroll"><div class="timing-board" role="img" aria-label="Fast Move timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
+    }
+
+    function renderCompendiumTimingVisualizer() {
+      const reference = ensureCompendiumMoveReference();
+      const api = window.PvPeakFastMoveTiming;
+      const stage = $("compendiumStage");
+      if (!reference?.fast.length || !api) {
+        stage.innerHTML = `<div class="compendium-empty"><div><strong>Timing data unavailable</strong><p>The Fast Move reference could not initialize.</p></div></div>`;
+        return;
+      }
+      compendiumTimingDefaults(reference);
+      const moveA = reference.byId.get(compendiumTimingSelection.moveA) || reference.fast[0];
+      const moveB = reference.byId.get(compendiumTimingSelection.moveB) || reference.fast[1] || reference.fast[0];
+      const model = api.build(moveA, moveB, { turnCount: compendiumTimingSelection.turnCount });
+      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Move Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Move data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Move A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Move B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Key insight</h4><p>${escapeHtml(model.insight)} Diamonds mark the turn immediately before each displayed impact of Move B, helping judges inspect recurring timing landmarks.</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.turnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Move. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. Timing landmarks are explanatory guides, not automatic guarantees that a Charged Move is safe in every battle state.</p></details></div>`;
+      $("compendiumTimingMoveA").onchange = event => { compendiumTimingSelection.moveA = event.target.value; renderCompendiumTimingVisualizer(); };
+      $("compendiumTimingMoveB").onchange = event => { compendiumTimingSelection.moveB = event.target.value; renderCompendiumTimingVisualizer(); };
+      $("compendiumTimingRange").onclick = () => { compendiumTimingSelection.turnCount = model.turnCount === 12 ? 24 : 12; renderCompendiumTimingVisualizer(); };
+      $("compendiumTimingReset").onclick = () => { compendiumTimingSelection = { moveA: null, moveB: null, turnCount: 12 }; renderCompendiumTimingVisualizer(); };
     }
 
     function compendiumMoveColor(move) {
@@ -15226,11 +15502,20 @@
       const stage = $("compendiumStage");
       const color = compendiumMoveColor(move);
       const stats = compendiumMoveStats(move);
+      const pokemonReference = ensureCompendiumPokemonReference();
+      const learners = window.PvPeakPokemonReference?.learners(pokemonReference, move.sourceId) || [];
       const effects = move.effects.length
         ? `<div class="move-detail-effects"><h4>Move effect</h4><ul>${move.effects.map(effect => `<li>${escapeHtml(window.PvPeakMoveReference.effectLabel(effect))}</li>`).join("")}</ul></div>`
         : `<div class="move-detail-effects"><h4>Move effect</h4><ul><li>No stat-stage effect in the canonical move data.</li></ul></div>`;
-      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}">${compendiumDetailActions(`← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Moves`)}<div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Move" : "Charged Move"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>${effects}</div>`;
+      const learnersHtml = learners.length ? `<div class="move-learners">${learners.slice(0, 24).map(pokemon => `<button class="move-learner" type="button" data-linked-pokemon="${pokemon.id}" aria-label="Open ${escapeHtml(pokemon.name)} reference"><img data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><span>${escapeHtml(pokemon.name)}</span></button>`).join("")}</div>${learners.length > 24 ? `<p class="muted">Showing 24 of ${learners.length} Pokémon.</p>` : ""}` : `<p class="muted">No released Pokémon in the current canonical dataset learn this move.</p>`;
+      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}">${compendiumDetailActions(`← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Moves`)}<div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Move" : "Charged Move"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div><div class="compendium-detail-columns"><div>${effects}</div><aside class="compendium-detail-card"><h4>Quick actions</h4>${move.kind === "fast" ? `<button class="secondary" id="compendiumMoveTiming" type="button">Compare timing</button>` : ""}<p class="muted">Used by ${learners.length} released Pokémon form${learners.length === 1 ? "" : "s"} in the current simulator dataset.</p></aside></div><section class="compendium-detail-card"><h4>Pokémon that learn ${escapeHtml(move.name)}</h4>${learnersHtml}</section></div>`;
       bindCompendiumDetailActions(stage, () => selectCompendiumCategory("moves"));
+      bindCompendiumPokemonImages(stage);
+      stage.querySelectorAll("[data-linked-pokemon]").forEach(button => button.onclick = () => openCompendiumPokemon(button.dataset.linkedPokemon));
+      if ($("compendiumMoveTiming")) $("compendiumMoveTiming").onclick = () => {
+        compendiumTimingSelection.moveA = move.id;
+        selectCompendiumCategory("timing-visualizer");
+      };
       stage.querySelector(".compendium-detail-back").focus();
     }
 
@@ -15261,7 +15546,7 @@
       }
       resultsBox.innerHTML = results.map((result, index) => {
         const label = compendiumSearchTypeLabel(result.type);
-        const icon = result.type === "fast-move" ? "F" : result.type === "charged-move" ? "C" : result.type === "mechanics" ? "M" : result.type === "rulings" ? "R" : "G";
+        const icon = result.type === "fast-move" ? "F" : result.type === "charged-move" ? "C" : result.type === "pokemon" ? "P" : result.type === "mechanics" ? "M" : result.type === "rulings" ? "R" : "G";
         return `<button id="compendiumSearchOption${index}" class="compendium-search-result" type="button" role="option" aria-selected="${index === compendiumSearchActiveIndex}" data-search-index="${index}"><span class="compendium-result-icon" aria-hidden="true">${icon}</span><span class="compendium-result-copy"><strong>${escapeHtml(result.title)}</strong><small>${escapeHtml(result.summary)}</small></span><span class="compendium-result-kind">${escapeHtml(label)}</span></button>`;
       }).join("");
       resultsBox.querySelectorAll("[data-search-index]").forEach(button => {
@@ -15272,7 +15557,7 @@
     }
 
     function compendiumSearchTypeLabel(type) {
-      return ({ "fast-move": "Fast Move", "charged-move": "Charged Move", mechanics: "Mechanic", rulings: "Ruling", glossary: "Glossary" })[type] || title(type);
+      return ({ "fast-move": "Fast Move", "charged-move": "Charged Move", pokemon: "Pokémon", mechanics: "Mechanic", rulings: "Ruling", glossary: "Glossary" })[type] || title(type);
     }
 
     function setCompendiumSearchActiveIndex(index, scroll = true) {
@@ -15323,6 +15608,11 @@
         renderCompendiumCategories();
         renderCompendiumMoveReference();
         syncCompendiumRoute({ category: "moves", item: result.item.id });
+        return;
+      }
+      if (result.type === "pokemon") {
+        clearCompendiumSearch(false);
+        openCompendiumPokemon(result.item.id);
         return;
       }
       if (["mechanics", "rulings", "glossary"].includes(result.type)) {
