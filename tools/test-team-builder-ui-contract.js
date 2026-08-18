@@ -122,6 +122,9 @@ assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,
 assert.match(html, /function prepareTeamBuilderFinalSlotPlan\(\)[\s\S]{0,1800}PvPeakTeamBuilderAnalysis\.createPlan[\s\S]{0,500}finalSlotCandidateId/, "Final Slot Finder must reuse canonical cached matchup jobs.");
 assert.match(html, /function teamBuilderFinalSlotRanking\(\)[\s\S]{0,1400}rankTeamCandidates\([\s\S]{0,200}mode: "append"/, "Final-slot results must use the shared deterministic optimization layer.");
 assert.match(html, /function applyTeamBuilderFinalSlot\(candidateId\)[\s\S]{0,300}findIndex\(candidate => !candidate\)[\s\S]{0,500}PvPeakTeamBuilder\.setMember/, "Add to team must fill the next empty canonical slot.");
+assert.match(html, /0-answer <b>\$\{item\.zeroAnswerBefore\}&rarr;\$\{item\.zeroAnswerAfter\}<\/b>/, "Final Slot Finder answer deltas must use a stable HTML arrow entity.");
+assert.match(html, /\.team-final-slot-metrics \{[^}]*font-size: 9px/, "Final Slot Finder metrics must remain comfortably readable.");
+assert.match(html, /\.team-final-slot-copy strong \{[^}]*font-size: 13px/, "Final Slot Finder candidate names must have clear visual priority.");
 assert.match(html, /No team member has been changed/, "Candidate results must make their non-mutating status explicit before Add to team.");
 assert.match(html, /function captureTeamBuilderComparisonBaseline\(renderNow = true\)[\s\S]{0,700}persistTeamBuilderComparisonBaseline/, "Team A must be a persistent semantic roster snapshot.");
 assert.match(html, /function prepareTeamBuilderComparisonPlan\(\)[\s\S]{0,900}createTeamBuilderPlanForTeam\(teamBuilderComparisonBaseline\)[\s\S]{0,300}uniqueJobs/, "Team comparison must reuse and deduplicate canonical matchup jobs.");
