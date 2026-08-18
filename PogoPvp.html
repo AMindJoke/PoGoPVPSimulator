@@ -1395,7 +1395,7 @@
     .team-final-slot-result { display: grid; grid-template-columns: 28px 64px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 108px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel); }
     .team-final-slot-rank { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--subtle); color: var(--muted); font-size: 11px; font-weight: 950; }.team-final-slot-result:nth-child(-n+3) .team-final-slot-rank { background: color-mix(in srgb, var(--accent) 14%, var(--panel)); color: var(--accent); }
     .team-final-slot-result > img { width: 64px; height: 64px; object-fit: contain; }.team-final-slot-copy { min-width: 0; }.team-final-slot-copy strong { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }.team-final-slot-types { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }.team-final-slot-types .type-badge { padding: 3px 6px; font-size: 8px; }
-    .team-final-slot-metrics { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; color: var(--muted); font-size: 9px; font-weight: 800; line-height: 1.35; }.team-final-slot-metrics b { color: #2f8e62; font-size: 11px; }.team-final-slot-moves { margin-top: 6px; overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .team-final-slot-metrics { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 9px; font-weight: 800; line-height: 1.35; }.team-final-slot-metrics b { color: #2f8e62; font-size: 11px; }.team-final-slot-moves { margin-top: 7px; color: var(--ink); font-size: 11px; font-weight: 750; line-height: 1.4; }
     .team-final-slot-action { display: grid; justify-items: end; gap: 8px; }.team-final-slot-score { color: #2f8e62; font-size: 16px; font-weight: 950; }.team-final-slot-score small { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; text-align: right; }.team-final-slot-action button { min-height: 38px; padding: 7px 10px; font-size: 10px; white-space: nowrap; }
     .team-final-slot-more { width: 100%; min-height: 40px; margin-top: 11px; font-size: 11px; }
     .team-comparison { display: none; width: 100%; max-width: none; margin-top: 22px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
@@ -16384,7 +16384,7 @@
       const slotsLeft = window.PvPeakTeamBuilder.TEAM_SIZE - selected;
       $("teamBuilderFinalSlotTitle").textContent = `Your team has ${slotsLeft} slot${slotsLeft === 1 ? "" : "s"} left`;
       $("teamBuilderFinalSlotCopy").textContent = slotsLeft === 1
-        ? "Find the PokÃ©mon that best repairs your current coverage gaps."
+        ? "Find the Pok\u00e9mon that best repairs your current coverage gaps."
         : `Rank the best next member for this ${selected}/6 roster using its current weaknesses.`;
       $("teamBuilderFinalSlotAnalyze").textContent = slotsLeft === 1 ? "Find final member" : "Find next member";
       $("teamBuilderFinalSlotAnalyze").disabled = teamBuilderAnalysisActive || !teamBuilderMetaDefinition;
@@ -16435,7 +16435,7 @@
       if (!coveragePlan.length || coveragePlan.some(job => !teamBuilderAnalysisCache.has(job.key))) {
         teamBuilderFinalSlotPendingStart = true;
         $("teamBuilderFinalSlotProgressWrap").classList.add("is-visible");
-        $("teamBuilderFinalSlotStatus").textContent = "Preparing current team coverage firstâ€¦";
+        $("teamBuilderFinalSlotStatus").textContent = "Preparing current team coverage first\u2026";
         startTeamBuilderAnalysis();
         return;
       }
@@ -16464,8 +16464,8 @@
       const done = active ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
       wrap.classList.toggle("is-visible", total > 0 || active || teamBuilderFinalSlotPendingStart);
-      if (active) $("teamBuilderFinalSlotStatus").textContent = `Evaluating ${teamBuilderFinalSlotCandidates.size} eligible candidates against ${teamBuilderFinalSlotTargetGroups.length} priority threats${teamBuilderAnalysisCacheHits ? ` Â· ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` Â· ${teamBuilderAnalysisFailed} failed` : ""}`;
-      else if (total && cached === total) $("teamBuilderFinalSlotStatus").textContent = `${teamBuilderFinalSlotCandidates.size} candidates ready Â· ${teamBuilderFinalSlotTargetGroups.length} priority threats.`;
+      if (active) $("teamBuilderFinalSlotStatus").textContent = `Evaluating ${teamBuilderFinalSlotCandidates.size} eligible candidates against ${teamBuilderFinalSlotTargetGroups.length} priority threats${teamBuilderAnalysisCacheHits ? ` \u00b7 ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` \u00b7 ${teamBuilderAnalysisFailed} failed` : ""}`;
+      else if (total && cached === total) $("teamBuilderFinalSlotStatus").textContent = `${teamBuilderFinalSlotCandidates.size} candidates ready \u00b7 ${teamBuilderFinalSlotTargetGroups.length} priority threats.`;
       else if (!teamBuilderFinalSlotPendingStart) $("teamBuilderFinalSlotStatus").textContent = "Ready to evaluate eligible candidates.";
       $("teamBuilderFinalSlotCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderFinalSlotProgress");
@@ -16508,7 +16508,7 @@
         const types = (pokemon?.types || []).map(type => `<span class="type-badge" style="background:${typeColors[type] || "#66788c"};color:${contrastText(typeColors[type] || "#66788c")}">${title(type)}</span>`).join("");
         const moves = `${escapeHtml(moveMap.get(member?.fastMoveId)?.name || "—")} &middot; ${(member?.chargedMoveIds || []).map(id => escapeHtml(moveMap.get(id)?.name || id)).join(" / ")}`;
         const score = `${item.optimizationScore >= 0 ? "+" : ""}${item.optimizationScore}`;
-        return `<article class="team-final-slot-result"><span class="team-final-slot-rank">${index + 1}</span><img data-team-final-slot-sprite="${index}" alt=""><div class="team-final-slot-copy"><strong>${escapeHtml(pokemon?.name || item.candidateId)}</strong><div class="team-final-slot-types">${types}</div><div class="team-final-slot-metrics"><span>0-answer <b>${item.zeroAnswerBefore}&rarr;${item.zeroAnswerAfter}</b></span><span>1-answer <b>${item.oneAnswerBefore}&rarr;${item.oneAnswerAfter}</b></span><span>Critical fixed <b>${item.criticalThreatsFixed}</b></span><span>New holes <b>0</b></span></div><div class="team-final-slot-moves">${moves}</div></div><div class="team-final-slot-action"><span class="team-final-slot-score">${score}<small>improvement points</small></span><button type="button" data-team-add-final-slot="${escapeHtml(item.candidateId)}">Add to team</button></div></article>`;
+        return `<article class="team-final-slot-result"><span class="team-final-slot-rank">${index + 1}</span><img data-team-final-slot-sprite="${index}" alt=""><div class="team-final-slot-copy"><strong>${escapeHtml(pokemon?.name || item.candidateId)}</strong><div class="team-final-slot-types">${types}</div><div class="team-final-slot-metrics"><span>0-answer <b>${item.zeroAnswerBefore}&rarr;${item.zeroAnswerAfter}</b></span><span>1-answer <b>${item.oneAnswerBefore}&rarr;${item.oneAnswerAfter}</b></span></div><div class="team-final-slot-moves">${moves}</div></div><div class="team-final-slot-action"><span class="team-final-slot-score">${score}<small>improvement points</small></span><button type="button" data-team-add-final-slot="${escapeHtml(item.candidateId)}">Add to team</button></div></article>`;
       }).join("");
       visible.forEach((item, index) => {
         const pokemon = findPokemon(item.candidateId);
@@ -16531,7 +16531,7 @@
       } catch (_) { return; }
       persistTeamBuilderState();
       resetTeamBuilderFinalSlotEvaluation();
-      teamBuilderFeedback(`${findPokemon(candidateId)?.name || "PokÃ©mon"} added to slot ${slot + 1}.`);
+      teamBuilderFeedback(`${findPokemon(candidateId)?.name || "Pok\u00e9mon"} added to slot ${slot + 1}.`);
       renderTeamBuilder();
     }
 

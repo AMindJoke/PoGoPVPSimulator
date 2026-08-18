@@ -125,6 +125,11 @@ assert.match(html, /function applyTeamBuilderFinalSlot\(candidateId\)[\s\S]{0,30
 assert.match(html, /0-answer <b>\$\{item\.zeroAnswerBefore\}&rarr;\$\{item\.zeroAnswerAfter\}<\/b>/, "Final Slot Finder answer deltas must use a stable HTML arrow entity.");
 assert.match(html, /\.team-final-slot-metrics \{[^}]*font-size: 9px/, "Final Slot Finder metrics must remain comfortably readable.");
 assert.match(html, /\.team-final-slot-copy strong \{[^}]*font-size: 13px/, "Final Slot Finder candidate names must have clear visual priority.");
+assert.match(html, /\.team-final-slot-moves \{[^}]*font-size: 11px;[^}]*font-weight: 750/, "Final Slot Finder move sets must be clearly readable.");
+assert.doesNotMatch(html, /team-final-slot-metrics[^\n]*Critical fixed/, "Final Slot Finder cards should omit secondary critical-fix noise.");
+assert.doesNotMatch(html, /team-final-slot-metrics[^\n]*New holes/, "Final Slot Finder cards should omit the always-zero new-holes value.");
+assert.match(html, /candidates ready \\u00b7 \$\{teamBuilderFinalSlotTargetGroups\.length\} priority threats/, "Final Slot Finder status separators must be encoding-safe.");
+assert.match(html, /Find the Pok\\u00e9mon that best repairs your current coverage gaps/, "Final Slot Finder copy must render Pokémon without mojibake.");
 assert.match(html, /No team member has been changed/, "Candidate results must make their non-mutating status explicit before Add to team.");
 assert.match(html, /function captureTeamBuilderComparisonBaseline\(renderNow = true\)[\s\S]{0,700}persistTeamBuilderComparisonBaseline/, "Team A must be a persistent semantic roster snapshot.");
 assert.match(html, /function prepareTeamBuilderComparisonPlan\(\)[\s\S]{0,900}createTeamBuilderPlanForTeam\(teamBuilderComparisonBaseline\)[\s\S]{0,300}uniqueJobs/, "Team comparison must reuse and deduplicate canonical matchup jobs.");
