@@ -72,6 +72,7 @@ includes('Compendium explanation');
 includes('article.lastUpdated');
 includes('article.related.length');
 includes('function renderCompendiumEntryButton(entry, entryType)');
+includes('.compendium-entry-button:hover { border-color: color-mix(in srgb, var(--accent) 42%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--ink);');
 includes('entryType === "glossary"');
 includes('class="compendium-glossary-expanded"');
 includes('data-usage="${escapeHtml(entry.usage || "competitive")}"');

@@ -440,7 +440,9 @@
     .compendium-entry-list { display: grid; gap: 7px; }
     .compendium-entry-list.is-glossary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .compendium-entry-button { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 12px; padding: 12px; text-align: left; background: var(--soft); color: var(--ink); box-shadow: none; }
+    .compendium-entry-button:hover { border-color: color-mix(in srgb, var(--accent) 42%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--ink); box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 10%, transparent); transform: translateY(-1px); }
     .compendium-entry-button small { display: block; margin-top: 3px; color: var(--muted); }
+    .compendium-entry-button:hover small { color: var(--muted); }
     .compendium-entry-context { align-self: center; padding: 4px 7px; border-radius: 99px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 900; white-space: nowrap; }
     .compendium-entry-context[data-source-type="official"] { background: color-mix(in srgb, #3b8f68 12%, var(--panel)); color: #28704e; }
     .compendium-glossary-expanded { display: block; margin-top: 2px; color: var(--accent-dark); font-size: 9px; font-weight: 850; }
