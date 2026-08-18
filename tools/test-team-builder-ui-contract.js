@@ -125,7 +125,9 @@ assert.match(html, /function applyTeamBuilderFinalSlot\(candidateId\)[\s\S]{0,30
 assert.match(html, /0-answer <b>\$\{item\.zeroAnswerBefore\}&rarr;\$\{item\.zeroAnswerAfter\}<\/b>/, "Final Slot Finder answer deltas must use a stable HTML arrow entity.");
 assert.match(html, /\.team-final-slot-metrics \{[^}]*font-size: 9px/, "Final Slot Finder metrics must remain comfortably readable.");
 assert.match(html, /\.team-final-slot-copy strong \{[^}]*font-size: 13px/, "Final Slot Finder candidate names must have clear visual priority.");
-assert.match(html, /\.team-final-slot-moves \{[^}]*font-size: 11px;[^}]*font-weight: 750/, "Final Slot Finder move sets must be clearly readable.");
+assert.match(html, /\.team-final-slot-moves \.team-card-move \{[^}]*font-size: 11px;[^}]*font-weight: 780/, "Final Slot Finder move sets must be clearly readable.");
+assert.match(html, /\.team-final-slot-moves \{[^}]*display: flex;[^}]*flex-wrap: wrap/, "Final Slot Finder moves must stay in a horizontal wrapping row.");
+assert.match(html, /\[teamBuilderMoveLine\(member\?\.fastMoveId[\s\S]{0,160}chargedMoveIds[\s\S]{0,120}teamBuilderMoveLine/, "Final Slot Finder must reuse the roster's typed move-dot presentation.");
 assert.doesNotMatch(html, /team-final-slot-metrics[^\n]*Critical fixed/, "Final Slot Finder cards should omit secondary critical-fix noise.");
 assert.doesNotMatch(html, /team-final-slot-metrics[^\n]*New holes/, "Final Slot Finder cards should omit the always-zero new-holes value.");
 assert.match(html, /candidates ready \\u00b7 \$\{teamBuilderFinalSlotTargetGroups\.length\} priority threats/, "Final Slot Finder status separators must be encoding-safe.");
