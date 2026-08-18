@@ -38,6 +38,8 @@ includes('id="compendiumMoveType"');
 includes('id="compendiumMoveSort"');
 includes('renderCompendiumMoveDetail(selected)');
 includes('function renderCompendiumPokemonReference()');
+includes('function refreshCompendiumPokemonResults()');
+includes('compendiumPokemonFilters.query = event.target.value; compendiumPokemonVisibleCount = 120; refreshCompendiumPokemonResults();');
 includes('function renderCompendiumPokemonDetail(pokemon)');
 includes('Default Great League build');
 includes('source?.defaultIVs?.cp1500');

@@ -45,11 +45,15 @@
     const requested = Math.round(Number(options.turnCount || 12));
     const turnCount = Math.max(6, Math.min(24, requested));
     const alignment = lcm(moveA.turns, moveB.turns);
-    const candidateWindows = row(moveB, turnCount).events.map(event => Math.max(event.start, event.impact - 1));
+    const rowA = row(moveA, turnCount);
+    const rowB = row(moveB, turnCount);
+    const moveAReadyTurns = new Set(rowA.events.filter(event => event.duration === moveA.turns).map(event => event.impact));
+    const oneTurnBeforeMoveB = new Set(rowB.events.map(event => Math.max(event.start, event.impact - 1)));
+    const candidateWindows = [...moveAReadyTurns].filter(turn => oneTurnBeforeMoveB.has(turn));
     return Object.freeze({
       turnCount,
       alignment,
-      rows: Object.freeze([row(moveA, turnCount), row(moveB, turnCount)]),
+      rows: Object.freeze([rowA, rowB]),
       candidateWindows: Object.freeze([...new Set(candidateWindows)]),
       insight: `${moveA.name} and ${moveB.name} realign every ${alignment} turn${alignment === 1 ? "" : "s"}.`
     });
