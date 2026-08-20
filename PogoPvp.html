@@ -704,7 +704,7 @@
     .pokemon-detail-pane { display: grid; gap: 12px; }
     .pokemon-detail-pane .compendium-detail-columns { grid-template-columns: 1fr; gap: 0; }
     .pokemon-detail-head { grid-template-columns: 90px minmax(0, 1fr); min-height: 0; padding: 4px 0 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
-    .pokemon-detail-head::after { right: -28px; width: 120px; height: 120px; border-width: 18px; }
+    .pokemon-detail-head::after { top: 40px; right: auto; left: -48px; width: 150px; height: 150px; border-width: 20px; }
     .pokemon-detail-sprite { width: 90px; height: 90px; }
     .pokemon-detail-copy h3 { font-size: 24px; }
     .pokemon-detail-actions { grid-column: 1 / -1; display: flex; justify-content: flex-start; }
@@ -713,6 +713,9 @@
     .pokemon-base-stats div:last-child { border-right: 0; }
     .pokemon-build-meta span { border: 0; background: var(--subtle); font-size: 9px; font-weight: 650; }
     .pokemon-move-groups { gap: 0; }
+    .pokemon-move-groups .compendium-detail-card { padding-bottom: 0; }
+    .pokemon-move-groups .compendium-detail-card h4 { padding-inline: 10px; }
+    .pokemon-move-groups .pokemon-move-list { gap: 0; }
     .pokemon-move-link { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; transition: background-color var(--comp-motion); }
     .pokemon-move-link:hover { background: color-mix(in srgb, var(--move-color) 5%, var(--panel)); }
 
