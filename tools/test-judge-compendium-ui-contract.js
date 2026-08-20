@@ -75,6 +75,9 @@ includes('.pokemon-detail-head:hover .pokemon-detail-avatar::after { animation: 
 includes('@keyframes pokemon-avatar-halo-pulse');
 includes('.pokemon-detail-head:hover .pokemon-detail-avatar::after { animation: none !important; }');
 includes('function renderCompendiumTimingVisualizer()');
+includes('class="timing-reading-guide"');
+includes('What you’re seeing');
+includes('Check the spelling or try a broader official or community term.');
 includes('data-linked-pokemon="${pokemon.id}"');
 includes('data-linked-move="${move.id}"');
 includes('id="compendiumOpenPokemonBattle"');
@@ -116,6 +119,8 @@ includes('function renderCompendiumSource(article)');
 includes('compendium-semantic-label');
 includes('Judge Note');
 includes('Key Point');
+includes('Compendium Explanation');
+includes('Official Rule');
 includes('The linked document is official. This article is a concise Compendium summary, not an official quotation.');
 includes('target="_blank" rel="noopener noreferrer"');
 includes('Source revised ${escapeHtml(article.sourceUpdated)}');

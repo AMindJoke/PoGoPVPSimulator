@@ -588,6 +588,9 @@
     .timing-insights > div { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
     .timing-insights h4 { margin: 0 0 6px; font-size: 12px; }
     .timing-insights p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .timing-reading-guide { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 8px 14px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .timing-reading-guide h4 { margin: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+    .timing-reading-guide p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
     .compendium-article { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-article[hidden] { display: none; }
     .compendium-article .compendium-detail-actions { margin-bottom: 15px; }
@@ -730,6 +733,10 @@
     .compendium-article-section[data-section-kind="key-point"] .compendium-semantic-label { color: var(--accent-dark); }
     .compendium-article-section[data-section-kind="judge-note"] { padding: 14px 16px; border: 1px solid color-mix(in srgb, #c77a24 28%, var(--line)); border-left: 4px solid #c77a24; border-radius: var(--comp-radius); background: color-mix(in srgb, #c77a24 6%, var(--panel)); }
     .compendium-article-section[data-section-kind="judge-note"] .compendium-semantic-label { color: #9a5a15; }
+    .compendium-article-section[data-section-kind="example"] { padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--comp-radius); background: var(--soft); }
+    .compendium-article-section[data-section-kind="example"] .compendium-semantic-label { color: var(--muted); }
+    .compendium-article-section[data-section-kind="compendium-note"] { padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line)); border-left: 4px solid var(--accent); border-radius: var(--comp-radius); background: color-mix(in srgb, var(--accent) 5%, var(--panel)); }
+    .compendium-article-section[data-section-kind="compendium-note"] .compendium-semantic-label { color: var(--accent-dark); }
     .compendium-article-source .compendium-semantic-label { color: #28704e; }
     .compendium-article-source { border-color: var(--line); border-left-color: var(--muted); background: var(--soft); }
     .compendium-article-source[data-source-type="official"] { border-color: color-mix(in srgb, #3b8f68 28%, var(--line)); border-left-color: #3b8f68; background: color-mix(in srgb, #3b8f68 6%, var(--panel)); }
@@ -816,6 +823,7 @@
       .compendium-detail-actions .secondary { min-height: 44px; }
       .compendium-copy-feedback { grid-column: 1 / -1; }
       .compendium-detail-columns, .timing-insights { grid-template-columns: 1fr; }
+      .timing-reading-guide { grid-template-columns: 1fr; gap: 4px; }
       .pokemon-reference-list { grid-template-columns: 1fr; }
       .pokemon-detail-head { grid-template-columns: 134px minmax(0, 1fr); min-height: 120px; padding: 12px; }
       .pokemon-detail-sprite { width: 92px; height: 92px; }
@@ -15445,10 +15453,13 @@
       const progress = ensureCompendiumEssentialsProgress();
       const total = essentials?.CURRICULUM.length || 0;
       const completed = progress.completed.length;
-      const next = essentials?.nextStep(progress);
+      const next = essentials?.resumeStep(progress);
       const started = completed > 0 || progress.lastOpened;
-      const actionLabel = started ? "Continue Judge Essentials" : "Start Judge Essentials";
-      const intro = started
+      const allComplete = total > 0 && completed === total;
+      const actionLabel = allComplete ? "Review Judge Essentials" : started ? "Continue Judge Essentials" : "Start Judge Essentials";
+      const intro = allComplete
+        ? "All current concepts are marked understood. You can revisit any step without changing your completion record."
+        : started
         ? `Continue with <strong>${escapeHtml(next?.title || "Judge Essentials")}</strong>. ${completed} of ${total} concepts marked understood.`
         : "Learn the core concepts every Pokémon GO judge should understand, in a practical order.";
       const list = (essentials?.CURRICULUM || []).map(step => {
@@ -15461,7 +15472,7 @@
 
     function renderCompendiumEntryButton(entry, entryType) {
       const context = entryType === "rulings"
-        ? `<span class="compendium-entry-context" data-source-type="${escapeHtml(entry.sourceType || "compendium")}">${entry.sourceType === "official" ? "Official source" : entry.sourceType === "mixed" ? "Mixed sources" : "Compendium"}</span>`
+        ? `<span class="compendium-entry-context" data-source-type="${escapeHtml(entry.sourceType || "compendium")}">${entry.sourceType === "official" ? "Official Rule" : entry.sourceType === "mixed" ? "Official source + explanation" : "Compendium Explanation"}</span>`
         : entryType === "glossary"
           ? `<span class="compendium-entry-context" data-usage="${escapeHtml(entry.usage || "competitive")}">${escapeHtml(entry.category || "Term")}</span>`
         : `<span aria-hidden="true">\u203a</span>`;
@@ -15475,7 +15486,11 @@
       if (!category || categoryId === "home") {
         stage.innerHTML = renderCompendiumHome();
         stage.querySelectorAll("[data-essentials-step]").forEach(button => button.onclick = () => openJudgeEssentialsStep(button.dataset.essentialsStep));
-        $("compendiumEssentialsStart").onclick = () => openJudgeEssentialsStep(window.PvPeakJudgeEssentials?.nextStep(ensureCompendiumEssentialsProgress())?.id);
+        $("compendiumEssentialsStart").onclick = () => {
+          const essentials = window.PvPeakJudgeEssentials;
+          const target = essentials?.resumeStep(ensureCompendiumEssentialsProgress()) || essentials?.CURRICULUM?.[0];
+          if (target) openJudgeEssentialsStep(target.id);
+        };
         return;
       }
       if (categoryId === "moves") {
@@ -15695,7 +15710,7 @@
       const moveB = reference.byId.get(compendiumTimingSelection.moveB) || reference.fast[1] || reference.fast[0];
       const model = api.build(moveA, moveB, { turnCount: compendiumTimingSelection.turnCount });
       const completedThrough = model.turnCount > model.requestedTurnCount ? ` The range completes attacks begun through turn ${model.requestedTurnCount}, so this view continues through turn ${model.turnCount}.` : "";
-      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Attack Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Attack data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Fast Attack A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Fast Attack B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Key insight</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Fast Attack A has completed and can act exactly one turn before Fast Attack B reaches its displayed impact.${completedThrough}</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.requestedTurnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Attack. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. A landmark requires both action availability after Fast Attack A and one remaining turn before Fast Attack B’s impact. The selected range includes every Fast Attack that begins within it and shows that attack through its complete impact. These are explanatory timing guides, not automatic guarantees that a Charged Attack is safe in every battle state.</p></details></div>`;
+      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Attack Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Attack data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Fast Attack A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Fast Attack B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div><section class="timing-reading-guide" aria-labelledby="timingReadingGuideTitle"><h4 id="timingReadingGuideTitle">What you’re seeing</h4><p><strong>${escapeHtml(moveA.name)}</strong> lasts ${moveA.turns} turn${moveA.turns === 1 ? "" : "s"}; <strong>${escapeHtml(moveB.name)}</strong> lasts ${moveB.turns} turn${moveB.turns === 1 ? "" : "s"}. Each bar shows one Fast Attack from its start through its impact, while the value inside is total stored energy after that use.</p></section>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Timing landmarks</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Fast Attack A has completed and can act exactly one turn before Fast Attack B reaches its displayed impact.${completedThrough}</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.requestedTurnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Attack. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. A landmark requires both action availability after Fast Attack A and one remaining turn before Fast Attack B’s impact. The selected range includes every Fast Attack that begins within it and shows that attack through its complete impact. These are explanatory timing guides, not automatic guarantees that a Charged Attack is safe in every battle state.</p></details></div>`;
       $("compendiumTimingMoveA").onchange = event => { compendiumTimingSelection.moveA = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingMoveB").onchange = event => { compendiumTimingSelection.moveB = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingRange").onclick = () => { compendiumTimingSelection.turnCount = model.requestedTurnCount === 12 ? 24 : 12; renderCompendiumTimingVisualizer(); };
@@ -15865,7 +15880,7 @@
       resultsBox.hidden = false;
       searchInput.setAttribute("aria-expanded", "true");
       if (!results.length) {
-        resultsBox.innerHTML = `<div class="compendium-empty"><div><strong>No indexed reference found</strong><p>Try a different term. The Compendium data library is ready to grow without changing the search UI.</p></div></div>`;
+        resultsBox.innerHTML = `<div class="compendium-empty"><div><strong>No indexed reference found</strong><p>Check the spelling or try a broader official or community term.</p></div></div>`;
         searchInput.removeAttribute("aria-activedescendant");
         $("compendiumSearchStatus").textContent = `No results for ${normalized}.`;
         return;
@@ -15976,12 +15991,16 @@
 
     function renderCompendiumArticleSection(section) {
       const kind = section.kind || "text";
-      const semanticKind = kind === "example" ? "judge-note" : kind;
+      const semanticKind = kind;
       const semanticLabel = semanticKind === "key-point"
         ? `<p class="compendium-semantic-label"><span aria-hidden="true">★</span>Key Point</p>`
         : semanticKind === "judge-note"
           ? `<p class="compendium-semantic-label"><span aria-hidden="true">⚖</span>Judge Note</p>`
-          : "";
+          : semanticKind === "compendium-note"
+            ? `<p class="compendium-semantic-label"><span aria-hidden="true">i</span>Compendium Explanation</p>`
+            : semanticKind === "example"
+              ? `<p class="compendium-semantic-label"><span aria-hidden="true">◇</span>Example</p>`
+              : "";
       const copy = kind === "steps"
         ? `<ol class="compendium-article-steps">${section.body.map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`
         : section.body.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("");
@@ -15999,7 +16018,7 @@
 
     function renderCompendiumSource(article) {
       if (!article.source) return "";
-      const badge = article.sourceType === "official" ? "Official source" : article.sourceType === "mixed" ? "Mixed sources" : "Compendium explanation";
+      const badge = article.sourceType === "official" ? "Official Rule" : article.sourceType === "mixed" ? "Official source + Compendium explanation" : "Compendium Explanation";
       const badgeIcon = article.sourceType === "official" ? "✓" : article.sourceType === "mixed" ? "◐" : "i";
       const section = article.sourceSection ? `<span class="compendium-source-section">${escapeHtml(article.sourceSection)}</span>` : "";
       const sourceDate = article.sourceUpdated ? `<span class="compendium-source-date">Source revised ${escapeHtml(article.sourceUpdated)}</span>` : "";

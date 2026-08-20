@@ -129,12 +129,12 @@
         {
           "id": "tool-boundary",
           "heading": "Reconstruction is evidence support",
-          "kind": "key-point",
+          "kind": "compendium-note",
           "body": ["Scenario Review can help test the corrected battle state, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, the issue, and its significant impact."]
         }
       ],
       "source": "Play! Pokémon Pokémon GO Tournament Handbook",
-      "sourceType": "official",
+      "sourceType": "mixed",
       "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
       "sourceSection": "Sections 6.7.1 and 6.7.3.2",
       "sourceUpdated": "2026-05-21",

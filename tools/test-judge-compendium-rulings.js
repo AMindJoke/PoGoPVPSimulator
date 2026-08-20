@@ -26,7 +26,7 @@ assert.strictEqual(rulingIds.size, rulings.items.length, "Ruling IDs must be uni
 
 const mechanicIds = new Set(mechanics.items.map(item => item.id));
 for (const ruling of rulings.items) {
-  assert.strictEqual(ruling.sourceType, "official");
+  assert.ok(["official", "mixed"].includes(ruling.sourceType), `${ruling.id} must declare its authority boundary`);
   assert.ok(ruling.sourceUrl.startsWith("https://mcdn.pokemon.com/"), `${ruling.id} must link to the official handbook`);
   assert.match(ruling.sourceSection, /^Sections? /);
   assert.strictEqual(ruling.sourceUpdated, "2026-05-21");
@@ -41,7 +41,8 @@ assert.strictEqual(model.search(index, "one-turn lag")[0].id, "general-lag-revie
 assert.strictEqual(model.search(index, "screen recording")[0].id, "screen-recording-evidence");
 
 const dreArticle = model.articleView("rulings", normalized.rulings.find(item => item.id === "fast-attack-prevents-charged-attack"));
-assert.strictEqual(dreArticle.sourceType, "official");
+assert.strictEqual(dreArticle.sourceType, "mixed", "The DRE article combines official guidance with an explicit Compendium reconstruction note");
+assert.strictEqual(dreArticle.sections.find(section => section.id === "tool-boundary").kind, "compendium-note", "Simulator guidance must be visibly separated from the official rule summary");
 assert.ok(dreArticle.related.includes("fast-move-impact"));
 assert.ok(dreArticle.related.includes("technical-review-resolution"));
 

@@ -11,10 +11,10 @@
     Object.freeze({ id: "fast-attack-duration", order: 2, title: "Fast Attack Duration", summary: "Understand multi-turn Fast Attacks and action windows.", targetType: "mechanics", targetId: "fast-move-duration" }),
     Object.freeze({ id: "energy", order: 3, title: "Energy & Charged Attacks", summary: "Learn when energy is gained, capped, and spent.", targetType: "mechanics", targetId: "energy-generation" }),
     Object.freeze({ id: "cap", order: 4, title: "Charged Attack Priority (CAP)", summary: "Resolve simultaneous Charged Attacks using current Attack.", targetType: "mechanics", targetId: "charged-move-priority" }),
-    Object.freeze({ id: "shields", order: 5, title: "Shields", summary: "Recognize Protect Shield states during a review.", targetType: "glossary", targetId: "shield-scenario" }),
-    Object.freeze({ id: "switching", order: 6, title: "Switching & Switch Timer", summary: "Use the switching reference while judging action windows.", targetType: "glossary", targetId: "catch" }),
+    Object.freeze({ id: "shields", order: 5, title: "Shield Scenarios", summary: "Read the Protect Shield configurations used in matchup review.", targetType: "glossary", targetId: "shield-scenario" }),
+    Object.freeze({ id: "switching", order: 6, title: "Switching & Catches", summary: "Recognize the competitive term for redirecting an incoming Charged Attack.", targetType: "glossary", targetId: "catch" }),
     Object.freeze({ id: "stat-changes", order: 7, title: "Stat Changes", summary: "Track bounded Attack and Defense stages.", targetType: "mechanics", targetId: "stat-stages" }),
-    Object.freeze({ id: "battle-end", order: 8, title: "Battle End & Simultaneous Events", summary: "Review impact timing and simultaneous knockouts.", targetType: "mechanics", targetId: "fast-move-impact" }),
+    Object.freeze({ id: "battle-end", order: 8, title: "Simultaneous Fast Attack Impacts", summary: "Review how simultaneous Fast Attack impacts can produce simultaneous knockouts.", targetType: "mechanics", targetId: "fast-move-impact" }),
     Object.freeze({ id: "intervention", order: 9, title: "Errors & Judge Intervention", summary: "Start a technical review with the right evidence and process.", targetType: "rulings", targetId: "technical-review-request" })
   ]);
 
@@ -44,10 +44,14 @@
   }
 
   function isCompleted(progress, stepId) { return (progress?.completed || []).includes(stepId); }
-  function nextStep(progress) { return CURRICULUM.find(step => !isCompleted(progress, step.id)) || CURRICULUM[CURRICULUM.length - 1]; }
+  function nextStep(progress) { return CURRICULUM.find(step => !isCompleted(progress, step.id)) || null; }
+  function resumeStep(progress) {
+    const opened = CURRICULUM.find(step => step.id === progress?.lastOpened);
+    return opened && !isCompleted(progress, opened.id) ? opened : nextStep(progress);
+  }
   function previousStep(stepId) { const index = CURRICULUM.findIndex(step => step.id === stepId); return index > 0 ? CURRICULUM[index - 1] : null; }
   function followingStep(stepId) { const index = CURRICULUM.findIndex(step => step.id === stepId); return index >= 0 && index < CURRICULUM.length - 1 ? CURRICULUM[index + 1] : null; }
   function curriculumIsValid(datasets = {}) { return CURRICULUM.every(step => (datasets[step.targetType] || []).some(entry => entry.id === step.targetId)); }
 
-  return Object.freeze({ STORAGE_KEY, CURRICULUM, normalizeProgress, readProgress, writeProgress, markOpened, markCompleted, isCompleted, nextStep, previousStep, followingStep, curriculumIsValid });
+  return Object.freeze({ STORAGE_KEY, CURRICULUM, normalizeProgress, readProgress, writeProgress, markOpened, markCompleted, isCompleted, nextStep, resumeStep, previousStep, followingStep, curriculumIsValid });
 });

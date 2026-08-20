@@ -17,10 +17,19 @@ assert.equal(Essentials.nextStep(progress).id, "turns");
 progress = Essentials.markOpened(progress, "energy");
 progress = Essentials.writeProgress(storage, progress);
 assert.equal(Essentials.readProgress(storage).lastOpened, "energy", "Last opened step should persist locally");
+assert.equal(Essentials.resumeStep(progress).id, "energy", "Continue should resume the last opened incomplete step");
 progress = Essentials.markCompleted(progress, "turns");
 progress = Essentials.markCompleted(progress, "fast-attack-duration");
 assert.equal(Essentials.nextStep(progress).id, "energy", "Continue should select the next incomplete step");
 assert.equal(Essentials.previousStep("energy").id, "fast-attack-duration");
 assert.equal(Essentials.followingStep("energy").id, "cap");
+
+let complete = Essentials.normalizeProgress(null);
+Essentials.CURRICULUM.forEach(step => { complete = Essentials.markCompleted(complete, step.id); });
+assert.equal(Essentials.nextStep(complete), null, "A completed curriculum must not pretend the final step is still pending");
+assert.equal(Essentials.resumeStep(complete), null, "A completed curriculum must have no incomplete resume target");
+
+const reviewed = Essentials.markOpened(complete, "energy");
+assert.deepEqual(reviewed.completed, complete.completed, "Reviewing an earlier step must not corrupt completion state");
 
 console.log("Judge Essentials tests passed.");
