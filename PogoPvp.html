@@ -486,7 +486,7 @@
     .move-reference-count { color: var(--muted); font-size: 10px; font-weight: 850; white-space: nowrap; }
     .move-reference-toolbar { display: grid; grid-template-columns: minmax(150px, 1fr) 118px 150px; gap: 7px; }
     .move-reference-toolbar label { display: grid; gap: 3px; color: var(--muted); font-size: 7px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
-    .move-reference-toolbar input, .move-reference-toolbar select { width: 100%; max-width: none; min-height: 34px; padding-block: 5px; color: var(--ink); font-size: 10px; text-transform: none; }
+    .move-reference-toolbar input, .move-reference-toolbar select { width: 100%; max-width: none; min-height: 38px; padding-block: 6px; color: var(--ink); font-size: 11px; text-transform: none; }
     .move-turn-filter { display: flex; align-items: center; gap: 4px; max-width: 100%; overflow-x: auto; padding-bottom: 1px; }
     .move-turn-filter > span { margin-right: 2px; color: var(--muted); font-size: 8px; font-weight: 900; white-space: nowrap; }
     .move-turn-filter button { flex: 0 0 auto; min-width: 30px; min-height: 28px; padding: 4px 6px; border-color: var(--line); background: var(--panel); color: var(--muted); box-shadow: none; font-size: 9px; }
@@ -495,16 +495,16 @@
     .move-reference-columns { padding: 4px 10px; color: var(--muted); font-size: 7px; font-weight: 950; letter-spacing: .055em; text-transform: uppercase; }
     .move-reference-columns[data-kind="charged"], .move-reference-row[data-kind="charged"] { grid-template-columns: minmax(190px, 1.65fr) repeat(3, minmax(52px, .55fr)) minmax(72px, .85fr) 18px; }
     .move-reference-list { display: grid; gap: 3px; }
-    .move-reference-row { --move-color: #66788c; width: 100%; min-height: 52px; padding: 7px 10px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); text-align: left; box-shadow: none; }
+    .move-reference-row { --move-color: #66788c; width: 100%; min-height: 57px; padding: 8px 11px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); text-align: left; box-shadow: none; }
     .move-reference-row:hover { border-color: color-mix(in srgb, var(--move-color) 56%, var(--line)); background: color-mix(in srgb, var(--move-color) 5%, var(--panel)); }
     .move-reference-row[aria-current="true"] { border-color: color-mix(in srgb, var(--move-color) 74%, var(--line)); background: color-mix(in srgb, var(--move-color) 10%, var(--panel)); box-shadow: inset 3px 0 0 var(--move-color); }
     .move-reference-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .compendium-move-type-icon { flex: 0 0 auto; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--move-color); color: var(--move-text, #fff); }
-    .compendium-move-type-icon svg { width: 16px; height: 16px; fill: currentColor; }
+    .compendium-move-type-icon { flex: 0 0 auto; display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: var(--move-color); color: var(--move-text, #fff); }
+    .compendium-move-type-icon svg { width: 17px; height: 17px; fill: currentColor; }
     .move-reference-name { min-width: 0; }
-    .move-reference-name strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-    .move-reference-name span { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; font-weight: 750; }
-    .move-reference-value { color: var(--ink); font-size: 11px; font-weight: 900; text-align: center; white-space: nowrap; }
+    .move-reference-name strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .move-reference-name span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; font-weight: 750; }
+    .move-reference-value { color: var(--ink); font-size: 12px; font-weight: 900; text-align: center; white-space: nowrap; }
     .move-reference-effect { display: inline-flex; align-items: center; justify-content: center; min-width: 0; padding: 3px 4px; border-radius: 6px; background: var(--subtle); color: var(--muted); font-size: 8px; font-weight: 850; line-height: 1.15; text-align: center; }
     .move-reference-open { color: var(--muted); font-size: 17px; }
     .move-reference-empty { min-height: 180px; }
@@ -15535,6 +15535,19 @@
       }).join(" · ");
     }
 
+    function compendiumMoveLearnerSpecies(reference, moveSourceId) {
+      const api = window.PvPeakPokemonReference;
+      if (typeof api?.learnerSpecies === "function") return api.learnerSpecies(reference, moveSourceId);
+      const seen = new Set();
+      return (api?.learners(reference, moveSourceId) || []).filter(pokemon => {
+        if (pokemon.shadow) return false;
+        const speciesKey = String(pokemon.name || "").replace(/\s+\(Shadow\)$/i, "").trim().toLocaleLowerCase();
+        if (!speciesKey || seen.has(speciesKey)) return false;
+        seen.add(speciesKey);
+        return true;
+      });
+    }
+
     function compendiumMoveStats(move) {
       if (move.kind === "fast") return [
         ["Damage", move.power], ["Energy", `+${move.energyGain}`], ["Duration", `${move.turns}T`], ["DPT", move.dpt.toFixed(2)], ["EPT", move.ept.toFixed(2)]
@@ -15618,7 +15631,7 @@
       }
       const color = compendiumMoveColor(move);
       const pokemonReference = ensureCompendiumPokemonReference();
-      const learners = window.PvPeakPokemonReference?.learners(pokemonReference, move.sourceId) || [];
+      const learners = compendiumMoveLearnerSpecies(pokemonReference, move.sourceId);
       const primaryStats = move.kind === "fast"
         ? [["Damage", move.power], ["Energy", `+${move.energyGain}`], ["Turns", move.turns], ["DPT", move.dpt.toFixed(2)], ["EPT", move.ept.toFixed(2)]]
         : [["Damage", move.power], ["Energy", move.energyCost], ["DPE", move.dpe.toFixed(2)]];

@@ -65,5 +65,16 @@
     return reference?.learnersByMove?.get(moveSourceId) || Object.freeze([]);
   }
 
-  return Object.freeze({ stableId, normalizePokemon, createReference, filter, searchEntries, learners });
+  function learnerSpecies(reference, moveSourceId) {
+    const seen = new Set();
+    return Object.freeze(learners(reference, moveSourceId).filter(item => {
+      if (item.shadow) return false;
+      const speciesKey = String(item.name || "").replace(/\s+\(Shadow\)$/i, "").trim().toLocaleLowerCase();
+      if (!speciesKey || seen.has(speciesKey)) return false;
+      seen.add(speciesKey);
+      return true;
+    }));
+  }
+
+  return Object.freeze({ stableId, normalizePokemon, createReference, filter, searchEntries, learners, learnerSpecies });
 });

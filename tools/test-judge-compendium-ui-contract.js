@@ -39,6 +39,8 @@ includes('id="compendiumMoveSort"');
 includes('function compendiumMoveTypeIcon(move)');
 includes('function compendiumMoveEffectCompact(move)');
 includes('function renderCompendiumMoveDetailPanel(move)');
+includes('function compendiumMoveLearnerSpecies(reference, moveSourceId)');
+includes('api?.learnerSpecies');
 includes('id="compendiumMoveDetailPanel"');
 includes('class="move-reference-columns"');
 includes('data-mobile-stats="${escapeHtml(mobile)}"');
