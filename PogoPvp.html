@@ -571,14 +571,14 @@
     .timing-toolbar select { width: 100%; max-width: none; min-height: 44px; color: var(--ink); font-size: 13px; font-weight: 650; text-transform: none; }
     .timing-vs { align-self: end; display: grid; place-items: center; width: 38px; height: 44px; color: var(--muted); font-size: 15px; font-weight: 750; }
     .timing-board-scroll { max-width: 100%; overflow-x: auto; }
-    .timing-board { display: grid; gap: 8px; min-width: 760px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+    .timing-board { display: grid; gap: 8px; width: max(100%, var(--timing-board-min-width, 760px)); min-width: 760px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
     .timing-turns, .timing-row { display: grid; grid-template-columns: 130px repeat(var(--timing-turns), minmax(34px, 1fr)); gap: 3px; align-items: stretch; }
     .timing-turns span { display: grid; place-items: center; min-height: 24px; color: var(--muted); font-size: 10px; font-weight: 750; }
     .timing-row-label { display: grid; align-content: center; padding: 8px; border-radius: 7px; background: var(--panel); }
     .timing-row-label strong, .timing-row-label small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .timing-row-label strong { font-size: 11px; font-weight: 750; }
     .timing-row-label small { margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 650; }
-    .timing-segment { position: relative; display: grid; place-items: center; min-height: 52px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 11px; font-weight: 750; }
+    .timing-segment { position: relative; display: grid; min-width: 0; place-items: center; min-height: 52px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 11px; font-weight: 750; }
     .timing-segment::after { content: ""; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translateY(-50%); }
     .timing-window { display: grid; place-items: center; min-height: 32px; border-radius: 6px; color: var(--muted); font-size: 10px; font-weight: 750; }
     .timing-window.is-candidate { border: 1px solid color-mix(in srgb, #3b8f68 48%, var(--line)); background: color-mix(in srgb, #3b8f68 13%, var(--panel)); color: #28704e; }
@@ -15492,7 +15492,8 @@
         return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
       }).join("");
       const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
-      return `<div class="timing-board-scroll"><div class="timing-board" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
+      const boardMinWidth = 130 + model.turnCount * 34 + model.turnCount * 3;
+      return `<div class="timing-board-scroll"><div class="timing-board" style="--timing-board-min-width:${boardMinWidth}px" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
     }
 
     function renderCompendiumTimingVisualizer() {
