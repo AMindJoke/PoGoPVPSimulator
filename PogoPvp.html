@@ -579,6 +579,7 @@
     .timing-row-label strong { font-size: 11px; font-weight: 750; }
     .timing-row-label small { margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 650; }
     .timing-segment { position: relative; display: grid; min-width: 0; place-items: center; min-height: 52px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 11px; font-weight: 750; }
+    .timing-board.is-extended .timing-segment > span { font-size: 10px; }
     .timing-segment::after { content: ""; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translateY(-50%); }
     .timing-window { display: grid; place-items: center; min-height: 32px; border-radius: 6px; color: var(--muted); font-size: 10px; font-weight: 750; }
     .timing-window.is-candidate { border: 1px solid color-mix(in srgb, #3b8f68 48%, var(--line)); background: color-mix(in srgb, #3b8f68 13%, var(--panel)); color: #28704e; }
@@ -15476,7 +15477,7 @@
 
     function compendiumTimingDefaults(reference) {
       const find = name => reference.fast.find(move => move.name.toLowerCase() === name);
-      if (!compendiumTimingSelection.moveA) compendiumTimingSelection.moveA = (find("incinerate") || reference.fast[0])?.id || null;
+      if (!compendiumTimingSelection.moveA) compendiumTimingSelection.moveA = (find("bubble") || reference.fast[0])?.id || null;
       if (!compendiumTimingSelection.moveB) compendiumTimingSelection.moveB = (find("sucker punch") || reference.fast[1] || reference.fast[0])?.id || null;
     }
 
@@ -15494,7 +15495,7 @@
       const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
       // The board uses border-box sizing, so include its 13px side padding and 1px borders.
       const boardMinWidth = 130 + model.turnCount * 34 + model.turnCount * 3 + 28;
-      return `<div class="timing-board-scroll"><div class="timing-board" style="--timing-board-min-width:${boardMinWidth}px" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
+      return `<div class="timing-board-scroll"><div class="timing-board${model.requestedTurnCount > 12 ? " is-extended" : ""}" style="--timing-board-min-width:${boardMinWidth}px" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
     }
 
     function renderCompendiumTimingVisualizer() {
