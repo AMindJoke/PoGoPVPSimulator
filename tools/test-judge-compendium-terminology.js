@@ -29,4 +29,9 @@ assert.match(compendiumUi, /Fast Attacks/);
 assert.match(compendiumUi, /Charged Attacks/);
 assert.match(compendiumUi, /Fast Attack Timing Visualizer/);
 
+const modelSource = fs.readFileSync(path.join(root, "src", "compendium", "compendium-model.js"), "utf8");
+assert.match(modelSource, /\["cmp", "charged attack priority"\]/, "Community terminology should remain an input-only search alias.");
+assert.match(modelSource, /\["fast move", "fast attack"\]/, "Fast Move should resolve to official terminology during search.");
+assert.match(modelSource, /\["charged move", "charged attack"\]/, "Charged Move should resolve to official terminology during search.");
+
 console.log("Judge Compendium terminology tests passed.");

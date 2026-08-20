@@ -47,6 +47,9 @@ assert.deepStrictEqual(model.CONTENT_TYPES, ["mechanics", "rulings", "glossary"]
 assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["home", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
 assert.strictEqual(model.validateDataset("mechanics", mechanics).valid, true);
 assert.strictEqual(model.validTimelineDiagram(mechanics.items[0].content[0].diagram), true);
+const compendiumNote = structuredClone(rulings);
+compendiumNote.items[0].content[0].kind = "compendium-note";
+assert.strictEqual(model.validateDataset("rulings", compendiumNote).valid, true, "Rulings must support explicitly labeled Compendium explanation sections");
 assert.strictEqual(model.validateDataset("rulings", rulings).valid, true);
 assert.strictEqual(model.validateDataset("glossary", glossary).valid, true);
 
@@ -74,14 +77,24 @@ const index = model.buildSearchIndex(normalized);
 assert.strictEqual(index.length, 3);
 assert.strictEqual(model.search(index, "DRE")[0].id, "dre-window");
 assert.strictEqual(model.search(index, "charged attack priority")[0].id, "cmp");
+assert.strictEqual(model.resolveSearchAliases("CMP"), "charged attack priority");
+assert.strictEqual(model.resolveSearchAliases("charged move priority"), "charged attack priority");
+assert.strictEqual(model.resolveSearchAliases("Fast Moves"), "fast attacks");
+assert.strictEqual(model.resolveSearchAliases("charged move"), "charged attack");
+assert.strictEqual(model.resolveSearchAliases("stat changes"), "attack and defense stages");
+assert.strictEqual(model.resolveSearchAliases("switch"), "switching");
+assert.strictEqual(model.search(index, "CMP")[0].id, "cmp");
+assert.strictEqual(model.search(index, "charged move priority")[0].id, "cmp");
 assert.deepStrictEqual(model.search(index, "missing"), []);
 assert.strictEqual(model.normalizeSearchText("Pokémon – Timing"), "pokemon timing");
 
 const rankedIndex = model.buildSearchIndex(normalized, [
   { id: "incinerate-guide", type: "mechanics", title: "Understanding Incinerate", summary: "Timing guide", keywords: ["incinerate"] },
-  { id: "incinerate", type: "fast-move", title: "Incinerate", summary: "20 damage", keywords: ["fire"] }
+  { id: "incinerate", type: "fast-move", title: "Incinerate", summary: "20 damage", keywords: ["fire"] },
+  { id: "capability", type: "rulings", title: "Recording capability", summary: "Evidence guidance", keywords: [] }
 ]);
 assert.deepStrictEqual(model.search(rankedIndex, "incinerate").slice(0, 2).map(entry => entry.id), ["incinerate", "incinerate-guide"]);
+assert.ok(!model.search(rankedIndex, "cap").some(entry => entry.id === "capability"), "Short abbreviations must match complete search tokens, not arbitrary substrings");
 
 const article = model.articleView("rulings", normalized.rulings[0]);
 assert.strictEqual(article.id, "dre-window");

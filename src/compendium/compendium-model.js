@@ -7,6 +7,16 @@
 
   const SCHEMA_VERSION = 1;
   const CONTENT_TYPES = Object.freeze(["mechanics", "rulings", "glossary"]);
+  const SEARCH_ALIASES = Object.freeze([
+    Object.freeze(["charged move priority", "charged attack priority"]),
+    Object.freeze(["charged moves", "charged attacks"]),
+    Object.freeze(["charged move", "charged attack"]),
+    Object.freeze(["fast moves", "fast attacks"]),
+    Object.freeze(["fast move", "fast attack"]),
+    Object.freeze(["stat changes", "attack and defense stages"]),
+    Object.freeze(["switch", "switching"]),
+    Object.freeze(["cmp", "charged attack priority"])
+  ]);
   const CATEGORIES = Object.freeze([
     Object.freeze({ id: "home", label: "Home", summary: "Start here or jump straight to a Compendium tool.", status: "foundation" }),
     Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast Attack and Charged Attack data.", status: "phase-2" }),
@@ -53,7 +63,7 @@
       && isStableId(section.id)
       && typeof section.heading === "string"
       && stringArray(section.body)
-      && (!section.kind || ["text", "key-point", "example", "steps", "timeline"].includes(section.kind))
+      && (!section.kind || ["text", "key-point", "example", "judge-note", "compendium-note", "steps", "timeline"].includes(section.kind))
       && (section.kind !== "timeline" || validTimelineDiagram(section.diagram)));
   }
 
@@ -174,6 +184,14 @@
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().replace(/[^a-z0-9+.-]+/g, " ").trim();
   }
 
+  function resolveSearchAliases(value) {
+    let normalized = normalizeSearchText(value);
+    SEARCH_ALIASES.forEach(([alias, official]) => {
+      normalized = normalized.replace(new RegExp(`(^|\\s)${alias.replace(/ /g, "\\s+")}(?=\\s|$)`, "g"), (_, prefix) => `${prefix}${official}`);
+    });
+    return normalized.replace(/\s+/g, " ").trim();
+  }
+
   function searchScore(entry, normalized, terms) {
     const title = normalizeSearchText(entry.title);
     const keywords = (entry.keywords || []).map(normalizeSearchText);
@@ -189,11 +207,12 @@
   }
 
   function search(index, query, limit = 12) {
-    const normalized = normalizeSearchText(query);
+    const normalized = resolveSearchAliases(query);
     if (!normalized) return Object.freeze([]);
     const terms = normalized.split(/\s+/).filter(Boolean);
     return Object.freeze((index || []).map(entry => {
-      if (!terms.every(term => entry.text.includes(term))) return null;
+      const tokens = entry.text.split(/\s+/).filter(Boolean);
+      if (!terms.every(term => term.length <= 3 ? tokens.includes(term) : entry.text.includes(term))) return null;
       const score = searchScore(entry, normalized, terms);
       return { entry, score };
     }).filter(Boolean).sort((a, b) => a.score - b.score || a.entry.title.localeCompare(b.entry.title) || a.entry.id.localeCompare(b.entry.id)).slice(0, limit).map(result => result.entry));
@@ -232,6 +251,8 @@
     normalizeDatasets,
     buildSearchIndex,
     normalizeSearchText,
+    resolveSearchAliases,
+    SEARCH_ALIASES,
     searchScore,
     search,
     articleView
