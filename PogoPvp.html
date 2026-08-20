@@ -575,13 +575,15 @@
     .timing-board { display: grid; gap: 8px; width: max(100%, var(--timing-board-min-width, 760px)); min-width: 760px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
     .timing-turns, .timing-row { display: grid; grid-template-columns: 130px repeat(var(--timing-turns), minmax(34px, 1fr)); gap: 3px; align-items: stretch; }
     .timing-turns span { display: grid; place-items: center; min-height: 24px; color: var(--muted); font-size: 10px; font-weight: 750; }
+    .timing-turns .timing-turn-number { position: relative; }
+    .timing-turns .timing-turn-number b { position: absolute; top: 50%; right: 0; color: inherit; font: inherit; transform: translate(50%, -50%); }
     .timing-row-label { display: grid; align-content: center; padding: 8px; border-radius: 7px; background: var(--panel); }
     .timing-row-label strong, .timing-row-label small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .timing-row-label strong { font-size: 11px; font-weight: 750; }
     .timing-row-label small { margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 650; }
     .timing-segment { position: relative; display: grid; min-width: 0; place-items: center; min-height: 52px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 11px; font-weight: 750; }
     .timing-board.is-extended .timing-segment > span { font-size: 10px; }
-    .timing-segment::after { content: ""; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translateY(-50%); }
+    .timing-segment::after { content: ""; position: absolute; right: 0; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translate(50%, -50%); }
     .timing-window { display: grid; place-items: center; min-height: 32px; border-radius: 6px; color: var(--muted); font-size: 10px; font-weight: 750; }
     .timing-window.is-candidate { border: 1px solid color-mix(in srgb, #3b8f68 48%, var(--line)); background: color-mix(in srgb, #3b8f68 13%, var(--panel)); color: #28704e; }
     .timing-insights { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .65fr); gap: 10px; }
@@ -12816,19 +12818,25 @@
       }
       .compendium-scroll-hint {
         display: flex;
+        grid-column: 3;
+        grid-row: 1;
         align-items: center;
         justify-content: flex-end;
         gap: 5px;
-        margin-top: -3px;
-        padding: 0 4px;
+        margin: 0;
+        padding: 0;
         color: rgba(255,255,255,.66);
         font-size: 9px;
         font-weight: 750;
         letter-spacing: .015em;
+        white-space: nowrap;
       }
       .compendium-scroll-hint span {
         font-size: 13px;
         line-height: 1;
+      }
+      .compendium-hero {
+        grid-template-columns: 34px minmax(0, 1fr) auto;
       }
 
       .team-slot.is-empty,
@@ -13833,10 +13841,10 @@
           <header class="compendium-hero">
             <div><p class="compendium-eyebrow">Judge tools</p><h2 id="compendiumTitle">Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and canonical battle data.</p></div>
             <div class="compendium-hero-mark" aria-hidden="true">JC</div>
+            <span class="compendium-scroll-hint" aria-hidden="true">Swipe for more sections <span>&rarr;</span></span>
           </header>
           <button id="compendiumNavToggle" class="compendium-nav-toggle" type="button" aria-expanded="false" aria-controls="compendiumCategories">Sections</button>
           <nav id="compendiumCategories" class="compendium-categories" aria-label="Compendium categories" role="tablist"></nav>
-          <span class="compendium-scroll-hint" aria-hidden="true">Swipe for more sections <span>&rarr;</span></span>
         </aside>
         <div class="compendium-content">
           <section class="compendium-search-panel" aria-label="Search the Judge Compendium">
@@ -15948,10 +15956,13 @@
     }
 
     function renderCompendiumTimingBoard(model) {
-      const headings = `<div class="timing-turns" style="--timing-turns:${model.turnCount}"><span>Turn</span>${Array.from({ length: model.turnCount }, (_, index) => `<span>${index + 1}</span>`).join("")}</div>`;
+      const headings = `<div class="timing-turns" style="--timing-turns:${model.turnCount}"><span>Turn</span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-turn-number"><b>${index + 1}</b></span>`).join("")}</div>`;
       const rows = model.rows.map(row => {
         const color = typeColors[row.move.type] || "#66788c";
-        const events = row.events.map(event => `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${event.duration};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, energy total ${event.energyAfter}"><span>Energy ${event.energyAfter}</span></span>`).join("");
+        const events = row.events.map(event => {
+          const activeTurnSpan = Math.max(1, event.duration - 1);
+          return `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${activeTurnSpan};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, energy total ${event.energyAfter}"><span>Energy ${event.energyAfter}</span></span>`;
+        }).join("");
         return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
       }).join("");
       const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
@@ -15973,7 +15984,7 @@
       const moveB = reference.byId.get(compendiumTimingSelection.moveB) || reference.fast[1] || reference.fast[0];
       const model = api.build(moveA, moveB, { turnCount: compendiumTimingSelection.turnCount });
       const completedThrough = model.turnCount > model.requestedTurnCount ? ` The range completes attacks begun through turn ${model.requestedTurnCount}, so this view continues through turn ${model.turnCount}.` : "";
-      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Attack Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Attack data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Fast Attack A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Fast Attack B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div><section class="timing-reading-guide" aria-labelledby="timingReadingGuideTitle"><h4 id="timingReadingGuideTitle">What you’re seeing</h4><p><strong>${escapeHtml(moveA.name)}</strong> lasts ${moveA.turns} turn${moveA.turns === 1 ? "" : "s"}; <strong>${escapeHtml(moveB.name)}</strong> lasts ${moveB.turns} turn${moveB.turns === 1 ? "" : "s"}. Each bar shows one Fast Attack from its start through its impact, while the value inside is total stored energy after that use.</p></section>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Timing landmarks</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Fast Attack A has completed and can act exactly one turn before Fast Attack B reaches its displayed impact.${completedThrough}</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.requestedTurnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Attack. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. A landmark requires both action availability after Fast Attack A and one remaining turn before Fast Attack B’s impact. The selected range includes every Fast Attack that begins within it and shows that attack through its complete impact. These are explanatory timing guides, not automatic guarantees that a Charged Attack is safe in every battle state.</p></details></div>`;
+      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Attack Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Attack data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Fast Attack A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Fast Attack B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div><section class="timing-reading-guide" aria-labelledby="timingReadingGuideTitle"><h4 id="timingReadingGuideTitle">What you’re seeing</h4><p><strong>${escapeHtml(moveA.name)}</strong> lasts ${moveA.turns} turn${moveA.turns === 1 ? "" : "s"}; <strong>${escapeHtml(moveB.name)}</strong> lasts ${moveB.turns} turn${moveB.turns === 1 ? "" : "s"}. Each bar covers the active turns leading to its impact marker, while the value inside is total stored energy after that use.</p></section>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Timing landmarks</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Fast Attack A has completed and can act exactly one turn before Fast Attack B reaches its displayed impact.${completedThrough}</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.requestedTurnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar covers the active turns before a Fast Attack’s impact. The outlined endpoint marks the impact boundary; the number inside is cumulative energy after that use. A landmark requires both action availability after Fast Attack A and one remaining turn before Fast Attack B’s impact. The selected range includes every Fast Attack that begins within it and shows that attack through its complete impact. These are explanatory timing guides, not automatic guarantees that a Charged Attack is safe in every battle state.</p></details></div>`;
       $("compendiumTimingMoveA").onchange = event => { compendiumTimingSelection.moveA = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingMoveB").onchange = event => { compendiumTimingSelection.moveB = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingRange").onclick = () => { compendiumTimingSelection.turnCount = model.requestedTurnCount === 12 ? 24 : 12; renderCompendiumTimingVisualizer(); };
