@@ -12780,6 +12780,268 @@
         box-shadow: 0 14px 32px rgba(23, 33, 47, .14);
       }
     }
+
+    /* Mobile usability pass: keep desktop density and application logic intact. */
+    .compendium-scroll-hint,
+    .meta-matchup-more {
+      display: none;
+    }
+    .move-detail .move-learner:hover,
+    .move-detail .move-learner:focus-visible {
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+      color: var(--ink);
+      filter: none;
+    }
+    .move-detail .move-learner:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 34%, transparent);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 760px) {
+      .compendium-sidebar {
+        overflow: hidden;
+      }
+      .compendium-categories,
+      .compendium-sidebar.is-open .compendium-categories {
+        scroll-padding-inline: 4px;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-inline: contain;
+      }
+      .compendium-category {
+        flex: 0 0 calc((100% - 6px) / 3);
+        min-width: 0;
+        scroll-snap-align: start;
+        scroll-snap-stop: normal;
+      }
+      .compendium-scroll-hint {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+        margin-top: -3px;
+        padding: 0 4px;
+        color: rgba(255,255,255,.66);
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: .015em;
+      }
+      .compendium-scroll-hint span {
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .team-slot.is-empty,
+      .team-slot.is-empty .team-slot-empty {
+        min-height: 124px;
+      }
+      .team-slot.is-empty .team-slot-empty {
+        padding: 14px;
+      }
+      .team-slot.is-empty .team-slot-empty span {
+        gap: 6px;
+      }
+      .team-slot.is-empty .team-slot-empty b {
+        width: 36px;
+        height: 36px;
+        font-size: 21px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app-tabs button {
+        min-height: 40px;
+        padding-block: 7px;
+      }
+      header h1 {
+        padding-right: 96px;
+      }
+      .mobile-header-actions button {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        min-height: 40px;
+      }
+
+      .options-panel .advanced-body button,
+      .iv-details button,
+      .iv-profile-toggle button,
+      .bait-toggle button,
+      .compact-toggle button,
+      .energy-stepper button {
+        min-height: 40px;
+      }
+      .advanced-body input,
+      .advanced-body select,
+      .iv-field input,
+      .start-energy-control input {
+        height: 40px;
+        min-height: 40px;
+      }
+      .pokemon-picker-input,
+      body.clarity-ui .moves-stack label select.move-select {
+        min-height: 40px;
+      }
+      .compact-toggle button,
+      .bait-toggle button,
+      .iv-profile-toggle button,
+      .energy-stepper button {
+        height: auto;
+      }
+      body.clarity-ui .options-panel .shield-mode-toggle button {
+        height: auto;
+        min-height: 40px;
+        padding-block: 5px;
+      }
+      .iv-impact-toggle {
+        min-height: 36px;
+        padding: 5px 7px;
+        font-size: 9px;
+      }
+      .iv-profile-toggle button,
+      .bait-toggle button,
+      .compact-toggle button {
+        padding: 5px 4px;
+        font-size: 9px;
+      }
+      .energy-stepper button {
+        padding: 5px;
+        font-size: 9px;
+      }
+
+      .meta-detail-content {
+        padding: 8px;
+      }
+      .meta-matchups {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+      }
+      .meta-matchup-group {
+        gap: 7px;
+        padding: 8px;
+        border-radius: 8px;
+      }
+      .meta-matchup-group > strong {
+        min-height: 24px;
+        padding-bottom: 6px;
+        font-size: 11px;
+      }
+      .meta-matchup-list {
+        gap: 6px;
+      }
+      .meta-matchup-card,
+      .meta-matchup-card:first-child,
+      .meta-matchup-card:last-child,
+      .meta-matchup-card:only-child {
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        min-height: 64px !important;
+        margin-top: 0;
+        padding: 7px 8px !important;
+        border-radius: 7px;
+      }
+      .meta-matchup-card + .meta-matchup-card {
+        margin-top: 0;
+      }
+      .meta-matchup-card > img {
+        width: 44px;
+        height: 44px;
+      }
+      .meta-matchup-name {
+        font-size: 12px;
+        line-height: 1.12;
+      }
+      .meta-matchup-types {
+        grid-column: 2;
+        transform: none;
+      }
+      .meta-matchup-types .type-badge {
+        min-height: 17px;
+        padding: 2px 5px;
+        font-size: 8px;
+      }
+      .meta-matchup-result {
+        grid-row: 1 / 3;
+        align-self: center;
+        min-width: 56px;
+        min-height: 30px;
+        padding: 4px 7px;
+        font-size: 10px;
+      }
+      .meta-matchup-group.is-collapsed .meta-matchup-card:nth-child(n + 3) {
+        display: none;
+      }
+      .meta-matchup-more {
+        display: block;
+        width: 100%;
+        min-height: 40px;
+        padding: 7px 10px;
+        border-color: rgba(255,255,255,.30);
+        background: rgba(255,255,255,.09);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 850;
+        box-shadow: none;
+      }
+      .meta-matchup-more:hover,
+      .meta-matchup-more:focus-visible {
+        border-color: rgba(255,255,255,.52);
+        background: rgba(255,255,255,.15);
+        transform: none;
+      }
+
+      .timeline {
+        --timeline-track-height: 48px;
+        --timeline-lane-height: 32px;
+        --timeline-badge-font-size: 9px;
+        --timeline-badge-gap: 4px;
+      }
+      .timeline-ruler {
+        font-size: 9px;
+      }
+      .timeline-label img {
+        width: 30px;
+        height: 30px;
+      }
+      .timeline-token-label {
+        font-size: 9px;
+      }
+      .timeline-legend {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .team-slot.is-empty,
+      .team-slot.is-empty .team-slot-empty {
+        min-height: 112px;
+      }
+      .timeline {
+        --timeline-side-zone-width: 62px;
+        --timeline-track-height: 48px;
+        --timeline-lane-height: 32px;
+        --timeline-badge-font-size: 9px;
+      }
+      .timeline-label img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+      body.battle-setup-ready:not(.battle-results-visible) main {
+        padding-bottom: 8px;
+      }
+      body.battle-setup-ready:not(.battle-results-visible) .battle-cta-row {
+        position: static;
+        width: 100%;
+        margin-top: -2px;
+        transform: none;
+        pointer-events: auto;
+      }
+      body.battle-setup-ready:not(.battle-results-visible) .battle-cta {
+        min-height: 42px;
+      }
+    }
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
@@ -13574,6 +13836,7 @@
           </header>
           <button id="compendiumNavToggle" class="compendium-nav-toggle" type="button" aria-expanded="false" aria-controls="compendiumCategories">Sections</button>
           <nav id="compendiumCategories" class="compendium-categories" aria-label="Compendium categories" role="tablist"></nav>
+          <span class="compendium-scroll-hint" aria-hidden="true">Swipe for more sections <span>&rarr;</span></span>
         </aside>
         <div class="compendium-content">
           <section class="compendium-search-panel" aria-label="Search the Judge Compendium">
@@ -18729,6 +18992,19 @@
           loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
         };
       });
+      container.querySelectorAll("[data-meta-matchup-more]").forEach(button => {
+        button.onclick = event => {
+          event.stopPropagation();
+          const group = button.closest(".meta-matchup-group");
+          if (!group) return;
+          const expanded = group.classList.toggle("is-expanded");
+          group.classList.toggle("is-collapsed", !expanded);
+          button.setAttribute("aria-expanded", String(expanded));
+          const count = Number(button.dataset.moreCount || 0);
+          const label = button.dataset.moreLabel || "matchups";
+          button.textContent = expanded ? `Show fewer ${label}` : `Show ${count} more ${label}`;
+        };
+      });
     }
 
     function metaRankingDetailsHtml(entry) {
@@ -18743,7 +19019,12 @@
       const cards = items.length
         ? items.map(item => metaKeyMatchupCard(item, sourceEntry)).join("")
         : `<span class="meta-matchup-empty">No key ${className} available for the current dataset.</span>`;
-      return `<section class="meta-matchup-group ${className}" aria-label="${label}"><strong>${label}</strong><div class="meta-matchup-list">${cards}</div></section>`;
+      const moreCount = Math.max(0, items.length - 2);
+      const moreLabel = className === "wins" ? "wins" : "losses";
+      const moreButton = moreCount
+        ? `<button type="button" class="meta-matchup-more" data-meta-matchup-more data-more-count="${moreCount}" data-more-label="${moreLabel}" aria-expanded="false">Show ${moreCount} more ${moreLabel}</button>`
+        : "";
+      return `<section class="meta-matchup-group ${className}${moreCount ? " is-collapsed" : ""}" aria-label="${label}"><strong>${label}</strong><div class="meta-matchup-list">${cards}</div>${moreButton}</section>`;
     }
 
     function metaKeyMatchupCard(item, sourceEntry) {
