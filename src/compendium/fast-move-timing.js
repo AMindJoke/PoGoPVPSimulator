@@ -28,10 +28,10 @@
     });
   }
 
-  function row(move, requestedTurnCount) {
+  function row(move, lastStartTurn) {
     const events = [];
     let energy = 0;
-    for (let start = 1; start <= requestedTurnCount; start += move.turns) {
+    for (let start = 1; start <= lastStartTurn; start += move.turns) {
       const impact = start + move.turns - 1;
       energy += move.energyGain;
       events.push(Object.freeze({ start, impact, duration: impact - start + 1, energyAfter: energy }));
@@ -45,9 +45,11 @@
     const requested = Math.round(Number(options.turnCount || 12));
     const requestedTurnCount = Math.max(6, Math.min(24, requested));
     const alignment = lcm(moveA.turns, moveB.turns);
-    const rowA = row(moveA, requestedTurnCount);
-    const rowB = row(moveB, requestedTurnCount);
-    const turnCount = Math.max(requestedTurnCount, ...rowA.events.map(event => event.impact), ...rowB.events.map(event => event.impact));
+    const requestedRowA = row(moveA, requestedTurnCount);
+    const requestedRowB = row(moveB, requestedTurnCount);
+    const turnCount = Math.max(requestedTurnCount, ...requestedRowA.events.map(event => event.impact), ...requestedRowB.events.map(event => event.impact));
+    const rowA = row(moveA, turnCount - moveA.turns + 1);
+    const rowB = row(moveB, turnCount - moveB.turns + 1);
     const moveAReadyTurns = new Set(rowA.events.filter(event => event.duration === moveA.turns).map(event => event.impact));
     const oneTurnBeforeMoveB = new Set(rowB.events.map(event => Math.max(event.start, event.impact - 1)));
     const candidateWindows = [...moveAReadyTurns].filter(turn => oneTurnBeforeMoveB.has(turn));
