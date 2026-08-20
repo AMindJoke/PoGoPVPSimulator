@@ -15492,7 +15492,8 @@
         return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
       }).join("");
       const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
-      const boardMinWidth = 130 + model.turnCount * 34 + model.turnCount * 3;
+      // The board uses border-box sizing, so include its 13px side padding and 1px borders.
+      const boardMinWidth = 130 + model.turnCount * 34 + model.turnCount * 3 + 28;
       return `<div class="timing-board-scroll"><div class="timing-board" style="--timing-board-min-width:${boardMinWidth}px" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
     }
 
