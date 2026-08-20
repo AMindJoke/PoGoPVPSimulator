@@ -22,6 +22,8 @@ assert.strictEqual(model.effectLabel(reference.byId.get("icy-wind").effects[0]),
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "fast", turns: 5 }).map(move => move.id), ["incinerate"]);
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "charged", type: "water" }).map(move => move.id), ["hydro-cannon"]);
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "fast", sort: "energy" }).map(move => move.id), ["incinerate", "mud-shot"]);
+assert.deepStrictEqual(model.filterMoves(reference, { kind: "fast", sort: "dpt" }).map(move => move.id), ["incinerate", "mud-shot"]);
+assert.deepStrictEqual(model.filterMoves(reference, { kind: "charged", energyCost: 40 }).map(move => move.id), ["hydro-cannon"]);
 assert.deepStrictEqual(model.filterMoves(reference, { kind: "charged", query: "icy" }).map(move => move.id), ["icy-wind"]);
 assert.strictEqual(model.normalizeMove(fixture[4]), null);
 const searchEntries = model.searchEntries(reference);

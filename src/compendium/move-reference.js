@@ -5,7 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const SORTS = Object.freeze(["name", "power", "energy", "efficiency"]);
+  const SORTS = Object.freeze(["name", "power", "energy", "turns", "dpt", "ept", "dpe", "efficiency"]);
 
   function stableMoveId(moveId) {
     return String(moveId || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -81,15 +81,25 @@
     const query = String(filters.query || "").trim().toLocaleLowerCase();
     const type = String(filters.type || "all").toLowerCase();
     const turns = filters.turns === "all" || filters.turns == null ? null : Math.max(1, Math.round(finite(filters.turns)));
+    const energy = filters.energyCost === "all" || filters.energyCost == null ? null : Math.max(0, Math.round(finite(filters.energyCost)));
     const sort = SORTS.includes(filters.sort) ? filters.sort : "name";
     const source = reference?.[kind] || [];
     const result = source.filter(move => {
       if (query && !`${move.name} ${move.sourceName} ${move.type}`.toLocaleLowerCase().includes(query)) return false;
       if (type !== "all" && move.type !== type) return false;
       if (kind === "fast" && turns && move.turns !== turns) return false;
+      if (kind === "charged" && energy != null && move.energyCost !== energy) return false;
       return true;
     });
-    const metric = move => sort === "power" ? move.power : sort === "energy" ? (kind === "fast" ? move.energyGain : move.energyCost) : sort === "efficiency" ? (kind === "fast" ? move.ept : move.dpe) : 0;
+    const metric = move => {
+      if (sort === "power") return move.power;
+      if (sort === "energy") return kind === "fast" ? move.energyGain : move.energyCost;
+      if (sort === "turns") return move.turns;
+      if (sort === "dpt") return move.dpt || 0;
+      if (sort === "ept" || sort === "efficiency") return kind === "fast" ? move.ept : move.dpe;
+      if (sort === "dpe") return move.dpe || 0;
+      return 0;
+    };
     result.sort((a, b) => sort === "name" ? a.name.localeCompare(b.name) || a.sourceId.localeCompare(b.sourceId) : metric(b) - metric(a) || a.name.localeCompare(b.name));
     return Object.freeze(result);
   }
