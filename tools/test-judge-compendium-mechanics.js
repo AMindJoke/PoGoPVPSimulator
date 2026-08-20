@@ -23,6 +23,9 @@ assert.strictEqual(model.search(index, "CAP")[0].id, "charged-move-priority");
 assert.strictEqual(model.search(index, "impact turn")[0].id, "fast-move-impact");
 assert.strictEqual(model.search(index, "100 energy")[0].id, "energy-generation");
 
+const energyCopy = dataset.items.find(item => item.id === "energy-generation").content.flatMap(section => section.body).join(" ");
+assert.match(energyCopy, /switching the Pokémon out does not cause it to lose energy/, "Energy guidance must explain that switching preserves stored energy");
+
 for (const item of dataset.items) {
   assert.ok(item.related.every(id => ids.includes(id)), `${item.id} links to a missing mechanic`);
   assert.ok(item.content.every(section => section.body.every(paragraph => paragraph.length <= 360)), `${item.id} contains an overlong paragraph`);
