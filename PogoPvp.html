@@ -15991,16 +15991,14 @@
 
     function renderCompendiumArticleSection(section) {
       const kind = section.kind || "text";
-      const semanticKind = kind;
+      const semanticKind = kind === "example" ? "judge-note" : kind;
       const semanticLabel = semanticKind === "key-point"
         ? `<p class="compendium-semantic-label"><span aria-hidden="true">★</span>Key Point</p>`
         : semanticKind === "judge-note"
           ? `<p class="compendium-semantic-label"><span aria-hidden="true">⚖</span>Judge Note</p>`
           : semanticKind === "compendium-note"
             ? `<p class="compendium-semantic-label"><span aria-hidden="true">i</span>Compendium Explanation</p>`
-            : semanticKind === "example"
-              ? `<p class="compendium-semantic-label"><span aria-hidden="true">◇</span>Example</p>`
-              : "";
+            : "";
       const copy = kind === "steps"
         ? `<ol class="compendium-article-steps">${section.body.map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`
         : section.body.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("");

@@ -121,7 +121,7 @@ includes('Judge Note');
 includes('Key Point');
 includes('Compendium Explanation');
 includes('Official Rule');
-includes('.compendium-article-section[data-section-kind="example"] { padding: 14px 16px; border: 1px solid color-mix(in srgb, #c77a24 28%, var(--line)); border-left: 4px solid #c77a24;', "Examples must keep their warm highlighted treatment without being mislabeled as Judge Notes");
+includes('const semanticKind = kind === "example" ? "judge-note" : kind;', "Examples must use the same Judge Note treatment on desktop and mobile");
 includes('The linked document is official. This article is a concise Compendium summary, not an official quotation.');
 includes('target="_blank" rel="noopener noreferrer"');
 includes('Source revised ${escapeHtml(article.sourceUpdated)}');
