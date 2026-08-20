@@ -114,7 +114,7 @@
         type: `${move.kind}-move`,
         title: move.name,
         summary,
-        keywords: Object.freeze([move.sourceId, move.type, move.kind, `${move.kind} move`, ...(move.kind === "fast" ? [`${move.turns} turn`, `${move.turns}t`, "dpt", "ept"] : ["dpe", "charged move"])]),
+        keywords: Object.freeze([move.sourceId, move.type, move.kind, `${move.kind} attack`, ...(move.kind === "fast" ? [`${move.turns} turn`, `${move.turns}t`, "dpt", "ept"] : ["dpe", "charged attack"])]),
         relatedItems: Object.freeze([]),
         item: move
       });

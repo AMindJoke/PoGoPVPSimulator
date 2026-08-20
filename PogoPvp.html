@@ -31,6 +31,7 @@
   <script src="src/compendium/quick-reference.js"></script>
   <script src="src/compendium/pokemon-reference.js"></script>
   <script src="src/compendium/fast-move-timing.js"></script>
+  <script src="src/compendium/judge-essentials.js"></script>
   <script src="src/compendium/compendium-routing.js"></script>
   <script src="src/scenario/scenario-model.js"></script>
   <script src="src/scenario/manual-battle-state.js"></script>
@@ -433,6 +434,33 @@
     .compendium-quick-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 12%, var(--panel)); color: var(--accent-dark); font-size: 17px; }
     .compendium-quick-card strong { display: block; font-size: 13px; }
     .compendium-quick-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 9.5px; line-height: 1.35; }
+    .compendium-home { display: grid; gap: 18px; max-width: 980px; }
+    .compendium-home-intro { display: flex; align-items: start; justify-content: space-between; gap: 18px; }
+    .compendium-home-intro h3 { margin: 0; font-size: 23px; letter-spacing: -.03em; }
+    .compendium-home-intro p { max-width: 620px; margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .compendium-essentials-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); }
+    .compendium-essentials-card h4 { margin: 0; font-size: 15px; }
+    .compendium-essentials-card p { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .compendium-essentials-progress { display: flex; align-items: center; gap: 8px; margin-top: 11px; color: var(--muted); font-size: 9px; font-weight: 850; }
+    .compendium-essentials-progress i { display: block; width: min(170px, 30vw); height: 5px; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--line) 72%, transparent); }
+    .compendium-essentials-progress i::after { content: ""; display: block; width: var(--essentials-progress, 0%); height: 100%; border-radius: inherit; background: var(--accent); }
+    .compendium-essentials-action { min-width: 160px; min-height: 42px; }
+    .compendium-home-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .compendium-home-section-head h4 { margin: 0; font-size: 13px; }
+    .compendium-home-section-head p { margin: 0; color: var(--muted); font-size: 10px; }
+    .compendium-essentials-list { display: grid; gap: 7px; }
+    .compendium-essentials-step { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 64px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+    .compendium-essentials-number { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: var(--subtle); color: var(--muted); font-size: 10px; font-weight: 950; }
+    .compendium-essentials-step.is-complete .compendium-essentials-number { background: color-mix(in srgb, #3b8f68 17%, var(--panel)); color: #28704e; }
+    .compendium-essentials-step strong, .compendium-essentials-step small { display: block; }
+    .compendium-essentials-step strong { font-size: 12px; }
+    .compendium-essentials-step small { margin-top: 3px; color: var(--muted); font-size: 9.5px; line-height: 1.35; }
+    .compendium-essentials-open { min-height: 36px; padding: 6px 10px; background: var(--panel); color: var(--ink); box-shadow: none; }
+    .compendium-essentials-context { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 15px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line)); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, var(--panel)); }
+    .compendium-essentials-context strong { font-size: 11px; }
+    .compendium-essentials-context span { color: var(--muted); font-size: 9px; font-weight: 800; }
+    .compendium-essentials-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .compendium-essentials-nav-group { display: flex; flex-wrap: wrap; gap: 8px; }
     .compendium-empty { display: grid; place-items: center; min-height: 220px; padding: 24px; border: 1px dashed var(--line); border-radius: 11px; background: var(--soft); text-align: center; }
     .compendium-empty > div { max-width: 480px; }
     .compendium-empty strong { display: block; margin-bottom: 7px; font-size: 15px; }
@@ -611,6 +639,11 @@
       .compendium-quick-grid { grid-template-columns: 1fr; }
       .compendium-entry-list.is-glossary { grid-template-columns: 1fr; }
       .compendium-quick-card { min-height: 72px; }
+      .compendium-home-intro, .compendium-essentials-card { align-items: stretch; flex-direction: column; }
+      .compendium-essentials-card { grid-template-columns: 1fr; }
+      .compendium-essentials-action { width: 100%; }
+      .compendium-essentials-step { grid-template-columns: 30px minmax(0, 1fr); }
+      .compendium-essentials-open { grid-column: 2; justify-self: start; min-height: 40px; }
       .compendium-stage-head { align-items: start; flex-direction: column; gap: 7px; }
       .move-reference-topline { align-items: stretch; flex-direction: column; }
       .move-kind-switch { width: 100%; }
@@ -15012,7 +15045,7 @@
       return p.name;
     }
 
-    let compendiumActiveCategory = "quick-reference";
+    let compendiumActiveCategory = "home";
     let compendiumDatasets = Object.freeze({ mechanics: Object.freeze([]), rulings: Object.freeze([]), glossary: Object.freeze([]) });
     let compendiumSearchIndex = Object.freeze([]);
     let compendiumSearchResults = Object.freeze([]);
@@ -15031,6 +15064,8 @@
     let compendiumOpenArticle = null;
     let compendiumHistorySyncing = false;
     let compendiumCopyFeedbackTimer = null;
+    let compendiumEssentialsProgress = null;
+    let compendiumEssentialsStepId = null;
 
     function currentCompendiumRoute() {
       return { category: compendiumActiveCategory, item: compendiumSelectedMoveId || compendiumSelectedPokemonId || compendiumOpenArticle?.id || null };
@@ -15177,7 +15212,7 @@
 
     function renderCompendiumCategories() {
       const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
-      const icons = { "quick-reference": "⌂", moves: "⇅", pokemon: "◉", "timing-visualizer": "◷", mechanics: "⚙", rulings: "⚖", glossary: "Aa" };
+      const icons = { home: "⌂", "quick-reference": "▣", moves: "⇅", pokemon: "◉", "timing-visualizer": "◷", mechanics: "⚙", rulings: "⚖", glossary: "Aa" };
       $("compendiumCategories").innerHTML = categories.map(category => `<button class="compendium-category" type="button" role="tab" data-compendium-category="${category.id}" aria-selected="${category.id === compendiumActiveCategory}"><span class="compendium-category-icon" aria-hidden="true">${icons[category.id] || "•"}</span><span>${escapeHtml(category.label)}</span></button>`).join("");
       $("compendiumCategories").querySelectorAll("[data-compendium-category]").forEach(button => {
         button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCategory);
@@ -15191,6 +15226,7 @@
       compendiumSelectedMoveId = null;
       compendiumSelectedPokemonId = null;
       compendiumOpenArticle = null;
+      compendiumEssentialsStepId = null;
       $("compendiumArticle").hidden = true;
       $("compendiumStage").hidden = false;
       renderCompendiumCategories();
@@ -15207,16 +15243,51 @@
       return [];
     }
 
-    function renderCompendiumLanding() {
+    function ensureCompendiumEssentialsProgress() {
+      if (compendiumEssentialsProgress) return compendiumEssentialsProgress;
+      compendiumEssentialsProgress = window.PvPeakJudgeEssentials?.readProgress(window.localStorage) || { completed: [], lastOpened: null };
+      return compendiumEssentialsProgress;
+    }
+
+    function saveCompendiumEssentialsProgress(progress) {
+      compendiumEssentialsProgress = window.PvPeakJudgeEssentials?.writeProgress(window.localStorage, progress) || progress;
+      return compendiumEssentialsProgress;
+    }
+
+    function openJudgeEssentialsStep(stepId) {
+      const api = window.PvPeakJudgeEssentials;
+      const step = api?.CURRICULUM.find(item => item.id === stepId);
+      if (!step) return;
+      compendiumEssentialsStepId = step.id;
+      saveCompendiumEssentialsProgress(api.markOpened(ensureCompendiumEssentialsProgress(), step.id));
+      openCompendiumArticle(step.targetType, step.targetId, { essentialsStepId: step.id });
+    }
+
+    function renderCompendiumHome() {
       const cards = [
-        { id: "moves", icon: "⇅", title: "Moves", copy: "Fast and Charged Move reference workspace." },
+        { id: "moves", icon: "⇅", title: "Moves", copy: "Fast Attack and Charged Attack reference workspace." },
         { id: "pokemon", icon: "◉", title: "Pokémon", copy: "Species, typing, stats, and canonical learnable moves." },
-        { id: "timing-visualizer", icon: "◷", title: "Timing Visualizer", copy: "Compare Fast Move durations, impacts, and alignment." },
         { id: "mechanics", icon: "⚙", title: "Mechanics", copy: "Battle timing and interaction explanations." },
         { id: "rulings", icon: "⚖", title: "Rulings", copy: "Clearly sourced tournament guidance." },
+        { id: "quick-reference", icon: "▣", title: "Quick Reference", copy: "Facts and tools for use during an event." },
         { id: "glossary", icon: "Aa", title: "Glossary", copy: "Competitive terminology and judge-facing definitions." }
       ];
-      return `<div class="compendium-stage-head"><div><h3>Quick Reference</h3><p>Start with a topic or use the structured search above.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><div class="compendium-quick-grid">${cards.map(card => `<button class="compendium-quick-card" type="button" data-compendium-card="${card.id}"><span class="compendium-quick-icon" aria-hidden="true">${card.icon}</span><span><strong>${card.title}</strong><small>${card.copy}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div>`;
+      const essentials = window.PvPeakJudgeEssentials;
+      const progress = ensureCompendiumEssentialsProgress();
+      const total = essentials?.CURRICULUM.length || 0;
+      const completed = progress.completed.length;
+      const next = essentials?.nextStep(progress);
+      const started = completed > 0 || progress.lastOpened;
+      const actionLabel = started ? "Continue Judge Essentials" : "Start Judge Essentials";
+      const intro = started
+        ? `Continue with <strong>${escapeHtml(next?.title || "Judge Essentials")}</strong>. ${completed} of ${total} concepts marked understood.`
+        : "Learn the core concepts every Pokémon GO judge should understand, in a practical order.";
+      const list = (essentials?.CURRICULUM || []).map(step => {
+        const done = essentials.isCompleted(progress, step.id);
+        const isCurrent = step.id === next?.id;
+        return `<li class="compendium-essentials-step${done ? " is-complete" : ""}"${isCurrent ? ' aria-current="step"' : ""}><span class="compendium-essentials-number" aria-label="${done ? "Completed" : `Step ${step.order}`}">${done ? "✓" : step.order}</span><span><strong>${escapeHtml(step.title)}${isCurrent && !done ? " · Current" : ""}</strong><small>${escapeHtml(step.summary)}</small></span><button class="compendium-essentials-open secondary" type="button" data-essentials-step="${step.id}">${done ? "Review" : "Open"}</button></li>`;
+      }).join("");
+      return `<div class="compendium-home"><div class="compendium-home-intro"><div><p class="compendium-eyebrow">Judge Compendium</p><h3>Start with what you need.</h3><p>Search the reference above for an exact answer, or follow the essentials below if you are new to Pokémon GO judging.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><section class="compendium-essentials-card" aria-labelledby="judgeEssentialsTitle"><div><p class="compendium-eyebrow">${started ? "Judge Essentials" : "New Judge?"}</p><h4 id="judgeEssentialsTitle">${started ? `${completed} of ${total} understood` : "Start here"}</h4><p>${intro}</p><div class="compendium-essentials-progress"><i aria-hidden="true" style="--essentials-progress:${total ? Math.round(completed / total * 100) : 0}%"></i><span>${completed} / ${total}</span></div></div><button id="compendiumEssentialsStart" class="compendium-essentials-action" type="button">${actionLabel}</button></section><div class="compendium-home-section-head"><h4>Judge Essentials</h4><p>Progress is saved only on this device.</p></div><ol class="compendium-essentials-list" aria-label="Judge Essentials learning path">${list}</ol><div class="compendium-home-section-head"><h4>Quick access</h4><p>Open a focused Compendium workspace.</p></div><div class="compendium-quick-grid">${cards.map(card => `<button class="compendium-quick-card" type="button" data-compendium-card="${card.id}"><span class="compendium-quick-icon" aria-hidden="true">${card.icon}</span><span><strong>${card.title}</strong><small>${card.copy}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div></div>`;
     }
 
     function ensureCompendiumQuickReference() {
@@ -15234,6 +15305,22 @@
       selectCompendiumCategory("moves");
     }
 
+    function renderCompendiumQuickReference() {
+      const reference = ensureCompendiumQuickReference();
+      const durationRows = reference?.fastDurations || [];
+      const durationButtons = durationRows.map(item => `<button class="compendium-entry-button" type="button" data-quick-duration="${item.turns}"><span><strong>${item.turns}-turn Fast Attacks</strong><small>${item.moveCount} attacks · ${item.seconds.toFixed(1)} seconds</small></span><span aria-hidden="true">›</span></button>`).join("");
+      const facts = [
+        ["Battle turn", `${reference?.turnSeconds || 0.5} seconds`],
+        ["Stored energy", `${reference?.maxEnergy || 100} maximum`],
+        ["Protect Shields", `${reference?.maxShields || 2} maximum`],
+        ["Stat stages", `${reference?.minStatStage || -4} to +${reference?.maxStatStage || 4}`]
+      ];
+      const stage = $("compendiumStage");
+      stage.innerHTML = `<div class="compendium-stage-head"><div><h3>Quick Reference</h3><p>Quick facts and direct paths for use during an event.</p></div><span class="compendium-foundation-badge">At a glance</span></div><div class="compendium-detail-columns"><section class="compendium-detail-card"><h4>Fast Attack durations</h4><div class="compendium-entry-list">${durationButtons}</div></section><aside class="compendium-detail-card"><h4>Battle facts</h4><div class="compendium-article-meta">${facts.map(([label, value]) => `<span>${escapeHtml(label)} · ${escapeHtml(value)}</span>`).join("")}</div><button class="secondary" id="compendiumQuickMechanics" type="button">Open Mechanics</button></aside></div>`;
+      stage.querySelectorAll("[data-quick-duration]").forEach(button => button.onclick = () => openQuickReferenceDuration(Number(button.dataset.quickDuration)));
+      $("compendiumQuickMechanics").onclick = () => selectCompendiumCategory("mechanics");
+    }
+
     function renderCompendiumEntryButton(entry, entryType) {
       const context = entryType === "rulings"
         ? `<span class="compendium-entry-context" data-source-type="${escapeHtml(entry.sourceType || "compendium")}">${entry.sourceType === "official" ? "Official source" : entry.sourceType === "mixed" ? "Mixed sources" : "Compendium"}</span>`
@@ -15247,9 +15334,15 @@
     function renderCompendiumCategory(categoryId) {
       const category = (window.PvPeakJudgeCompendium?.CATEGORIES || []).find(item => item.id === categoryId);
       const stage = $("compendiumStage");
-      if (!category || categoryId === "quick-reference") {
-        stage.innerHTML = renderCompendiumLanding();
+      if (!category || categoryId === "home") {
+        stage.innerHTML = renderCompendiumHome();
         stage.querySelectorAll("[data-compendium-card]").forEach(button => button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCard));
+        stage.querySelectorAll("[data-essentials-step]").forEach(button => button.onclick = () => openJudgeEssentialsStep(button.dataset.essentialsStep));
+        $("compendiumEssentialsStart").onclick = () => openJudgeEssentialsStep(window.PvPeakJudgeEssentials?.nextStep(ensureCompendiumEssentialsProgress())?.id);
+        return;
+      }
+      if (categoryId === "quick-reference") {
+        renderCompendiumQuickReference();
         return;
       }
       if (categoryId === "moves") {
@@ -15383,7 +15476,7 @@
 
     function renderCompendiumPokemonMoveList(moveIds, kind) {
       const moves = moveIds.map(compendiumMoveBySourceId).filter(move => move?.kind === kind);
-      if (!moves.length) return `<p class="muted">No listed ${kind === "fast" ? "Fast" : "Charged"} Moves.</p>`;
+      if (!moves.length) return `<p class="muted">No listed ${kind === "fast" ? "Fast" : "Charged"} Attacks.</p>`;
       return `<div class="pokemon-move-list">${moves.map(move => {
         const color = compendiumMoveColor(move);
         const detail = move.kind === "fast" ? `${move.power} damage · +${move.energyGain} energy · ${move.turns}T` : `${move.power} damage · ${move.energyCost} energy`;
@@ -15405,7 +15498,7 @@
       const buildStats = build
         ? `<p class="pokemon-build-label">Default Great League build</p><div class="pokemon-base-stats"><div><span>Attack</span><strong>${build.attack.toFixed(1)}</strong></div><div><span>Defense</span><strong>${build.defense.toFixed(1)}</strong></div><div><span>HP</span><strong>${build.hp}</strong></div></div><div class="pokemon-build-meta"><span>CP ${build.cp}</span><span>Level ${build.level}</span><span>IV ${ivAtk}/${ivDef}/${ivHp}</span></div>`
         : `<p class="pokemon-build-label">Great League build unavailable</p>`;
-      stage.innerHTML = `<div class="pokemon-detail" style="--pokemon-color:${primary}">${compendiumDetailActions("← Back to Pokémon")}<div class="pokemon-detail-head"><img class="pokemon-detail-sprite" data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><div class="pokemon-detail-copy"><p class="compendium-eyebrow">#${pokemon.dex || "—"}${pokemon.shadow ? " · Shadow Pokémon" : ""}</p><h3>${escapeHtml(pokemon.name)}</h3>${compendiumTypeBadges(pokemon.types)}${buildStats}</div><div class="pokemon-detail-actions"><button class="primary" id="compendiumOpenPokemonBattle" type="button">Open in Battle</button></div></div><div class="compendium-detail-columns"><div class="pokemon-move-groups"><section class="compendium-detail-card"><h4>Fast Moves</h4>${renderCompendiumPokemonMoveList(pokemon.fastMoveIds, "fast")}</section><section class="compendium-detail-card"><h4>Charged Moves</h4>${renderCompendiumPokemonMoveList(pokemon.chargedMoveIds, "charged")}</section></div><aside class="compendium-detail-card"><h4>About this reference</h4><p class="muted">The displayed battle stats use the simulator’s default Great League IV spread at the highest legal level up to 1,500 CP. Typing and move pools come from the same canonical battle data.</p><p class="muted"><strong>${pokemon.fastMoveIds.length}</strong> Fast Move entries · <strong>${pokemon.chargedMoveIds.length}</strong> Charged Move entries.</p></aside></div></div>`;
+      stage.innerHTML = `<div class="pokemon-detail" style="--pokemon-color:${primary}">${compendiumDetailActions("← Back to Pokémon")}<div class="pokemon-detail-head"><img class="pokemon-detail-sprite" data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><div class="pokemon-detail-copy"><p class="compendium-eyebrow">#${pokemon.dex || "—"}${pokemon.shadow ? " · Shadow Pokémon" : ""}</p><h3>${escapeHtml(pokemon.name)}</h3>${compendiumTypeBadges(pokemon.types)}${buildStats}</div><div class="pokemon-detail-actions"><button class="primary" id="compendiumOpenPokemonBattle" type="button">Open in Battle</button></div></div><div class="compendium-detail-columns"><div class="pokemon-move-groups"><section class="compendium-detail-card"><h4>Fast Attacks</h4>${renderCompendiumPokemonMoveList(pokemon.fastMoveIds, "fast")}</section><section class="compendium-detail-card"><h4>Charged Attacks</h4>${renderCompendiumPokemonMoveList(pokemon.chargedMoveIds, "charged")}</section></div><aside class="compendium-detail-card"><h4>About this reference</h4><p class="muted">The displayed battle stats use the simulator’s default Great League IV spread at the highest legal level up to 1,500 CP. Typing and attack pools come from the same canonical battle data.</p><p class="muted"><strong>${pokemon.fastMoveIds.length}</strong> Fast Attack entries · <strong>${pokemon.chargedMoveIds.length}</strong> Charged Attack entries.</p></aside></div></div>`;
       bindCompendiumPokemonImages(stage);
       bindCompendiumDetailActions(stage, () => selectCompendiumCategory("pokemon"));
       $("compendiumOpenPokemonBattle").onclick = () => openCompendiumPokemonInBattle(source?.id || pokemon.sourceId);
@@ -15430,8 +15523,8 @@
         const events = row.events.map(event => `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${event.duration};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, ${event.energyAfter} cumulative energy"><span>+${event.energyAfter}</span></span>`).join("");
         return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
       }).join("");
-      const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Move A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
-      return `<div class="timing-board-scroll"><div class="timing-board" role="img" aria-label="Fast Move timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
+      const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
+      return `<div class="timing-board-scroll"><div class="timing-board" role="img" aria-label="Fast Attack timing comparison for ${escapeHtml(model.rows[0].move.name)} and ${escapeHtml(model.rows[1].move.name)} across ${model.turnCount} turns">${headings}${rows}${windows}</div></div>`;
     }
 
     function renderCompendiumTimingVisualizer() {
@@ -15439,14 +15532,14 @@
       const api = window.PvPeakFastMoveTiming;
       const stage = $("compendiumStage");
       if (!reference?.fast.length || !api) {
-        stage.innerHTML = `<div class="compendium-empty"><div><strong>Timing data unavailable</strong><p>The Fast Move reference could not initialize.</p></div></div>`;
+        stage.innerHTML = `<div class="compendium-empty"><div><strong>Timing data unavailable</strong><p>The Fast Attack reference could not initialize.</p></div></div>`;
         return;
       }
       compendiumTimingDefaults(reference);
       const moveA = reference.byId.get(compendiumTimingSelection.moveA) || reference.fast[0];
       const moveB = reference.byId.get(compendiumTimingSelection.moveB) || reference.fast[1] || reference.fast[0];
       const model = api.build(moveA, moveB, { turnCount: compendiumTimingSelection.turnCount });
-      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Move Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Move data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Move A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Move B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Key insight</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Move A has completed and can act exactly one turn before Move B reaches its displayed impact.</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.turnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Move. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. A landmark requires both action availability after Move A and one remaining turn before Move B’s impact. These are explanatory timing guides, not automatic guarantees that a Charged Move is safe in every battle state.</p></details></div>`;
+      stage.innerHTML = `<div class="timing-visualizer"><div class="compendium-stage-head"><div><h3>Fast Attack Timing Visualizer</h3><p>Compare duration, impact points, cumulative energy, and recurring alignment using canonical Fast Attack data.</p></div><span class="compendium-foundation-badge">Interactive tool</span></div><div class="timing-toolbar"><label>Fast Attack A<select id="compendiumTimingMoveA">${compendiumTimingOptions(reference, moveA.id)}</select></label><span class="timing-vs" aria-hidden="true">VS</span><label>Fast Attack B<select id="compendiumTimingMoveB">${compendiumTimingOptions(reference, moveB.id)}</select></label><button class="secondary" id="compendiumTimingReset" type="button">Reset</button></div>${renderCompendiumTimingBoard(model)}<div class="timing-insights"><div><h4>Key insight</h4><p>${escapeHtml(model.insight)} Diamonds appear only when Fast Attack A has completed and can act exactly one turn before Fast Attack B reaches its displayed impact.</p></div><div><h4>View range</h4><p><button class="secondary" id="compendiumTimingRange" type="button">${model.turnCount === 12 ? "Extend to 24 turns" : "Show 12 turns"}</button></p></div></div><details class="compendium-detail-card"><summary><strong>How it works</strong></summary><p class="muted">Each colored bar spans the canonical duration of one Fast Attack. The outlined endpoint is its impact point; the number inside is cumulative energy after that use. A landmark requires both action availability after Fast Attack A and one remaining turn before Fast Attack B’s impact. These are explanatory timing guides, not automatic guarantees that a Charged Attack is safe in every battle state.</p></details></div>`;
       $("compendiumTimingMoveA").onchange = event => { compendiumTimingSelection.moveA = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingMoveB").onchange = event => { compendiumTimingSelection.moveB = event.target.value; renderCompendiumTimingVisualizer(); };
       $("compendiumTimingRange").onclick = () => { compendiumTimingSelection.turnCount = model.turnCount === 12 ? 24 : 12; renderCompendiumTimingVisualizer(); };
@@ -15485,7 +15578,7 @@
       const sortLabels = compendiumMoveKind === "fast"
         ? [["name", "Name A–Z"], ["power", "Highest damage"], ["energy", "Highest energy gain"], ["efficiency", "Highest EPT"]]
         : [["name", "Name A–Z"], ["power", "Highest damage"], ["energy", "Highest energy cost"], ["efficiency", "Highest DPE"]];
-      stage.innerHTML = `<div class="compendium-moves"><div class="compendium-stage-head"><div><h3>Move Reference</h3><p>Canonical PvP values from the same data used by the battle engine.</p></div><span class="compendium-foundation-badge">${reference.fast.length + reference.charged.length} listed moves</span></div><div class="move-reference-topline"><div class="move-kind-switch" role="group" aria-label="Move category"><button type="button" data-move-kind="fast" aria-pressed="${compendiumMoveKind === "fast"}">Fast Moves · ${reference.fast.length}</button><button type="button" data-move-kind="charged" aria-pressed="${compendiumMoveKind === "charged"}">Charged Moves · ${reference.charged.length}</button></div><span id="compendiumMoveCount" class="move-reference-count"></span></div><div class="move-reference-toolbar"><label>Find a move<input id="compendiumMoveSearch" type="search" autocomplete="off" placeholder="Filter move names..." value="${escapeHtml(compendiumMoveFilters.query)}"></label><label>Type<select id="compendiumMoveType"><option value="all">All types</option>${types.map(type => `<option value="${type}" ${compendiumMoveFilters.type === type ? "selected" : ""}>${escapeHtml(title(type))}</option>`).join("")}</select></label><label>Sort by<select id="compendiumMoveSort">${sortLabels.map(([value, label]) => `<option value="${value}" ${compendiumMoveFilters.sort === value ? "selected" : ""}>${label}</option>`).join("")}</select></label></div>${compendiumMoveKind === "fast" ? `<div class="move-turn-filter" role="group" aria-label="Fast Move duration"><span>Duration</span>${["all",1,2,3,4,5].map(value => `<button type="button" data-move-turns="${value}" aria-pressed="${String(compendiumMoveFilters.turns) === String(value)}">${value === "all" ? "All" : `${value}T`}</button>`).join("")}</div>` : ""}<div id="compendiumMoveResults" class="move-reference-list"></div></div>`;
+      stage.innerHTML = `<div class="compendium-moves"><div class="compendium-stage-head"><div><h3>Attack Reference</h3><p>Canonical PvP values from the same data used by the battle engine.</p></div><span class="compendium-foundation-badge">${reference.fast.length + reference.charged.length} listed attacks</span></div><div class="move-reference-topline"><div class="move-kind-switch" role="group" aria-label="Attack category"><button type="button" data-move-kind="fast" aria-pressed="${compendiumMoveKind === "fast"}">Fast Attacks · ${reference.fast.length}</button><button type="button" data-move-kind="charged" aria-pressed="${compendiumMoveKind === "charged"}">Charged Attacks · ${reference.charged.length}</button></div><span id="compendiumMoveCount" class="move-reference-count"></span></div><div class="move-reference-toolbar"><label>Find an attack<input id="compendiumMoveSearch" type="search" autocomplete="off" placeholder="Filter attack names..." value="${escapeHtml(compendiumMoveFilters.query)}"></label><label>Type<select id="compendiumMoveType"><option value="all">All types</option>${types.map(type => `<option value="${type}" ${compendiumMoveFilters.type === type ? "selected" : ""}>${escapeHtml(title(type))}</option>`).join("")}</select></label><label>Sort by<select id="compendiumMoveSort">${sortLabels.map(([value, label]) => `<option value="${value}" ${compendiumMoveFilters.sort === value ? "selected" : ""}>${label}</option>`).join("")}</select></label></div>${compendiumMoveKind === "fast" ? `<div class="move-turn-filter" role="group" aria-label="Fast Attack duration"><span>Duration</span>${["all",1,2,3,4,5].map(value => `<button type="button" data-move-turns="${value}" aria-pressed="${String(compendiumMoveFilters.turns) === String(value)}">${value === "all" ? "All" : `${value}T`}</button>`).join("")}</div>` : ""}<div id="compendiumMoveResults" class="move-reference-list"></div></div>`;
       stage.querySelectorAll("[data-move-kind]").forEach(button => button.onclick = () => {
         compendiumMoveKind = button.dataset.moveKind;
         compendiumMoveFilters.sort = "name";
@@ -15507,7 +15600,7 @@
       const container = $("compendiumMoveResults");
       if (!reference || !container) return;
       const moves = window.PvPeakMoveReference.filterMoves(reference, { kind: compendiumMoveKind, ...compendiumMoveFilters });
-      $("compendiumMoveCount").textContent = `${moves.length} ${compendiumMoveKind === "fast" ? "Fast" : "Charged"} Move${moves.length === 1 ? "" : "s"}`;
+      $("compendiumMoveCount").textContent = `${moves.length} ${compendiumMoveKind === "fast" ? "Fast" : "Charged"} Attack${moves.length === 1 ? "" : "s"}`;
       if (!moves.length) {
         container.innerHTML = `<div class="compendium-empty move-reference-empty"><div><strong>No moves match these filters</strong><p>Try another name, type, or duration.</p></div></div>`;
         return;
@@ -15531,10 +15624,10 @@
       const pokemonReference = ensureCompendiumPokemonReference();
       const learners = window.PvPeakPokemonReference?.learners(pokemonReference, move.sourceId) || [];
       const effects = move.effects.length
-        ? `<div class="move-detail-effects"><h4>Move effect</h4><ul>${move.effects.map(effect => `<li>${escapeHtml(window.PvPeakMoveReference.effectLabel(effect))}</li>`).join("")}</ul></div>`
-        : `<div class="move-detail-effects"><h4>Move effect</h4><ul><li>No stat-stage effect in the canonical move data.</li></ul></div>`;
+        ? `<div class="move-detail-effects"><h4>Attack effect</h4><ul>${move.effects.map(effect => `<li>${escapeHtml(window.PvPeakMoveReference.effectLabel(effect))}</li>`).join("")}</ul></div>`
+        : `<div class="move-detail-effects"><h4>Attack effect</h4><ul><li>No stat-stage effect in the canonical attack data.</li></ul></div>`;
       const learnersHtml = learners.length ? `<div class="move-learners">${learners.slice(0, 24).map(pokemon => `<button class="move-learner" type="button" data-linked-pokemon="${pokemon.id}" aria-label="Open ${escapeHtml(pokemon.name)} reference"><img data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><span>${escapeHtml(pokemon.name)}</span></button>`).join("")}</div>${learners.length > 24 ? `<p class="muted">Showing 24 of ${learners.length} Pokémon.</p>` : ""}` : `<p class="muted">No released Pokémon in the current canonical dataset learn this move.</p>`;
-      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}">${compendiumDetailActions(`← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Moves`)}<div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Move" : "Charged Move"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div><div class="compendium-detail-columns"><div>${effects}</div><aside class="compendium-detail-card"><h4>Quick actions</h4>${move.kind === "fast" ? `<button class="secondary" id="compendiumMoveTiming" type="button">Compare timing</button>` : ""}<p class="muted">Used by ${learners.length} released Pokémon form${learners.length === 1 ? "" : "s"} in the current simulator dataset.</p></aside></div><section class="compendium-detail-card"><h4>Pokémon that learn ${escapeHtml(move.name)}</h4>${learnersHtml}</section></div>`;
+      stage.innerHTML = `<div class="move-detail" style="--move-color:${color};--move-text:${contrastText(color)}">${compendiumDetailActions(`← Back to ${move.kind === "fast" ? "Fast" : "Charged"} Attacks`)}<div class="move-detail-head"><span class="move-reference-symbol" aria-hidden="true">${move.kind === "fast" ? "F" : "C"}</span><div><p class="compendium-eyebrow">${move.kind === "fast" ? "Fast Attack" : "Charged Attack"}</p><h3 id="compendiumMoveDetailTitle">${escapeHtml(move.name)}</h3><span class="type-badge" style="background:${color};color:${contrastText(color)}">${escapeHtml(title(move.type))}</span></div></div><div class="move-detail-grid">${stats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div><div class="compendium-detail-columns"><div>${effects}</div><aside class="compendium-detail-card"><h4>Quick actions</h4>${move.kind === "fast" ? `<button class="secondary" id="compendiumMoveTiming" type="button">Compare timing</button>` : ""}<p class="muted">Used by ${learners.length} released Pokémon form${learners.length === 1 ? "" : "s"} in the current simulator dataset.</p></aside></div><section class="compendium-detail-card"><h4>Pokémon that learn ${escapeHtml(move.name)}</h4>${learnersHtml}</section></div>`;
       bindCompendiumDetailActions(stage, () => selectCompendiumCategory("moves"));
       bindCompendiumPokemonImages(stage);
       stage.querySelectorAll("[data-linked-pokemon]").forEach(button => button.onclick = () => openCompendiumPokemon(button.dataset.linkedPokemon));
@@ -15583,7 +15676,7 @@
     }
 
     function compendiumSearchTypeLabel(type) {
-      return ({ "fast-move": "Fast Move", "charged-move": "Charged Move", pokemon: "Pokémon", mechanics: "Mechanic", rulings: "Ruling", glossary: "Glossary" })[type] || title(type);
+      return ({ "fast-move": "Fast Attack", "charged-move": "Charged Attack", pokemon: "Pokémon", mechanics: "Mechanic", rulings: "Ruling", glossary: "Glossary" })[type] || title(type);
     }
 
     function setCompendiumSearchActiveIndex(index, scroll = true) {
@@ -15703,6 +15796,9 @@
       compendiumActiveCategory = type;
       compendiumSelectedMoveId = null;
       compendiumOpenArticle = { type, id: entryId };
+      const essentials = window.PvPeakJudgeEssentials;
+      const essentialsStep = options.essentialsStepId ? essentials?.CURRICULUM.find(step => step.id === options.essentialsStepId) : null;
+      if (!essentialsStep) compendiumEssentialsStepId = null;
       renderCompendiumCategories();
       const source = renderCompendiumSource(article);
       const updated = article.lastUpdated ? `<span>Updated ${escapeHtml(article.lastUpdated)}</span>` : "";
@@ -15712,11 +15808,25 @@
         : "";
       const relatedEntries = article.related.map(compendiumRelatedEntry).filter(Boolean);
       const relatedHtml = relatedEntries.length ? `<section class="compendium-related"><h3>Related references</h3><div class="compendium-related-list">${relatedEntries.map(item => `<button class="compendium-related-button" type="button" data-related-type="${item.type}" data-related-id="${item.entry.id}">${escapeHtml(item.entry.term || item.entry.title)}</button>`).join("")}</div></section>` : "";
-      $("compendiumArticle").innerHTML = `${compendiumDetailActions(`← Back to ${(window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium"}`)}<p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${glossaryMeta}${updated}${related}</div>${source}${article.sections.map(renderCompendiumArticleSection).join("")}${relatedHtml}`;
+      const essentialsContext = essentialsStep ? `<aside class="compendium-essentials-context" aria-label="Judge Essentials context"><strong>Judge Essentials · ${essentialsStep.order} of ${essentials.CURRICULUM.length}</strong><span>${escapeHtml(essentialsStep.title)}</span></aside>` : "";
+      const previousStep = essentialsStep ? essentials.previousStep(essentialsStep.id) : null;
+      const nextStep = essentialsStep ? essentials.followingStep(essentialsStep.id) : null;
+      const alreadyComplete = essentialsStep ? essentials.isCompleted(ensureCompendiumEssentialsProgress(), essentialsStep.id) : false;
+      const essentialsNav = essentialsStep ? `<nav class="compendium-essentials-nav" aria-label="Judge Essentials step navigation"><div class="compendium-essentials-nav-group">${previousStep ? `<button class="secondary" type="button" data-essentials-previous="${previousStep.id}">← Previous</button>` : `<button class="secondary" type="button" data-essentials-home>← Home</button>`}</div><div class="compendium-essentials-nav-group"><button type="button" data-essentials-complete="${essentialsStep.id}">${alreadyComplete ? "Understood" : "Mark as understood"}</button>${nextStep ? `<button class="secondary" type="button" data-essentials-next="${nextStep.id}">Next →</button>` : `<button class="secondary" type="button" data-essentials-home>Finish</button>`}</div></nav>` : "";
+      $("compendiumArticle").innerHTML = `${compendiumDetailActions(`← Back to ${(window.PvPeakJudgeCompendium.CATEGORIES.find(category => category.id === type) || {}).label || "Compendium"}`)}${essentialsContext}<p class="compendium-eyebrow">${escapeHtml(article.eyebrow)}</p><h2 id="compendiumArticleTitle" tabindex="-1">${escapeHtml(article.title)}</h2><p class="compendium-article-summary">${escapeHtml(article.summary)}</p><div class="compendium-article-meta"><span>${escapeHtml(article.type)}</span>${glossaryMeta}${updated}${related}</div>${source}${article.sections.map(renderCompendiumArticleSection).join("")}${relatedHtml}${essentialsNav}`;
       $("compendiumStage").hidden = true;
       $("compendiumArticle").hidden = false;
       bindCompendiumDetailActions($("compendiumArticle"), () => selectCompendiumCategory(type));
       $("compendiumArticle").querySelectorAll("[data-related-id]").forEach(button => button.onclick = () => openCompendiumArticle(button.dataset.relatedType, button.dataset.relatedId));
+      $("compendiumArticle").querySelectorAll("[data-essentials-previous], [data-essentials-next]").forEach(button => button.onclick = () => openJudgeEssentialsStep(button.dataset.essentialsPrevious || button.dataset.essentialsNext));
+      $("compendiumArticle").querySelectorAll("[data-essentials-home]").forEach(button => button.onclick = () => selectCompendiumCategory("home"));
+      const completeButton = $("compendiumArticle").querySelector("[data-essentials-complete]");
+      if (completeButton) completeButton.onclick = () => {
+        const completedStep = completeButton.dataset.essentialsComplete;
+        saveCompendiumEssentialsProgress(essentials.markCompleted(ensureCompendiumEssentialsProgress(), completedStep));
+        completeButton.textContent = "Understood";
+        completeButton.disabled = true;
+      };
       if (!options.skipHistory) syncCompendiumRoute({ category: type, item: entryId });
       $("compendiumArticleTitle").focus?.();
     }

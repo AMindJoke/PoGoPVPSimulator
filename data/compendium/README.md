@@ -39,8 +39,8 @@ The runtime validates every loaded dataset through `src/compendium/compendium-mo
 
 Move records are intentionally not duplicated in this directory. `src/compendium/move-reference.js` adapts `BATTLE_GAMEMASTER.moves`, the same canonical source consumed by the battle engine. It derives only deterministic reference values:
 
-- Fast Moves: duration, damage per turn, and energy per turn;
-- Charged Moves: energy cost and damage per energy;
+- Fast Attacks: duration, damage per turn, and energy per turn;
+- Charged Attacks: energy cost and damage per energy;
 - structured stat-stage effects and their canonical activation chance.
 
 Entries explicitly marked `unlisted` in the canonical source are omitted from the public reference.
@@ -51,4 +51,4 @@ The runtime combines normalized Move Reference records with validated Mechanics,
 
 ## Quick Reference
 
-`src/compendium/quick-reference.js` derives the floor-friendly summary from battle settings, canonical move durations, and enforced engine limits. Duration shortcuts route into the Move Reference with the corresponding Fast Move filter already selected. Values absent from canonical project data are intentionally omitted.
+`src/compendium/quick-reference.js` derives the floor-friendly summary from battle settings, canonical attack durations, and enforced engine limits. Duration shortcuts route into the Move Reference with the corresponding Fast Attack filter already selected. Values absent from canonical project data are intentionally omitted.

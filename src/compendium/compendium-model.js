@@ -8,10 +8,11 @@
   const SCHEMA_VERSION = 1;
   const CONTENT_TYPES = Object.freeze(["mechanics", "rulings", "glossary"]);
   const CATEGORIES = Object.freeze([
+    Object.freeze({ id: "home", label: "Home", summary: "Start here or jump straight to a Compendium tool.", status: "foundation" }),
     Object.freeze({ id: "quick-reference", label: "Quick Reference", summary: "Essential battle and tournament facts at a glance.", status: "foundation" }),
-    Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast and Charged Move data.", status: "phase-2" }),
+    Object.freeze({ id: "moves", label: "Moves", summary: "Look up canonical Fast Attack and Charged Attack data.", status: "phase-2" }),
     Object.freeze({ id: "pokemon", label: "Pokémon", summary: "Browse canonical species, stats, typing, and learnable moves.", status: "reference" }),
-    Object.freeze({ id: "timing-visualizer", label: "Timing Visualizer", summary: "Compare Fast Move timing, impacts, energy, and alignment.", status: "tool" }),
+    Object.freeze({ id: "timing-visualizer", label: "Timing Visualizer", summary: "Compare Fast Attack timing, impacts, energy, and alignment.", status: "tool" }),
     Object.freeze({ id: "mechanics", label: "Mechanics", summary: "Learn how Pokémon GO PvP timing and actions work.", status: "phase-5" }),
     Object.freeze({ id: "rulings", label: "Rulings", summary: "Find sourced guidance for tournament situations.", status: "phase-6" }),
     Object.freeze({ id: "glossary", label: "Glossary", summary: "Decode common competitive and judge terminology.", status: "phase-7" })

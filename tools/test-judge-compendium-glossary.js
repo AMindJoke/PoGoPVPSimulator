@@ -28,11 +28,11 @@ for (const item of glossary.items) {
 
 const normalized = model.normalizeDatasets({ glossary, mechanics, rulings });
 const index = model.buildSearchIndex(normalized);
-assert.strictEqual(model.search(index, "CMP")[0].id, "cmp");
+assert.strictEqual(model.search(index, "CAP")[0].id, "cmp");
 assert.strictEqual(model.search(index, "damage registration error")[0].id, "dre");
 assert.strictEqual(model.search(index, "one-turn lag")[0].id, "one-turn-lag");
 assert.ok(model.search(index, "1-turn lag").some(entry => entry.id === "one-turn-lag"));
-assert.strictEqual(model.search(index, "FM")[0].id, "fast-move");
+assert.strictEqual(model.search(index, "Fast Attack")[0].id, "fast-move");
 assert.strictEqual(model.search(index, "undercharging")[0].id, "undercharge");
 
 console.log("Judge Compendium glossary tests passed.");

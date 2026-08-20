@@ -20,7 +20,7 @@
     const turns = Math.max(1, Math.round(Number(move?.turns || 0)));
     return Object.freeze({
       id: String(move?.id || move?.sourceId || ""),
-      name: String(move?.name || "Fast Move"),
+      name: String(move?.name || "Fast Attack"),
       type: String(move?.type || "normal"),
       turns,
       power: Math.max(0, Number(move?.power || 0)),

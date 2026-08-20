@@ -71,7 +71,7 @@
     "test:perf-debug": "node tools/test-perf-debug.js",
     "test:ux-presenters": "node tools/test-ux-presenters.js",
     "test:team-builder": "node tools/test-team-builder-state.js && node tools/test-team-builder-meta.js && node tools/test-team-builder-analysis.js && node tools/test-team-builder-share.js && node tools/test-team-builder-ui-contract.js",
-    "test:judge-compendium": "node tools/test-judge-compendium-model.js && node tools/test-judge-compendium-move-reference.js && node tools/test-judge-compendium-quick-reference.js && node tools/test-judge-compendium-pokemon-reference.js && node tools/test-judge-compendium-fast-move-timing.js && node tools/test-judge-compendium-mechanics.js && node tools/test-judge-compendium-rulings.js && node tools/test-judge-compendium-glossary.js && node tools/test-judge-compendium-routing.js && node tools/test-judge-compendium-ui-contract.js",
+    "test:judge-compendium": "node tools/test-judge-compendium-model.js && node tools/test-judge-compendium-move-reference.js && node tools/test-judge-compendium-quick-reference.js && node tools/test-judge-compendium-pokemon-reference.js && node tools/test-judge-compendium-fast-move-timing.js && node tools/test-judge-compendium-mechanics.js && node tools/test-judge-compendium-rulings.js && node tools/test-judge-compendium-glossary.js && node tools/test-judge-compendium-routing.js && node tools/test-judge-essentials.js && node tools/test-judge-compendium-ui-contract.js && node tools/test-judge-compendium-terminology.js",
     "build:ranking-details": "node tools/build-ranking-details.js",
     "test:hp-swing": "node tools/test-hp-swing-analysis.js",
     "scan:battle-contradictions": "node tools/scan-battle-contradictions.js",

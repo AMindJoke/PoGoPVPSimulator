@@ -7,10 +7,10 @@ const mechanics = {
   contentType: "mechanics",
   items: [{
     id: "fast-move-timing",
-    title: "Fast Move timing",
+    title: "Fast Attack timing",
     summary: "A fixture for the reusable mechanics schema.",
     category: "Timing",
-    keywords: ["turn", "fast move"],
+    keywords: ["turn", "fast attack"],
     content: [{ id: "overview", heading: "Overview", kind: "timeline", body: ["Fixture copy."], diagram: { turnCount: 3, rows: [{ label: "Fast", segments: [{ start: 1, duration: 3, label: "Move", tone: "fast" }] }] } }],
     related: ["damage-registration"],
     lastUpdated: "2026-08-17"
@@ -39,12 +39,12 @@ const rulings = {
 const glossary = {
   schemaVersion: 1,
   contentType: "glossary",
-  items: [{ id: "cmp", term: "CMP", expanded: "Charged Move Priority", definition: "A fixture glossary definition.", category: "Timing", usage: "competitive", aliases: ["Charged Attack Priority"], keywords: ["priority"], related: ["fast-move-timing"] }]
+  items: [{ id: "cmp", term: "CAP", expanded: "Charged Attack Priority", definition: "A fixture glossary definition.", category: "Timing", usage: "competitive", aliases: ["CAP tie"], keywords: ["priority"], related: ["fast-move-timing"] }]
 };
 
 assert.strictEqual(model.SCHEMA_VERSION, 1);
 assert.deepStrictEqual(model.CONTENT_TYPES, ["mechanics", "rulings", "glossary"]);
-assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["quick-reference", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
+assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["home", "quick-reference", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
 assert.strictEqual(model.validateDataset("mechanics", mechanics).valid, true);
 assert.strictEqual(model.validTimelineDiagram(mechanics.items[0].content[0].diagram), true);
 assert.strictEqual(model.validateDataset("rulings", rulings).valid, true);
@@ -73,7 +73,6 @@ const normalized = model.normalizeDatasets({ mechanics, rulings, glossary });
 const index = model.buildSearchIndex(normalized);
 assert.strictEqual(index.length, 3);
 assert.strictEqual(model.search(index, "DRE")[0].id, "dre-window");
-assert.strictEqual(model.search(index, "charged move priority")[0].id, "cmp");
 assert.strictEqual(model.search(index, "charged attack priority")[0].id, "cmp");
 assert.deepStrictEqual(model.search(index, "missing"), []);
 assert.strictEqual(model.normalizeSearchText("Pokémon – Timing"), "pokemon timing");
@@ -93,7 +92,7 @@ assert.strictEqual(article.sections[0].id, "judge-note");
 assert.deepStrictEqual(article.related, ["fast-move-timing"]);
 
 const glossaryArticle = model.articleView("glossary", normalized.glossary[0]);
-assert.deepStrictEqual(glossaryArticle.aliases, ["Charged Attack Priority"]);
+assert.deepStrictEqual(glossaryArticle.aliases, ["CAP tie"]);
 assert.strictEqual(glossaryArticle.usage, "competitive");
 
 console.log("Judge Compendium model tests passed.");

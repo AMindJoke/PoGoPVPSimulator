@@ -22,6 +22,11 @@ assert.deepEqual(
   { category: "quick-reference", item: null },
   "Category-only destinations must ignore an item parameter."
 );
+assert.deepEqual(
+  Routing.readLocation({ search: "?compendium=home", pathname: "/" }),
+  { category: "home", item: null },
+  "Home must be a valid Compendium landing route."
+);
 assert.equal(Routing.readLocation({ search: "?compendium=unknown", pathname: "/" }), null);
 assert.equal(Routing.readLocation({ search: "?compendium=moves&item=../bad", pathname: "/" })?.item, null);
 assert.equal(Routing.readLocation({ search: "?debugBattle=1", pathname: "/" }), null);

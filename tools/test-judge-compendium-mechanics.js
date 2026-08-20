@@ -19,7 +19,7 @@ timelines.forEach(section => assert.strictEqual(model.validTimelineDiagram(secti
 
 const normalized = model.normalizeDatasets({ mechanics: dataset });
 const index = model.buildSearchIndex(normalized);
-assert.strictEqual(model.search(index, "CMP")[0].id, "charged-move-priority");
+assert.strictEqual(model.search(index, "CAP")[0].id, "charged-move-priority");
 assert.strictEqual(model.search(index, "impact turn")[0].id, "fast-move-impact");
 assert.strictEqual(model.search(index, "100 energy")[0].id, "energy-generation");
 
