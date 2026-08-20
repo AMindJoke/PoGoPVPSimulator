@@ -567,25 +567,25 @@
     .move-learner span { overflow: hidden; font-size: 9px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
     .timing-visualizer { display: grid; gap: 13px; }
     .timing-toolbar { display: grid; grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr) auto; align-items: end; gap: 9px; }
-    .timing-toolbar label { display: grid; gap: 4px; color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
-    .timing-toolbar select { width: 100%; max-width: none; min-height: 42px; color: var(--ink); font-size: 11px; text-transform: none; }
-    .timing-vs { align-self: end; display: grid; place-items: center; width: 38px; height: 42px; color: var(--muted); font-weight: 950; }
+    .timing-toolbar label { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
+    .timing-toolbar select { width: 100%; max-width: none; min-height: 44px; color: var(--ink); font-size: 13px; font-weight: 650; text-transform: none; }
+    .timing-vs { align-self: end; display: grid; place-items: center; width: 38px; height: 44px; color: var(--muted); font-size: 15px; font-weight: 750; }
     .timing-board-scroll { max-width: 100%; overflow-x: auto; }
-    .timing-board { display: grid; gap: 8px; min-width: 720px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
-    .timing-turns, .timing-row { display: grid; grid-template-columns: 118px repeat(var(--timing-turns), minmax(34px, 1fr)); gap: 3px; align-items: stretch; }
-    .timing-turns span { display: grid; place-items: center; min-height: 22px; color: var(--muted); font-size: 8px; font-weight: 900; }
-    .timing-row-label { display: grid; align-content: center; padding: 7px; border-radius: 7px; background: var(--panel); }
+    .timing-board { display: grid; gap: 8px; min-width: 760px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+    .timing-turns, .timing-row { display: grid; grid-template-columns: 130px repeat(var(--timing-turns), minmax(34px, 1fr)); gap: 3px; align-items: stretch; }
+    .timing-turns span { display: grid; place-items: center; min-height: 24px; color: var(--muted); font-size: 10px; font-weight: 750; }
+    .timing-row-label { display: grid; align-content: center; padding: 8px; border-radius: 7px; background: var(--panel); }
     .timing-row-label strong, .timing-row-label small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .timing-row-label strong { font-size: 9px; }
-    .timing-row-label small { margin-top: 2px; color: var(--muted); font-size: 7px; }
-    .timing-segment { position: relative; display: grid; place-items: center; min-height: 48px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 8px; font-weight: 900; }
+    .timing-row-label strong { font-size: 11px; font-weight: 750; }
+    .timing-row-label small { margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 650; }
+    .timing-segment { position: relative; display: grid; place-items: center; min-height: 52px; border: 1px solid color-mix(in srgb, var(--move-color) 44%, var(--line)); border-radius: 7px; background: color-mix(in srgb, var(--move-color) 12%, var(--panel)); color: var(--ink); font-size: 11px; font-weight: 750; }
     .timing-segment::after { content: ""; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border: 2px solid var(--move-color); border-radius: 50%; background: var(--panel); transform: translateY(-50%); }
-    .timing-window { display: grid; place-items: center; min-height: 28px; border-radius: 6px; color: var(--muted); font-size: 8px; font-weight: 900; }
+    .timing-window { display: grid; place-items: center; min-height: 32px; border-radius: 6px; color: var(--muted); font-size: 10px; font-weight: 750; }
     .timing-window.is-candidate { border: 1px solid color-mix(in srgb, #3b8f68 48%, var(--line)); background: color-mix(in srgb, #3b8f68 13%, var(--panel)); color: #28704e; }
     .timing-insights { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .65fr); gap: 10px; }
     .timing-insights > div { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
-    .timing-insights h4 { margin: 0 0 6px; font-size: 11px; }
-    .timing-insights p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .timing-insights h4 { margin: 0 0 6px; font-size: 12px; }
+    .timing-insights p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     .compendium-article { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .compendium-article[hidden] { display: none; }
     .compendium-article .compendium-detail-actions { margin-bottom: 15px; }
@@ -15481,14 +15481,14 @@
     }
 
     function compendiumTimingOptions(reference, selected) {
-      return reference.fast.map(move => `<option value="${move.id}" ${move.id === selected ? "selected" : ""}>${escapeHtml(move.name)} · ${move.turns}T · +${move.energyGain}</option>`).join("");
+      return reference.fast.map(move => `<option value="${move.id}" ${move.id === selected ? "selected" : ""}>${escapeHtml(move.name)} · ${move.turns} turns · +${move.energyGain} energy</option>`).join("");
     }
 
     function renderCompendiumTimingBoard(model) {
       const headings = `<div class="timing-turns" style="--timing-turns:${model.turnCount}"><span>Turn</span>${Array.from({ length: model.turnCount }, (_, index) => `<span>${index + 1}</span>`).join("")}</div>`;
       const rows = model.rows.map(row => {
         const color = typeColors[row.move.type] || "#66788c";
-        const events = row.events.map(event => `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${event.duration};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, ${event.energyAfter} cumulative energy"><span>+${event.energyAfter}</span></span>`).join("");
+        const events = row.events.map(event => `<span class="timing-segment" style="grid-column:${event.start + 1} / span ${event.duration};--move-color:${color}" title="${escapeHtml(row.move.name)}: impact at turn ${event.impact}, energy total ${event.energyAfter}"><span>Energy ${event.energyAfter}</span></span>`).join("");
         return `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>${escapeHtml(row.move.name)}</strong><small>${row.move.turns}T · +${row.move.energyGain} energy</small></span>${events}</div>`;
       }).join("");
       const windows = `<div class="timing-row" style="--timing-turns:${model.turnCount}"><span class="timing-row-label"><strong>Timing landmarks</strong><small>Attack A ready · 1 turn before B impact</small></span>${Array.from({ length: model.turnCount }, (_, index) => `<span class="timing-window ${model.candidateWindows.includes(index + 1) ? "is-candidate" : ""}" style="grid-column:${index + 2}">${model.candidateWindows.includes(index + 1) ? "◆" : ""}</span>`).join("")}</div>`;
