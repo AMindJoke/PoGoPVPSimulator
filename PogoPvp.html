@@ -15264,14 +15264,6 @@
     }
 
     function renderCompendiumHome() {
-      const cards = [
-        { id: "moves", icon: "⇅", title: "Moves", copy: "Fast Attack and Charged Attack reference workspace." },
-        { id: "pokemon", icon: "◉", title: "Pokémon", copy: "Species, typing, stats, and canonical learnable moves." },
-        { id: "mechanics", icon: "⚙", title: "Mechanics", copy: "Battle timing and interaction explanations." },
-        { id: "rulings", icon: "⚖", title: "Rulings", copy: "Clearly sourced tournament guidance." },
-        { id: "quick-reference", icon: "▣", title: "Quick Reference", copy: "Facts and tools for use during an event." },
-        { id: "glossary", icon: "Aa", title: "Glossary", copy: "Competitive terminology and judge-facing definitions." }
-      ];
       const essentials = window.PvPeakJudgeEssentials;
       const progress = ensureCompendiumEssentialsProgress();
       const total = essentials?.CURRICULUM.length || 0;
@@ -15287,7 +15279,7 @@
         const isCurrent = step.id === next?.id;
         return `<li class="compendium-essentials-step${done ? " is-complete" : ""}"${isCurrent ? ' aria-current="step"' : ""}><span class="compendium-essentials-number" aria-label="${done ? "Completed" : `Step ${step.order}`}">${done ? "✓" : step.order}</span><span><strong>${escapeHtml(step.title)}${isCurrent && !done ? " · Current" : ""}</strong><small>${escapeHtml(step.summary)}</small></span><button class="compendium-essentials-open secondary" type="button" data-essentials-step="${step.id}">${done ? "Review" : "Open"}</button></li>`;
       }).join("");
-      return `<div class="compendium-home"><div class="compendium-home-intro"><div><p class="compendium-eyebrow">Judge Compendium</p><h3>Start with what you need.</h3><p>Search the reference above for an exact answer, or follow the essentials below if you are new to Pokémon GO judging.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><section class="compendium-essentials-card" aria-labelledby="judgeEssentialsTitle"><div><p class="compendium-eyebrow">${started ? "Judge Essentials" : "New Judge?"}</p><h4 id="judgeEssentialsTitle">${started ? `${completed} of ${total} understood` : "Start here"}</h4><p>${intro}</p><div class="compendium-essentials-progress"><i aria-hidden="true" style="--essentials-progress:${total ? Math.round(completed / total * 100) : 0}%"></i><span>${completed} / ${total}</span></div></div><button id="compendiumEssentialsStart" class="compendium-essentials-action" type="button">${actionLabel}</button></section><div class="compendium-home-section-head"><h4>Judge Essentials</h4><p>Progress is saved only on this device.</p></div><ol class="compendium-essentials-list" aria-label="Judge Essentials learning path">${list}</ol><div class="compendium-home-section-head"><h4>Quick access</h4><p>Open a focused Compendium workspace.</p></div><div class="compendium-quick-grid">${cards.map(card => `<button class="compendium-quick-card" type="button" data-compendium-card="${card.id}"><span class="compendium-quick-icon" aria-hidden="true">${card.icon}</span><span><strong>${card.title}</strong><small>${card.copy}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div></div>`;
+      return `<div class="compendium-home"><div class="compendium-home-intro"><div><p class="compendium-eyebrow">Judge Compendium</p><h3>Start with what you need.</h3><p>Search the reference above for an exact answer, or follow the essentials below if you are new to Pokémon GO judging.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><section class="compendium-essentials-card" aria-labelledby="judgeEssentialsTitle"><div><p class="compendium-eyebrow">${started ? "Judge Essentials" : "New Judge?"}</p><h4 id="judgeEssentialsTitle">${started ? `${completed} of ${total} understood` : "Start here"}</h4><p>${intro}</p><div class="compendium-essentials-progress"><i aria-hidden="true" style="--essentials-progress:${total ? Math.round(completed / total * 100) : 0}%"></i><span>${completed} / ${total}</span></div></div><button id="compendiumEssentialsStart" class="compendium-essentials-action" type="button">${actionLabel}</button></section><div class="compendium-home-section-head"><h4>Judge Essentials</h4><p>Progress is saved only on this device.</p></div><ol class="compendium-essentials-list" aria-label="Judge Essentials learning path">${list}</ol></div>`;
     }
 
     function ensureCompendiumQuickReference() {
@@ -15336,7 +15328,6 @@
       const stage = $("compendiumStage");
       if (!category || categoryId === "home") {
         stage.innerHTML = renderCompendiumHome();
-        stage.querySelectorAll("[data-compendium-card]").forEach(button => button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCard));
         stage.querySelectorAll("[data-essentials-step]").forEach(button => button.onclick = () => openJudgeEssentialsStep(button.dataset.essentialsStep));
         $("compendiumEssentialsStart").onclick = () => openJudgeEssentialsStep(window.PvPeakJudgeEssentials?.nextStep(ensureCompendiumEssentialsProgress())?.id);
         return;
