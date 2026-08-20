@@ -68,6 +68,8 @@ includes('pokemonStatsAtLevel(source, ivAtk, ivDef, ivHp, defaultLevel, defaultC
 includes('.pokemon-move-groups .compendium-detail-card { padding-bottom: 0; }');
 includes('.pokemon-move-groups .compendium-detail-card h4 { padding-inline: 10px; }');
 includes('.pokemon-detail-head::before, .pokemon-detail-head::after');
+includes('.pokemon-detail-head { --pokemon-avatar-left: 0px; grid-template-columns: 134px minmax(0, 1fr);');
+includes('.pokemon-detail-head .pokemon-detail-sprite { justify-self: center; transform: scale(.82); }');
 includes('.pokemon-detail-head:hover::after { animation: pokemon-avatar-halo-pulse 2.8s ease-in-out infinite; }');
 includes('@keyframes pokemon-avatar-halo-pulse');
 includes('.pokemon-detail-head:hover::after { animation: none !important; }');

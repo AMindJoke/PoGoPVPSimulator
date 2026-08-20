@@ -703,11 +703,11 @@
     .pokemon-reference-toolbar input, .pokemon-reference-toolbar select, .move-reference-toolbar input, .move-reference-toolbar select { grid-column: 1; width: 100%; }
     .pokemon-detail-pane { display: grid; gap: 12px; }
     .pokemon-detail-pane .compendium-detail-columns { grid-template-columns: 1fr; gap: 0; }
-    .pokemon-detail-head { grid-template-columns: 90px minmax(0, 1fr); min-height: 0; padding: 4px 0 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+    .pokemon-detail-head { --pokemon-avatar-left: 0px; grid-template-columns: 134px minmax(0, 1fr); min-height: 0; padding: 4px 0 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
     .pokemon-detail-head::before, .pokemon-detail-head::after { content: ""; position: absolute; top: 50%; right: auto; z-index: 0; border-radius: 50%; pointer-events: none; transform: translateY(-50%); transform-origin: center; }
-    .pokemon-detail-head::before { left: 11px; width: 112px; height: 112px; background: radial-gradient(circle at 34% 25%, rgba(255,255,255,.78) 0 6px, transparent 7px), radial-gradient(circle, color-mix(in srgb, var(--pokemon-color) 18%, var(--panel)) 0 38%, color-mix(in srgb, var(--pokemon-color) 34%, var(--panel)) 39% 50%, color-mix(in srgb, var(--pokemon-color) 12%, var(--panel)) 51% 65%, transparent 66%); box-shadow: inset 0 0 14px rgba(255,255,255,.42), 0 7px 18px color-mix(in srgb, var(--pokemon-color) 13%, transparent); }
-    .pokemon-detail-head::after { left: 0; width: 134px; height: 134px; border: 1px solid color-mix(in srgb, var(--pokemon-color) 36%, transparent); background: radial-gradient(circle at 86% 80%, color-mix(in srgb, var(--pokemon-color) 52%, var(--panel)) 0 4px, transparent 4.5px); box-shadow: 0 0 18px color-mix(in srgb, var(--pokemon-color) 12%, transparent), inset 0 0 0 1px rgba(255,255,255,.34); }
-    .pokemon-detail-head .pokemon-detail-sprite { transform: translateX(22px) scale(.82); }
+    .pokemon-detail-head::before { left: calc(var(--pokemon-avatar-left) + 11px); width: 112px; height: 112px; background: radial-gradient(circle at 34% 25%, rgba(255,255,255,.78) 0 6px, transparent 7px), radial-gradient(circle, color-mix(in srgb, var(--pokemon-color) 18%, var(--panel)) 0 38%, color-mix(in srgb, var(--pokemon-color) 34%, var(--panel)) 39% 50%, color-mix(in srgb, var(--pokemon-color) 12%, var(--panel)) 51% 65%, transparent 66%); box-shadow: inset 0 0 14px rgba(255,255,255,.42), 0 7px 18px color-mix(in srgb, var(--pokemon-color) 13%, transparent); }
+    .pokemon-detail-head::after { left: var(--pokemon-avatar-left); width: 134px; height: 134px; border: 1px solid color-mix(in srgb, var(--pokemon-color) 36%, transparent); background: radial-gradient(circle at 86% 80%, color-mix(in srgb, var(--pokemon-color) 52%, var(--panel)) 0 4px, transparent 4.5px); box-shadow: 0 0 18px color-mix(in srgb, var(--pokemon-color) 12%, transparent), inset 0 0 0 1px rgba(255,255,255,.34); }
+    .pokemon-detail-head .pokemon-detail-sprite { justify-self: center; transform: scale(.82); }
     .pokemon-detail-head:hover::after { animation: pokemon-avatar-halo-pulse 2.8s ease-in-out infinite; }
     .pokemon-detail-sprite { width: 90px; height: 90px; }
     .pokemon-detail-copy h3 { font-size: 24px; }
@@ -815,9 +815,9 @@
       .compendium-copy-feedback { grid-column: 1 / -1; }
       .compendium-detail-columns, .timing-insights { grid-template-columns: 1fr; }
       .pokemon-reference-list { grid-template-columns: 1fr; }
-      .pokemon-detail-head { grid-template-columns: 92px minmax(0, 1fr); min-height: 120px; padding: 12px; }
+      .pokemon-detail-head { --pokemon-avatar-left: 12px; grid-template-columns: 134px minmax(0, 1fr); min-height: 120px; padding: 12px; }
       .pokemon-detail-sprite { width: 92px; height: 92px; }
-      .pokemon-detail-head .pokemon-detail-sprite { transform: translateX(9px) scale(.82); }
+      .pokemon-detail-head .pokemon-detail-sprite { transform: scale(.82); }
       .pokemon-detail-actions { grid-column: 1 / -1; width: 100%; }
       .pokemon-detail-actions button { width: 100%; min-height: 44px; }
       .move-learners { grid-template-columns: repeat(2, minmax(0, 1fr)); }
