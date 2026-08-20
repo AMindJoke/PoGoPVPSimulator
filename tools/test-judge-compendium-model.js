@@ -44,7 +44,7 @@ const glossary = {
 
 assert.strictEqual(model.SCHEMA_VERSION, 1);
 assert.deepStrictEqual(model.CONTENT_TYPES, ["mechanics", "rulings", "glossary"]);
-assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["home", "quick-reference", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
+assert.deepStrictEqual(model.CATEGORIES.map(category => category.id), ["home", "moves", "pokemon", "timing-visualizer", "mechanics", "rulings", "glossary"]);
 assert.strictEqual(model.validateDataset("mechanics", mechanics).valid, true);
 assert.strictEqual(model.validTimelineDiagram(mechanics.items[0].content[0].diagram), true);
 assert.strictEqual(model.validateDataset("rulings", rulings).valid, true);

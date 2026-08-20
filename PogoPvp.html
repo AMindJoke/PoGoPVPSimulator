@@ -15060,7 +15060,6 @@
     let compendiumPokemonVisibleCount = 120;
     let compendiumSelectedPokemonId = null;
     let compendiumTimingSelection = { moveA: null, moveB: null, turnCount: 12 };
-    let compendiumQuickReference = null;
     let compendiumOpenArticle = null;
     let compendiumHistorySyncing = false;
     let compendiumCopyFeedbackTimer = null;
@@ -15097,8 +15096,9 @@
     async function applyCompendiumRoute(route) {
       const normalized = window.PvPeakCompendiumRouting?.normalizeRoute(route);
       if (!normalized) return false;
+      const category = normalized.category === "quick-reference" ? "home" : normalized.category;
       compendiumHistorySyncing = true;
-      compendiumActiveCategory = normalized.category;
+      compendiumActiveCategory = category;
       compendiumSelectedMoveId = null;
       compendiumSelectedPokemonId = null;
       compendiumOpenArticle = null;
@@ -15108,25 +15108,30 @@
         setAppView("compendium");
         await loadJudgeCompendiumContent();
         if (normalized.item && compendiumRouteItemExists(normalized)) {
-          if (normalized.category === "moves") {
+          if (category === "moves") {
             const move = ensureCompendiumMoveReference().byId.get(normalized.item);
             compendiumMoveKind = move.kind;
             compendiumSelectedMoveId = move.id;
             renderCompendiumCategory("moves");
-          } else if (normalized.category === "pokemon") {
+          } else if (category === "pokemon") {
             compendiumSelectedPokemonId = normalized.item;
             renderCompendiumCategory("pokemon");
           } else {
-            openCompendiumArticle(normalized.category, normalized.item, { skipHistory: true });
+            openCompendiumArticle(category, normalized.item, { skipHistory: true });
           }
         } else {
-          renderCompendiumCategory(normalized.category);
+          renderCompendiumCategory(category);
           if (normalized.item) {
             $("compendiumSearchStatus").textContent = "That reference is no longer available. The category has been opened instead.";
             compendiumHistorySyncing = false;
-            syncCompendiumRoute({ category: normalized.category, item: null }, { replace: true });
+            syncCompendiumRoute({ category, item: null }, { replace: true });
             compendiumHistorySyncing = true;
           }
+        }
+        if (normalized.category === "quick-reference") {
+          compendiumHistorySyncing = false;
+          syncCompendiumRoute({ category: "home", item: null }, { replace: true });
+          compendiumHistorySyncing = true;
         }
         return true;
       } finally {
@@ -15212,7 +15217,7 @@
 
     function renderCompendiumCategories() {
       const categories = window.PvPeakJudgeCompendium?.CATEGORIES || [];
-      const icons = { home: "⌂", "quick-reference": "▣", moves: "⇅", pokemon: "◉", "timing-visualizer": "◷", mechanics: "⚙", rulings: "⚖", glossary: "Aa" };
+      const icons = { home: "⌂", moves: "⇅", pokemon: "◉", "timing-visualizer": "◷", mechanics: "⚙", rulings: "⚖", glossary: "Aa" };
       $("compendiumCategories").innerHTML = categories.map(category => `<button class="compendium-category" type="button" role="tab" data-compendium-category="${category.id}" aria-selected="${category.id === compendiumActiveCategory}"><span class="compendium-category-icon" aria-hidden="true">${icons[category.id] || "•"}</span><span>${escapeHtml(category.label)}</span></button>`).join("");
       $("compendiumCategories").querySelectorAll("[data-compendium-category]").forEach(button => {
         button.onclick = () => selectCompendiumCategory(button.dataset.compendiumCategory);
@@ -15282,37 +15287,6 @@
       return `<div class="compendium-home"><div class="compendium-home-intro"><div><p class="compendium-eyebrow">Judge Compendium</p><h3>Start with what you need.</h3><p>Search the reference above for an exact answer, or follow the essentials below if you are new to Pokémon GO judging.</p></div><span class="compendium-foundation-badge">Reference workspace</span></div><section class="compendium-essentials-card" aria-labelledby="judgeEssentialsTitle"><div><p class="compendium-eyebrow">${started ? "Judge Essentials" : "New Judge?"}</p><h4 id="judgeEssentialsTitle">${started ? `${completed} of ${total} understood` : "Start here"}</h4><p>${intro}</p><div class="compendium-essentials-progress"><i aria-hidden="true" style="--essentials-progress:${total ? Math.round(completed / total * 100) : 0}%"></i><span>${completed} / ${total}</span></div></div><button id="compendiumEssentialsStart" class="compendium-essentials-action" type="button">${actionLabel}</button></section><div class="compendium-home-section-head"><h4>Judge Essentials</h4><p>Progress is saved only on this device.</p></div><ol class="compendium-essentials-list" aria-label="Judge Essentials learning path">${list}</ol></div>`;
     }
 
-    function ensureCompendiumQuickReference() {
-      if (compendiumQuickReference) return compendiumQuickReference;
-      const reference = ensureCompendiumMoveReference();
-      if (!reference || !window.PvPeakQuickReference) return null;
-      compendiumQuickReference = window.PvPeakQuickReference.create({ settings: gm.settings, rawMoves: gm.moves, reference, maxEnergy: 100, maxShields: 2 });
-      return compendiumQuickReference;
-    }
-
-    function openQuickReferenceDuration(turns) {
-      compendiumMoveKind = "fast";
-      compendiumMoveFilters = { query: "", type: "all", turns: String(turns), sort: "name" };
-      compendiumSelectedMoveId = null;
-      selectCompendiumCategory("moves");
-    }
-
-    function renderCompendiumQuickReference() {
-      const reference = ensureCompendiumQuickReference();
-      const durationRows = reference?.fastDurations || [];
-      const durationButtons = durationRows.map(item => `<button class="compendium-entry-button" type="button" data-quick-duration="${item.turns}"><span><strong>${item.turns}-turn Fast Attacks</strong><small>${item.moveCount} attacks · ${item.seconds.toFixed(1)} seconds</small></span><span aria-hidden="true">›</span></button>`).join("");
-      const facts = [
-        ["Battle turn", `${reference?.turnSeconds || 0.5} seconds`],
-        ["Stored energy", `${reference?.maxEnergy || 100} maximum`],
-        ["Protect Shields", `${reference?.maxShields || 2} maximum`],
-        ["Stat stages", `${reference?.minStatStage || -4} to +${reference?.maxStatStage || 4}`]
-      ];
-      const stage = $("compendiumStage");
-      stage.innerHTML = `<div class="compendium-stage-head"><div><h3>Quick Reference</h3><p>Quick facts and direct paths for use during an event.</p></div><span class="compendium-foundation-badge">At a glance</span></div><div class="compendium-detail-columns"><section class="compendium-detail-card"><h4>Fast Attack durations</h4><div class="compendium-entry-list">${durationButtons}</div></section><aside class="compendium-detail-card"><h4>Battle facts</h4><div class="compendium-article-meta">${facts.map(([label, value]) => `<span>${escapeHtml(label)} · ${escapeHtml(value)}</span>`).join("")}</div><button class="secondary" id="compendiumQuickMechanics" type="button">Open Mechanics</button></aside></div>`;
-      stage.querySelectorAll("[data-quick-duration]").forEach(button => button.onclick = () => openQuickReferenceDuration(Number(button.dataset.quickDuration)));
-      $("compendiumQuickMechanics").onclick = () => selectCompendiumCategory("mechanics");
-    }
-
     function renderCompendiumEntryButton(entry, entryType) {
       const context = entryType === "rulings"
         ? `<span class="compendium-entry-context" data-source-type="${escapeHtml(entry.sourceType || "compendium")}">${entry.sourceType === "official" ? "Official source" : entry.sourceType === "mixed" ? "Mixed sources" : "Compendium"}</span>`
@@ -15330,10 +15304,6 @@
         stage.innerHTML = renderCompendiumHome();
         stage.querySelectorAll("[data-essentials-step]").forEach(button => button.onclick = () => openJudgeEssentialsStep(button.dataset.essentialsStep));
         $("compendiumEssentialsStart").onclick = () => openJudgeEssentialsStep(window.PvPeakJudgeEssentials?.nextStep(ensureCompendiumEssentialsProgress())?.id);
-        return;
-      }
-      if (categoryId === "quick-reference") {
-        renderCompendiumQuickReference();
         return;
       }
       if (categoryId === "moves") {
