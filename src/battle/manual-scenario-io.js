@@ -33,6 +33,7 @@
     "wait",
     "faint",
     "replacement",
+    "switch",
     "pokemon-entry"
   ]);
   const TECHNICAL_ISSUE_TYPES = new Set(["one-turn-lag", "dre"]);

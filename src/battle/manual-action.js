@@ -11,6 +11,7 @@
     SHIELD: "SHIELD",
     NO_SHIELD: "NO_SHIELD",
     WAIT: "WAIT",
+    SWITCH: "SWITCH",
     RESUME_AUTO: "RESUME_AUTO",
     INSERT_LAG: "INSERT_LAG",
     INSERT_DRE: "INSERT_DRE",
@@ -69,7 +70,7 @@
   ]);
 
   const SHIELD_ACTIONS = new Set([ACTION_TYPE.SHIELD, ACTION_TYPE.NO_SHIELD]);
-  const BATTLE_ACTIONS = new Set([ACTION_TYPE.FAST_MOVE, ACTION_TYPE.CHARGED_MOVE, ACTION_TYPE.WAIT]);
+  const BATTLE_ACTIONS = new Set([ACTION_TYPE.FAST_MOVE, ACTION_TYPE.CHARGED_MOVE, ACTION_TYPE.WAIT, ACTION_TYPE.SWITCH]);
 
   function clone(value) {
     if (value == null) return value;
@@ -112,6 +113,7 @@
       side || "?",
       actionType || "INVALID",
       input.moveId || "-",
+      input.metadata?.incomingId || "-",
       requestedAtTurn,
       input.requestedAtEventId || "-",
       Number(input.sequence || 0)
@@ -254,6 +256,17 @@
         legal: !!waitIsLegal,
         reasonCode: waitIsLegal ? REASON_CODE.OK : REASON_CODE.WAIT_NOT_LEGAL,
         earliestLegalTurn: waitIsLegal ? Number(state.currentTurn || 0) : null
+      });
+    }
+
+    if (manualAction.actionType === ACTION_TYPE.SWITCH) {
+      const exactSwitch = legalActions.find(action => action.type === "switch"
+        && (!manualAction.metadata?.incomingId || action.incomingId === manualAction.metadata.incomingId));
+      return result(manualAction, {
+        legal: !!exactSwitch,
+        reasonCode: exactSwitch ? REASON_CODE.OK : REASON_CODE.NOT_READY,
+        earliestLegalTurn: exactSwitch ? Number(state.currentTurn || 0) : null,
+        pendingDecisionType: exactSwitch ? "VOLUNTARY_SWITCH" : null
       });
     }
 

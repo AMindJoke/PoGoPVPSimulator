@@ -244,6 +244,25 @@
         return resolveChargedAction(action, validation, clone(dependencies.getState()));
       }
 
+      if (action.actionType === ManualAction.ACTION_TYPE.SWITCH) {
+        if (typeof dependencies.resolveSwitch !== "function") {
+          return { ok: false, action, validation: { ...validation, reasonCode: "ACTION_RESOLVER_NOT_CONNECTED" }, trace: clone(trace) };
+        }
+        append(TRACE_STATE.REGISTERED, action, {
+          registeredTurn: Number(registeredBefore.currentTurn || 0),
+          queuedAction: clone(validation.normalizedAction),
+          stateHashBefore: ManualAction.stateHash(registeredBefore)
+        });
+        const resolutionBefore = clone(dependencies.getState());
+        const resolution = dependencies.resolveSwitch({
+          side: action.side,
+          incomingId: action.metadata?.incomingId || null,
+          manualAction: clone(action),
+          validation: clone(validation)
+        });
+        return finishResolution(action, validation, resolutionBefore, resolution);
+      }
+
       if (action.actionType !== ManualAction.ACTION_TYPE.FAST_MOVE) {
         append(TRACE_STATE.INVALIDATED, action, {
           invalidationReason: "ACTION_RESOLVER_NOT_CONNECTED",

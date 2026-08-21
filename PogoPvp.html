@@ -38,6 +38,7 @@
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
   <script src="src/battle/manual-battle-timing.js"></script>
+  <script src="src/battle/manual-switching.js"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js"></script>
   <script src="src/battle/manual-runtime.js"></script>
@@ -14067,6 +14068,7 @@
     let initialTimelineState = null;
     let battleTurns = { A: 0, B: 0 };
     let manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
+    let manualSwitchState = window.PvPeakManualSwitching?.createState?.() || null;
     let manualModeState = window.PvPeakManualMode?.createState?.() || null;
     let manualBattleRuntime = null;
     let manualBattleTrace = [];
@@ -14112,6 +14114,7 @@
 
     function resetManualBattleTiming() {
       manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
+      manualSwitchState = window.PvPeakManualSwitching?.createState?.() || null;
       return manualBattleTiming;
     }
 
@@ -14131,6 +14134,44 @@
       syncManualBattleTiming();
       manualBattleTiming = api.addChargedSequence(manualBattleTiming);
       return manualBattleTiming;
+    }
+
+    function createManualBenchCombatant(pokemon, side) {
+      if (!pokemon) return null;
+      const active = side === "A" ? left : right;
+      const combatant = createMetaCombatant(pokemon, side);
+      combatant.shields = Number(active?.shields || 0);
+      combatant.baiting = active?.baiting || combatant.baiting;
+      combatant.shieldMode = active?.shieldMode || combatant.shieldMode;
+      return combatant;
+    }
+
+    function manualSwitchLegality(side) {
+      const switching = window.PvPeakManualSwitching;
+      const active = side === "A" ? left : right;
+      const currentTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      const actionReady = Number(battleTurns[side] || 0) <= currentTurn
+        && manualModeState?.status === window.PvPeakManualMode?.STATUS?.AWAITING_ACTION;
+      syncManualBattleTiming();
+      return switching?.legality?.({
+        side,
+        active,
+        switchState: manualSwitchState,
+        timing: manualBattleTiming,
+        actionReady,
+        battleEnded: battleEnded(),
+        chargedPending: !!manualModeState?.pendingDecision?.shieldDecision
+      }) || { legal: false, reason: "SWITCHING_UNAVAILABLE", remainingMs: 0 };
+    }
+
+    function manualSwitchLegalActions(side) {
+      const legality = manualSwitchLegality(side);
+      if (!legality.legal) return [];
+      return (legality.candidates || []).map(combatant => ({
+        type: "switch",
+        incomingId: combatant.p?.id || null,
+        startTurn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
+      }));
     }
     const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
       persistent: true,
@@ -21105,13 +21146,17 @@
         getState: () => manualCanonicalState(),
         getBranchId: () => manualModeState?.branchId || null,
         getDecisionPoint: () => currentManualDecisionPoint(),
-        getLegalActions: side => legalBattleActions(side === "A" ? left : right),
+        getLegalActions: side => [
+          ...legalBattleActions(side === "A" ? left : right),
+          ...manualSwitchLegalActions(side)
+        ],
         resolveFast: ({ side, manualAction }) => {
           const attacker = side === "A" ? left : right;
           const defender = side === "A" ? right : left;
           recordManualIntelligenceDecision(attacker, "fast_move");
           return useFast(attacker, defender, { manualAction });
         },
+        resolveSwitch: ({ side, incomingId, manualAction }) => performManualVoluntarySwitch(side, incomingId, manualAction),
         getShieldDecisionPoint: ({ action, attackerSide, defenderSide }) => {
           const state = manualCanonicalState();
           return window.PvPeakManualAction.createDecisionPoint({
@@ -21166,6 +21211,64 @@
         onTrace: entry => manualBattleTrace.push(entry)
       });
       return manualBattleRuntime;
+    }
+
+    function performManualVoluntarySwitch(side, incomingId, manualAction = null) {
+      const switching = window.PvPeakManualSwitching;
+      const active = side === "A" ? left : right;
+      if (!switching || !active) return false;
+      const beforeState = captureManualRuntimeSnapshot();
+      let result;
+      try {
+        result = switching.switchActive({
+          side,
+          active,
+          incomingId,
+          switchState: manualSwitchState,
+          timing: syncManualBattleTiming()
+        });
+      } catch (_) {
+        return false;
+      }
+      const incoming = result.active;
+      incoming.trainer = side;
+      incoming.shields = Number(active.shields || 0);
+      manualSwitchState = result.switchState;
+      manualBattleTiming = result.timing;
+      if (side === "A") left = incoming;
+      else right = incoming;
+      const currentTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      battleTurns[side] = currentTurn + 1;
+      syncManualBattleTiming();
+      const eventId = `manual-switch-${side}-${timeline.length}-${currentTurn}`;
+      const event = {
+        id: eventId,
+        timelineEventId: eventId,
+        timelineIndex: timeline.length,
+        trainer: side,
+        kind: "switch",
+        source: "manual-mode",
+        manualActionId: manualAction?.id || null,
+        branchId: manualModeState?.branchId || null,
+        start: currentTurn,
+        duration: 1,
+        outgoingPokemonId: result.outgoing.p?.id || null,
+        outgoingPokemonName: result.outgoing.p?.name || "Pokémon",
+        outgoingPokemon: cloneTechnicalValue(result.outgoing.p),
+        incomingPokemonId: incoming.p?.id || null,
+        incomingPokemonName: incoming.p?.name || "Pokémon",
+        incomingPokemon: cloneTechnicalValue(incoming.p),
+        switchCooldownMs: window.PvPeakManualBattleTiming.SWITCH_COOLDOWN_MS,
+        label: `${result.outgoing.p?.name || "Pokémon"} switched to ${incoming.p?.name || "Pokémon"}`,
+        state: battleSnapshot()
+      };
+      timeline.push(event);
+      captureManualEventSnapshots(event, beforeState);
+      clearManualEnergyTrainerNextCycle();
+      manualEnergyTrainerPrevious = null;
+      manualEnergyTrainerSuppressPop = true;
+      add(`T${currentTurn} - ${side}: ${result.outgoing.p.name} switches to ${incoming.p.name}.`, "info");
+      return true;
     }
 
     function normalizedHybridIntent(side, action) {
@@ -21590,6 +21693,7 @@
       manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.(restored.manualBattleTiming || {
         canonicalTurn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
       }) || null;
+      manualSwitchState = window.PvPeakManualSwitching?.createState?.(restored.manualSwitchState) || null;
       manualPendingFastEvents = cloneTechnicalValue(restored.manualPendingFastEvents || []);
       initialTimelineState = restored.initialTimelineState || initialTimelineState;
       if (Object.prototype.hasOwnProperty.call(restored, "scenarioState")) {
@@ -22284,6 +22388,45 @@
       render();
       if (focus) requestAnimationFrame(() => document.querySelector(`[data-mobile-comparison-view="${view}"]`)?.focus());
       return true;
+    }
+
+    async function executeLiveManualSwitch(side, incomingId) {
+      if (!ensureLiveManualSession(side)) return false;
+      const result = liveManualRuntime().request({
+        side,
+        actionType: window.PvPeakManualAction.ACTION_TYPE.SWITCH,
+        metadata: { incomingId }
+      });
+      if (!result.ok) {
+        add(`${side}: voluntary switch rejected (${result.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
+        render();
+        return false;
+      }
+      if (manualModeState.status !== window.PvPeakManualMode.STATUS.RESOLVING) {
+        manualModeState = window.PvPeakManualMode.beginResolution(manualModeState);
+      }
+      manualModeState = window.PvPeakManualMode.completeResolution(manualModeState, {
+        timeline,
+        cursorTurn: manualCanonicalState()?.currentTurn || 0,
+        cursorEventId: timeline.at(-1)?.timelineEventId || null,
+        terminal: battleEnded(),
+        terminalResult: currentManualTerminalResult(),
+        pendingDecision: battleEnded() ? null : currentManualDecisionPoint()
+      });
+      syncManualBranchAfterAction(result.action);
+      render();
+      return true;
+    }
+
+    function addManualSwitchCandidate(side, pokemonId) {
+      const switching = window.PvPeakManualSwitching;
+      const pokemon = findPokemon(pokemonId);
+      const active = side === "A" ? left : right;
+      if (!switching || !pokemon || !active) return false;
+      const candidate = createManualBenchCombatant(pokemon, side);
+      const before = switching.teamSize(manualSwitchState, side, active);
+      manualSwitchState = switching.addBenchPokemon(manualSwitchState, side, active, candidate);
+      return switching.teamSize(manualSwitchState, side, active) > before;
     }
 
     function handleManualMobileComparisonKeydown(event) {
@@ -25276,6 +25419,7 @@
         right,
         battleTurns,
         manualBattleTiming: syncManualBattleTiming(),
+        manualSwitchState,
         manualPendingFastEvents,
         initialTimelineState,
         scenarioState,
@@ -32396,6 +32540,7 @@
         initialTimelineState,
         battleTurns: { ...battleTurns },
         manualBattleTiming: cloneTechnicalValue(manualBattleTiming),
+        manualSwitchState: cloneTechnicalValue(manualSwitchState),
         selectedTimelineIndex,
         previewTimelineIndex,
         previewingTimeline,
@@ -32427,6 +32572,7 @@
       manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.(snapshot.manualBattleTiming || {
         canonicalTurn: Math.min(Number(battleTurns?.A || 0), Number(battleTurns?.B || 0))
       }) || null;
+      manualSwitchState = window.PvPeakManualSwitching?.createState?.(snapshot.manualSwitchState) || null;
       selectedTimelineIndex = snapshot.selectedTimelineIndex;
       previewTimelineIndex = snapshot.previewTimelineIndex;
       previewingTimeline = snapshot.previewingTimeline;
