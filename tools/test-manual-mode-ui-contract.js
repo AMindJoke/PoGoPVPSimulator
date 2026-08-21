@@ -76,6 +76,14 @@ for (const id of [
   "manualDecisionBanner",
   "manualCurrentDecisionTitle",
   "manualDecisionWhy",
+  "manualBattleClock",
+  "manualSwitchA",
+  "manualSwitchB",
+  "manualSwitchModal",
+  "manualSwitchSearch",
+  "manualSwitchCandidates",
+  "manualSwitchCancel",
+  "manualSwitchConfirm",
   "manualScenarioPanel",
   "manualScenarioName",
   "manualScenarioStatus",
@@ -557,6 +565,13 @@ assert.match(html, /function setTimelineReplayRangeProgress/);
 assert.match(html, /The original simulation remains unchanged/);
 assert.match(html, /actionType: "RESUME_AUTO"/);
 assert.match(html, /function timelineMoveSummary/);
+assert.match(html, /function renderSwitchTimelineEvent/);
+assert.match(html, /class="timeline-block switch-event/);
+assert.match(html, /Voluntary switch · 45 second cooldown/);
+assert.match(html, /actionType: "SWITCH"/);
+assert.match(html, /manualSwitchState = result\.switchState/);
+assert.match(html, /manualBattleTiming = result\.timing/);
+assert.match(html, /preservedBenchCombatant/, "Bring next Pokemon must preserve a benched combatant's canonical HP and energy.");
 assert.match(html, /timelineTooltipSummaryHtml\(timelineMoveSummary\(event, isSwipe\)\)/);
 assert.match(html, /function timelineMoveDamagePercent/);
 assert.match(html, /damage\$\{timelineMoveDamagePercent\(event\)\}/, "Move tooltips must show damage as a percentage of the target's maximum HP.");

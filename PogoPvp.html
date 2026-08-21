@@ -37,11 +37,11 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/manual-battle-timing.js"></script>
-  <script src="src/battle/manual-switching.js"></script>
+  <script src="src/battle/manual-battle-timing.js?v=20260821-switching"></script>
+  <script src="src/battle/manual-switching.js?v=20260821-switching"></script>
   <script src="src/battle/manual-mode.js"></script>
-  <script src="src/battle/manual-action.js"></script>
-  <script src="src/battle/manual-runtime.js"></script>
+  <script src="src/battle/manual-action.js?v=20260821-switching"></script>
+  <script src="src/battle/manual-runtime.js?v=20260821-switching"></script>
   <script src="src/battle/manual-hybrid.js"></script>
   <script src="src/battle/manual-timeline.js"></script>
   <script src="src/battle/manual-branches.js"></script>
@@ -7417,6 +7417,59 @@
     .manual-bring-next-hp-mode button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
     .manual-bring-next-stages { grid-column: 1 / -1; display: grid; gap: 5px; }
     .manual-bring-next-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .manual-battle-clock {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .manual-switch-control {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+    .manual-switch-control > button {
+      width: auto;
+      min-width: 92px;
+      display: inline-flex;
+      justify-content: center;
+      gap: 6px;
+      color: var(--ink);
+      background: var(--panel);
+      border-color: var(--line);
+    }
+    .manual-switch-control > small { color: var(--muted); font-size: 9px; line-height: 1.2; }
+    .manual-switch-icon { width: 16px; height: 16px; flex: 0 0 auto; }
+    .manual-switch-modal .modal-card { width: min(520px, 100%); }
+    .manual-switch-copy { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+    .manual-switch-candidates { display: grid; gap: 8px; margin: 12px 0; max-height: min(52vh, 430px); overflow: auto; }
+    .manual-switch-candidate {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 64px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--ink);
+      text-align: left;
+    }
+    .manual-switch-candidate[aria-checked="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+    .manual-switch-candidate img { width: 48px; height: 48px; object-fit: contain; }
+    .manual-switch-candidate span { display: grid; gap: 2px; }
+    .manual-switch-candidate strong { font-size: 12px; }
+    .manual-switch-candidate small { color: var(--muted); font-size: 10px; }
+    .manual-switch-candidate em { color: var(--accent); font-size: 9px; font-style: normal; font-weight: 850; }
+    @media (max-width: 900px) {
+      .manual-switch-control > button { min-height: 42px; }
+      .manual-switch-modal .modal-card { align-self: end; width: 100%; max-height: 78vh; border-radius: 16px 16px 0 0; }
+      .manual-switch-candidate { min-height: 68px; }
+    }
     .energy-trainer-scale { position: relative; min-width: 0; padding-top: 76px; }
     .energy-trainer-thresholds { position: absolute; inset: 0 0 auto; height: 74px; }
     .energy-trainer-threshold { position: absolute; bottom: 0; width: 0; height: 100%; border-left: 1px solid color-mix(in srgb, var(--line) 66%, var(--accent)); }
@@ -8562,6 +8615,40 @@
     body.manual-mode-active .timeline-block.fast {
       border-radius: 3px;
     }
+    .timeline-block.switch-event {
+      top: -3px;
+      height: 28px;
+      min-width: 54px;
+      padding: 1px 5px;
+      border-radius: 14px;
+      border-color: color-mix(in srgb, var(--brand) 65%, var(--line));
+      background: color-mix(in srgb, var(--brand) 15%, var(--panel));
+      color: var(--ink);
+      text-shadow: none;
+      overflow: visible;
+      box-shadow: 0 2px 7px rgba(18, 64, 83, .16);
+      z-index: 7;
+    }
+    .timeline-block.switch-event img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+    .timeline-switch-arrows {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--brand);
+    }
+    .timeline-scroll.overview-mode .timeline-block.switch-event {
+      min-width: 30px;
+      padding-inline: 3px;
+    }
+    .timeline-scroll.overview-mode .timeline-block.switch-event img:first-child,
+    .timeline-scroll.overview-mode .timeline-switch-arrows { display: none; }
     body.manual-mode-active .timeline-block.charge {
       height: 28px;
       border-radius: 7px;
@@ -13492,6 +13579,7 @@
                 <span class="manual-editor-kicker">Current decision</span>
                 <strong id="manualCurrentDecisionTitle">Choose an action</strong>
                 <span id="manualDecisionWhy">Automatic simulation is paused.</span>
+                <span id="manualBattleClock" class="manual-battle-clock">Battle time 0.0s</span>
               </div>
               <section id="manualScenarioPanel" class="manual-scenario-panel" aria-label="Scenario controls">
                 <div class="manual-scenario-copy">
@@ -13518,12 +13606,14 @@
                 <button id="p1UseCharge1">Charged 1</button>
                 <button id="p1UseCharge2">Charged 2</button>
                 <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
+                <span id="manualSwitchA" class="manual-switch-control"></span>
               </div>
               <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
                 <button id="p2UseFast">Fast</button>
                 <button id="p2UseCharge1">Charged 1</button>
                 <button id="p2UseCharge2">Charged 2</button>
                 <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
+                <span id="manualSwitchB" class="manual-switch-control"></span>
               </div>
               <div class="manual-editor-command-bar">
                 <button id="manualResumeAuto" class="secondary manual-continue-auto" type="button" title="Continue this timeline version using automatic decisions.">
@@ -14041,6 +14131,21 @@
     </div>
   </div>
 
+  <div class="modal manual-switch-modal" id="manualSwitchModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="manualSwitchTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div><h2 id="manualSwitchTitle">Switch Pokémon</h2><p class="manual-switch-copy">Choose a living Pokémon from this side's team.</p></div>
+        <button id="manualSwitchClose" class="modal-close" type="button" aria-label="Close switch selector">×</button>
+      </div>
+      <label class="manual-bring-next-field" for="manualSwitchSearch">Find a Pokémon<input id="manualSwitchSearch" type="search" placeholder="Name or form" autocomplete="off"></label>
+      <div id="manualSwitchCandidates" class="manual-switch-candidates" role="radiogroup" aria-label="Available switch targets"></div>
+      <div class="manual-bring-next-actions">
+        <button id="manualSwitchCancel" class="secondary" type="button">Cancel</button>
+        <button id="manualSwitchConfirm" type="button" disabled>Switch</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const $ = id => document.getElementById(id);
     const gm = window.BATTLE_GAMEMASTER;
@@ -14111,10 +14216,13 @@
     let manualJudgeEventSequence = 0;
     let manualBringNextContext = null;
     let manualIncomingStatePending = null;
+    let manualSwitchContext = null;
+    let manualSwitchDraftCandidate = null;
 
     function resetManualBattleTiming() {
       manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
       manualSwitchState = window.PvPeakManualSwitching?.createState?.() || null;
+      manualSwitchDraftCandidate = null;
       return manualBattleTiming;
     }
 
@@ -14167,7 +14275,12 @@
     function manualSwitchLegalActions(side) {
       const legality = manualSwitchLegality(side);
       if (!legality.legal) return [];
-      return (legality.candidates || []).map(combatant => ({
+      const candidates = [...(legality.candidates || [])];
+      if (
+        manualSwitchDraftCandidate?.side === side
+        && !candidates.some(candidate => candidate?.p?.id === manualSwitchDraftCandidate.combatant?.p?.id)
+      ) candidates.push(manualSwitchDraftCandidate.combatant);
+      return candidates.map(combatant => ({
         type: "switch",
         incomingId: combatant.p?.id || null,
         startTurn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
@@ -14745,6 +14858,14 @@
         if (event.target.id === "manualBringNextModal") cancelManualBringNext();
       });
       document.addEventListener("keydown", handleManualBringNextKeydown);
+      $("manualSwitchClose").onclick = cancelManualSwitch;
+      $("manualSwitchCancel").onclick = cancelManualSwitch;
+      $("manualSwitchConfirm").onclick = confirmManualSwitch;
+      $("manualSwitchSearch").oninput = renderManualSwitchCandidates;
+      $("manualSwitchModal").addEventListener("click", event => {
+        if (event.target.id === "manualSwitchModal") cancelManualSwitch();
+      });
+      document.addEventListener("keydown", handleManualSwitchKeydown);
       $("manualScenarioOpen").onclick = openManualScenarioLibrary;
       $("manualScenarioSave").onclick = saveManualScenario;
       $("manualScenarioCopyLink").onclick = copyManualScenarioShareLink;
@@ -21101,6 +21222,10 @@
         attackStage: right.attackStage || 0,
         defenseStage: right.defenseStage || 0
       };
+      state.manualBattleTiming = cloneTechnicalValue(syncManualBattleTiming());
+      state.manualSwitchState = cloneTechnicalValue(manualSwitchState);
+      state.sides.A.bench = cloneTechnicalValue(manualSwitchState?.A?.bench || []);
+      state.sides.B.bench = cloneTechnicalValue(manualSwitchState?.B?.bench || []);
       return state;
     }
 
@@ -21220,11 +21345,15 @@
       const beforeState = captureManualRuntimeSnapshot();
       let result;
       try {
+        const sourceSwitchState = manualSwitchDraftCandidate?.side === side
+          && manualSwitchDraftCandidate.combatant?.p?.id === incomingId
+          ? switching.addBenchPokemon(manualSwitchState, side, active, manualSwitchDraftCandidate.combatant)
+          : manualSwitchState;
         result = switching.switchActive({
           side,
           active,
           incomingId,
-          switchState: manualSwitchState,
+          switchState: sourceSwitchState,
           timing: syncManualBattleTiming()
         });
       } catch (_) {
@@ -21263,6 +21392,9 @@
         state: battleSnapshot()
       };
       timeline.push(event);
+      selectedTimelineIndex = event.timelineIndex;
+      previewTimelineIndex = event.timelineIndex;
+      previewingTimeline = false;
       captureManualEventSnapshots(event, beforeState);
       clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerPrevious = null;
@@ -22317,7 +22449,8 @@
       if (event.kind === "charge") return `${actor || "Charged Move"}${move ? ` · ${move}` : ""}`;
       if (event.kind === "shield" || event.kind === "form-protect") return `${actor || "Pokemon"} shields`;
       if (event.kind === "faint") return `Pokemon ${event.faintedSide || event.trainer || ""} faints`.trim();
-      if (["entry", "replacement", "switch"].includes(event.kind)) return `${actor || "Pokemon"} enters`;
+      if (event.kind === "switch") return `${event.outgoingPokemonName || actor || "Pokemon"} → ${event.incomingPokemonName || "switch-in"}`;
+      if (["entry", "replacement"].includes(event.kind)) return `${actor || "Pokemon"} enters`;
       if (event.kind === "judge-state-edit") return "Judge state edit";
       return title(String(event.kind || "Battle event").replaceAll("-", " "));
     }
@@ -22390,13 +22523,19 @@
       return true;
     }
 
-    async function executeLiveManualSwitch(side, incomingId) {
+    async function executeLiveManualSwitch(side, incomingId, draftCandidate = null) {
       if (!ensureLiveManualSession(side)) return false;
-      const result = liveManualRuntime().request({
-        side,
-        actionType: window.PvPeakManualAction.ACTION_TYPE.SWITCH,
-        metadata: { incomingId }
-      });
+      manualSwitchDraftCandidate = draftCandidate ? { side, combatant: cloneTechnicalValue(draftCandidate) } : null;
+      let result;
+      try {
+        result = liveManualRuntime().request({
+          side,
+          actionType: "SWITCH",
+          metadata: { incomingId }
+        });
+      } finally {
+        manualSwitchDraftCandidate = null;
+      }
       if (!result.ok) {
         add(`${side}: voluntary switch rejected (${result.validation?.reasonCode || "INVALID_ACTION"}).`, "info");
         render();
@@ -22427,6 +22566,130 @@
       const before = switching.teamSize(manualSwitchState, side, active);
       manualSwitchState = switching.addBenchPokemon(manualSwitchState, side, active, candidate);
       return switching.teamSize(manualSwitchState, side, active) > before;
+    }
+
+    function manualSwitchReasonText(legality) {
+      const reason = legality?.reason;
+      if (reason === window.PvPeakManualSwitching?.REASON?.COOLDOWN) {
+        return `Available in ${window.PvPeakManualBattleTiming.formatSeconds(legality.remainingMs)}`;
+      }
+      if (reason === window.PvPeakManualSwitching?.REASON?.ACTION_LOCKED) return "Fast Attack in progress";
+      if (reason === window.PvPeakManualSwitching?.REASON?.CHARGED_PENDING) return "Charged Attack resolving";
+      if (reason === window.PvPeakManualSwitching?.REASON?.FAINTED_ACTIVE) return "Use Bring next Pokémon";
+      if (reason === window.PvPeakManualSwitching?.REASON?.BATTLE_ENDED) return "Battle complete";
+      if (reason === window.PvPeakManualSwitching?.REASON?.NO_BENCH) return "No living bench Pokémon";
+      return legality?.legal ? "Choose a bench Pokémon" : "Unavailable now";
+    }
+
+    function manualSwitchIconMarkup() {
+      return `<svg class="manual-switch-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7h9.5l-2.2-2.2M17 17H7.5l2.2 2.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 7l-1.5-1.5M6 17l1.5 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    }
+
+    function renderManualSwitchControls() {
+      const timing = syncManualBattleTiming();
+      const clock = $("manualBattleClock");
+      if (clock && timing) clock.textContent = `Battle time ${(timing.elapsedBattleMs / 1000).toFixed(1)}s`;
+      ["A", "B"].forEach(side => {
+        const mount = $(`manualSwitch${side}`);
+        if (!mount) return;
+        const legality = manualSwitchLegality(side);
+        const controlled = !!manualModeState?.controlledSides?.includes(side);
+        const readOnly = window.PvPeakManualBranches?.activeBranch?.(manualBranchRegistry)?.branchId === window.PvPeakManualBranches?.ORIGINAL_BRANCH_ID;
+        const enabled = controlled && legality.legal && !readOnly && !manualMatchupEditMode;
+        const explanation = manualSwitchReasonText(legality);
+        mount.innerHTML = `<button type="button" data-manual-switch-side="${side}" ${enabled ? "" : "disabled"} aria-label="Switch Pokémon ${side}. ${escapeHtml(explanation)}">${manualSwitchIconMarkup()}<span>Switch</span></button><small>${escapeHtml(explanation)}</small>`;
+        mount.querySelector("button").onclick = event => openManualSwitch(side, event.currentTarget);
+      });
+    }
+
+    function manualSwitchCandidatePool() {
+      const context = manualSwitchContext;
+      if (!context) return [];
+      const switching = window.PvPeakManualSwitching;
+      const active = context.side === "A" ? left : right;
+      const bench = switching.validBench(manualSwitchState, context.side);
+      const existingIds = new Set([active?.p?.id, ...bench.map(candidate => candidate.p?.id)].filter(Boolean));
+      const canAdd = switching.teamSize(manualSwitchState, context.side, active) < switching.MAX_TEAM_SIZE;
+      const existing = bench.map(combatant => ({ pokemon: combatant.p, combatant, existing: true }));
+      const available = canAdd
+        ? allPokemon.filter(pokemon => pokemon?.id && !existingIds.has(pokemon.id)).map(pokemon => ({ pokemon, combatant: null, existing: false }))
+        : [];
+      return [...existing, ...available];
+    }
+
+    function renderManualSwitchCandidates() {
+      const context = manualSwitchContext;
+      const mount = $("manualSwitchCandidates");
+      if (!context || !mount) return;
+      const query = normalizeSearchText($("manualSwitchSearch")?.value || "");
+      const pool = manualSwitchCandidatePool();
+      const visible = pool.filter(item => !query || normalizeSearchText(displayName(item.pokemon)).includes(query)).slice(0, 100);
+      if (!visible.some(item => item.pokemon.id === context.selectedPokemonId)) context.selectedPokemonId = null;
+      mount.innerHTML = visible.length ? visible.map(item => {
+        const selected = item.pokemon.id === context.selectedPokemonId;
+        const state = item.combatant;
+        const detail = state
+          ? `HP ${state.hp}/${state.maxHp} · Energy ${state.energy}`
+          : "New team member · Full HP · 0 Energy";
+        return `<button type="button" class="manual-switch-candidate" role="radio" aria-checked="${selected}" data-manual-switch-pokemon="${escapeHtml(item.pokemon.id)}"><img alt=""><span><strong>${escapeHtml(displayName(item.pokemon))}</strong><small>${escapeHtml(detail)}</small></span><em>${item.existing ? "Bench" : "Add"}</em></button>`;
+      }).join("") : `<p class="manual-switch-copy">No matching living Pokémon is available.</p>`;
+      mount.querySelectorAll("[data-manual-switch-pokemon]").forEach(button => {
+        const item = visible.find(candidate => candidate.pokemon.id === button.dataset.manualSwitchPokemon);
+        if (item) setPokemonImage(button.querySelector("img"), item.pokemon);
+        button.onclick = () => {
+          context.selectedPokemonId = button.dataset.manualSwitchPokemon;
+          renderManualSwitchCandidates();
+          $("manualSwitchConfirm").disabled = false;
+        };
+      });
+      $("manualSwitchConfirm").disabled = !context.selectedPokemonId;
+    }
+
+    function openManualSwitch(side, origin) {
+      const legality = manualSwitchLegality(side);
+      if (!legality.legal) return false;
+      manualSwitchContext = { side, selectedPokemonId: null, returnFocus: origin || document.activeElement };
+      $("manualSwitchTitle").textContent = `Switch Pokémon · Side ${side}`;
+      $("manualSwitchSearch").value = "";
+      renderManualSwitchCandidates();
+      const modal = $("manualSwitchModal");
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => $("manualSwitchSearch")?.focus({ preventScroll: true }));
+      return true;
+    }
+
+    function cancelManualSwitch() {
+      const context = manualSwitchContext;
+      const modal = $("manualSwitchModal");
+      modal?.classList.remove("open");
+      modal?.setAttribute("aria-hidden", "true");
+      manualSwitchContext = null;
+      if (context?.returnFocus?.isConnected) context.returnFocus.focus({ preventScroll: true });
+      return true;
+    }
+
+    async function confirmManualSwitch() {
+      const context = manualSwitchContext;
+      if (!context?.selectedPokemonId) return false;
+      const existing = window.PvPeakManualSwitching.validBench(manualSwitchState, context.side)
+        .some(combatant => combatant.p?.id === context.selectedPokemonId);
+      const draftCandidate = existing
+        ? null
+        : createManualBenchCombatant(findPokemon(context.selectedPokemonId), context.side);
+      if (!existing && !draftCandidate) return false;
+      const side = context.side;
+      const pokemonId = context.selectedPokemonId;
+      cancelManualSwitch();
+      return executeLiveManualSwitch(side, pokemonId, draftCandidate);
+    }
+
+    function handleManualSwitchKeydown(event) {
+      if (!$("manualSwitchModal")?.classList.contains("open")) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        cancelManualSwitch();
+      }
     }
 
     function handleManualMobileComparisonKeydown(event) {
@@ -24017,10 +24280,20 @@
     function manualBringNextAvailability(side) {
       const stateApi = window.PvPeakManualBattleState;
       const combatant = manualBattleStateCombatant(side);
-      const candidates = stateApi?.eligibleIncomingPokemon(
+      const catalogCandidates = stateApi?.eligibleIncomingPokemon(
         allPokemon,
         manualBringNextExcludedPokemon(side)
       ) || [];
+      const preservedIds = new Set(
+        (window.PvPeakManualSwitching?.validBench?.(manualSwitchState, side) || [])
+          .map(candidate => candidate?.p?.id)
+          .filter(Boolean)
+      );
+      const preservedCandidates = [...preservedIds].map(findPokemon).filter(Boolean);
+      const candidates = [
+        ...preservedCandidates,
+        ...catalogCandidates.filter(candidate => !preservedIds.has(candidate.id))
+      ];
       const availability = stateApi?.replacementAvailability(combatant, candidates, scenarioState, side) || {
         fainted: Number(combatant?.hp || 0) <= 0,
         awaitingThisSide: false,
@@ -24159,6 +24432,10 @@
       manualIncomingStatePending = {
         side: context.side,
         beforeState: captureManualRuntimeSnapshot(),
+        preservedBenchCombatant: cloneTechnicalValue(
+          window.PvPeakManualSwitching?.validBench?.(manualSwitchState, context.side)
+            .find(candidate => candidate?.p?.id === pokemonId) || null
+        ),
         fullHp: context.fullHp,
         hp: $("manualBringNextHp")?.value,
         energy: $("manualBringNextEnergy")?.value,
@@ -24703,6 +24980,7 @@
           });
         }
       }
+      renderManualSwitchControls();
       updateManualBranchSelectionUi();
     }
 
@@ -29644,7 +29922,13 @@
         const survivorSide = scenarioState.activeSide;
         const survivorPrefix = scenarioSidePrefix(survivorSide);
         const survivor = JSON.parse(JSON.stringify(scenarioState.lockedState.combatant));
-        const incoming = create(prefix, incomingSide);
+        const pendingIncoming = manualIncomingStatePending?.side === incomingSide
+          ? manualIncomingStatePending
+          : null;
+        const preservedIncoming = pendingIncoming?.preservedBenchCombatant
+          ? cloneTechnicalValue(pendingIncoming.preservedBenchCombatant)
+          : null;
+        const incoming = preservedIncoming || create(prefix, incomingSide);
         const previousSegment = scenarioState.segments[scenarioState.segments.length - 1];
         const remainingShields = Number(
           scenarioState.nextSegmentOverrides?.shields?.[incomingSide]
@@ -29658,17 +29942,18 @@
         );
         incoming.shields = remainingShields;
         survivor.shields = survivorShields;
-        const pendingIncoming = manualIncomingStatePending?.side === incomingSide
-          ? manualIncomingStatePending
-          : null;
         window.PvPeakManualBattleState.prepareIncomingCombatant(incoming, {
-          fullHp: pendingIncoming?.fullHp ?? true,
-          hp: pendingIncoming?.hp,
-          energy: pendingIncoming?.energy ?? 0,
-          attackStage: pendingIncoming?.attackStage ?? 0,
-          defenseStage: pendingIncoming?.defenseStage ?? 0,
+          fullHp: preservedIncoming ? false : (pendingIncoming?.fullHp ?? true),
+          hp: preservedIncoming?.hp ?? pendingIncoming?.hp,
+          energy: preservedIncoming?.energy ?? pendingIncoming?.energy ?? 0,
+          attackStage: preservedIncoming?.attackStage ?? pendingIncoming?.attackStage ?? 0,
+          defenseStage: preservedIncoming?.defenseStage ?? pendingIncoming?.defenseStage ?? 0,
           shields: remainingShields
         });
+        if (preservedIncoming && manualSwitchState?.[incomingSide]?.bench) {
+          manualSwitchState[incomingSide].bench = manualSwitchState[incomingSide].bench
+            .filter(candidate => candidate?.p?.id !== incoming.p.id);
+        }
         $(`${prefix}Shields`).value = String(remainingShields);
         $(`${prefix}StartEnergy`).value = String(incoming.energy);
         $(`${survivorPrefix}Shields`).value = String(Math.max(0, survivorShields));
@@ -33337,6 +33622,7 @@
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
         if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
+        if (event.kind === "switch") return renderSwitchTimelineEvent(event, index, turnPx, chargeSlots);
         if (event.source === "judge-manual") return renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots);
         if (event.kind === "technical-lag" || event.kind === "technical-dre") {
           const baseTurn = visualTurn(event.start, chargeSlots, false);
@@ -33380,6 +33666,19 @@
         const effects = isCharge ? timelineStageEffectHtml(event) : "";
         return `${trail}<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(labelText)}" style="left:${left}px;width:${width}px;background:${color};color:${textColor};border-color:${borderColor}">${label}${effects}</div>${markers}`;
       }).join("") + timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) + `</div>`;
+    }
+
+    function renderSwitchTimelineEvent(event, index, turnPx, chargeSlots) {
+      const outgoing = event.outgoingPokemon || findPokemon(event.outgoingPokemonId);
+      const incoming = event.incomingPokemon || findPokemon(event.incomingPokemonId);
+      const width = timelineZoomPercent() < 100 ? 32 : 74;
+      const center = visualTurn(Number(event.start || 0), chargeSlots, false) * turnPx + turnPx / 2;
+      const left = Math.max(2, center - width / 2);
+      const label = event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`;
+      const sprite = pokemon => pokemon
+        ? `<img src="${escapeHtml(imageUrl(pokemon))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(pokemon))}'">`
+        : "";
+      return `<div class="timeline-block switch-event${selectedTimelineIndex === index ? " selected" : ""}" data-event-index="${index}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" style="left:${left}px;width:${width}px">${sprite(outgoing)}<span class="timeline-switch-arrows" aria-hidden="true">⇄</span>${sprite(incoming)}</div>`;
     }
 
     function manualJudgeTimelineShortLabel(event) {
@@ -33527,6 +33826,11 @@
     function timelineMoveSummary(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
       const stateLines = timelineStateSummaryLines(event);
+      if (event.kind === "switch") return [
+        event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`,
+        "Voluntary switch · 45 second cooldown",
+        ...stateLines
+      ].join("\n");
       if (event.source === "judge-manual") return [event.label || "Judge edit", "Manual reconstruction", ...stateLines].join("\n");
       if (event.kind === "technical-lag" || event.kind === "technical-dre") {
         return [event.label || (event.kind === "technical-lag" ? "One-Turn Lag" : "DRE"), "Technical reconstruction", ...stateLines].join("\n");
@@ -33559,6 +33863,11 @@
 
     function timelineMoveTitle(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
+      if (event.kind === "switch") return [
+        event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`,
+        `Turn: ${Number(event.start || 0)}`,
+        "Switch cooldown: 45 seconds"
+      ].join("\n");
       if (event.source === "judge-manual") return [
         event.label || "Judge edit",
         "Source: Judge manual reconstruction",
