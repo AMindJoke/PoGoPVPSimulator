@@ -123,7 +123,7 @@ const simple = IO.serializeScenario({
   runtimeState: {
     battleTurns: { A: 2, B: 2 },
     manualPendingFastEvents: [],
-    manualBattleTiming: { canonicalTurn: 2, chargedSequenceMs: 10000, elapsedBattleMs: 11000, nextSwitchAvailableAtMs: { A: 45000, B: 0 } },
+    manualBattleTiming: { canonicalTurn: 2, chargedSequenceMs: 10000, elapsedBattleMs: 11000, nextSwitchAvailableAtMs: { A: 45000, B: 0 }, postChargedSwitchWindow: { turn: 2, sourceEventId: "charge-1", eligibleSides: ["B"] } },
     manualSwitchState: { A: { bench: [{ trainer: "A", p: { id: "azumarill", name: "Azumarill" }, hp: 121, maxHp: 191, energy: 33 }] }, B: { bench: [] } }
   },
   manualModeState: { selectedSide: "A", pendingDecision: { activeSide: "A" } }
@@ -138,6 +138,7 @@ const simpleImported = IO.deserializeScenario(simpleJson, { battleEngineVersion:
 assert.equal(simpleImported.ok, true);
 assert.deepEqual(simpleImported.scenario, simple, "A canonical scenario must survive an exact round trip.");
 assert.equal(simpleImported.scenario.state.runtimeState.manualBattleTiming.elapsedBattleMs, 11000);
+assert.deepEqual(simpleImported.scenario.state.runtimeState.manualBattleTiming.postChargedSwitchWindow.eligibleSides, ["B"]);
 assert.equal(simpleImported.scenario.state.runtimeState.manualSwitchState.A.bench[0].energy, 33);
 assert.equal(IO.stableStringify(simple), IO.stableStringify(IO.serializeScenario({
   registry: simpleRegistry,
@@ -149,7 +150,7 @@ assert.equal(IO.stableStringify(simple), IO.stableStringify(IO.serializeScenario
   runtimeState: {
     battleTurns: { A: 2, B: 2 },
     manualPendingFastEvents: [],
-    manualBattleTiming: { canonicalTurn: 2, chargedSequenceMs: 10000, elapsedBattleMs: 11000, nextSwitchAvailableAtMs: { A: 45000, B: 0 } },
+    manualBattleTiming: { canonicalTurn: 2, chargedSequenceMs: 10000, elapsedBattleMs: 11000, nextSwitchAvailableAtMs: { A: 45000, B: 0 }, postChargedSwitchWindow: { turn: 2, sourceEventId: "charge-1", eligibleSides: ["B"] } },
     manualSwitchState: { A: { bench: [{ trainer: "A", p: { id: "azumarill", name: "Azumarill" }, hp: 121, maxHp: 191, energy: 33 }] }, B: { bench: [] } }
   },
   manualModeState: { selectedSide: "A", pendingDecision: { activeSide: "A" } }

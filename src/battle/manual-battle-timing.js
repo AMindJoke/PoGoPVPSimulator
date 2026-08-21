@@ -24,15 +24,24 @@
       canonicalTurn * TURN_DURATION_MS + chargedSequenceMs,
       number(input.elapsedBattleMs)
     );
+    const sourceWindow = input.postChargedSwitchWindow;
+    const eligibleSides = Array.isArray(sourceWindow?.eligibleSides)
+      ? sourceWindow.eligibleSides.filter(side => SIDES.includes(side))
+      : [];
     return {
-      version: 1,
+      version: 2,
       canonicalTurn,
       chargedSequenceMs,
       elapsedBattleMs,
       nextSwitchAvailableAtMs: {
         A: Math.max(0, number(input.nextSwitchAvailableAtMs?.A)),
         B: Math.max(0, number(input.nextSwitchAvailableAtMs?.B))
-      }
+      },
+      postChargedSwitchWindow: eligibleSides.length ? {
+        turn: Math.max(0, number(sourceWindow.turn, canonicalTurn)),
+        sourceEventId: sourceWindow.sourceEventId || null,
+        eligibleSides
+      } : null
     };
   }
 
@@ -67,6 +76,38 @@
     return remainingSwitchMs(state, side) === 0;
   }
 
+  function openPostChargedSwitchWindow(state, input = {}) {
+    const next = createState(state);
+    const eligibleSides = (Array.isArray(input.eligibleSides) ? input.eligibleSides : SIDES)
+      .filter(side => SIDES.includes(side));
+    next.postChargedSwitchWindow = eligibleSides.length ? {
+      turn: Math.max(0, number(input.turn, next.canonicalTurn)),
+      sourceEventId: input.sourceEventId || null,
+      eligibleSides: [...new Set(eligibleSides)]
+    } : null;
+    return next;
+  }
+
+  function postChargedSwitchEligible(state, side) {
+    if (!SIDES.includes(side)) return false;
+    return createState(state).postChargedSwitchWindow?.eligibleSides.includes(side) === true;
+  }
+
+  function consumePostChargedSwitch(state, side) {
+    const next = createState(state);
+    if (!next.postChargedSwitchWindow || !SIDES.includes(side)) return next;
+    next.postChargedSwitchWindow.eligibleSides = next.postChargedSwitchWindow.eligibleSides
+      .filter(candidate => candidate !== side);
+    if (!next.postChargedSwitchWindow.eligibleSides.length) next.postChargedSwitchWindow = null;
+    return next;
+  }
+
+  function closePostChargedSwitchWindow(state) {
+    const next = createState(state);
+    next.postChargedSwitchWindow = null;
+    return next;
+  }
+
   function formatSeconds(milliseconds) {
     const seconds = Math.max(0, number(milliseconds)) / 1000;
     return `${seconds.toFixed(seconds % 1 ? 1 : 0)}s`;
@@ -82,6 +123,10 @@
     startSwitchCooldown,
     remainingSwitchMs,
     canSwitch,
+    openPostChargedSwitchWindow,
+    postChargedSwitchEligible,
+    consumePostChargedSwitch,
+    closePostChargedSwitchWindow,
     formatSeconds
   });
 });

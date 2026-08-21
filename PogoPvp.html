@@ -37,8 +37,8 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/manual-battle-timing.js?v=20260821-switching"></script>
-  <script src="src/battle/manual-switching.js?v=20260821-switching"></script>
+  <script src="src/battle/manual-battle-timing.js?v=20260821-post-charged-switch"></script>
+  <script src="src/battle/manual-switching.js?v=20260821-post-charged-switch"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js?v=20260821-switching"></script>
   <script src="src/battle/manual-runtime.js?v=20260821-switching"></script>
@@ -14238,9 +14238,29 @@
 
     function addManualChargedSequenceTime() {
       const api = window.PvPeakManualBattleTiming;
-      if (!api || !manualModeState?.enabled) return null;
+      if (!api || !manualModeState?.enabled || chargedContinuationDepth > 0) return null;
       syncManualBattleTiming();
       manualBattleTiming = api.addChargedSequence(manualBattleTiming);
+      return manualBattleTiming;
+    }
+
+    function closeManualPostChargedSwitchWindow() {
+      const api = window.PvPeakManualBattleTiming;
+      if (!api || !manualModeState?.enabled || chargedContinuationDepth > 0) return manualBattleTiming;
+      manualBattleTiming = api.closePostChargedSwitchWindow(syncManualBattleTiming());
+      return manualBattleTiming;
+    }
+
+    function openManualPostChargedSwitchWindow(chargeEvent) {
+      const api = window.PvPeakManualBattleTiming;
+      if (!api || !manualModeState?.enabled || chargedContinuationDepth > 0 || !chargeEvent || Number(left?.hp || 0) <= 0 || Number(right?.hp || 0) <= 0) {
+        return manualBattleTiming;
+      }
+      manualBattleTiming = api.openPostChargedSwitchWindow(syncManualBattleTiming(), {
+        turn: Number(chargeEvent.start || 0),
+        sourceEventId: chargeEvent.timelineEventId || chargeEvent.id || null,
+        eligibleSides: ["A", "B"]
+      });
       return manualBattleTiming;
     }
 
@@ -21156,6 +21176,7 @@
       const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
         ? captureManualRuntimeSnapshot()
         : null;
+      closeManualPostChargedSwitchWindow();
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       if (typeof manualModeState !== "undefined" && manualModeState?.enabled && !technicalIssueInjection && chargedContinuationDepth === 0) {
         const event = registerManualFast(attacker, defender, options);
@@ -21330,7 +21351,6 @@
           if (moveIndex < 0) return false;
           recordManualIntelligenceDecision(attacker, "charged_move", attacker.charged[moveIndex]);
           const forceBuffs = await askManualBuffDecision(attacker.charged[moveIndex]);
-          addManualChargedSequenceTime();
           return useCharge(attacker, defender, moveIndex, { shielded, forceBuffs, manualAction });
         },
         onTrace: entry => manualBattleTrace.push(entry)
@@ -21367,7 +21387,7 @@
       if (side === "A") left = incoming;
       else right = incoming;
       const currentTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
-      battleTurns[side] = currentTurn + 1;
+      battleTurns[side] = currentTurn + result.turnCost;
       syncManualBattleTiming();
       const eventId = `manual-switch-${side}-${timeline.length}-${currentTurn}`;
       const event = {
@@ -21380,7 +21400,12 @@
         manualActionId: manualAction?.id || null,
         branchId: manualModeState?.branchId || null,
         start: currentTurn,
-        duration: 1,
+        duration: result.turnCost,
+        turnCost: result.turnCost,
+        postCharged: result.postCharged,
+        sourceChargedEventId: result.postCharged
+          ? beforeState?.manualBattleTiming?.postChargedSwitchWindow?.sourceEventId || null
+          : null,
         outgoingPokemonId: result.outgoing.p?.id || null,
         outgoingPokemonName: result.outgoing.p?.name || "Pokémon",
         outgoingPokemon: cloneTechnicalValue(result.outgoing.p),
@@ -21399,7 +21424,7 @@
       clearManualEnergyTrainerNextCycle();
       manualEnergyTrainerPrevious = null;
       manualEnergyTrainerSuppressPop = true;
-      add(`T${currentTurn} - ${side}: ${result.outgoing.p.name} switches to ${incoming.p.name}.`, "info");
+      add(`T${currentTurn} - ${side}: ${result.outgoing.p.name} switches to ${incoming.p.name}${result.postCharged ? " after the Charged Attack (0 turns)" : " (1 turn)"}.`, "info");
       return true;
     }
 
@@ -22578,7 +22603,8 @@
       if (reason === window.PvPeakManualSwitching?.REASON?.FAINTED_ACTIVE) return "Use Bring next Pokémon";
       if (reason === window.PvPeakManualSwitching?.REASON?.BATTLE_ENDED) return "Battle complete";
       if (reason === window.PvPeakManualSwitching?.REASON?.NO_BENCH) return "No living bench Pokémon";
-      return legality?.legal ? "Choose a bench Pokémon" : "Unavailable now";
+      if (legality?.legal && legality.postCharged) return "Free switch after Charged Attack";
+      return legality?.legal ? "Choose a bench Pokémon · 1 turn" : "Unavailable now";
     }
 
     function manualSwitchIconMarkup() {
@@ -25126,6 +25152,7 @@
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      closeManualPostChargedSwitchWindow();
       const waitTurns = Math.max(1, Number(timingWindow?.waitTurns || 1));
       const currentTurn = Number(battleTurns[attacker.trainer] || 0);
       const targetTurn = currentTurn + waitTurns;
@@ -25169,6 +25196,8 @@
       const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
         ? captureManualRuntimeSnapshot()
         : null;
+      closeManualPostChargedSwitchWindow();
+      addManualChargedSequenceTime();
       attacker.timingPlanMoveId = null;
       attacker.timingPlanFastMovesRemaining = 0;
       attacker.timingContinuationCount = 0;
@@ -25321,6 +25350,7 @@
       if (typeof resolveTechnicalPendingFastAfterCharge === "function") {
         resolveTechnicalPendingFastAfterCharge(attacker, defender, move);
       }
+      openManualPostChargedSwitchWindow(chargeEvent);
       if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(chargeEvent, manualRuntimeBefore);
       if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
@@ -33828,7 +33858,7 @@
       const stateLines = timelineStateSummaryLines(event);
       if (event.kind === "switch") return [
         event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`,
-        "Voluntary switch · 45 second cooldown",
+        `${event.postCharged ? "Post-Charged switch" : "Voluntary switch"} · ${Number(event.turnCost ?? event.duration ?? 1)} turn${Number(event.turnCost ?? event.duration ?? 1) === 1 ? "" : "s"} · 45 second cooldown`,
         ...stateLines
       ].join("\n");
       if (event.source === "judge-manual") return [event.label || "Judge edit", "Manual reconstruction", ...stateLines].join("\n");
@@ -33866,6 +33896,7 @@
       if (event.kind === "switch") return [
         event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`,
         `Turn: ${Number(event.start || 0)}`,
+        `Turn cost: ${Number(event.turnCost ?? event.duration ?? 1)}`,
         "Switch cooldown: 45 seconds"
       ].join("\n");
       if (event.source === "judge-manual") return [

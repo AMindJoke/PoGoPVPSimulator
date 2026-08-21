@@ -60,7 +60,15 @@
     const candidates = validBench(input.switchState, side);
     const canAdd = teamSize(input.switchState, side, input.active) < MAX_TEAM_SIZE;
     if (!candidates.length && !canAdd) return { legal: false, reason: REASON.NO_BENCH, remainingMs: 0 };
-    return { legal: true, reason: REASON.OK, remainingMs: 0, candidates, canAdd };
+    return {
+      legal: true,
+      reason: REASON.OK,
+      remainingMs: 0,
+      candidates,
+      canAdd,
+      postCharged: Timing.postChargedSwitchEligible(input.timing, side),
+      turnCost: Timing.postChargedSwitchEligible(input.timing, side) ? 0 : 1
+    };
   }
 
   function switchActive(input = {}) {
@@ -79,11 +87,18 @@
     incoming.attackStage = 0;
     incoming.defenseStage = 0;
     bench.splice(index, 1, outgoing);
+    const postCharged = Timing.postChargedSwitchEligible(input.timing, side);
+    const turnCost = postCharged ? 0 : 1;
+    const windowTiming = postCharged
+      ? Timing.consumePostChargedSwitch(input.timing, side)
+      : Timing.closePostChargedSwitchWindow(input.timing);
     return {
       active: incoming,
       outgoing,
       switchState: state,
-      timing: Timing.startSwitchCooldown(input.timing, side)
+      timing: Timing.startSwitchCooldown(windowTiming, side),
+      turnCost,
+      postCharged
     };
   }
 

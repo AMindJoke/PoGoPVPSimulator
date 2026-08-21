@@ -29,8 +29,21 @@ assert.equal(switched.switchState.A.bench[0].energy, 44);
 assert.equal(switched.switchState.A.bench[0].attackStage, 0, "temporary stages reset on exit");
 assert.equal(Timing.remainingSwitchMs(switched.timing, "A"), 45000);
 assert.equal(Timing.remainingSwitchMs(switched.timing, "B"), 0);
+assert.equal(switched.turnCost, 1, "a normal voluntary switch costs one turn");
+assert.equal(switched.postCharged, false);
 legal = Switching.legality({ side: "A", active: switched.active, switchState: switched.switchState, timing: switched.timing, actionReady: true });
 assert.equal(legal.reason, Switching.REASON.COOLDOWN);
 assert.equal(Switching.legality({ side: "A", active: { ...active, hp: 0 }, switchState, timing, actionReady: true }).reason, Switching.REASON.FAINTED_ACTIVE);
+
+const postChargedTiming = Timing.openPostChargedSwitchWindow(timing, { turn: 20, sourceEventId: "charge-1" });
+const postChargedLegal = Switching.legality({ side: "A", active, switchState, timing: postChargedTiming, actionReady: true });
+assert.equal(postChargedLegal.postCharged, true);
+assert.equal(postChargedLegal.turnCost, 0);
+const freeSwitch = Switching.switchActive({ side: "A", active, incomingId: "azumarill", switchState, timing: postChargedTiming });
+assert.equal(freeSwitch.turnCost, 0, "a voluntary switch at the end of a Charged Attack costs zero turns");
+assert.equal(freeSwitch.postCharged, true);
+assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "A"), false);
+assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "B"), true, "the opponent keeps its independent post-Charged opportunity");
+assert.equal(Timing.remainingSwitchMs(freeSwitch.timing, "A"), 45000, "a zero-turn switch still starts the normal cooldown");
 
 console.log("Manual voluntary switching tests passed.");
