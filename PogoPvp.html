@@ -33331,6 +33331,16 @@
       });
     }
 
+    function timelineMoveDamagePercent(event) {
+      const targetSide = event?.trainer === "A" ? "B" : "A";
+      const state = event?.state || event?.stateAfter || event?.stateBefore || null;
+      const targetState = state?.[targetSide] || null;
+      const combatant = targetSide === "A" ? left : right;
+      const maxHp = Number(targetState?.maxHp || combatant?.maxHp || 0);
+      const damage = Math.max(0, Number(event?.damage || 0));
+      return maxHp > 0 ? ` (${(damage / maxHp * 100).toFixed(1)}% HP)` : "";
+    }
+
     function timelineMoveSummary(event, isSwipe = false) {
       if (isSwipe) return "Swipe";
       const stateLines = timelineStateSummaryLines(event);
@@ -33359,9 +33369,8 @@
         : `-${event.move.energyCost || 0} energy`;
       return [
         event.move.name,
-        `${event.damage || 0} damage`,
-        energy,
-        ...stateLines
+        `${event.damage || 0} damage${timelineMoveDamagePercent(event)}`,
+        energy
       ].join("\n");
     }
 

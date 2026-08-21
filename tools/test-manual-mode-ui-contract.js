@@ -558,6 +558,8 @@ assert.match(html, /The original simulation remains unchanged/);
 assert.match(html, /actionType: "RESUME_AUTO"/);
 assert.match(html, /function timelineMoveSummary/);
 assert.match(html, /timelineTooltipSummaryHtml\(timelineMoveSummary\(event, isSwipe\)\)/);
+assert.match(html, /function timelineMoveDamagePercent/);
+assert.match(html, /damage\$\{timelineMoveDamagePercent\(event\)\}/, "Move tooltips must show damage as a percentage of the target's maximum HP.");
 assert.match(html, /\$\{event\.move\.name\} blocked/);
 assert.match(html, /\+\$\{event\.move\.energyGain \|\| 0\} energy/);
 assert.match(html, /manualRuntimeToolbar"\)\.dataset\.statusTone/);
