@@ -42,6 +42,15 @@ assert.doesNotMatch(html, /pokemonMap\.get\(/, "Timeline tooltips must use an in
 assert.match(html, /\["fast", "charge", "shield", "form-protect", "technical-lag", "technical-dre"\]/, "Manual timeline hover details must cover normal and technical battle events.");
 assert.match(html, /data-timeline-tooltip="\$\{escapeHtml\(tooltipSummary\)\}"/, "Branched comparison events must carry the same timeline state summary.");
 assert.match(html, /id="manualComparisonMoveTooltip" class="timeline-move-tooltip manual-comparison-move-tooltip"/, "Scenario Comparison must render a dedicated unclipped hover tooltip.");
+assert.match(html, /id="manualTimelineZoomHeaderMount"[\s\S]{0,420}class="timeline-zoom-control"/, "Desktop Timeline zoom must be grouped with the Timeline heading.");
+assert.match(html, /id="manualTimelineZoomMobileMount"/, "Mobile must retain a dedicated zoom placement below the Timeline.");
+assert.match(html, /id="manualTimelineSelectionCard"[^>]+aria-live="polite"[^>]+hidden/, "Timeline selection must expose a compact persistent state summary.");
+assert.match(html, /function renderManualTimelineSelectionCard\(\)[\s\S]{0,2400}HP \$\{hp\}\/\$\{maxHp\} · Energy \$\{energy\}/, "The selected event summary must show both Pokemon HP and energy.");
+assert.match(html, /manual-timeline-selection-cursor/, "A selected Timeline event must receive a persistent vertical cursor.");
+assert.match(html, /function manualTimelineCollisionLanes\(/, "Nearby semantic Timeline events must be assigned adaptive visual lanes.");
+assert.match(html, /id="manualTimelineSwipeHint"[^>]*>Swipe timeline →</, "Mobile Timeline overflow must have a discoverable swipe hint.");
+assert.match(html, /function updateManualTimelineScrollAffordance\(markSeen = false\)/, "Timeline edge affordances must react to horizontal scroll position.");
+assert.match(html, /Technical tools unlock when an eligible Fast Move appears on this timeline/, "Technical Issues must explain why its controls are temporarily unavailable.");
 const allIds = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 assert.equal(new Set(allIds).size, allIds.length, "Every simulator element id must be unique.");
 for (const id of [

@@ -13226,6 +13226,175 @@
         min-height: 42px;
       }
     }
+    /* Scenario Review timeline refinement: presentation only, engine state is unchanged. */
+    body[data-view="scenario-review"].manual-mode-active .scenario-status-toolbar {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    @media (min-width: 901px) {
+      body[data-view="scenario-review"].manual-mode-active .manual-workspace-header::after {
+        content: "Scenario Review";
+        order: 2;
+        padding-left: 2px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 850;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-workspace-scenario { order: 3; }
+      body[data-view="scenario-review"].manual-mode-active .manual-workspace-nav { order: 4; }
+      body.manual-mode-active .manual-timeline-stage {
+        grid-template-rows: auto auto auto auto auto;
+        align-self: start;
+        height: max-content;
+      }
+      body.manual-mode-active .manual-timeline-stage .timeline-zoom-control {
+        margin: 0;
+      }
+    }
+    .manual-timeline-zoom-mount {
+      display: inline-flex;
+      align-items: center;
+    }
+    .manual-timeline-zoom-mobile-mount:empty { display: none; }
+    body.manual-mode-active .manual-hud-center .manual-hud-turn-pill,
+    body.manual-mode-active .manual-hud-center .manual-hud-actor-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      min-height: 23px;
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: none;
+      white-space: nowrap;
+    }
+    body.manual-mode-active .manual-hud-center .manual-hud-actor-pill {
+      border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+      color: var(--accent-dark);
+    }
+    .manual-timeline-selection-card {
+      display: grid;
+      grid-template-columns: minmax(150px, auto) repeat(2, minmax(130px, 1fr));
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding: 7px 9px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+      color: var(--text);
+      box-shadow: 0 3px 10px rgba(23, 33, 47, .06);
+    }
+    .manual-timeline-selection-card[hidden] { display: none; }
+    .manual-timeline-selection-card > strong { font-size: 11px; }
+    .manual-timeline-selection-card > span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .manual-timeline-selection-card b { color: var(--text); }
+    .manual-timeline-selection-cursor {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 4;
+      width: 2px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 78%, #fff);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--panel) 80%, transparent), 0 0 8px color-mix(in srgb, var(--accent) 28%, transparent);
+      pointer-events: none;
+    }
+    body.manual-mode-active .timeline-block.timeline-staggered {
+      transform: translateY(9px);
+      z-index: 8;
+    }
+    body.manual-mode-active .timeline-track.has-staggered-events { overflow: visible; }
+    .manual-timeline-edge,
+    .manual-timeline-swipe-hint { display: none; }
+    .manual-technical-issue-actions button:disabled {
+      cursor: not-allowed;
+      opacity: .42;
+      filter: saturate(.45);
+    }
+    @media (max-width: 900px) {
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-zoom-mobile-mount {
+        display: flex;
+        justify-content: flex-end;
+        min-height: 42px;
+        margin-top: 4px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-zoom-mobile-mount .timeline-zoom-control {
+        margin: 0;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-selection-card {
+        grid-template-columns: 1fr 1fr;
+        gap: 5px 8px;
+        padding: 6px 8px;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-selection-card > strong { grid-column: 1 / -1; }
+      body[data-view="scenario-review"].manual-mode-active .timeline-grid { position: relative; }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-edge {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 12;
+        display: block;
+        width: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .16s ease;
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-edge-left {
+        left: var(--timeline-side-zone-width);
+        background: linear-gradient(90deg, var(--panel), transparent);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-edge-right {
+        right: 0;
+        background: linear-gradient(270deg, var(--panel), transparent);
+      }
+      body[data-view="scenario-review"].manual-mode-active .timeline-grid.can-scroll-left .manual-timeline-edge-left,
+      body[data-view="scenario-review"].manual-mode-active .timeline-grid.can-scroll-right .manual-timeline-edge-right { opacity: .94; }
+      body[data-view="scenario-review"].manual-mode-active .manual-timeline-swipe-hint {
+        position: absolute;
+        right: 10px;
+        bottom: 7px;
+        z-index: 13;
+        display: inline-flex;
+        padding: 3px 7px;
+        border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--panel) 92%, transparent);
+        color: var(--accent-dark);
+        font-size: 8px;
+        font-weight: 900;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .16s ease;
+      }
+      body[data-view="scenario-review"].manual-mode-active .timeline-grid.can-scroll-right:not(.swipe-hint-seen) .manual-timeline-swipe-hint { opacity: 1; }
+      body.manual-mode-active .manual-hud-center .manual-hud-turn-pill,
+      body.manual-mode-active .manual-hud-center .manual-hud-actor-pill {
+        min-width: 46px;
+        min-height: 19px;
+        padding: 2px 4px;
+        font-size: 7px;
+      }
+    }
   </style>
 </head>
 <body class="clarity-ui" data-view="simulator">
@@ -13538,6 +13707,13 @@
                 <span><i class="legend-shield"></i>Shield</span>
               </span>
               <input id="timelineZoom" type="hidden" value="100">
+              <span id="manualTimelineZoomHeaderMount" class="manual-timeline-zoom-mount">
+                <span class="timeline-zoom-control" role="group" aria-label="Timeline zoom">
+                  <button id="timelineZoomOut" type="button" aria-label="Zoom timeline out">-</button>
+                  <output id="timelineZoomValue" aria-live="polite">100%</output>
+                  <button id="timelineZoomIn" type="button" aria-label="Zoom timeline in">+</button>
+                </span>
+              </span>
             </div>
           </div>
           <div id="manualTimelineGrid" class="timeline-grid">
@@ -13551,14 +13727,14 @@
               <div class="timeline-track" id="p1Timeline"></div>
               <div class="timeline-track" id="p2Timeline"></div>
             </div>
+            <span class="manual-timeline-edge manual-timeline-edge-left" aria-hidden="true"></span>
+            <span class="manual-timeline-edge manual-timeline-edge-right" aria-hidden="true"></span>
+            <span id="manualTimelineSwipeHint" class="manual-timeline-swipe-hint" aria-hidden="true">Swipe timeline →</span>
           </div>
+          <div id="manualTimelineSelectionCard" class="manual-timeline-selection-card" aria-live="polite" hidden></div>
           <section id="manualComparisonPanel" class="manual-comparison-panel" aria-labelledby="manualComparisonForkTitle" hidden></section>
           <div id="manualTechnicalIssuesMount" class="manual-technical-issues-mount" hidden></div>
-          <div class="timeline-zoom-control" role="group" aria-label="Timeline zoom">
-            <button id="timelineZoomOut" type="button" aria-label="Zoom timeline out">-</button>
-            <output id="timelineZoomValue" aria-live="polite">100%</output>
-            <button id="timelineZoomIn" type="button" aria-label="Zoom timeline in">+</button>
-          </div>
+          <div id="manualTimelineZoomMobileMount" class="manual-timeline-zoom-mobile-mount"></div>
         </div>
         <section id="manualEditorWorkspace" class="manual-editor-workspace" aria-live="polite" hidden>
           <div id="manualDuelHud" class="manual-duel-hud" aria-label="Current battle state">
@@ -13584,10 +13760,10 @@
             </article>
             <div class="manual-hud-center">
               <strong>VS</strong>
-              <span>Turn <b id="manualHudTurn">0</b></span>
-              <small id="manualHudPhase">Before action</small>
-              <em id="manualHudActor">Choose an action</em>
-              <em id="manualHudMobileActor" class="manual-hud-mobile-actor">A or B</em>
+              <span class="manual-hud-turn-pill">Turn <b id="manualHudTurn">0</b></span>
+              <small id="manualHudPhase" class="sr-only">Before action</small>
+              <em id="manualHudActor" class="sr-only">Choose an action</em>
+              <em id="manualHudMobileActor" class="manual-hud-mobile-actor manual-hud-actor-pill">A or B</em>
               <em id="manualHudComparisonView" class="manual-hud-comparison-view" hidden>Viewing: Branch A</em>
               <button id="manualHudMatchupDone" class="manual-hud-matchup-done" type="button">Done</button>
             </div>
@@ -14987,7 +15163,9 @@
         highlightTimelineIndex(selectedTimelineIndex);
         updateManualBranchSelectionUi();
         updateManualTimelineEventMenu();
+        renderManualTimelineSelectionCard();
       });
+      $("timelineScroll").addEventListener("scroll", () => updateManualTimelineScrollAffordance(true), { passive: true });
       $("timelineScroll").addEventListener("pointerenter", updateTimelineHover);
       $("timelineScroll").addEventListener("pointermove", event => {
         updateTimelineHover(event);
@@ -24279,12 +24457,16 @@
       const mode = technicalReviewState?.mode || null;
       const draft = technicalReviewState?.draft || null;
       const eligibleTargets = mode ? manualTechnicalEligibleEventIndexes(mode) : [];
+      const lagEligibleTargets = manualTechnicalEligibleEventIndexes(api.ISSUE_TYPES.ONE_TURN_LAG);
+      const dreEligibleTargets = manualTechnicalEligibleEventIndexes(api.ISSUE_TYPES.DRE);
       const dreComparisonTargets = manualDreComparisonShortcutEligibleEventIndexes();
       const instructions = mode === api.ISSUE_TYPES.ONE_TURN_LAG
         ? "Select the Fast Move affected by the one-turn lag."
         : mode === api.ISSUE_TYPES.DRE
           ? "Select the Fast Move that created the DRE window."
-          : "Reconstruct a reported timing issue from an eligible Fast Move.";
+          : lagEligibleTargets.length || dreEligibleTargets.length
+            ? "Reconstruct a reported timing issue from an eligible Fast Move."
+            : "Technical tools unlock when an eligible Fast Move appears on this timeline.";
       const selectionMessage = mode === api.ISSUE_TYPES.DRE && !eligibleTargets.length
         ? "No valid DRE target in this segment. A Fast Move must unlock a Charged Move immediately before lethal opposing Fast Move damage."
         : mode === api.ISSUE_TYPES.ONE_TURN_LAG && !eligibleTargets.length
@@ -24298,8 +24480,8 @@
       return `<section class="manual-technical-issues" aria-label="Technical Issues">
         <header><strong>Technical Issues</strong><small>${escapeHtml(instructions)}</small></header>
         <div class="manual-technical-issue-actions" role="group" aria-label="Technical issue selection">
-          <button type="button" data-manual-technical-issue="one-turn-lag" aria-pressed="${mode === api.ISSUE_TYPES.ONE_TURN_LAG}">1-Turn Lag</button>
-          <button type="button" data-manual-technical-issue="dre" aria-pressed="${mode === api.ISSUE_TYPES.DRE}">DRE</button>
+          <button type="button" data-manual-technical-issue="one-turn-lag" aria-pressed="${mode === api.ISSUE_TYPES.ONE_TURN_LAG}" ${!lagEligibleTargets.length && mode !== api.ISSUE_TYPES.ONE_TURN_LAG ? "disabled" : ""} title="${lagEligibleTargets.length ? "Select an eligible Fast Move" : "No eligible Fast Move yet"}">1-Turn Lag</button>
+          <button type="button" data-manual-technical-issue="dre" aria-pressed="${mode === api.ISSUE_TYPES.DRE}" ${!dreEligibleTargets.length && mode !== api.ISSUE_TYPES.DRE ? "disabled" : ""} title="${dreEligibleTargets.length ? "Select an eligible DRE window" : "No eligible DRE window yet"}">DRE</button>
         </div>
         ${dreComparisonTargets.length ? `<button type="button" class="secondary manual-technical-comparison-shortcut" data-manual-dre-comparison>Compare with/without DRE</button>` : ""}
         ${mode ? `<div class="manual-technical-selection" role="status" aria-live="polite"><span>${escapeHtml(selectionMessage)}</span><button type="button" class="secondary" data-manual-technical-cancel>Cancel</button></div>` : ""}
@@ -24918,15 +25100,19 @@
       const technicalMount = $("manualTechnicalIssuesMount");
       const timelineStage = $("manualTimelineStage");
       const timelineZoom = timelineStage?.querySelector(".timeline-zoom-control");
+      const timelineZoomHeaderMount = $("manualTimelineZoomHeaderMount");
+      const timelineZoomMobileMount = $("manualTimelineZoomMobileMount");
       const runtimeToolbar = $("manualRuntimeToolbar");
       const runtimeHome = $("manualRuntimeToolbarHome");
       const modeExit = $("manualModeExit");
       const modeExitHome = $("manualModeExitHome");
-      if (!workspace || !decisionPanel || !inspector || !secondaryMount || !eventMenu || !technicalMount || !timelineStage || !timelineZoom || !runtimeToolbar || !runtimeHome || !modeExit || !modeExitHome) return false;
+      if (!workspace || !decisionPanel || !inspector || !secondaryMount || !eventMenu || !technicalMount || !timelineStage || !timelineZoom || !timelineZoomHeaderMount || !timelineZoomMobileMount || !runtimeToolbar || !runtimeHome || !modeExit || !modeExitHome) return false;
       if (decisionPanel.parentElement !== workspace) workspace.insertBefore(decisionPanel, secondaryMount);
       if (inspector.parentElement !== workspace) workspace.insertBefore(inspector, secondaryMount);
       if (eventMenu.parentElement !== workspace) secondaryMount.after(eventMenu);
-      if (technicalMount.parentElement !== timelineStage) timelineStage.insertBefore(technicalMount, timelineZoom);
+      if (technicalMount.parentElement !== timelineStage) timelineStage.insertBefore(technicalMount, timelineZoomMobileMount);
+      const zoomHome = window.matchMedia("(max-width: 900px)").matches ? timelineZoomMobileMount : timelineZoomHeaderMount;
+      if (timelineZoom.parentElement !== zoomHome) zoomHome.append(timelineZoom);
       if (runtimeToolbar.parentElement !== runtimeHome) runtimeHome.append(runtimeToolbar);
       if (modeExit.parentElement !== runtimeToolbar) modeExitHome.after(modeExit);
       return true;
@@ -25138,13 +25324,16 @@
       const mobileControls = $("manualMobileControlsArea");
       const technicalMount = $("manualTechnicalIssuesMount");
       const eventMenu = $("manualTimelineEventMenu");
+      const timelineZoom = timelineStage.querySelector(".timeline-zoom-control");
+      const timelineZoomMobileMount = $("manualTimelineZoomMobileMount");
       const workspaceNav = workspaceHeader.querySelector(".manual-workspace-nav");
       const workspaceExit = $("manualWorkspaceExit");
       const modeExit = $("manualModeExit");
-      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell || !mobileControls || !technicalMount || !eventMenu || !workspaceNav || !workspaceExit || !modeExit) return;
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell || !mobileControls || !technicalMount || !eventMenu || !timelineZoom || !timelineZoomMobileMount || !workspaceNav || !workspaceExit || !modeExit) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
       const mobileReview = mobile && document.body.dataset.view === "scenario-review";
       if (mobile) {
+        if (timelineZoom.parentElement !== timelineZoomMobileMount) timelineZoomMobileMount.append(timelineZoom);
         modeExit.textContent = mobileReview ? "Exit" : "Exit Manual";
         modeExit.title = mobileReview ? "Exit Scenario Review" : "Exit Manual Mode";
         mobileShell.hidden = !manualModeState?.enabled || !mobileReview;
@@ -33597,13 +33786,72 @@
       renderTimelineRow("B", "p2Timeline", maxTurn, turnPx, chargeSlots, chargeStarts);
       renderScenarioTimelineTransitions(chargeSlots, turnPx);
       renderTechnicalTimelineState();
+      renderManualTimelineSelectionCard();
       if (mobileManualScroll && !sameMobileTimeline) scroll.scrollLeft = 0;
       else if (isFit && !mobileManualScroll) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
       else if (mobileManualScroll) scroll.scrollLeft = Math.min(previousScrollLeft, Math.max(0, scroll.scrollWidth - scroll.clientWidth));
       if (mobileManualScroll) scroll.dataset.mobileTimelineKey = mobileScrollKey;
       else delete scroll.dataset.mobileTimelineKey;
+      updateManualTimelineScrollAffordance();
       if (timelineSpan) perfDebug.endSpan(timelineSpan);
+    }
+
+    function manualTimelineSelectedState(event) {
+      const snapshots = window.PvPeakManualSnapshots;
+      const stored = event?.timelineEventId && snapshots
+        ? manualSnapshotStore?.get(event.timelineEventId, snapshots.BOUNDARY.AFTER)?.state
+        : null;
+      return stored || event?.stateAfter || event?.state || null;
+    }
+
+    function renderManualTimelineSelectionCard() {
+      const card = $("manualTimelineSelectionCard");
+      const scroll = $("timelineScroll");
+      scroll?.querySelectorAll(":scope > .manual-timeline-selection-cursor").forEach(cursor => cursor.remove());
+      const event = Number.isInteger(selectedTimelineIndex) ? timeline[selectedTimelineIndex] : null;
+      const selected = Number.isInteger(selectedTimelineIndex)
+        ? scroll?.querySelector(`.timeline-block[data-event-index="${selectedTimelineIndex}"]`)
+        : null;
+      if (!card || !event || !selected || event.hiddenFromTimeline) {
+        if (card) {
+          card.hidden = true;
+          card.innerHTML = "";
+        }
+        return;
+      }
+      const cursor = document.createElement("span");
+      cursor.className = "manual-timeline-selection-cursor";
+      cursor.setAttribute("aria-hidden", "true");
+      cursor.style.left = `${selected.offsetLeft + selected.offsetWidth / 2}px`;
+      scroll.append(cursor);
+      const state = manualTimelineSelectedState(event);
+      const sideState = side => state?.[side] || state?.[side === "A" ? "left" : "right"] || null;
+      const sideSummary = side => {
+        const combatant = side === "A" ? left : right;
+        const snapshot = sideState(side);
+        const hp = Number(snapshot?.hp ?? combatant?.hp ?? 0);
+        const maxHp = Number(snapshot?.maxHp ?? combatant?.maxHp ?? hp);
+        const energy = Number(snapshot?.energy ?? combatant?.energy ?? 0);
+        return `<span><b>${side}</b> · HP ${hp}/${maxHp} · Energy ${energy}</span>`;
+      };
+      const kind = event.kind === "fast" ? "Fast" : event.kind === "charge" ? "Charged" : title(String(event.kind || "Event").replaceAll("-", " "));
+      const name = event.move?.name || event.label || kind;
+      card.hidden = false;
+      card.innerHTML = `<strong>${escapeHtml(name)} · ${escapeHtml(kind)} · Turn ${Number(event.start || 0)}</strong>${sideSummary("A")}${sideSummary("B")}`;
+    }
+
+    function updateManualTimelineScrollAffordance(markSeen = false) {
+      const grid = $("manualTimelineGrid");
+      const scroll = $("timelineScroll");
+      if (!grid || !scroll) return;
+      if (markSeen && Math.abs(scroll.scrollLeft - Number(scroll.dataset.affordanceStart || 0)) > 4) {
+        grid.classList.add("swipe-hint-seen");
+      }
+      const overflow = scroll.scrollWidth > scroll.clientWidth + 2;
+      grid.classList.toggle("can-scroll-left", overflow && scroll.scrollLeft > 2);
+      grid.classList.toggle("can-scroll-right", overflow && scroll.scrollLeft + scroll.clientWidth < scroll.scrollWidth - 2);
+      if (!scroll.dataset.affordanceStart) scroll.dataset.affordanceStart = String(scroll.scrollLeft);
     }
 
     function renderTimelinePokemonZone(prefix, combatant) {
@@ -33754,23 +34002,26 @@
     function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeSlots, chargeStarts) {
       const row = $(id);
       const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer && !item.event.hiddenFromTimeline);
+      const collisionLanes = manualTimelineCollisionLanes(events, turnPx, chargeSlots);
       row.style.setProperty("--turn-px", `${turnPx}px`);
+      row.classList.toggle("has-staggered-events", [...collisionLanes.values()].some(lane => lane > 0));
       const laneWidth = maxTurn * turnPx;
       if (!events.length) {
         row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px"><span class="timeline-empty">No actions</span></div>`;
         return;
       }
       row.innerHTML = `<div class="timeline-lane" style="width:${laneWidth}px">` + events.map(({ event, index }) => {
+        const collisionClass = collisionLanes.get(index) ? " timeline-staggered" : "";
         if (event.kind === "fast") return renderFastTimelineEvent(event, chargeSlots, chargeStarts, turnPx, index);
-        if (event.kind === "switch") return renderSwitchTimelineEvent(event, index, turnPx, chargeSlots);
-        if (event.source === "judge-manual") return renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots);
+        if (event.kind === "switch") return renderSwitchTimelineEvent(event, index, turnPx, chargeSlots, collisionClass);
+        if (event.source === "judge-manual") return renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots, collisionClass);
         if (event.kind === "technical-lag" || event.kind === "technical-dre") {
           const baseTurn = visualTurn(event.start, chargeSlots, false);
           const label = event.kind === "technical-lag" ? "+1T" : "DRE";
           const title = event.kind === "technical-lag"
             ? `One-turn lag before ${event.move?.name || "Fast Move"}`
             : `${event.move?.name || "Charged Move"} fires before pending ${event.pendingFastMoveName || "Fast Move"} damage`;
-          return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}" data-event-index="${index}" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
+          return `<div class="timeline-block technical-event ${event.kind === "technical-lag" ? "technical-lag" : "technical-dre"}${collisionClass}" data-event-index="${index}" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" style="left:${Math.max(2, baseTurn * turnPx)}px">${label}</div>`;
         }
         const isShield = event.kind === "shield" || event.kind === "form-protect";
         const color = isShield ? "#f8effb" : typeColors[event.move.type] || "#156f8f";
@@ -33794,7 +34045,7 @@
           : `${moveTypeIcon(event.move)}<span class="timeline-token-label">${escapeHtml(editorLabel)}</span>`;
         const effectClass = isCharge ? timelineStageEffectClass(event) : "";
         const trainerClass = isCharge ? ` trainer-${trainer.toLowerCase()}` : "";
-        const cls = (isShield ? `timeline-block shield${event.kind === "form-protect" ? " form-protect" : ""}` : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + (selectedTimelineIndex === index ? " selected" : "");
+        const cls = (isShield ? `timeline-block shield${event.kind === "form-protect" ? " form-protect" : ""}` : isCharge ? "timeline-block charge" : "timeline-block") + trainerClass + effectClass + collisionClass + (selectedTimelineIndex === index ? " selected" : "");
         const labelText = isShield
           ? event.kind === "form-protect"
             ? `${event.specialProtection || "Protection"} used against ${event.move.name} - turn ${event.start}`
@@ -33808,7 +34059,39 @@
       }).join("") + timelineKoMarkersForTrainer(trainer, chargeSlots, turnPx) + `</div>`;
     }
 
-    function renderSwitchTimelineEvent(event, index, turnPx, chargeSlots) {
+    function manualTimelineCollisionLanes(events, turnPx, chargeSlots) {
+      const lanes = new Map();
+      const laneEnds = [-Infinity, -Infinity];
+      events.filter(({ event }) => event.kind !== "fast").forEach(({ event, index }) => {
+        const name = event.move?.name || event.label || "";
+        const width = event.kind === "switch"
+          ? (timelineZoomPercent() < 100 ? 38 : 46)
+          : event.kind === "charge"
+            ? Math.max(timelineChargeWidth(turnPx), Math.min(72, timelineEditorMoveLabel(event.move).length * 6 + 20))
+            : event.kind === "shield" || event.kind === "form-protect"
+              ? timelineShieldWidth(turnPx)
+              : event.source === "judge-manual"
+                ? Math.max(52, Math.min(128, manualJudgeTimelineShortLabel(event).length * 5 + 16))
+                : Math.max(34, Math.min(70, name.length * 5 + 14));
+        const baseTurn = event.kind === "charge"
+          ? chargeVisualTurn(event, index, chargeSlots)
+          : event.chargeEvent
+            ? chargeVisualTurn(event.chargeEvent, event.chargeIndex, chargeSlots)
+            : visualTurn(Number(event.start || 0), chargeSlots, false);
+        const center = event.kind === "switch"
+          ? baseTurn * turnPx + turnPx / 2
+          : event.kind === "charge" || event.kind === "shield" || event.kind === "form-protect"
+            ? (baseTurn + chargeWindowTurns) * turnPx
+            : baseTurn * turnPx + width / 2;
+        const leftEdge = Math.max(2, center - width / 2);
+        const lane = leftEdge > laneEnds[0] + 3 ? 0 : leftEdge > laneEnds[1] + 3 ? 1 : (laneEnds[0] <= laneEnds[1] ? 0 : 1);
+        lanes.set(index, lane);
+        laneEnds[lane] = leftEdge + width;
+      });
+      return lanes;
+    }
+
+    function renderSwitchTimelineEvent(event, index, turnPx, chargeSlots, collisionClass = "") {
       const outgoing = event.outgoingPokemon || findPokemon(event.outgoingPokemonId);
       const incoming = event.incomingPokemon || findPokemon(event.incomingPokemonId);
       const width = timelineZoomPercent() < 100 ? 38 : 46;
@@ -33818,7 +34101,7 @@
       const sprite = pokemon => pokemon
         ? `<img src="${escapeHtml(imageUrl(pokemon))}" alt="" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(pokemon))}'">`
         : "";
-      return `<div class="timeline-block switch-event${selectedTimelineIndex === index ? " selected" : ""}" data-event-index="${index}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" style="left:${left}px;width:${width}px">${sprite(outgoing)}<span class="timeline-switch-arrows" aria-hidden="true">⇄</span>${sprite(incoming)}</div>`;
+      return `<div class="timeline-block switch-event${collisionClass}${selectedTimelineIndex === index ? " selected" : ""}" data-event-index="${index}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" style="left:${left}px;width:${width}px">${sprite(outgoing)}<span class="timeline-switch-arrows" aria-hidden="true">⇄</span>${sprite(incoming)}</div>`;
     }
 
     function manualJudgeTimelineShortLabel(event) {
@@ -33834,7 +34117,7 @@
       return "Judge edit";
     }
 
-    function renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots) {
+    function renderManualJudgeTimelineEvent(event, index, trainer, turnPx, chargeSlots, collisionClass = "") {
       const label = manualJudgeTimelineShortLabel(event);
       const width = Math.max(52, Math.min(128, label.length * 5 + 16));
       const earlierAtTurn = timeline.slice(0, index).filter(candidate =>
@@ -33843,7 +34126,7 @@
         && Number(candidate.start || 0) === Number(event.start || 0)
       ).length;
       const left = Math.max(2, visualTurn(event.start, chargeSlots, false) * turnPx + earlierAtTurn * 14);
-      const cls = `timeline-block judge-event ${event.kind}${selectedTimelineIndex === index ? " selected" : ""}`;
+      const cls = `timeline-block judge-event ${event.kind}${collisionClass}${selectedTimelineIndex === index ? " selected" : ""}`;
       return `<div class="${cls}" data-event-index="${index}" aria-label="${escapeHtml(event.label || label)}" title="${escapeHtml(event.label || label)}" style="left:${left}px;width:${width}px">${escapeHtml(label)}</div>`;
     }
 
