@@ -186,6 +186,8 @@ for (const functionName of ["syncManualEditorPlacement", "renderManualDuelHud", 
   assert.equal(declarations.length, 1, `${functionName} must not be duplicated for mobile.`);
 }
 assert.match(html, /focusMount\.append\(workspaceHeader\)/);
+assert.match(html, /mobileReview && modeExit\.parentElement !== workspaceNav[\s\S]{0,100}workspaceNav\.insertBefore\(modeExit, workspaceExit\)/, "Mobile Scenario Review must place Exit beside Guide in the primary header.");
+assert.match(html, /modeExitHome\.after\(modeExit\)/, "Leaving the mobile review layout must restore Exit Manual to its canonical toolbar home.");
 assert.match(html, /focusMount\.append\(duelHud\)/);
 assert.match(html, /decisionPanel\.append\(actions\)/);
 assert.match(html, /secondaryMount\.append\(runtimeToolbar\)/);

@@ -11406,6 +11406,14 @@
       #manualModeExit {
         grid-column: 1 / -1;
       }
+      body[data-view="scenario-review"].manual-mode-active .manual-workspace-nav #manualModeExit {
+        grid-column: auto;
+        min-height: 32px;
+        padding: 4px 7px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
       .manual-head span {
         display: none;
       }
@@ -13663,6 +13671,7 @@
                   <button id="manualRedo" class="secondary" type="button" title="Restore the last undone edit." hidden disabled>↷ Redo</button>
                   <button id="manualRestartTimeline" class="secondary" type="button" title="Restart this Manual Mode timeline from the beginning.">↺ Restart</button>
                 </div>
+                <span id="manualModeExitHome" hidden></span>
                 <button id="manualModeExit" class="secondary" type="button">Exit Manual</button>
                 <button id="manualMobileVersionsToggle" class="secondary" type="button" hidden aria-expanded="false">Manage Timeline Versions</button>
                 <div id="manualVersionPanel" class="manual-version-panel">
@@ -24339,12 +24348,15 @@
       const timelineZoom = timelineStage?.querySelector(".timeline-zoom-control");
       const runtimeToolbar = $("manualRuntimeToolbar");
       const runtimeHome = $("manualRuntimeToolbarHome");
-      if (!workspace || !decisionPanel || !inspector || !secondaryMount || !eventMenu || !technicalMount || !timelineStage || !timelineZoom || !runtimeToolbar || !runtimeHome) return false;
+      const modeExit = $("manualModeExit");
+      const modeExitHome = $("manualModeExitHome");
+      if (!workspace || !decisionPanel || !inspector || !secondaryMount || !eventMenu || !technicalMount || !timelineStage || !timelineZoom || !runtimeToolbar || !runtimeHome || !modeExit || !modeExitHome) return false;
       if (decisionPanel.parentElement !== workspace) workspace.insertBefore(decisionPanel, secondaryMount);
       if (inspector.parentElement !== workspace) workspace.insertBefore(inspector, secondaryMount);
       if (eventMenu.parentElement !== workspace) secondaryMount.after(eventMenu);
       if (technicalMount.parentElement !== timelineStage) timelineStage.insertBefore(technicalMount, timelineZoom);
       if (runtimeToolbar.parentElement !== runtimeHome) runtimeHome.append(runtimeToolbar);
+      if (modeExit.parentElement !== runtimeToolbar) modeExitHome.after(modeExit);
       return true;
     }
 
@@ -24553,14 +24565,20 @@
       const mobileControls = $("manualMobileControlsArea");
       const technicalMount = $("manualTechnicalIssuesMount");
       const eventMenu = $("manualTimelineEventMenu");
-      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell || !mobileControls || !technicalMount || !eventMenu) return;
+      const workspaceNav = workspaceHeader.querySelector(".manual-workspace-nav");
+      const workspaceExit = $("manualWorkspaceExit");
+      const modeExit = $("manualModeExit");
+      if (!actions || !workspace || !mobileMount || !inspector || !decisionPanel || !focusMount || !workspaceHeader || !timelineStage || !duelHud || !secondaryMount || !runtimeToolbar || !runtimeHome || !battleTimeline || !mobileShell || !mobileControls || !technicalMount || !eventMenu || !workspaceNav || !workspaceExit || !modeExit) return;
       const mobile = window.matchMedia("(max-width: 900px)").matches;
       const mobileReview = mobile && document.body.dataset.view === "scenario-review";
       if (mobile) {
+        modeExit.textContent = mobileReview ? "Exit" : "Exit Manual";
+        modeExit.title = mobileReview ? "Exit Scenario Review" : "Exit Manual Mode";
         mobileShell.hidden = !manualModeState?.enabled || !mobileReview;
         mobileShell.dataset.active = manualModeState?.enabled && mobileReview ? "true" : "false";
         mobileShell.setAttribute("aria-hidden", String(!manualModeState?.enabled || !mobileReview));
         if (workspaceHeader.parentElement !== focusMount) focusMount.append(workspaceHeader);
+        if (mobileReview && modeExit.parentElement !== workspaceNav) workspaceNav.insertBefore(modeExit, workspaceExit);
         if (duelHud.parentElement !== focusMount) focusMount.append(duelHud);
         if (actions.parentElement !== decisionPanel) decisionPanel.append(actions);
         if (mobileReview) {
@@ -24590,6 +24608,8 @@
         return;
       }
       mobileMount.hidden = true;
+      modeExit.textContent = "Exit Manual";
+      modeExit.title = "Exit Manual Mode";
       mobileShell.hidden = true;
       delete mobileShell.dataset.active;
       mobileShell.setAttribute("aria-hidden", "true");
