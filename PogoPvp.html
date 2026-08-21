@@ -37,6 +37,7 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
+  <script src="src/battle/manual-battle-timing.js"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js"></script>
   <script src="src/battle/manual-runtime.js"></script>
@@ -14065,6 +14066,7 @@
     let timeline = [];
     let initialTimelineState = null;
     let battleTurns = { A: 0, B: 0 };
+    let manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
     let manualModeState = window.PvPeakManualMode?.createState?.() || null;
     let manualBattleRuntime = null;
     let manualBattleTrace = [];
@@ -14107,6 +14109,29 @@
     let manualJudgeEventSequence = 0;
     let manualBringNextContext = null;
     let manualIncomingStatePending = null;
+
+    function resetManualBattleTiming() {
+      manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
+      return manualBattleTiming;
+    }
+
+    function syncManualBattleTiming() {
+      const api = window.PvPeakManualBattleTiming;
+      if (!api) return null;
+      manualBattleTiming = api.advanceToTurn(
+        manualBattleTiming || api.createState(),
+        Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
+      );
+      return manualBattleTiming;
+    }
+
+    function addManualChargedSequenceTime() {
+      const api = window.PvPeakManualBattleTiming;
+      if (!api || !manualModeState?.enabled) return null;
+      syncManualBattleTiming();
+      manualBattleTiming = api.addChargedSequence(manualBattleTiming);
+      return manualBattleTiming;
+    }
     const manualEnergyTrainerNextCycleController = window.PvPeakEnergyTrainer?.createNextCycleController?.({
       persistent: true,
       onChange: state => {
@@ -19855,6 +19880,7 @@
       manualBattleRuntime = null;
       manualBattleTrace = [];
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
+      resetManualBattleTiming();
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       manualBranchRegistry = null;
       manualScenarioComparison = null;
@@ -21134,6 +21160,7 @@
           if (moveIndex < 0) return false;
           recordManualIntelligenceDecision(attacker, "charged_move", attacker.charged[moveIndex]);
           const forceBuffs = await askManualBuffDecision(attacker.charged[moveIndex]);
+          addManualChargedSequenceTime();
           return useCharge(attacker, defender, moveIndex, { shielded, forceBuffs, manualAction });
         },
         onTrace: entry => manualBattleTrace.push(entry)
@@ -21560,6 +21587,9 @@
       left = restored.left;
       right = restored.right;
       battleTurns = restored.battleTurns || { A: 0, B: 0 };
+      manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.(restored.manualBattleTiming || {
+        canonicalTurn: Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0))
+      }) || null;
       manualPendingFastEvents = cloneTechnicalValue(restored.manualPendingFastEvents || []);
       initialTimelineState = restored.initialTimelineState || initialTimelineState;
       if (Object.prototype.hasOwnProperty.call(restored, "scenarioState")) {
@@ -25235,6 +25265,7 @@
       timeline.push(event);
       if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
       if (kind === "charge") battleTurns[attacker.trainer] = start + 1;
+      if (manualModeState?.enabled) syncManualBattleTiming();
       return event;
     }
 
@@ -25244,6 +25275,7 @@
         left,
         right,
         battleTurns,
+        manualBattleTiming: syncManualBattleTiming(),
         manualPendingFastEvents,
         initialTimelineState,
         scenarioState,
@@ -28879,6 +28911,7 @@
       manualBattleRuntime = null;
       manualBattleTrace = [];
       manualModeState = window.PvPeakManualMode?.createState?.() || null;
+      resetManualBattleTiming();
       manualSnapshotStore = window.PvPeakManualSnapshots?.createStore?.() || null;
       manualBranchRegistry = null;
       manualScenarioComparison = null;
@@ -32362,6 +32395,7 @@
         timeline,
         initialTimelineState,
         battleTurns: { ...battleTurns },
+        manualBattleTiming: cloneTechnicalValue(manualBattleTiming),
         selectedTimelineIndex,
         previewTimelineIndex,
         previewingTimeline,
@@ -32390,6 +32424,9 @@
       timeline = snapshot.timeline;
       initialTimelineState = snapshot.initialTimelineState;
       battleTurns = snapshot.battleTurns;
+      manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.(snapshot.manualBattleTiming || {
+        canonicalTurn: Math.min(Number(battleTurns?.A || 0), Number(battleTurns?.B || 0))
+      }) || null;
       selectedTimelineIndex = snapshot.selectedTimelineIndex;
       previewTimelineIndex = snapshot.previewTimelineIndex;
       previewingTimeline = snapshot.previewingTimeline;

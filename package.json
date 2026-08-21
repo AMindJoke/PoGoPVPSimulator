@@ -29,6 +29,7 @@
     "test:ranking-cache-refresh": "node tools/test-ranking-cache-refresh.js",
     "test:scenario-model": "node tools/test-scenario-model.js",
     "test:manual-battle-state": "node tools/test-manual-battle-state.js",
+    "test:manual-battle-timing": "node tools/test-manual-battle-timing.js",
     "test:turn-engine": "node tools/test-turn-resolution-engine.js",
     "test:manual-mode": "node tools/test-manual-mode-model.js && node tools/test-manual-mode-legality.js && node tools/test-manual-mode-runtime.js && node tools/test-manual-mode-charged.js && node tools/test-manual-mode-timeline-editing.js && node tools/test-manual-mode-branching.js && node tools/test-scenario-comparison-model.js && node tools/test-manual-mode-import-export.js && node tools/test-manual-scenario-share.js && node tools/test-manual-scenario-share-robustness.js && node tools/test-manual-mode-snapshots.js && node tools/test-manual-mode-hybrid.js && node tools/test-manual-mode-ui-contract.js",
     "test:manual-mode-legality": "node tools/test-manual-mode-legality.js",
