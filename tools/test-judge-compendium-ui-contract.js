@@ -78,6 +78,8 @@ includes('.pokemon-detail-head:hover .pokemon-detail-avatar::after { animation: 
 includes('function renderCompendiumTimingVisualizer()');
 includes('class="timing-reading-guide"');
 includes('What you’re seeing');
+includes('grid-column:${event.start + 1} / span ${event.duration}', "Timing bars must span the complete Fast Attack duration so consecutive uses do not show false waiting turns.");
+assert.ok(!html.includes('event.duration - 1'), "Timing bars must not remove a turn from every Fast Attack.");
 includes('Check the spelling or try a broader official or community term.');
 includes('data-linked-pokemon="${pokemon.id}"');
 includes('data-linked-move="${move.id}"');
