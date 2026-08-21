@@ -280,6 +280,28 @@
       gap: 9px;
       color: #fff;
     }
+    .header-theme-toggle {
+      min-height: 32px;
+      padding: 5px 9px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 6px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      box-shadow: none;
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .header-theme-toggle:hover,
+    .header-theme-toggle:focus-visible {
+      border-color: rgba(255,255,255,.46);
+      background: rgba(255,255,255,.14);
+      transform: none;
+    }
+    body[data-theme="neo"] .header-theme-toggle {
+      border-color: rgba(0, 228, 255, .38);
+      background: rgba(0, 228, 255, .08);
+      color: var(--ink);
+    }
     .app-franchise {
       font-size: 28px;
       font-weight: 950;
@@ -346,6 +368,9 @@
       gap: 14px;
     }
     .scenario-toolbar-copy {
+      display: none;
+    }
+    body[data-view="simulator"] .scenario-status-toolbar {
       display: none;
     }
     body[data-view="scenario-review"] .toolbar {
@@ -6118,8 +6143,19 @@
       width: min(100%, var(--battle-layout-width));
       justify-self: center;
       display: flex;
+      align-items: center;
       justify-content: center;
+      gap: 10px;
       margin-top: -4px;
+    }
+    .battle-reset {
+      min-height: 38px;
+      padding: 7px 13px;
+      border-color: var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
     }
     .battle-cta {
       min-width: 168px;
@@ -11471,6 +11507,9 @@
       body.battle-setup-ready:not(.battle-results-visible) .battle-cta {
         pointer-events: auto;
       }
+      body.battle-setup-ready:not(.battle-results-visible) .battle-reset {
+        pointer-events: auto;
+      }
       .matrix-cell:has(.matrix-swing) .matrix-value {
         transform: translateX(-5px);
       }
@@ -12388,11 +12427,12 @@
 
     /* Mobile battle layout: clearer hierarchy with fewer nested surfaces. */
     @media (max-width: 900px) {
+      .header-theme-toggle { display: none; }
       header {
         position: relative;
       }
       header h1 {
-        padding-right: 82px;
+        padding-right: 48px;
       }
       .mobile-header-actions {
         position: absolute;
@@ -12421,9 +12461,6 @@
         border-color: rgba(255, 255, 255, .48);
         background: rgba(255, 255, 255, .16);
         transform: none;
-      }
-      body:not([data-view="simulator"]) #mobileReset {
-        display: none;
       }
       body[data-theme="neo"] .mobile-header-actions button {
         border-color: rgba(0, 228, 255, .38);
@@ -12600,7 +12637,7 @@
 
     @media (max-width: 430px) {
       header h1 {
-        padding-right: 76px;
+        padding-right: 44px;
       }
       .mobile-header-actions {
         top: 7px;
@@ -12876,7 +12913,7 @@
         padding-block: 7px;
       }
       header h1 {
-        padding-right: 96px;
+        padding-right: 52px;
       }
       .mobile-header-actions button {
         width: 40px;
@@ -13070,8 +13107,8 @@
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
     <h1 class="app-title-lockup"><span class="app-franchise">Pokémon</span><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
-    <div class="mobile-header-actions" aria-label="Simulator controls">
-      <button id="mobileReset" type="button" title="Reset simulator" aria-label="Reset simulator"><span aria-hidden="true">&#8635;</span></button>
+    <button id="themeToggle" class="header-theme-toggle" type="button">Dark</button>
+    <div class="mobile-header-actions" aria-label="Theme controls">
       <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
     </div>
     <nav class="app-tabs" aria-label="App views">
@@ -13090,31 +13127,13 @@
       <button id="sharedScenarioStartNew" class="secondary" type="button">Start a new scenario</button>
     </div>
     <div id="simulatorView" class="app-view">
-    <div class="toolbar">
+    <div class="toolbar scenario-status-toolbar">
       <div class="scenario-toolbar-copy">
         <strong id="scenarioToolbarTitle">Manual Review</strong>
         <span id="scenarioToolbarSummary">Judge workspace · continuous battle state</span>
       </div>
-      <div class="toolbar-group toolbar-actions">
-        <button id="reset" class="secondary">Reset</button>
-        <button id="themeToggle" class="secondary">Dark</button>
-      </div>
-      <div class="toolbar-group toolbar-preset">
-        <select id="presetMatchup" class="preset-select" title="Quick matchup">
-          <option value="">Quick matchup...</option>
-          <option value="swampert|skarmory">Swampert vs Skarmory</option>
-          <option value="forretress_shadow|machoke_shadow">Shadow Forretress vs Shadow Machoke</option>
-          <option value="sableye_shadow|swampert">Shadow Sableye vs Swampert</option>
-          <option value="sandslash_alolan_shadow|swampert">Shadow Alolan Sandslash vs Swampert</option>
-        </select>
-        <button id="loadPreset" class="secondary">Load</button>
-      </div>
-      <div class="toolbar-group toolbar-filters">
-        <label class="check"><input id="releasedOnly" type="checkbox" checked> Released only</label>
-        <label class="check"><input id="showForms" type="checkbox"> Show duplicate forms</label>
-      </div>
-      <span class="hint" id="counts"></span>
     </div>
+    <span class="battle-catalog-state" id="counts" hidden aria-hidden="true"></span>
 
     <div id="matrixPreview" class="matrix-preview" aria-live="polite"></div>
 
@@ -13343,6 +13362,7 @@
 
     <div class="battle-cta-row">
       <button id="battleCta" class="battle-cta">Battle</button>
+      <button id="reset" class="secondary battle-reset" type="button">Reset</button>
     </div>
 
     <div class="analysis-grid">
@@ -14432,12 +14452,6 @@
         .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
       if (inputSpan) perfDebug.endSpan(inputSpan);
 
-      if (typeof matchMedia === "function" && matchMedia("(max-width: 900px)").matches) {
-        $("releasedOnly").checked = false;
-      }
-
-      $("releasedOnly").onchange = refreshPokemonLists;
-      $("showForms").onchange = refreshPokemonLists;
       setupPokemonPicker("p1");
       setupPokemonPicker("p2");
       document.addEventListener("click", event => {
@@ -14506,9 +14520,7 @@
       $("technicalOriginalBranch").onclick = () => showTechnicalReviewBranch("original");
       $("technicalIssueBranch").onclick = () => showTechnicalReviewBranch("issue");
       $("reset").onclick = resetForManualBattle;
-      $("loadPreset").onclick = loadPresetMatchup;
       $("themeToggle").onclick = toggleTheme;
-      $("mobileReset").onclick = () => $("reset").click();
       $("mobileThemeToggle").onclick = toggleTheme;
       syncMobileThemeControl();
       document.querySelectorAll("[data-view-target]").forEach(button => {
@@ -19351,20 +19363,7 @@
     }
 
     function filteredBaseList() {
-      let list = allPokemon;
-      if (document.body.dataset.view !== "scenario-review" && $("releasedOnly").checked) {
-        list = list.filter(p => p.released);
-      }
-      if (!$("showForms").checked) {
-        const seen = new Set();
-        list = list.filter(p => {
-          const key = p.name.toLowerCase();
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-      }
-      return list;
+      return allPokemon;
     }
 
     function refreshPokemonLists() {
@@ -19990,19 +19989,9 @@
       return Math.max(0, Math.min(100, Math.round(Number(value || 0))));
     }
 
-    function loadPresetMatchup() {
-      const value = $("presetMatchup").value;
-      if (!value) return;
-      const [a, b] = value.split("|");
-      setPokemonSelection("p1", a);
-      setPokemonSelection("p2", b);
-      startBattle();
-    }
-
     function setPokemonSelection(prefix, pokemonId) {
       const select = $(`${prefix}Pokemon`);
       if (![...select.options].some(option => option.value === pokemonId)) {
-        $("showForms").checked = true;
         $(`${prefix}Search`).value = "";
         refreshOnePokemonList(prefix, pokemonId);
       }
@@ -32259,7 +32248,7 @@
       const controlIds = [
         "p1Pokemon", "p1Search", "p1Fast", "p1Charged1", "p1Charged2", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1IvProfile", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
         "p2Pokemon", "p2Search", "p2Fast", "p2Charged1", "p2Charged2", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2IvProfile", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
-        "releasedOnly", "showForms", "timelineZoom", "presetMatchup", "logFilter"
+        "timelineZoom", "logFilter"
       ];
       const controls = {};
       controlIds.forEach(id => {

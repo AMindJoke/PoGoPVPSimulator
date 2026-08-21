@@ -5,6 +5,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
+assert.match(html, /class="app-title-lockup"[\s\S]{0,220}id="themeToggle" class="header-theme-toggle"/, "The desktop theme control must live beside the application logo.");
+assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,180}id="reset" class="secondary battle-reset"/, "Reset must be grouped with the battle action instead of the global header.");
+assert.match(html, /function filteredBaseList\(\)\s*\{\s*return allPokemon;\s*\}/, "Battle selection must always include unreleased Pokemon and duplicate forms.");
+assert.doesNotMatch(html, /id="(?:releasedOnly|showForms|presetMatchup|loadPreset|mobileReset)"/, "The obsolete Battle toolbar, Quick Matchup, duplicate-form filter, released filter, and header reset must be removed.");
 assert.match(html, /src\/battle\/manual-branches\.js[\s\S]{0,150}src\/battle\/scenario-comparison\.js[\s\S]{0,150}src\/battle\/manual-scenario-io\.js/, "Scenario Comparison must load between the branch registry and canonical Scenario IO.");
 assert.match(html, /id="manualScenarioCompare"[^>]+data-scenario-command="compare"[^>]*>[^<]*Create Comparison/, "Scenario controls must expose Create Comparison through the shared desktop/mobile Scenario panel.");
 assert.match(html, /id="scenarioSetupBack"[^>]*>Back to Battle Setup/, "Scenario Review setup must expose a visible way back to the battle setup before a review starts.");
