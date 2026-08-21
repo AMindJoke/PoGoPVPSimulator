@@ -6177,7 +6177,7 @@
       overflow: hidden;
       text-shadow: none;
       box-shadow: 0 3px 0 #0a4a63, 0 6px 14px rgba(10, 74, 99, .35);
-      transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+      transition: transform .12s ease, box-shadow .12s ease;
     }
     .battle-cta::before {
       content: "";
@@ -6192,10 +6192,10 @@
       content: none;
     }
     .battle-cta:hover {
-      background: #1e8fbc;
-      transform: none;
+      background: #1b7fa8;
+      box-shadow: 0 3px 0 #0a4a63, 0 6px 14px rgba(10, 74, 99, .35);
     }
-    .battle-cta:active {
+    .battle-cta:not(:disabled):active {
       transform: translateY(3px);
       box-shadow: 0 0 0 #0a4a63, 0 3px 8px rgba(10, 74, 99, .30);
     }
@@ -6204,10 +6204,10 @@
       outline-offset: 3px;
     }
     .battle-cta:disabled {
-      opacity: .48;
+      opacity: 1;
       cursor: not-allowed;
       transform: none;
-      box-shadow: 0 2px 0 #0a4a63, 0 4px 10px rgba(10, 74, 99, .20);
+      box-shadow: 0 3px 0 #0a4a63, 0 6px 14px rgba(10, 74, 99, .35);
     }
     .battle-btn__icon {
       position: relative;
