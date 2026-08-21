@@ -7411,12 +7411,40 @@
     .manual-bring-next-field { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 850; }
     .manual-bring-next-field select,
     .manual-bring-next-field input { width: 100%; min-height: 36px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); font: inherit; }
+    .manual-bring-next-picker { display: grid; gap: 7px; }
+    .manual-bring-next-candidates { display: grid; gap: 5px; max-height: 205px; padding: 2px; overflow-y: auto; overscroll-behavior: contain; }
+    .manual-bring-next-candidate {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      min-height: 50px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel);
+      color: var(--ink);
+      text-align: left;
+    }
+    .manual-bring-next-candidate[aria-selected="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent); }
+    .manual-bring-next-candidate img { width: 40px; height: 40px; object-fit: contain; }
+    .manual-bring-next-candidate img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 5px rgba(143,79,184,.72)); }
+    .manual-bring-next-candidate span { min-width: 0; }
+    .manual-bring-next-candidate strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .manual-bring-next-candidate small { color: var(--muted); font-size: 9px; }
+    .manual-bring-next-candidate::after { content: "›"; color: var(--muted); font-size: 18px; }
+    .manual-bring-next-empty { margin: 4px 0; padding: 12px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); text-align: center; }
     .manual-bring-next-state { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); }
     .manual-bring-next-state > strong { grid-column: 1 / -1; font-size: 11px; }
     .manual-bring-next-hp-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
     .manual-bring-next-hp-mode button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
     .manual-bring-next-stages { grid-column: 1 / -1; display: grid; gap: 5px; }
     .manual-bring-next-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    @media (max-width: 900px) {
+      .manual-bring-next-candidates { max-height: min(24dvh, 190px); }
+      .manual-bring-next-candidate { min-height: 54px; }
+    }
     .manual-battle-clock {
       color: var(--muted);
       font-size: 9px;
@@ -14097,9 +14125,12 @@
         <button id="manualBringNextClose" class="modal-close" type="button" aria-label="Close Pokémon selector">×</button>
       </div>
       <div class="manual-bring-next-body">
-        <label class="manual-bring-next-field" for="manualBringNextPokemon">Pokémon
-          <select id="manualBringNextPokemon"></select>
-        </label>
+        <div class="manual-bring-next-picker">
+          <label class="manual-bring-next-field" for="manualBringNextSearch">Find a Pokémon
+            <input id="manualBringNextSearch" type="search" placeholder="Name or form" autocomplete="off" aria-controls="manualBringNextCandidates">
+          </label>
+          <div id="manualBringNextCandidates" class="manual-bring-next-candidates" role="listbox" aria-label="Available replacement Pokémon"></div>
+        </div>
         <section class="manual-bring-next-state" aria-labelledby="manualBringNextStateTitle">
           <strong id="manualBringNextStateTitle">Starting state</strong>
           <div class="manual-bring-next-field">
@@ -14871,7 +14902,11 @@
       $("manualBringNextClose").onclick = cancelManualBringNext;
       $("manualBringNextCancel").onclick = cancelManualBringNext;
       $("manualBringNextConfirm").onclick = confirmManualBringNext;
-      $("manualBringNextPokemon").onchange = syncManualBringNextPokemon;
+      $("manualBringNextSearch").oninput = () => {
+        renderManualBringNextCandidates();
+        syncManualBringNextPokemon();
+      };
+      $("manualBringNextSearch").addEventListener("keydown", handleManualBringNextSearchKeydown);
       $("manualBringNextHpFull").onclick = () => setManualBringNextHpMode(true);
       $("manualBringNextHpCustom").onclick = () => setManualBringNextHpMode(false);
       $("manualBringNextModal").addEventListener("click", event => {
@@ -24343,8 +24378,67 @@
       });
     }
 
+    function manualBringNextVisibleCandidates() {
+      const context = manualBringNextContext;
+      if (!context) return [];
+      const query = normalizeSearchText($("manualBringNextSearch")?.value || "");
+      return (context.candidates || []).filter(pokemon => {
+        if (!query) return true;
+        const searchable = normalizeSearchText(`${displayName(pokemon)} ${pokemon.id || ""}`);
+        return searchable.includes(query);
+      }).slice(0, 100);
+    }
+
+    function selectManualBringNextPokemon(pokemonId, { focus = false } = {}) {
+      const context = manualBringNextContext;
+      if (!context || !context.candidates?.some(pokemon => pokemon.id === pokemonId)) return false;
+      context.selectedPokemonId = pokemonId;
+      renderManualBringNextCandidates();
+      syncManualBringNextPokemon();
+      $("manualBringNextConfirm").disabled = false;
+      if (focus) requestAnimationFrame(() => {
+        document.querySelector(`[data-manual-bring-next-pokemon="${CSS.escape(pokemonId)}"]`)?.focus({ preventScroll: true });
+      });
+      return true;
+    }
+
+    function renderManualBringNextCandidates() {
+      const context = manualBringNextContext;
+      const mount = $("manualBringNextCandidates");
+      if (!context || !mount) return;
+      const visible = manualBringNextVisibleCandidates();
+      if (!visible.some(pokemon => pokemon.id === context.selectedPokemonId)) {
+        context.selectedPokemonId = visible[0]?.id || null;
+      }
+      mount.innerHTML = visible.length ? visible.map(pokemon => {
+        const selected = pokemon.id === context.selectedPokemonId;
+        const types = (pokemon.types || []).filter(Boolean).join(" · ") || "Pokémon";
+        return `<button type="button" class="manual-bring-next-candidate" role="option" aria-selected="${selected}" data-manual-bring-next-pokemon="${escapeHtml(pokemon.id)}"><img class="${isShadow(pokemon) ? "shadow-pokemon" : ""}" alt=""><span><strong>${escapeHtml(displayName(pokemon))}</strong><small>${escapeHtml(types)}</small></span></button>`;
+      }).join("") : `<p class="manual-bring-next-empty" role="status">No matching Pokémon.</p>`;
+      mount.querySelectorAll("[data-manual-bring-next-pokemon]").forEach(button => {
+        const pokemon = visible.find(candidate => candidate.id === button.dataset.manualBringNextPokemon);
+        if (pokemon) setPokemonImage(button.querySelector("img"), pokemon);
+        button.onclick = () => selectManualBringNextPokemon(button.dataset.manualBringNextPokemon, { focus: true });
+      });
+      $("manualBringNextConfirm").disabled = !context.selectedPokemonId;
+    }
+
+    function handleManualBringNextSearchKeydown(event) {
+      if (!manualBringNextContext) return;
+      if (event.key === "ArrowDown") {
+        const first = $("manualBringNextCandidates")?.querySelector("[data-manual-bring-next-pokemon]");
+        if (first) {
+          event.preventDefault();
+          first.focus({ preventScroll: true });
+        }
+      } else if (event.key === "Enter" && manualBringNextContext.selectedPokemonId) {
+        event.preventDefault();
+        confirmManualBringNext();
+      }
+    }
+
     function syncManualBringNextPokemon() {
-      const pokemon = findPokemon($("manualBringNextPokemon")?.value);
+      const pokemon = findPokemon(manualBringNextContext?.selectedPokemonId);
       const defaults = pokemon?.defaultIVs?.cp1500 || null;
       const stats = pokemon
         ? statsForIvSpread(pokemon, defaults ? defaults[1] : 0, defaults ? defaults[2] : 15, defaults ? defaults[3] : 15)
@@ -24390,24 +24484,25 @@
       manualBringNextContext = {
         side,
         returnFocus,
+        candidates,
+        selectedPokemonId: candidates[0]?.id || null,
         fullHp: true,
         maxHp: 1,
         attackStage: 0,
         defenseStage: 0
       };
       $("manualBringNextTitle").textContent = `Choose next Pokémon · Side ${side}`;
-      $("manualBringNextPokemon").innerHTML = candidates.map(pokemon =>
-        `<option value="${escapeHtml(pokemon.id)}">${escapeHtml(displayName(pokemon))}</option>`
-      ).join("");
+      $("manualBringNextSearch").value = "";
       $("manualBringNextEnergy").value = "0";
       renderManualBringNextStages();
+      renderManualBringNextCandidates();
       syncManualBringNextPokemon();
       setManualBringNextHpMode(true);
       const modal = $("manualBringNextModal");
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
       $("manualBringNextConfirm").disabled = !candidates.length;
-      requestAnimationFrame(() => $("manualBringNextPokemon")?.focus({ preventScroll: true }));
+      requestAnimationFrame(() => $("manualBringNextSearch")?.focus({ preventScroll: true }));
       return true;
     }
 
@@ -24437,7 +24532,7 @@
         return;
       }
       if (event.key !== "Tab") return;
-      const focusable = [...modal.querySelectorAll("button:not([disabled]), select:not([disabled]), input:not([disabled])")]
+      const focusable = [...modal.querySelectorAll("button:not([disabled]), input:not([disabled])")]
         .filter(element => element.offsetParent !== null);
       if (!focusable.length) return;
       const first = focusable[0];
@@ -24453,7 +24548,7 @@
 
     function confirmManualBringNext() {
       const context = manualBringNextContext;
-      const pokemonId = $("manualBringNextPokemon")?.value;
+      const pokemonId = context?.selectedPokemonId;
       if (!context || !findPokemon(pokemonId)) return false;
       manualIncomingStatePending = {
         side: context.side,
