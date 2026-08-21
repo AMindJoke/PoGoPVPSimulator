@@ -7,6 +7,8 @@ const path = require("node:path");
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 assert.match(html, /src\/battle\/manual-branches\.js[\s\S]{0,150}src\/battle\/scenario-comparison\.js[\s\S]{0,150}src\/battle\/manual-scenario-io\.js/, "Scenario Comparison must load between the branch registry and canonical Scenario IO.");
 assert.match(html, /id="manualScenarioCompare"[^>]+data-scenario-command="compare"[^>]*>[^<]*Create Comparison/, "Scenario controls must expose Create Comparison through the shared desktop/mobile Scenario panel.");
+assert.match(html, /id="scenarioSetupBack"[^>]*>Back to Battle Setup/, "Scenario Review setup must expose a visible way back to the battle setup before a review starts.");
+assert.match(html, /function leaveScenarioReviewSetup\(\)[\s\S]{0,260}scenarioState \|\| manualModeState\?\.enabled/, "The setup escape must leave only before a live review is active.");
 assert.match(html, /function createManualScenarioComparison\(\)[\s\S]{0,2200}COMMAND_TYPE\.CREATE_COMPARISON/, "Create Comparison must use the atomic branch-registry command.");
 assert.match(html, /comparison: manualScenarioComparison/, "Scenario persistence must include the active comparison projection.");
 assert.match(html, /manualScenarioComparison = cloneTechnicalValue\(scenarioDocument\.comparison \|\| null\)/, "Opening a scenario must restore comparison state.");

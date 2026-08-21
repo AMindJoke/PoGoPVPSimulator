@@ -5002,6 +5002,12 @@
       background: #156f8f;
       color: #fff;
     }
+    /* The setup escape is needed on compact/mobile review, where the main
+       navigation is intentionally out of the way. Desktop keeps its normal
+       top navigation and reset controls uncluttered. */
+    @media (min-width: 901px) {
+      #scenarioSetupBack { display: none !important; }
+    }
     .technical-review {
       display: none;
       max-width: none;
@@ -13547,6 +13553,7 @@
             <button id="scenarioAutoMode" class="secondary" type="button" aria-pressed="false">Auto Simulation</button>
           </div>
           <button id="scenarioLockState" class="scenario-lock" type="button">Lock State</button>
+          <button id="scenarioSetupBack" class="secondary" type="button" hidden>Back to Battle Setup</button>
           <button id="scenarioEnd" class="secondary" type="button" hidden>End Scenario</button>
         </div>
       </section>
@@ -14482,6 +14489,7 @@
       $("scenarioManualMode").onclick = () => setScenarioReviewMode("manual");
       $("scenarioAutoMode").onclick = () => setScenarioReviewMode("automatic");
       $("scenarioLockState").onclick = lockScenarioState;
+      $("scenarioSetupBack").onclick = leaveScenarioReviewSetup;
       $("scenarioEnd").onclick = endScenarioReview;
       $("technicalLagMode").onclick = () => setTechnicalReviewMode("one-turn-lag");
       $("technicalDreMode").onclick = () => setTechnicalReviewMode("dre");
@@ -30379,6 +30387,7 @@
       const box = $("scenarioReview");
       const lockButton = $("scenarioLockState");
       const endButton = $("scenarioEnd");
+      const setupBackButton = $("scenarioSetupBack");
       const outcome = scenarioWinnerAndLoser();
       const canLock = !!outcome && battleEnded();
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
@@ -30387,6 +30396,7 @@
       box.hidden = !active;
       box.classList.toggle("active", active);
       if (!active) return;
+      if (setupBackButton) setupBackButton.hidden = true;
       const manualModeButton = $("scenarioManualMode");
       const automaticModeButton = $("scenarioAutoMode");
       const manualSelected = scenarioReviewMode === "manual";
@@ -30414,6 +30424,7 @@
           : "Choose both Pokémon, then press Battle when you want to run the automatic simulation.";
         lockButton.hidden = true;
         endButton.hidden = !scenarioState;
+        if (setupBackButton) setupBackButton.hidden = !!scenarioState || !!manualModeState?.enabled;
         return;
       }
 
@@ -30485,6 +30496,14 @@
       });
       renderScenarioStacks();
       if (options.renderNow !== false) render();
+    }
+
+    function leaveScenarioReviewSetup() {
+      if (document.body.dataset.view !== "scenario-review" || scenarioState || manualModeState?.enabled) return false;
+      endScenarioReview({ renderNow: false });
+      scenarioManualEntryPending = false;
+      setAppView("simulator");
+      return true;
     }
 
     function renderBattleReview() {
