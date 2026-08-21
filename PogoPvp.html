@@ -8646,8 +8646,9 @@
     .timeline-block.switch-event {
       top: -3px;
       height: 28px;
-      min-width: 54px;
-      padding: 1px 5px;
+      min-width: 0;
+      padding: 1px 3px;
+      gap: 0;
       border-radius: 14px;
       border-color: color-mix(in srgb, var(--brand) 65%, var(--line));
       background: color-mix(in srgb, var(--brand) 15%, var(--panel));
@@ -8658,25 +8659,39 @@
       z-index: 7;
     }
     .timeline-block.switch-event img {
-      width: 22px;
-      height: 22px;
+      position: relative;
+      width: 23px;
+      height: 23px;
+      flex: 0 0 23px;
       object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(23,33,47,.2));
     }
+    .timeline-block.switch-event img:first-child { margin-right: -6px; z-index: 1; }
+    .timeline-block.switch-event img:last-child { margin-left: -6px; z-index: 2; }
     .timeline-switch-arrows {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 15px;
-      font-size: 13px;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      margin-inline: -2px;
+      border: 1px solid color-mix(in srgb, var(--brand) 48%, var(--line));
+      border-radius: 50%;
+      background: var(--panel);
+      font-size: 9px;
       font-weight: 900;
       color: var(--brand);
+      line-height: 1;
+      z-index: 3;
     }
     .timeline-scroll.overview-mode .timeline-block.switch-event {
-      min-width: 30px;
-      padding-inline: 3px;
+      min-width: 0;
+      padding-inline: 2px;
     }
-    .timeline-scroll.overview-mode .timeline-block.switch-event img:first-child,
-    .timeline-scroll.overview-mode .timeline-switch-arrows { display: none; }
+    .timeline-scroll.overview-mode .timeline-block.switch-event img { width: 19px; height: 19px; flex-basis: 19px; }
+    .timeline-scroll.overview-mode .timeline-switch-arrows { width: 11px; height: 11px; flex-basis: 11px; font-size: 7px; }
     body.manual-mode-active .timeline-block.charge {
       height: 28px;
       border-radius: 7px;
@@ -33796,7 +33811,7 @@
     function renderSwitchTimelineEvent(event, index, turnPx, chargeSlots) {
       const outgoing = event.outgoingPokemon || findPokemon(event.outgoingPokemonId);
       const incoming = event.incomingPokemon || findPokemon(event.incomingPokemonId);
-      const width = timelineZoomPercent() < 100 ? 32 : 74;
+      const width = timelineZoomPercent() < 100 ? 38 : 46;
       const center = visualTurn(Number(event.start || 0), chargeSlots, false) * turnPx + turnPx / 2;
       const left = Math.max(2, center - width / 2);
       const label = event.label || `${event.outgoingPokemonName || "Pokémon"} switched to ${event.incomingPokemonName || "Pokémon"}`;
