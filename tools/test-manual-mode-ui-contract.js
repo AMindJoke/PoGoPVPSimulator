@@ -6,7 +6,8 @@ const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 assert.match(html, /class="app-title-lockup"[\s\S]{0,220}id="themeToggle" class="header-theme-toggle"/, "The desktop theme control must live beside the application logo.");
-assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,180}id="reset" class="secondary battle-reset"/, "Reset must be grouped with the battle action instead of the global header.");
+assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,700}id="reset" class="secondary battle-reset"/, "Reset must be grouped with the battle action instead of the global header.");
+assert.match(html, /id="battleCta" class="battle-cta"[\s\S]{0,220}class="battle-btn__icon"[\s\S]{0,320}class="battle-btn__label">Battle/, "The Battle action must use its distinct lightning icon and protected text layer.");
 assert.match(html, /function filteredBaseList\(\)\s*\{\s*return allPokemon;\s*\}/, "Battle selection must always include unreleased Pokemon and duplicate forms.");
 assert.doesNotMatch(html, /id="(?:releasedOnly|showForms|presetMatchup|loadPreset|mobileReset)"/, "The obsolete Battle toolbar, Quick Matchup, duplicate-form filter, released filter, and header reset must be removed.");
 assert.match(html, /src\/battle\/manual-branches\.js[\s\S]{0,150}src\/battle\/scenario-comparison\.js[\s\S]{0,150}src\/battle\/manual-scenario-io\.js/, "Scenario Comparison must load between the branch registry and canonical Scenario IO.");

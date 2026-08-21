@@ -6158,95 +6158,80 @@
       font-weight: 850;
     }
     .battle-cta {
-      min-width: 168px;
-      min-height: 44px;
-      padding: 8px 24px 8px 18px;
-      border-radius: 999px;
-      border: 2px solid var(--battle-border);
-      background: var(--battle-bg);
-      color: var(--battle-ink);
-      font-size: 16px;
-      font-weight: 850;
-      letter-spacing: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      text-transform: none;
-      box-shadow:
-        0 5px 0 var(--battle-shadow-edge),
-        0 10px 18px rgba(23, 33, 47, .18),
-        inset 0 1px 0 rgba(255, 255, 255, .46);
+      gap: 10px;
+      min-width: 168px;
+      min-height: 48px;
+      padding: 13px 28px;
+      border: 0;
+      border-radius: 999px;
+      background: #1b7fa8;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .01em;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
       text-shadow: none;
+      box-shadow: 0 3px 0 #0a4a63, 0 6px 14px rgba(10, 74, 99, .35);
+      transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
     }
     .battle-cta::before {
       content: "";
-      width: 24px;
-      height: 24px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      background:
-        radial-gradient(circle at 50% 50%, #f7c51d 0 13%, transparent 14%),
-        linear-gradient(90deg, transparent 0 27%, rgba(247, 197, 29, .95) 27% 35%, transparent 35% 65%, rgba(247, 197, 29, .95) 65% 73%, transparent 73%),
-        linear-gradient(0deg, transparent 0 27%, rgba(247, 197, 29, .95) 27% 35%, transparent 35% 65%, rgba(247, 197, 29, .95) 65% 73%, transparent 73%),
-        #12374a;
-      border: 2px solid #102532;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.18),
-        inset 0 -2px 0 rgba(0,0,0,.18);
-      transform: rotate(45deg);
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: rgba(255, 255, 255, .14);
+      clip-path: ellipse(82% 70% at 50% 0%);
+      pointer-events: none;
     }
     .battle-cta::after {
       content: none;
     }
     .battle-cta:hover {
-      background: var(--battle-bg-hover);
-      transform: translateY(-1px);
-      box-shadow:
-        0 6px 0 var(--battle-shadow-edge),
-        0 12px 20px rgba(23, 33, 47, .20),
-        inset 0 1px 0 rgba(255, 255, 255, .50);
+      background: #1e8fbc;
+      transform: none;
+    }
+    .battle-cta:active {
+      transform: translateY(3px);
+      box-shadow: 0 0 0 #0a4a63, 0 3px 8px rgba(10, 74, 99, .30);
+    }
+    .battle-cta:focus-visible {
+      outline: 2px solid #4ce0d2;
+      outline-offset: 3px;
     }
     .battle-cta:disabled {
       opacity: .48;
       cursor: not-allowed;
       transform: none;
-      box-shadow:
-        0 3px 0 var(--battle-shadow-edge),
-        0 6px 14px rgba(23, 33, 47, .12),
-        inset 0 1px 0 rgba(255, 255, 255, .30);
+      box-shadow: 0 2px 0 #0a4a63, 0 4px 10px rgba(10, 74, 99, .20);
     }
-    body[data-theme="dark"] .battle-cta {
-      box-shadow:
-        0 5px 0 var(--battle-shadow-edge),
-        0 0 18px rgba(255, 198, 42, .14),
-        0 12px 24px rgba(0, 0, 0, .30),
-        inset 0 1px 0 rgba(255, 255, 255, .46);
+    .battle-btn__icon {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .16);
     }
-    body[data-theme="dark"] .battle-cta:hover {
-      box-shadow:
-        0 6px 0 var(--battle-shadow-edge),
-        0 0 24px rgba(255, 198, 42, .20),
-        0 14px 28px rgba(0, 0, 0, .34),
-        inset 0 1px 0 rgba(255, 255, 255, .52);
+    .battle-btn__icon svg {
+      width: 18px;
+      height: 18px;
     }
+    .battle-btn__label {
+      position: relative;
+      z-index: 1;
+    }
+    body[data-theme="dark"] .battle-cta,
     body[data-theme="neo"] .battle-cta {
-      box-shadow:
-        0 5px 0 #6f3f00,
-        0 0 20px rgba(255, 204, 0, .22),
-        0 12px 24px rgba(0, 0, 0, .32),
-        inset 0 1px 0 rgba(255, 255, 255, .52);
-    }
-    body[data-theme="neo"] .battle-cta:hover {
-      box-shadow:
-        0 6px 0 #6f3f00,
-        0 0 26px rgba(255, 204, 0, .30),
-        0 14px 28px rgba(0, 0, 0, .34),
-        inset 0 1px 0 rgba(255, 255, 255, .56);
+      box-shadow: 0 3px 0 #07394d, 0 7px 18px rgba(0, 0, 0, .34);
     }
     .timeline-head {
       display: flex;
@@ -11520,10 +11505,14 @@
         font-size: 13px;
         gap: 7px;
       }
-      .battle-cta::before {
+      .battle-btn__icon {
         width: 20px;
         height: 20px;
-        border-width: 2px;
+        flex-basis: 20px;
+      }
+      .battle-btn__icon svg {
+        width: 15px;
+        height: 15px;
       }
       .key-numbers {
         display: flex;
@@ -12121,10 +12110,14 @@
         font-size: 12px;
         gap: 6px;
       }
-      .battle-cta::before {
+      .battle-btn__icon {
         width: 18px;
         height: 18px;
-        border-width: 2px;
+        flex-basis: 18px;
+      }
+      .battle-btn__icon svg {
+        width: 13px;
+        height: 13px;
       }
       .key-numbers {
         gap: 5px;
@@ -13361,7 +13354,14 @@
     </div>
 
     <div class="battle-cta-row">
-      <button id="battleCta" class="battle-cta">Battle</button>
+      <button id="battleCta" class="battle-cta" type="button">
+        <span class="battle-btn__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" focusable="false">
+            <path d="M13 2 L5 14 H11 L9 22 L19 9 H13 L13 2 Z" fill="currentColor"></path>
+          </svg>
+        </span>
+        <span class="battle-btn__label">Battle</span>
+      </button>
       <button id="reset" class="secondary battle-reset" type="button">Reset</button>
     </div>
 
