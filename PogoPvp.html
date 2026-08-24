@@ -95,6 +95,12 @@
       --meta-brand-accent: #d6ad39;
       --app-visual-viewport-height: 100dvh;
       --app-keyboard-inset: 0px;
+      --ui-radius-control: 7px;
+      --ui-radius-surface: 9px;
+      --ui-radius-dialog: 12px;
+      --ui-motion-fast: 140ms ease;
+      --ui-motion-standard: 180ms ease;
+      --ui-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
     }
     body[data-theme="dark"] {
       --bg: #111822;
@@ -2977,11 +2983,13 @@
       display: none;
       max-height: 240px;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
       padding: 5px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--ui-radius-surface);
       background: var(--panel);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 28px color-mix(in srgb, var(--ink) 14%, transparent);
       z-index: 80;
     }
     .pokemon-picker.open .pokemon-suggestions {
@@ -2996,12 +3004,13 @@
       min-height: 34px;
       padding: 4px 6px;
       border: 1px solid transparent;
-      border-radius: 7px;
+      border-radius: var(--ui-radius-control);
       background: transparent;
       color: var(--ink);
       text-align: left;
       font-weight: 800;
       cursor: pointer;
+      transition: background-color var(--ui-motion-fast), border-color var(--ui-motion-fast);
     }
     .pokemon-suggestion:hover,
     .pokemon-suggestion.active {
@@ -3600,10 +3609,10 @@
       margin-top: 9px;
       background: var(--soft);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--ui-radius-surface);
       padding: 10px;
       position: relative;
-      transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+      transition: box-shadow var(--ui-motion-standard), border-color var(--ui-motion-standard), transform var(--ui-motion-standard);
     }
     .battle-kicker {
       margin-bottom: 8px;
@@ -3621,8 +3630,8 @@
       font: inherit;
       cursor: pointer;
       font-weight: 600;
-      border-radius: 6px;
-      transition: background-color .14s ease, border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+      border-radius: var(--ui-radius-control);
+      transition: background-color var(--ui-motion-fast), border-color var(--ui-motion-fast), box-shadow var(--ui-motion-fast), transform var(--ui-motion-fast);
     }
     button:hover {
       background: var(--accent-dark);
@@ -7480,14 +7489,16 @@
       background: var(--panel);
       color: var(--ink);
       text-align: left;
+      transition: background-color var(--ui-motion-fast), border-color var(--ui-motion-fast), box-shadow var(--ui-motion-fast);
     }
     .manual-bring-next-candidate[aria-selected="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent); }
     .manual-bring-next-candidate img { width: 40px; height: 40px; object-fit: contain; }
     .manual-bring-next-candidate img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 5px rgba(143,79,184,.72)); }
     .manual-bring-next-candidate span { min-width: 0; }
     .manual-bring-next-candidate strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-    .manual-bring-next-candidate small { color: var(--muted); font-size: 9px; }
+    .manual-bring-next-candidate small { color: var(--muted); font-size: 10px; }
     .manual-bring-next-candidate::after { content: "›"; color: var(--muted); font-size: 18px; }
+    .manual-bring-next-candidate[aria-selected="true"]::after { content: "✓"; color: var(--accent); font-size: 14px; font-weight: 950; }
     .manual-bring-next-empty { margin: 4px 0; padding: 12px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); text-align: center; }
     .manual-bring-next-state { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); }
     .manual-bring-next-state > strong { grid-column: 1 / -1; font-size: 11px; }
@@ -7526,7 +7537,7 @@
     .manual-switch-icon { width: 16px; height: 16px; flex: 0 0 auto; }
     .manual-switch-modal .modal-card { width: min(520px, 100%); }
     .manual-switch-copy { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
-    .manual-switch-candidates { display: grid; gap: 8px; margin: 12px 0; max-height: min(52vh, 430px); overflow: auto; }
+    .manual-switch-candidates { display: grid; gap: 8px; margin: 12px 0; max-height: min(52vh, 430px); overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
     .manual-switch-candidate {
       display: grid;
       grid-template-columns: 52px minmax(0, 1fr) auto;
@@ -7540,8 +7551,9 @@
       background: var(--panel);
       color: var(--ink);
       text-align: left;
+      transition: background-color var(--ui-motion-fast), border-color var(--ui-motion-fast), box-shadow var(--ui-motion-fast);
     }
-    .manual-switch-candidate[aria-checked="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+    .manual-switch-candidate[aria-checked="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
     .manual-switch-candidate img { width: 48px; height: 48px; object-fit: contain; }
     .manual-switch-candidate span { display: grid; gap: 2px; }
     .manual-switch-candidate strong { font-size: 12px; }
@@ -9386,7 +9398,7 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 10px;
-      border-radius: 8px;
+      border-radius: var(--ui-radius-dialog);
     }
     .shared-scenario-error[hidden] { display: none; }
     .shared-scenario-error button { flex: 0 0 auto; }
@@ -11918,8 +11930,18 @@
       .analysis-hero {
         grid-template-columns: 80px minmax(0, 1fr);
         gap: 9px 12px;
-        padding: 14px;
-      }
+      padding: 14px;
+    }
+    :where(button, input, select, textarea, [tabindex]):focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--accent) 72%, #fff);
+      outline-offset: 2px;
+      box-shadow: var(--ui-focus-ring);
+    }
+    :where(.hp-value, .energy-value, .manual-battle-clock, .manual-state-input-shell input,
+      .timeline-time-label, .timeline-ruler, .move-stat, .pokemon-detail-stat strong,
+      .team-matchup-score, .meta-score, output) {
+      font-variant-numeric: tabular-nums;
+    }
       .analysis-hero-sprite { width: 78px; height: 78px; }
       .analysis-hero h2 { margin-top: 3px; font-size: 25px; }
       .analysis-hero-kicker { font-size: 10px; }
