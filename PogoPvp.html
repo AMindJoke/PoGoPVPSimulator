@@ -45,8 +45,8 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/manual-battle-timing.js?v=20260821-post-charged-switch"></script>
-  <script src="src/battle/manual-switching.js?v=20260821-post-charged-switch"></script>
+  <script src="src/battle/manual-battle-timing.js?v=20260824-post-charged-actor"></script>
+  <script src="src/battle/manual-switching.js?v=20260824-post-charged-actor"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js?v=20260821-switching"></script>
   <script src="src/battle/manual-runtime.js?v=20260821-switching"></script>
@@ -15013,7 +15013,7 @@
       manualBattleTiming = api.openPostChargedSwitchWindow(syncManualBattleTiming(), {
         turn: Number(chargeEvent.start || 0),
         sourceEventId: chargeEvent.timelineEventId || chargeEvent.id || null,
-        eligibleSides: ["A", "B"]
+        chargedAttackActor: chargeEvent.trainer
       });
       return manualBattleTiming;
     }
@@ -23489,7 +23489,7 @@
       if (reason === window.PvPeakManualSwitching?.REASON?.FAINTED_ACTIVE) return "Use Bring next Pokémon";
       if (reason === window.PvPeakManualSwitching?.REASON?.BATTLE_ENDED) return "Battle complete";
       if (reason === window.PvPeakManualSwitching?.REASON?.NO_BENCH) return "No living bench Pokémon";
-      if (legality?.legal && legality.postCharged) return "Free switch after Charged Attack";
+      if (legality?.legal && legality.postCharged) return "Free switch after your Charged Attack";
       return legality?.legal ? "Choose a bench Pokémon · 1 turn" : "Unavailable now";
     }
 

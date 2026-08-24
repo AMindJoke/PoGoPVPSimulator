@@ -28,8 +28,14 @@
     const eligibleSides = Array.isArray(sourceWindow?.eligibleSides)
       ? sourceWindow.eligibleSides.filter(side => SIDES.includes(side))
       : [];
+    const chargedAttackActor = SIDES.includes(sourceWindow?.chargedAttackActor)
+      ? sourceWindow.chargedAttackActor
+      : eligibleSides.length === 1
+        ? eligibleSides[0]
+        : null;
+    const actorEligible = chargedAttackActor && eligibleSides.includes(chargedAttackActor);
     return {
-      version: 2,
+      version: 3,
       canonicalTurn,
       chargedSequenceMs,
       elapsedBattleMs,
@@ -37,10 +43,11 @@
         A: Math.max(0, number(input.nextSwitchAvailableAtMs?.A)),
         B: Math.max(0, number(input.nextSwitchAvailableAtMs?.B))
       },
-      postChargedSwitchWindow: eligibleSides.length ? {
+      postChargedSwitchWindow: actorEligible ? {
         turn: Math.max(0, number(sourceWindow.turn, canonicalTurn)),
         sourceEventId: sourceWindow.sourceEventId || null,
-        eligibleSides
+        chargedAttackActor,
+        eligibleSides: [chargedAttackActor]
       } : null
     };
   }
@@ -78,19 +85,24 @@
 
   function openPostChargedSwitchWindow(state, input = {}) {
     const next = createState(state);
-    const eligibleSides = (Array.isArray(input.eligibleSides) ? input.eligibleSides : SIDES)
-      .filter(side => SIDES.includes(side));
-    next.postChargedSwitchWindow = eligibleSides.length ? {
+    const chargedAttackActor = SIDES.includes(input.chargedAttackActor)
+      ? input.chargedAttackActor
+      : SIDES.includes(input.actorSide)
+        ? input.actorSide
+        : null;
+    next.postChargedSwitchWindow = chargedAttackActor ? {
       turn: Math.max(0, number(input.turn, next.canonicalTurn)),
       sourceEventId: input.sourceEventId || null,
-      eligibleSides: [...new Set(eligibleSides)]
+      chargedAttackActor,
+      eligibleSides: [chargedAttackActor]
     } : null;
     return next;
   }
 
   function postChargedSwitchEligible(state, side) {
     if (!SIDES.includes(side)) return false;
-    return createState(state).postChargedSwitchWindow?.eligibleSides.includes(side) === true;
+    const window = createState(state).postChargedSwitchWindow;
+    return window?.chargedAttackActor === side && window.eligibleSides.includes(side);
   }
 
   function consumePostChargedSwitch(state, side) {

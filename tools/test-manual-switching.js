@@ -4,8 +4,8 @@ const assert = require("node:assert/strict");
 const Timing = require("../src/battle/manual-battle-timing.js");
 const Switching = require("../src/battle/manual-switching.js");
 
-const pokemon = (id, hp, energy, attackStage = 0, defenseStage = 0) => ({
-  trainer: "A", p: { id, name: id }, hp, maxHp: 150, energy, attackStage, defenseStage
+const pokemon = (id, hp, energy, attackStage = 0, defenseStage = 0, trainer = "A") => ({
+  trainer, p: { id, name: id }, hp, maxHp: 150, energy, attackStage, defenseStage
 });
 const active = pokemon("talonflame", 91, 44, 2, -1);
 let switchState = Switching.createState();
@@ -35,7 +35,11 @@ legal = Switching.legality({ side: "A", active: switched.active, switchState: sw
 assert.equal(legal.reason, Switching.REASON.COOLDOWN);
 assert.equal(Switching.legality({ side: "A", active: { ...active, hp: 0 }, switchState, timing, actionReady: true }).reason, Switching.REASON.FAINTED_ACTIVE);
 
-const postChargedTiming = Timing.openPostChargedSwitchWindow(timing, { turn: 20, sourceEventId: "charge-1" });
+const postChargedTiming = Timing.openPostChargedSwitchWindow(timing, {
+  turn: 20,
+  sourceEventId: "charge-1",
+  chargedAttackActor: "A"
+});
 const postChargedLegal = Switching.legality({ side: "A", active, switchState, timing: postChargedTiming, actionReady: true });
 assert.equal(postChargedLegal.postCharged, true);
 assert.equal(postChargedLegal.turnCost, 0);
@@ -43,7 +47,71 @@ const freeSwitch = Switching.switchActive({ side: "A", active, incomingId: "azum
 assert.equal(freeSwitch.turnCost, 0, "a voluntary switch at the end of a Charged Attack costs zero turns");
 assert.equal(freeSwitch.postCharged, true);
 assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "A"), false);
-assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "B"), true, "the opponent keeps its independent post-Charged opportunity");
+assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "B"), false, "the Charged Attack receiver never receives a free switch window");
 assert.equal(Timing.remainingSwitchMs(freeSwitch.timing, "A"), 45000, "a zero-turn switch still starts the normal cooldown");
+
+let receiverSwitchState = Switching.createState();
+const receiver = pokemon("lickilicky", 130, 40, 0, 0, "B");
+const receiverBench = pokemon("froslass", 111, 12, 0, 0, "B");
+receiverSwitchState = Switching.addBenchPokemon(receiverSwitchState, "B", receiver, receiverBench);
+const receiverLegal = Switching.legality({
+  side: "B",
+  active: receiver,
+  switchState: receiverSwitchState,
+  timing: postChargedTiming,
+  actionReady: true,
+  shielded: false
+});
+assert.equal(receiverLegal.postCharged, false, "receiving an unshielded Charged Attack does not grant a free switch");
+assert.equal(receiverLegal.turnCost, 1, "the receiver's switch costs exactly one turn");
+const shieldedReceiverLegal = Switching.legality({
+  side: "B",
+  active: receiver,
+  switchState: receiverSwitchState,
+  timing: postChargedTiming,
+  actionReady: true,
+  shielded: true
+});
+assert.equal(shieldedReceiverLegal.turnCost, 1, "shielding does not change receiver switch timing");
+const receiverSwitch = Switching.switchActive({
+  side: "B",
+  active: receiver,
+  incomingId: "froslass",
+  switchState: receiverSwitchState,
+  timing: postChargedTiming
+});
+assert.equal(receiverSwitch.turnCost, 1);
+assert.equal(receiverSwitch.postCharged, false);
+const receiverAfterTurn = Timing.advanceToTurn(receiverSwitch.timing, 21);
+assert.equal(receiverAfterTurn.elapsedBattleMs - receiverSwitch.timing.elapsedBattleMs, Timing.TURN_DURATION_MS, "the switch action advances deterministic time by one turn");
+assert.equal(Timing.remainingSwitchMs(receiverAfterTurn, "B"), 44500, "the consumed turn progresses the 45 second switch cooldown");
+
+const shieldedOwnWindow = Timing.openPostChargedSwitchWindow(timing, {
+  turn: 20,
+  sourceEventId: "charge-shielded",
+  chargedAttackActor: "A",
+  shielded: true
+});
+assert.equal(Switching.legality({ side: "A", active, switchState, timing: shieldedOwnWindow, actionReady: true }).turnCost, 0, "the actor keeps its free switch even when the target shields");
+
+const plannedActive = { ...active, timingPlanMoveId: "FLAME_CHARGE", timingPlanFastMovesRemaining: 2, fastMoveCycleProgress: 1 };
+let progressState = Switching.createState();
+progressState = Switching.addBenchPokemon(progressState, "A", plannedActive, {
+  ...pokemon("azumarill", 120, 35),
+  timingPlanMoveId: "PLAY_ROUGH",
+  timingPlanFastMovesRemaining: 1,
+  fastMoveCycleProgress: 1
+});
+const resetProgress = Switching.switchActive({
+  side: "A",
+  active: plannedActive,
+  incomingId: "azumarill",
+  switchState: progressState,
+  timing
+});
+assert.equal(resetProgress.active.fastMoveCycleProgress, 0, "an incoming Pokémon never resumes partial Fast Attack progress");
+assert.equal(resetProgress.active.timingPlanMoveId, null);
+assert.equal(resetProgress.switchState.A.bench[0].fastMoveCycleProgress, 0, "the outgoing Pokémon discards partial Fast Attack progress");
+assert.equal(resetProgress.switchState.A.bench[0].timingPlanFastMovesRemaining, 0);
 
 console.log("Manual voluntary switching tests passed.");

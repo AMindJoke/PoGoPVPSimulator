@@ -48,6 +48,16 @@
     return ids.size;
   }
 
+  function resetFastCycleState(combatant) {
+    if (!combatant) return combatant;
+    combatant.timingPlanMoveId = null;
+    combatant.timingPlanFastMovesRemaining = 0;
+    if (Object.prototype.hasOwnProperty.call(combatant, "fastMoveCycleProgress")) {
+      combatant.fastMoveCycleProgress = 0;
+    }
+    return combatant;
+  }
+
   function legality(input = {}) {
     const side = input.side;
     if (!SIDES.includes(side)) return { legal: false, reason: REASON.INVALID_SIDE, remainingMs: Infinity };
@@ -81,6 +91,8 @@
     if (index < 0) throw new Error(REASON.INVALID_TARGET);
     const outgoing = clone(input.active);
     const incoming = clone(bench[index]);
+    resetFastCycleState(outgoing);
+    resetFastCycleState(incoming);
     // Pokémon GO clears temporary Attack and Defense stages when a Pokémon leaves play.
     outgoing.attackStage = 0;
     outgoing.defenseStage = 0;
