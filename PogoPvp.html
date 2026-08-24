@@ -93,6 +93,8 @@
       --battle-shadow-edge: #202638;
       --meta-brand-bg: linear-gradient(125deg, #102532 0%, #123747 62%, #174b59 100%);
       --meta-brand-accent: #d6ad39;
+      --app-visual-viewport-height: 100dvh;
+      --app-keyboard-inset: 0px;
     }
     body[data-theme="dark"] {
       --bg: #111822;
@@ -12514,6 +12516,43 @@
       }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-controls-shell {
         scroll-behavior: auto;
+      }
+    }
+
+    @media (max-width: 900px) {
+      html,
+      body {
+        scroll-padding-bottom: calc(20px + var(--app-keyboard-inset, 0px));
+      }
+      input[type="text"],
+      input[type="search"],
+      input[type="number"],
+      input[type="email"],
+      input[type="url"],
+      input[type="tel"],
+      textarea,
+      select {
+        font-size: max(16px, 1em);
+      }
+      .modal.open {
+        height: var(--app-visual-viewport-height, 100dvh);
+        max-height: var(--app-visual-viewport-height, 100dvh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+      .modal.open > .modal-card {
+        max-height: calc(var(--app-visual-viewport-height, 100dvh) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
+        scroll-padding-bottom: calc(16px + var(--app-keyboard-inset, 0px));
+      }
+      .manual-bring-next-modal .modal-card,
+      .manual-switch-modal .modal-card {
+        max-height: calc(var(--app-visual-viewport-height, 100dvh) - env(safe-area-inset-top, 0px));
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell {
+        max-height: calc(var(--app-visual-viewport-height, 100dvh) - env(safe-area-inset-top, 0px) - 8px);
+      }
+      body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell[data-state="expanded"] {
+        height: min(88dvh, calc(var(--app-visual-viewport-height, 100dvh) - env(safe-area-inset-top, 0px) - 8px));
       }
     }
 
@@ -35123,15 +35162,57 @@
       return String(text).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     }
 
-    init();
-
-    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+    if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
     }
+
+    (function initMobileViewportSupport() {
+      if (typeof document === "undefined" || typeof window === "undefined" || !document.documentElement || !document.body) return;
+      const root = document.documentElement;
+      const mobileQuery = window.matchMedia("(max-width: 900px)");
+      let focusTimer = 0;
+
+      function syncMobileViewport() {
+        const viewport = window.visualViewport;
+        const height = Math.max(1, Math.round(viewport ? viewport.height : window.innerHeight));
+        const offsetTop = viewport ? Math.max(0, Math.round(viewport.offsetTop)) : 0;
+        const keyboardInset = viewport
+          ? Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
+          : 0;
+        root.style.setProperty("--app-visual-viewport-height", `${height}px`);
+        root.style.setProperty("--app-keyboard-inset", `${keyboardInset}px`);
+        root.style.setProperty("--app-visual-viewport-offset", `${offsetTop}px`);
+        document.body.classList.toggle("mobile-keyboard-open", mobileQuery.matches && keyboardInset > 100);
+      }
+
+      function keepFocusedControlVisible(event) {
+        if (!mobileQuery.matches || !event.target.matches("input, textarea, [contenteditable='true']")) return;
+        window.clearTimeout(focusTimer);
+        focusTimer = window.setTimeout(() => {
+          const viewport = window.visualViewport;
+          const viewportTop = viewport ? viewport.offsetTop : 0;
+          const viewportBottom = viewportTop + (viewport ? viewport.height : window.innerHeight);
+          const rect = event.target.getBoundingClientRect();
+          if (rect.top < viewportTop + 12 || rect.bottom > viewportBottom - 16) {
+            event.target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
+          }
+        }, 180);
+      }
+
+      syncMobileViewport();
+      window.addEventListener("resize", syncMobileViewport, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", syncMobileViewport, { passive: true });
+        window.visualViewport.addEventListener("scroll", syncMobileViewport, { passive: true });
+      }
+      document.addEventListener("focusin", keepFocusedControlVisible);
+    })();
+
+    init();
   </script>
 </body>
 </html>
