@@ -11458,6 +11458,15 @@
         min-height: 44px;
         padding: 6px 7px;
       }
+      body.manual-mode-active .manual-editor-actions .manual-switch-control > button {
+        flex: 0 0 80px;
+        width: 80px;
+        min-width: 80px;
+        padding-inline: 7px;
+        overflow: hidden;
+        font-size: 14px;
+        white-space: nowrap;
+      }
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell .actions button[id*="UseCharge"]:disabled,
       body[data-view="scenario-review"].manual-mode-active .manual-mobile-bottom-sheet-shell .actions button[id*="UseCharge"].build-available {
         display: none;
@@ -11528,6 +11537,7 @@
       }
       body.manual-mode-active .manual-runtime-toolbar {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 7px;
         padding: 8px;
         border: 1px solid var(--line);
@@ -11539,12 +11549,17 @@
       }
       body.manual-mode-active .manual-history-actions {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 6px;
       }
       body.manual-mode-active .manual-history-actions button,
       body.manual-mode-active #manualModeExit {
+        min-width: 0;
         min-height: 44px;
+        padding-inline: 6px;
+        overflow: hidden;
+        font-size: 12px;
+        white-space: nowrap;
       }
       body.manual-mode-active #manualBranchSelect {
         width: 100%;
