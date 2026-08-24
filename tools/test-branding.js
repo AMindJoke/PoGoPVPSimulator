@@ -13,12 +13,13 @@ const mark = fs.readFileSync(path.join(root, "assets", "go-pvp-mark.png"));
 
 assert.match(html, /<title>GO PvP Simulator<\/title>/);
 assert.match(html, /apple-mobile-web-app-title" content="GO PvP Simulator"/);
-assert.match(html, /class="app-brand-mark"[^>]+src="assets\/go-pvp-mark\.png"[^>]+alt=""[^>]+aria-hidden="true"/);
-assert.match(html, /class="app-franchise">GO<\/span><span class="app-wordmark">PvP <small>Simulator<\/small>/);
+assert.match(html, /class="app-go-lockup" aria-label="GO"[^>]*>[\s\S]{0,260}class="app-brand-mark"[^>]+src="assets\/go-pvp-mark\.png"[^>]+alt=""[^>]+aria-hidden="true"/);
+assert.match(html, /class="app-franchise" aria-hidden="true">O<\/span><\/span><span class="app-wordmark">PvP <small>Simulator<\/small>/);
+assert.match(html, /\.app-go-lockup\s*\{[\s\S]{0,150}gap: 2px;/);
 assert.match(html, /\.app-brand-mark\s*\{[\s\S]{0,180}width: 32px;[\s\S]{0,100}height: 32px;/);
 assert.match(html, /\.app-brand-mark\s*\{[\s\S]{0,260}border-radius: 50%;[\s\S]{0,90}background: rgba\(255, 255, 255, \.94\);/, "The dark mark must use a deliberate circular contrast surface, never a rectangular image background.");
 assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,900}\.app-brand-mark \{ width: 30px; height: 30px; flex-basis: 30px; \}/);
-assert.doesNotMatch(html, /class="app-franchise">Pokémon<\/span>/);
+assert.doesNotMatch(html, /class="app-franchise">(?:Pokémon|GO)<\/span>/);
 assert.match(index, /<title>GO PvP Simulator<\/title>/);
 assert.equal(manifest.name, "GO PvP Simulator");
 assert.equal(manifest.short_name, "GO PvP Simulator");

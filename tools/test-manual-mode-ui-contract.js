@@ -6,8 +6,8 @@ const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 assert.match(html, /class="app-title-lockup"[\s\S]{0,420}id="themeToggle" class="header-theme-toggle"/, "The desktop theme control must live beside the application logo.");
-assert.match(html, /class="app-brand-mark"[^>]+src="assets\/go-pvp-mark\.png"[^>]+alt=""[^>]+aria-hidden="true"/, "The GO mark must be decorative and use the prepared project asset.");
-assert.match(html, /class="app-franchise">GO<\/span><span class="app-wordmark">PvP <small>Simulator<\/small>/, "The visible product lockup must read GO PvP Simulator.");
+assert.match(html, /class="app-go-lockup" aria-label="GO"[^>]*>[\s\S]{0,260}class="app-brand-mark"[^>]+src="assets\/go-pvp-mark\.png"[^>]+alt=""[^>]+aria-hidden="true"/, "The GO mark must replace the visible G while remaining decorative inside an accessible GO lockup.");
+assert.match(html, /class="app-franchise" aria-hidden="true">O<\/span><\/span><span class="app-wordmark">PvP <small>Simulator<\/small>/, "The visible product lockup must use the mark as the G in GO PvP Simulator.");
 assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,700}id="reset" class="secondary battle-reset"/, "Reset must be grouped with the battle action instead of the global header.");
 assert.match(html, /id="battleCta" class="battle-cta"[\s\S]{0,220}class="battle-btn__icon"[\s\S]{0,320}class="battle-btn__label">Battle/, "The Battle action must use its distinct lightning icon and protected text layer.");
 assert.match(html, /function filteredBaseList\(\)\s*\{\s*return allPokemon;\s*\}/, "Battle selection must always include unreleased Pokemon and duplicate forms.");
