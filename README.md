@@ -1,4 +1,4 @@
-# Pokemon GO PvP Simulator
+# GO PvP Simulator
 
 Browser-based Pokémon GO PvP battle simulator and manual scenario review workspace.
 

@@ -39,6 +39,7 @@
     "test:manual-battle-timing": "node tools/test-manual-battle-timing.js",
     "test:manual-switching": "node tools/test-manual-switching.js",
     "test:post-charged-switch": "node tools/test-post-charged-switch-timing.js",
+    "test:branding": "node tools/test-branding.js",
     "test:turn-engine": "node tools/test-turn-resolution-engine.js",
     "test:manual-mode": "node tools/test-manual-mode-model.js && node tools/test-manual-mode-legality.js && node tools/test-manual-mode-runtime.js && node tools/test-manual-mode-charged.js && node tools/test-manual-mode-timeline-editing.js && node tools/test-manual-mode-branching.js && node tools/test-scenario-comparison-model.js && node tools/test-manual-mode-import-export.js && node tools/test-manual-scenario-share.js && node tools/test-manual-scenario-share-robustness.js && node tools/test-manual-mode-snapshots.js && node tools/test-manual-mode-hybrid.js && node tools/test-manual-mode-ui-contract.js",
     "test:manual-mode-legality": "node tools/test-manual-mode-legality.js",

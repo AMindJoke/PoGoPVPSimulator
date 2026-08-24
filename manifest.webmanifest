@@ -1,7 +1,7 @@
 {
   "id": "./PogoPvp.html",
-  "name": "Pokémon GO PvP Simulator",
-  "short_name": "PvP Simulator",
+  "name": "GO PvP Simulator",
+  "short_name": "GO PvP Simulator",
   "description": "Judge-focused Pokémon GO PvP tools for battle review, mechanics reference, simulation and team building.",
   "start_url": "./PogoPvp.html",
   "scope": "./",
