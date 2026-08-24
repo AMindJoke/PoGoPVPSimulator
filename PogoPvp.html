@@ -13698,22 +13698,23 @@
       color: var(--ink);
       box-shadow: 0 7px 20px color-mix(in srgb, var(--tool-accent) 8%, var(--shadow));
       text-align: left;
+      touch-action: manipulation;
       transform: translateY(0);
-      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+      transition: background-color var(--ui-motion-standard), border-color var(--ui-motion-standard), box-shadow var(--ui-motion-standard), transform var(--ui-motion-fast);
     }
     .home-tool-grid-all .home-tool-card { min-height: 148px; }
     .home-tool-grid-primary .home-tool-card { min-height: 178px; }
     .home-tool-grid-secondary .home-tool-card { min-height: 126px; padding-block: 18px; }
     .home-tool-card:hover {
       border-color: color-mix(in srgb, var(--tool-accent) 58%, var(--line));
-      background: color-mix(in srgb, var(--tool-accent) 8%, var(--panel));
+      background: color-mix(in srgb, var(--tool-accent) 7%, var(--panel));
       color: var(--ink);
-      box-shadow: 0 12px 28px color-mix(in srgb, var(--tool-accent) 14%, var(--shadow));
-      transform: translateY(-2px);
+      box-shadow: 0 10px 24px color-mix(in srgb, var(--tool-accent) 12%, var(--shadow));
+      transform: translateY(-1px);
     }
     .home-tool-card:hover .home-tool-copy > span:last-child { color: var(--muted); }
-    .home-tool-card:active { transform: translateY(0); }
-    .home-tool-card:focus-visible { outline: 3px solid color-mix(in srgb, var(--tool-accent) 55%, transparent); outline-offset: 3px; }
+    .home-tool-card:active { background: color-mix(in srgb, var(--tool-accent) 10%, var(--panel)); transform: translateY(0); }
+    .home-tool-card:focus-visible { outline: 2px solid color-mix(in srgb, var(--tool-accent) 68%, #fff); outline-offset: 3px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--tool-accent) 16%, transparent); }
     .home-tool-card.is-review { --tool-accent: #7158b7; }
     .home-tool-card.is-compendium { --tool-accent: #237da4; }
     .home-tool-card.is-simulator { --tool-accent: #30856d; }
@@ -13834,7 +13835,7 @@
       .home-tool-icon svg { width: 24px; height: 24px; }
       .home-tool-copy strong,
       .is-secondary-tool .home-tool-copy strong { font-size: 17px; }
-      .home-tool-copy > span:last-child { font-size: 11px; line-height: 1.35; }
+      .home-tool-copy > span:last-child { font-size: 11px; line-height: 1.4; }
       .home-tool-tier { font-size: 8px; }
       .home-tool-action { align-self: center; width: 28px; height: 28px; display: grid; place-items: center; overflow: hidden; font-size: 0; }
       .home-tool-action span { font-size: 18px; }
@@ -13850,7 +13851,7 @@
       .home-hero-mark { position: absolute; right: -34px; bottom: -38px; width: 122px; opacity: .42; }
       .home-tool-card { gap: 9px; padding: 13px !important; }
       .home-tool-icon { width: 42px; height: 42px; }
-      .home-tool-copy > span:last-child { font-size: 10px; }
+      .home-tool-copy > span:last-child { font-size: 10.5px; }
     }
   </style>
 </head>
