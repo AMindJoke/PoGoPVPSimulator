@@ -16859,7 +16859,7 @@
     }
 
     function compendiumTimingOptions(reference, selected) {
-      return reference.fast.map(move => `<option value="${move.id}" ${move.id === selected ? "selected" : ""}>${escapeHtml(move.name)} · ${move.turns} turns · +${move.energyGain} energy</option>`).join("");
+      return reference.fast.map(move => `<option value="${move.id}" ${move.id === selected ? "selected" : ""}>${escapeHtml(move.name)} · ${move.turns}T · +${move.energyGain}E</option>`).join("");
     }
 
     function renderCompendiumTimingBoard(model) {

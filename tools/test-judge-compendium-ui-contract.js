@@ -76,6 +76,7 @@ includes('.pokemon-detail-head:hover .pokemon-detail-avatar::after { animation: 
 includes('@keyframes pokemon-avatar-halo-pulse');
 includes('.pokemon-detail-head:hover .pokemon-detail-avatar::after { animation: none !important; }');
 includes('function renderCompendiumTimingVisualizer()');
+includes('${move.turns}T · +${move.energyGain}E', "Timing selectors must keep duration and energy readable at narrow mobile widths.");
 includes('class="timing-reading-guide"');
 includes('What you’re seeing');
 includes('grid-column:${event.start + 1} / span ${event.duration}', "Timing bars must span the complete Fast Attack duration so consecutive uses do not show false waiting turns.");
