@@ -13562,6 +13562,7 @@
       text-align: right;
     }
     .home-tool-grid { display: grid; gap: 14px; }
+    .home-tool-grid-all,
     .home-tool-grid-primary,
     .home-tool-grid-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .home-tool-card {
@@ -13584,13 +13585,17 @@
       transform: translateY(0);
       transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
     }
+    .home-tool-grid-all .home-tool-card { min-height: 148px; }
     .home-tool-grid-primary .home-tool-card { min-height: 178px; }
     .home-tool-grid-secondary .home-tool-card { min-height: 126px; padding-block: 18px; }
     .home-tool-card:hover {
       border-color: color-mix(in srgb, var(--tool-accent) 58%, var(--line));
+      background: color-mix(in srgb, var(--tool-accent) 8%, var(--panel));
+      color: var(--ink);
       box-shadow: 0 12px 28px color-mix(in srgb, var(--tool-accent) 14%, var(--shadow));
       transform: translateY(-2px);
     }
+    .home-tool-card:hover .home-tool-copy > span:last-child { color: var(--muted); }
     .home-tool-card:active { transform: translateY(0); }
     .home-tool-card:focus-visible { outline: 3px solid color-mix(in srgb, var(--tool-accent) 55%, transparent); outline-offset: 3px; }
     .home-tool-card.is-review { --tool-accent: #7158b7; }
@@ -13664,10 +13669,11 @@
     @media (max-width: 900px) {
       header {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto auto;
-        gap: 7px;
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 7px;
         padding: 9px 10px 7px;
       }
+      header h1 { min-height: 42px; align-items: center; }
       .app-tabs {
         grid-column: 1 / -1;
         width: 100%;
@@ -13699,8 +13705,10 @@
       .home-section-heading { display: block; padding-inline: 2px; }
       .home-section-heading h2, .home-section-heading h3 { font-size: 19px; }
       .home-section-heading > p { margin-top: 5px; text-align: left; }
+      .home-tool-grid-all,
       .home-tool-grid-primary,
       .home-tool-grid-secondary { grid-template-columns: 1fr; gap: 9px; }
+      .home-tool-grid-all .home-tool-card,
       .home-tool-grid-primary .home-tool-card,
       .home-tool-grid-secondary .home-tool-card { min-height: 0; padding: 15px; border-radius: 15px; }
       .home-tool-card { grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; }
@@ -13738,12 +13746,12 @@
     </div>
     <nav class="app-tabs" aria-label="App views">
       <button id="homeTab" type="button" class="active" data-view-target="home">Home</button>
-      <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
-      <button id="simulatorTab" type="button" data-view-target="simulator">Simulator</button>
+      <button id="simulatorTab" type="button" data-view-target="simulator">Battle</button>
       <button id="scenarioReviewTab" type="button" data-view-target="scenario-review">Scenario Review</button>
-      <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
       <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
+      <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
+      <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
     </nav>
   </header>
   <main>
@@ -13754,46 +13762,41 @@
     </div>
     <div id="homeView" class="app-view home-view">
       <section class="home-shell" aria-labelledby="homePrimaryTitle">
-        <section class="home-tools-section home-primary-tools" aria-labelledby="homePrimaryTitle">
-          <div class="home-section-heading"><div><span>Primary tools</span><h2 id="homePrimaryTitle">What do you want to do?</h2></div><p>Start from the tool that matches your task.</p></div>
-          <div class="home-tool-grid home-tool-grid-primary">
+        <section class="home-tools-section" aria-labelledby="homePrimaryTitle">
+          <div class="home-section-heading"><div><h2 id="homePrimaryTitle">What do you want to do?</h2></div><p>Start from the tool that matches your task.</p></div>
+          <div class="home-tool-grid home-tool-grid-all">
+            <button class="home-tool-card is-simulator" type="button" data-home-target="simulator" aria-describedby="homeSimulatorDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M18 4 9 17h7l-2 11 10-15h-7z"/></svg></span>
+              <span class="home-tool-copy"><strong>Battle</strong><span id="homeSimulatorDescription">Run deterministic PvP simulations. Explore matchups and verify outcomes.</span></span>
+              <span class="home-tool-action">Open Battle <span aria-hidden="true">→</span></span>
+              <span class="home-tool-watermark" aria-hidden="true"></span>
+            </button>
             <button class="home-tool-card is-review" type="button" data-home-target="scenario-review" aria-describedby="homeReviewDescription">
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 8h9v6H6zM17 18h9v6h-9zM10.5 14v4h11"/><circle cx="10.5" cy="18" r="2"/><circle cx="21.5" cy="14" r="2"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Primary</span><strong>Scenario Review</strong><span id="homeReviewDescription">Reconstruct reported battles step by step. Inspect timing, switches, shields and technical issues.</span></span>
+              <span class="home-tool-copy"><strong>Scenario Review</strong><span id="homeReviewDescription">Reconstruct reported battles step by step. Inspect timing, switches, shields and technical issues.</span></span>
               <span class="home-tool-action">Start Review <span aria-hidden="true">→</span></span>
               <span class="home-tool-watermark" aria-hidden="true"></span>
             </button>
-            <button class="home-tool-card is-compendium" type="button" data-home-target="compendium" aria-describedby="homeCompendiumDescription">
-              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6h8c2 0 3 1 3 3v17c0-2-1-3-3-3H7zM25 6h-5c-1.3 0-2 .7-2 2v18c0-2 1-3 3-3h4z"/><path d="M10 11h5M10 15h5M21 11h2M21 15h2"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Primary</span><strong>Judge Compendium</strong><span id="homeCompendiumDescription">Browse mechanics, attacks, Pokémon, rulings and timing references. All in one place.</span></span>
-              <span class="home-tool-action">Open Compendium <span aria-hidden="true">→</span></span>
-              <span class="home-tool-watermark" aria-hidden="true"></span>
-            </button>
-          </div>
-        </section>
-
-        <section class="home-tools-section home-secondary-tools" aria-labelledby="homeSecondaryTitle">
-          <div class="home-section-heading home-section-heading-compact"><div><span>More tools</span><h3 id="homeSecondaryTitle">Explore and prepare</h3></div></div>
-          <div class="home-tool-grid home-tool-grid-secondary">
-            <button class="home-tool-card is-simulator is-secondary-tool" type="button" data-home-target="simulator" aria-describedby="homeSimulatorDescription">
-              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M18 4 9 17h7l-2 11 10-15h-7z"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Battle Simulator</strong><span id="homeSimulatorDescription">Run deterministic PvP simulations. Explore matchups and verify outcomes.</span></span>
-              <span class="home-tool-action">Open Simulator <span aria-hidden="true">→</span></span>
-            </button>
-            <button class="home-tool-card is-builder is-secondary-tool" type="button" data-home-target="team-builder" aria-describedby="homeBuilderDescription">
-              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1M5 27c.5-3 2-4 4-4s3.5 1 4 4M19 27c.5-3 2-4 4-4s3.5 1 4 4"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Team Builder</strong><span id="homeBuilderDescription">Build and evaluate competitive teams. Check coverage, bulk and consistency.</span></span>
-              <span class="home-tool-action">Open Team Builder <span aria-hidden="true">→</span></span>
-            </button>
-            <button class="home-tool-card is-meta is-secondary-tool" type="button" data-home-target="meta" aria-describedby="homeMetaDescription">
+            <button class="home-tool-card is-meta" type="button" data-home-target="meta" aria-describedby="homeMetaDescription">
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 25V15h5v10zM14 25V9h5v16zM22 25V5h5v20z"/><path d="M5 27h23"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Meta</strong><span id="homeMetaDescription">Explore Great League rankings, matchup data and the current competitive field.</span></span>
+              <span class="home-tool-copy"><strong>Meta</strong><span id="homeMetaDescription">Explore Great League rankings, matchup data and the current competitive field.</span></span>
               <span class="home-tool-action">Open Meta <span aria-hidden="true">→</span></span>
             </button>
-            <button class="home-tool-card is-analysis is-secondary-tool" type="button" data-home-target="analysis" aria-describedby="homeAnalysisDescription">
+            <button class="home-tool-card is-analysis" type="button" data-home-target="analysis" aria-describedby="homeAnalysisDescription">
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="14" cy="14" r="8"/><path d="m20 20 7 7M10 15l3-3 3 2 3-4"/></svg></span>
-              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Pokémon Analysis</strong><span id="homeAnalysisDescription">Inspect an individual Pokémon's performance, matchups, roles and key battle patterns.</span></span>
+              <span class="home-tool-copy"><strong>Pokémon Analysis</strong><span id="homeAnalysisDescription">Inspect an individual Pokémon's performance, matchups, roles and key battle patterns.</span></span>
               <span class="home-tool-action">Open Analysis <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-builder" type="button" data-home-target="team-builder" aria-describedby="homeBuilderDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1M5 27c.5-3 2-4 4-4s3.5 1 4 4M19 27c.5-3 2-4 4-4s3.5 1 4 4"/></svg></span>
+              <span class="home-tool-copy"><strong>Team Builder</strong><span id="homeBuilderDescription">Build and evaluate competitive teams. Check coverage, bulk and consistency.</span></span>
+              <span class="home-tool-action">Open Team Builder <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-compendium" type="button" data-home-target="compendium" aria-describedby="homeCompendiumDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6h8c2 0 3 1 3 3v17c0-2-1-3-3-3H7zM25 6h-5c-1.3 0-2 .7-2 2v18c0-2 1-3 3-3h4z"/><path d="M10 11h5M10 15h5M21 11h2M21 15h2"/></svg></span>
+              <span class="home-tool-copy"><strong>Judge Compendium</strong><span id="homeCompendiumDescription">Browse mechanics, attacks, Pokémon, rulings and timing references. All in one place.</span></span>
+              <span class="home-tool-action">Open Compendium <span aria-hidden="true">→</span></span>
+              <span class="home-tool-watermark" aria-hidden="true"></span>
             </button>
           </div>
         </section>
@@ -13803,7 +13806,7 @@
           <div class="home-quick-start-list">
             <button type="button" data-home-target="scenario-review"><span>Need to review something that happened in a match?</span><strong>Scenario Review <span aria-hidden="true">→</span></strong></button>
             <button type="button" data-home-target="compendium"><span>Need to check how a mechanic works?</span><strong>Compendium <span aria-hidden="true">→</span></strong></button>
-            <button type="button" data-home-target="simulator"><span>Need to verify a matchup?</span><strong>Simulator <span aria-hidden="true">→</span></strong></button>
+            <button type="button" data-home-target="simulator"><span>Need to verify a matchup?</span><strong>Battle <span aria-hidden="true">→</span></strong></button>
           </div>
         </section>
 

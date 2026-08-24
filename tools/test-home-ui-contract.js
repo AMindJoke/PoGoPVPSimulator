@@ -22,8 +22,7 @@ includes('data-home-target="simulator"');
 includes('data-home-target="team-builder"');
 includes('data-home-target="meta"');
 includes('data-home-target="analysis"');
-includes('home-tool-grid-primary');
-includes('home-tool-grid-secondary');
+includes('home-tool-grid-all');
 includes('home-quick-start');
 includes('Not affiliated with Niantic, The Pokémon Company or Play! Pokémon.');
 
@@ -55,5 +54,14 @@ assert.deepStrictEqual(
 for (const id of ["simulatorTab", "scenarioReviewTab", "teamBuilderTab", "metaTab", "analysisTab", "compendiumTab"]) {
   includes(`id="${id}"`, `Existing navigation destination ${id} must remain available.`);
 }
+
+includes('id="simulatorTab" type="button" data-view-target="simulator">Battle</button>');
+const homeMarkup = html.slice(html.indexOf('id="homeView"'), html.indexOf('id="simulatorView"'));
+assert.ok(!homeMarkup.includes('home-tool-tier'), "Home cards must not be divided into primary and secondary tiers.");
+assert.ok(!homeMarkup.includes('home-primary-tools') && !homeMarkup.includes('home-secondary-tools'), "Home tools must share one continuous section.");
+assert.ok(
+  homeMarkup.indexOf('data-home-target="simulator"') < homeMarkup.indexOf('data-home-target="scenario-review"'),
+  "Battle must precede Scenario Review in the Home tool order."
+);
 
 console.log("Home UI contract tests passed.");
