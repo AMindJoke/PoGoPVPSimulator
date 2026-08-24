@@ -21933,7 +21933,7 @@
       const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
         ? captureManualRuntimeSnapshot()
         : null;
-      closeManualPostChargedSwitchWindow();
+      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       if (typeof manualModeState !== "undefined" && manualModeState?.enabled && !technicalIssueInjection && chargedContinuationDepth === 0) {
         const event = registerManualFast(attacker, defender, options);
@@ -25980,7 +25980,7 @@
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
-      closeManualPostChargedSwitchWindow();
+      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
       const waitTurns = Math.max(1, Number(timingWindow?.waitTurns || 1));
       const currentTurn = Number(battleTurns[attacker.trainer] || 0);
       const targetTurn = currentTurn + waitTurns;
@@ -26024,8 +26024,8 @@
       const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
         ? captureManualRuntimeSnapshot()
         : null;
-      closeManualPostChargedSwitchWindow();
-      addManualChargedSequenceTime();
+      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
+      if (typeof addManualChargedSequenceTime === "function") addManualChargedSequenceTime();
       attacker.timingPlanMoveId = null;
       attacker.timingPlanFastMovesRemaining = 0;
       attacker.timingContinuationCount = 0;
@@ -26178,7 +26178,7 @@
       if (typeof resolveTechnicalPendingFastAfterCharge === "function") {
         resolveTechnicalPendingFastAfterCharge(attacker, defender, move);
       }
-      openManualPostChargedSwitchWindow(chargeEvent);
+      if (typeof openManualPostChargedSwitchWindow === "function") openManualPostChargedSwitchWindow(chargeEvent);
       if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(chargeEvent, manualRuntimeBefore);
       if (activeAutoTurnContext?.deferTerminalFinalization) return true;
       return finish();
@@ -26536,7 +26536,7 @@
       };
       if (traceContext.manualAction) {
         event.manualActionId = traceContext.manualAction.id || null;
-        event.branchId = manualModeState?.branchId || null;
+        event.branchId = typeof manualModeState !== "undefined" ? manualModeState?.branchId || null : null;
         event.source = "manual-mode";
       }
       event.timelineIndex = timeline.length;
@@ -26544,7 +26544,7 @@
       timeline.push(event);
       if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
       if (kind === "charge") battleTurns[attacker.trainer] = start + 1;
-      if (manualModeState?.enabled) syncManualBattleTiming();
+      if (typeof manualModeState !== "undefined" && manualModeState?.enabled) syncManualBattleTiming();
       return event;
     }
 
