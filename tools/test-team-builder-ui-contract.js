@@ -151,6 +151,8 @@ assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,4300}team-replacement-st
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,4700}team-comparison-changes[^}]*grid-template-columns: 1fr/, "Team comparison changes must stack cleanly on mobile.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,6500}team-final-slot-ranking[^}]*grid-template-columns: 1fr/, "Final Slot Finder candidates must stack as readable mobile cards.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,5200}team-builder-share[^}]*min-height: 44px/, "The share control must remain a comfortable mobile target.");
+assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1500}team-card-actions button \{[^}]*min-width: 44px;[^}]*min-height: 44px;/, "Mobile roster actions must remain comfortable touch targets.");
+assert.match(html, /team-builder-league select[^}]*font-size: 16px;/, "Mobile Team Builder selects must not trigger iOS focus zoom.");
 assert.match(html, /Species Clause: that Pokemon species is already on your team/);
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,900}team-roster-grid[\s\S]{0,100}repeat\(2/ , "Common mobile widths must use two comfortable columns.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\s\S]{0,80}1fr/, "The mobile build editor must stack move controls instead of compressing them.");

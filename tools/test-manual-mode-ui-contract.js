@@ -682,6 +682,8 @@ assert.match(html, /timeline\.slice\(chargeTimelineStart\)\.find\(event => \(/);
 assert.match(html, /if \(!chargedEvent\) throw new Error\("DRE_CHARGED_REJECTED"\);/);
 assert.match(html, /function restoreManualRuntimePayload[\s\S]{0,2400}return true;/);
 assert.match(html, /event\.key !== "Escape" \|\| document\.body\.dataset\.view !== "scenario-review"/);
+assert.match(html, /class="scenario-setup-helper">Choose both Pokémon to open the manual review workspace\.<\/p>/, "Empty mobile Scenario Review must explain its next step.");
+assert.match(html, /body\[data-view="scenario-review"\]\.manual-mode-active \.scenario-setup-helper \{ display: none; \}/, "The setup helper must leave once Manual Mode opens.");
 
 const inlineScripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 assert(inlineScripts.length, "Expected the simulator inline runtime.");

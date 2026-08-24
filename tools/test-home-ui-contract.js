@@ -39,6 +39,7 @@ includes('button.setAttribute("aria-current", "page")');
 includes('.home-tool-card:focus-visible');
 includes('@media (max-width: 900px)');
 includes('overflow-x: auto;', "Mobile navigation must remain discoverable without overflowing the page.");
+assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,1600}\.app-tabs button \{[^}]*min-height: 44px;/, "Mobile app navigation must provide comfortable touch targets.");
 includes('.home-tool-grid-primary,\n      .home-tool-grid-secondary { grid-template-columns: 1fr;');
 includes('var(--panel)');
 includes('var(--ink)');
