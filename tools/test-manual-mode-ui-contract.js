@@ -513,7 +513,7 @@ assert.match(html, /cooldown active for/);
 assert.match(html, /not enough energy/);
 assert.match(html, /function timelineEditorMoveLabel/);
 assert.match(html, /class="timeline-token-label"/);
-assert.match(html, /class="app-hub-name">GO Judge Hub <small>Pokémon GO PvP tools<\/small>/);
+assert.match(html, /class="app-wordmark">PvP <small>Simulator<\/small>/);
 assert.match(html, /--timeline-side-zone-width: 74px/);
 assert.match(html, /\.key-numbers\s*\{[\s\S]{0,90}width: min\(100%, var\(--battle-layout-width\)\)/);
 assert.match(html, /\.log-panel\s*\{[\s\S]{0,90}width: min\(100%, var\(--battle-layout-width\)\)/);

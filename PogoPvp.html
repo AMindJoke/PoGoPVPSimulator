@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GO Judge Hub · Pokémon GO PvP Tools</title>
+  <title>Pokémon GO PvP Simulator</title>
   <meta name="description" content="Judge-focused Pokémon GO PvP tools for battle review, mechanics reference, simulation and team building.">
   <script src="battle-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -13544,6 +13544,7 @@
       gap: 24px;
       padding: 0 4px;
     }
+    .home-section-heading h2,
     .home-section-heading h3,
     .home-quick-start-title h3 {
       margin: 3px 0 0;
@@ -13596,6 +13597,8 @@
     .home-tool-card.is-compendium { --tool-accent: #237da4; }
     .home-tool-card.is-simulator { --tool-accent: #30856d; }
     .home-tool-card.is-builder { --tool-accent: #c47637; }
+    .home-tool-card.is-meta { --tool-accent: #596db0; }
+    .home-tool-card.is-analysis { --tool-accent: #a64f78; }
     .home-tool-icon {
       position: relative;
       z-index: 2;
@@ -13655,7 +13658,7 @@
 
     @media (max-width: 1220px) and (min-width: 901px) {
       header { gap: 12px; padding-inline: 14px; }
-      .app-hub-name { font-size: 17px; }
+      .app-franchise, .app-wordmark { font-size: 21px; }
       .app-tabs button { padding-inline: 9px; font-size: 11px; }
     }
     @media (max-width: 900px) {
@@ -13665,9 +13668,6 @@
         gap: 7px;
         padding: 9px 10px 7px;
       }
-      .app-hub-mark { width: 32px; height: 32px; flex-basis: 32px; border-radius: 9px; font-size: 11px; }
-      .app-hub-name { font-size: 15px; }
-      .app-hub-name small { font-size: 6.5px; }
       .app-tabs {
         grid-column: 1 / -1;
         width: 100%;
@@ -13697,7 +13697,7 @@
       .home-hero-mark::after { inset: 25px; border-width: 7px; }
       .home-hero-mark span { inset: 39px; box-shadow: 0 0 0 4px var(--panel); }
       .home-section-heading { display: block; padding-inline: 2px; }
-      .home-section-heading h3 { font-size: 19px; }
+      .home-section-heading h2, .home-section-heading h3 { font-size: 19px; }
       .home-section-heading > p { margin-top: 5px; text-align: left; }
       .home-tool-grid-primary,
       .home-tool-grid-secondary { grid-template-columns: 1fr; gap: 9px; }
@@ -13731,7 +13731,7 @@
 <body class="clarity-ui" data-view="home">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
-    <h1 class="app-title-lockup"><span class="app-hub-mark" aria-hidden="true">GJ</span><span class="app-hub-name">GO Judge Hub <small>Pokémon GO PvP tools</small></span></h1>
+    <h1 class="app-title-lockup"><span class="app-franchise">Pokémon</span><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
     <button id="themeToggle" class="header-theme-toggle" type="button">Dark</button>
     <div class="mobile-header-actions" aria-label="Theme controls">
       <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
@@ -13753,18 +13753,9 @@
       <button id="sharedScenarioStartNew" class="secondary" type="button">Start a new scenario</button>
     </div>
     <div id="homeView" class="app-view home-view">
-      <section class="home-shell" aria-labelledby="homeHeroTitle">
-        <div class="home-hero">
-          <div class="home-hero-copy">
-            <p class="home-eyebrow">Pokémon GO PvP · Judge toolkit</p>
-            <h2 id="homeHeroTitle">Tools for understanding,<br>reviewing and explaining<br>Pokémon GO PvP.</h2>
-            <p>Designed for judges, by players.<br>Accurate data, deterministic simulations<br>and clear references in one place.</p>
-          </div>
-          <div class="home-hero-mark" aria-hidden="true"><span></span></div>
-        </div>
-
+      <section class="home-shell" aria-labelledby="homePrimaryTitle">
         <section class="home-tools-section home-primary-tools" aria-labelledby="homePrimaryTitle">
-          <div class="home-section-heading"><div><span>Primary tools</span><h3 id="homePrimaryTitle">Review and explain with confidence</h3></div><p>The two judge-focused workspaces at the center of GO Judge Hub.</p></div>
+          <div class="home-section-heading"><div><span>Primary tools</span><h2 id="homePrimaryTitle">What do you want to do?</h2></div><p>Start from the tool that matches your task.</p></div>
           <div class="home-tool-grid home-tool-grid-primary">
             <button class="home-tool-card is-review" type="button" data-home-target="scenario-review" aria-describedby="homeReviewDescription">
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 8h9v6H6zM17 18h9v6h-9zM10.5 14v4h11"/><circle cx="10.5" cy="18" r="2"/><circle cx="21.5" cy="14" r="2"/></svg></span>
@@ -13793,6 +13784,16 @@
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1M5 27c.5-3 2-4 4-4s3.5 1 4 4M19 27c.5-3 2-4 4-4s3.5 1 4 4"/></svg></span>
               <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Team Builder</strong><span id="homeBuilderDescription">Build and evaluate competitive teams. Check coverage, bulk and consistency.</span></span>
               <span class="home-tool-action">Open Team Builder <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-meta is-secondary-tool" type="button" data-home-target="meta" aria-describedby="homeMetaDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 25V15h5v10zM14 25V9h5v16zM22 25V5h5v20z"/><path d="M5 27h23"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Meta</strong><span id="homeMetaDescription">Explore Great League rankings, matchup data and the current competitive field.</span></span>
+              <span class="home-tool-action">Open Meta <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-analysis is-secondary-tool" type="button" data-home-target="analysis" aria-describedby="homeAnalysisDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="14" cy="14" r="8"/><path d="m20 20 7 7M10 15l3-3 3 2 3-4"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Pokémon Analysis</strong><span id="homeAnalysisDescription">Inspect an individual Pokémon's performance, matchups, roles and key battle patterns.</span></span>
+              <span class="home-tool-action">Open Analysis <span aria-hidden="true">→</span></span>
             </button>
           </div>
         </section>

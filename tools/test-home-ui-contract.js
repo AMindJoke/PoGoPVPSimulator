@@ -13,13 +13,15 @@ includes('id="homeTab"');
 includes('data-view-target="home"');
 includes('id="homeView"');
 includes('body[data-view="home"] #homeView');
-includes('id="homeHeroTitle"');
-includes('Tools for understanding,<br>reviewing and explaining<br>Pokémon GO PvP.');
-includes('Designed for judges, by players.');
+includes('id="homePrimaryTitle"');
+includes('What do you want to do?');
+assert.ok(!html.includes('id="homeHeroTitle"'), "The Home must lead directly with its tools instead of a large promotional hero.");
 includes('data-home-target="scenario-review"');
 includes('data-home-target="compendium"');
 includes('data-home-target="simulator"');
 includes('data-home-target="team-builder"');
+includes('data-home-target="meta"');
+includes('data-home-target="analysis"');
 includes('home-tool-grid-primary');
 includes('home-tool-grid-secondary');
 includes('home-quick-start');
@@ -46,8 +48,8 @@ includes('var(--line)');
 const homeTargets = [...html.matchAll(/data-home-target="([^"]+)"/g)].map(match => match[1]);
 assert.deepStrictEqual(
   new Set(homeTargets),
-  new Set(["scenario-review", "compendium", "simulator", "team-builder"]),
-  "Home actions must lead only to the four requested first-class tools."
+  new Set(["scenario-review", "compendium", "simulator", "team-builder", "meta", "analysis"]),
+  "Home actions must expose all six first-class tools."
 );
 
 for (const id of ["simulatorTab", "scenarioReviewTab", "teamBuilderTab", "metaTab", "analysisTab", "compendiumTab"]) {
