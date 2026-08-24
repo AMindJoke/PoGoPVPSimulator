@@ -949,6 +949,9 @@
     .analysis-picker { display: grid; grid-template-columns: 1fr; align-items: stretch; gap: 4px; min-width: 250px; }
     .analysis-picker span { color: var(--muted); font-size: 11px; font-weight: 800; }
     .analysis-picker select { min-height: 39px; font-weight: 750; }
+    .analysis-pokemon-picker { min-width: 0; }
+    .analysis-pokemon-picker .pokemon-picker-input { width: 100%; min-height: 39px; font-weight: 750; }
+    .analysis-pokemon-picker .pokemon-suggestions { min-width: 300px; }
     .analysis-content { display: grid; gap: 12px; width: min(100%, 1060px); margin: 0 auto; }
     .analysis-hero {
       position: relative;
@@ -1274,6 +1277,7 @@
     .analysis-picker { min-width: 260px; gap: var(--analysis-xs); }
     .analysis-picker span { font-size: 11px; }
     .analysis-picker select { min-height: 40px; border-radius: 6px; font-size: 13px; }
+    .analysis-pokemon-picker .pokemon-picker-input { min-height: 40px; border-radius: 6px; font-size: 13px; }
     .analysis-league-badge { display: grid; place-items: center; min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--analysis-subtle); color: var(--ink); font-size: 12px; font-weight: 850; }
     .analysis-content { gap: var(--analysis-lg); }
     .analysis-dossier-hero {
@@ -13688,6 +13692,8 @@
       .app-tabs::-webkit-scrollbar { display: none; }
       .app-tabs button { flex: 0 0 auto; min-height: 38px; padding: 7px 12px; font-size: 11px; scroll-snap-align: start; }
       main { padding: 10px; }
+      .analysis-pokemon-picker,
+      .analysis-pokemon-picker .pokemon-suggestions { width: 100%; min-width: 0; }
       .home-shell { gap: 17px; }
       .home-hero {
         min-height: 0;
@@ -14503,10 +14509,14 @@
         </div>
         <div class="analysis-page-actions">
           <button id="analysisBackToMeta" class="secondary" type="button">Back to Meta</button>
-          <label class="analysis-picker">
-            <span>Analyze Pokemon</span>
-            <select id="analysisPokemon" aria-label="Choose a Pokemon to analyze"></select>
-          </label>
+          <div class="analysis-picker">
+            <span id="analysisPokemonLabel">Analyze Pokemon</span>
+            <div class="pokemon-picker analysis-pokemon-picker" data-analysis-pokemon-picker>
+              <input id="analysisPokemonSearch" class="pokemon-picker-input search-input" type="search" placeholder="Search Pokemon" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-labelledby="analysisPokemonLabel" aria-controls="analysisPokemonSuggestions">
+              <div id="analysisPokemonSuggestions" class="pokemon-suggestions" role="listbox"></div>
+              <select id="analysisPokemon" class="pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
+            </div>
+          </div>
           <span class="analysis-league-badge">Great League</span>
         </div>
       </div>
@@ -15268,10 +15278,12 @@
 
       setupPokemonPicker("p1");
       setupPokemonPicker("p2");
+      setupAnalysisPokemonPicker();
       document.addEventListener("click", event => {
         if (!event.target.closest(".pokemon-picker")) {
           closePokemonSuggestions("p1");
           closePokemonSuggestions("p2");
+          closeAnalysisPokemonSuggestions();
         }
         if (!event.target.closest(".manual-hud-pokemon-picker")) {
           closeManualHudPokemonSuggestions("A");
@@ -19331,6 +19343,83 @@
       };
     }
 
+    function setupAnalysisPokemonPicker() {
+      const input = $("analysisPokemonSearch");
+      if (!input) return;
+      input.onfocus = () => openAnalysisPokemonSuggestions(true);
+      input.onclick = () => openAnalysisPokemonSuggestions(true);
+      input.oninput = () => openAnalysisPokemonSuggestions(false);
+      input.onkeydown = event => {
+        if (event.key === "Escape") {
+          closeAnalysisPokemonSuggestions();
+          syncAnalysisPokemonPickerInput();
+        }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          $("analysisPokemonSuggestions")?.querySelector(".pokemon-suggestion")?.click();
+        }
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          $("analysisPokemonSuggestions")?.querySelector(".pokemon-suggestion")?.focus();
+        }
+      };
+      input.onblur = () => {
+        window.setTimeout(() => {
+          if (!document.activeElement?.closest("[data-analysis-pokemon-picker]")) {
+            syncAnalysisPokemonPickerInput();
+            closeAnalysisPokemonSuggestions();
+          }
+        }, 120);
+      };
+    }
+
+    function analysisPokemonChoices() {
+      return analysisRankingEntries()
+        .map(entry => ({ entry, pokemon: findPokemon(entry.id) }))
+        .filter(item => item.pokemon);
+    }
+
+    function openAnalysisPokemonSuggestions(showAll = false) {
+      const picker = document.querySelector("[data-analysis-pokemon-picker]");
+      const input = $("analysisPokemonSearch");
+      const box = $("analysisPokemonSuggestions");
+      if (!picker || !input || !box) return;
+      const query = showAll ? "" : normalizeSearchText(input.value);
+      let choices = analysisPokemonChoices();
+      if (query) {
+        choices = choices
+          .map(item => ({ ...item, score: pokemonSearchScore(item.pokemon, query) }))
+          .filter(item => item.score < 100)
+          .sort((a, b) => a.score - b.score || a.entry.rank - b.entry.rank || a.pokemon.name.localeCompare(b.pokemon.name));
+      }
+      const visibleChoices = choices.slice(0, 28);
+      renderPokemonSuggestionList(box, visibleChoices.map(item => item.pokemon), {
+        onSelect: pokemon => selectAnalysisPokemon(pokemon.id)
+      });
+      picker.classList.add("open");
+      input.setAttribute("aria-expanded", "true");
+    }
+
+    function closeAnalysisPokemonSuggestions() {
+      document.querySelector("[data-analysis-pokemon-picker]")?.classList.remove("open");
+      $("analysisPokemonSearch")?.setAttribute("aria-expanded", "false");
+    }
+
+    function syncAnalysisPokemonPickerInput(entry = null) {
+      const select = $("analysisPokemon");
+      const input = $("analysisPokemonSearch");
+      if (!select || !input) return;
+      const selectedEntry = entry || analysisRankingEntries().find(item => item.id === select.value);
+      const pokemon = selectedEntry ? findPokemon(selectedEntry.id) : null;
+      input.value = pokemon ? displayName(pokemon) : (selectedEntry?.name || "");
+    }
+
+    function selectAnalysisPokemon(pokemonId) {
+      closeAnalysisPokemonSuggestions();
+      renderPokemonAnalysis(pokemonId);
+      $("analysisPokemonSearch")?.focus();
+    }
+
     function renderPokemonAnalysis(requestedId) {
       const root = $("analysisContent");
       const select = $("analysisPokemon");
@@ -19347,6 +19436,7 @@
         select.innerHTML = entries.map(item => `<option value="${escapeHtml(item.id)}">#${escapeHtml(item.rank)} ${escapeHtml(item.name)}</option>`).join("");
       }
       select.value = entry.id;
+      syncAnalysisPokemonPickerInput(entry);
       const rawModel = analysisModel(entry);
       const normalize = window.PvPeakPokemonAnalysisViewModel?.normalizePokemonAnalysisViewModel;
       const model = typeof normalize === "function" ? normalize(rawModel) : rawModel;
