@@ -144,7 +144,7 @@ includes('aria-label="Copy a direct link to this reference"');
 includes('class="compendium-copy-feedback" role="status" aria-live="polite"');
 includes('syncCompendiumRoute({ category: "moves", item: compendiumSelectedMoveId })');
 includes('syncCompendiumRoute({ category: type, item: entryId })');
-includes('else loadCompendiumFromLocation();');
+includes('else if (!loadCompendiumFromLocation()) setAppView(readAppViewFromLocation() || "home");');
 
 includes('.compendium-workspace { display: grid; grid-template-columns: 210px minmax(0, 1fr);');
 includes('.compendium-sidebar { position: sticky;');

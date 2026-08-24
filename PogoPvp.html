@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pokemon GO PvP Simulator</title>
+  <title>GO Judge Hub · Pokémon GO PvP Tools</title>
+  <meta name="description" content="Judge-focused Pokémon GO PvP tools for battle review, mechanics reference, simulation and team building.">
   <script src="battle-data.js"></script>
   <script src="default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
@@ -282,6 +283,37 @@
       gap: 9px;
       color: #fff;
     }
+    .app-hub-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: 11px;
+      background: rgba(255,255,255,.10);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: -.03em;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+    }
+    .app-hub-name {
+      display: grid;
+      gap: 2px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+    .app-hub-name small {
+      color: rgba(255,255,255,.64);
+      font-size: 8px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
     .header-theme-toggle {
       min-height: 32px;
       padding: 5px 9px;
@@ -408,7 +440,8 @@
     body[data-view="scenario-review"] #counts {
       display: none;
     }
-    #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView { display: none; }
+    #homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView { display: none; }
+    body[data-view="home"] #homeView,
     body[data-view="simulator"] #simulatorView,
     body[data-view="scenario-review"] #simulatorView,
     body[data-view="meta"] #metaView,
@@ -13395,23 +13428,322 @@
         font-size: 7px;
       }
     }
+    /* GO Judge Hub home */
+    .home-view { width: 100%; }
+    .home-shell {
+      width: min(100%, 1180px);
+      max-width: none;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+      overflow: visible;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .home-hero {
+      position: relative;
+      isolation: isolate;
+      min-height: 238px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      align-items: center;
+      gap: 28px;
+      overflow: hidden;
+      padding: 34px 42px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 86% 15%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 36%),
+        var(--panel);
+      box-shadow: 0 14px 36px var(--shadow);
+    }
+    .home-hero-copy { position: relative; z-index: 2; }
+    .home-eyebrow,
+    .home-section-heading span,
+    .home-quick-start-title > span,
+    .home-tool-tier {
+      color: var(--accent-dark);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .home-hero h2 {
+      max-width: 720px;
+      margin: 7px 0 13px;
+      color: var(--ink);
+      font-size: clamp(36px, 4vw, 50px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    .home-hero-copy > p:last-child {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+    .home-hero-mark {
+      position: relative;
+      justify-self: center;
+      width: 218px;
+      aspect-ratio: 1;
+      border: 22px solid color-mix(in srgb, var(--accent) 13%, transparent);
+      border-radius: 50%;
+      opacity: .8;
+    }
+    .home-hero-mark::before,
+    .home-hero-mark::after,
+    .home-hero-mark span {
+      content: "";
+      position: absolute;
+    }
+    .home-hero-mark::before {
+      left: -38px;
+      right: -38px;
+      top: calc(50% - 11px);
+      height: 22px;
+      background: color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+    .home-hero-mark::after {
+      inset: 54px;
+      border: 14px solid color-mix(in srgb, var(--accent) 18%, transparent);
+      border-radius: 50%;
+      background: var(--panel);
+    }
+    .home-hero-mark span {
+      z-index: 1;
+      inset: 83px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 54%, var(--panel));
+      box-shadow: 0 0 0 8px var(--panel);
+    }
+    .home-tools-section,
+    .home-quick-start {
+      width: 100%;
+      max-width: none;
+      display: grid;
+      gap: 13px;
+    }
+    .home-tools-section {
+      overflow: visible;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .home-section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 4px;
+    }
+    .home-section-heading h3,
+    .home-quick-start-title h3 {
+      margin: 3px 0 0;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+    }
+    .home-section-heading > p {
+      max-width: 420px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: right;
+    }
+    .home-tool-grid { display: grid; gap: 14px; }
+    .home-tool-grid-primary,
+    .home-tool-grid-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-tool-card {
+      --tool-accent: var(--accent);
+      position: relative;
+      isolation: isolate;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      overflow: hidden;
+      padding: 22px;
+      border: 1px solid color-mix(in srgb, var(--tool-accent) 26%, var(--line));
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--tool-accent) 5%, var(--panel));
+      color: var(--ink);
+      box-shadow: 0 7px 20px color-mix(in srgb, var(--tool-accent) 8%, var(--shadow));
+      text-align: left;
+      transform: translateY(0);
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .home-tool-grid-primary .home-tool-card { min-height: 178px; }
+    .home-tool-grid-secondary .home-tool-card { min-height: 126px; padding-block: 18px; }
+    .home-tool-card:hover {
+      border-color: color-mix(in srgb, var(--tool-accent) 58%, var(--line));
+      box-shadow: 0 12px 28px color-mix(in srgb, var(--tool-accent) 14%, var(--shadow));
+      transform: translateY(-2px);
+    }
+    .home-tool-card:active { transform: translateY(0); }
+    .home-tool-card:focus-visible { outline: 3px solid color-mix(in srgb, var(--tool-accent) 55%, transparent); outline-offset: 3px; }
+    .home-tool-card.is-review { --tool-accent: #7158b7; }
+    .home-tool-card.is-compendium { --tool-accent: #237da4; }
+    .home-tool-card.is-simulator { --tool-accent: #30856d; }
+    .home-tool-card.is-builder { --tool-accent: #c47637; }
+    .home-tool-icon {
+      position: relative;
+      z-index: 2;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--tool-accent) 14%, var(--panel));
+      color: var(--tool-accent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tool-accent) 26%, transparent);
+    }
+    .is-secondary-tool .home-tool-icon { width: 48px; height: 48px; border-radius: 14px; }
+    .home-tool-icon svg { width: 29px; height: 29px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .home-tool-copy { position: relative; z-index: 2; min-width: 0; display: grid; gap: 5px; }
+    .home-tool-copy strong { font-size: 22px; line-height: 1.1; letter-spacing: -.025em; }
+    .is-secondary-tool .home-tool-copy strong { font-size: 18px; }
+    .home-tool-copy > span:last-child { max-width: 390px; color: var(--muted); font-size: 12.5px; font-weight: 600; line-height: 1.45; }
+    .home-tool-action { position: relative; z-index: 2; align-self: end; color: var(--tool-accent); font-size: 12px; font-weight: 900; white-space: nowrap; }
+    .home-tool-watermark {
+      position: absolute;
+      right: -24px;
+      bottom: -48px;
+      width: 150px;
+      height: 150px;
+      border: 18px solid color-mix(in srgb, var(--tool-accent) 8%, transparent);
+      border-radius: 50%;
+      z-index: 0;
+    }
+    .home-tool-watermark::before { content: ""; position: absolute; left: -20px; right: -20px; top: calc(50% - 8px); height: 16px; background: color-mix(in srgb, var(--tool-accent) 8%, transparent); }
+    .home-quick-start {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+    .home-quick-start { grid-template-columns: 180px minmax(0, 1fr); align-items: center; }
+    .home-quick-start-title h3 { font-size: 17px; }
+    .home-quick-start-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .home-quick-start-list button {
+      min-height: 68px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      padding: 10px 12px;
+      border-color: var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      box-shadow: none;
+      text-align: left;
+    }
+    .home-quick-start-list button:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--soft)); transform: none; }
+    .home-quick-start-list button span { color: var(--muted); font-size: 10.5px; line-height: 1.25; }
+    .home-quick-start-list button strong { color: var(--accent-dark); font-size: 11px; }
+    .home-footer { padding: 4px 8px 10px; color: var(--muted); font-size: 10px; line-height: 1.45; text-align: center; }
+
+    @media (max-width: 1220px) and (min-width: 901px) {
+      header { gap: 12px; padding-inline: 14px; }
+      .app-hub-name { font-size: 17px; }
+      .app-tabs button { padding-inline: 9px; font-size: 11px; }
+    }
+    @media (max-width: 900px) {
+      header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 7px;
+        padding: 9px 10px 7px;
+      }
+      .app-hub-mark { width: 32px; height: 32px; flex-basis: 32px; border-radius: 9px; font-size: 11px; }
+      .app-hub-name { font-size: 15px; }
+      .app-hub-name small { font-size: 6.5px; }
+      .app-tabs {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 3px;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+      }
+      .app-tabs::-webkit-scrollbar { display: none; }
+      .app-tabs button { flex: 0 0 auto; min-height: 38px; padding: 7px 12px; font-size: 11px; scroll-snap-align: start; }
+      main { padding: 10px; }
+      .home-shell { gap: 17px; }
+      .home-hero {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr) 86px;
+        gap: 8px;
+        padding: 24px 20px;
+        border-radius: 17px;
+      }
+      .home-hero h2 { margin-block: 6px 10px; font-size: clamp(27px, 8.2vw, 36px); }
+      .home-hero-copy > p:last-child { font-size: 12px; }
+      .home-hero-mark { width: 104px; border-width: 11px; transform: translateX(22px); }
+      .home-hero-mark::before { left: -17px; right: -17px; top: calc(50% - 5px); height: 10px; }
+      .home-hero-mark::after { inset: 25px; border-width: 7px; }
+      .home-hero-mark span { inset: 39px; box-shadow: 0 0 0 4px var(--panel); }
+      .home-section-heading { display: block; padding-inline: 2px; }
+      .home-section-heading h3 { font-size: 19px; }
+      .home-section-heading > p { margin-top: 5px; text-align: left; }
+      .home-tool-grid-primary,
+      .home-tool-grid-secondary { grid-template-columns: 1fr; gap: 9px; }
+      .home-tool-grid-primary .home-tool-card,
+      .home-tool-grid-secondary .home-tool-card { min-height: 0; padding: 15px; border-radius: 15px; }
+      .home-tool-card { grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; }
+      .home-tool-icon { width: 47px; height: 47px; border-radius: 13px; }
+      .home-tool-icon svg { width: 24px; height: 24px; }
+      .home-tool-copy strong,
+      .is-secondary-tool .home-tool-copy strong { font-size: 17px; }
+      .home-tool-copy > span:last-child { font-size: 11px; line-height: 1.35; }
+      .home-tool-tier { font-size: 8px; }
+      .home-tool-action { align-self: center; width: 28px; height: 28px; display: grid; place-items: center; overflow: hidden; font-size: 0; }
+      .home-tool-action span { font-size: 18px; }
+      .home-quick-start { grid-template-columns: 1fr; gap: 12px; padding: 15px; }
+      .home-quick-start-list { grid-template-columns: 1fr; gap: 6px; }
+      .home-quick-start-list button { min-height: 54px; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+      .home-quick-start-list button strong { text-align: right; }
+      .home-footer { font-size: 9px; }
+    }
+    @media (max-width: 380px) {
+      .home-hero { grid-template-columns: 1fr; padding: 20px 17px; }
+      .home-hero h2 { font-size: 26px; }
+      .home-hero-mark { position: absolute; right: -34px; bottom: -38px; width: 122px; opacity: .42; }
+      .home-tool-card { gap: 9px; padding: 13px !important; }
+      .home-tool-icon { width: 42px; height: 42px; }
+      .home-tool-copy > span:last-child { font-size: 10px; }
+    }
   </style>
 </head>
-<body class="clarity-ui" data-view="simulator">
+<body class="clarity-ui" data-view="home">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
   <header>
-    <h1 class="app-title-lockup"><span class="app-franchise">Pokémon</span><span class="app-wordmark">PvP <small>Simulator</small></span></h1>
+    <h1 class="app-title-lockup"><span class="app-hub-mark" aria-hidden="true">GJ</span><span class="app-hub-name">GO Judge Hub <small>Pokémon GO PvP tools</small></span></h1>
     <button id="themeToggle" class="header-theme-toggle" type="button">Dark</button>
     <div class="mobile-header-actions" aria-label="Theme controls">
       <button id="mobileThemeToggle" type="button" title="Change theme" aria-label="Change theme"><span id="mobileThemeIcon" aria-hidden="true">&#9790;</span></button>
     </div>
     <nav class="app-tabs" aria-label="App views">
-      <button id="simulatorTab" type="button" class="active" data-view-target="simulator">Battle</button>
+      <button id="homeTab" type="button" class="active" data-view-target="home">Home</button>
+      <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
+      <button id="simulatorTab" type="button" data-view-target="simulator">Simulator</button>
       <button id="scenarioReviewTab" type="button" data-view-target="scenario-review">Scenario Review</button>
+      <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
       <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
-      <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
-      <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
     </nav>
   </header>
   <main>
@@ -13419,6 +13751,63 @@
     <div id="sharedScenarioError" class="error shared-scenario-error" role="alert" hidden>
       <span>This shared scenario could not be loaded.</span>
       <button id="sharedScenarioStartNew" class="secondary" type="button">Start a new scenario</button>
+    </div>
+    <div id="homeView" class="app-view home-view">
+      <section class="home-shell" aria-labelledby="homeHeroTitle">
+        <div class="home-hero">
+          <div class="home-hero-copy">
+            <p class="home-eyebrow">Pokémon GO PvP · Judge toolkit</p>
+            <h2 id="homeHeroTitle">Tools for understanding,<br>reviewing and explaining<br>Pokémon GO PvP.</h2>
+            <p>Designed for judges, by players.<br>Accurate data, deterministic simulations<br>and clear references in one place.</p>
+          </div>
+          <div class="home-hero-mark" aria-hidden="true"><span></span></div>
+        </div>
+
+        <section class="home-tools-section home-primary-tools" aria-labelledby="homePrimaryTitle">
+          <div class="home-section-heading"><div><span>Primary tools</span><h3 id="homePrimaryTitle">Review and explain with confidence</h3></div><p>The two judge-focused workspaces at the center of GO Judge Hub.</p></div>
+          <div class="home-tool-grid home-tool-grid-primary">
+            <button class="home-tool-card is-review" type="button" data-home-target="scenario-review" aria-describedby="homeReviewDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 8h9v6H6zM17 18h9v6h-9zM10.5 14v4h11"/><circle cx="10.5" cy="18" r="2"/><circle cx="21.5" cy="14" r="2"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Primary</span><strong>Scenario Review</strong><span id="homeReviewDescription">Reconstruct reported battles step by step. Inspect timing, switches, shields and technical issues.</span></span>
+              <span class="home-tool-action">Start Review <span aria-hidden="true">→</span></span>
+              <span class="home-tool-watermark" aria-hidden="true"></span>
+            </button>
+            <button class="home-tool-card is-compendium" type="button" data-home-target="compendium" aria-describedby="homeCompendiumDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6h8c2 0 3 1 3 3v17c0-2-1-3-3-3H7zM25 6h-5c-1.3 0-2 .7-2 2v18c0-2 1-3 3-3h4z"/><path d="M10 11h5M10 15h5M21 11h2M21 15h2"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Primary</span><strong>Judge Compendium</strong><span id="homeCompendiumDescription">Browse mechanics, attacks, Pokémon, rulings and timing references. All in one place.</span></span>
+              <span class="home-tool-action">Open Compendium <span aria-hidden="true">→</span></span>
+              <span class="home-tool-watermark" aria-hidden="true"></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="home-tools-section home-secondary-tools" aria-labelledby="homeSecondaryTitle">
+          <div class="home-section-heading home-section-heading-compact"><div><span>More tools</span><h3 id="homeSecondaryTitle">Explore and prepare</h3></div></div>
+          <div class="home-tool-grid home-tool-grid-secondary">
+            <button class="home-tool-card is-simulator is-secondary-tool" type="button" data-home-target="simulator" aria-describedby="homeSimulatorDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M18 4 9 17h7l-2 11 10-15h-7z"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Battle Simulator</strong><span id="homeSimulatorDescription">Run deterministic PvP simulations. Explore matchups and verify outcomes.</span></span>
+              <span class="home-tool-action">Open Simulator <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-builder is-secondary-tool" type="button" data-home-target="team-builder" aria-describedby="homeBuilderDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1M5 27c.5-3 2-4 4-4s3.5 1 4 4M19 27c.5-3 2-4 4-4s3.5 1 4 4"/></svg></span>
+              <span class="home-tool-copy"><span class="home-tool-tier">Secondary</span><strong>Team Builder</strong><span id="homeBuilderDescription">Build and evaluate competitive teams. Check coverage, bulk and consistency.</span></span>
+              <span class="home-tool-action">Open Team Builder <span aria-hidden="true">→</span></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="home-quick-start" aria-labelledby="homeQuickStartTitle">
+          <div class="home-quick-start-title"><span>Quick Start</span><h3 id="homeQuickStartTitle">Where should I go?</h3></div>
+          <div class="home-quick-start-list">
+            <button type="button" data-home-target="scenario-review"><span>Need to review something that happened in a match?</span><strong>Scenario Review <span aria-hidden="true">→</span></strong></button>
+            <button type="button" data-home-target="compendium"><span>Need to check how a mechanic works?</span><strong>Compendium <span aria-hidden="true">→</span></strong></button>
+            <button type="button" data-home-target="simulator"><span>Need to verify a matchup?</span><strong>Simulator <span aria-hidden="true">→</span></strong></button>
+          </div>
+        </section>
+
+        <footer class="home-footer">Independent Pokémon GO PvP analysis and judge reference tool.<br>Not affiliated with Niantic, The Pokémon Company or Play! Pokémon.</footer>
+      </section>
     </div>
     <div id="simulatorView" class="app-view">
     <div class="toolbar scenario-status-toolbar">
@@ -14945,7 +15334,10 @@
       $("mobileThemeToggle").onclick = toggleTheme;
       syncMobileThemeControl();
       document.querySelectorAll("[data-view-target]").forEach(button => {
-        button.onclick = () => setAppView(button.dataset.viewTarget);
+        button.onclick = () => navigateAppView(button.dataset.viewTarget);
+      });
+      document.querySelectorAll("[data-home-target]").forEach(button => {
+        button.onclick = () => navigateAppView(button.dataset.homeTarget);
       });
       window.addEventListener("popstate", event => {
         const route = window.PvPeakCompendiumRouting?.readLocation?.(window.location);
@@ -14953,11 +15345,11 @@
           void applyCompendiumRoute(route);
           return;
         }
-        if (document.body.dataset.view === "compendium") {
-          compendiumHistorySyncing = true;
-          setAppView(event.state?.appView || "simulator");
-          compendiumHistorySyncing = false;
-        }
+        compendiumHistorySyncing = true;
+        appViewHistorySyncing = true;
+        setAppView(event.state?.appView || readAppViewFromLocation() || "home");
+        appViewHistorySyncing = false;
+        compendiumHistorySyncing = false;
       });
       $("compendiumSearch").oninput = event => updateCompendiumSearch(event.target.value);
       $("compendiumSearch").onkeydown = handleCompendiumSearchKeydown;
@@ -15329,7 +15721,7 @@
         const hasSharedTeam = Boolean(window.PvPeakTeamBuilderShare?.teamTokenFromLocation?.(window.location));
         if (hasSharedScenario) void loadSharedScenarioFromLocation();
         else if (hasSharedTeam) void loadSharedTeamFromLocation();
-        else loadCompendiumFromLocation();
+        else if (!loadCompendiumFromLocation()) setAppView(readAppViewFromLocation() || "home");
       }
       if (pagePerfRunId) {
         requestAnimationFrame(() => requestAnimationFrame(() => perfDebug.finishRun(pagePerfRunId, {
@@ -15966,6 +16358,7 @@
     let compendiumTimingSelection = { moveA: null, moveB: null, turnCount: 12 };
     let compendiumOpenArticle = null;
     let compendiumHistorySyncing = false;
+    let appViewHistorySyncing = false;
     let compendiumCopyFeedbackTimer = null;
     let compendiumEssentialsProgress = null;
     let compendiumEssentialsStepId = null;
@@ -15987,7 +16380,7 @@
       if (!api || compendiumHistorySyncing || !window.history?.pushState) return;
       const url = api.locationWithoutCompendium(window.location);
       const method = options.replace ? "replaceState" : "pushState";
-      if (url !== window.location.href) window.history[method]({ appView: options.appView || "simulator" }, "", url);
+      if (url !== window.location.href) window.history[method]({ appView: options.appView || "home" }, "", url);
     }
 
     function compendiumRouteItemExists(route) {
@@ -16806,21 +17199,63 @@
       $("compendiumArticleTitle").focus?.();
     }
 
+    const supportedAppViews = new Set(["home", "simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]);
+
+    function readAppViewFromLocation(locationLike = window.location) {
+      const candidate = new URLSearchParams(locationLike.search || "").get("view");
+      return supportedAppViews.has(candidate) ? candidate : null;
+    }
+
+    function appViewUrl(view, locationLike = window.location) {
+      const next = supportedAppViews.has(view) ? view : "home";
+      const url = new URL(locationLike.href);
+      url.searchParams.delete("compendium");
+      url.searchParams.delete("item");
+      url.searchParams.delete("tbBattle");
+      if (next === "home") url.searchParams.delete("view");
+      else url.searchParams.set("view", next);
+      url.hash = "";
+      return url.toString();
+    }
+
+    function navigateAppView(view, options = {}) {
+      const next = supportedAppViews.has(view) ? view : "home";
+      if (next === "compendium") {
+        compendiumActiveCategory = "home";
+        compendiumSelectedMoveId = null;
+        compendiumSelectedPokemonId = null;
+        compendiumOpenArticle = null;
+        setAppView(next);
+      } else {
+        const method = options.replace ? "replaceState" : "pushState";
+        const url = appViewUrl(next);
+        appViewHistorySyncing = true;
+        if (window.history?.[method] && url !== window.location.href) {
+          window.history[method]({ appView: next }, "", url);
+        }
+        setAppView(next);
+        appViewHistorySyncing = false;
+      }
+      if (!options.preserveScroll) window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
     function setAppView(view) {
-      const supportedViews = new Set(["simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]);
-      const next = supportedViews.has(view) ? view : "simulator";
+      const next = supportedAppViews.has(view) ? view : "home";
       const previous = document.body.dataset.view;
       if (next === "compendium" && previous !== "compendium" && !compendiumHistorySyncing && window.history?.replaceState) {
-        window.history.replaceState({ ...(window.history.state || {}), appView: previous || "simulator" }, "", window.location.href);
+        window.history.replaceState({ ...(window.history.state || {}), appView: previous || "home" }, "", window.location.href);
       }
-      if (previous === "compendium" && next !== "compendium") clearCompendiumRoute({ appView: next });
+      if (previous === "compendium" && next !== "compendium" && !appViewHistorySyncing) clearCompendiumRoute({ appView: next });
       document.body.dataset.view = next;
       if (next !== "scenario-review") {
         document.body.classList.remove("scenario-manual-setup", "scenario-matchup-editing");
         manualMatchupEditMode = false;
       }
       document.querySelectorAll("[data-view-target]").forEach(button => {
-        button.classList.toggle("active", button.dataset.viewTarget === next);
+        const active = button.dataset.viewTarget === next;
+        button.classList.toggle("active", active);
+        if (active) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
       });
       if (next === "meta") {
         renderMetaRankings();

@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test:home": "node tools/test-home-ui-contract.js",
     "generate:great-league-ranking": "npm run generate:rankings",
     "generate:great-league-ranking:full": "npm run generate:great-league-full",
     "generate:great-league-meta-test": "node tools/build-great-league-meta-database.js --all-pokemon --ranking-only --profiles=rank1 --all-shield-states --opponents=meta --ranking-model=role",
