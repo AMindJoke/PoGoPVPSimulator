@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test:pwa": "node tools/test-pwa-contract.js",
     "test:home": "node tools/test-home-ui-contract.js",
     "test:pokemon-analysis-ui": "node tools/test-pokemon-analysis-ui-contract.js",
     "generate:great-league-ranking": "npm run generate:rankings",

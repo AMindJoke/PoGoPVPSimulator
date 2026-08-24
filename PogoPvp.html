@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokémon GO PvP Simulator</title>
   <meta name="description" content="Judge-focused Pokémon GO PvP tools for battle review, mechanics reference, simulation and team building.">
+  <meta name="theme-color" content="#156f8f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="PvP Simulator">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <script src="battle-data.js"></script>
   <script src="default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
@@ -35117,6 +35124,14 @@
     }
 
     init();
+
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(error => {
+          console.warn("Offline support could not be enabled.", error);
+        });
+      }, { once: true });
+    }
   </script>
 </body>
 </html>

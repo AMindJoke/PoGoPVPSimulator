@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Pokémon PvP Simulator</title>
+  <desc id="desc">A teal battle arena mark with the letters PvP.</desc>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="38" x2="442" y2="474" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1e8fb7"/>
+      <stop offset="1" stop-color="#0f526b"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="128" y1="96" x2="388" y2="416" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#d9f4fb" stop-opacity=".78"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="166" fill="none" stroke="url(#ring)" stroke-width="22"/>
+  <path d="M92 256h94m140 0h94" stroke="#fff" stroke-width="22" stroke-linecap="round" opacity=".9"/>
+  <circle cx="256" cy="256" r="70" fill="#fff" opacity=".14"/>
+  <circle cx="256" cy="256" r="42" fill="none" stroke="#fff" stroke-width="14"/>
+  <text x="256" y="279" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="74" font-weight="800" letter-spacing="-7" fill="#fff">PvP</text>
+</svg>

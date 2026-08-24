@@ -1,0 +1,26 @@
+{
+  "id": "./PogoPvp.html",
+  "name": "Pokémon GO PvP Simulator",
+  "short_name": "PvP Simulator",
+  "description": "Judge-focused Pokémon GO PvP tools for battle review, mechanics reference, simulation and team building.",
+  "start_url": "./PogoPvp.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e5edf0",
+  "theme_color": "#156f8f",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
