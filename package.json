@@ -1,6 +1,7 @@
 {
   "scripts": {
     "test:presentation-ui": "node tools/test-presentation-ui-contract.js",
+    "test:scenario-presentation": "node tools/test-scenario-presentation-contract.js",
     "test:pwa": "node tools/test-pwa-contract.js",
     "test:mobile-keyboard": "node tools/test-mobile-keyboard-contract.js",
     "test:home": "node tools/test-home-ui-contract.js",
