@@ -14995,7 +14995,7 @@
     const battleReliability = window.PvPeakBattleReliability || {};
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
-    const matchupScoreVersion = "resource-score-v2";
+    const matchupScoreVersion = "resource-score-v3";
     const matchupResultVersion = `${battleEngineVersion}:${matchupScoreVersion}`;
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     const perfDebug = window.PvPeakPerfDebug || null;
@@ -16281,6 +16281,7 @@
         const MAX_CLOSING_COST_EDGE = ${MAX_CLOSING_COST_EDGE};
         const MAX_FARM_PRESSURE_EDGE = ${MAX_FARM_PRESSURE_EDGE};
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
+        const MATCHUP_HP_EDGE_WEIGHT = ${MATCHUP_HP_EDGE_WEIGHT};
         const MIN_TERMINAL_OUTCOME_EDGE = ${MIN_TERMINAL_OUTCOME_EDGE};
         const PvPeakPerfDebug = (${perfFactory.toString()})({
           root: globalThis,
@@ -33409,6 +33410,7 @@
     const MAX_CLOSING_COST_EDGE = 55;
     const MAX_FARM_PRESSURE_EDGE = 95;
     const MAX_OUTPACE_PRESSURE_EDGE = 55;
+    const MATCHUP_HP_EDGE_WEIGHT = 450;
     const MIN_TERMINAL_OUTCOME_EDGE = 18;
 
     function scoreShieldMatrixResult(a, b, options = {}) {
@@ -33417,7 +33419,7 @@
       const bHp = b.maxHp ? b.hp / b.maxHp : 0;
       const aChargeProgress = chargedReadiness(a, b);
       const bChargeProgress = chargedReadiness(b, a);
-      const hpEdge = (aHp - bHp) * 270;
+      const hpEdge = (aHp - bHp) * MATCHUP_HP_EDGE_WEIGHT;
       const energyEdge = (a.energy - b.energy) * 1.15;
       const shieldEdge = (a.shields - b.shields) * 75;
       const readyEdge = (aChargeProgress - bChargeProgress) * 70;
@@ -33787,7 +33789,9 @@
     }
 
     function outpacePressure(attacker, defender) {
-      if (!attacker || !defender || !attacker.fast || defender.hp <= 0) return 0;
+      // Outpace pressure describes actions that can still happen from the
+      // resulting state. A fainted attacker cannot exert future pressure.
+      if (!attacker || !defender || !attacker.fast || attacker.hp <= 0 || defender.hp <= 0) return 0;
       const attackerCharges = unshieldedChargeEvents(attacker.trainer);
       const defenderCharges = unshieldedChargeEvents(defender.trainer);
       const attackerFirstTwo = attackerCharges.slice(0, 2);

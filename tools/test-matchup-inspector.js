@@ -60,7 +60,7 @@ function testCachedScoreMigration() {
     360, "B", "cradily", 0, 0, -171,
     -1.8493150684931505, 0, 0, .98, 0, 0, 0, 32
   ]);
-  assert.equal(migrated.score, 482);
+  assert.equal(migrated.score, 480);
   assert.equal(migrated.winnerSide, "B");
   assert.ok(migrated.winnerEdge < 0);
 }

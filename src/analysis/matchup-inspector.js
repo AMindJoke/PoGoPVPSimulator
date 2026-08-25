@@ -19,28 +19,31 @@ const CACHE_RESULT_FIELDS = [
   "outpacePressureEdge"
 ];
 
-const MATCHUP_SCORE_VERSION = "resource-score-v2";
+const MATCHUP_SCORE_VERSION = "resource-score-v3";
 const MIN_TERMINAL_OUTCOME_EDGE = 18;
+const LEGACY_HP_EDGE_WEIGHT = 270;
+const MATCHUP_HP_EDGE_WEIGHT = 450;
 
 function rescoreCachedResult(result) {
   if (!result) return result;
   const direction = result.winnerSide === "A" ? 1 : result.winnerSide === "B" ? -1 : 0;
   if (!direction) return { ...result, score: 500, winnerEdge: 0 };
+  const migratedHpEdge = Number(result.hpEdge || 0) * MATCHUP_HP_EDGE_WEIGHT / LEGACY_HP_EDGE_WEIGHT;
   const resourceEdge = [
-    result.hpEdge,
+    migratedHpEdge,
     result.energyEdge,
     result.shieldEdge,
     result.readyEdge,
     result.dangerEdge,
     result.closingCostEdge,
-    result.farmPressureEdge,
-    result.outpacePressureEdge
+    result.farmPressureEdge
   ].reduce((sum, value) => sum + Number(value || 0), 0);
   const winnerEdge = direction * (MIN_TERMINAL_OUTCOME_EDGE + Math.max(0, -resourceEdge * direction));
   return {
     ...result,
     score: Math.max(0, Math.min(1000, Math.round(500 + resourceEdge + winnerEdge))),
-    winnerEdge
+    winnerEdge,
+    hpEdge: migratedHpEdge
   };
 }
 
