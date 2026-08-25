@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-08-24-v2";
+const CACHE_VERSION = "2026-08-25-v1";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -8,7 +8,9 @@ const CORE_ASSETS = [
   "./PogoPvp.html",
   "./manifest.webmanifest",
   "./assets/go-pvp-mark.png",
-  "./assets/app-icon.svg",
+  "./assets/go-pvp-favicon-16.png",
+  "./assets/go-pvp-favicon-32.png",
+  "./assets/go-pvp-favicon-48.png",
   "./assets/app-icon-180.png",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",

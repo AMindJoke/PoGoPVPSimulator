@@ -10,6 +10,11 @@ const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 assert.match(html, /<link rel="manifest" href="manifest\.webmanifest">/);
 assert.match(html, /<meta name="theme-color" content="#156f8f">/);
 assert.match(html, /<link rel="apple-touch-icon" href="assets\/app-icon-180\.png">/);
+for (const size of [16, 32, 48]) {
+  assert.match(html, new RegExp(`<link rel="icon" href="assets/go-pvp-favicon-${size}\\.png" sizes="${size}x${size}" type="image/png">`));
+  assert.ok(fs.existsSync(path.join(root, "assets", `go-pvp-favicon-${size}.png`)), `Missing ${size}px GO favicon.`);
+}
+assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
 assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js"\)/);
 
 assert.strictEqual(manifest.start_url, "./PogoPvp.html");
@@ -21,6 +26,7 @@ for (const icon of manifest.icons) {
 }
 
 assert.match(serviceWorker, /request\.mode === "navigate"/);
+assert.match(serviceWorker, /"\.\/assets\/go-pvp-favicon-32\.png"/, "The GO favicon must be available offline.");
 assert.match(serviceWorker, /cache\.match\(request, \{ ignoreSearch: true \}\)/);
 assert.match(serviceWorker, /cache\.match\("\.\/PogoPvp\.html"\)/);
 assert.doesNotMatch(serviceWorker, /cache\.addAll\(/, "One optional asset must not abort the whole install.");

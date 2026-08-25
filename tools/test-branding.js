@@ -10,6 +10,11 @@ const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8"));
 const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 const mark = fs.readFileSync(path.join(root, "assets", "go-pvp-mark.png"));
+const pngDimensions = file => {
+  const png = fs.readFileSync(path.join(root, "assets", file));
+  assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], `${file} must remain a PNG.`);
+  return [png.readUInt32BE(16), png.readUInt32BE(20)];
+};
 
 assert.match(html, /<title>GO PvP Simulator<\/title>/);
 assert.match(html, /apple-mobile-web-app-title" content="GO PvP Simulator"/);
@@ -24,6 +29,12 @@ assert.match(index, /<title>GO PvP Simulator<\/title>/);
 assert.equal(manifest.name, "GO PvP Simulator");
 assert.equal(manifest.short_name, "GO PvP Simulator");
 assert.match(serviceWorker, /"\.\/assets\/go-pvp-mark\.png"/, "The brand mark must remain available in the offline application shell.");
+for (const size of [16, 32, 48]) {
+  assert.deepEqual(pngDimensions(`go-pvp-favicon-${size}.png`), [size, size], `The ${size}px favicon must have exact dimensions.`);
+}
+for (const size of [180, 192, 512]) {
+  assert.deepEqual(pngDimensions(`app-icon-${size}.png`), [size, size], `The ${size}px app icon must have exact dimensions.`);
+}
 assert.deepEqual([...mark.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], "Brand mark must remain a PNG.");
 assert.equal(mark.readUInt32BE(16), 512, "Brand mark width must support high-DPI rendering.");
 assert.equal(mark.readUInt32BE(20), 512, "Brand mark height must preserve its square aspect ratio.");
