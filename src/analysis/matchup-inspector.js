@@ -143,7 +143,12 @@ function buildMatchupInspectorData({ a, b, scenarios, source = "precomputed", pr
 
 function findCachedScenario(cache, defenderId, shieldState) {
   const cells = cache && cache.cells || {};
-  const match = Object.entries(cells).find(([key]) => key.startsWith(`${defenderId}:`) && key.includes(`|${shieldState}|`));
+  const legacyPrefix = `${defenderId}:`;
+  const signaturePrefix = `{"id":"${defenderId}"`;
+  const match = Object.entries(cells).find(([key]) => (
+    (key.startsWith(legacyPrefix) || key.startsWith(signaturePrefix))
+    && key.includes(`|${shieldState}|`)
+  ));
   if (!match) return null;
   return inflateCacheResult(match[1]);
 }

@@ -27,6 +27,6 @@ assert.equal(result.details.simultaneousFaint, true);
 assert.equal(result.score, 500, "A terminal simultaneous faint must be neutral in the matrix.");
 
 const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
-assert.match(html, /matrix-v16:/, "The persisted matrix cache must be invalidated for the new outcome semantics.");
+assert.match(html, /matrix-v17:/, "The persisted matrix cache must be invalidated for the new score semantics.");
 
 console.log("Matrix simultaneous Fast draw test passed.");

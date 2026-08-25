@@ -14995,6 +14995,8 @@
     const battleReliability = window.PvPeakBattleReliability || {};
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
+    const matchupScoreVersion = "resource-score-v2";
+    const matchupResultVersion = `${battleEngineVersion}:${matchupScoreVersion}`;
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     const perfDebug = window.PvPeakPerfDebug || null;
     const perfDebugEnabled = perfDebug?.enabled === true;
@@ -15191,7 +15193,7 @@
     const hpSwingAnalysisCache = new Map();
     const hpSwingAnalysisPending = new Set();
     const shieldMatrixCacheLimit = 900;
-    const shieldMatrixCacheVersion = `matrix-v16:${battleEngineVersion}`;
+    const shieldMatrixCacheVersion = `matrix-v17:${matchupResultVersion}`;
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
@@ -15200,7 +15202,7 @@
     const matrixWorkerConfigSignatures = new Set();
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
-    const metaMatchupCacheVersion = `meta-v6:${battleEngineVersion}`;
+    const metaMatchupCacheVersion = `meta-v7:${matchupResultVersion}`;
     const metaRankingDataUrl = "data/great-league-rankings.json";
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
@@ -16232,6 +16234,8 @@
         applyInitialFastAdvantage,
         applyMatrixSimulationPolicy,
         scoreShieldMatrixResult,
+        terminalOutcomeEdge,
+        scoreWithFlipCloseness,
         formatEdge,
         chargedReadiness,
         chargedReadinessImpact,
@@ -16277,7 +16281,7 @@
         const MAX_CLOSING_COST_EDGE = ${MAX_CLOSING_COST_EDGE};
         const MAX_FARM_PRESSURE_EDGE = ${MAX_FARM_PRESSURE_EDGE};
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
-        const DECISIVE_WIN_EDGE = ${DECISIVE_WIN_EDGE};
+        const MIN_TERMINAL_OUTCOME_EDGE = ${MIN_TERMINAL_OUTCOME_EDGE};
         const PvPeakPerfDebug = (${perfFactory.toString()})({
           root: globalThis,
           enabled: ${perfDebugEnabled},
@@ -17852,7 +17856,7 @@
         if (opponent) opponentSignatures[id] = matrixCombatantSignature(createMetaCombatant(opponent, "B"));
       });
       return window.PvPeakTeamBuilderAnalysis.createPlan({
-        engineVersion: battleEngineVersion,
+        engineVersion: matchupResultVersion,
         providerId: teamBuilderState.analysisConfig.meta,
         shields: teamBuilderState.analysisConfig.shields,
         team,
@@ -18423,7 +18427,7 @@
 
     function teamBuilderFinalSlotContextSignature() {
       const team = (teamBuilderState?.team || []).map(window.PvPeakTeamBuilderAnalysis.memberSignature).join(";");
-      return `${team}|${teamBuilderState?.analysisConfig?.meta || ""}|${teamBuilderState?.analysisConfig?.shields || ""}|${battleEngineVersion}`;
+      return `${team}|${teamBuilderState?.analysisConfig?.meta || ""}|${teamBuilderState?.analysisConfig?.shields || ""}|${matchupResultVersion}`;
     }
 
     function resetTeamBuilderFinalSlotEvaluation() {
@@ -18480,7 +18484,7 @@
       teamBuilderEligibleOptimizationMembers().forEach(({ candidateId, member }) => {
         teamBuilderFinalSlotCandidates.set(candidateId, member);
         window.PvPeakTeamBuilderAnalysis.createPlan({
-          engineVersion: battleEngineVersion,
+          engineVersion: matchupResultVersion,
           providerId: teamBuilderState.analysisConfig.meta,
           shields: teamBuilderState.analysisConfig.shields,
           team: [member],
@@ -18692,7 +18696,7 @@
       teamBuilderEligibleReplacementMembers().forEach(({ candidateId, member }) => {
         teamBuilderReplacementCandidates.set(candidateId, member);
         const candidateJobs = window.PvPeakTeamBuilderAnalysis.createPlan({
-          engineVersion: battleEngineVersion,
+          engineVersion: matchupResultVersion,
           providerId: teamBuilderState.analysisConfig.meta,
           shields: teamBuilderState.analysisConfig.shields,
           team: [member],
@@ -18801,7 +18805,7 @@
     function teamBuilderComparisonSignature() {
       const baseline = (teamBuilderComparisonBaseline || []).map(window.PvPeakTeamBuilderAnalysis.memberSignature).join(";");
       const current = teamBuilderState.team.map(window.PvPeakTeamBuilderAnalysis.memberSignature).join(";");
-      return `${baseline}|${current}|${teamBuilderState.analysisConfig.meta}|${teamBuilderState.analysisConfig.shields}|${battleEngineVersion}`;
+      return `${baseline}|${current}|${teamBuilderState.analysisConfig.meta}|${teamBuilderState.analysisConfig.shields}|${matchupResultVersion}`;
     }
 
     function captureTeamBuilderComparisonBaseline(renderNow = true) {
@@ -33405,7 +33409,7 @@
     const MAX_CLOSING_COST_EDGE = 55;
     const MAX_FARM_PRESSURE_EDGE = 95;
     const MAX_OUTPACE_PRESSURE_EDGE = 55;
-    const DECISIVE_WIN_EDGE = 171;
+    const MIN_TERMINAL_OUTCOME_EDGE = 18;
 
     function scoreShieldMatrixResult(a, b, options = {}) {
       const simultaneousFaint = a.hp <= 0 && b.hp <= 0;
@@ -33417,17 +33421,22 @@
       const energyEdge = (a.energy - b.energy) * 1.15;
       const shieldEdge = (a.shields - b.shields) * 75;
       const readyEdge = (aChargeProgress - bChargeProgress) * 70;
-      const winnerEdge = a.hp > 0 && b.hp <= 0 ? DECISIVE_WIN_EDGE : b.hp > 0 && a.hp <= 0 ? -DECISIVE_WIN_EDGE : 0;
       const dangerEdge = nearChargeDanger(a, b) * -MAX_DANGER_EDGE + nearChargeDanger(b, a) * MAX_DANGER_EDGE;
       const closingCostEdge = closingCostPressure(b, a) - closingCostPressure(a, b);
       const farmPressureEdge = farmDownPressure(a, b) - farmDownPressure(b, a);
       const outpacePressureEdge = outpacePressure(a, b) - outpacePressure(b, a);
-      const resourceTotal = 500 + winnerEdge + hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
-      const total = simultaneousFaint ? 500 : resourceTotal;
-      const score = Math.max(0, Math.min(1000, Math.round(total)));
-      const winner = simultaneousFaint ? "Draw" : score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
+      const resourceEdge = hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
+      const winnerEdge = terminalOutcomeEdge(a, b, resourceEdge);
+      const resourceTotal = 500 + winnerEdge + resourceEdge;
+      const rawTotal = simultaneousFaint ? 500 : resourceTotal;
+      const rawScore = Math.max(0, Math.min(1000, Math.round(rawTotal)));
       const flipPotential = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
       const swing = flipPotential && flipPotential.visible ? flipPotential.best : null;
+      const flipAdjustedScore = scoreWithFlipCloseness(rawScore, a, b, swing);
+      const flipClosenessEdge = flipAdjustedScore - rawScore;
+      const score = flipAdjustedScore;
+      const total = rawTotal + flipClosenessEdge;
+      const winner = simultaneousFaint ? "Draw" : score > 500 ? a.p.name : score < 500 ? b.p.name : "Close";
       const parts = [
         `base 500`,
         `winner ${formatEdge(winnerEdge)}`,
@@ -33438,7 +33447,8 @@
         `danger ${formatEdge(dangerEdge)}`,
         `closing cost ${formatEdge(closingCostEdge)}`,
         `farm pressure ${formatEdge(farmPressureEdge)}`,
-        `outpace ${formatEdge(outpacePressureEdge)}`
+        `outpace ${formatEdge(outpacePressureEdge)}`,
+        `flip closeness ${formatEdge(flipClosenessEdge)}`
       ].join(" | ");
       return {
         score,
@@ -33460,10 +33470,31 @@
           closingCostEdge,
           farmPressureEdge,
           outpacePressureEdge,
+          resourceEdge,
+          flipClosenessEdge,
           flipPotential,
           total
         }
       };
+    }
+
+    function terminalOutcomeEdge(a, b, resourceEdge) {
+      const direction = a.hp > 0 && b.hp <= 0 ? 1 : b.hp > 0 && a.hp <= 0 ? -1 : 0;
+      if (!direction) return 0;
+      const alignedResourceEdge = Number(resourceEdge || 0) * direction;
+      const outcomeCorrection = Math.max(0, -alignedResourceEdge);
+      return direction * (MIN_TERMINAL_OUTCOME_EDGE + outcomeCorrection);
+    }
+
+    function scoreWithFlipCloseness(score, a, b, swing) {
+      if (!swing) return score;
+      const fastMoves = Math.max(1, Number(swing.fastMoveCount || swing.fastMoves || 1));
+      const turnCost = Math.max(1, Number(swing.totalTurnCost || swing.turnCost || 1));
+      const maximumDistance = turnCost <= 2 ? 35 : turnCost <= 4 ? 55 : fastMoves === 1 ? 75 : null;
+      if (maximumDistance === null) return score;
+      if (a.hp > 0 && b.hp <= 0 && swing.side === "B") return Math.min(score, 500 + maximumDistance);
+      if (b.hp > 0 && a.hp <= 0 && swing.side === "A") return Math.max(score, 500 - maximumDistance);
+      return score;
     }
 
     function formatEdge(value) {
