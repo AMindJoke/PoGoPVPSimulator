@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis/ranking-details");
+const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const root = path.resolve(__dirname, "..");
 const rankingPath = path.join(root, "data", "great-league-rankings.json");
@@ -44,7 +45,7 @@ entries.forEach((entry, index) => {
           opponentId = JSON.parse(signature).id || opponentId;
         } catch (_) {}
       }
-      const score = Number(Array.isArray(value) ? value[0] : value?.score);
+      const score = Number(inflateCacheResult(value)?.score);
       if (opponentId !== entry.id && Number.isFinite(score)) cells.push({ opponentId, score });
     });
   }
@@ -67,6 +68,7 @@ const output = {
   schemaVersion: 1,
   generatedAt: new Date().toISOString(),
   sourceRankingGeneratedAt: ranking.metadata?.generatedAt || null,
+  scoreVersion: MATCHUP_SCORE_VERSION,
   entries: details
 };
 const json = `${JSON.stringify(output, null, 2)}\n`;

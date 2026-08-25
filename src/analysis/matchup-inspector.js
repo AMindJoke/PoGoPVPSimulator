@@ -19,12 +19,38 @@ const CACHE_RESULT_FIELDS = [
   "outpacePressureEdge"
 ];
 
+const MATCHUP_SCORE_VERSION = "resource-score-v2";
+const MIN_TERMINAL_OUTCOME_EDGE = 18;
+
+function rescoreCachedResult(result) {
+  if (!result) return result;
+  const direction = result.winnerSide === "A" ? 1 : result.winnerSide === "B" ? -1 : 0;
+  if (!direction) return { ...result, score: 500, winnerEdge: 0 };
+  const resourceEdge = [
+    result.hpEdge,
+    result.energyEdge,
+    result.shieldEdge,
+    result.readyEdge,
+    result.dangerEdge,
+    result.closingCostEdge,
+    result.farmPressureEdge,
+    result.outpacePressureEdge
+  ].reduce((sum, value) => sum + Number(value || 0), 0);
+  const winnerEdge = direction * (MIN_TERMINAL_OUTCOME_EDGE + Math.max(0, -resourceEdge * direction));
+  return {
+    ...result,
+    score: Math.max(0, Math.min(1000, Math.round(500 + resourceEdge + winnerEdge))),
+    winnerEdge
+  };
+}
+
 function inflateCacheResult(value) {
-  if (!Array.isArray(value)) return value || null;
-  return CACHE_RESULT_FIELDS.reduce((result, field, index) => {
+  if (!Array.isArray(value)) return rescoreCachedResult(value || null);
+  const inflated = CACHE_RESULT_FIELDS.reduce((result, field, index) => {
     result[field] = value[index];
     return result;
   }, {});
+  return rescoreCachedResult(inflated);
 }
 
 function invertResult(result) {
@@ -168,7 +194,9 @@ function buildFromCacheFiles({ a, b, aCache, bCache, shieldStates = ["0-0", "1-1
 }
 
 module.exports = {
+  MATCHUP_SCORE_VERSION,
   inflateCacheResult,
+  rescoreCachedResult,
   invertResult,
   summarizeShieldScenario,
   analysisFlagsFromScenarios,

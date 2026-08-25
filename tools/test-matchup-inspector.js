@@ -7,7 +7,8 @@ const {
   analysisFlagsFromScenarios,
   buildFromCacheFiles,
   buildMatchupInspectorData,
-  invertResult
+  invertResult,
+  inflateCacheResult
 } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -52,6 +53,16 @@ function testOrientationInversion() {
   assert.equal(inverted.hpRatioB, .4);
   assert.equal(inverted.winnerEdge, -171);
   assert.equal(inverted.hpEdge, -32);
+}
+
+function testCachedScoreMigration() {
+  const migrated = inflateCacheResult([
+    360, "B", "cradily", 0, 0, -171,
+    -1.8493150684931505, 0, 0, .98, 0, 0, 0, 32
+  ]);
+  assert.equal(migrated.score, 482);
+  assert.equal(migrated.winnerSide, "B");
+  assert.ok(migrated.winnerEdge < 0);
 }
 
 function testScenarioMapping() {
@@ -108,6 +119,7 @@ function testRealCacheIfAvailable() {
 
 function run() {
   testOrientationInversion();
+  testCachedScoreMigration();
   testScenarioMapping();
   testAnalysisFlags();
   testMissingCacheFallbackModel();

@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { runQualityPipeline } = require("./validate-great-league-dataset");
+const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
 const RANKING_PATH = path.join(ROOT, "data", "great-league-rankings.json");
@@ -222,8 +223,7 @@ function parseCacheCellKey(key) {
 }
 
 function cellScore(value) {
-  if (Array.isArray(value)) return Number(value[0]);
-  return Number(value && value.score);
+  return Number(inflateCacheResult(value)?.score);
 }
 
 function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), selectiveIds = null) {
@@ -435,6 +435,7 @@ function run(options = {}) {
     metadata: {
       ...ranking.metadata,
       generatedAt: new Date().toISOString(),
+      scoreVersion: MATCHUP_SCORE_VERSION,
       rankingModel: {
         ...(ranking.metadata && ranking.metadata.rankingModel || {}),
         version: MODEL.version,

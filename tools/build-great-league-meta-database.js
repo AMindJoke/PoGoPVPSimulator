@@ -9,6 +9,7 @@ const turnEngine = require("../src/battle/turn-resolution-engine");
 const matchupPlanner = require("../src/battle/matchup-planner");
 const matchupPlannerAdapter = require("../src/battle/matchup-planner-adapter");
 const battleIntelligence = require("../src/battle/battle-intelligence");
+const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
@@ -683,26 +684,6 @@ function compactCacheResult(result) {
   ];
 }
 
-function inflateCacheResult(value) {
-  if (!Array.isArray(value)) return value;
-  return {
-    score: value[0],
-    winnerSide: value[1],
-    winnerId: value[2],
-    hpRatioA: value[3],
-    hpRatioB: value[4],
-    winnerEdge: value[5],
-    hpEdge: value[6],
-    energyEdge: value[7],
-    shieldEdge: value[8],
-    readyEdge: value[9],
-    dangerEdge: value[10],
-    closingCostEdge: value[11],
-    farmPressureEdge: value[12],
-    outpacePressureEdge: value[13]
-  };
-}
-
 function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defender, shieldState, aShields, bShields, config, category = "standard", extra = "" }) {
   const key = matchupCacheKey({ profile, attacker, defender, shieldState, config, category, extra });
   const cacheKey = matchupCacheCellKey({ defender, shieldState, config, category, extra });
@@ -1274,6 +1255,7 @@ function main() {
             generatedAt,
             matrixVersion: MATRIX_VERSION,
             engineVersion: MATRIX_VERSION,
+            scoreVersion: MATCHUP_SCORE_VERSION,
             profiles,
             fullCandidateCount,
             pokemonCount: pool.length,
@@ -1293,6 +1275,7 @@ function main() {
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
     matrixVersion: MATRIX_VERSION,
     engineVersion: MATRIX_VERSION,
+    scoreVersion: MATCHUP_SCORE_VERSION,
     cpCap: CP_CAP,
     configuredPokemonCount: allPokemonRanking ? eligiblePokemon.length : metaConfig.pokemon.length,
     fullCandidateCount,
