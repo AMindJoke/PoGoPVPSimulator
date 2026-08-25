@@ -17,6 +17,17 @@ function assert(condition, message) {
   '--ui-focus-ring:'
 ].forEach((token) => assert(html.includes(token), `Missing shared presentation token ${token}`));
 
+[
+  '--bg: #efeae1;',
+  '--panel: #f7f3eb;',
+  '--surface-raised: #fcfaf6;',
+  '--line: #d8d2c8;',
+  '--soft: #fbf8f2;'
+].forEach((token) => assert(html.includes(token), `Missing warm light-theme surface token ${token}`));
+
+assert(/body\[data-theme="dark"\]\s*\{[\s\S]*?--panel:\s*#182231;[\s\S]*?--surface-raised:\s*#111822;/.test(html), 'Dark-theme surfaces must remain explicitly dark');
+assert(/select, input\s*\{[\s\S]*?background:\s*var\(--surface-raised\);/.test(html), 'Inputs must stay distinct on the warm panel surface');
+
 assert(/\.pokemon-suggestions\s*\{[\s\S]*?overscroll-behavior:\s*contain;[\s\S]*?scrollbar-gutter:\s*stable;/.test(html), 'Pokémon picker results must keep scrolling contained and stable');
 assert(/\.manual-switch-candidates\s*\{[^}]*overscroll-behavior:\s*contain;[^}]*scrollbar-gutter:\s*stable;/.test(html), 'Switch picker must use the shared scroll behavior');
 assert(/\.manual-bring-next-candidate\[aria-selected="true"\]::after\s*\{[^}]*content:\s*"✓";/.test(html), 'Replacement picker needs a non-color selected indicator');
