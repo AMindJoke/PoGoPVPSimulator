@@ -114,4 +114,42 @@ assert.equal(resetProgress.active.timingPlanMoveId, null);
 assert.equal(resetProgress.switchState.A.bench[0].fastMoveCycleProgress, 0, "the outgoing Pokémon discards partial Fast Attack progress");
 assert.equal(resetProgress.switchState.A.bench[0].timingPlanFastMovesRemaining, 0);
 
+// A second voluntary switch becomes legal only at the exact deterministic
+// 45-second boundary, and starts a fresh independent cooldown.
+const justBeforeCooldown = Timing.advanceToTurn(switched.timing, 109);
+assert.equal(Timing.remainingSwitchMs(justBeforeCooldown, "A"), 500);
+assert.equal(
+  Switching.legality({
+    side: "A",
+    active: switched.active,
+    switchState: switched.switchState,
+    timing: justBeforeCooldown,
+    actionReady: true
+  }).reason,
+  Switching.REASON.COOLDOWN,
+  "the second switch must remain unavailable with one deterministic turn left"
+);
+const cooldownExpired = Timing.advanceToTurn(switched.timing, 110);
+assert.equal(Timing.remainingSwitchMs(cooldownExpired, "A"), 0);
+const secondSwitchLegal = Switching.legality({
+  side: "A",
+  active: switched.active,
+  switchState: switched.switchState,
+  timing: cooldownExpired,
+  actionReady: true
+});
+assert.equal(secondSwitchLegal.legal, true);
+const secondSwitch = Switching.switchActive({
+  side: "A",
+  active: switched.active,
+  incomingId: "talonflame",
+  switchState: switched.switchState,
+  timing: cooldownExpired
+});
+assert.equal(secondSwitch.active.p.id, "talonflame");
+assert.equal(secondSwitch.active.hp, 91, "the returning Pokemon keeps its canonical HP");
+assert.equal(secondSwitch.active.energy, 44, "the returning Pokemon keeps its canonical energy");
+assert.equal(secondSwitch.turnCost, 1);
+assert.equal(Timing.remainingSwitchMs(secondSwitch.timing, "A"), 45000);
+
 console.log("Manual voluntary switching tests passed.");
