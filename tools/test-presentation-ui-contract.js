@@ -27,6 +27,8 @@ function assert(condition, message) {
 
 assert(/body\[data-theme="dark"\]\s*\{[\s\S]*?--panel:\s*#182231;[\s\S]*?--surface-raised:\s*#111822;/.test(html), 'Dark-theme surfaces must remain explicitly dark');
 assert(/select, input\s*\{[\s\S]*?background:\s*var\(--surface-raised\);/.test(html), 'Inputs must stay distinct on the warm panel surface');
+assert(/body::after\s*\{[\s\S]*?paper-grain\.svg[\s\S]*?mix-blend-mode:\s*multiply;/.test(html), 'Light theme must include the shared paper grain overlay');
+assert(/body\[data-theme="dark"\]::after,[\s\S]*?body\[data-theme="neo"\]::after\s*\{[\s\S]*?display:\s*none;/.test(html), 'Paper grain must stay disabled in dark themes');
 
 assert(/\.pokemon-suggestions\s*\{[\s\S]*?overscroll-behavior:\s*contain;[\s\S]*?scrollbar-gutter:\s*stable;/.test(html), 'Pokémon picker results must keep scrolling contained and stable');
 assert(/\.manual-switch-candidates\s*\{[^}]*overscroll-behavior:\s*contain;[^}]*scrollbar-gutter:\s*stable;/.test(html), 'Switch picker must use the shared scroll behavior');

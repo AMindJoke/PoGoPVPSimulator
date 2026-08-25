@@ -27,6 +27,7 @@ for (const icon of manifest.icons) {
 
 assert.match(serviceWorker, /request\.mode === "navigate"/);
 assert.match(serviceWorker, /"\.\/assets\/go-pvp-favicon-32\.png"/, "The GO favicon must be available offline.");
+assert.match(serviceWorker, /"\.\/assets\/paper-grain\.svg"/, "The light-theme paper grain must be available offline.");
 assert.match(serviceWorker, /cache\.match\(request, \{ ignoreSearch: true \}\)/);
 assert.match(serviceWorker, /cache\.match\("\.\/PogoPvp\.html"\)/);
 assert.doesNotMatch(serviceWorker, /cache\.addAll\(/, "One optional asset must not abort the whole install.");

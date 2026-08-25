@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720">
+  <filter id="fibers" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.18" numOctaves="3" seed="17" stitchTiles="stitch"/>
+    <feColorMatrix values="
+      0 0 0 0 0.35
+      0 0 0 0 0.29
+      0 0 0 0 0.21
+      0.07 0.07 0.07 0 -0.07"/>
+  </filter>
+  <filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="31" stitchTiles="stitch"/>
+    <feColorMatrix values="
+      0 0 0 0 0.28
+      0 0 0 0 0.24
+      0 0 0 0 0.19
+      0.035 0.035 0.035 0 -0.035"/>
+  </filter>
+  <rect width="720" height="720" filter="url(#fibers)" opacity="0.58"/>
+  <rect width="720" height="720" filter="url(#grain)" opacity="0.52"/>
+</svg>

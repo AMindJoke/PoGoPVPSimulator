@@ -188,6 +188,20 @@
       background-attachment: fixed;
       color: var(--ink);
     }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: url("assets/paper-grain.svg") center / 720px 720px repeat;
+      mix-blend-mode: multiply;
+      opacity: .58;
+    }
+    body[data-theme="dark"]::after,
+    body[data-theme="neo"]::after {
+      display: none;
+    }
     .pokemon-arena-bg {
       position: fixed;
       top: 50%;
