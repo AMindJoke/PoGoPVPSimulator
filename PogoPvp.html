@@ -192,11 +192,11 @@
       content: "";
       position: fixed;
       inset: 0;
-      z-index: 2;
+      z-index: 0;
       pointer-events: none;
-      background: url("assets/paper-grain.svg") center / 720px 720px repeat;
+      background: url("assets/paper-grain.svg") center / 960px 960px repeat;
       mix-blend-mode: multiply;
-      opacity: .58;
+      opacity: .72;
     }
     body[data-theme="dark"]::after,
     body[data-theme="neo"]::after {
@@ -13903,6 +13903,54 @@
       .home-tool-card { gap: 9px; padding: 13px !important; }
       .home-tool-icon { width: 42px; height: 42px; }
       .home-tool-copy > span:last-child { font-size: 10.5px; }
+    }
+    body:not([data-theme]) :where(
+      .home-tool-card,
+      .home-quick-start,
+      .setup > section,
+      .manual-panel,
+      .timeline,
+      .manual-scenario-panel,
+      .compendium-stage,
+      .compendium-article,
+      .move-reference-row,
+      .pokemon-reference-card,
+      .analysis-hero,
+      .analysis-section,
+      .team-slot,
+      #teamBuilderView .team-builder-head,
+      .team-meta-setup,
+      .team-coverage,
+      .team-insights,
+      .team-replacement,
+      .team-final-slot,
+      .team-comparison
+    ),
+    body[data-theme="light"] :where(
+      .home-tool-card,
+      .home-quick-start,
+      .setup > section,
+      .manual-panel,
+      .timeline,
+      .manual-scenario-panel,
+      .compendium-stage,
+      .compendium-article,
+      .move-reference-row,
+      .pokemon-reference-card,
+      .analysis-hero,
+      .analysis-section,
+      .team-slot,
+      #teamBuilderView .team-builder-head,
+      .team-meta-setup,
+      .team-coverage,
+      .team-insights,
+      .team-replacement,
+      .team-final-slot,
+      .team-comparison
+    ) {
+      background-image: url("assets/paper-grain.svg");
+      background-size: 960px 960px;
+      background-blend-mode: multiply;
     }
   </style>
 </head>
