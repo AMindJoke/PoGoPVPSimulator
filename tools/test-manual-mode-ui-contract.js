@@ -197,7 +197,8 @@ assert.match(html, /setPokemonImage\(sprite, combatant\.p\)/);
 assert.match(html, /function finalFallbackImageUrl/);
 const pokemonImageLoader = html.match(/function setPokemonImage[\s\S]+?function spriteSlug/)?.[0] || "";
 assert(pokemonImageLoader.indexOf("img.onerror =") < pokemonImageLoader.lastIndexOf("img.src ="), "Pokemon image fallbacks must be installed before assigning src.");
-assert.match(html, /energyMoveOrb\(move, combatant\.energy, prefix, index\)/);
+assert.match(html, /energyCollectionMarkup\(combatant\.charged, combatant\.energy, prefix/);
+assert.match(html, /function energyCollectionMarkup\(charged, energy, prefix, coreMarkup\)[\s\S]{0,500}energyMoveOrb\(move, energy, prefix, index\)/);
 assert.match(html, /function syncManualEditorPlacement/);
 assert.match(html, /window\.matchMedia\("\(max-width: 900px\)"\)\.matches/);
 assert.match(html, /\.manual-mobile-review-shell\s*\{\s*display: none;\s*\}/, "The mobile shell must not affect desktop layout.");
@@ -619,7 +620,7 @@ assert.match(html, /\? "unchanged"[\s\S]{0,180}\? `comparison \$\{branch\.compar
 assert.doesNotMatch(html, /moves from external service|external planner policy/i);
 assert.match(html, /Need \$\{missingEnergy\} more energy/);
 assert.match(html, /manualStartPoint"\)\.value = "battle-start"/);
-assert.match(html, /Charged · \$\{c\.charged\[0\]\.energyCost\} energy/);
+assert.match(html, /Charged · \$\{move\.energyCost\} energy/);
 assert.match(html, /manualStartPoint"\)\.onchange = updateManualBranchSelectionUi/);
 assert.match(html, /manualSelectionCancel"\)\.onclick = cancelManualBranchSelection/);
 assert.match(html, /event\.key === "Escape"[\s\S]{0,200}cancelManualBranchSelection/);

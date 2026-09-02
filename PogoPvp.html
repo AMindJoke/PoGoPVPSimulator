@@ -1604,7 +1604,7 @@
     .team-editor-section > header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
     .team-editor-section h3 { margin: 0; font-size: 13px; }
     .team-editor-section header span { color: var(--muted); font-size: 9px; font-weight: 750; }
-    .team-editor-moves { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .team-editor-moves { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 9px; }
     .team-editor-field { display: grid; gap: 5px; min-width: 0; color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
     .team-editor-field select, .team-editor-field input { width: 100%; min-width: 0; min-height: 40px; font-size: 11px; font-weight: 800; text-transform: none; }
     .team-build-profiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
@@ -14110,10 +14110,10 @@
             <div class="move-group-title">Fast Move</div>
             <label><span>Fast</span><select id="p1Fast" class="move-select"></select></label>
           </div>
-          <div class="move-group">
+          <div id="p1ChargedMoves" class="move-group charged-move-selects">
             <div class="move-group-title">Charged Moves</div>
-            <label><span>Charged 1</span><select id="p1Charged1" class="move-select"></select></label>
-            <label><span>Charged 2</span><select id="p1Charged2" class="move-select"></select></label>
+            <label data-charged-slot="1"><span>Charged 1</span><select id="p1Charged1" class="move-select" data-charged-slot="1"></select></label>
+            <label data-charged-slot="2"><span>Charged 2</span><select id="p1Charged2" class="move-select" data-charged-slot="2"></select></label>
           </div>
           <details class="iv-details advanced-panel options-panel">
             <summary>Battle Options</summary>
@@ -14220,10 +14220,10 @@
             <div class="move-group-title">Fast Move</div>
             <label><span>Fast</span><select id="p2Fast" class="move-select"></select></label>
           </div>
-          <div class="move-group">
+          <div id="p2ChargedMoves" class="move-group charged-move-selects">
             <div class="move-group-title">Charged Moves</div>
-            <label><span>Charged 1</span><select id="p2Charged1" class="move-select"></select></label>
-            <label><span>Charged 2</span><select id="p2Charged2" class="move-select"></select></label>
+            <label data-charged-slot="1"><span>Charged 1</span><select id="p2Charged1" class="move-select" data-charged-slot="1"></select></label>
+            <label data-charged-slot="2"><span>Charged 2</span><select id="p2Charged2" class="move-select" data-charged-slot="2"></select></label>
           </div>
           <details class="iv-details advanced-panel options-panel">
             <summary>Battle Options</summary>
@@ -14436,15 +14436,15 @@
             <div id="manualEditorActions" class="manual-editor-actions">
               <div id="manualActionsA" class="actions" data-label="Pokemon A" hidden>
                 <button id="p1UseFast">Fast</button>
-                <button id="p1UseCharge1">Charged 1</button>
-                <button id="p1UseCharge2">Charged 2</button>
+                <button id="p1UseCharge1" data-manual-charge-index="0">Charged 1</button>
+                <button id="p1UseCharge2" data-manual-charge-index="1">Charged 2</button>
                 <span id="manualAutoA" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
                 <span id="manualSwitchA" class="manual-switch-control"></span>
               </div>
               <div id="manualActionsB" class="actions" data-label="Pokemon B" hidden>
                 <button id="p2UseFast">Fast</button>
-                <button id="p2UseCharge1">Charged 1</button>
-                <button id="p2UseCharge2">Charged 2</button>
+                <button id="p2UseCharge1" data-manual-charge-index="0">Charged 1</button>
+                <button id="p2UseCharge2" data-manual-charge-index="1">Charged 2</button>
                 <span id="manualAutoB" class="manual-auto-response"><strong>Automatic response</strong><small>This side continues automatically after your move.</small></span>
                 <span id="manualSwitchB" class="manual-switch-control"></span>
               </div>
@@ -14845,10 +14845,10 @@
       </div>
       <section class="team-editor-section" aria-labelledby="teamBuilderMovesTitle">
         <header><h3 id="teamBuilderMovesTitle">Moveset</h3><span>* Elite or legacy move</span></header>
-        <div class="team-editor-moves">
+        <div id="teamBuilderEditorMoves" class="team-editor-moves">
           <label class="team-editor-field">Fast Move<select id="teamBuilderFastMove"></select></label>
-          <label class="team-editor-field">Charged Move 1<select id="teamBuilderChargedMove1"></select></label>
-          <label class="team-editor-field">Charged Move 2<select id="teamBuilderChargedMove2"></select></label>
+          <label class="team-editor-field" data-team-builder-charged-slot="1">Charged Move 1<select id="teamBuilderChargedMove1" data-team-builder-charged-slot="1"></select></label>
+          <label class="team-editor-field" data-team-builder-charged-slot="2">Charged Move 2<select id="teamBuilderChargedMove2" data-team-builder-charged-slot="2"></select></label>
         </div>
       </section>
       <section class="team-editor-section" aria-labelledby="teamBuilderBuildTitle">
@@ -15514,10 +15514,7 @@
       $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
       $("p1Fast").onchange = () => handleFastMoveChange("p1");
       $("p2Fast").onchange = () => handleFastMoveChange("p2");
-      ["1", "2"].forEach(slot => {
-        $(`p1Charged${slot}`).onchange = () => handleChargedMoveChange("p1", slot);
-        $(`p2Charged${slot}`).onchange = () => handleChargedMoveChange("p2", slot);
-      });
+      ["p1", "p2"].forEach(prefix => bindChargedMoveSelects(prefix));
       document.querySelectorAll(".bait-toggle button").forEach(button => {
         button.onclick = () => setBaiting(button.closest(".bait-toggle").dataset.prefix, button.dataset.bait);
       });
@@ -15667,8 +15664,7 @@
       $("teamBuilderEditorModal").onkeydown = event => trapTeamBuilderModalFocus(event, closeTeamBuilderEditor);
       $("teamBuilderShadowToggle").onclick = toggleTeamBuilderShadow;
       $("teamBuilderFastMove").onchange = syncTeamBuilderEditorMoves;
-      $("teamBuilderChargedMove1").onchange = syncTeamBuilderEditorMoves;
-      $("teamBuilderChargedMove2").onchange = syncTeamBuilderEditorMoves;
+      teamBuilderChargedMoveSelects().forEach(select => { select.onchange = syncTeamBuilderEditorMoves; });
       $("teamBuilderBuildProfiles").querySelectorAll("[data-team-build-profile]").forEach(button => {
         button.onclick = () => setTeamBuilderBuildProfile(button.dataset.teamBuildProfile);
       });
@@ -17564,7 +17560,8 @@
         types: pokemon.types,
         shadow: isShadow(pokemon),
         fastMoveId: moves.fast.id,
-        chargedMoveIds: moves.charged.map(move => move.id).slice(0, 2),
+        chargedMoveIds: moves.charged.map(move => move.id).slice(0, selectedChargedMoveLimit(pokemon)),
+        selectedChargedMoveLimit: selectedChargedMoveLimit(pokemon),
         build: teamBuilderResolvedBuild(pokemon, "default")
       };
     }
@@ -17999,12 +17996,12 @@
       const stats = statsForIvSpread(pokemon, clampIv(build.ivAtk), clampIv(build.ivDef), clampIv(build.ivHp));
       const fast = moveMap.get(member.fastMoveId);
       const charged = member.chargedMoveIds.map(id => moveMap.get(id)).filter(Boolean);
-      if (!fast || charged.length < 2) throw new Error("TEAM_ANALYSIS_MOVESET_INVALID");
+      if (!fast || charged.length < selectedChargedMoveLimit(pokemon)) throw new Error("TEAM_ANALYSIS_MOVESET_INVALID");
       return initializeCombatantForms({
         trainer,
         p: cloneMatrixPokemon(pokemon),
         fast: cloneMatrixMove(fast),
-        charged: charged.slice(0, 2).map(cloneMatrixMove),
+        charged: charged.map(cloneMatrixMove),
         level: stats.level,
         cp: stats.cp,
         ivAtk: stats.ivAtk,
@@ -19038,11 +19035,9 @@
     function applyTeamBuilderBattleSide(prefix, side) {
       setPokemonSelection(prefix, side.pokemonId);
       $(`${prefix}Fast`).value = side.fastMoveId;
-      $(`${prefix}Charged1`).value = side.chargedMoveIds[0] || "";
-      $(`${prefix}Charged2`).value = side.chargedMoveIds[1] || "";
+      ensureChargedMoveSelects(prefix, findPokemon(side.pokemonId)).forEach((select, index) => { select.value = side.chargedMoveIds[index] || ""; });
       colorMoveSelect(`${prefix}Fast`);
-      colorMoveSelect(`${prefix}Charged1`);
-      colorMoveSelect(`${prefix}Charged2`);
+      chargedMoveSelects(prefix).filter(select => !select.disabled).forEach(select => colorMoveSelect(select.id));
       $(`${prefix}IvAtk`).value = side.ivAtk;
       $(`${prefix}IvDef`).value = side.ivDef;
       $(`${prefix}IvHp`).value = side.ivHp;
@@ -19147,6 +19142,34 @@
       }).join("");
     }
 
+    function teamBuilderChargedMoveSelects() {
+      return [...document.querySelectorAll("#teamBuilderEditorMoves select[data-team-builder-charged-slot]")]
+        .sort((a, b) => Number(a.dataset.teamBuilderChargedSlot) - Number(b.dataset.teamBuilderChargedSlot));
+    }
+
+    function ensureTeamBuilderChargedMoveSelects(pokemon) {
+      const container = $("teamBuilderEditorMoves");
+      if (!container) return [];
+      const limit = selectedChargedMoveLimit(pokemon);
+      let selects = teamBuilderChargedMoveSelects();
+      while (selects.length < limit) {
+        const slot = selects.length + 1;
+        const label = document.createElement("label");
+        label.className = "team-editor-field";
+        label.dataset.teamBuilderChargedSlot = String(slot);
+        label.innerHTML = `Charged Move ${slot}<select id="teamBuilderChargedMove${slot}" data-team-builder-charged-slot="${slot}"></select>`;
+        container.append(label);
+        selects = teamBuilderChargedMoveSelects();
+      }
+      selects.forEach((select, index) => {
+        const enabled = index < limit;
+        select.disabled = !enabled;
+        select.closest("label").hidden = !enabled;
+        select.onchange = syncTeamBuilderEditorMoves;
+      });
+      return selects.slice(0, limit);
+    }
+
     function renderTeamBuilderEditor() {
       const draft = teamBuilderEditorDraft;
       const pokemon = draft && findPokemon(draft.pokemonId);
@@ -19161,8 +19184,9 @@
       shadowToggle.textContent = isShadow(pokemon) ? "Shadow on" : "Use Shadow";
       const eliteMoves = new Set(pokemon.eliteMoves || []);
       $("teamBuilderFastMove").innerHTML = teamBuilderMoveOptions(pokemon.fast, draft.fastMoveId, eliteMoves);
-      $("teamBuilderChargedMove1").innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[0], eliteMoves);
-      $("teamBuilderChargedMove2").innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[1], eliteMoves);
+      ensureTeamBuilderChargedMoveSelects(pokemon).forEach((select, index) => {
+        select.innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[index], eliteMoves);
+      });
       syncTeamBuilderEditorMoves();
       renderTeamBuilderBuildProfile();
       $("teamBuilderEditorFeedback").textContent = "";
@@ -19171,14 +19195,16 @@
     function syncTeamBuilderEditorMoves() {
       if (!teamBuilderEditorDraft) return;
       const fast = $("teamBuilderFastMove");
-      const charged1 = $("teamBuilderChargedMove1");
-      const charged2 = $("teamBuilderChargedMove2");
+      const chargedSelects = teamBuilderChargedMoveSelects().filter(select => !select.disabled);
       teamBuilderEditorDraft.fastMoveId = fast.value;
-      teamBuilderEditorDraft.chargedMoveIds = [charged1.value, charged2.value].filter(Boolean);
-      [...charged1.options].forEach(option => { option.disabled = option.value === charged2.value && option.value !== charged1.value; });
-      [...charged2.options].forEach(option => { option.disabled = option.value === charged1.value && option.value !== charged2.value; });
-      const duplicate = charged1.value && charged1.value === charged2.value;
-      $("teamBuilderEditorFeedback").textContent = duplicate ? "Choose two different Charged Moves." : "";
+      teamBuilderEditorDraft.chargedMoveIds = chargedSelects.map(select => select.value).filter(Boolean);
+      chargedSelects.forEach(select => {
+        const otherValues = new Set(chargedSelects.filter(other => other !== select).map(other => other.value).filter(Boolean));
+        [...select.options].forEach(option => { option.disabled = otherValues.has(option.value) && option.value !== select.value; });
+      });
+      const values = chargedSelects.map(select => select.value).filter(Boolean);
+      const duplicate = new Set(values).size !== values.length;
+      $("teamBuilderEditorFeedback").textContent = duplicate ? "Choose different Charged Moves." : "";
       $("teamBuilderEditorSave").disabled = !!duplicate;
     }
 
@@ -19193,10 +19219,11 @@
       }
       const defaults = teamBuilderDefaultMember(target);
       const charged = teamBuilderEditorDraft.chargedMoveIds.filter(moveId => target.charged.includes(moveId));
+      const chargedLimit = selectedChargedMoveLimit(target);
       teamBuilderEditorDraft = {
         ...defaults,
         fastMoveId: target.fast.includes(teamBuilderEditorDraft.fastMoveId) ? teamBuilderEditorDraft.fastMoveId : defaults.fastMoveId,
-        chargedMoveIds: charged.length >= 2 ? charged.slice(0, 2) : defaults.chargedMoveIds,
+        chargedMoveIds: charged.length >= chargedLimit ? charged.slice(0, chargedLimit) : defaults.chargedMoveIds,
         build: teamBuilderResolvedBuild(target, teamBuilderEditorDraft.build?.profile || "default", teamBuilderEditorDraft.build)
       };
       renderTeamBuilderEditor();
@@ -19901,11 +19928,9 @@
       const entry = metaCompareEntry(id);
       if (!entry) return;
       setPokemonSelection(prefix, id);
-      const selections = [
-        [`${prefix}Fast`, entry.moves.fast?.id],
-        [`${prefix}Charged1`, entry.moves.charged[0]?.id],
-        [`${prefix}Charged2`, entry.moves.charged[1]?.id || ""]
-      ];
+      const selections = [[`${prefix}Fast`, entry.moves.fast?.id], ...chargedMoveSelects(prefix)
+        .filter(select => !select.disabled)
+        .map((select, index) => [select.id, entry.moves.charged[index]?.id || ""])];
       selections.forEach(([selectId, moveId]) => {
         const select = $(selectId);
         if (select && [...select.options].some(option => option.value === moveId)) select.value = moveId;
@@ -20293,7 +20318,7 @@
       const fastId = rankingEntry?.moveset?.fast;
       const chargedIds = Array.isArray(rankingEntry?.moveset?.charged) ? rankingEntry.moveset.charged : [];
       const fast = fastId && pokemon.fast.includes(fastId) ? moveMap.get(fastId) : null;
-      const charged = chargedIds.filter(id => pokemon.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean).slice(0, 2);
+      const charged = chargedIds.filter(id => pokemon.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean).slice(0, selectedChargedMoveLimit(pokemon));
       if (fast && charged.length) return { fast, charged };
       return metaMovesForPokemon(pokemon);
     }
@@ -20344,9 +20369,15 @@
       const standardCharged = standard
         ? (standard.charged || []).filter(id => p.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean)
         : [];
-      const charged = standardCharged.length
-        ? standardCharged.slice(0, 2)
-        : p.charged.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p)).slice(0, 2);
+      const chargedLimit = selectedChargedMoveLimit(p);
+      const rankedCharged = p.charged.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p));
+      const chargedIds = window.PvPeakChargedMoveCollection?.selectedIds?.({
+        pokemon: p,
+        selectedIds: standardCharged.map(move => move.id),
+        fallbackIds: rankedCharged.map(move => move.id),
+        availableIds: p.charged
+      }) || rankedCharged.slice(0, chargedLimit).map(move => move.id);
+      const charged = chargedIds.map(id => moveMap.get(id)).filter(Boolean);
       return { fast, charged };
     }
 
@@ -20541,11 +20572,9 @@
       if (!pokemon) return;
       const moves = metaRankingMoves(metaRankingDatasetEntry(pokemonId), pokemon);
       if (moves.fast) $(`${prefix}Fast`).value = moves.fast.id;
-      $(`${prefix}Charged1`).value = moves.charged[0]?.id || "";
-      $(`${prefix}Charged2`).value = moves.charged[1]?.id || "";
+      ensureChargedMoveSelects(prefix, pokemon).forEach((select, index) => { select.value = moves.charged[index]?.id || ""; });
       colorMoveSelect(`${prefix}Fast`);
-      colorMoveSelect(`${prefix}Charged1`);
-      colorMoveSelect(`${prefix}Charged2`);
+      chargedMoveSelects(prefix).filter(select => !select.disabled).forEach(select => colorMoveSelect(select.id));
       syncSelection(prefix);
     }
 
@@ -20722,10 +20751,46 @@
         return;
       }
       fillMoveSelect(`${prefix}Fast`, p.fast, p);
-      fillMoveSelect(`${prefix}Charged1`, p.charged, p);
-      fillMoveSelect(`${prefix}Charged2`, p.charged, p);
+      ensureChargedMoveSelects(prefix, p).forEach(select => fillMoveSelect(select.id, p.charged, p));
       chooseRecommendedMoves(prefix, p);
       syncSelection(prefix);
+    }
+
+    function chargedMoveSelects(prefix) {
+      return [...document.querySelectorAll(`#${prefix}ChargedMoves select[data-charged-slot]`)]
+        .sort((a, b) => Number(a.dataset.chargedSlot) - Number(b.dataset.chargedSlot));
+    }
+
+    function selectedChargedMoveLimit(pokemon) {
+      return window.PvPeakChargedMoveCollection?.selectedLimit?.(pokemon) || 2;
+    }
+
+    function bindChargedMoveSelects(prefix) {
+      chargedMoveSelects(prefix).forEach(select => {
+        select.onchange = () => handleChargedMoveChange(prefix, select.dataset.chargedSlot);
+      });
+    }
+
+    function ensureChargedMoveSelects(prefix, pokemon) {
+      const container = $(`${prefix}ChargedMoves`);
+      if (!container) return [];
+      const limit = selectedChargedMoveLimit(pokemon);
+      let selects = chargedMoveSelects(prefix);
+      while (selects.length < limit) {
+        const slot = selects.length + 1;
+        const label = document.createElement("label");
+        label.dataset.chargedSlot = String(slot);
+        label.innerHTML = `<span>Charged ${slot}</span><select id="${prefix}Charged${slot}" class="move-select" data-charged-slot="${slot}"></select>`;
+        container.append(label);
+        selects = chargedMoveSelects(prefix);
+      }
+      selects.forEach((select, index) => {
+        const enabled = index < limit;
+        select.disabled = !enabled;
+        select.closest("label").hidden = !enabled;
+      });
+      bindChargedMoveSelects(prefix);
+      return selects.slice(0, limit);
     }
 
     function fillMoveSelect(id, moveIds, pokemon = null) {
@@ -20746,17 +20811,16 @@
         return;
       }
       const fast = p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b, p) - fastMoveScore(a, p));
+      const limit = selectedChargedMoveLimit(p);
       const charged = p.charged.map(id => moveMap.get(id)).filter(Boolean)
         .sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p))
-        .slice(0, 2)
+        .slice(0, limit)
         .sort((a, b) => a.energyCost - b.energyCost || chargedMoveScore(b, p) - chargedMoveScore(a, p));
       if (fast[0]) $(`${prefix}Fast`).value = fast[0].id;
-      if (charged[0]) $(`${prefix}Charged1`).value = charged[0].id;
-      if (charged[1]) $(`${prefix}Charged2`).value = charged[1].id;
-      else if (charged[0]) $(`${prefix}Charged2`).value = charged[0].id;
+      const selects = chargedMoveSelects(prefix).slice(0, limit);
+      selects.forEach((select, index) => { select.value = charged[index]?.id || charged[0]?.id || ""; });
       colorMoveSelect(`${prefix}Fast`);
-      colorMoveSelect(`${prefix}Charged1`);
-      colorMoveSelect(`${prefix}Charged2`);
+      selects.forEach(select => colorMoveSelect(select.id));
     }
 
     function standardMovesetFor(p) {
@@ -20768,30 +20832,31 @@
 
     function applyStandardMoveset(prefix, p, standard) {
       const fastSelect = $(`${prefix}Fast`);
-      const charged1Select = $(`${prefix}Charged1`);
-      const charged2Select = $(`${prefix}Charged2`);
+      const chargedSelects = chargedMoveSelects(prefix).slice(0, selectedChargedMoveLimit(p));
       if (standard.fast && p.fast.includes(standard.fast)) {
         fastSelect.value = standard.fast;
       }
 
       const standardCharged = (standard.charged || []).filter(id => p.charged.includes(id));
-      if (standardCharged[0]) charged1Select.value = standardCharged[0];
-      if (standardCharged[1]) charged2Select.value = standardCharged[1];
-      if (standardCharged.length < 2) {
+      chargedSelects.forEach((select, index) => {
+        if (standardCharged[index]) select.value = standardCharged[index];
+      });
+      if (standardCharged.length < chargedSelects.length) {
         const fallbackCharged = p.charged.map(id => moveMap.get(id)).filter(Boolean)
           .filter(move => !standardCharged.includes(move.id))
           .sort((a, b) => chargedMoveScore(b, p) - chargedMoveScore(a, p));
-        if (!standardCharged[0] && fallbackCharged[0]) charged1Select.value = fallbackCharged[0].id;
-        if (!standardCharged[1]) {
-          const usedFirst = charged1Select.value;
-          const fallbackSecond = fallbackCharged.find(move => move.id !== usedFirst) || fallbackCharged[0];
-          if (fallbackSecond) charged2Select.value = fallbackSecond.id;
-        }
+        const used = new Set(standardCharged);
+        chargedSelects.forEach((select, index) => {
+          if (standardCharged[index]) return;
+          const fallback = fallbackCharged.find(move => !used.has(move.id)) || fallbackCharged[0];
+          if (!fallback) return;
+          select.value = fallback.id;
+          used.add(fallback.id);
+        });
       }
 
       colorMoveSelect(`${prefix}Fast`);
-      colorMoveSelect(`${prefix}Charged1`);
-      colorMoveSelect(`${prefix}Charged2`);
+      chargedSelects.forEach(select => colorMoveSelect(select.id));
     }
 
     function fastMoveScore(move, p) {
@@ -20959,8 +21024,7 @@
     function syncSelection(prefix) {
       renderIvProfileState(prefix);
       colorMoveSelect(`${prefix}Fast`);
-      colorMoveSelect(`${prefix}Charged1`);
-      colorMoveSelect(`${prefix}Charged2`);
+      chargedMoveSelects(prefix).filter(select => !select.disabled).forEach(select => colorMoveSelect(select.id));
       updateStartEnergyStepper(prefix);
       rememberMoveSelections(prefix);
       updateBattleAvailability();
@@ -20996,10 +21060,10 @@
     }
 
     function selectedChargedMoves(prefix) {
-      return [
-        moveMap.get($(`${prefix}Charged1`).value),
-        moveMap.get($(`${prefix}Charged2`).value)
-      ].filter(Boolean);
+      return chargedMoveSelects(prefix)
+        .filter(select => !select.disabled)
+        .map(select => moveMap.get(select.value))
+        .filter(Boolean);
     }
 
     function resetBattleStateFromSetup() {
@@ -21065,18 +21129,18 @@
 
     function handleChargedMoveChange(prefix, changedSlot) {
       const changed = $(`${prefix}Charged${changedSlot}`);
-      const otherSlot = changedSlot === "1" ? "2" : "1";
-      const other = $(`${prefix}Charged${otherSlot}`);
+      if (!changed) return;
       const previous = changed.dataset.current || "";
-      if (changed.value && changed.value === other.value && previous !== changed.value) {
-        other.value = previous;
+      const duplicate = chargedMoveSelects(prefix).find(select => select !== changed && select.value && select.value === changed.value);
+      if (duplicate && previous !== changed.value) {
+        duplicate.value = previous;
+        colorMoveSelect(duplicate.id);
       }
       syncSelection(prefix);
     }
 
     function rememberMoveSelections(prefix) {
-      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
-        const select = $(id);
+      [$(`${prefix}Fast`), ...chargedMoveSelects(prefix)].filter(Boolean).forEach(select => {
         select.dataset.current = select.value;
       });
     }
@@ -21101,9 +21165,7 @@
       setPokemonCardSelected(prefix, false);
       delete displayedResources[prefix];
       clearHpDamagePreview(prefix);
-      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
-        if ($(id)) $(id).innerHTML = "";
-      });
+      [$(`${prefix}Fast`), ...chargedMoveSelects(prefix)].filter(Boolean).forEach(select => { select.innerHTML = ""; });
       $(`${prefix}BattleName`).textContent = "";
       $(`${prefix}BattleMeta`).textContent = "";
       $(`${prefix}Types`).innerHTML = "";
@@ -21420,7 +21482,7 @@
         trainer,
         p,
         fast: moveMap.get($(`${prefix}Fast`).value),
-        charged: [moveMap.get($(`${prefix}Charged1`).value) || null, moveMap.get($(`${prefix}Charged2`).value) || null],
+        charged: selectedChargedMoves(prefix),
         level: stats.level,
         cp: stats.cp,
         ivAtk: stats.ivAtk,
@@ -21507,11 +21569,12 @@
     }
 
     function matrixInputIdentity() {
-      return ["p1", "p2"].map(prefix => [
+      return ["p1", "p2"].map(prefix => {
+        const chargedIds = chargedMoveSelects(prefix).filter(select => !select.disabled).map(select => select.value);
+        return [
         $(`${prefix}Pokemon`)?.value,
         $(`${prefix}Fast`)?.value,
-        $(`${prefix}Charged1`)?.value,
-        $(`${prefix}Charged2`)?.value,
+        chargedIds.join("\u001d"),
         $(`${prefix}IvAtk`)?.value,
         $(`${prefix}IvDef`)?.value,
         $(`${prefix}IvHp`)?.value,
@@ -21522,9 +21585,9 @@
         $(`${prefix}ShieldMode`)?.value,
         $(`${prefix}Shields`)?.value,
         moveDataFingerprint($(`${prefix}Fast`)?.value),
-        moveDataFingerprint($(`${prefix}Charged1`)?.value),
-        moveDataFingerprint($(`${prefix}Charged2`)?.value)
-      ].join("\u001f")).join("\u001e");
+        chargedIds.map(moveDataFingerprint).join("\u001d")
+      ].join("\u001f");
+      }).join("\u001e");
     }
 
     function moveDataFingerprint(moveId) {
@@ -24943,14 +25006,12 @@
           $(`manualHudHp${side}`).style.setProperty("--hp-percent", `${hpPercent}%`);
           $(`manualHudHp${side}`).style.setProperty("--hp-color", hpColor);
         }
-        if ($(`manualHudEnergy${side}`)) {
-          $(`manualHudEnergy${side}`).innerHTML = `<strong>${combatant.energy}</strong><small>energy</small>`;
-        }
         const prefix = side === "A" ? "p1" : "p2";
-        combatant.charged.slice(0, 2).forEach((move, index) => {
-          const slot = document.querySelector(`[data-manual-charge-slot="${side}-${index}"]`);
-          if (slot) slot.innerHTML = energyMoveOrb(move, combatant.energy, prefix, index);
-        });
+        const charges = $(`manualHudCharges${side}`);
+        if (charges) {
+          charges.innerHTML = energyCollectionMarkup(combatant.charged, combatant.energy, prefix,
+            `<span id="manualHudEnergy${side}" class="manual-hud-energy"><strong>${combatant.energy}</strong><small>energy</small></span>`);
+        }
         renderManualHudShieldControl(side, prefix);
       };
       renderSide("A", left);
@@ -25974,50 +26035,42 @@
         $("manualAutoB").querySelector("strong").textContent = `${right?.p?.name || "Pokemon B"} responds automatically`;
         $("manualAutoB").querySelector("small").textContent = "This side continues automatically after your move.";
       }
+      syncManualChargeButtons("A", left);
+      syncManualChargeButtons("B", right);
       if (enabled) {
         if ($("p1UseFast")) $("p1UseFast").disabled = !left?.fast;
         if ($("p2UseFast")) $("p2UseFast").disabled = !right?.fast;
-        [
-          { id: "p1UseCharge1", combatant: left, move: left?.charged?.[0] },
-          { id: "p1UseCharge2", combatant: left, move: left?.charged?.[1] },
-          { id: "p2UseCharge1", combatant: right, move: right?.charged?.[0] },
-          { id: "p2UseCharge2", combatant: right, move: right?.charged?.[1] }
-        ].forEach(({ id, combatant, move }) => {
-          const button = $(id);
-          if (!button) return;
-          const missingEnergy = move ? Math.max(0, Number(move.energyCost || 0) - Number(combatant?.energy || 0)) : 0;
-          button.disabled = !move || missingEnergy > 0;
-          if (move && missingEnergy > 0) {
-            button.title = `${button.title}\nNeed ${missingEnergy} more energy.`;
-          }
+        [["A", left], ["B", right]].forEach(([side, combatant]) => {
+          manualChargeButtons(side).filter(button => !button.hidden).forEach((button, index) => {
+            const move = combatant?.charged?.[index];
+            const missingEnergy = move ? Math.max(0, Number(move.energyCost || 0) - Number(combatant?.energy || 0)) : 0;
+            button.disabled = !move || missingEnergy > 0;
+            if (move && missingEnergy > 0) button.title = `${button.title}\nNeed ${missingEnergy} more energy.`;
+          });
         });
         const locked = [
           window.PvPeakManualMode.STATUS.AWAITING_SHIELD_DECISION,
           window.PvPeakManualMode.STATUS.RESOLVING,
           window.PvPeakManualMode.STATUS.TERMINAL
         ].includes(manualModeState.status);
-        ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
-          const button = $(id);
-          if (button && locked) button.disabled = true;
-        });
+        [...manualActionButtons("A"), ...manualActionButtons("B")].forEach(button => { if (locked) button.disabled = true; });
         if (!manualModeState.controlledSides.includes("A")) {
-          ["p1UseFast", "p1UseCharge1", "p1UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
+          manualActionButtons("A").forEach(button => { button.disabled = true; });
         }
         if (!manualModeState.controlledSides.includes("B")) {
-          ["p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => { if ($(id)) $(id).disabled = true; });
+          manualActionButtons("B").forEach(button => { button.disabled = true; });
         }
         [
-          { side: "A", combatant: left, ids: ["p1UseFast", "p1UseCharge1", "p1UseCharge2"] },
-          { side: "B", combatant: right, ids: ["p2UseFast", "p2UseCharge1", "p2UseCharge2"] }
-        ].forEach(({ side, combatant, ids }) => {
+          { side: "A", combatant: left },
+          { side: "B", combatant: right }
+        ].forEach(({ side, combatant }) => {
           if (!manualModeState.controlledSides.includes(side) || !combatant) return;
           const legalActions = legalBattleActions(combatant, manualCanonicalState()?.currentTurn);
           const legalFast = legalActions.some(action => ["fast", "fast_move"].includes(action.type));
           const legalChargedIds = new Set(legalActions
             .filter(action => ["charged", "charged_move"].includes(action.type))
             .map(action => action.moveId));
-          ids.forEach((id, index) => {
-            const button = $(id);
+          manualActionButtons(side).forEach((button, index) => {
             const move = index === 0 ? combatant.fast : combatant.charged?.[index - 1];
             const legal = index === 0 ? legalFast : !!move && legalChargedIds.has(move.id);
             const canBuild = index > 0
@@ -26037,18 +26090,14 @@
           });
         });
         if (active?.branchId === window.PvPeakManualBranches.ORIGINAL_BRANCH_ID) {
-          ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
-            const button = $(id);
-            if (!button) return;
+          [...manualActionButtons("A"), ...manualActionButtons("B")].forEach(button => {
             button.disabled = true;
             button.classList.remove("build-available");
             button.title = "The original simulation is read-only. Select an editable scenario to act.";
           });
         }
         if (manualMatchupEditMode) {
-          ["p1UseFast", "p1UseCharge1", "p1UseCharge2", "p2UseFast", "p2UseCharge1", "p2UseCharge2"].forEach(id => {
-            const button = $(id);
-            if (!button) return;
+          [...manualActionButtons("A"), ...manualActionButtons("B")].forEach(button => {
             button.disabled = true;
             button.classList.remove("build-available");
             button.title = "Finish choosing both Pokemon before selecting a move.";
@@ -30481,7 +30530,38 @@
       }
     }
 
-    function renderSide(c, opponent, hpId, energyId, c1Id, c2Id) {
+    function manualChargeButtons(side) {
+      return [...document.querySelectorAll(`#manualActions${side} [data-manual-charge-index]`)]
+        .sort((a, b) => Number(a.dataset.manualChargeIndex) - Number(b.dataset.manualChargeIndex));
+    }
+
+    function syncManualChargeButtons(side, combatant) {
+      const container = $(`manualActions${side}`);
+      if (!container) return [];
+      const prefix = side === "A" ? "p1" : "p2";
+      const moves = Array.isArray(combatant?.charged) ? combatant.charged : [];
+      let buttons = manualChargeButtons(side);
+      while (buttons.length < moves.length) {
+        const index = buttons.length;
+        const button = document.createElement("button");
+        button.id = `${prefix}UseCharge${index + 1}`;
+        button.dataset.manualChargeIndex = String(index);
+        container.insertBefore(button, $(`manualAuto${side}`));
+        buttons = manualChargeButtons(side);
+      }
+      buttons.forEach((button, index) => {
+        button.hidden = index >= moves.length;
+        button.onclick = () => executeLiveManualCharge(side, index);
+      });
+      return buttons.slice(0, moves.length);
+    }
+
+    function manualActionButtons(side) {
+      const prefix = side === "A" ? "p1" : "p2";
+      return [$(`${prefix}UseFast`), ...manualChargeButtons(side).filter(button => !button.hidden)].filter(Boolean);
+    }
+
+    function renderSide(c, opponent, hpId, energyId) {
       if (!c) return;
       const prefix = hpId.slice(0, 2);
       setPokemonCardSelected(prefix, true);
@@ -30499,12 +30579,13 @@
       renderShields(prefix);
       renderResourceBars(prefix, c.hp, c.maxHp, c.energy);
       setMoveButton(`${prefix}UseFast`, c.fast, c.fast.name, `Fast · +${c.fast.energyGain} energy · ${c.fast.turns}T`, opponent);
-      setMoveButton(c1Id, c.charged[0], c.charged[0]?.name || "None", c.charged[0] ? `Charged · ${c.charged[0].energyCost} energy` : "Charged", opponent);
-      setMoveButton(c2Id, c.charged[1], c.charged[1]?.name || "None", c.charged[1] ? `Charged · ${c.charged[1].energyCost} energy` : "Charged", opponent);
-      $(c1Id).classList.toggle("ready", !!c.charged[0] && c.energy >= c.charged[0].energyCost);
-      $(c2Id).classList.toggle("ready", !!c.charged[1] && c.energy >= c.charged[1].energyCost);
-      $(c1Id).disabled = !c.charged[0];
-      $(c2Id).disabled = !c.charged[1];
+      const side = prefix === "p1" ? "A" : "B";
+      syncManualChargeButtons(side, c).forEach((button, index) => {
+        const move = c.charged[index];
+        setMoveButton(button.id, move, move?.name || "None", move ? `Charged · ${move.energyCost} energy` : "Charged", opponent);
+        button.classList.toggle("ready", !!move && c.energy >= move.energyCost);
+        button.disabled = !move;
+      });
     }
 
     function renderResourceBars(prefix, hp, maxHp, energy, state = null) {
@@ -30542,10 +30623,15 @@
       const prefix = id.slice(0, 2);
       const combatant = prefix === "p1" ? left : right;
       const charged = chargedOverride || (combatant && combatant.charged ? combatant.charged : []);
-      $(id).innerHTML =
-        `${energyMoveOrb(charged[0], energy, prefix, 0)}` +
-        `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>` +
-        `${energyMoveOrb(charged[1], energy, prefix, 1)}`;
+      $(id).innerHTML = energyCollectionMarkup(charged, energy, prefix,
+        `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>`);
+    }
+
+    function energyCollectionMarkup(charged, energy, prefix, coreMarkup) {
+      const moves = Array.isArray(charged) ? charged : [];
+      const split = Math.ceil(moves.length / 2);
+      const orbs = moves.map((move, index) => energyMoveOrb(move, energy, prefix, index));
+      return orbs.slice(0, split).join("") + coreMarkup + orbs.slice(split).join("");
     }
 
     function energyMoveOrb(move, energy, prefix, index) {
@@ -30811,8 +30897,8 @@
       const perfRunId = activeUiPerfRunId();
       const renderSpan = perfRunId ? perfDebug.startSpan("render", perfRunId) : null;
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
-      renderSide(left, right, "p1Hp", "p1EnergyPanel", "p1UseCharge1", "p1UseCharge2");
-      renderSide(right, left, "p2Hp", "p2EnergyPanel", "p2UseCharge1", "p2UseCharge2");
+      renderSide(left, right, "p1Hp", "p1EnergyPanel");
+      renderSide(right, left, "p2Hp", "p2EnergyPanel");
       renderManualModeControls();
       if (!scenarioWorkspace) renderKeyNumbers();
       renderTimeline();
@@ -33084,7 +33170,7 @@
           attack: stats.attack,
           defense: stats.defense,
           maxHp: stats.hp,
-          moves: [$(`${prefix}Fast`).value, $(`${prefix}Charged1`).value, $(`${prefix}Charged2`).value],
+          moves: [$(`${prefix}Fast`).value, ...chargedMoveSelects(prefix).filter(select => !select.disabled).map(select => select.value)],
           startEnergy: clampEnergy($(`${prefix}StartEnergy`).value || 0),
           baiting: $(`${prefix}Baiting`).value,
           shieldMode: $(`${prefix}ShieldMode`).value
@@ -33820,10 +33906,11 @@
 
     function snapshotFullSimulatorState() {
       const controlIds = [
-        "p1Pokemon", "p1Search", "p1Fast", "p1Charged1", "p1Charged2", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1IvProfile", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
-        "p2Pokemon", "p2Search", "p2Fast", "p2Charged1", "p2Charged2", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2IvProfile", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
+        "p1Pokemon", "p1Search", "p1Fast", "p1Level", "p1IvAtk", "p1IvDef", "p1IvHp", "p1Cp", "p1IvProfile", "p1Baiting", "p1StartEnergy", "p1Shields", "p1ShieldMode",
+        "p2Pokemon", "p2Search", "p2Fast", "p2Level", "p2IvAtk", "p2IvDef", "p2IvHp", "p2Cp", "p2IvProfile", "p2Baiting", "p2StartEnergy", "p2Shields", "p2ShieldMode",
         "timelineZoom", "logFilter"
       ];
+      ["p1", "p2"].forEach(prefix => chargedMoveSelects(prefix).forEach(select => controlIds.push(select.id)));
       const controls = {};
       controlIds.forEach(id => {
         const el = $(id);
@@ -33889,9 +33976,8 @@
       }
       select.value = pokemonId;
       fillMoveSelect(`${prefix}Fast`, p.fast, p);
-      fillMoveSelect(`${prefix}Charged1`, p.charged, p);
-      fillMoveSelect(`${prefix}Charged2`, p.charged, p);
-      [`${prefix}Fast`, `${prefix}Charged1`, `${prefix}Charged2`].forEach(id => {
+      ensureChargedMoveSelects(prefix, p).forEach(chargedSelect => fillMoveSelect(chargedSelect.id, p.charged, p));
+      [`${prefix}Fast`, ...chargedMoveSelects(prefix).filter(chargedSelect => !chargedSelect.disabled).map(chargedSelect => chargedSelect.id)].forEach(id => {
         if (controls[id]) $(id).value = controls[id];
         colorMoveSelect(id);
       });
