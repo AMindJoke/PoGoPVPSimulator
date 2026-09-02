@@ -78,6 +78,17 @@
       snorlax: add(["PSYWAVE"]), snorlax_shadow: add(["PSYWAVE"])
     }),
     pendingValues: Object.freeze([]),
-    generated: null
+    generatedAssets: Object.freeze({
+      rankings: "data/seasons/twilight-trails/great-league-rankings.js",
+      rankingDetails: "data/seasons/twilight-trails/great-league-ranking-details.js",
+      defaultMovesets: "data/seasons/twilight-trails/default-movesets.js"
+    }),
+    generated: root.TWILIGHT_TRAILS_RANKINGS && root.TWILIGHT_TRAILS_RANKING_DETAILS
+      ? Object.freeze({
+          rankings: root.TWILIGHT_TRAILS_RANKINGS,
+          rankingDetails: root.TWILIGHT_TRAILS_RANKING_DETAILS,
+          defaultMovesets: root.TWILIGHT_TRAILS_DEFAULT_MOVESETS || {}
+        })
+      : null
   });
 })(typeof globalThis !== "undefined" ? globalThis : this);

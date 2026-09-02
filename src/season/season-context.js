@@ -83,8 +83,12 @@
     });
     if (preview.enabled && Array.isArray(preview.pendingValues) && preview.pendingValues.length) errors.push("PREVIEW_VALUES_PENDING");
     if (preview.enabled && options.requireGenerated !== false) {
-      if (!record(preview.generated)) errors.push("PREVIEW_GENERATED_OUTPUTS_MISSING");
-      else {
+      const generatedLoaded = record(preview.generated) && preview.generated.rankings && preview.generated.rankingDetails;
+      const generatedDeferred = record(preview.generatedAssets)
+        && cleanId(preview.generatedAssets.rankings)
+        && cleanId(preview.generatedAssets.rankingDetails);
+      if (!generatedLoaded && !generatedDeferred) errors.push("PREVIEW_GENERATED_OUTPUTS_MISSING");
+      else if (record(preview.generated)) {
         if (!preview.generated.rankings) errors.push("PREVIEW_RANKINGS_MISSING");
         if (!preview.generated.rankingDetails) errors.push("PREVIEW_RANKING_DETAILS_MISSING");
       }
@@ -151,7 +155,9 @@
     if (previewAvailable) allowed.add(cleanId(catalog.next.id));
     const requested = querySeason(input.location) || storedSeason(input.storage);
     const selectedId = allowed.has(requested) ? requested : cleanId(catalog.current?.id);
-    const isPreview = previewAvailable && selectedId === cleanId(catalog.next.id);
+    const previewRequested = previewAvailable && selectedId === cleanId(catalog.next.id);
+    const previewDataLoaded = !!(catalog.next?.generated?.rankings && catalog.next?.generated?.rankingDetails);
+    const isPreview = previewRequested && previewDataLoaded;
     const descriptor = isPreview ? catalog.next : catalog.current;
     const moveResolved = isPreview ? applyMoveOverrides(gameMaster, catalog.next.moveOverrides) : gameMaster;
     const resolvedGameMaster = isPreview ? applyPokemonMoveOverrides(moveResolved, catalog.next.pokemonMoveOverrides) : gameMaster;
@@ -166,7 +172,7 @@
       rankingVersion: descriptor.rankingVersion || "unversioned",
       identity,
       gameMaster: resolvedGameMaster,
-      defaultMovesets: input.defaultMovesets || {},
+      defaultMovesets: isPreview ? (generated?.defaultMovesets || input.defaultMovesets || {}) : (input.defaultMovesets || {}),
       rankings: generated?.rankings || input.rankings || null,
       rankingDetails: generated?.rankingDetails || input.rankingDetails || null,
       moveMetadata: metadata
@@ -177,8 +183,8 @@
       next: previewAvailable ? catalog.next : null,
       previewAvailable,
       requestedSeasonId: requested || null,
-      selectionWasInvalid: !!requested && !allowed.has(requested),
-      errors: Object.freeze(catalogErrors),
+      selectionWasInvalid: (!!requested && !allowed.has(requested)) || (previewRequested && !previewDataLoaded),
+      errors: Object.freeze(previewRequested && !previewDataLoaded ? [...catalogErrors, "PREVIEW_GENERATED_ASSETS_NOT_LOADED"] : catalogErrors),
       cacheIdentity(engineVersion) { return `${identity}:${cleanId(engineVersion) || "engine-unversioned"}`; },
       persist(seasonId) {
         const nextId = allowed.has(cleanId(seasonId)) ? cleanId(seasonId) : cleanId(catalog.current?.id);

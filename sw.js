@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-02-v9-season-context";
+const CACHE_VERSION = "2026-09-02-v10-season-preview-loader";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -19,6 +19,7 @@ const CORE_ASSETS = [
   "./default-movesets.js",
   "./data/great-league-rankings.js",
   "./data/great-league-ranking-details.js",
+  "./data/seasons/season-generated-loader.js",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js",
   "./src/season/season-context.js",

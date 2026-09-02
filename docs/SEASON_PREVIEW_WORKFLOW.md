@@ -9,6 +9,10 @@ The simulator resolves every season-sensitive input through `PvPeakSeasonContext
 3. Supply season-derived `generated.rankings` and `generated.rankingDetails`. Do not point these fields at Current Season output after move values diverge.
 4. Run `npm run test:season-context`, the generated-data validation, and representative Current Season regressions before enabling the descriptor.
 
+For Twilight Trails, a complete single-process generation is available as `npm run generate:twilight-trails`. A chunked run may pass `--chunk-output`, `--offset`, and `--limit` to the same generator; merge it with `npm run merge:twilight-trails`, then run `npm run analyze:twilight-trails` and `npm run details:twilight-trails`.
+
+Preview output is written below `data/seasons/<season-id>/`. Its matchup cache is a delta layer: compatible Current Season cells are read-only fallback data, while every preview-specific result is written beneath the season directory with `seasonId` and `dataVersion`. The generated-data loader loads either Current or Preview ranking assets according to the URL/local preference, never both large datasets together.
+
 The application deliberately refuses to expose an enabled preview whose generated outputs are missing. This prevents the Simulator from using preview move data while Team Builder silently uses Current Season rankings.
 
 ## Updating an estimated value

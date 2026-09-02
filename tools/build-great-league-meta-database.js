@@ -10,6 +10,7 @@ const matchupPlanner = require("../src/battle/matchup-planner");
 const matchupPlannerAdapter = require("../src/battle/matchup-planner-adapter");
 const battleIntelligence = require("../src/battle/battle-intelligence");
 const pokemonForms = require("../src/battle/pokemon-form");
+const seasonContext = require("../src/season/season-context");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -39,6 +40,7 @@ const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-ca
 const statsCache = new Map();
 const movesCache = new Map();
 const formCatalogCache = new Map();
+let activeGenerationPreview = null;
 const persistentRank1Stats = loadPersistentRank1Stats();
 let persistentRank1StatsDirty = false;
 
@@ -66,14 +68,22 @@ const weightSourceArg = process.argv.find(arg => arg.startsWith("--weight-source
 const weightSourcePath = weightSourceArg ? weightSourceArg.split("=").slice(1).join("=") : "";
 const weightModeArg = process.argv.find(arg => arg.startsWith("--weight-mode="));
 const weightMode = weightModeArg ? weightModeArg.split("=")[1] : "competitive";
+const seasonArg = process.argv.find(arg => arg.startsWith("--season="));
+const generationSeasonId = seasonArg ? safeCacheSegment(seasonArg.split("=").slice(1).join("=")) : "";
+const generationOutputRoot = generationSeasonId ? path.join("data", "seasons", generationSeasonId) : "data";
 const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
 const profileFilter = profilesArg
   ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
   : null;
-const matchupCacheRoot = path.join(ROOT, "data", "matchup-cache", "great-league");
+const matchupCacheRoot = path.join(ROOT, generationOutputRoot, "matchup-cache", "great-league");
+const fallbackMatchupCacheRoot = generationSeasonId
+  ? path.join(ROOT, "data", "matchup-cache", "great-league")
+  : null;
 const matchupCacheStats = {
   enabled: useMatchupCache,
   hits: 0,
+  baseHits: 0,
+  previewHits: 0,
   misses: 0,
   writes: 0,
   filesRead: 0,
@@ -141,6 +151,33 @@ function readWindowGlobal(relativePath, globalName) {
   vm.createContext(context);
   vm.runInContext(code, context, { filename: relativePath, timeout: 30000 });
   return context.window[globalName];
+}
+
+function readRootGlobal(relativePath, globalName) {
+  const code = fs.readFileSync(path.join(ROOT, relativePath), "utf8");
+  const context = { window: {}, console };
+  context.globalThis = context;
+  vm.createContext(context);
+  vm.runInContext(code, context, { filename: relativePath, timeout: 30000 });
+  return context[globalName] || context.window[globalName];
+}
+
+function generationData() {
+  const canonicalGameMaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
+  const canonicalMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
+  if (!generationSeasonId) return { gameMaster: canonicalGameMaster, standardMovesets: canonicalMovesets, preview: null };
+  const preview = readRootGlobal("data/seasons/next-season.js", "BATTLE_NEXT_SEASON");
+  if (!preview || safeCacheSegment(preview.id) !== generationSeasonId) {
+    throw new Error(`Unknown or unavailable generation season: ${generationSeasonId}`);
+  }
+  activeGenerationPreview = preview;
+  const moveResolved = seasonContext.applyMoveOverrides(canonicalGameMaster, preview.moveOverrides);
+  const gameMaster = seasonContext.applyPokemonMoveOverrides(moveResolved, preview.pokemonMoveOverrides);
+  return {
+    gameMaster,
+    standardMovesets: buildPreviewMovesets(canonicalMovesets, gameMaster, preview),
+    preview
+  };
 }
 
 function loadPersistentRank1Stats() {
@@ -372,6 +409,46 @@ function chargedMoveScore(move) {
   return (dpe * 32) + baitBonus + pressureBonus;
 }
 
+function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
+  const resolved = JSON.parse(JSON.stringify(canonicalMovesets || {}));
+  const normalizedMoves = new Map((gameMaster.moves || []).map(move => [move.moveId, normalizeMove(move)]));
+  const changedMoveIds = new Set(Object.keys(preview?.moveOverrides || {}));
+  for (const pokemon of gameMaster.pokemon || []) {
+    const id = pokemon.speciesId;
+    if (!id) continue;
+    const baseId = id.replace(/_shadow(_|$)/, "_").replace(/_shadow$/, "");
+    const current = resolved[id] || resolved[baseId] || null;
+    const availability = preview?.pokemonMoveOverrides?.[id] || null;
+    const affectedFast = (pokemon.fastMoves || []).filter(moveId => changedMoveIds.has(moveId));
+    const affectedCharged = (pokemon.chargedMoves || []).filter(moveId => changedMoveIds.has(moveId));
+    const addedFast = availability?.fast?.add || [];
+    const addedCharged = availability?.charged?.add || [];
+    if (!current && !availability) continue;
+    if (!availability && !affectedFast.length && !affectedCharged.length) continue;
+
+    const validFast = moveId => (pokemon.fastMoves || []).includes(moveId) && normalizedMoves.has(moveId);
+    const validCharged = moveId => (pokemon.chargedMoves || []).includes(moveId) && normalizedMoves.has(moveId);
+    let fast = validFast(current?.fast) ? current.fast : null;
+    for (const candidate of [...new Set([...affectedFast, ...addedFast].filter(validFast))]) {
+      if (!fast || fastMoveScore(normalizedMoves.get(candidate)) > fastMoveScore(normalizedMoves.get(fast))) fast = candidate;
+    }
+    const charged = [...new Set((current?.charged || []).filter(validCharged))].slice(0, 2);
+    const alternatives = [...new Set([...affectedCharged, ...addedCharged].filter(validCharged))]
+      .filter(moveId => !charged.includes(moveId))
+      .sort((a, b) => chargedMoveScore(normalizedMoves.get(b)) - chargedMoveScore(normalizedMoves.get(a)));
+    for (const candidate of alternatives) {
+      if (charged.length < 2) {
+        charged.push(candidate);
+        continue;
+      }
+      const weakestIndex = chargedMoveScore(normalizedMoves.get(charged[0])) <= chargedMoveScore(normalizedMoves.get(charged[1])) ? 0 : 1;
+      if (chargedMoveScore(normalizedMoves.get(candidate)) > chargedMoveScore(normalizedMoves.get(charged[weakestIndex]))) charged[weakestIndex] = candidate;
+    }
+    if (fast && charged.length) resolved[id] = { fast, charged };
+  }
+  return resolved;
+}
+
 function selectMoves(p, moveMap, standardMovesets) {
   if (movesCache.has(p.id)) return movesCache.get(p.id);
   const standard = standardMovesetFor(p, standardMovesets);
@@ -568,26 +645,42 @@ function matchupCachePath(profile, attackerId) {
   return path.join(matchupCacheRoot, safeCacheSegment(profile), `${safeCacheSegment(attackerId)}.json`);
 }
 
-function loadMatchupCacheFile(profile, attackerId, attackerSignature) {
-  const file = matchupCachePath(profile, attackerId);
-  if (!useMatchupCache || !fs.existsSync(file)) {
-    return { file, dirty: false, attackerSignature, cells: {} };
-  }
+function generationPath(...segments) {
+  return path.join(generationOutputRoot, ...segments);
+}
+
+function fallbackMatchupCachePath(profile, attackerId) {
+  return fallbackMatchupCacheRoot
+    ? path.join(fallbackMatchupCacheRoot, safeCacheSegment(profile), `${safeCacheSegment(attackerId)}.json`)
+    : null;
+}
+
+function readCompatibleCache(file, attackerSignature, requirePreviewIdentity = false) {
+  if (!file || !fs.existsSync(file)) return null;
   try {
     const cache = JSON.parse(fs.readFileSync(file, "utf8"));
     matchupCacheStats.filesRead++;
-    if (cache.matrixVersion !== MATRIX_VERSION || cache.attackerSignature !== attackerSignature) {
-      return { file, dirty: false, attackerSignature, cells: {} };
-    }
-    return {
-      file,
-      dirty: false,
-      attackerSignature,
-      cells: cache && cache.cells && typeof cache.cells === "object" ? cache.cells : {}
-    };
+    if (cache.matrixVersion !== MATRIX_VERSION || cache.attackerSignature !== attackerSignature) return null;
+    if (requirePreviewIdentity && (
+      cache.seasonId !== activeGenerationPreview?.id ||
+      cache.dataVersion !== activeGenerationPreview?.dataVersion
+    )) return null;
+    return cache && cache.cells && typeof cache.cells === "object" ? cache.cells : {};
   } catch (_) {
-    return { file, dirty: false, attackerSignature, cells: {} };
+    return null;
   }
+}
+
+function loadMatchupCacheFile(profile, attackerId, attackerSignature) {
+  const file = matchupCachePath(profile, attackerId);
+  if (!useMatchupCache) return { file, dirty: false, attackerSignature, cells: {}, baseCells: {} };
+  return {
+    file,
+    dirty: false,
+    attackerSignature,
+    cells: readCompatibleCache(file, attackerSignature, Boolean(generationSeasonId)) || {},
+    baseCells: readCompatibleCache(fallbackMatchupCachePath(profile, attackerId), attackerSignature) || {}
+  };
 }
 
 function saveMatchupCacheFile(cache) {
@@ -598,6 +691,8 @@ function saveMatchupCacheFile(cache) {
     league: "great",
     generatedAt: new Date().toISOString(),
     matrixVersion: MATRIX_VERSION,
+    seasonId: activeGenerationPreview?.id || null,
+    dataVersion: activeGenerationPreview?.dataVersion || null,
     attackerSignature: cache.attackerSignature,
     cells: cache.cells
   })}\n`, "utf8");
@@ -688,7 +783,13 @@ function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defende
   const cacheKey = matchupCacheCellKey({ defender, shieldState, config, category, extra });
   if (useMatchupCache && cache.cells[cacheKey]) {
     matchupCacheStats.hits++;
+    matchupCacheStats.previewHits++;
     return { key, result: inflateCacheResult(cache.cells[cacheKey]) };
+  }
+  if (useMatchupCache && cache.baseCells?.[cacheKey]) {
+    matchupCacheStats.hits++;
+    matchupCacheStats.baseHits++;
+    return { key, result: inflateCacheResult(cache.baseCells[cacheKey]) };
   }
   matchupCacheStats.misses++;
   const workerResult = adapter.simulate({
@@ -743,7 +844,7 @@ function compactMatchupSummary(cell) {
 function writeSplitMatchupFile({ profile, pokemon, shieldState, rows, metadata }) {
   const profileSegment = metadata.profiles.length > 1 ? `${profile}-` : "";
   const relativePath = path.join(
-    "data",
+    generationOutputRoot,
     "matchups",
     "great-league",
     shieldStateSlug(shieldState),
@@ -765,7 +866,7 @@ function writeSplitMatchupFile({ profile, pokemon, shieldState, rows, metadata }
 }
 
 function writeSplitMatchupIndex(metadata) {
-  return writeJson(path.join("data", "matchups", "great-league", "index.json"), {
+  return writeJson(generationPath("matchups", "great-league", "index.json"), {
     schemaVersion: MATCHUP_SCHEMA_VERSION,
     league: "great",
     generatedAt: metadata.generatedAt,
@@ -776,7 +877,7 @@ function writeSplitMatchupIndex(metadata) {
     opponentPokemonCount: metadata.opponentPokemonCount,
     profiles: metadata.profiles,
     shieldStates: metadata.shieldScenarios.map(([a, b]) => `${a}-${b}`),
-    fileStructure: "data/matchups/great-league/<shieldState>/<pokemonId>.json",
+    fileStructure: `${generationOutputRoot.replace(/\\/g, "/")}/matchups/great-league/<shieldState>/<pokemonId>.json`,
     notes: [
       "Each file is from the named Pokemon's perspective as Pokemon A.",
       "A vs B is simulated directly; reverse rows are not inferred."
@@ -1091,8 +1192,9 @@ function validateOutput({ rankings, matchups, pool, opponentPool, profiles, scen
 function main() {
   const started = Date.now();
   const metaConfig = readJson("data/great-league-meta.json");
-  const gamemaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
-  const standardMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
+  const sourceData = generationData();
+  const gamemaster = sourceData.gameMaster;
+  const standardMovesets = sourceData.standardMovesets;
   if (!gamemaster || !Array.isArray(gamemaster.moves) || !Array.isArray(gamemaster.pokemon)) {
     throw new Error("Could not load battle-data.js.");
   }
@@ -1130,7 +1232,7 @@ function main() {
   if (!profiles.length) throw new Error("No valid IV profiles selected.");
   if (!scenarios.length) throw new Error("No shield scenarios selected.");
 
-  console.log(`Loading live simulator matrix worker...`);
+  console.log(`Loading live simulator matrix worker for ${generationSeasonId || "current"}...`);
   const adapter = createWorkerAdapter(extractLiveWorkerSource());
   const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
   if (externalOpponentWeights) {
@@ -1269,6 +1371,8 @@ function main() {
   const generationDurationSeconds = Math.round((Date.now() - started) / 1000);
   const metadata = {
     datasetVersion: 1,
+    seasonId: sourceData.preview?.id || null,
+    dataVersion: sourceData.preview?.dataVersion || null,
     generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
@@ -1294,6 +1398,8 @@ function main() {
     matchupCache: {
       enabled: useMatchupCache,
       hits: matchupCacheStats.hits,
+      baseHits: matchupCacheStats.baseHits,
+      previewHits: matchupCacheStats.previewHits,
       misses: matchupCacheStats.misses,
       writes: matchupCacheStats.writes,
       filesRead: matchupCacheStats.filesRead,
@@ -1351,15 +1457,18 @@ function main() {
   };
 
   validateOutput({ rankings, matchups, pool, opponentPool, profiles, scenarios, selfMatchupsSkipped });
-  const rankingPath = chunkOutput ? `data/ranking-chunks/great-league-rankings-${String(offset).padStart(4, "0")}.json` : "data/great-league-rankings.json";
+  const rankingPath = chunkOutput
+    ? generationPath("ranking-chunks", `great-league-rankings-${String(offset).padStart(4, "0")}.json`)
+    : generationPath("great-league-rankings.json");
   const rankingSize = writeJson(rankingPath, rankings);
   let fullRankingSize = 0;
   if (fullOutput && !chunkOutput) {
-    fullRankingSize = writeJson(path.join("data", "rankings", "great-league-full.json"), rankings);
+    fullRankingSize = writeJson(generationPath("rankings", "great-league-full.json"), rankings);
   }
   if (!chunkOutput) writeRankingScript(rankings);
+  if (!chunkOutput && generationSeasonId) writeDefaultMovesets(standardMovesets);
   const splitIndexSize = splitMatchups ? writeSplitMatchupIndex(metadata) : 0;
-  const matchupSize = matchups ? writeJson("data/great-league-matchups.json", matchups) : 0;
+  const matchupSize = matchups ? writeJson(generationPath("great-league-matchups.json"), matchups) : 0;
   const elapsed = Math.round((Date.now() - started) / 1000);
   console.log(`Wrote ${rankingPath} (${rankingSize.toLocaleString()} bytes).`);
   if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);
@@ -1367,23 +1476,27 @@ function main() {
   if (splitIndexSize) console.log(`Wrote data/matchups/great-league/index.json (${splitIndexSize.toLocaleString()} bytes).`);
   if (matchups) console.log(`Wrote data/great-league-matchups.json (${matchupSize.toLocaleString()} bytes).`);
   if (!chunkOutput) {
-    const qualityReport = runQualityPipeline({ datasetPath: rankingPath, writeMetadata: true, writeReport: true });
+    const qualityReport = runQualityPipeline({
+      datasetPath: rankingPath,
+      writeMetadata: !generationSeasonId,
+      writeReport: !generationSeasonId
+    });
     console.log(`Dataset quality report: ${qualityReport.status}.`);
   }
   if (useMatchupCache) {
-    console.log(`Matchup cache: ${matchupCacheStats.hits.toLocaleString()} hits, ${matchupCacheStats.misses.toLocaleString()} misses, ${matchupCacheStats.writes.toLocaleString()} writes, ${matchupCacheStats.filesWritten.toLocaleString()} files written.`);
+    console.log(`Matchup cache: ${matchupCacheStats.hits.toLocaleString()} hits (${matchupCacheStats.baseHits.toLocaleString()} Current base, ${matchupCacheStats.previewHits.toLocaleString()} preview), ${matchupCacheStats.misses.toLocaleString()} misses, ${matchupCacheStats.writes.toLocaleString()} writes, ${matchupCacheStats.filesWritten.toLocaleString()} files written.`);
   }
   savePersistentRank1Stats();
   console.log(`Done in ${elapsed}s.`);
 }
 
 function mergeRankingChunks() {
-  const chunkDir = path.join(ROOT, "data", "ranking-chunks");
+  const chunkDir = path.join(ROOT, generationPath("ranking-chunks"));
   const files = fs.existsSync(chunkDir)
     ? fs.readdirSync(chunkDir).filter(name => /^great-league-rankings-\d+\.json$/.test(name)).sort()
     : [];
   if (!files.length) throw new Error("No ranking chunks found.");
-  const chunks = files.map(name => readJson(path.join("data", "ranking-chunks", name)));
+  const chunks = files.map(name => readJson(generationPath("ranking-chunks", name)));
   const entries = chunks.flatMap(chunk => chunk.entries || []);
   const totalCells = chunks.reduce((sum, chunk) => sum + Number(chunk.metadata && chunk.metadata.cells || 0), 0);
   const mergedMatchupCache = chunks.reduce((summary, chunk) => {
@@ -1419,10 +1532,12 @@ function mergeRankingChunks() {
     },
     entries: entries.map((entry, index) => ({ ...entry, rank: index + 1 }))
   };
-  const rankingSize = writeJson("data/great-league-rankings.json", merged);
-  const fullRankingSize = fullOutput ? writeJson(path.join("data", "rankings", "great-league-full.json"), merged) : 0;
+  const rankingPath = generationPath("great-league-rankings.json");
+  const rankingSize = writeJson(rankingPath, merged);
+  const fullRankingSize = fullOutput ? writeJson(generationPath("rankings", "great-league-full.json"), merged) : 0;
   writeRankingScript(merged);
-  const qualityReport = runQualityPipeline({ datasetPath: "data/great-league-rankings.json", writeMetadata: true, writeReport: true });
+  if (generationSeasonId) writeDefaultMovesets(generationData().standardMovesets);
+  const qualityReport = runQualityPipeline({ datasetPath: rankingPath, writeMetadata: !generationSeasonId, writeReport: !generationSeasonId });
   console.log(`Merged ${files.length} chunks into data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
   if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);
   console.log(`Wrote data/great-league-rankings.js.`);
@@ -1430,9 +1545,19 @@ function mergeRankingChunks() {
 }
 
 function writeRankingScript(rankings) {
-  const file = path.join(ROOT, "data", "great-league-rankings.js");
-  ensureDir(path.dirname("data/great-league-rankings.js"));
-  fs.writeFileSync(file, `window.GREAT_LEAGUE_RANKINGS = ${JSON.stringify(rankings, null, 2)};\n`, "utf8");
+  const relativePath = generationPath("great-league-rankings.js");
+  const file = path.join(ROOT, relativePath);
+  ensureDir(path.dirname(relativePath));
+  const globalName = generationSeasonId ? "TWILIGHT_TRAILS_RANKINGS" : "GREAT_LEAGUE_RANKINGS";
+  fs.writeFileSync(file, `window.${globalName} = ${JSON.stringify(rankings, null, 2)};\n`, "utf8");
+}
+
+function writeDefaultMovesets(standardMovesets) {
+  const jsonPath = generationPath("default-movesets.json");
+  writeJson(jsonPath, standardMovesets);
+  const jsPath = generationPath("default-movesets.js");
+  ensureDir(path.dirname(jsPath));
+  fs.writeFileSync(path.join(ROOT, jsPath), `window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = ${JSON.stringify(standardMovesets, null, 2)};\n`, "utf8");
 }
 
 if (require.main === module) {
@@ -1452,6 +1577,7 @@ module.exports = {
   createWorkerAdapter,
   normalizeMove,
   normalizePokemon,
+  buildPreviewMovesets,
   defaultStats,
   statsForIvSpread,
   rank1Stats,

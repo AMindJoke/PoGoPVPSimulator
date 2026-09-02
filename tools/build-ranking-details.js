@@ -6,11 +6,15 @@ const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const root = path.resolve(__dirname, "..");
-const rankingPath = path.join(root, "data", "great-league-rankings.json");
-const analysisPath = path.join(root, "data", "analysis", "great-league-analysis.json");
-const cacheDir = path.join(root, "data", "matchup-cache", "great-league", "rank1");
-const outputJson = path.join(root, "data", "great-league-ranking-details.json");
-const outputJs = path.join(root, "data", "great-league-ranking-details.js");
+const seasonArg = process.argv.find(arg => arg.startsWith("--season="));
+const seasonId = (seasonArg ? seasonArg.split("=").slice(1).join("=") : "").replace(/[^a-z0-9_.-]+/gi, "_");
+const outputRoot = path.join(root, ...(seasonId ? ["data", "seasons", seasonId] : ["data"]));
+const rankingPath = path.join(outputRoot, "great-league-rankings.json");
+const analysisPath = path.join(outputRoot, "analysis", "great-league-analysis.json");
+const cacheDir = path.join(outputRoot, "matchup-cache", "great-league", "rank1");
+const fallbackCacheDir = seasonId ? path.join(root, "data", "matchup-cache", "great-league", "rank1") : null;
+const outputJson = path.join(outputRoot, "great-league-ranking-details.json");
+const outputJs = path.join(outputRoot, "great-league-ranking-details.js");
 const pokemonArg = process.argv.find(arg => arg.startsWith("--pokemon="));
 const selectiveIds = new Set((pokemonArg ? pokemonArg.split("=").slice(1).join("=") : "")
   .split(",")
@@ -33,9 +37,11 @@ const details = existingOutput?.entries && typeof existingOutput.entries === "ob
 entries.forEach((entry, index) => {
   if (selectiveIds.size && !selectiveIds.has(entry.id)) return;
   const cachePath = path.join(cacheDir, `${entry.id}.json`);
-  const cells = [];
-  if (fs.existsSync(cachePath)) {
-    const cache = JSON.parse(fs.readFileSync(cachePath, "utf8"));
+  const fallbackCachePath = fallbackCacheDir ? path.join(fallbackCacheDir, `${entry.id}.json`) : null;
+  const cellsByOpponent = new Map();
+  const ingestCache = file => {
+    if (!file || !fs.existsSync(file)) return;
+    const cache = JSON.parse(fs.readFileSync(file, "utf8"));
     Object.entries(cache.cells || {}).forEach(([key, value]) => {
       if (!key.endsWith("|1-1|standard")) return;
       const signature = key.slice(0, key.indexOf("|"));
@@ -46,9 +52,12 @@ entries.forEach((entry, index) => {
         } catch (_) {}
       }
       const score = Number(inflateCacheResult(value)?.score);
-      if (opponentId !== entry.id && Number.isFinite(score)) cells.push({ opponentId, score });
+      if (opponentId !== entry.id && Number.isFinite(score)) cellsByOpponent.set(opponentId, { opponentId, score });
     });
-  }
+  };
+  ingestCache(fallbackCachePath);
+  ingestCache(cachePath);
+  const cells = [...cellsByOpponent.values()];
   const relevant = selectRelevantMatchups(cells, rankById, 5);
   const mapRow = row => ({
     id: row.opponentId,
@@ -73,5 +82,6 @@ const output = {
 };
 const json = `${JSON.stringify(output, null, 2)}\n`;
 fs.writeFileSync(outputJson, json);
-fs.writeFileSync(outputJs, `window.GREAT_LEAGUE_RANKING_DETAILS = ${JSON.stringify(output)};\n`);
+const globalName = seasonId ? "TWILIGHT_TRAILS_RANKING_DETAILS" : "GREAT_LEAGUE_RANKING_DETAILS";
+fs.writeFileSync(outputJs, `window.${globalName} = ${JSON.stringify(output)};\n`);
 process.stdout.write(`Wrote ${outputJson} and ${outputJs}\n`);
