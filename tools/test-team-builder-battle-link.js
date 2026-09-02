@@ -6,10 +6,12 @@ const payload = {
   left: { pokemonId: "jumpluff_shadow", fastMoveId: "FAIRY_WIND", chargedMoveIds: ["ENERGY_BALL", "ACROBATICS"], ivAtk: 0, ivDef: 15, ivHp: 15, shields: 2, baiting: "selective", shieldMode: "smart", startEnergy: 0 },
   right: { pokemonId: "talonflame", fastMoveId: "INCINERATE", chargedMoveIds: ["FLY", "FLAME_CHARGE"], ivAtk: 0, ivDef: 15, ivHp: 15, shields: 2, baiting: "selective", shieldMode: "smart", startEnergy: 0 }
 };
+payload.left.chargedMoveIds.push("MOONBLAST");
 
 const token = BattleLink.encode(payload);
 assert.match(token, /^[A-Za-z0-9_-]+$/, "Battle payloads must be URL-safe.");
 assert.deepEqual(BattleLink.decode(token), BattleLink.normalizePayload(payload), "Battle payloads must round-trip every canonical setup field.");
+assert.deepEqual(BattleLink.decode(token).left.chargedMoveIds, ["ENERGY_BALL", "ACROBATICS", "MOONBLAST"], "Battle links must preserve an N-move Charged Attack collection.");
 const url = new URL(BattleLink.createUrl("https://example.test/PogoPvp.html#team=old", payload));
 assert.equal(url.searchParams.get(BattleLink.PARAM), token);
 assert.equal(url.hash, "", "A direct Battle link must not retain an unrelated shared-team hash.");

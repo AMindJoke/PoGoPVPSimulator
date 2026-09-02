@@ -25,7 +25,9 @@
 
   function normalizeSide(side) {
     if (!side || typeof side !== "object") throw new Error("TEAM_BUILDER_BATTLE_SIDE_INVALID");
-    const chargedMoveIds = Array.isArray(side.chargedMoveIds) ? side.chargedMoveIds.filter(Boolean).slice(0, 2).map(String) : [];
+    const chargedMoveIds = Array.isArray(side.chargedMoveIds)
+      ? [...new Set(side.chargedMoveIds.filter(Boolean).map(String))]
+      : [];
     return Object.freeze({
       pokemonId: String(side.pokemonId || ""),
       fastMoveId: String(side.fastMoveId || ""),

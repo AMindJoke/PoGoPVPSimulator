@@ -91,6 +91,11 @@ assert.strictEqual(createNextCycleModel({
 }).rows.length, 1);
 assert.strictEqual(createNextCycleModel({ usedMove: mudBomb, chargedMoves: [mudBomb], remainingEnergy: 0, fastMove: null }), null);
 assert.strictEqual(createNextCycleModel({ usedMove: mudBomb, chargedMoves: [mudBomb], remainingEnergy: 0, fastMove: { energyGain: 0 } }), null);
+assert.deepStrictEqual(
+  createChargedThresholdModel([mudBomb, scald, { id: "THIRD", energyCost: 60 }], 60).map(item => item.move.id),
+  [mudBomb.id, scald.id, "THIRD"],
+  "Energy Trainer thresholds must preserve every selected Charged Attack."
+);
 assert.equal(shouldPresentNextCycle({
   executionOk: true,
   actionType: "CHARGED_MOVE",

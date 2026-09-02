@@ -78,7 +78,7 @@ function applicationState(overrides = {}) {
         ivDef: 15,
         ivHp: 15,
         fast: { id: "MUD_SHOT" },
-        charged: [{ id: "AQUA_TAIL" }, { id: "STONE_EDGE" }],
+        charged: [{ id: "AQUA_TAIL" }, { id: "STONE_EDGE" }, { id: "EARTHQUAKE" }],
         maxHp: 150,
         hp: 73,
         energy: 47,
@@ -189,6 +189,7 @@ assert.equal(advancedImported.ok, true);
 assert.equal(advancedImported.scenario.participants.A.current.hp, 73);
 assert.equal(advancedImported.scenario.participants.A.current.energy, 47);
 assert.equal(advancedImported.scenario.participants.A.current.attackStage, 1);
+assert.deepEqual(advancedImported.scenario.participants.A.build.moves.charged, ["AQUA_TAIL", "STONE_EDGE", "EARTHQUAKE"], "Scenario documents must preserve every selected Charged Attack while reading legacy two-slot controls.");
 assert.equal(advancedImported.scenario.participants.B.current.defenseStage, 2);
 assert.equal(advancedImported.scenario.participants.B.current.shields, 0);
 assert.equal(advancedImported.scenario.state.currentTurn, 8);

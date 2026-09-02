@@ -2,11 +2,12 @@
   const api = factory(
     typeof module === "object" && module.exports ? require("./manual-branches.js") : root.PvPeakManualBranches,
     typeof module === "object" && module.exports ? require("./manual-mode.js") : root.PvPeakManualMode,
-    typeof module === "object" && module.exports ? require("./scenario-comparison.js") : root.PvPeakScenarioComparison
+    typeof module === "object" && module.exports ? require("./scenario-comparison.js") : root.PvPeakScenarioComparison,
+    typeof module === "object" && module.exports ? require("./charged-move-collection.js") : root.PvPeakChargedMoveCollection
   );
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakManualScenarioIO = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (Branches, ManualMode, Comparison) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Branches, ManualMode, Comparison, ChargedMoves) {
   "use strict";
 
   const SCHEMA_ID = "pogo-pvp-scenario";
@@ -90,10 +91,12 @@
     const pokemon = combatant?.p || null;
     const id = pokemon?.id || controls[`${prefix}Pokemon`] || fallbackId;
     const initialState = applicationState?.battle?.initialTimelineState?.[side] || null;
-    const chargedIds = [
-      controls[`${prefix}Charged1`] || combatant?.charged?.[0]?.id || null,
-      controls[`${prefix}Charged2`] || combatant?.charged?.[1]?.id || null
-    ];
+    const runtimeChargedIds = (combatant?.charged || []).map(move => move?.id || move?.moveId).filter(Boolean);
+    const collectionControl = controls[`${prefix}ChargedMoves`];
+    const legacyControl = [controls[`${prefix}Charged1`], controls[`${prefix}Charged2`]].filter(Boolean);
+    const chargedIds = ChargedMoves?.normalizeIds
+      ? ChargedMoves.normalizeIds(runtimeChargedIds.length ? runtimeChargedIds : (Array.isArray(collectionControl) ? collectionControl : legacyControl))
+      : (runtimeChargedIds.length ? runtimeChargedIds : legacyControl);
     const currentHp = combatant ? Number(combatant.hp) : null;
     return {
       side,
@@ -341,7 +344,11 @@
     if (!isRecord(build.moves)) errors.push(`INVALID_MOVES_${side}`);
     else {
       if (build.moves.fast != null && typeof build.moves.fast !== "string") errors.push(`INVALID_FAST_MOVE_${side}`);
-      if (!Array.isArray(build.moves.charged) || build.moves.charged.length > 2) errors.push(`INVALID_CHARGED_MOVES_${side}`);
+      if (!Array.isArray(build.moves.charged)
+        || build.moves.charged.some(moveId => typeof moveId !== "string" || !moveId.trim())
+        || new Set(build.moves.charged).size !== build.moves.charged.length) {
+        errors.push(`INVALID_CHARGED_MOVES_${side}`);
+      }
       if (typeof options.isMoveId === "function") {
         if (build.moves.fast && !options.isMoveId(pokemonId, build.moves.fast, "fast")) errors.push(`UNKNOWN_FAST_MOVE_${side}`);
         (build.moves.charged || []).filter(Boolean).forEach(moveId => {

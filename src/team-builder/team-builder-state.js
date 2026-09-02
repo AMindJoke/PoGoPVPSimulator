@@ -1,8 +1,10 @@
 (function (root, factory) {
-  const api = factory();
+  const api = factory(
+    typeof module === "object" && module.exports ? require("../battle/charged-move-collection.js") : root.PvPeakChargedMoveCollection
+  );
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakTeamBuilder = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (ChargedMoves) {
   "use strict";
 
   const SCHEMA_VERSION = 1;
@@ -60,7 +62,12 @@
 
   function normalizeMember(member) {
     if (!member?.pokemonId) throw new Error("TEAM_MEMBER_POKEMON_REQUIRED");
-    const chargedMoveIds = [...new Set((member.chargedMoveIds || []).filter(Boolean))].slice(0, 2);
+    const selectedChargedMoveLimit = ChargedMoves?.selectedLimit?.({
+      selectedChargedMoveLimit: member.selectedChargedMoveLimit
+    }) || 2;
+    const chargedMoveIds = ChargedMoves?.normalizeIds
+      ? ChargedMoves.normalizeIds(member.chargedMoveIds, { limit: selectedChargedMoveLimit })
+      : [...new Set((member.chargedMoveIds || []).filter(Boolean))].slice(0, selectedChargedMoveLimit);
     if (!member.fastMoveId || !chargedMoveIds.length) throw new Error("TEAM_MEMBER_MOVESET_REQUIRED");
     return Object.freeze({
       pokemonId: String(member.pokemonId),
@@ -71,6 +78,7 @@
       shadow: !!member.shadow,
       fastMoveId: String(member.fastMoveId),
       chargedMoveIds: Object.freeze(chargedMoveIds.map(String)),
+      selectedChargedMoveLimit,
       build: normalizeBuild(member.build)
     });
   }

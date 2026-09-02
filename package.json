@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test:charged-move-collection": "node tools/test-charged-move-collection.js",
     "test:presentation-ui": "node tools/test-presentation-ui-contract.js",
     "test:scenario-presentation": "node tools/test-scenario-presentation-contract.js",
     "test:home-presentation": "node tools/test-home-presentation-contract.js",

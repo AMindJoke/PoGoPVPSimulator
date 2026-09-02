@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-08-25-v7";
+const CACHE_VERSION = "2026-09-02-v8";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -50,6 +50,7 @@ const CORE_ASSETS = [
   "./src/scenario/scenario-model.js",
   "./src/scenario/manual-battle-state.js",
   "./src/scenario/technical-review-model.js",
+  "./src/battle/charged-move-collection.js",
   "./src/battle/turn-resolution-engine.js",
   "./src/battle/manual-battle-timing.js",
   "./src/battle/manual-switching.js",

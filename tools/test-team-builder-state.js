@@ -60,4 +60,10 @@ const serialized = JSON.parse(JSON.stringify(analysisConfigured));
 assert.deepEqual(TeamBuilder.normalizeState(serialized), analysisConfigured, "Movesets, builds and analysis configuration must survive serialization.");
 assert.notEqual(great.team[2].chargedMoveIds, great.team[1]?.chargedMoveIds, "Member move arrays must not share mutable references.");
 
+const megaMember = pokemon("mega_test", 9999, { charged: ["CHARGE_1", "CHARGE_2", "CHARGE_3"] });
+megaMember.selectedChargedMoveLimit = 3;
+const withMega = TeamBuilder.setMember(TeamBuilder.createState(), 0, megaMember);
+assert.deepEqual(withMega.team[0].chargedMoveIds, ["CHARGE_1", "CHARGE_2", "CHARGE_3"], "A form capability must preserve three selected Charged Attacks.");
+assert.equal(withMega.team[0].selectedChargedMoveLimit, 3);
+
 console.log("Team Builder state tests passed.");

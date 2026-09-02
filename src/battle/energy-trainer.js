@@ -28,7 +28,8 @@
   }
 
   function createChargedThresholdModel(moves = [], energy = 0) {
-    return moves.slice(0, 2)
+    return moves
+      .filter(Boolean)
       .map(move => ({ move, cost: Math.max(0, Math.min(100, Number(move?.energyCost || 0))) }))
       .sort((a, b) => a.cost - b.cost)
       .map((entry, index, sorted) => Object.freeze({
@@ -56,7 +57,7 @@
 
   function createNextCycleModel({ usedMove, chargedMoves = [], remainingEnergy = 0, fastMove } = {}) {
     const fastEnergy = Number(fastMove?.energyGain || 0);
-    const validCharged = chargedMoves.slice(0, 2).filter(move =>
+    const validCharged = chargedMoves.filter(move =>
       move && Number.isFinite(Number(move.energyCost)) && Number(move.energyCost) > 0
     );
     if (!usedMove || !Number.isFinite(fastEnergy) || fastEnergy <= 0 || !validCharged.length) return null;
