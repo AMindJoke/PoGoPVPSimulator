@@ -18,6 +18,9 @@
   <script src="default-movesets.js"></script>
   <script src="data/great-league-rankings.js"></script>
   <script src="data/great-league-ranking-details.js"></script>
+  <script src="data/seasons/next-season.js"></script>
+  <script src="data/seasons/season-catalog.js"></script>
+  <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
   <script src="src/reliability/battle-reliability.js"></script>
@@ -14990,16 +14993,39 @@
     const $ = id => document.getElementById(id);
     const THEME_STORAGE_KEY = "go-judge-hub-theme";
     const SUPPORTED_THEMES = new Set(["light", "dark", "neo"]);
-    const gm = window.BATTLE_GAMEMASTER;
+    const seasonContext = window.PvPeakSeasonContext?.create?.({
+      catalog: window.BATTLE_SEASON_CATALOG,
+      gameMaster: window.BATTLE_GAMEMASTER,
+      defaultMovesets: window.BATTLE_DEFAULT_MOVESETS,
+      rankings: window.GREAT_LEAGUE_RANKINGS,
+      rankingDetails: window.GREAT_LEAGUE_RANKING_DETAILS,
+      storage: window.localStorage,
+      location: window.location
+    }) || null;
+    const activeSeasonData = seasonContext?.activeSeasonData || {
+      id: "legacy-current",
+      label: "Current Season",
+      status: "current",
+      dataVersion: "legacy",
+      identity: "legacy-current:legacy",
+      gameMaster: window.BATTLE_GAMEMASTER,
+      defaultMovesets: window.BATTLE_DEFAULT_MOVESETS || {},
+      rankings: window.GREAT_LEAGUE_RANKINGS || null,
+      rankingDetails: window.GREAT_LEAGUE_RANKING_DETAILS || { entries: {} },
+      moveMetadata: {}
+    };
+    window.BATTLE_ACTIVE_SEASON_DATA = activeSeasonData;
+    const gm = activeSeasonData.gameMaster;
     const ivOptimization = window.PvPeakIvOptimization;
     const ivImpactPresenter = window.PvPeakIvImpact || {};
     const rankingDetailsPresenter = window.PvPeakRankingDetails || {};
-    const metaRankingDetails = window.GREAT_LEAGUE_RANKING_DETAILS || { entries: {} };
+    const metaRankingDetails = activeSeasonData.rankingDetails || { entries: {} };
     const battleReliability = window.PvPeakBattleReliability || {};
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
     const matchupScoreVersion = "resource-score-v3";
-    const matchupResultVersion = `${battleEngineVersion}:${matchupScoreVersion}`;
+    const seasonCacheIdentity = seasonContext?.cacheIdentity?.(battleEngineVersion) || `${activeSeasonData.identity}:${battleEngineVersion}`;
+    const matchupResultVersion = `${seasonCacheIdentity}:${matchupScoreVersion}`;
     const debugBattleTracing = new URLSearchParams(window.location?.search || "").get("debugBattle") === "1";
     const perfDebug = window.PvPeakPerfDebug || null;
     const perfDebugEnabled = perfDebug?.enabled === true;
@@ -15217,7 +15243,7 @@
     let metaBuildActive = false;
     let metaBuildTotal = 0;
     let metaBuildDone = 0;
-    let metaRankingData = window.GREAT_LEAGUE_RANKINGS || null;
+    let metaRankingData = activeSeasonData.rankings || null;
     let metaRankingLoading = false;
     let metaRankingLoadError = "";
     let metaRankingLoadPromise = null;
@@ -15370,7 +15396,7 @@
         charged: ["SKY_ATTACK", "BRAVE_BIRD"]
       }
     };
-    const bundledStandardMovesets = window.BATTLE_DEFAULT_MOVESETS || {};
+    const bundledStandardMovesets = activeSeasonData.defaultMovesets || {};
     const standardMovesets = { ...fallbackStandardMovesets, ...bundledStandardMovesets };
     const damageBonus = 1.2999999523162842;
     const shadowAtkMultiplier = 1.2;
@@ -17858,6 +17884,7 @@
         if (opponent) opponentSignatures[id] = matrixCombatantSignature(createMetaCombatant(opponent, "B"));
       });
       return window.PvPeakTeamBuilderAnalysis.createPlan({
+        seasonIdentity: activeSeasonData.identity,
         engineVersion: matchupResultVersion,
         providerId: teamBuilderState.analysisConfig.meta,
         shields: teamBuilderState.analysisConfig.shields,
@@ -18486,6 +18513,7 @@
       teamBuilderEligibleOptimizationMembers().forEach(({ candidateId, member }) => {
         teamBuilderFinalSlotCandidates.set(candidateId, member);
         window.PvPeakTeamBuilderAnalysis.createPlan({
+          seasonIdentity: activeSeasonData.identity,
           engineVersion: matchupResultVersion,
           providerId: teamBuilderState.analysisConfig.meta,
           shields: teamBuilderState.analysisConfig.shields,
@@ -18698,6 +18726,7 @@
       teamBuilderEligibleReplacementMembers().forEach(({ candidateId, member }) => {
         teamBuilderReplacementCandidates.set(candidateId, member);
         const candidateJobs = window.PvPeakTeamBuilderAnalysis.createPlan({
+          seasonIdentity: activeSeasonData.identity,
           engineVersion: matchupResultVersion,
           providerId: teamBuilderState.analysisConfig.meta,
           shields: teamBuilderState.analysisConfig.shields,
@@ -24329,6 +24358,7 @@
       return window.PvPeakManualScenarioIO.serializeScenario({
         registry: manualBranchRegistry,
         battleEngineVersion,
+        dataset: { seasonId: activeSeasonData.id, dataVersion: activeSeasonData.dataVersion },
         reviewMode: scenarioReviewMode,
         scenarioReview: {
           state: scenarioState,
@@ -24355,6 +24385,8 @@
     function manualScenarioValidationOptions(options = {}) {
       return {
         battleEngineVersion,
+        seasonId: activeSeasonData.id,
+        dataVersion: activeSeasonData.dataVersion,
         ...options,
         isPokemonId: id => !!findPokemon(id),
         isMoveId: (pokemonId, moveId, category) => {

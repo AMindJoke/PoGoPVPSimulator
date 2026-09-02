@@ -191,6 +191,10 @@
       mode: MODE,
       capabilities: [...CAPABILITIES],
       engine: { battleVersion },
+      dataset: input.dataset ? {
+        seasonId: String(input.dataset.seasonId || input.dataset.id || ""),
+        dataVersion: String(input.dataset.dataVersion || "")
+      } : null,
       review: {
         mode: input.reviewMode === "automatic" ? "automatic" : "manual",
         state: review?.state || null,
@@ -277,6 +281,7 @@
     return serializeScenario({
       registry: document.branchRegistry,
       battleEngineVersion: document.battleEngineVersion,
+      dataset: document.dataset || null,
       reviewMode: document.reviewMode,
       scenarioReview: document.scenarioReview,
       pokemon: document.pokemon,
@@ -414,6 +419,11 @@
     if (document.mode !== MODE) errors.push("INVALID_SCENARIO_MODE");
     if (!Array.isArray(document.capabilities) || !document.capabilities.every(item => typeof item === "string")) errors.push("INVALID_CAPABILITIES");
     if (!document.engine?.battleVersion) errors.push("BATTLE_ENGINE_VERSION_MISSING");
+    if (document.dataset != null) {
+      if (!isRecord(document.dataset) || !document.dataset.seasonId || !document.dataset.dataVersion) errors.push("INVALID_SEASON_CONTEXT");
+      if (options.seasonId && document.dataset?.seasonId !== options.seasonId && options.allowSeasonMismatch !== true) errors.push("SCENARIO_SEASON_MISMATCH");
+      if (options.dataVersion && document.dataset?.dataVersion !== options.dataVersion && options.allowSeasonMismatch !== true) errors.push("SCENARIO_DATA_VERSION_MISMATCH");
+    }
     if (
       options.battleEngineVersion
       && document.engine?.battleVersion !== options.battleEngineVersion
@@ -480,6 +490,8 @@
       options.battleEngineVersion
       && document.engine.battleVersion !== options.battleEngineVersion
     ) ? ["BATTLE_ENGINE_VERSION_MISMATCH"] : [];
+    if (!document.dataset) warnings.push("SEASON_CONTEXT_MISSING");
+    if (document.dataset && options.seasonId && document.dataset.seasonId !== options.seasonId) warnings.push("SCENARIO_SEASON_MISMATCH");
     return { ok: true, errors: [], warnings, scenario: clone(document) };
   }
 

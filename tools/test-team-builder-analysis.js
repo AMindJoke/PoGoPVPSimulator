@@ -10,6 +10,7 @@ const member = (pokemonId, fastMoveId = "FAST") => ({
 });
 
 const input = {
+  seasonIdentity: "live-a:gm-a",
   engineVersion: "engine-test",
   providerId: "great-league-current",
   shields: "1-1",
@@ -23,6 +24,7 @@ assert.equal(new Set(plan.map(job => job.key)).size, 4);
 assert.equal(Analysis.createPlan({ ...input, shields: "2-2" })[0].key === plan[0].key, false, "Shield state must invalidate the cache signature.");
 assert.equal(Analysis.createPlan({ ...input, team: [member("azumarill", "OTHER_FAST")] })[0].key === plan[0].key, false, "Moveset changes must invalidate the cache signature.");
 assert.equal(Analysis.createPlan({ ...input, opponentSignatures: { ...input.opponentSignatures, clodsire: "clodsire-build-v2" } })[0].key === plan[0].key, false, "Meta opponent build changes must invalidate the cache signature.");
+assert.equal(Analysis.createPlan({ ...input, seasonIdentity: "preview-b:gm-b" })[0].key === plan[0].key, false, "Season data identity must invalidate every Team Builder matchup cache key.");
 
 const storageData = new Map();
 const storage = { getItem: key => storageData.get(key) || null, setItem: (key, value) => storageData.set(key, value) };

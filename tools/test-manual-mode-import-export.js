@@ -116,6 +116,7 @@ const simpleRegistry = registryFor();
 const simple = IO.serializeScenario({
   registry: simpleRegistry,
   battleEngineVersion: "battle-planner-v27",
+  dataset: { seasonId: "live-a", dataVersion: "gm-a" },
   reviewMode: "manual",
   pokemon: { A: "quagsire_shadow", B: "corsola_galarian" },
   timeline: [fastEvent()],
@@ -141,9 +142,13 @@ assert.equal(simpleImported.scenario.state.runtimeState.manualBattleTiming.elaps
 assert.deepEqual(simpleImported.scenario.state.runtimeState.manualBattleTiming.postChargedSwitchWindow.eligibleSides, ["B"]);
 assert.equal(simpleImported.scenario.state.runtimeState.manualBattleTiming.postChargedSwitchWindow.chargedAttackActor, "B");
 assert.equal(simpleImported.scenario.state.runtimeState.manualSwitchState.A.bench[0].energy, 33);
+assert.deepEqual(simpleImported.scenario.dataset, { seasonId: "live-a", dataVersion: "gm-a" });
+assert(IO.deserializeScenario(simpleJson, { battleEngineVersion: "battle-planner-v27", seasonId: "preview-b", dataVersion: "gm-b" }).errors.includes("SCENARIO_SEASON_MISMATCH"), "A scenario must not silently open under another season.");
+assert.equal(IO.deserializeScenario(simpleJson, { battleEngineVersion: "battle-planner-v27", seasonId: "preview-b", dataVersion: "gm-b", allowSeasonMismatch: true }).ok, true, "A caller may explicitly approve a season migration.");
 assert.equal(IO.stableStringify(simple), IO.stableStringify(IO.serializeScenario({
   registry: simpleRegistry,
   battleEngineVersion: "battle-planner-v27",
+  dataset: { seasonId: "live-a", dataVersion: "gm-a" },
   reviewMode: "manual",
   pokemon: { A: "quagsire_shadow", B: "corsola_galarian" },
   timeline: [fastEvent()],

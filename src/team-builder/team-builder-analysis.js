@@ -35,6 +35,7 @@
   function jobKey(input) {
     return [
       `team-analysis-v${SCHEMA_VERSION}`,
+      input.seasonIdentity || "legacy-current",
       input.engineVersion,
       input.providerId,
       input.shields,
