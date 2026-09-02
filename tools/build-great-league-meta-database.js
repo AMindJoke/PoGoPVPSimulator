@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const crypto = require("crypto");
 const { runQualityPipeline } = require("./validate-great-league-dataset");
 const battleReliability = require("../src/reliability/battle-reliability");
 const turnEngine = require("../src/battle/turn-resolution-engine");
@@ -178,6 +179,10 @@ function generationData() {
     standardMovesets: buildPreviewMovesets(canonicalMovesets, gameMaster, preview),
     preview
   };
+}
+
+function gameMasterHash(gameMaster) {
+  return crypto.createHash("sha256").update(JSON.stringify(gameMaster)).digest("hex");
 }
 
 function loadPersistentRank1Stats() {
@@ -1373,6 +1378,7 @@ function main() {
     datasetVersion: 1,
     seasonId: sourceData.preview?.id || null,
     dataVersion: sourceData.preview?.dataVersion || null,
+    gameMasterHash: gameMasterHash(gamemaster),
     generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
@@ -1491,6 +1497,7 @@ function main() {
 }
 
 function mergeRankingChunks() {
+  const mergedSourceData = generationSeasonId ? generationData() : null;
   const chunkDir = path.join(ROOT, generationPath("ranking-chunks"));
   const files = fs.existsSync(chunkDir)
     ? fs.readdirSync(chunkDir).filter(name => /^great-league-rankings-\d+\.json$/.test(name)).sort()
@@ -1521,6 +1528,7 @@ function mergeRankingChunks() {
     league: "great",
     metadata: {
       ...chunks[0].metadata,
+      gameMasterHash: mergedSourceData ? gameMasterHash(mergedSourceData.gameMaster) : chunks[0].metadata.gameMasterHash,
       generatedAt: new Date().toISOString(),
       mergedFromChunks: files.length,
       pokemonCount: entries.length,
@@ -1536,7 +1544,7 @@ function mergeRankingChunks() {
   const rankingSize = writeJson(rankingPath, merged);
   const fullRankingSize = fullOutput ? writeJson(generationPath("rankings", "great-league-full.json"), merged) : 0;
   writeRankingScript(merged);
-  if (generationSeasonId) writeDefaultMovesets(generationData().standardMovesets);
+  if (generationSeasonId) writeDefaultMovesets(mergedSourceData.standardMovesets);
   const qualityReport = runQualityPipeline({ datasetPath: rankingPath, writeMetadata: !generationSeasonId, writeReport: !generationSeasonId });
   console.log(`Merged ${files.length} chunks into data/great-league-rankings.json (${rankingSize.toLocaleString()} bytes).`);
   if (fullRankingSize) console.log(`Wrote data/rankings/great-league-full.json (${fullRankingSize.toLocaleString()} bytes).`);

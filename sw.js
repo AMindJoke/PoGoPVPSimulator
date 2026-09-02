@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-02-v10-season-preview-loader";
+const CACHE_VERSION = "2026-09-02-v11-twilight-trails-preview";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -20,6 +20,9 @@ const CORE_ASSETS = [
   "./data/great-league-rankings.js",
   "./data/great-league-ranking-details.js",
   "./data/seasons/season-generated-loader.js",
+  "./data/seasons/twilight-trails/great-league-rankings.js",
+  "./data/seasons/twilight-trails/great-league-ranking-details.js",
+  "./data/seasons/twilight-trails/default-movesets.js",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js",
   "./src/season/season-context.js",

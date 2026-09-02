@@ -15257,7 +15257,9 @@
     const shieldMatrixComputing = new Set();
     const shieldMatrixComputeTimeouts = new Map();
     const metaMatchupCacheVersion = `meta-v7:${matchupResultVersion}`;
-    const metaRankingDataUrl = "data/great-league-rankings.json";
+    const metaRankingDataUrl = activeSeasonData.status === "preview"
+      ? `data/seasons/${activeSeasonData.id}/great-league-rankings.json`
+      : "data/great-league-rankings.json";
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
     const metaCombatantSignatureCache = new Map();
@@ -19827,8 +19829,8 @@
     }
 
     function ensureMetaRankingData() {
-      if (!metaRankingData && window.GREAT_LEAGUE_RANKINGS) {
-        metaRankingData = window.GREAT_LEAGUE_RANKINGS;
+      if (!metaRankingData && activeSeasonData.rankings) {
+        metaRankingData = activeSeasonData.rankings;
         metaOfflineRowsCache = null;
       }
       if (metaRankingData || metaRankingLoading || metaRankingLoadPromise) return;
@@ -19875,7 +19877,7 @@
     }
 
     function reloadMetaRankingData() {
-      metaRankingData = window.GREAT_LEAGUE_RANKINGS || null;
+      metaRankingData = activeSeasonData.rankings || null;
       metaOfflineRowsCache = null;
       metaRankingLoadError = "";
       metaRankingLoadPromise = null;

@@ -16,8 +16,8 @@
     id: "twilight-trails",
     label: "Twilight Trails",
     dataVersion: "twilight-trails-draft-2",
-    rankingVersion: "pending",
-    enabled: false,
+    rankingVersion: "great-league-twilight-trails-preview-v1",
+    enabled: true,
     sourceUrl,
     moveOverrides: Object.freeze({
       AIR_CUTTER: estimated({ power: 60, energy: 40, buffApplyChance: 0.1 }, "energy cost and boost chance"),

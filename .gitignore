@@ -2,6 +2,11 @@ pvpoke-rankings-*.json
 data/ranking-chunks/
 data/matchup-cache/
 data/analysis/
+data/seasons/*/analysis/
+data/seasons/*/logs/
+data/seasons/*/matchup-cache/
+data/seasons/*/ranking-chunks/
+data/seasons/*/rankings/
 data/great-league-rank1-stats-cache.json
 reports/battle-regressions/
 reports/battle-contradictions/

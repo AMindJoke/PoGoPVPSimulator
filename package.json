@@ -3,6 +3,7 @@
     "test:season-context": "node tools/test-season-context.js",
     "test:season-ui": "node tools/test-season-ui-contract.js",
     "test:twilight-trails": "node tools/test-twilight-trails-data.js",
+    "test:twilight-trails-runtime": "node tools/test-twilight-trails-runtime.js",
     "test:season-generation": "node tools/test-season-generation.js",
     "test:season-loader": "node tools/test-season-loader.js",
     "test:charged-move-collection": "node tools/test-charged-move-collection.js",

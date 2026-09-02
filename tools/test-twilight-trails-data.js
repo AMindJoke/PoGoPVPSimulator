@@ -16,7 +16,7 @@ for (const relative of ["battle-data.js", "data/seasons/next-season.js", "data/s
 const gm = browser.BATTLE_GAMEMASTER;
 const draft = browser.BATTLE_NEXT_SEASON;
 assert.equal(draft.id, "twilight-trails");
-assert.equal(draft.enabled, false, "The preview must stay unavailable until derived rankings are generated.");
+assert.equal(draft.enabled, true, "The complete preview descriptor must be available.");
 assert.equal(draft.pendingValues.length, 0);
 assert.deepEqual(Season.validateCatalog(browser.BATTLE_SEASON_CATALOG, gm), []);
 

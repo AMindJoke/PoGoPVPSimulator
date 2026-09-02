@@ -2,7 +2,7 @@
 
 Canonical announcement: <https://pokemongo.com/news/go-battle-league-twilight-trails>
 
-The draft is stored only in `data/seasons/next-season.js` and remains disabled until its derived rankings are generated. It contains all explicit Trainer Battle power changes, Bulldoze's guaranteed Defense drop, Draining Kiss's guaranteed self-Defense increase, all announced Attack availability updates, and the provisional values supplied for fields the announcement leaves unspecified. Availability is also applied to the corresponding canonical Shadow and Mega forms where that same announced form exists.
+The preview source is stored in `data/seasons/next-season.js` and is enabled with its own generated rankings, ranking details, default movesets, and season-versioned cache layer. It contains all explicit Trainer Battle power changes, Bulldoze's guaranteed Defense drop, Draining Kiss's guaranteed self-Defense increase, all announced Attack availability updates, and the provisional values supplied for fields the announcement leaves unspecified. Availability is also applied to the corresponding canonical Shadow and Mega forms where that same announced form exists.
 
 ## Provisional values
 
