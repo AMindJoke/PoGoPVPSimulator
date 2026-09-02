@@ -1,40 +1,51 @@
 (function (root) {
   "use strict";
 
-  // Canonical Twilight Trails draft. It remains disabled until all pending values
-  // are supplied and season-derived rankings are generated.
+  // Canonical Twilight Trails draft. It remains disabled until season-derived
+  // rankings are generated. Estimated fields are explicitly marked below.
   const sourceUrl = "https://pokemongo.com/news/go-battle-league-twilight-trails";
   const confirmed = (values, note) => Object.freeze({ ...values, status: "confirmed", note: note || "Official Twilight Trails announcement", sourceUrl });
+  const estimated = (values, fields) => Object.freeze({
+    ...values,
+    status: "estimated",
+    note: `Provisional pre-release value supplied for ${fields}; replace after the live Game Master update.`,
+    sourceUrl
+  });
   const add = (fast = [], charged = []) => Object.freeze({ fast: Object.freeze({ add: Object.freeze(fast) }), charged: Object.freeze({ add: Object.freeze(charged) }), status: "confirmed", sourceUrl });
   root.BATTLE_NEXT_SEASON = Object.freeze({
     id: "twilight-trails",
     label: "Twilight Trails",
-    dataVersion: "twilight-trails-draft-1",
+    dataVersion: "twilight-trails-draft-2",
     rankingVersion: "pending",
     enabled: false,
     sourceUrl,
     moveOverrides: Object.freeze({
-      AIR_CUTTER: confirmed({ power: 60 }),
-      BULLDOZE: confirmed({ power: 80, buffApplyChance: 1, buffs: [0, -1], buffTarget: "opponent" }),
-      BODY_SLAM: confirmed({ power: 65 }),
-      SAND_TOMB: confirmed({ power: 55 }),
-      BRINE: confirmed({ power: 100 }),
-      BUBBLE_BEAM: confirmed({ power: 50 }),
-      MIRROR_COAT: confirmed({ power: 75 }),
+      AIR_CUTTER: estimated({ power: 60, energy: 40, buffApplyChance: 0.1 }, "energy cost and boost chance"),
+      BULLDOZE: estimated({ power: 80, energy: 50, buffApplyChance: 1, buffs: [0, -1], buffTarget: "opponent" }, "energy cost"),
+      BODY_SLAM: estimated({ power: 65, energy: 40 }, "energy cost"),
+      SAND_TOMB: estimated({ power: 55, energy: 45 }, "energy cost"),
+      BRINE: estimated({ power: 100, energy: 60 }, "energy cost"),
+      BUBBLE_BEAM: estimated({ power: 50, energy: 45 }, "energy cost"),
+      MIRROR_COAT: estimated({ power: 75, energy: 45 }, "energy cost"),
+      HIGH_HORSEPOWER: estimated({ energy: 55 }, "energy cost"),
       CHARGE_BEAM: confirmed({ power: 6 }),
       IRON_HEAD: confirmed({ power: 85 }),
       DRAINING_KISS: confirmed({ power: 80, buffApplyChance: 1, buffs: [0, 1], buffTarget: "self" }),
       POISON_FANG: confirmed({ power: 50 }),
       LUNGE: confirmed({ power: 70 }),
-      BITE: confirmed({ power: 2 }),
+      BLAZE_KICK: estimated({ energy: 35 }, "energy cost"),
+      BITE: estimated({ power: 2, energyGain: 4 }, "energy generation"),
       INFESTATION: confirmed({ power: 10 }),
-      TAKE_DOWN: confirmed({ power: 14 }),
-      SCRATCH: confirmed({ power: 3 }),
-      MOONBLAST: confirmed({ power: 90 }),
+      TAKE_DOWN: estimated({ power: 14, energyGain: 9 }, "energy generation"),
+      SCRATCH: estimated({ power: 3, energyGain: 4 }, "energy generation"),
+      MOONBLAST: estimated({ power: 90, energy: 50 }, "energy cost"),
       SHADOW_BALL: confirmed({ power: 90 }),
+      DARK_PULSE: estimated({ energy: 45 }, "energy cost"),
       PSYCHO_BOOST: confirmed({ power: 85 }),
-      RAGE_FIST: confirmed({ power: 55 }),
+      RAGE_FIST: estimated({ power: 55, energy: 40 }, "energy cost"),
+      MAGNET_BOMB: estimated({ energy: 40 }, "energy cost"),
       DOUBLE_IRON_BASH: confirmed({ power: 70 }),
+      SHADOW_FORCE: estimated({ energy: 80 }, "energy cost"),
       LOW_KICK: confirmed({ power: 6 })
     }),
     pokemonMoveOverrides: Object.freeze({
@@ -66,12 +77,7 @@
       toxtricity_low_key: add([], ["SWIFT"]), toxtricity_amped: add([], ["SWIFT"]),
       snorlax: add(["PSYWAVE"]), snorlax_shadow: add(["PSYWAVE"])
     }),
-    pendingValues: Object.freeze([
-      "AIR_CUTTER.energy", "AIR_CUTTER.buffApplyChance", "BULLDOZE.energy", "BODY_SLAM.energy", "SAND_TOMB.energy",
-      "BRINE.energy", "BUBBLE_BEAM.energy", "MIRROR_COAT.energy", "HIGH_HORSEPOWER.energy", "BLAZE_KICK.energy",
-      "BITE.energyGain", "TAKE_DOWN.energyGain", "SCRATCH.energyGain", "MOONBLAST.energy", "DARK_PULSE.energy",
-      "RAGE_FIST.energy", "MAGNET_BOMB.energy", "SHADOW_FORCE.energy"
-    ]),
+    pendingValues: Object.freeze([]),
     generated: null
   });
 })(typeof globalThis !== "undefined" ? globalThis : this);

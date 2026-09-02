@@ -16,8 +16,8 @@ for (const relative of ["battle-data.js", "data/seasons/next-season.js", "data/s
 const gm = browser.BATTLE_GAMEMASTER;
 const draft = browser.BATTLE_NEXT_SEASON;
 assert.equal(draft.id, "twilight-trails");
-assert.equal(draft.enabled, false, "The preview must stay unavailable while official numeric fields are pending.");
-assert.equal(draft.pendingValues.length, 18);
+assert.equal(draft.enabled, false, "The preview must stay unavailable until derived rankings are generated.");
+assert.equal(draft.pendingValues.length, 0);
 assert.deepEqual(Season.validateCatalog(browser.BATTLE_SEASON_CATALOG, gm), []);
 
 const runnablePreview = {
@@ -38,10 +38,20 @@ const currentMove = id => gm.moves.find(move => move.moveId === id);
 const previewMove = id => context.activeSeasonData.gameMaster.moves.find(move => move.moveId === id);
 assert.equal(currentMove("LUNGE").power, 60);
 assert.equal(previewMove("LUNGE").power, 70);
+assert.equal(previewMove("AIR_CUTTER").energy, 40);
+assert.equal(previewMove("AIR_CUTTER").buffApplyChance, 0.1);
 assert.equal(previewMove("BULLDOZE").power, 80);
+assert.equal(previewMove("BULLDOZE").energy, 50);
 assert.equal(previewMove("BULLDOZE").buffApplyChance, 1);
 assert.equal(previewMove("DRAINING_KISS").power, 80);
 assert.deepEqual(Array.from(previewMove("DRAINING_KISS").buffs), [0, 1]);
+assert.equal(previewMove("MIRROR_COAT").energy, 45);
+assert.equal(previewMove("BITE").energyGain, 4);
+assert.equal(previewMove("TAKE_DOWN").energyGain, 9);
+assert.equal(previewMove("SCRATCH").energyGain, 4);
+assert.equal(previewMove("SHADOW_FORCE").energy, 80);
+assert.equal(draft.moveOverrides.AIR_CUTTER.status, "estimated");
+assert.equal(draft.moveOverrides.LUNGE.status, "confirmed");
 
 const pokemon = id => context.activeSeasonData.gameMaster.pokemon.find(entry => entry.speciesId === id);
 assert(pokemon("volbeat").fastMoves.includes("INFESTATION"));
