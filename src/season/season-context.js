@@ -8,7 +8,8 @@
   const STORAGE_KEY = "go-pvp-active-season-v1";
   const STATUS = Object.freeze({ CURRENT: "current", PREVIEW: "preview" });
   const VALUE_STATUS = new Set(["estimated", "confirmed"]);
-  const MOVE_FIELDS = new Set(["power", "energy", "energyGain", "turns", "cooldown", "buffApplyChance"]);
+  const MOVE_FIELDS = new Set(["power", "energy", "energyGain", "turns", "cooldown", "buffApplyChance", "buffs", "buffsSelf", "buffsOpponent", "buffTarget"]);
+  const NUMERIC_MOVE_FIELDS = new Set(["power", "energy", "energyGain", "turns", "cooldown", "buffApplyChance"]);
 
   function record(value) { return !!value && typeof value === "object" && !Array.isArray(value); }
   function cleanId(value) { return String(value || "").trim(); }
@@ -67,11 +68,21 @@
       const changedFields = Object.keys(override).filter(field => MOVE_FIELDS.has(field));
       if (!changedFields.length) errors.push(`PREVIEW_MOVE_VALUE_MISSING:${code}`);
       changedFields.forEach(field => {
-        if (!Number.isFinite(Number(override[field]))) errors.push(`PREVIEW_MOVE_NUMBER_INVALID:${code}:${field}`);
+        if (NUMERIC_MOVE_FIELDS.has(field) && !Number.isFinite(Number(override[field]))) errors.push(`PREVIEW_MOVE_NUMBER_INVALID:${code}:${field}`);
       });
       if (override.status === "estimated" && !cleanId(override.note)) errors.push(`PREVIEW_MOVE_ESTIMATE_NOTE_MISSING:${code}`);
     });
-    if (options.requireGenerated !== false) {
+    const pokemonIds = new Set((gameMaster?.pokemon || []).map(pokemon => cleanId(pokemon?.speciesId)).filter(Boolean));
+    if (preview.pokemonMoveOverrides != null && !record(preview.pokemonMoveOverrides)) errors.push("PREVIEW_POKEMON_OVERRIDES_INVALID");
+    else Object.entries(preview.pokemonMoveOverrides || {}).forEach(([pokemonId, override]) => {
+      if (!pokemonIds.has(cleanId(pokemonId))) errors.push(`PREVIEW_POKEMON_UNKNOWN:${cleanId(pokemonId)}`);
+      if (!record(override)) { errors.push(`PREVIEW_POKEMON_OVERRIDE_INVALID:${cleanId(pokemonId)}`); return; }
+      ["fast", "charged"].forEach(kind => (override[kind]?.add || []).forEach(moveId => {
+        if (!moveIds.has(cleanId(moveId))) errors.push(`PREVIEW_POKEMON_MOVE_UNKNOWN:${cleanId(pokemonId)}:${cleanId(moveId)}`);
+      }));
+    });
+    if (preview.enabled && Array.isArray(preview.pendingValues) && preview.pendingValues.length) errors.push("PREVIEW_VALUES_PENDING");
+    if (preview.enabled && options.requireGenerated !== false) {
       if (!record(preview.generated)) errors.push("PREVIEW_GENERATED_OUTPUTS_MISSING");
       else {
         if (!preview.generated.rankings) errors.push("PREVIEW_RANKINGS_MISSING");
@@ -99,10 +110,25 @@
       const override = overrides[move.moveId];
       if (!override) return move;
       const next = { ...move };
-      MOVE_FIELDS.forEach(field => { if (Object.hasOwn(override, field)) next[field] = Number(override[field]); });
+      MOVE_FIELDS.forEach(field => {
+        if (!Object.hasOwn(override, field)) return;
+        next[field] = NUMERIC_MOVE_FIELDS.has(field) ? Number(override[field]) : override[field];
+      });
       return Object.freeze(next);
     });
     return Object.freeze({ ...gameMaster, moves: Object.freeze(moves) });
+  }
+
+  function applyPokemonMoveOverrides(gameMaster, overrides) {
+    if (!overrides || !Object.keys(overrides).length) return gameMaster;
+    const pokemon = (gameMaster.pokemon || []).map(entry => {
+      const override = overrides[entry.speciesId];
+      if (!override) return entry;
+      const fastMoves = [...new Set([...(entry.fastMoves || []), ...(override.fast?.add || [])])];
+      const chargedMoves = [...new Set([...(entry.chargedMoves || []), ...(override.charged?.add || [])])];
+      return Object.freeze({ ...entry, fastMoves: Object.freeze(fastMoves), chargedMoves: Object.freeze(chargedMoves) });
+    });
+    return Object.freeze({ ...gameMaster, pokemon: Object.freeze(pokemon) });
   }
 
   function querySeason(locationLike) {
@@ -127,7 +153,8 @@
     const selectedId = allowed.has(requested) ? requested : cleanId(catalog.current?.id);
     const isPreview = previewAvailable && selectedId === cleanId(catalog.next.id);
     const descriptor = isPreview ? catalog.next : catalog.current;
-    const resolvedGameMaster = isPreview ? applyMoveOverrides(gameMaster, catalog.next.moveOverrides) : gameMaster;
+    const moveResolved = isPreview ? applyMoveOverrides(gameMaster, catalog.next.moveOverrides) : gameMaster;
+    const resolvedGameMaster = isPreview ? applyPokemonMoveOverrides(moveResolved, catalog.next.pokemonMoveOverrides) : gameMaster;
     const generated = isPreview ? catalog.next.generated : null;
     const metadata = isPreview ? Object.freeze(Object.fromEntries(Object.entries(catalog.next.moveOverrides || {}).map(([id, value]) => [id, Object.freeze({ status: value.status, note: value.note || "" })]))) : Object.freeze({});
     const identity = `${descriptor.id}:${descriptor.dataVersion}`;
@@ -161,5 +188,5 @@
     });
   }
 
-  return Object.freeze({ STORAGE_KEY, STATUS, MOVE_FIELDS, validateCanonicalData, validatePreview, validateCatalog, applyMoveOverrides, create });
+  return Object.freeze({ STORAGE_KEY, STATUS, MOVE_FIELDS, validateCanonicalData, validatePreview, validateCatalog, applyMoveOverrides, applyPokemonMoveOverrides, create });
 });

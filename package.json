@@ -2,6 +2,7 @@
   "scripts": {
     "test:season-context": "node tools/test-season-context.js",
     "test:season-ui": "node tools/test-season-ui-contract.js",
+    "test:twilight-trails": "node tools/test-twilight-trails-data.js",
     "test:charged-move-collection": "node tools/test-charged-move-collection.js",
     "test:variable-charged-move-ui": "node tools/test-variable-charged-move-ui.js",
     "test:mega-forms": "node tools/test-mega-form-architecture.js",
