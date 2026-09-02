@@ -54,6 +54,7 @@ const CORE_ASSETS = [
   "./src/scenario/manual-battle-state.js",
   "./src/scenario/technical-review-model.js",
   "./src/battle/charged-move-collection.js",
+  "./src/battle/pokemon-form.js",
   "./src/battle/turn-resolution-engine.js",
   "./src/battle/manual-battle-timing.js",
   "./src/battle/manual-switching.js",

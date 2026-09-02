@@ -35,6 +35,7 @@
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/battle/charged-move-collection.js"></script>
+  <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/team-builder/team-builder-analysis.js"></script>
@@ -15567,6 +15568,7 @@
           charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
           eliteMoves: p.eliteMoves || [],
           tags: p.tags || [],
+          form: window.PvPeakPokemonForms?.describe?.(p) || { id: p.speciesId, kind: "standard", isMega: false },
           formChange: p.formChange ? JSON.parse(JSON.stringify(p.formChange)) : null
         }))
         .filter(p => p.fast.length && p.charged.length)

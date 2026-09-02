@@ -4,6 +4,7 @@
     "test:season-ui": "node tools/test-season-ui-contract.js",
     "test:charged-move-collection": "node tools/test-charged-move-collection.js",
     "test:variable-charged-move-ui": "node tools/test-variable-charged-move-ui.js",
+    "test:mega-forms": "node tools/test-mega-form-architecture.js",
     "test:presentation-ui": "node tools/test-presentation-ui-contract.js",
     "test:scenario-presentation": "node tools/test-scenario-presentation-contract.js",
     "test:home-presentation": "node tools/test-home-presentation-contract.js",

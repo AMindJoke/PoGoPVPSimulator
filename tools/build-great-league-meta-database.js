@@ -9,6 +9,7 @@ const turnEngine = require("../src/battle/turn-resolution-engine");
 const matchupPlanner = require("../src/battle/matchup-planner");
 const matchupPlannerAdapter = require("../src/battle/matchup-planner-adapter");
 const battleIntelligence = require("../src/battle/battle-intelligence");
+const pokemonForms = require("../src/battle/pokemon-form");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -277,9 +278,7 @@ function isShadow(p) {
 
 function isEligibleGreatLeaguePokemon(p) {
   if (!p || p.released === false || !p.fast.length || !p.charged.length) return false;
-  const name = p.name || "";
-  if (p.id.includes("_mega") || name.includes("(Mega)")) return false;
-  if (p.id.includes("_primal") || name.includes("(Primal)")) return false;
+  if (pokemonForms.isMega(p) || pokemonForms.kind(p) === pokemonForms.FORM_KINDS.PRIMAL) return false;
   return true;
 }
 
