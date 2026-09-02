@@ -32,5 +32,7 @@ assert(unavailable.errors.includes("PREVIEW_GENERATED_OUTPUTS_MISSING"));
 assert(Season.validatePreview({ ...preview, moveOverrides: { MISSING: { power: 1, status: "confirmed" } } }, gm).includes("PREVIEW_MOVE_UNKNOWN:MISSING"));
 assert(Season.validatePreview({ ...preview, moveOverrides: { FAST: { energyGain: 9, status: "estimated" } } }, gm).includes("PREVIEW_MOVE_ESTIMATE_NOTE_MISSING:FAST"));
 assert(Season.validateCatalog({ schemaVersion: 1, current, next: { ...preview, id: current.id } }, gm).includes("SEASON_IDS_DUPLICATE"));
+assert(Season.validateCanonicalData({ moves: [{ moveId: "DUP" }, { moveId: "DUP" }], pokemon: [] }).includes("MOVE_ID_DUPLICATE:DUP"));
+assert(Season.validateCanonicalData({ moves: gm.moves, pokemon: [{ speciesId: "mega_fixture", baseStats: { atk: 1, def: 1, hp: 1 }, fastMoves: ["FAST"], chargedMoves: ["CHARGE", "CHARGE"] }] }).includes("POKEMON_CHARGED_DUPLICATE:mega_fixture"));
 
 console.log("Season context tests passed.");

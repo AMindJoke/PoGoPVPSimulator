@@ -21,6 +21,38 @@
     return errors;
   }
 
+  function validateCanonicalData(gameMaster) {
+    const errors = [];
+    if (!Array.isArray(gameMaster?.moves)) errors.push("CANONICAL_MOVES_MISSING");
+    if (!Array.isArray(gameMaster?.pokemon)) errors.push("CANONICAL_POKEMON_MISSING");
+    const moveIds = new Set();
+    (gameMaster?.moves || []).forEach((move, index) => {
+      const id = cleanId(move?.moveId);
+      if (!id) errors.push(`MOVE_ID_MISSING:${index}`);
+      else if (moveIds.has(id)) errors.push(`MOVE_ID_DUPLICATE:${id}`);
+      else moveIds.add(id);
+      ["power", "energy", "energyGain", "turns", "cooldown"].forEach(field => {
+        if (move?.[field] != null && !Number.isFinite(Number(move[field]))) errors.push(`MOVE_NUMBER_INVALID:${id || index}:${field}`);
+      });
+    });
+    const pokemonIds = new Set();
+    (gameMaster?.pokemon || []).forEach((pokemon, index) => {
+      const id = cleanId(pokemon?.speciesId);
+      if (!id) errors.push(`POKEMON_ID_MISSING:${index}`);
+      else if (pokemonIds.has(id)) errors.push(`POKEMON_ID_DUPLICATE:${id}`);
+      else pokemonIds.add(id);
+      ["atk", "def", "hp"].forEach(field => {
+        if (!Number.isFinite(Number(pokemon?.baseStats?.[field]))) errors.push(`POKEMON_STAT_INVALID:${id || index}:${field}`);
+      });
+      [...(pokemon?.fastMoves || []), ...(pokemon?.chargedMoves || [])].forEach(moveId => {
+        if (!moveIds.has(cleanId(moveId))) errors.push(`POKEMON_MOVE_UNKNOWN:${id || index}:${cleanId(moveId)}`);
+      });
+      const charged = (pokemon?.chargedMoves || []).map(cleanId).filter(Boolean);
+      if (new Set(charged).size !== charged.length) errors.push(`POKEMON_CHARGED_DUPLICATE:${id || index}`);
+    });
+    return [...new Set(errors)];
+  }
+
   function validatePreview(preview, gameMaster, options = {}) {
     if (!preview) return [];
     const errors = descriptorErrors(preview, "PREVIEW");
@@ -52,6 +84,7 @@
   function validateCatalog(catalog, gameMaster, options = {}) {
     const errors = [];
     if (!record(catalog) || catalog.schemaVersion !== 1) return ["SEASON_CATALOG_INVALID"];
+    errors.push(...validateCanonicalData(gameMaster));
     errors.push(...descriptorErrors(catalog.current, "CURRENT"));
     if (catalog.next) {
       errors.push(...validatePreview(catalog.next, gameMaster, options));
@@ -128,5 +161,5 @@
     });
   }
 
-  return Object.freeze({ STORAGE_KEY, STATUS, MOVE_FIELDS, validatePreview, validateCatalog, applyMoveOverrides, create });
+  return Object.freeze({ STORAGE_KEY, STATUS, MOVE_FIELDS, validateCanonicalData, validatePreview, validateCatalog, applyMoveOverrides, create });
 });

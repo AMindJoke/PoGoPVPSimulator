@@ -389,6 +389,25 @@
       background: rgba(0, 228, 255, .08);
       color: var(--ink);
     }
+    .season-banner {
+      width: min(var(--battle-layout-width), calc(100% - 24px));
+      margin: 10px auto 0;
+      padding: 8px 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--panel) 90%, var(--accent) 10%);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 750;
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+    .season-banner[hidden] { display: none; }
+    .season-banner button { min-height: 34px; padding: 6px 12px; white-space: nowrap; }
+    .preview-value-badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 4px 7px; border: 1px solid color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--warn) 11%, var(--panel)); color: var(--ink); font-size: 10px; font-weight: 800; }
     .app-franchise {
       font-size: 28px;
       font-weight: 950;
@@ -13900,6 +13919,8 @@
       .home-quick-start-list button { min-height: 54px; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
       .home-quick-start-list button strong { text-align: right; }
       .home-footer { font-size: 9px; }
+      .season-banner { width: calc(100% - 20px); margin-top: 8px; justify-content: space-between; font-size: 11px; }
+      .season-banner button { min-height: 32px; padding-inline: 9px; font-size: 10px; }
     }
     @media (max-width: 380px) {
       .home-hero { grid-template-columns: 1fr; padding: 20px 17px; }
@@ -13977,6 +13998,10 @@
       <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
     </nav>
   </header>
+  <aside id="seasonBanner" class="season-banner" aria-live="polite" hidden>
+    <span id="seasonBannerText"></span>
+    <button id="seasonBannerAction" type="button"></button>
+  </aside>
   <main>
     <div class="error" id="error"></div>
     <div id="sharedScenarioError" class="error shared-scenario-error" role="alert" hidden>
@@ -15470,8 +15495,34 @@
       return matrixPerfRuns.get(shieldMatrixPendingSignature)?.runId || null;
     }
 
+    function initSeasonControls() {
+      const banner = $("seasonBanner");
+      const action = $("seasonBannerAction");
+      const text = $("seasonBannerText");
+      document.body.dataset.season = activeSeasonData.status;
+      document.body.dataset.seasonId = activeSeasonData.id;
+      if (seasonContext?.selectionWasInvalid) seasonContext.persist(activeSeasonData.id);
+      if (seasonContext?.errors?.length) console.error("Season data validation failed:", seasonContext.errors);
+      if (!banner || !action || !text || !seasonContext?.previewAvailable) return;
+      const previewActive = activeSeasonData.status === "preview";
+      text.textContent = previewActive
+        ? `Viewing ${activeSeasonData.label} preview`
+        : `${seasonContext.next.label} preview available`;
+      action.textContent = previewActive ? "Return to Current Season" : "Go to Next Season";
+      action.onclick = () => {
+        const targetId = previewActive ? seasonContext.current.id : seasonContext.next.id;
+        seasonContext.persist(targetId);
+        const url = new URL(window.location.href);
+        if (previewActive) url.searchParams.delete("season");
+        else url.searchParams.set("season", targetId);
+        window.location.assign(url.toString());
+      };
+      banner.hidden = false;
+    }
+
     function init() {
       restoreThemePreference();
+      initSeasonControls();
       const pagePerfRunId = perfDebugEnabled ? perfDebug.beginRun("startup") : null;
       const inputSpan = pagePerfRunId ? perfDebug.startSpan("input.processing", pagePerfRunId) : null;
       if (!gm || !gm.pokemon || !gm.moves) {
@@ -17231,9 +17282,15 @@
       const effects = move.effects.length ? `<div class="move-detail-effects"><h4>Attack effect</h4><ul>${move.effects.map(effect => `<li>${escapeHtml(window.PvPeakMoveReference.effectLabel(effect))}</li>`).join("")}</ul></div>` : "";
       const learnersHtml = learners.length ? `<div class="move-learners">${learners.slice(0, 12).map(pokemon => `<button class="move-learner" type="button" data-linked-pokemon="${pokemon.id}" aria-label="Open ${escapeHtml(pokemon.name)} reference"><img data-pokemon-sprite="${escapeHtml(pokemon.sourceId)}" alt=""><span>${escapeHtml(pokemon.name)}</span></button>`).join("")}</div>${learners.length > 12 ? `<p class="muted">Showing 12 of ${learners.length} Pokémon.</p>` : ""}` : `<p class="muted">No released Pokémon in the current canonical dataset learn this attack.</p>`;
       const copyAction = move.id === compendiumSelectedMoveId ? `<button class="secondary compendium-copy-link" type="button" aria-label="Copy a direct link to this attack">Copy link</button><span class="compendium-copy-feedback" role="status" aria-live="polite"></span>` : "";
+      const previewMetadata = activeSeasonData.status === "preview" ? activeSeasonData.moveMetadata?.[move.sourceId] : null;
+      const previewBadge = previewMetadata?.status === "estimated"
+        ? `<span class="preview-value-badge" title="${escapeHtml(previewMetadata.note || "This numeric value is provisional.")}">Preview value · Estimated</span>`
+        : previewMetadata?.status === "confirmed"
+          ? `<span class="preview-value-badge" title="Confirmed for the next season">Next Season · Confirmed</span>`
+          : "";
       panel.style.setProperty("--move-color", color);
       panel.style.setProperty("--move-text", contrastText(color));
-      panel.innerHTML = `<div class="compendium-detail-actions"><button class="secondary compendium-move-close" type="button">← All ${move.kind === "fast" ? "Fast" : "Charged"} Attacks</button>${copyAction}</div><div class="move-detail-head">${compendiumMoveTypeIcon(move)}<div><h3 id="compendiumMoveDetailTitle" tabindex="-1">${escapeHtml(move.name)}</h3><p class="move-detail-kind">${escapeHtml(title(move.type))} · ${move.kind === "fast" ? "Fast Attack" : "Charged Attack"}</p></div></div><div class="move-detail-grid">${primaryStats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>${effects}<div class="compendium-detail-card"><h4>Pokémon that learn ${escapeHtml(move.name)}</h4>${learnersHtml}</div><div class="compendium-detail-card"><h4>Related</h4><div class="compendium-related-list">${move.kind === "fast" ? `<button class="compendium-related-button" type="button" id="compendiumMoveTiming">Open in Timing Visualizer</button><button class="compendium-related-button" type="button" data-move-related="fast-move-duration">Fast Attack Duration</button>` : `<button class="compendium-related-button" type="button" data-move-related="energy-generation">Energy & Charged Attacks</button><button class="compendium-related-button" type="button" data-move-related="charged-move-priority">Charged Attack Priority</button>`}</div></div>`;
+      panel.innerHTML = `<div class="compendium-detail-actions"><button class="secondary compendium-move-close" type="button">← All ${move.kind === "fast" ? "Fast" : "Charged"} Attacks</button>${copyAction}</div><div class="move-detail-head">${compendiumMoveTypeIcon(move)}<div><h3 id="compendiumMoveDetailTitle" tabindex="-1">${escapeHtml(move.name)}</h3><p class="move-detail-kind">${escapeHtml(title(move.type))} · ${move.kind === "fast" ? "Fast Attack" : "Charged Attack"}</p>${previewBadge}</div></div><div class="move-detail-grid">${primaryStats.map(([label, value]) => `<div class="move-detail-stat"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</div>${effects}<div class="compendium-detail-card"><h4>Pokémon that learn ${escapeHtml(move.name)}</h4>${learnersHtml}</div><div class="compendium-detail-card"><h4>Related</h4><div class="compendium-related-list">${move.kind === "fast" ? `<button class="compendium-related-button" type="button" id="compendiumMoveTiming">Open in Timing Visualizer</button><button class="compendium-related-button" type="button" data-move-related="fast-move-duration">Fast Attack Duration</button>` : `<button class="compendium-related-button" type="button" data-move-related="energy-generation">Energy & Charged Attacks</button><button class="compendium-related-button" type="button" data-move-related="charged-move-priority">Charged Attack Priority</button>`}</div></div>`;
       panel.querySelector(".compendium-move-close").onclick = () => { compendiumSelectedMoveId = null; renderCompendiumMoveReference(); syncCompendiumRoute({ category: "moves", item: null }); };
       if (panel.querySelector(".compendium-copy-link")) panel.querySelector(".compendium-copy-link").onclick = copyCompendiumLink;
       bindCompendiumPokemonImages(panel);
