@@ -6,6 +6,9 @@ const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 assert.match(html, /class="app-title-lockup"[\s\S]{0,420}id="themeToggle" class="header-theme-toggle"/, "The desktop theme control must live beside the application logo.");
+assert.match(html, /const THEME_STORAGE_KEY = "go-judge-hub-theme";[\s\S]{0,160}SUPPORTED_THEMES = new Set\(\["light", "dark", "neo"\]\)/, "Theme persistence must accept only supported themes.");
+assert.match(html, /function restoreThemePreference\(\)[\s\S]{0,360}localStorage\.getItem\(THEME_STORAGE_KEY\)[\s\S]{0,220}applyTheme\(stored, \{ persist: false \}\)/, "The saved theme must be restored safely at startup.");
+assert.match(html, /function toggleTheme\(\)[\s\S]{0,260}applyTheme\(next\)/, "Theme changes must use the persisted canonical setter.");
 assert.match(html, /class="app-go-lockup" aria-label="GO"[^>]*>[\s\S]{0,260}class="app-brand-mark"[^>]+src="assets\/go-pvp-mark\.png"[^>]+alt=""[^>]+aria-hidden="true"/, "The GO mark must replace the visible G while remaining decorative inside an accessible GO lockup.");
 assert.match(html, /class="app-franchise" aria-hidden="true">O<\/span><\/span><span class="app-wordmark">PvP <small>Simulator<\/small>/, "The visible product lockup must use the mark as the G in GO PvP Simulator.");
 assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,700}id="reset" class="secondary battle-reset"/, "Reset must be grouped with the battle action instead of the global header.");
@@ -648,6 +651,7 @@ assert.match(html, /restoreManualRuntimePayload\(plan\.runtimeState, plan\.immut
 assert.match(html, /PvPeakManualBranches\.undo/);
 assert.match(html, /PvPeakManualBranches\.redo/);
 assert.match(html, /function resetBattleStateFromSetup\(\)\s*\{\s*clearManualEnergyTrainerNextCycle\(\)/);
+assert.match(html, /function resetBattleStateFromSetup\(\)\s*\{\s*clearManualEnergyTrainerNextCycle\(\);\s*hideTimelineHover\(\)/, "A new battle or review must clear stale timeline hover state.");
 assert.match(html, /function restoreManualRuntimePayload[\s\S]{0,180}clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function restoreActiveManualBranch[\s\S]{0,220}clearManualEnergyTrainerNextCycle\(\)/);
 assert.match(html, /function restoreActiveManualBranch[\s\S]{0,800}if \(active\.runtimeState\)[\s\S]{0,140}restoreManualRuntimePayload\(active\.runtimeState, events\)/, "Branch switching must restore the runtime owned by that branch before falling back to shared snapshots.");

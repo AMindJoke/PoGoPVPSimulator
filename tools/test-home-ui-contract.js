@@ -40,7 +40,7 @@ includes('.home-tool-card:focus-visible');
 includes('@media (max-width: 900px)');
 includes('overflow-x: auto;', "Mobile navigation must remain discoverable without overflowing the page.");
 assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,1600}\.app-tabs button \{[^}]*min-height: 44px;/, "Mobile app navigation must provide comfortable touch targets.");
-includes('.home-tool-grid-primary,\n      .home-tool-grid-secondary { grid-template-columns: 1fr;');
+assert.match(html, /\.home-tool-grid-all,\s*\.home-tool-grid-primary,\s*\.home-tool-grid-secondary\s*\{\s*grid-template-columns:\s*1fr;/, "All Home tool grids must collapse to one column on mobile.");
 includes('var(--panel)');
 includes('var(--ink)');
 includes('var(--line)');

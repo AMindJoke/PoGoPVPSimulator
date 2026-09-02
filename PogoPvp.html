@@ -14987,6 +14987,8 @@
 
   <script>
     const $ = id => document.getElementById(id);
+    const THEME_STORAGE_KEY = "go-judge-hub-theme";
+    const SUPPORTED_THEMES = new Set(["light", "dark", "neo"]);
     const gm = window.BATTLE_GAMEMASTER;
     const ivOptimization = window.PvPeakIvOptimization;
     const ivImpactPresenter = window.PvPeakIvImpact || {};
@@ -15442,6 +15444,7 @@
     }
 
     function init() {
+      restoreThemePreference();
       const pagePerfRunId = perfDebugEnabled ? perfDebug.beginRun("startup") : null;
       const inputSpan = pagePerfRunId ? perfDebug.startSpan("input.processing", pagePerfRunId) : null;
       if (!gm || !gm.pokemon || !gm.moves) {
@@ -21000,6 +21003,7 @@
 
     function resetBattleStateFromSetup() {
       clearManualEnergyTrainerNextCycle();
+      hideTimelineHover();
       technicalIssueInjection = null;
       manualPendingFastEvents = [];
       if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
@@ -35210,12 +35214,31 @@
       return indexes;
     }
 
+    function applyTheme(theme, options = {}) {
+      const next = SUPPORTED_THEMES.has(theme) ? theme : "light";
+      document.body.dataset.theme = next;
+      $("themeToggle").textContent = next === "neo" ? "Light" : next === "light" ? "Dark" : "Neo";
+      if (options.persist !== false) {
+        try {
+          window.localStorage.setItem(THEME_STORAGE_KEY, next);
+        } catch (_) {}
+      }
+      syncMobileThemeControl();
+      return next;
+    }
+
+    function restoreThemePreference() {
+      let stored = "light";
+      try {
+        stored = window.localStorage.getItem(THEME_STORAGE_KEY) || "light";
+      } catch (_) {}
+      return applyTheme(stored, { persist: false });
+    }
+
     function toggleTheme() {
       const current = document.body.dataset.theme || "light";
       const next = current === "neo" ? "light" : current === "light" ? "dark" : "neo";
-      document.body.dataset.theme = next;
-      $("themeToggle").textContent = next === "neo" ? "Light" : next === "light" ? "Dark" : "Neo";
-      syncMobileThemeControl();
+      applyTheme(next);
     }
 
     function syncMobileThemeControl() {
