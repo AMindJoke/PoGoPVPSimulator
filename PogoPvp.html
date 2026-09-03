@@ -22225,12 +22225,16 @@
       return state ? api.terminalOutcome(state).ended : !!(left && right && (left.hp <= 0 || right.hp <= 0));
     }
 
-    function resolveManualFastImpactsThrough(turn) {
+    function resolveManualFastImpactsThrough(turn, options = {}) {
       const api = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
       if (!api || !manualPendingFastEvents.length || !left || !right) return [];
       const targetTurn = Math.max(0, Number(turn || 0));
+      const inclusive = options.inclusive !== false;
       const dueTurns = [...new Set(manualPendingFastEvents
-        .filter(event => event.status === "pending" && Number(event.resolveTurn || 0) <= targetTurn)
+        .filter(event => event.status === "pending"
+          && (inclusive
+            ? Number(event.resolveTurn || 0) <= targetTurn
+            : Number(event.resolveTurn || 0) < targetTurn))
         .map(event => Number(event.resolveTurn || 0)))]
         .sort((a, b) => a - b);
       const resolved = [];
@@ -22302,7 +22306,14 @@
       });
       attacker.lastFastStart = event.start;
       add(`T${event.start}-${event.start + event.duration} - ${attacker.trainer}: ${attacker.p.name} registers ${attacker.fast.name}; impact at T${pending.resolveTurn}.`, "fast");
-      resolveManualFastImpactsThrough(Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0)));
+      // End-of-turn damage for the current decision turn must remain pending
+      // until both sides have had a chance to register their action. This is
+      // what allows a Charged Attack to be triggered on the same turn that a
+      // Fast Attack would otherwise faint the user under the 2026 rules.
+      // Earlier impacts are already safe to commit; swaps and Charged
+      // finalization intentionally use the inclusive resolver below.
+      const currentDecisionTurn = Math.min(Number(battleTurns.A || 0), Number(battleTurns.B || 0));
+      resolveManualFastImpactsThrough(currentDecisionTurn, { inclusive: false });
       return event;
     }
 

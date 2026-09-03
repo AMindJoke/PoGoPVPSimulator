@@ -338,6 +338,7 @@ assert.match(html, /No simulation starts automatically/);
 assert.match(html, /function commitManualBattleStateEdit/);
 assert.match(html, /function registerManualFast/);
 assert.match(html, /function resolveManualFastImpactsThrough/);
+assert.match(html, /resolveManualFastImpactsThrough\(currentDecisionTurn, \{ inclusive: false \}\)/, "Manual Fast registration must leave current-turn impacts pending for a same-turn Charged Attack decision.");
 assert.match(html, /manualPendingFastEvents = api\.scheduleEvent/);
 assert.match(html, /typeof technicalIssueInjection === "undefined" \|\| !technicalIssueInjection/);
 assert.match(html, /chargedContinuationDepth === 0/);
