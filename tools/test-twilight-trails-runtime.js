@@ -40,6 +40,8 @@ assert.equal(context.activeSeasonData.rankings.entries.length, 1541);
 assert.equal(Object.keys(context.activeSeasonData.rankingDetails.entries).length, 1541);
 assert.equal(context.activeSeasonData.rankings.metadata.seasonId, "twilight-trails");
 assert.equal(context.activeSeasonData.rankings.metadata.dataVersion, "twilight-trails-draft-2");
+assert.equal(context.activeSeasonData.rankings.metadata.weightMode, "competitive");
+assert.match(context.activeSeasonData.rankings.metadata.weightSource, /great-league-rankings-iteration-1\.json$/);
 assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, context.activeSeasonData.rankings.metadata.generatedAt);
 assert.equal(context.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
 assert.equal(context.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");

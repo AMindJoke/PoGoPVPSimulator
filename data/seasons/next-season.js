@@ -16,7 +16,7 @@
     id: "twilight-trails",
     label: "Twilight Trails",
     dataVersion: "twilight-trails-draft-2",
-    rankingVersion: "great-league-twilight-trails-preview-v1",
+    rankingVersion: "great-league-twilight-trails-preview-v2",
     enabled: true,
     sourceUrl,
     moveOverrides: Object.freeze({

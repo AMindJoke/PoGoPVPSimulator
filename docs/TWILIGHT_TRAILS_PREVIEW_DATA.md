@@ -2,7 +2,7 @@
 
 Canonical announcement: <https://pokemongo.com/news/go-battle-league-twilight-trails>
 
-The preview source is stored in `data/seasons/next-season.js` and is enabled with its own generated rankings, ranking details, default movesets, and season-versioned cache layer. It contains all explicit Trainer Battle power changes, Bulldoze's guaranteed Defense drop, Draining Kiss's guaranteed self-Defense increase, all announced Attack availability updates, and the provisional values supplied for fields the announcement leaves unspecified. Availability is also applied to the corresponding canonical Shadow and Mega forms where that same announced form exists.
+The preview source is stored in `data/seasons/next-season.js` and is enabled with its own generated rankings, ranking details, default movesets, and season-versioned cache layer. The published `preview-v2` ranking is a second competitive iteration: it reweights the complete cached matchup field using the first Twilight Trails preview ranking as opponent-strength input. It contains all explicit Trainer Battle power changes, Bulldoze's guaranteed Defense drop, Draining Kiss's guaranteed self-Defense increase, all announced Attack availability updates, and the provisional values supplied for fields the announcement leaves unspecified. Availability is also applied to the corresponding canonical Shadow and Mega forms where that same announced form exists.
 
 ## Provisional values
 
@@ -27,4 +27,4 @@ The preview source is stored in `data/seasons/next-season.js` and is enabled wit
 | Magnet Bomb | Energy cost | 45 | 40 |
 | Shadow Force | Energy cost | 90 | 80 |
 
-These fields are marked `estimated` in runtime metadata and must be replaced with confirmed values after the live Game Master update. The pending list is now empty; preview-derived rankings must still be regenerated before `enabled` is set to true.
+These fields are marked `estimated` in runtime metadata and must be replaced with confirmed values after the live Game Master update. The pending list is empty and the isolated preview-derived ranking is enabled; it must be regenerated again when provisional values are replaced by confirmed Game Master values.
