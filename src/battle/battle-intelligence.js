@@ -812,6 +812,20 @@ function createPvPeakBattleIntelligenceApi() {
       }
     }
 
+    // A Fast Move which is already lethal must remain the first-class tactical
+    // choice even when the opponent is about to reach a Charged Attack.  The
+    // pending-impact check above only covers a Fast that has already been
+    // registered; this covers the action the actor is ready to register now.
+    const currentFastDamage = canonicalFastDamage(actor, context, "actor");
+    if (fast && currentFastDamage >= numeric(opponent.hp) && numeric(opponent.hp) > 0) {
+      triggered.push("TACTICAL-009_DO_NOT_THROW_WHEN_FAST_ALREADY_KOS");
+      return finish(fast, "tactical", "FAST_MOVE", {
+        sourceBranch: "canonical current Fast guarantees KO",
+        currentFastDamage,
+        opponentHp: opponent.hp
+      });
+    }
+
     const survival = canonicalSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context });
     triggered.push("SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON");
     const forced = canonicalForcedThrow({ actor, opponent, moves, chargedCandidates, survival, context });
@@ -1114,6 +1128,14 @@ function createPvPeakBattleIntelligenceApi() {
     return chargedCandidates.find(candidate => candidate.action.moveId === move.id)
       || chargedCandidates.find(candidate => candidate.action.move === move.original)
       || null;
+  }
+
+  function canonicalFastDamage(actor, context, perspective = "actor") {
+    return Math.max(0, numeric(
+      typeof context?.estimateFastDamage === "function"
+        ? context.estimateFastDamage(perspective)
+        : actor?.fastMove?.damage ?? actor?.fastMove?.power
+    ));
   }
 
   function canonicalSurvivalHorizon({ state, side, actor, opponent, opponentMoves, context }) {
@@ -1440,6 +1462,59 @@ function createPvPeakBattleIntelligenceApi() {
     return null;
   }
 
+  function canonicalFastClosureBeforeOpponentThreat({ state, side, actor, opponent, opponentMoves, fast, context }) {
+    if (!fast || !actor?.fastMove || numeric(opponent?.hp) <= 0) return null;
+    const fastDamage = canonicalFastDamage(actor, context, "actor");
+    if (fastDamage <= 0) return null;
+    const fastTurns = Math.max(1, numeric(actor.fastMove.turns, 1));
+    const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
+    const fastsNeeded = Math.max(1, Math.ceil(numeric(opponent.hp) / fastDamage));
+    // Keep this a bounded tactical check.  It is intended to find the common
+    // one- or two-Fast close, not replace the full continuation search.
+    if (fastsNeeded > 4) return null;
+    const finalFastImpactTurn = currentTurn + fastsNeeded * fastTurns - 1;
+    const opponentFastTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
+    const opponentFastDamage = canonicalFastDamage(opponent, context, "opponent");
+    const opponentReadyTurn = Math.max(currentTurn, numeric(opponent.readyTurn));
+
+    // A Charged Attack triggered on the opponent's ready turn starts on the
+    // following turn under the 2026 rules.  Equality is therefore safe when
+    // our final Fast impact lands on that ready turn.
+    const chargedThreat = (opponentMoves || [])
+      .filter(move => numeric(opponent.energy) >= numeric(move.energyCost)
+        && numeric(move.damage) >= numeric(actor.hp))
+      .sort((a, b) => numeric(b.damage) - numeric(a.damage))[0] || null;
+    const threatStartTurn = chargedThreat ? opponentReadyTurn + 1 : Infinity;
+    if (threatStartTurn <= finalFastImpactTurn) return null;
+
+    // Account for Fast impacts already in flight and for the first future
+    // opponent Fast that could resolve before our closing impact.
+    const pendingDamage = pendingDamageThrough(state, side, finalFastImpactTurn);
+    let futureFastDamage = 0;
+    if (opponentReadyTurn > currentTurn
+      && opponentReadyTurn + opponentFastTurns <= finalFastImpactTurn) {
+      futureFastDamage = opponentFastDamage;
+    }
+    const actorSurvives = numeric(actor.hp) > pendingDamage + futureFastDamage;
+    if (!actorSurvives) return null;
+
+    return {
+      fastDamage,
+      fastsNeeded,
+      fastTurns,
+      currentTurn,
+      finalFastImpactTurn,
+      opponentReadyTurn,
+      opponentFastTurns,
+      opponentFastDamage,
+      threatStartTurn: Number.isFinite(threatStartTurn) ? threatStartTurn : null,
+      pendingDamage,
+      futureFastDamage,
+      actorHp: actor.hp,
+      actorSurvives
+    };
+  }
+
   function canonicalTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival }) {
     const triggered = ["TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS"];
     const rejected = [];
@@ -1474,6 +1549,16 @@ function createPvPeakBattleIntelligenceApi() {
         ? context.estimateFastDamage("opponent")
         : opponent.fastMove?.damage
     ));
+    const fastClosure = canonicalFastClosureBeforeOpponentThreat({
+      state,
+      side,
+      actor,
+      opponent,
+      opponentMoves,
+      fast,
+      context
+    });
+    const canCloseWithFast = !!fastClosure;
     let optimize = timingWindowOpen && context.chargedTimingOptimization !== false && !!fast;
     const actorFaints = numeric(actor.hp) <= oppFastDamage;
     if (actorFaints) {
@@ -1495,7 +1580,7 @@ function createPvPeakBattleIntelligenceApi() {
     let turnsPlanned = ownTurns + Math.floor(numeric(actor.energy) / moves[0].energyCost);
     if (numeric(actor.attack) < numeric(opponent.attack)) turnsPlanned++;
     const resourcesBecomeUnusable = turnsPlanned > survival.turnsToLive;
-    if (resourcesBecomeUnusable) {
+    if (resourcesBecomeUnusable && !canCloseWithFast) {
       optimize = false;
       triggered.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
     } else rejected.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
@@ -1521,7 +1606,7 @@ function createPvPeakBattleIntelligenceApi() {
         break;
       }
     }
-    if (opponentChargedLethal) {
+    if (opponentChargedLethal && !canCloseWithFast) {
       optimize = false;
       triggered.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
     } else rejected.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
@@ -1556,6 +1641,8 @@ function createPvPeakBattleIntelligenceApi() {
         resourcesBecomeUnusable,
         immediateLethal,
         opponentChargedLethal,
+        canCloseWithFast,
+        fastClosure,
         fittedFastCount,
         fittedFastDamage: oppFastDamage * fittedFastCount,
         ownFastDamage
