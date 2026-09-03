@@ -29,8 +29,12 @@ function battleState(overrides = {}) {
 }
 
 const state = battleState();
+assert.equal(TurnEngine.RULESET_VERSION, "trainer-battles-2026");
 assert.deepEqual(TurnEngine.getLegalActions(state, "A").map(action => action.type), ["fast", "charged"]);
 assert.deepEqual(TurnEngine.getLegalActions(state, "B"), []);
+const legalCharged = TurnEngine.getLegalActions(state, "A").find(action => action.type === "charged");
+assert.equal(legalCharged.triggerTurn, 5);
+assert.equal(legalCharged.startTurn, 6, "a triggered Charged Attack starts on the following turn");
 
 const cmpState = battleState({ readyB: 5, energyB: 40, attackA: 130, attackB: 110 });
 assert.deepEqual(TurnEngine.orderReadySides(cmpState), ["A", "B"]);
@@ -71,6 +75,23 @@ assert.equal(
 for (const duration of [1, 2, 3, 4, 5]) {
   assert.equal(TurnEngine.fastImpactTurn(7, duration), 7 + duration - 1);
 }
+assert.equal(TurnEngine.chargedStartTurn(7), 8);
+assert.equal(TurnEngine.swapTurnCost(), 1, "a normal quick swap costs one turn");
+assert.equal(TurnEngine.swapTurnCost({ forced: true }), 0, "a forced swap costs zero turns");
+assert.equal(TurnEngine.swapTurnCost({ postCharged: true }), 0, "an end-of-Charged-sequence swap costs zero turns");
+
+const sameTurnPhases = TurnEngine.eventsDue([
+  TurnEngine.createFastImpactEvent({ id: "phase-fast", sourceSide: "A", targetSide: "B", startTurn: 8, duration: 1 }),
+  TurnEngine.createChargedAttackEvent({ id: "phase-charge", sourceSide: "B", targetSide: "A", triggerTurn: 7 }),
+  TurnEngine.createSwapEvent({ id: "phase-swap", side: "A", incomingId: "bench-a", turn: 8 })
+], 8);
+assert.deepEqual(
+  sameTurnPhases.map(event => event.id),
+  ["phase-swap", "phase-charge", "phase-fast"],
+  "same-turn resolution is swap, Charged Attack, then Fast Attack impact"
+);
+assert.equal(sameTurnPhases[1].startTurn, 8);
+assert.equal(sameTurnPhases[1].registeredWhileAlive, true);
 
 const pendingRollout = TurnEngine.createFastImpactEvent({
   sourceSide: "B",

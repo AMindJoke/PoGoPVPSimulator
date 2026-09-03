@@ -22,10 +22,10 @@ assert.equal(Timing.canSwitch(state, "A"), true);
 
 state = Timing.openPostChargedSwitchWindow(state, { turn: 55, sourceEventId: "charge-1", chargedAttackActor: "A" });
 assert.equal(Timing.postChargedSwitchEligible(state, "A"), true);
-assert.equal(Timing.postChargedSwitchEligible(state, "B"), false, "the Charged Attack receiver never inherits the actor's free switch");
+assert.equal(Timing.postChargedSwitchEligible(state, "B"), true, "both players may swap for zero turns as the Charged Attack sequence ends");
 state = Timing.consumePostChargedSwitch(state, "A");
 assert.equal(Timing.postChargedSwitchEligible(state, "A"), false, "the free post-Charged switch is consumed independently per side");
-assert.equal(Timing.postChargedSwitchEligible(state, "B"), false);
+assert.equal(Timing.postChargedSwitchEligible(state, "B"), true);
 state = Timing.closePostChargedSwitchWindow(state);
 assert.equal(state.postChargedSwitchWindow, null, "a later battle action closes the post-Charged window");
 
@@ -39,12 +39,13 @@ const ambiguousLegacy = Timing.createState({
   version: 2,
   postChargedSwitchWindow: { turn: 55, sourceEventId: "legacy-charge", eligibleSides: ["A", "B"] }
 });
-assert.equal(ambiguousLegacy.postChargedSwitchWindow, null, "ambiguous legacy state must not grant a free switch to both sides");
+assert.deepEqual(ambiguousLegacy.postChargedSwitchWindow.eligibleSides, ["A", "B"], "legacy post-Charged windows migrate to the 2026 two-sided rule");
 const singleSideLegacy = Timing.createState({
   version: 2,
   postChargedSwitchWindow: { turn: 55, sourceEventId: "legacy-charge-b", eligibleSides: ["B"] }
 });
 assert.equal(singleSideLegacy.postChargedSwitchWindow.chargedAttackActor, "B", "unambiguous legacy state remains compatible");
+assert.deepEqual(singleSideLegacy.postChargedSwitchWindow.eligibleSides, ["A", "B"]);
 assert.equal(Timing.formatSeconds(31500), "31.5s");
 assert.equal(Timing.formatSeconds(45000), "45s");
 

@@ -25,17 +25,19 @@
       number(input.elapsedBattleMs)
     );
     const sourceWindow = input.postChargedSwitchWindow;
-    const eligibleSides = Array.isArray(sourceWindow?.eligibleSides)
-      ? sourceWindow.eligibleSides.filter(side => SIDES.includes(side))
+    const storedEligibleSides = Array.isArray(sourceWindow?.eligibleSides)
+      ? [...new Set(sourceWindow.eligibleSides.filter(side => SIDES.includes(side)))]
+      : [];
+    const eligibleSides = sourceWindow
+      ? number(input.version) >= 4 ? storedEligibleSides : [...SIDES]
       : [];
     const chargedAttackActor = SIDES.includes(sourceWindow?.chargedAttackActor)
       ? sourceWindow.chargedAttackActor
-      : eligibleSides.length === 1
-        ? eligibleSides[0]
+      : storedEligibleSides.length === 1
+        ? storedEligibleSides[0]
         : null;
-    const actorEligible = chargedAttackActor && eligibleSides.includes(chargedAttackActor);
     return {
-      version: 3,
+      version: 4,
       canonicalTurn,
       chargedSequenceMs,
       elapsedBattleMs,
@@ -43,11 +45,11 @@
         A: Math.max(0, number(input.nextSwitchAvailableAtMs?.A)),
         B: Math.max(0, number(input.nextSwitchAvailableAtMs?.B))
       },
-      postChargedSwitchWindow: actorEligible ? {
+      postChargedSwitchWindow: sourceWindow && eligibleSides.length ? {
         turn: Math.max(0, number(sourceWindow.turn, canonicalTurn)),
         sourceEventId: sourceWindow.sourceEventId || null,
         chargedAttackActor,
-        eligibleSides: [chargedAttackActor]
+        eligibleSides
       } : null
     };
   }
@@ -94,7 +96,7 @@
       turn: Math.max(0, number(input.turn, next.canonicalTurn)),
       sourceEventId: input.sourceEventId || null,
       chargedAttackActor,
-      eligibleSides: [chargedAttackActor]
+      eligibleSides: [...SIDES]
     } : null;
     return next;
   }
@@ -102,7 +104,7 @@
   function postChargedSwitchEligible(state, side) {
     if (!SIDES.includes(side)) return false;
     const window = createState(state).postChargedSwitchWindow;
-    return window?.chargedAttackActor === side && window.eligibleSides.includes(side);
+    return window?.eligibleSides.includes(side) === true;
   }
 
   function consumePostChargedSwitch(state, side) {

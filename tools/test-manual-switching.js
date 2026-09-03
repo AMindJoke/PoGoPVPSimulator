@@ -47,7 +47,7 @@ const freeSwitch = Switching.switchActive({ side: "A", active, incomingId: "azum
 assert.equal(freeSwitch.turnCost, 0, "a voluntary switch at the end of a Charged Attack costs zero turns");
 assert.equal(freeSwitch.postCharged, true);
 assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "A"), false);
-assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "B"), false, "the Charged Attack receiver never receives a free switch window");
+assert.equal(Timing.postChargedSwitchEligible(freeSwitch.timing, "B"), true, "the opponent keeps its independent end-of-sequence swap window");
 assert.equal(Timing.remainingSwitchMs(freeSwitch.timing, "A"), 45000, "a zero-turn switch still starts the normal cooldown");
 
 let receiverSwitchState = Switching.createState();
@@ -62,8 +62,8 @@ const receiverLegal = Switching.legality({
   actionReady: true,
   shielded: false
 });
-assert.equal(receiverLegal.postCharged, false, "receiving an unshielded Charged Attack does not grant a free switch");
-assert.equal(receiverLegal.turnCost, 1, "the receiver's switch costs exactly one turn");
+assert.equal(receiverLegal.postCharged, true, "either player may use the end-of-sequence swap window");
+assert.equal(receiverLegal.turnCost, 0, "an end-of-sequence swap costs zero turns");
 const shieldedReceiverLegal = Switching.legality({
   side: "B",
   active: receiver,
@@ -72,7 +72,7 @@ const shieldedReceiverLegal = Switching.legality({
   actionReady: true,
   shielded: true
 });
-assert.equal(shieldedReceiverLegal.turnCost, 1, "shielding does not change receiver switch timing");
+assert.equal(shieldedReceiverLegal.turnCost, 0, "shielding does not change the zero-turn end-of-sequence window");
 const receiverSwitch = Switching.switchActive({
   side: "B",
   active: receiver,
@@ -80,11 +80,11 @@ const receiverSwitch = Switching.switchActive({
   switchState: receiverSwitchState,
   timing: postChargedTiming
 });
-assert.equal(receiverSwitch.turnCost, 1);
-assert.equal(receiverSwitch.postCharged, false);
+assert.equal(receiverSwitch.turnCost, 0);
+assert.equal(receiverSwitch.postCharged, true);
 const receiverAfterTurn = Timing.advanceToTurn(receiverSwitch.timing, 21);
-assert.equal(receiverAfterTurn.elapsedBattleMs - receiverSwitch.timing.elapsedBattleMs, Timing.TURN_DURATION_MS, "the switch action advances deterministic time by one turn");
-assert.equal(Timing.remainingSwitchMs(receiverAfterTurn, "B"), 44500, "the consumed turn progresses the 45 second switch cooldown");
+assert.equal(receiverAfterTurn.elapsedBattleMs - receiverSwitch.timing.elapsedBattleMs, Timing.TURN_DURATION_MS, "the next battle turn advances deterministic time by 0.5 seconds");
+assert.equal(Timing.remainingSwitchMs(receiverAfterTurn, "B"), 44500, "subsequent battle time progresses the 45 second switch cooldown");
 
 const shieldedOwnWindow = Timing.openPostChargedSwitchWindow(timing, {
   turn: 20,

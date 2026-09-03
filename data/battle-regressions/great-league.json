@@ -32,7 +32,7 @@
         "fastMoveCount": { "A": 19 },
         "registeredFastBeforeChargedKo": { "side": "A", "moveId": "DRAGON_BREATH", "turn": 19 }
       },
-      "notes": "Reviewed against the pinned PvPoke turn-order model: same-turn one-turn Fast availability is collected before Charged terminal finalization."
+      "notes": "2026 rules: the one-turn Fast Attack resolves at the end of the trigger turn, then the registered Charged Attack starts on the following turn."
     },
     {
       "id": "kingdra-shadow-tinkaton-primary-build-0s-adv3",

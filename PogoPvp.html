@@ -51,8 +51,8 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/manual-battle-timing.js?v=20260824-post-charged-actor"></script>
-  <script src="src/battle/manual-switching.js?v=20260824-post-charged-actor"></script>
+  <script src="src/battle/manual-battle-timing.js?v=20260903-pvp-2026-rules"></script>
+  <script src="src/battle/manual-switching.js?v=20260903-pvp-2026-rules"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js?v=20260821-switching"></script>
   <script src="src/battle/manual-runtime.js?v=20260821-switching"></script>
@@ -15119,6 +15119,7 @@
     function resetManualBattleTiming() {
       manualBattleTiming = window.PvPeakManualBattleTiming?.createState?.() || null;
       manualSwitchState = window.PvPeakManualSwitching?.createState?.() || null;
+      manualPendingFastEvents = [];
       manualSwitchDraftCandidate = null;
       return manualBattleTiming;
     }
@@ -16183,6 +16184,8 @@
         pendingLethalFastWindow,
         orderedBattleActors,
         battleEnded,
+        resolveManualFastImpactsThrough,
+        registerManualFast,
         useFast,
         useTimingWait,
         useCharge,
@@ -16390,6 +16393,8 @@
         let timeline = [];
         let initialTimelineState = null;
         let battleTurns = { A: 0, B: 0 };
+        let manualPendingFastEvents = [];
+        let manualModeState = null;
         let suppressRender = true;
         let activeAutoTurnContext = null;
         let chargedContinuationDepth = 0;
@@ -16442,6 +16447,7 @@
             timeline,
             initialTimelineState,
             battleTurns,
+            manualPendingFastEvents,
             suppressRender,
             activeAutoTurnContext,
             chargedContinuationOpening,
@@ -16463,6 +16469,7 @@
             timeline = saved.timeline;
             initialTimelineState = saved.initialTimelineState;
             battleTurns = saved.battleTurns;
+            manualPendingFastEvents = saved.manualPendingFastEvents;
             suppressRender = saved.suppressRender;
             activeAutoTurnContext = saved.activeAutoTurnContext;
             chargedContinuationOpening = saved.chargedContinuationOpening;
@@ -16513,6 +16520,7 @@
           applyMatrixSimulationPolicy(options.policy);
           log = [];
           timeline = [];
+          manualPendingFastEvents = [];
           battleInsights = [];
           if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
           initialTimelineState = battleSnapshot();
@@ -16567,6 +16575,7 @@
                hpAfter: Number(event.hpAfter || 0),
                damage: Number(event.damage || 0),
                registeredBeforeChargedKo: !!event.registeredBeforeChargedKo,
+               resolvedBeforeChargedStart: !!event.resolvedBeforeChargedStart,
                actionLifecycleStatus: event.actionLifecycleStatus || null
              }));
           }
@@ -22281,7 +22290,7 @@
         startTurn: event.start,
         duration: event.duration,
         timelineIndex: event.timelineIndex,
-        source: "manual-mode"
+        source: typeof manualModeState !== "undefined" && manualModeState?.enabled ? "manual-mode" : "battle"
       });
       event.fastImpactStatus = "pending";
       event.resolveTurn = pending.resolveTurn;
@@ -22313,7 +22322,7 @@
         : null;
       if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
-      if (typeof manualModeState !== "undefined" && manualModeState?.enabled && !technicalIssueInjection && chargedContinuationDepth === 0) {
+      if ((typeof technicalIssueInjection === "undefined" || !technicalIssueInjection) && chargedContinuationDepth === 0) {
         const event = registerManualFast(attacker, defender, options);
         if (!event) return false;
         if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(event, manualRuntimeBefore);
@@ -22552,6 +22561,9 @@
         state: battleSnapshot()
       };
       timeline.push(event);
+      // The incoming Pokémon is active before end-of-turn Fast Attack damage resolves.
+      resolveManualFastImpactsThrough(currentTurn);
+      event.state = battleSnapshot();
       selectedTimelineIndex = event.timelineIndex;
       previewTimelineIndex = event.timelineIndex;
       previewingTimeline = false;
@@ -26379,7 +26391,9 @@
     }
 
     function useCharge(attacker, defender, index, options = {}) {
-      if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
+      const registeredBeforeLethalFast = options.registeredBeforeLethalFast === true;
+      if (!registeredBeforeLethalFast && !ready()) return false;
+      if (!attacker || !defender || (!registeredBeforeLethalFast && attacker.hp <= 0) || defender.hp <= 0) return false;
       const move = attacker.charged[index];
       if (!move) return false;
       if (attacker.energy < move.energyCost) {
@@ -26519,6 +26533,11 @@
         hpBefore,
         hpAfter: defender.hp
       });
+      const turnApi = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      chargeEvent.triggerTurn = Number(chargeEvent.registrationTurn ?? chargeEvent.start ?? 0);
+      chargeEvent.actionStartTurn = turnApi?.chargedStartTurn?.(chargeEvent.triggerTurn) ?? chargeEvent.triggerTurn + 1;
+      chargeEvent.resolutionTurn = chargeEvent.actionStartTurn;
+      chargeEvent.registeredBeforeLethalFast = registeredBeforeLethalFast;
       completeAutomaticActionLifecycle(options.actionLifecycle, chargeEvent, attacker, defender);
       chargeEvent.buffs = buffMessages;
       chargeEvent.buffEffects = appliedBuffEffects(attacker, defender, stagesBeforeBuff);
@@ -26857,17 +26876,21 @@
         right.timingPlanFastMovesRemaining = 0;
       }
       const api = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      const nextTurn = Math.max(0, Number(currentTurn || 0)) + 1;
       api.sneakPairs(timeline, currentTurn, timelineStart, timelineFastImpactTurn).forEach(pair => {
         const event = timeline[pair.fastIndex];
         const interruptingCharge = timeline[pair.chargeIndex];
-        event.resolveTurn = currentTurn;
+        if (event.resolvedBeforeChargedStart) return;
+        event.resolveTurn = nextTurn;
         event.sneaked = true;
         event.sneakChargeName = interruptingCharge.move?.name || "charged move";
         event.sneakChargeIndex = pair.chargeIndex;
+        const pending = manualPendingFastEvents.find(candidate => candidate.timelineIndex === pair.fastIndex);
+        if (pending) pending.resolveTurn = nextTurn;
       });
-      const nextTurn = Math.max(0, Number(currentTurn || 0)) + 1;
       battleTurns.A = nextTurn;
       battleTurns.B = nextTurn;
+      resolveManualFastImpactsThrough(nextTurn);
       return true;
     }
 
@@ -28989,6 +29012,35 @@
         ) {
           simultaneousFastPlans.forEach(plan => context.acted.add(plan.attacker.trainer));
           progressed = true;
+          finish();
+          return progressed;
+        }
+        const chargeAndOneTurnFast = preparedActors.length === 2
+          ? preparedActors.map(item => ({
+              ...item,
+              type: item.plan?.action?.type === "charged" ? "charged_move" : item.plan?.action?.type === "fast" ? "fast_move" : item.plan?.action?.type
+            }))
+          : [];
+        const registeredCharge = chargeAndOneTurnFast.find(item => item.type === "charged_move");
+        const sameTurnFast = chargeAndOneTurnFast.find(item => item.type === "fast_move" && Number(item.attacker?.fast?.turns || 1) === 1);
+        if (registeredCharge && sameTurnFast && chargeAndOneTurnFast.every(item => item.type === "charged_move" || item.type === "fast_move")) {
+          // The one-turn Fast Attack resolves at the end of the trigger turn. The
+          // already registered Charged Attack then starts on the following turn,
+          // even when that Fast Attack reduced its user to 0 HP.
+          context.acted.add(sameTurnFast.attacker.trainer);
+          progressed = executePreparedAutomaticBattleAction(sameTurnFast.plan) || progressed;
+          const resolvedFast = [...timeline].reverse().find(event =>
+            event?.kind === "fast"
+            && event.trainer === sameTurnFast.attacker.trainer
+            && Number(event.start || 0) === Number(currentTurn || 0)
+          );
+          if (resolvedFast) {
+            resolvedFast.registeredBeforeChargedKo = true;
+            resolvedFast.resolvedBeforeChargedStart = true;
+          }
+          context.acted.add(registeredCharge.attacker.trainer);
+          progressed = executePreparedAutomaticBattleAction(registeredCharge.plan, { registeredBeforeLethalFast: true }) || progressed;
+          resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
           finish();
           return progressed;
         }

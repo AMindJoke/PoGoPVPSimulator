@@ -1,10 +1,11 @@
 (function (root, factory) {
   const api = factory(
-    typeof module === "object" && module.exports ? require("./manual-battle-timing.js") : root.PvPeakManualBattleTiming
+    typeof module === "object" && module.exports ? require("./manual-battle-timing.js") : root.PvPeakManualBattleTiming,
+    typeof module === "object" && module.exports ? require("./turn-resolution-engine.js") : root.PvPeakTurnEngine
   );
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakManualSwitching = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (Timing) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Timing, TurnEngine) {
   "use strict";
 
   const SIDES = Object.freeze(["A", "B"]);
@@ -70,14 +71,15 @@
     const candidates = validBench(input.switchState, side);
     const canAdd = teamSize(input.switchState, side, input.active) < MAX_TEAM_SIZE;
     if (!candidates.length && !canAdd) return { legal: false, reason: REASON.NO_BENCH, remainingMs: 0 };
+    const postCharged = Timing.postChargedSwitchEligible(input.timing, side);
     return {
       legal: true,
       reason: REASON.OK,
       remainingMs: 0,
       candidates,
       canAdd,
-      postCharged: Timing.postChargedSwitchEligible(input.timing, side),
-      turnCost: Timing.postChargedSwitchEligible(input.timing, side) ? 0 : 1
+      postCharged,
+      turnCost: TurnEngine?.swapTurnCost?.({ postCharged }) ?? (postCharged ? 0 : 1)
     };
   }
 
@@ -100,7 +102,7 @@
     incoming.defenseStage = 0;
     bench.splice(index, 1, outgoing);
     const postCharged = Timing.postChargedSwitchEligible(input.timing, side);
-    const turnCost = postCharged ? 0 : 1;
+    const turnCost = TurnEngine?.swapTurnCost?.({ postCharged }) ?? (postCharged ? 0 : 1);
     const windowTiming = postCharged
       ? Timing.consumePostChargedSwitch(input.timing, side)
       : Timing.closePostChargedSwitchWindow(input.timing);

@@ -195,7 +195,7 @@ function evaluateExpectations(testCase, result, tacticalSummary = null) {
   if (expectations.registeredFastBeforeChargedKo) {
     const actualEvent = registeredFastBeforeChargedKoEvent(result, expectations.registeredFastBeforeChargedKo);
     if (!actualEvent) {
-      failures.push(`Expected ${expectations.registeredFastBeforeChargedKo.side} ${expectations.registeredFastBeforeChargedKo.moveId || "Fast Move"} to resolve after same-turn Charged KO.`);
+      failures.push(`Expected ${expectations.registeredFastBeforeChargedKo.side} ${expectations.registeredFastBeforeChargedKo.moveId || "Fast Move"} to resolve before terminal finalization of the registered Charged Attack.`);
     }
   }
   if (expectations.forbiddenMoveAtDecision) {

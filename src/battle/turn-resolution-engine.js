@@ -1,10 +1,13 @@
 "use strict";
 
 function createPvPeakTurnEngineApi() {
+  // Canonical timing and priority rules: https://pokemongo.com/news/pvp-updates2026
+  const RULESET_VERSION = "trainer-battles-2026";
   const EVENT_PHASE = Object.freeze({
-    FAST_IMPACT: 10,
+    SWAP: 10,
     CHARGED_ACTION: 20,
-    STATE_TRANSITION: 30
+    FAST_IMPACT: 30,
+    STATE_TRANSITION: 40
   });
 
   function numeric(value, fallback = 0) {
@@ -67,7 +70,8 @@ function createPvPeakTurnEngineApi() {
         moveId: move.id || null,
         move,
         moveIndex: index,
-        startTurn: state.currentTurn
+        triggerTurn: state.currentTurn,
+        startTurn: chargedStartTurn(state.currentTurn)
       });
     });
     return actions;
@@ -157,6 +161,48 @@ function createPvPeakTurnEngineApi() {
 
   function fastImpactTurn(startTurn, duration) {
     return Math.max(0, numeric(startTurn)) + Math.max(1, numeric(duration, 1)) - 1;
+  }
+
+  function chargedStartTurn(triggerTurn) {
+    return Math.max(0, numeric(triggerTurn)) + 1;
+  }
+
+  function swapTurnCost(input = {}) {
+    return input.forced || input.postCharged ? 0 : 1;
+  }
+
+  function createSwapEvent(input = {}) {
+    const resolveTurn = Math.max(0, numeric(input.resolveTurn, input.turn));
+    return {
+      id: input.id || `swap-${input.side || "?"}-${resolveTurn}`,
+      type: "swap",
+      phase: EVENT_PHASE.SWAP,
+      side: input.side || null,
+      incomingId: input.incomingId || null,
+      forced: !!input.forced,
+      postCharged: !!input.postCharged,
+      turnCost: swapTurnCost(input),
+      resolveTurn,
+      status: "pending"
+    };
+  }
+
+  function createChargedAttackEvent(input = {}) {
+    const triggerTurn = Math.max(0, numeric(input.triggerTurn, input.requestTurn));
+    const startTurn = chargedStartTurn(triggerTurn);
+    return {
+      id: input.id || `charged-${input.sourceSide || "?"}-${triggerTurn}`,
+      type: "charged-action",
+      phase: EVENT_PHASE.CHARGED_ACTION,
+      sourceSide: input.sourceSide || null,
+      targetSide: input.targetSide || null,
+      moveId: input.moveId || null,
+      triggerTurn,
+      startTurn,
+      resolveTurn: startTurn,
+      registeredWhileAlive: input.registeredWhileAlive !== false,
+      status: "pending"
+    };
   }
 
   function createFastImpactEvent(input = {}) {
@@ -314,6 +360,7 @@ function createPvPeakTurnEngineApi() {
 
   return Object.freeze({
     createApi: createPvPeakTurnEngineApi,
+    RULESET_VERSION,
     EVENT_PHASE,
     createState,
     terminalOutcome,
@@ -324,6 +371,10 @@ function createPvPeakTurnEngineApi() {
     orderActionIntents,
     registerActionIntents,
     fastImpactTurn,
+    chargedStartTurn,
+    swapTurnCost,
+    createSwapEvent,
+    createChargedAttackEvent,
     createFastImpactEvent,
     scheduleEvent,
     eventsDue,

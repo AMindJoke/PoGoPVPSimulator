@@ -43,16 +43,16 @@ const ownSwitch = Switching.switchActive({ side: "A", active: activeA, incomingI
 assert.equal(ownSwitch.turnCost, 0);
 assert.equal(ownSwitch.postCharged, true);
 
-// 2 — opponent Charged → receiver switch costs one turn.
+// 2 — opponent Charged → receiver may also use the zero-turn end window.
 const receiverSwitch = Switching.switchActive({ side: "B", active: activeB, incomingId: "froslass", switchState: stateB, timing: ownWindow });
-assert.equal(receiverSwitch.turnCost, 1);
-assert.equal(receiverSwitch.postCharged, false);
+assert.equal(receiverSwitch.turnCost, 0);
+assert.equal(receiverSwitch.postCharged, true);
 
 // 3/4 — shielded and unshielded resolution retain the same receiver cost.
 for (const shielded of [true, false]) {
   const resolvedWindow = windowFor("A", `charge-shield-${shielded}`, { shielded });
   const legal = Switching.legality({ side: "B", active: activeB, switchState: stateB, timing: resolvedWindow, actionReady: true, shielded });
-  assert.equal(legal.turnCost, 1, `receiver cost changed for shielded=${shielded}`);
+  assert.equal(legal.turnCost, 0, `receiver cost changed for shielded=${shielded}`);
 }
 
 // 5 — shielding by the target does not remove the actor's own 0-turn window.
@@ -70,7 +70,7 @@ assert.equal(progressReset.switchState.A.bench[0].fastMoveCycleProgress, 0);
 // 8 — timeline semantics inherit the exact deterministic switch duration.
 const ownTimelineEvent = { kind: "switch", start: 20, duration: ownSwitch.turnCost, turnCost: ownSwitch.turnCost };
 const receiverTimelineEvent = { kind: "switch", start: 20, duration: receiverSwitch.turnCost, turnCost: receiverSwitch.turnCost };
-assert.equal(receiverTimelineEvent.start + receiverTimelineEvent.duration - (ownTimelineEvent.start + ownTimelineEvent.duration), 1);
+assert.equal(receiverTimelineEvent.start + receiverTimelineEvent.duration - (ownTimelineEvent.start + ownTimelineEvent.duration), 0);
 
 // 9 — Undo/Redo snapshots reproduce the same causal result.
 const before = clone({ timing: ownWindow, switchState: stateB, active: activeB, turn: 20 });
@@ -79,10 +79,10 @@ const undone = clone(before);
 const redone = Switching.switchActive({ side: "B", active: undone.active, incomingId: "froslass", switchState: undone.switchState, timing: undone.timing });
 assert.deepEqual(redone, firstResult);
 
-// 10 — export/import preserves the actor-owned window exactly.
+// 10 — export/import preserves the two-sided window and the Charged Attack actor provenance.
 const imported = Timing.createState(JSON.parse(JSON.stringify(windowFor("B", "charge-export"))));
 assert.equal(imported.postChargedSwitchWindow.chargedAttackActor, "B");
-assert.equal(Timing.postChargedSwitchEligible(imported, "A"), false);
+assert.equal(Timing.postChargedSwitchEligible(imported, "A"), true);
 assert.equal(Timing.postChargedSwitchEligible(imported, "B"), true);
 
 // 11 — a KO Charged never opens a voluntary switch window; Bring Next remains separate.
@@ -90,19 +90,19 @@ assert.match(html, /Number\(left\?\.hp \|\| 0\) <= 0 \|\| Number\(right\?\.hp \|
 assert.match(html, /kind: "switch"/);
 assert.match(html, /manualBringNext/);
 
-// 12 — the receiver's action turn advances deterministic time and cooldown by 0.5s.
+// 12 — the next battle turn advances deterministic time and cooldown by 0.5s.
 assert.equal(Timing.TURN_DURATION_MS, 500);
 const afterReceiverTurn = Timing.advanceToTurn(receiverSwitch.timing, 21);
 assert.equal(afterReceiverTurn.elapsedBattleMs - receiverSwitch.timing.elapsedBattleMs, 500);
 assert.equal(Timing.remainingSwitchMs(afterReceiverTurn, "B"), 44500);
 
-// Back-to-back Charged Attacks replace, rather than merge, actor ownership.
+// Back-to-back Charged Attacks replace the source event while reopening both opportunities.
 const replacedWindow = Timing.openPostChargedSwitchWindow(ownWindow, { turn: 21, sourceEventId: "charge-B", chargedAttackActor: "B" });
-assert.equal(Timing.postChargedSwitchEligible(replacedWindow, "A"), false);
+assert.equal(Timing.postChargedSwitchEligible(replacedWindow, "A"), true);
 assert.equal(Timing.postChargedSwitchEligible(replacedWindow, "B"), true);
 
-// Ambiguous version-2 data remains loadable but cannot grant both sides a free switch.
+// Legacy post-Charged windows migrate to the current two-sided rule.
 const legacy = Timing.createState({ version: 2, postChargedSwitchWindow: { turn: 20, sourceEventId: "legacy", eligibleSides: ["A", "B"] } });
-assert.equal(legacy.postChargedSwitchWindow, null);
+assert.deepEqual(legacy.postChargedSwitchWindow.eligibleSides, ["A", "B"]);
 
 console.log("Post-Charged switch timing regression matrix passed.");
