@@ -35668,6 +35668,9 @@
       const indexes = [];
       for (let i = 0; i < timeline.length; i++) {
         const event = timeline[i];
+        // A denied pending Fast impact inherits the terminal snapshot from
+        // the action that caused the source to faint. It is not a second KO.
+        if (event.fastImpactStatus === "denied") continue;
         const state = event.state && event.state[targetKey];
         if (!state) continue;
         if (event.kind !== "shield" && event.kind !== "form-protect" && previousHp > 0 && state.hp <= 0) indexes.push(i);
@@ -35818,7 +35821,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260904-v21").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260904-v22").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

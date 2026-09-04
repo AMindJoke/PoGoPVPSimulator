@@ -16,7 +16,7 @@ for (const size of [16, 32, 48]) {
   assert.ok(fs.existsSync(path.join(root, "assets", `go-pvp-favicon-${size}.png`)), `Missing ${size}px GO favicon.`);
 }
 assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
-assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js\?v=20260904-v21"\)/);
+assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js\?v=20260904-v22"\)/);
 
 assert.match(html, /\* \{ box-sizing: border-box; \}/,
   "The page must retain its global layout reset.");
@@ -26,6 +26,8 @@ assert.match(html, /\.pokemon-arena-bg \{\s*position: fixed;/,
   "The decorative arena must not occupy document flow and hide the app below the fold.");
 assert.match(html, /#homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView \{ display: none; \}/,
   "The application view visibility contract must remain present.");
+assert.match(html, /event\.fastImpactStatus === "denied"/,
+  "Denied pending Fast impacts must not render as duplicate KO markers.");
 assert.doesNotMatch(html, /--accent: #2c8bedeg/,
   "Malformed dark-theme CSS must not replace the base application styles.");
 
