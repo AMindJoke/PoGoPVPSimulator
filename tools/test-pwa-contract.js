@@ -18,6 +18,17 @@ for (const size of [16, 32, 48]) {
 assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
 assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js\?v=20260904-v20"\)/);
 
+assert.match(html, /\* \{ box-sizing: border-box; \}/,
+  "The page must retain its global layout reset.");
+assert.match(html, /body \{\s*margin: 0;/,
+  "The page must retain its base body layout styles.");
+assert.match(html, /\.pokemon-arena-bg \{\s*position: fixed;/,
+  "The decorative arena must not occupy document flow and hide the app below the fold.");
+assert.match(html, /#homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView \{ display: none; \}/,
+  "The application view visibility contract must remain present.");
+assert.doesNotMatch(html, /--accent: #2c8bedeg/,
+  "Malformed dark-theme CSS must not replace the base application styles.");
+
 const plannerVersion = battleReliability.match(/BATTLE_ENGINE_VERSION = "battle-planner-v(\d+)"/)?.[1];
 assert.ok(plannerVersion, "The battle engine must expose a numeric planner version.");
 assert.match(html, new RegExp(`src/battle/battle-intelligence\\.js\\?v=\\d+-planner-v${plannerVersion}`),
