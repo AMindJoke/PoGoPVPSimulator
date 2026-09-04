@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-04-v22-duplicate-ko-marker";
+const CACHE_VERSION = "2026-09-04-v23-duplicate-ko-marker";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
