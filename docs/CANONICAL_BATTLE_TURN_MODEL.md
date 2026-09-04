@@ -38,8 +38,11 @@ timeline renderer and not a planner's requested action.
   mechanical phase and boundary.
 - **One-turn lag**: diagnostic state in which an action request/registration is
   delayed by one absolute turn; it does not change move choice.
-- **DRE**: diagnostic state in which a Fast impact is retained as pending until
-  its canonical resolution/denial boundary; it does not change move choice.
+- **Timing Anomaly**: manual reconstruction state in which an actually pending
+  Fast impact is explicitly resolved before the normally prioritized action.
+  It is never selected by the automatic simulator.
+- **Legacy DRE**: historical issue identifier accepted when importing older
+  Scenario Review documents; it is not a current standard-timing behavior.
 
 ## Canonical boundary order
 
@@ -98,9 +101,10 @@ resolution.
 
 Two legacy integration gaps remain and are intentionally visible:
 
-1. Normal `useFast()` applies damage and energy immediately, then records a
-   timeline event. Only DRE and one-turn-lag paths currently create a pending
-   Fast impact.
+1. The legacy automatic `useFast()` path applies damage and energy immediately,
+   then records a timeline event. Manual Mode schedules its Fast impact as a
+   real pending event; older automatic DRE/lag injections remain readable only
+   for compatibility.
 2. `automaticBattleStep()` orders actors before collecting their intents.
    Its legacy `orderReadySides()` gives precedence to a side that merely has an
    affordable Charged Move. Canonical CMP requires both selected intents.
@@ -122,6 +126,8 @@ that existing buff/debuff behavior is preserved.
 - Same-boundary Fast impacts resolve from one phase-start snapshot.
 - A Fast impact whose source fainted on an earlier boundary is denied.
 - The renderer never determines mechanical timing.
-- One-turn lag and DRE alter timing state only, never strategic selection.
+- One-turn lag alters timing state only, never strategic selection.
+- Timing Anomaly is an explicit manual branch action and never enters
+  automatic strategic selection.
 
 The focused executable contract is `tools/test-turn-resolution-engine.js`.

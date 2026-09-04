@@ -31,7 +31,11 @@ Combatant state and ready turns
   -> next state
 ```
 
-The Decision Engine does not need to know whether a timing change came from DRE, one-turn lag, or a future tournament reconstruction. It sees legal actions and scheduled threats. For example, any pending lethal Fast impact creates urgency to use an already legal Charged Move before that impact resolves.
+The Decision Engine does not need to know whether a timing change came from a
+one-turn lag or a manual Timing Anomaly reconstruction. It sees legal actions
+and scheduled threats. Legacy DRE identifiers are import compatibility only.
+For example, any pending lethal Fast impact creates urgency to use an already
+legal Charged Move before that impact resolves.
 
 ## Scheduled Fast Impacts
 
@@ -41,7 +45,7 @@ A scheduled Fast impact records:
 - move identity;
 - start, duration, and resolution turn;
 - damage;
-- source context, such as normal battle, DRE, or one-turn lag;
+- source context, such as normal battle, Timing Anomaly, or one-turn lag;
 - pending, resolved, or denied status.
 
 If the source faints before its pending impact resolves, the event is denied. Otherwise damage is applied at resolution.

@@ -273,6 +273,35 @@ assert.equal(dreImported.scenario.technicalIssues.active.type, "dre");
 assert.deepEqual(dreImported.scenario.technicalIssues.eventIds, ["lethal-fast", "dre-1"]);
 assert.equal(dreImported.scenario.timeline.events[0].drePending, true);
 
+const anomaly = structuredClone(dre);
+anomaly.timeline.events = [
+  { ...dreFast, drePending: undefined, timingAnomaly: true, fastImpactStatus: "resolved" },
+  {
+    ...dreEvent,
+    id: "timing-anomaly-1",
+    timelineEventId: "timing-anomaly-1",
+    kind: "technical-anomaly",
+    issueType: "timing-anomaly",
+    anomalySubtype: "resolvePendingFastFirst",
+    trainer: "B",
+    move: { id: "INCINERATE", name: "Incinerate" },
+    pendingFastEventId: "pending-fast-1",
+    pendingFastMoveName: "Incinerate"
+  }
+];
+anomaly.technicalIssues = {
+  active: { type: "timing-anomaly", subtype: "resolvePendingFastFirst", pendingFastEventId: "pending-fast-1" },
+  eventIds: ["lethal-fast", "timing-anomaly-1"]
+};
+const anomalyImported = IO.deserializeScenario(IO.stringifyScenario(anomaly), { battleEngineVersion: "battle-planner-v27" });
+assert.equal(anomalyImported.ok, true);
+assert.equal(anomalyImported.scenario.technicalIssues.active.type, "timing-anomaly");
+assert.equal(anomalyImported.scenario.timeline.events[1].anomalySubtype, "resolvePendingFastFirst");
+assert.deepEqual(anomalyImported.scenario.technicalIssues.eventIds, ["lethal-fast", "timing-anomaly-1"]);
+const invalidAnomalySubtype = structuredClone(anomaly);
+invalidAnomalySubtype.timeline.events[1].anomalySubtype = "changeTimingFreely";
+assert(IO.deserializeScenario(invalidAnomalySubtype).errors.includes("INVALID_TIMING_ANOMALY_SUBTYPE:1"));
+
 const mismatch = IO.deserializeScenario(simpleJson, { battleEngineVersion: "battle-planner-v28" });
 assert.equal(mismatch.ok, false);
 assert(mismatch.errors.includes("BATTLE_ENGINE_VERSION_MISMATCH"));

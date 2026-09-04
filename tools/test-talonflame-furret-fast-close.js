@@ -4,6 +4,7 @@ const assert = require("assert");
 const TurnEngine = require("../src/battle/turn-resolution-engine");
 const Intelligence = require("../src/battle/battle-intelligence");
 const {
+  DEFAULT_PROFILE,
   RANK1_PROFILE,
   readWindowGlobal,
   extractLiveWorkerSource,
@@ -23,14 +24,14 @@ const pokemonMap = new Map(gameMaster.pokemon
 const adapter = createWorkerAdapter(extractLiveWorkerSource());
 const clone = value => JSON.parse(JSON.stringify(value));
 
-function fixtureConfig() {
+function fixtureConfig(shieldMode = "smart", profile = RANK1_PROFILE) {
   // Furret is A so the assertion follows the manual line from the reported
   // matchup.  Rank-1 builds are important: default level-50 stats do not
   // reproduce the production regression.
   const config = createBattleConfig(
     pokemonMap.get("furret"),
     pokemonMap.get("talonflame_shadow"),
-    RANK1_PROFILE,
+    profile,
     moveMap,
     defaultMovesets,
     pokemonMap
@@ -39,55 +40,183 @@ function fixtureConfig() {
   config.left.charged = [clone(moveMap.get("SWIFT")), clone(moveMap.get("TRAILBLAZE"))];
   config.right.fast = clone(moveMap.get("INCINERATE"));
   config.right.charged = [clone(moveMap.get("FLAME_CHARGE")), clone(moveMap.get("FLY"))];
-  config.left.shieldMode = "smart";
-  config.right.shieldMode = "smart";
+  config.left.shieldMode = shieldMode;
+  config.right.shieldMode = shieldMode;
   return config;
 }
 
-const result = adapter.simulate({
-  id: "shadow-talonflame-furret-fast-close",
-  key: "shadow-talonflame-furret-fast-close",
-  source: "reported-planner-regression",
-  aShields: 1,
-  bShields: 1,
-  includeSwing: false,
-  debugTimeline: true,
-  trace: true,
-  counterfactuals: false,
-  config: fixtureConfig()
-});
+function simulate(diagnosticPlan = null, shieldMode = "always", profile = RANK1_PROFILE) {
+  return adapter.simulate({
+    id: "shadow-talonflame-furret-fast-close",
+    key: "shadow-talonflame-furret-fast-close",
+    source: "reported-planner-regression",
+    aShields: 1,
+    bShields: 1,
+    includeSwing: false,
+    debugTimeline: true,
+    trace: true,
+    counterfactuals: false,
+    diagnosticPlan,
+    config: fixtureConfig(shieldMode, profile)
+  });
+}
+
+const result = simulate();
+const smartResult = simulate(null, "smart");
+const defaultProfileResult = simulate(null, "always", DEFAULT_PROFILE);
+const straightSwiftResult = simulate({
+  steps: [{ side: "A", turn: 14, type: "charged_move", moveId: "SWIFT" }]
+}, "always");
 
 const furretFastStarts = result.timelineTrace
   .filter(event => event.kind === "fast" && event.trainer === "A")
   .map(event => Number(event.start));
-const furretLateFastStarts = furretFastStarts.filter(turn => turn >= 23);
+const furretLateFastStarts = furretFastStarts.filter(turn => turn >= 21);
+
+if (process.argv.includes("--diagnose")) {
+  console.log(JSON.stringify({
+    score: result.score,
+    winnerEdge: result.details.winnerEdge,
+    finalState: result.decisionTrace.finalState,
+    defaultProfile: {
+      score: defaultProfileResult.score,
+      winnerEdge: defaultProfileResult.details.winnerEdge,
+      finalState: defaultProfileResult.decisionTrace.finalState,
+      timeline: defaultProfileResult.timelineTrace.map(event => ({
+        side: event.trainer,
+        turn: event.start,
+        kind: event.kind,
+        move: event.moveId,
+        hpBefore: event.hpBefore,
+        hpAfter: event.hpAfter,
+        energyBefore: event.energyBefore,
+        energyAfter: event.energyAfter
+      })),
+      decisions: (defaultProfileResult.decisionTrace.decisions || [])
+        .filter(decision => decision.side === "A" && Number(decision.turn) >= 20)
+        .map(decision => ({
+          turn: decision.turn,
+          type: decision.decisionType,
+          chosen: decision.chosenCandidate?.action || decision.chosenCandidate?.moveId,
+          reasonCode: decision.reasonCode,
+          intent: decision.principleResult?.intent,
+          timing: decision.principleResult?.evidence?.timing
+        }))
+    },
+    straightSwift: {
+      score: straightSwiftResult.score,
+      winnerEdge: straightSwiftResult.details.winnerEdge,
+      finalState: straightSwiftResult.decisionTrace.finalState,
+      timeline: straightSwiftResult.timelineTrace.map(event => ({
+        side: event.trainer,
+        turn: event.start,
+        kind: event.kind,
+        move: event.moveId,
+        hpBefore: event.hpBefore,
+        hpAfter: event.hpAfter,
+        energyBefore: event.energyBefore,
+        energyAfter: event.energyAfter
+      })),
+      decisions: (straightSwiftResult.decisionTrace.decisions || [])
+        .filter(decision => decision.side === "A" && Number(decision.turn) >= 20)
+        .map(decision => ({
+          turn: decision.turn,
+          type: decision.decisionType,
+          chosen: decision.chosenCandidate?.action || decision.chosenCandidate?.moveId,
+          reasonCode: decision.reasonCode,
+          intent: decision.principleResult?.intent,
+          timing: decision.principleResult?.evidence?.timing,
+          survival: decision.principleResult?.evidence?.survival,
+          forcedThrow: decision.principleResult?.evidence?.forcedThrow
+        }))
+    },
+    timeline: result.timelineTrace.map(event => ({
+      side: event.trainer,
+      turn: event.start,
+      kind: event.kind,
+      move: event.moveId,
+      hpBefore: event.hpBefore,
+      hpAfter: event.hpAfter,
+      energyBefore: event.energyBefore,
+      energyAfter: event.energyAfter
+    })),
+    decisions: (result.decisionTrace.decisions || [])
+      .filter(decision => decision.side === "A" && Number(decision.turn) >= 14)
+      .map(decision => ({
+        turn: decision.turn,
+        type: decision.decisionType,
+        chosen: decision.chosenCandidate?.action || decision.chosenCandidate?.moveId,
+        reasonCode: decision.reasonCode,
+        intent: decision.principleResult?.intent
+      }))
+  }, null, 2));
+  process.exit(0);
+}
 
 assert(result.details.winnerEdge > 0,
-  `Furret should win the rank-1 1-1 line by closing with Sucker Punch; score=${result.score}, edge=${result.details.winnerEdge}`);
+  `Furret should win the rank-1 1-1 line straight Swift; score=${result.score}, edge=${result.details.winnerEdge}`);
 assert.strictEqual(result.decisionTrace.finalState.A.hp > 0, true,
   "Furret should survive the fast close.");
 assert.strictEqual(result.decisionTrace.finalState.B.hp, 0,
   "Shadow Talonflame should faint before starting its next Charged Attack.");
-assert.strictEqual(Array.from(furretLateFastStarts.slice(-2)).join(","), "23,25",
-  "The planner must preserve both closing Sucker Punches at turns 23 and 25.");
+assert.strictEqual(Array.from(furretLateFastStarts.slice(-2)).join(","), "21,23",
+  "The planner must preserve both Sucker Punches before the closing Swift.");
+
+const firstFurretCharge = result.timelineTrace.find(event => event.kind === "charge" && event.trainer === "A");
+const firstTalonflameShield = result.timelineTrace.find(event => event.kind === "shield" && event.trainer === "B");
+assert.strictEqual(firstFurretCharge?.moveId, "SWIFT",
+  "The planner must choose the winning straight-Swift opener.");
+assert.strictEqual(firstTalonflameShield?.moveId, "SWIFT",
+  "Talonflame must shield the first Swift in the standard 1-1 line.");
+
+const t14Decision = (result.decisionTrace.decisions || []).find(decision =>
+  decision.side === "A"
+  && Number(decision.turn) === 14
+  && decision.decisionType === "charged-move-selection"
+);
+assert.strictEqual(t14Decision?.chosenCandidate?.moveId, "SWIFT",
+  "The charged decision trace must retain the winning straight-Swift opener.");
 
 const t23Decision = (result.decisionTrace.decisions || []).find(decision =>
   decision.side === "A"
   && Number(decision.turn) === 23
-  && ["charged-timing-selection", "charged-move-selection"].includes(decision.decisionType)
+  && decision.decisionType === "charged-timing-selection"
 );
-assert.strictEqual(t23Decision?.chosenCandidate?.moveId, "SUCKER_PUNCH",
-  "At turn 23 the planner must choose the safe Fast close instead of Swift.");
-assert.strictEqual(t23Decision?.principleResult?.evidence?.timing?.canCloseWithFast, true,
-  "The decision trace must record the safe Fast closure before the opponent threat.");
+assert.strictEqual(t23Decision?.chosenCandidate?.action, "FAST_THEN_REEVALUATE",
+  "At turn 23 Furret must use the second Sucker Punch instead of throwing Swift early.");
+assert.strictEqual(t23Decision?.principleResult?.evidence?.timing?.canCloseWithFastThenCharged, true,
+  "The planner must identify the Fast-then-Charged lethal window before Talonflame is ready.");
 
 const t25Decision = (result.decisionTrace.decisions || []).find(decision =>
   decision.side === "A"
   && Number(decision.turn) === 25
   && ["charged-timing-selection", "charged-move-selection"].includes(decision.decisionType)
 );
-assert(!t25Decision || t25Decision.chosenCandidate?.moveId !== "SWIFT",
-  "Once Sucker Punch is lethal, the planner must not force a nonlethal Charged Attack.");
+assert.strictEqual(t25Decision?.chosenCandidate?.moveId, "SWIFT",
+  "After two Sucker Punches the planner must use the lethal closing Swift.");
+
+const smartFirstShield = smartResult.timelineTrace.find(event => event.kind === "shield" && event.trainer === "B");
+assert.strictEqual(smartFirstShield?.moveId, "SWIFT",
+  "Smart shield logic must block Swift when taking it concedes a duration-adjusted farm range.");
+assert(smartResult.details.winnerEdge > 0,
+  "Furret must retain the straight-Swift win when both sides use Smart shield logic.");
+
+const defaultProfileFurretFasts = defaultProfileResult.timelineTrace
+  .filter(event => event.kind === "fast" && event.trainer === "A" && Number(event.start) >= 21)
+  .map(event => Number(event.start));
+const defaultProfileFurretCharges = defaultProfileResult.timelineTrace
+  .filter(event => event.kind === "charge" && event.trainer === "A")
+  .map(event => event.moveId);
+assert.strictEqual(defaultProfileResult.decisionTrace.finalState.A.maxHp, 160,
+  "The reported Furret profile must retain its exact 160 HP breakpoint.");
+assert.strictEqual(defaultProfileResult.decisionTrace.finalState.B.maxHp, 135,
+  "The reported Shadow Talonflame profile must retain its exact 135 HP breakpoint.");
+assert.strictEqual(defaultProfileFurretFasts.slice(0, 2).join(","), "21,23",
+  "The reported 160/135 profile must execute both late Sucker Punches.");
+assert.strictEqual(Array.from(defaultProfileFurretCharges).join(","), "SWIFT,SWIFT",
+  "The reported 160/135 profile must win straight Swift.");
+assert(defaultProfileResult.details.winnerEdge > 0,
+  "The reported 160/135 profile must remain a Furret win.");
 
 // Control: a pending lethal Fast impact must still take priority over a
 // tempting Fast farm.  This prevents the closure exception from becoming a

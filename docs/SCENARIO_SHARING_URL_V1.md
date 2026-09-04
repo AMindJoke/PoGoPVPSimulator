@@ -34,11 +34,11 @@ Desktop renders the command compactly beside the existing Scenario controls. Mob
 
 ## Robustness corpus
 
-The automated URL corpus covers short, long, dense and active-DRE scenarios. Current deterministic budgets are:
+The automated URL corpus covers short, long, dense and historical active-DRE scenarios. Current deterministic budgets are:
 
 - short scenario: at most 15,000 token characters;
 - 250-event timeline: at most 20,000;
 - 1,000-event stress timeline: at most 60,000;
-- 82-event DRE scenario with pending Fast damage: at most 15,000.
+- 82-event legacy DRE scenario with pending Fast damage: at most 15,000.
 
 The suite also verifies legacy-v1 decoding, truncated gzip rejection, decompression limits and exact semantic round trips. These are transport budgets rather than guarantees imposed on user scenarios; the hard safety limits remain authoritative.

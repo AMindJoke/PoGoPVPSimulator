@@ -7,7 +7,14 @@
 
   const ISSUE_TYPES = Object.freeze({
     ONE_TURN_LAG: "one-turn-lag",
+    TIMING_ANOMALY: "timing-anomaly",
+    // Kept for reading historical Scenario Review documents. New UI/actions
+    // must use TIMING_ANOMALY instead of recreating standard 2026 timing.
     DRE: "dre"
+  });
+
+  const TIMING_ANOMALY_SUBTYPES = Object.freeze({
+    RESOLVE_PENDING_FAST_FIRST: "resolvePendingFastFirst"
   });
 
   function clone(value) {
@@ -110,6 +117,53 @@
     };
   }
 
+  function createTimingAnomalyIssues(timeline, pendingEvents = [], currentTurn = 0, combatants = {}) {
+    if (!Array.isArray(pendingEvents)) return [];
+    const turn = Math.max(0, Number(currentTurn || 0));
+    return pendingEvents
+      .map((pending, pendingIndex) => ({ pending, pendingIndex }))
+      .filter(({ pending }) => (
+        pending?.status === "pending"
+        && ["A", "B"].includes(pending.sourceSide)
+        && ["A", "B"].includes(pending.targetSide)
+        && pending.sourceSide !== pending.targetSide
+        && Number.isFinite(Number(pending.startTurn ?? pending.triggerTurn ?? 0))
+        && Number(pending.startTurn ?? pending.triggerTurn ?? 0) <= turn
+        && Number.isFinite(Number(pending.resolveTurn ?? pending.impactTurn))
+      ))
+      .filter(({ pending }) => {
+        const source = combatants[pending.sourceSide];
+        const target = combatants[pending.targetSide];
+        if (!source || !target || Number(source.hp || 0) <= 0 || Number(target.hp || 0) <= 0) return false;
+        return (target.charged || target.chargedMoves || [])
+          .filter(Boolean)
+          .some(move => Number(target.energy || 0) >= Number(move.energyCost || 0));
+      })
+      .map(({ pending, pendingIndex }) => {
+        const eventIndex = Number.isInteger(pending.timelineIndex) ? pending.timelineIndex : null;
+        const timelineEvent = eventIndex != null ? timeline?.[eventIndex] : null;
+        return {
+          type: ISSUE_TYPES.TIMING_ANOMALY,
+          subtype: TIMING_ANOMALY_SUBTYPES.RESOLVE_PENDING_FAST_FIRST,
+          trainer: pending.targetSide,
+          fastSide: pending.sourceSide,
+          eventIndex,
+          pendingFastIndex: pendingIndex,
+          pendingFastEventId: pending.id || null,
+          pendingFastMoveId: pending.moveId || null,
+          pendingFastMoveName: pending.moveName || timelineEvent?.move?.name || "Fast Move",
+          pendingDamage: Number(pending.damage || 0),
+          normalResolveTurn: Number(pending.resolveTurn ?? pending.impactTurn),
+          turn,
+          actionOrdinal: null
+        };
+      });
+  }
+
+  function createTimingAnomalyIssue(timeline, pendingEvents = [], currentTurn = 0, combatants = {}) {
+    return createTimingAnomalyIssues(timeline, pendingEvents, currentTurn, combatants)[0] || null;
+  }
+
   function setResult(review, issue, originalState, issueState) {
     review.issue = clone(issue);
     review.selectedEventIndex = issue?.eventIndex ?? null;
@@ -128,12 +182,15 @@
 
   return {
     ISSUE_TYPES,
+    TIMING_ANOMALY_SUBTYPES,
     createReview,
     eventOrdinal,
     fastImpactTurn,
     findDreOpportunity,
     createOneTurnLagIssue,
     createDreIssue,
+    createTimingAnomalyIssue,
+    createTimingAnomalyIssues,
     setResult,
     clearReview
   };

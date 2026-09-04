@@ -187,6 +187,26 @@ const overrideLag = Manual.validateManualAction({
 assert.equal(overrideLag.legal, true);
 assert(overrideLag.warnings.includes("NON_CANONICAL_BRANCH"));
 
+const strictAnomaly = validate(state, "A", {
+  side: "A",
+  actionType: Manual.ACTION_TYPE.INSERT_TIMING_ANOMALY
+});
+assert.equal(strictAnomaly.reasonCode, Manual.REASON_CODE.UNSUPPORTED_RECONSTRUCTION);
+const overrideAnomaly = Manual.validateManualAction({
+  state,
+  side: "A",
+  manualAction: {
+    side: "A",
+    actionType: Manual.ACTION_TYPE.INSERT_TIMING_ANOMALY,
+    legalityMode: Manual.LEGALITY_MODE.REVIEW_OVERRIDE
+  },
+  legalityMode: Manual.LEGALITY_MODE.REVIEW_OVERRIDE,
+  decisionPoint: decision,
+  legalActions: Turn.getLegalActions(state, "A")
+});
+assert.equal(overrideAnomaly.legal, true);
+assert(overrideAnomaly.warnings.includes("NON_CANONICAL_BRANCH"));
+
 const stale = validate(state, "A", {
   side: "A",
   actionType: Manual.ACTION_TYPE.FAST_MOVE,

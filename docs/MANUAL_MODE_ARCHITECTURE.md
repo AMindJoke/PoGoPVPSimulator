@@ -40,7 +40,7 @@ rebuilding all downstream derived events.
 | Reset manual battle | Toolbar | Recreates combatants at turn 0 | Reusable | Keep as reset/start entry point |
 | Timeline click / hover preview | Battle timeline | Reads event snapshots | Reusable renderer and branch-point selector | Add stable event IDs and explicit before/after boundaries |
 | Automatic timeline replay | Battle timeline | Presentation-only animation | UI-only | Reuse rendering; replace timer-only replay with an explicit view cursor |
-| Scenario Review lag/DRE controls | Scenario Review | Re-simulates with technical injection | Mechanically authoritative but separate state wrapper | Adapt reconstruction commands into Manual Mode branches |
+| Scenario Review lag/Timing Anomaly controls | Scenario Review | Re-simulates with technical injection | Mechanically authoritative but separate state wrapper | Adapt reconstruction commands into Manual Mode branches |
 | Scenario Review Original / With issue | Scenario Review | Stores two captured runtime states | Reusable concept, limited branch model | Migrate to the common branch registry |
 | Matrix preview branches | Matchup matrix | Re-simulates configured initial advantages | Separate simulation preview | Keep outside Manual Mode; allow future import as a branch point |
 | Automatic planner | `automaticBattleStep` | Selects actions and invokes mechanics | Authoritative intent producer | Pause per controlled side; retain for AUTO sides and resume |
@@ -81,7 +81,7 @@ contract without manually maintaining a second UI timeline.
 - `battleSnapshot`, `initialTimelineState` and timeline event snapshots.
 - damage, energy, buff/debuff, form/protection and shield mechanics currently
   invoked by `useFast` and `useCharge`.
-- `src/scenario/technical-review-model.js` for identifying lag and DRE
+- `src/scenario/technical-review-model.js` for identifying lag and Timing Anomaly opportunities (legacy DRE remains read-only compatibility)
   opportunities.
 - current timeline renderer, move tokens, tooltips, zoom and selected-event
   highlighting.
@@ -105,7 +105,7 @@ contract without manually maintaining a second UI timeline.
   recording and terminal finalization in one function;
 - technical lag temporarily restores HP after `apply`, then queues a pending
   impact;
-- technical DRE copies HP from a resolver result back into the live combatant;
+- technical Timing Anomaly resolves the canonical pending Fast event and copies HP/energy from the resolver result back into the live combatant;
 - technical branch capture clones the entire mutable UI runtime;
 - automatic and manual entry points share low-level functions but do not share
   one intent contract.
@@ -122,7 +122,7 @@ The audit found the following runtime mutation categories in `PogoPvp.html`:
 1. Setup/reset assignment of starting energy.
 2. Scenario setup assignment of initial HP.
 3. Core `apply` damage and energy mutation.
-4. Technical lag/DRE temporary HP restoration and resolver copy-back.
+4. Technical lag/Timing Anomaly temporary HP restoration and resolver copy-back.
 5. Starting HP/energy advantage construction for matrix/preview simulations.
 6. Form transition energy reset.
 7. Same-turn registered Fast resolution after a Charged KO.
@@ -167,7 +167,7 @@ No model may store DOM nodes, callbacks or live combatant references.
 6. Add immutable branches and deterministic prefix restoration.
 7. Add downstream rebuild, undo and redo.
 8. Add per-side AUTO/MANUAL control and planner pause semantics.
-9. Integrate lag and DRE as traced reconstruction commands.
+9. Integrate lag and Timing Anomaly as traced reconstruction commands.
 10. Add import/export and worker parity.
 11. Upgrade the existing timeline renderer and replay controls.
 12. Complete real-matchup, desktop/mobile and performance validation.

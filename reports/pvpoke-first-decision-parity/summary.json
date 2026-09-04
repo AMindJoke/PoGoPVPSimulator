@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "suite": "RULE_CONFORMANCE",
   "reference": "manual expected fixture conformance",
-  "generatedAt": "2026-07-27T11:45:31.599Z",
+  "generatedAt": "2026-09-03T13:03:06.629Z",
   "pvpokeRevision": "5e1e3d971369a47aaf3e7247f50710d80205d570",
   "objective": "first-strategic-decision-parity",
   "totalStates": 640,

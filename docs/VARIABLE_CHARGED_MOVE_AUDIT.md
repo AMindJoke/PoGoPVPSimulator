@@ -8,7 +8,7 @@ This inventory separates real two-Charged-Attack assumptions from unrelated uses
 
 - `src/battle/turn-resolution-engine.js` normalizes `chargedMoves[]`, emits one legal action per affordable move, and resolves an action by stable move ID.
 - `src/battle/manual-action.js`, `src/battle/matchup-planner-adapter.js`, and almost all of `src/battle/battle-intelligence.js` search or iterate `chargedMoves[]`.
-- technical-review DRE eligibility already returns a collection of eligible Charged Attack IDs.
+- legacy technical-review DRE eligibility already returns a collection of eligible Charged Attack IDs; new manual reconstructions use Timing Anomaly instead.
 - Compendium Pokémon reference already renders every learnable Charged Attack from `chargedMoveIds[]`.
 - canonical runtime snapshots store the combatant's full `charged[]` collection.
 

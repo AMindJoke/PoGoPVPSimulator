@@ -29,7 +29,9 @@ application state is mutated.
 - `timeline`: semantic event history and its initial state. No DOM or rendered
   HTML is stored.
 - `technicalIssues`: active reconstruction state plus stable IDs of technical
-  timeline events. Resolved DRE/lag outcomes remain on their semantic events.
+  timeline events. Resolved timing anomalies remain on their semantic events;
+  new anomaly events use `timing-anomaly` and subtype `resolvePendingFastFirst`.
+  Legacy `dre` identifiers remain readable for historical documents.
 - `branchModel`: the current branch registry behind a versioned boundary. V1
   preserves current Undo/Redo behavior; the comparison model can evolve this
   section without coupling it to UI layout.

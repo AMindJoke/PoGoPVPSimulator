@@ -28,6 +28,43 @@ assert.equal(dre.lethalFastOrdinal, 2);
 assert.equal(TechnicalReview.createDreIssue(timeline, 0, 0, combatants), null);
 assert.equal(TechnicalReview.eventOrdinal(timeline, 2, 1, "fast", "A"), 1);
 
+const pendingFast = {
+  id: "pending-incinerate",
+  sourceSide: "B",
+  targetSide: "A",
+  moveId: "INCINERATE",
+  moveName: "Incinerate",
+  damage: 24,
+  resolveTurn: 4,
+  status: "pending",
+  timelineIndex: 3
+};
+const anomaly = TechnicalReview.createTimingAnomalyIssue(
+  [...timeline, { trainer: "B", kind: "fast", move: { name: "Incinerate" } }],
+  [pendingFast],
+  4,
+  {
+    A: { hp: 26, energy: 40, charged: [{ id: "SWIFT", name: "Swift", energyCost: 35 }] },
+    B: { hp: 100, energy: 0, charged: [] }
+  }
+);
+assert.equal(anomaly.type, "timing-anomaly");
+assert.equal(anomaly.subtype, "resolvePendingFastFirst");
+assert.equal(anomaly.pendingFastEventId, "pending-incinerate");
+assert.equal(anomaly.pendingFastMoveName, "Incinerate");
+assert.equal(TechnicalReview.createTimingAnomalyIssue(
+  timeline,
+  [{ ...pendingFast, startTurn: 3, resolveTurn: 5 }],
+  4,
+  { A: { hp: 26, energy: 40, charged: [{ id: "SWIFT", energyCost: 35 }] }, B: { hp: 100, charged: [] } }
+).pendingFastEventId, "pending-incinerate", "A pending Fast may be reconstructed before its normal impact turn.");
+assert.equal(TechnicalReview.createTimingAnomalyIssue(
+  timeline,
+  [{ ...pendingFast, startTurn: 5, resolveTurn: 6 }],
+  4,
+  { A: { hp: 26, energy: 40, charged: [{ id: "SWIFT", energyCost: 35 }] }, B: { hp: 100, charged: [] } }
+), null, "Anomaly cannot target a Fast that has not started yet.");
+
 const review = TechnicalReview.createReview();
 TechnicalReview.setResult(review, lag, { winner: "A" }, { winner: "B" });
 assert.equal(review.activeBranch, "original");

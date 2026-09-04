@@ -17,7 +17,7 @@ The executable suite covers 1v1, 1v2, 1v3, 2v3, 2v4, 3v4, 3v5, 4v5 and the
 exact-multiple 4v2 geometry. It separately checks simultaneous Charged
 readiness, CMP win/loss, a pending lethal Fast, Charged readiness before a Fast
 impact, Fast impact before same-boundary Charged registration, simultaneous
-faint, one-turn lag, and DRE pending state.
+faint, one-turn lag, and legacy DRE pending-state compatibility.
 
 The reference is conceptual rather than imported PvPoke code. Its purpose is to
 freeze the reverse-engineered 500 ms cooldown semantics without sharing the

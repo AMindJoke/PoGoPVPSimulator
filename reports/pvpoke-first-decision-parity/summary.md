@@ -2,7 +2,7 @@
 
 - Suite: `RULE_CONFORMANCE`
 - Reference: manual expected fixture conformance
-- This is separate from `PVPOKE_DIFFERENTIAL_PARITY`, which executes the actual pinned PvPoke runtime.
+- This is separate from `CANONICAL_DIFFERENTIAL_PARITY`, which executes the actual pinned PvPoke runtime.
 
 - PvPoke revision: `5e1e3d971369a47aaf3e7247f50710d80205d570`
 - Objective: first-strategic-decision-parity

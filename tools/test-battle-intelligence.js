@@ -487,6 +487,21 @@ const smartCounterfactual = Intelligence.selectShieldAction({
 assert.equal(smartCounterfactual.shield, false);
 assert(smartCounterfactual.reasonCodes.includes("SHIELD_PRESERVES_WIN_CONDITION"));
 
+const smartFarmRangeParity = Intelligence.selectShieldAction({
+  policy: "smart",
+  state: { shields: 1, chargedTaken: 0, hp: 86, maxHp: 135 },
+  threat: { damage: 53, energyCost: 35, entersFarmRange: true },
+  parityThreat: {
+    attacker: { energy: 49, fastMove: { turns: 2, energyGain: 7 }, baiting: "selective" },
+    defender: { shields: 1, hp: 86 },
+    move: { energyCost: 35 },
+    fastDamage: 7,
+    attackerChargedMoves: []
+  }
+});
+assert.equal(smartFarmRangeParity.shield, true);
+assert(smartFarmRangeParity.reasonCodes.includes("SHIELD_AVOIDS_FARM_RANGE"));
+
 for (const policy of ["FAST", "STANDARD", "DEEP_REVIEW"]) {
   assert.equal(select(lethalState, { policy }).action.moveId, "CHEAP");
 }

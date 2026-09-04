@@ -134,6 +134,19 @@ assert.equal(updatedRuntimeRegistry.branches["COMPARE-A"].runtimeState.left.hp, 
 assert.equal(updatedRuntimeRegistry.branches["COMPARE-B"].runtimeState.left.hp, 14, "Updating A must not mutate B runtime.");
 assert.equal(Branches.undo(updatedRuntimeRegistry).branches["COMPARE-A"].runtimeState.left.hp, 14, "Undo must restore the branch-owned runtime.");
 assert.equal(Branches.redo(Branches.undo(updatedRuntimeRegistry)).branches["COMPARE-A"].runtimeState.left.hp, 0, "Redo must restore the same branch-owned runtime.");
+const anomalyEditRegistry = Branches.execute(comparisonRegistry, {
+  type: Branches.COMMAND_TYPE.UPDATE_BRANCH,
+  payload: {
+    branchId: "COMPARE-A",
+    timelineModel: { ...editedTimeline, events: [{ id: "timing-anomaly-1", kind: "technical-anomaly" }] },
+    runtimeState: { left: { hp: 0 }, right: { hp: 21 }, battleTurns: { A: 5, B: 5 } },
+    terminalResult: { winner: "B" },
+    edit: { type: "INSERT_TIMING_ANOMALY", subtype: "resolvePendingFastFirst" }
+  }
+});
+assert.equal(anomalyEditRegistry.branches["COMPARE-A"].edits.at(-1).type, "INSERT_TIMING_ANOMALY");
+assert.equal(Branches.undo(anomalyEditRegistry).branches["COMPARE-A"].edits.length, 0, "Undo must remove the anomaly edit.");
+assert.equal(Branches.redo(Branches.undo(anomalyEditRegistry)).branches["COMPARE-A"].edits.at(-1).type, "INSERT_TIMING_ANOMALY", "Redo must restore the anomaly edit.");
 let dreShortcutRegistry = Branches.createRegistry({ timelineModel: originalTimeline, createdAt: "2026-01-01T00:00:00.000Z" });
 dreShortcutRegistry = Branches.execute(dreShortcutRegistry, {
   type: Branches.COMMAND_TYPE.CREATE_COMPARISON,

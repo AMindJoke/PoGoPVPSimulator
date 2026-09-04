@@ -217,6 +217,7 @@
       replacementPokemonId: event.replacementPokemonId || event.pokemonId || null,
       technicalDetails: event.kind?.startsWith("technical-") ? {
         label: event.label || null,
+        anomalySubtype: event.anomalySubtype || event.details?.anomalySubtype || null,
         chargedMoveId: event.details?.chargedMoveId || null,
         pendingFastMoveName: event.details?.pendingFastMoveName || null
       } : null,

@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-08-25T14:07:52.201Z",
+  "generatedAt": "2026-09-04T07:28:00.681Z",
   "status": "VALID",
   "generation": {
     "datasetVersion": 1,
     "simulatorVersion": "battle-planner-v33",
-    "currentEngineVersion": "battle-planner-v33",
+    "currentEngineVersion": "battle-planner-v36",
     "provenance": {
       "source": "offline-generated",
-      "currentEngineVersion": "battle-planner-v33",
+      "currentEngineVersion": "battle-planner-v36",
       "datasetEngineVersion": "battle-planner-v33",
       "datasetVersion": 1,
       "generatedAt": "2026-08-25T14:07:52.001Z",
-      "stale": false,
-      "staleReason": null
+      "stale": true,
+      "staleReason": "ENGINE_VERSION_MISMATCH"
     },
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "gameMasterHash": "92ecf66df22498f5",
@@ -84,7 +84,9 @@
   "validation": {
     "valid": true,
     "issues": [],
-    "warnings": [],
+    "warnings": [
+      "Dataset planner version is stale: battle-planner-v33; current battle-planner-v36."
+    ],
     "expected": {
       "entries": 1541,
       "matchupsPerEntry": 4620,

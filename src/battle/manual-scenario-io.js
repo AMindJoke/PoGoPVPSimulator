@@ -31,13 +31,16 @@
     "manual-entry",
     "technical-lag",
     "technical-dre",
+    "technical-anomaly",
     "wait",
     "faint",
     "replacement",
     "switch",
     "pokemon-entry"
   ]);
-  const TECHNICAL_ISSUE_TYPES = new Set(["one-turn-lag", "dre"]);
+  // `dre` remains readable for legacy scenarios, but new documents use the
+  // explicit anomaly type so standard 2026 timing is never represented as DRE.
+  const TECHNICAL_ISSUE_TYPES = new Set(["one-turn-lag", "timing-anomaly", "dre"]);
 
   function isRecord(value) {
     return !!value && typeof value === "object" && !Array.isArray(value);
@@ -153,10 +156,12 @@
       .filter(({ event }) => (
         event?.kind === "technical-lag"
         || event?.kind === "technical-dre"
+        || event?.kind === "technical-anomaly"
         || event?.issueType
         || event?.drePending
         || event?.dreResolved
         || event?.dreDenied
+        || event?.timingAnomaly
       ))
       .map(({ event, index }) => eventId(event, index));
   }
@@ -393,6 +398,9 @@
       }
     }
     if (event.issueType && !TECHNICAL_ISSUE_TYPES.has(event.issueType)) errors.push(`INVALID_TECHNICAL_ISSUE:${index}`);
+    if (event.kind === "technical-anomaly" && event.anomalySubtype !== "resolvePendingFastFirst") {
+      errors.push(`INVALID_TIMING_ANOMALY_SUBTYPE:${index}`);
+    }
   }
 
   function validatePendingFast(errors, event, index) {

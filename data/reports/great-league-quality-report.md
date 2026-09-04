@@ -1,7 +1,7 @@
 # Great League Dataset Quality Report
 
 Status: **Dataset VALID**
-Generated: 2026-08-25T14:07:52.201Z
+Generated: 2026-09-04T07:28:00.681Z
 
 ## Generation
 - Dataset version: 1
@@ -28,6 +28,8 @@ Generated: 2026-08-25T14:07:52.201Z
 
 ## Validation
 - No blocking issues found.
+### Warnings
+- Dataset planner version is stale: battle-planner-v33; current battle-planner-v36.
 
 ## Sanity Check
 ### Top 50

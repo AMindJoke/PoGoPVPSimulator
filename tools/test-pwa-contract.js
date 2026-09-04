@@ -6,6 +6,7 @@ const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8"));
 const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+const battleReliability = fs.readFileSync(path.join(root, "src", "reliability", "battle-reliability.js"), "utf8");
 
 assert.match(html, /<link rel="manifest" href="manifest\.webmanifest">/);
 assert.match(html, /<meta name="theme-color" content="#156f8f">/);
@@ -16,6 +17,11 @@ for (const size of [16, 32, 48]) {
 }
 assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
 assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js"\)/);
+
+const plannerVersion = battleReliability.match(/BATTLE_ENGINE_VERSION = "battle-planner-v(\d+)"/)?.[1];
+assert.ok(plannerVersion, "The battle engine must expose a numeric planner version.");
+assert.match(html, new RegExp(`src/battle/battle-intelligence\\.js\\?v=\\d+-planner-v${plannerVersion}`),
+  "The page cache-buster must stay aligned with the current battle engine version.");
 
 assert.strictEqual(manifest.start_url, "./PogoPvp.html");
 assert.strictEqual(manifest.display, "standalone");

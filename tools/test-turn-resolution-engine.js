@@ -118,6 +118,25 @@ assert.equal(TurnEngine.eventsDue(queued, 6).length, 1);
 const afterImpact = TurnEngine.resolveFastImpact(TurnEngine.createState({ ...state, pendingEvents: queued }), pendingRollout);
 assert.equal(afterImpact.state.sides.A.hp, 0);
 assert.equal(afterImpact.outcome.winner, "B");
+assert.equal(afterImpact.state.pendingEvents.length, 0, "a resolved anomaly Fast is removed from the pending queue");
+assert.deepEqual(TurnEngine.getLegalActions(afterImpact.state, "A"), [], "a lethal pending Fast prevents the intended Charged action");
+
+const nonLethalAnomaly = TurnEngine.createFastImpactEvent({
+  id: "anomaly-nonlethal",
+  sourceSide: "B",
+  targetSide: "A",
+  moveId: "ROLLOUT",
+  moveName: "Rollout",
+  damage: 7,
+  energyGain: 4,
+  startTurn: 4,
+  duration: 3
+});
+const nonLethalState = battleState({ hpA: 25, energyB: 10, pendingEvents: [nonLethalAnomaly] });
+const nonLethalResult = TurnEngine.resolveFastImpact(nonLethalState, nonLethalAnomaly);
+assert.equal(nonLethalResult.state.sides.A.hp, 18, "a non-lethal anomaly applies the real Fast damage");
+assert.equal(nonLethalResult.state.sides.B.energy, 14, "a non-lethal anomaly applies the Fast energy gain");
+assert.equal(nonLethalResult.outcome.ended, false, "a non-lethal anomaly leaves the battle active");
 
 const energyImpact = TurnEngine.createFastImpactEvent({
   sourceSide: "A",

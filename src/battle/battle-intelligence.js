@@ -1515,6 +1515,39 @@ function createPvPeakBattleIntelligenceApi() {
     };
   }
 
+  function canonicalFastThenChargedClosureBeforeOpponentThreat({ state, side, actor, opponent, moves, fast, context }) {
+    if (!fast || !actor?.fastMove || numeric(opponent?.hp) <= 0 || numeric(opponent?.shields) > 0) return null;
+    const fastDamage = canonicalFastDamage(actor, context, "actor");
+    if (fastDamage <= 0) return null;
+    const fastTurns = Math.max(1, numeric(actor.fastMove.turns, 1));
+    const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
+    const chargedTriggerTurn = currentTurn + fastTurns;
+    const opponentReadyTurn = Math.max(currentTurn, numeric(opponent.readyTurn));
+    if (chargedTriggerTurn >= opponentReadyTurn) return null;
+
+    const projectedEnergy = numeric(actor.energy) + numeric(actor.fastMove.energyGain);
+    const remainingHp = Math.max(0, numeric(opponent.hp) - fastDamage);
+    const closer = (moves || [])
+      .filter(move => projectedEnergy >= numeric(move.energyCost) && numeric(move.damage) >= remainingHp)
+      .sort((a, b) => numeric(a.energyCost) - numeric(b.energyCost) || numeric(b.damage) - numeric(a.damage))[0] || null;
+    if (!closer) return null;
+
+    const pendingDamage = pendingDamageThrough(state, side, chargedTriggerTurn);
+    if (numeric(actor.hp) <= pendingDamage) return null;
+    return {
+      fastDamage,
+      fastTurns,
+      currentTurn,
+      chargedTriggerTurn,
+      opponentReadyTurn,
+      projectedEnergy,
+      remainingHp,
+      moveId: closer.id,
+      moveDamage: closer.damage,
+      pendingDamage
+    };
+  }
+
   function canonicalTimingDecision({ state, side, actor, opponent, moves, opponentMoves, fast, context, survival }) {
     const triggered = ["TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS"];
     const rejected = [];
@@ -1559,6 +1592,17 @@ function createPvPeakBattleIntelligenceApi() {
       context
     });
     const canCloseWithFast = !!fastClosure;
+    const fastThenChargedClosure = canonicalFastThenChargedClosureBeforeOpponentThreat({
+      state,
+      side,
+      actor,
+      opponent,
+      moves,
+      fast,
+      context
+    });
+    const canCloseWithFastThenCharged = !!fastThenChargedClosure;
+    const canCloseBeforeOpponentThreat = canCloseWithFast || canCloseWithFastThenCharged;
     let optimize = timingWindowOpen && context.chargedTimingOptimization !== false && !!fast;
     const actorFaints = numeric(actor.hp) <= oppFastDamage;
     if (actorFaints) {
@@ -1580,7 +1624,7 @@ function createPvPeakBattleIntelligenceApi() {
     let turnsPlanned = ownTurns + Math.floor(numeric(actor.energy) / moves[0].energyCost);
     if (numeric(actor.attack) < numeric(opponent.attack)) turnsPlanned++;
     const resourcesBecomeUnusable = turnsPlanned > survival.turnsToLive;
-    if (resourcesBecomeUnusable && !canCloseWithFast) {
+    if (resourcesBecomeUnusable && !canCloseBeforeOpponentThreat) {
       optimize = false;
       triggered.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
     } else rejected.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
@@ -1606,7 +1650,7 @@ function createPvPeakBattleIntelligenceApi() {
         break;
       }
     }
-    if (opponentChargedLethal && !canCloseWithFast) {
+    if (opponentChargedLethal && !canCloseBeforeOpponentThreat) {
       optimize = false;
       triggered.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
     } else rejected.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
@@ -1643,6 +1687,8 @@ function createPvPeakBattleIntelligenceApi() {
         opponentChargedLethal,
         canCloseWithFast,
         fastClosure,
+        canCloseWithFastThenCharged,
+        fastThenChargedClosure,
         fittedFastCount,
         fittedFastDamage: oppFastDamage * fittedFastCount,
         ownFastDamage
@@ -2130,7 +2176,10 @@ function createPvPeakBattleIntelligenceApi() {
       );
     const preserveGuaranteedEffectOpener = selected?.guaranteedEffect
       && selected.effectStrategicValue?.valuable !== false
-      && (repeatedGuaranteedAttackDebuffRoute || numeric(selected.damage) >= bestImmediateDamage * .75);
+      && (
+        repeatedGuaranteedAttackDebuffRoute
+        || numeric(selected.damage) >= bestImmediateDamage * .75
+      );
     const preserveRepeatedCheapRoute = sequence.length > 1
       && sequence[0]?.id === sequence[1]?.id
       && higherCostPressureAvailable;
@@ -4205,6 +4254,12 @@ function createPvPeakBattleIntelligenceApi() {
       ));
     }
 
+    if (damage >= hp) return done(shieldResult(true, "SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98));
+    if (threat.entersFarmRange) return done(shieldResult(true, "SHIELD_AVOIDS_FARM_RANGE", "Smart shield avoids farm range.", .9));
+    if (threat.losesChargedThreat) {
+      return done(shieldResult(true, "SHIELD_PRESERVES_CHARGED_THREAT", "Smart shield preserves charged-move threat.", .88));
+    }
+
     if (policy === "smart" && input.parityThreat) {
       return done(canonicalWouldShieldDecision(input));
     }
@@ -4226,13 +4281,8 @@ function createPvPeakBattleIntelligenceApi() {
       }
     }
 
-    if (damage >= hp) return done(shieldResult(true, "SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98));
     if (threat.preBuffDefenseWindow && shields >= 2 && damage / maxHp >= .12) {
       return done(shieldResult(true, "SHIELD_PRESERVES_WIN_CONDITION", "Smart shield preserves HP before activating a guaranteed Defense boost.", .9));
-    }
-    if (threat.entersFarmRange) return done(shieldResult(true, "SHIELD_AVOIDS_FARM_RANGE", "Smart shield avoids farm range.", .9));
-    if (threat.losesChargedThreat) {
-      return done(shieldResult(true, "SHIELD_PRESERVES_CHARGED_THREAT", "Smart shield preserves charged-move threat.", .88));
     }
     const damageRatio = damage / maxHp;
     if (shields >= 2 && (damageRatio >= .42 || energyCost >= 55)) {
