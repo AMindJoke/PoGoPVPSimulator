@@ -16,12 +16,14 @@ for (const size of [16, 32, 48]) {
   assert.ok(fs.existsSync(path.join(root, "assets", `go-pvp-favicon-${size}.png`)), `Missing ${size}px GO favicon.`);
 }
 assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
-assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js"\)/);
+assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js\?v=20260904-v20"\)/);
 
 const plannerVersion = battleReliability.match(/BATTLE_ENGINE_VERSION = "battle-planner-v(\d+)"/)?.[1];
 assert.ok(plannerVersion, "The battle engine must expose a numeric planner version.");
 assert.match(html, new RegExp(`src/battle/battle-intelligence\\.js\\?v=\\d+-planner-v${plannerVersion}`),
   "The page cache-buster must stay aligned with the current battle engine version.");
+assert.match(html, new RegExp(`src/reliability/battle-reliability\\.js\\?v=\\d+-planner-v${plannerVersion}`),
+  "The reliability cache-buster must stay aligned with the current battle engine version.");
 
 assert.strictEqual(manifest.start_url, "./PogoPvp.html");
 assert.strictEqual(manifest.display, "standalone");

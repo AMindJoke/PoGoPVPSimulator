@@ -22,7 +22,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260903-planner-v35"></script>
+  <script src="src/reliability/battle-reliability.js?v=20260904-planner-v38"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -33334,7 +33334,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260904-v20").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
