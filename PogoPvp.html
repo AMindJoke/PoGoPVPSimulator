@@ -22,7 +22,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260904-planner-v38"></script>
+  <script src="src/reliability/battle-reliability.js?v=20260904-planner-v39"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -68,7 +68,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260904-planner-v38"></script>
+  <script src="src/battle/battle-intelligence.js?v=20260904-planner-v39"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -22198,7 +22198,7 @@
           }
         },
         pendingEvents: [
-          ...(typeof manualModeState !== "undefined" && manualModeState?.enabled && typeof manualPendingFastEvents !== "undefined" ? manualPendingFastEvents : []),
+          ...(typeof manualPendingFastEvents !== "undefined" ? manualPendingFastEvents : []),
           ...(typeof technicalIssueInjection !== "undefined" ? technicalIssueInjection?.pendingEvents || [] : [])
         ]
       });
@@ -22337,8 +22337,21 @@
         : null;
       if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
+      const turnApi = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
+      const automaticFastImpact = activeAutoTurnContext && turnApi
+        ? turnApi.createFastImpactEvent({
+            sourceSide: attacker.trainer,
+            targetSide: defender.trainer,
+            damage: estimate(attacker, defender, attacker.fast),
+            startTurn: Number(battleTurns[attacker.trainer] || 0),
+            duration: Math.max(1, Number(attacker.fast.turns || 1))
+          })
+        : null;
+      const deferAutomaticLethal = !!automaticFastImpact
+        && turnApi.shouldDeferLethalFastImpact(turnEngineState(automaticFastImpact.startTurn), automaticFastImpact);
       const deferForTrainerRules = (typeof manualModeState !== "undefined" && manualModeState?.enabled)
-        || activeAutoTurnContext?.deferFastImpacts === true;
+        || activeAutoTurnContext?.deferFastImpacts === true
+        || deferAutomaticLethal;
       if (deferForTrainerRules && (typeof technicalIssueInjection === "undefined" || !technicalIssueInjection) && chargedContinuationDepth === 0) {
         const event = registerManualFast(attacker, defender, options);
         if (!event) return false;
@@ -29098,7 +29111,8 @@
             break;
           }
         }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        const chargedTurn = resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        if (!chargedTurn) resolveManualFastImpactsThrough(currentTurn);
         finish();
       } finally {
         activeAutoTurnContext = previousContext;
@@ -35804,7 +35818,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260904-v20").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260904-v21").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

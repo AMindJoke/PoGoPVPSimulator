@@ -15,7 +15,7 @@ assert.match(html, /class="battle-cta-row"[\s\S]{0,180}id="battleCta"[\s\S]{0,70
 assert.match(html, /id="battleCta" class="battle-cta"[\s\S]{0,220}class="battle-btn__icon"[\s\S]{0,320}class="battle-btn__label">Battle/, "The Battle action must use its distinct lightning icon and protected text layer.");
 assert.match(html, /id="p1ShieldMode" type="hidden" value="always"[\s\S]{0,220}data-shield-mode="always" class="active"/, "Pokemon A must default to deterministic Always shield logic.");
 assert.match(html, /id="p2ShieldMode" type="hidden" value="always"[\s\S]{0,220}data-shield-mode="always" class="active"/, "Pokemon B must default to deterministic Always shield logic.");
-assert.match(html, /src\/battle\/battle-intelligence\.js\?v=20260904-planner-v38/, "The page must load the current battle planner version instead of reusing a stale browser-cached script.");
+assert.match(html, /src\/battle\/battle-intelligence\.js\?v=20260904-planner-v39/, "The page must load the current battle planner version instead of reusing a stale browser-cached script.");
 assert.match(html, /function filteredBaseList\(\)\s*\{\s*return allPokemon;\s*\}/, "Battle selection must always include unreleased Pokemon and duplicate forms.");
 assert.doesNotMatch(html, /id="(?:releasedOnly|showForms|presetMatchup|loadPreset|mobileReset)"/, "The obsolete Battle toolbar, Quick Matchup, duplicate-form filter, released filter, and header reset must be removed.");
 assert.match(html, /src\/battle\/manual-branches\.js[\s\S]{0,150}src\/battle\/scenario-comparison\.js[\s\S]{0,150}src\/battle\/manual-scenario-io\.js/, "Scenario Comparison must load between the branch registry and canonical Scenario IO.");

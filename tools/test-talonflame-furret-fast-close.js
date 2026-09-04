@@ -45,13 +45,13 @@ function fixtureConfig(shieldMode = "smart", profile = RANK1_PROFILE) {
   return config;
 }
 
-function simulate(diagnosticPlan = null, shieldMode = "always", profile = RANK1_PROFILE) {
+function simulate(diagnosticPlan = null, shieldMode = "always", profile = RANK1_PROFILE, shields = 1) {
   return adapter.simulate({
     id: "shadow-talonflame-furret-fast-close",
     key: "shadow-talonflame-furret-fast-close",
     source: "reported-planner-regression",
-    aShields: 1,
-    bShields: 1,
+    aShields: shields,
+    bShields: shields,
     includeSwing: false,
     debugTimeline: true,
     trace: true,
@@ -64,6 +64,7 @@ function simulate(diagnosticPlan = null, shieldMode = "always", profile = RANK1_
 const result = simulate();
 const smartResult = simulate(null, "smart");
 const defaultProfileResult = simulate(null, "always", DEFAULT_PROFILE);
+const twoShieldResult = simulate(null, "always", DEFAULT_PROFILE, 2);
 const straightSwiftResult = simulate({
   steps: [{ side: "A", turn: 14, type: "charged_move", moveId: "SWIFT" }]
 }, "always");
@@ -101,6 +102,33 @@ if (process.argv.includes("--diagnose")) {
           reasonCode: decision.reasonCode,
           intent: decision.principleResult?.intent,
           timing: decision.principleResult?.evidence?.timing
+        }))
+    },
+    twoShield: {
+      score: twoShieldResult.score,
+      winnerEdge: twoShieldResult.details.winnerEdge,
+      finalState: twoShieldResult.decisionTrace.finalState,
+      timeline: twoShieldResult.timelineTrace.map(event => ({
+        side: event.trainer,
+        turn: event.start,
+        duration: event.duration,
+        kind: event.kind,
+        move: event.moveId,
+        hpBefore: event.hpBefore,
+        hpAfter: event.hpAfter,
+        energyBefore: event.energyBefore,
+        energyAfter: event.energyAfter
+      })),
+      decisions: (twoShieldResult.decisionTrace.decisions || [])
+        .filter(decision => decision.side === "A")
+        .map(decision => ({
+          turn: decision.turn,
+          type: decision.decisionType,
+          chosen: decision.chosenCandidate?.action || decision.chosenCandidate?.moveId,
+          reasonCode: decision.reasonCode,
+          intent: decision.principleResult?.intent,
+          timing: decision.principleResult?.evidence?.timing,
+          survival: decision.principleResult?.evidence?.survival
         }))
     },
     straightSwift: {
@@ -217,6 +245,34 @@ assert.strictEqual(Array.from(defaultProfileFurretCharges).join(","), "SWIFT,SWI
   "The reported 160/135 profile must win straight Swift.");
 assert(defaultProfileResult.details.winnerEdge > 0,
   "The reported 160/135 profile must remain a Furret win.");
+
+const twoShieldLateFasts = twoShieldResult.timelineTrace
+  .filter(event => event.kind === "fast" && event.trainer === "A" && Number(event.start) >= 26)
+  .map(event => Number(event.start));
+const twoShieldClosingSwift = [...twoShieldResult.timelineTrace].reverse().find(event =>
+  event.kind === "charge" && event.trainer === "A" && event.moveId === "SWIFT"
+);
+const deferredIncinerate = twoShieldResult.timelineTrace.find(event =>
+  event.kind === "fast" && event.trainer === "B" && Number(event.start) === 31
+);
+assert(twoShieldResult.details.winnerEdge > 0,
+  "Furret must win the reported 2-2 line instead of fainting when Incinerate is registered.");
+assert.strictEqual(twoShieldResult.decisionTrace.finalState.A.hp, 17,
+  "The pending Incinerate must not damage Furret after Talonflame faints.");
+assert.strictEqual(twoShieldLateFasts.join(","), "26,28,30,32",
+  "Furret must fit the fourth Sucker Punch before the pending Incinerate impact.");
+assert.strictEqual(Number(twoShieldClosingSwift?.start), 34,
+  "Furret must close with Swift after the safe fourth Sucker Punch.");
+assert.strictEqual(deferredIncinerate?.hpAfter, deferredIncinerate?.hpBefore,
+  "A lethal long Fast Attack must remain pending at registration when the target can act first.");
+
+const twoShieldOverfarmDecision = (twoShieldResult.decisionTrace.decisions || []).find(decision =>
+  decision.side === "A"
+  && Number(decision.turn) === 32
+  && decision.decisionType === "charged-timing-selection"
+);
+assert.strictEqual(twoShieldOverfarmDecision?.chosenCandidate?.action, "FAST_THEN_REEVALUATE",
+  "A pending lethal Fast must not force an early throw when Fast-then-Charged closes first.");
 
 // Control: a pending lethal Fast impact must still take priority over a
 // tempting Fast farm.  This prevents the closure exception from becoming a

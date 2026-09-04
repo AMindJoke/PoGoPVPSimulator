@@ -790,6 +790,28 @@ function createPvPeakBattleIntelligenceApi() {
 
     const canonicalPendingLethal = nextPendingLethal(state, side);
     if (canonicalPendingLethal && chargedCandidates.length) {
+      const safeFastThenCharged = canonicalFastThenChargedClosureBeforeOpponentThreat({
+        state,
+        side,
+        actor,
+        opponent,
+        moves,
+        fast,
+        context
+      });
+      if (safeFastThenCharged) {
+        triggered.push(
+          "TIMING-011_OPTIMIZE_CHARGED_TIMING",
+          "TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"
+        );
+        rejected.push("TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT");
+        return finish(fast, "timing", "FAST_MOVE", {
+          sourceBranch: "pending lethal Fast still permits a Fast-then-Charged close",
+          pendingEventId: canonicalPendingLethal.id,
+          resolveTurn: canonicalPendingLethal.resolveTurn,
+          fastThenChargedClosure: safeFastThenCharged
+        });
+      }
       const forcedPending = canonicalForcedThrow({
         actor,
         opponent,
