@@ -55,6 +55,10 @@ const allPokemonRanking = args.has("--all-pokemon");
 const rankingOnly = args.has("--ranking-only");
 const chunkOutput = args.has("--chunk-output");
 const mergeChunks = args.has("--merge-chunks");
+const mergeOffsetsArg = process.argv.find(arg => arg.startsWith("--merge-offsets="));
+const mergeOffsets = mergeOffsetsArg
+  ? new Set(mergeOffsetsArg.slice("--merge-offsets=".length).split(",").map(value => String(Math.max(0, Number(value) || 0)).padStart(4, "0")))
+  : null;
 const splitMatchups = args.has("--split-matchups");
 const fullOutput = args.has("--full-output");
 const useMatchupCache = args.has("--matchup-cache");
@@ -249,6 +253,7 @@ function createWorkerAdapter(source, options = {}) {
     setTimeout,
     clearTimeout,
     BATTLE_INTELLIGENCE_STRICT: options.strict === true,
+    BATTLE_DRE_STANDARD: options.dreStandard === true,
     self: {
       postMessage(message) {
         posted.push(message);
@@ -612,13 +617,15 @@ function addMoveUsage(bucket, moveset) {
 
 function compactResult(result, aId, bId) {
   const details = result.details || {};
-  const winnerSide = details.winnerEdge > 0 ? "A" : details.winnerEdge < 0 ? "B" : "tie";
+  const winnerSide = details.simultaneousFaint
+    ? "tie"
+    : details.winnerEdge > 0 ? "A" : details.winnerEdge < 0 ? "B" : "tie";
   return {
-    score: Math.round(Number(result.score || 500)),
+    score: Math.round(Number(result.score ?? 500)),
     winnerSide,
     winnerId: winnerSide === "A" ? aId : winnerSide === "B" ? bId : null,
-    hpRatioA: Number((details.aHpRatio || 0).toFixed(4)),
-    hpRatioB: Number((details.bHpRatio || 0).toFixed(4)),
+    hpRatioA: Number((details.aHp ?? 0).toFixed(4)),
+    hpRatioB: Number((details.bHp ?? 0).toFixed(4)),
     winnerEdge: Number(details.winnerEdge || 0),
     hpEdge: Number(details.hpEdge || 0),
     energyEdge: Number(details.energyEdge || 0),
@@ -1500,7 +1507,10 @@ function mergeRankingChunks() {
   const mergedSourceData = generationSeasonId ? generationData() : null;
   const chunkDir = path.join(ROOT, generationPath("ranking-chunks"));
   const files = fs.existsSync(chunkDir)
-    ? fs.readdirSync(chunkDir).filter(name => /^great-league-rankings-\d+\.json$/.test(name)).sort()
+    ? fs.readdirSync(chunkDir)
+      .filter(name => /^great-league-rankings-\d+\.json$/.test(name))
+      .filter(name => !mergeOffsets || mergeOffsets.has(name.match(/-(\d+)\.json$/)[1]))
+      .sort()
     : [];
   if (!files.length) throw new Error("No ranking chunks found.");
   const chunks = files.map(name => readJson(generationPath("ranking-chunks", name)));
@@ -1592,5 +1602,6 @@ module.exports = {
   combatantStateSignature,
   createCombatant,
   createBattleConfig,
-  cloneBattleConfig
+  cloneBattleConfig,
+  compactResult
 };

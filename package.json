@@ -83,6 +83,7 @@
     "setup:pvpoke-reference": "node tools/setup-pvpoke-reference.js",
     "test:pvpoke-differential-parity": "node tools/test-pvpoke-differential-parity.js",
     "report:pvpoke-differential-parity": "node tools/pvpoke-differential-parity-harness.js --write",
+    "report:incinerate-dre-differential": "node tools/incinerate-dre-differential.js",
     "test:pvpoke-runtime-parity": "node tools/test-pvpoke-runtime-parity.js",
     "test:pvpoke-principle-audit": "node tools/test-pvpoke-principle-parity-audit.js",
     "docs:battle-principles": "node tools/generate-battle-principle-registry-doc.js",

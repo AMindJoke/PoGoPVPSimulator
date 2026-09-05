@@ -29058,8 +29058,11 @@
           defender,
           plan: prepareAutomaticBattleAction(attacker, defender)
         }));
-        context.deferFastImpacts = preparedActors.some(item => item.plan?.action?.type === "charged")
-          && preparedActors.some(item => item.plan?.action?.type === "fast");
+        const strictDreStandard = globalThis.BATTLE_DRE_STANDARD === true
+          || String(globalThis.BATTLE_DRE_STANDARD || "").toLowerCase() === "true";
+        context.deferFastImpacts = strictDreStandard
+          || (preparedActors.some(item => item.plan?.action?.type === "charged")
+            && preparedActors.some(item => item.plan?.action?.type === "fast"));
         const simultaneousFastPlans = preparedActors.map(item => item.plan).filter(Boolean);
         if (
           simultaneousFastPlans.length === 2
