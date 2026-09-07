@@ -128,7 +128,7 @@
           "id": "key-point",
           "heading": "Key point",
           "kind": "key-point",
-          "body": ["Registration, pending status, impact, and the next ready turn are separate facts. Use the event marker and state snapshot together when reviewing timing."]
+          "body": ["Registration, pending status, impact, and the next ready turn are separate facts. Keep those stages distinct when reviewing timing."]
         }
       ],
       "related": ["battle-turns", "fast-move-duration", "energy-generation"],
@@ -174,7 +174,7 @@
           "id": "comparison",
           "heading": "Compare priority Attack",
           "kind": "text",
-          "body": ["A Charged Attack is registered in the decision window but starts at the beginning of the next turn. Its damage and effects resolve before the end of Fast Attacks completing during that Charged sequence.", "When both sides register a Charged Attack in the same decision window, Charged Attack Priority compares each side's priority Attack value; the higher value starts first. Temporary Attack stage changes during battle do not change CAP order in the simulator, and displayed CP does not decide it. Defense changes do not affect CAP; they only affect damage.", "A pending Fast does not turn the old DRE discussion into a random exception: the current turn sequence deterministically decides which legal Charged action resolves before the Fast impact."]
+          "body": ["A Charged Attack is registered in the decision window but starts at the beginning of the next turn. Its damage and effects resolve before the end of Fast Attacks completing during that Charged sequence.", "When both sides register a Charged Attack in the same decision window, Charged Attack Priority compares each side's priority Attack value; the higher value starts first. Temporary Attack stage changes during battle do not change CAP order, and displayed CP does not decide it. Defense changes do not affect CAP; they only affect damage.", "A pending Fast does not turn the old DRE discussion into a random exception: the current turn sequence deterministically decides which legal Charged action resolves before the Fast impact."]
         },
         {
           "id": "sequence",
@@ -209,7 +209,7 @@
           "id": "multipliers",
           "heading": "Multiplier pattern",
           "kind": "example",
-          "body": ["The simulator uses (4 + stage) / 4 for non-negative stages and 4 / (4 − stage) for negative stages. For example, +1 is 1.25× and −1 is 0.8×."]
+          "body": ["For non-negative stages, the multiplier is (4 + stage) / 4; for negative stages, it is 4 / (4 − stage). For example, +1 is 1.25× and −1 is 0.8×."]
         },
         {
           "id": "cmp-effect",
@@ -261,7 +261,7 @@
           "id": "rule",
           "heading": "Registered is not resolved",
           "kind": "text",
-          "body": ["A Fast Attack can be registered and in progress before its damage reaches the end-of-turn impact. That scheduled event is a pending Fast. A pending Fast can be lethal without being an immediate knockout.", "The HP bar or timeline may briefly show pending damage before the game applies it. The damage animation is feedback after application, not a second damage event."]
+          "body": ["A Fast Attack can be registered and in progress before its damage reaches the end-of-turn impact. That scheduled event is a pending Fast. A pending Fast can be lethal without being an immediate knockout.", "A pending Fast resolves once at its scheduled impact; the same event cannot apply its damage twice."]
         },
         {
           "id": "legal-window",
@@ -279,7 +279,7 @@
           "id": "denied-impact",
           "heading": "A denied impact is not a second knockout",
           "kind": "key-point",
-          "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the registered event can be denied. Registered, resolved, and denied are different statuses; a denied event must not create a duplicate KO marker."]
+          "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the registered event can be denied. Registered, resolved, and denied are different statuses; a denied impact does not deal damage or create an additional knockout."]
         }
       ],
       "related": ["fast-move-impact", "charged-attack-timing", "switching-timing"],

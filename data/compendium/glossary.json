@@ -30,7 +30,7 @@
       "expanded": "Charged Attack",
       "definition": "An energy-spending battle action registered in one decision window and started at the beginning of the next turn when legal.",
       "category": "Actions",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["CA"],
       "keywords": ["charged", "energy cost", "attack"],
       "related": ["energy-generation", "charged-move-priority", "charged-attack-timing"]
@@ -63,7 +63,7 @@
       "expanded": "Maximum stored energy",
       "definition": "The 100-energy storage limit. Energy generated above that limit is not retained.",
       "category": "Energy",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["max energy", "overcap"],
       "keywords": ["100 energy", "energy limit"],
       "related": ["energy-generation"]
@@ -85,7 +85,7 @@
       "expanded": "Fast Attack",
       "definition": "A battle action with a fixed turn duration; its damage and energy apply together at the appropriate end-of-turn impact.",
       "category": "Actions",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["FA"],
       "keywords": ["duration", "energy gain", "impact"],
       "related": ["fast-move-duration", "fast-move-impact"]
@@ -94,9 +94,9 @@
       "id": "impact-turn",
       "term": "Impact turn",
       "expanded": "Fast Attack impact",
-      "definition": "The turn when a Fast Attack's damage and energy are applied together after its duration; the simulator calculates it as start turn + duration − 1.",
+      "definition": "The turn when a Fast Attack's damage and energy are applied together after its duration: start turn + duration − 1.",
       "category": "Timing",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["damage registration turn"],
       "keywords": ["resolve turn", "fast damage", "energy registration"],
       "related": ["fast-move-impact", "battle-turns"]
@@ -107,7 +107,7 @@
       "expanded": "1-Turn Lag",
       "definition": "A historical or review label for a verified action delay of one turn; it is not ordinary current Fast timing and does not establish a rematch by itself.",
       "category": "Technical issues",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["1-turn lag", "technical lag", "General Lag"],
       "keywords": ["lost turn", "input delay", "technical review"],
       "related": ["general-lag-review", "battle-turns"]
@@ -151,7 +151,7 @@
       "expanded": "Attack or Defense stage",
       "definition": "A bounded battle modifier applied independently to Attack or Defense, ranging from −4 through +4.",
       "category": "Battle state",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["buff stage", "debuff stage"],
       "keywords": ["buff", "debuff", "modifier", "attack", "defense"],
       "related": ["stat-stages", "charged-move-priority"]
@@ -160,9 +160,9 @@
       "id": "turn",
       "term": "Turn",
       "expanded": "Battle turn",
-      "definition": "The simulator's smallest battle-timing unit. One turn lasts 0.5 seconds.",
+      "definition": "The basic battle-timing unit. One turn lasts 0.5 seconds.",
       "category": "Timing",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["0.5 seconds", "half second"],
       "keywords": ["timing unit", "duration"],
       "related": ["battle-turns"]
@@ -184,7 +184,7 @@
       "expanded": "Pending Fast damage",
       "definition": "A registered Fast Attack whose damage and energy are scheduled for a later impact; pending status is not an immediate knockout.",
       "category": "Current timing",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["pending damage", "lethal pending Fast"],
       "keywords": ["fast impact", "registered", "resolved", "denied", "charged before impact"],
       "related": ["pending-fast", "fast-move-impact", "charged-attack-timing"]
@@ -195,7 +195,7 @@
       "expanded": "Switch before pending damage",
       "definition": "The current ordering in which a legal switch is applied before the pending Fast damage it is intended to absorb, so the incoming Pokémon receives that impact.",
       "category": "Switching",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["catch damage", "incoming damage"],
       "keywords": ["switch", "pending Fast", "incoming", "outgoing"],
       "related": ["switching-timing", "pending-fast"]
@@ -228,7 +228,7 @@
       "expanded": "Zero-turn end-of-sequence switch",
       "definition": "An eligible voluntary switch at the end of a Charged Attack sequence; it uses a distinct zero-turn window, not the normal one-turn cost.",
       "category": "Switching",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["zero-turn switch", "0-turn switch", "free switch after Charged"],
       "keywords": ["post charged", "switch window", "charged sequence"],
       "related": ["post-charged-switch", "switching-timing"]
@@ -239,7 +239,7 @@
       "expanded": "Target-owned Defense drop",
       "definition": "A Charged Attack effect that lowers the user's own Defense before an opponent's pending Fast reaches impact; that current Defense is used for the pending damage calculation.",
       "category": "Battle state",
-      "usage": "simulator",
+      "usage": "judge",
       "aliases": ["self debuff", "self-defense drop"],
       "keywords": ["pending Fast", "Defense stage", "stat change", "target"],
       "related": ["stat-stages", "pending-fast"]

@@ -59,5 +59,6 @@ assert.ok(model.search(index, "sneak").some(result => result.id === "sneak"));
 assert.ok(model.search(index, "leak").some(result => result.id === "sneak"));
 
 assert.doesNotMatch(JSON.stringify(raw), /Timing Anomaly|timing anomaly|timing-anomaly/i);
+assert.doesNotMatch(JSON.stringify(raw), /simulator|duplicate KO marker|event marker|state snapshot|HP bar|damage animation/i);
 
 console.log("Judge Compendium 2026 migration tests passed.");
