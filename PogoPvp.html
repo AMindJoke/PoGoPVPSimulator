@@ -22,7 +22,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260904-planner-v39"></script>
+  <script src="src/reliability/battle-reliability.js?v=20260907-planner-v40"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -68,7 +68,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260904-planner-v39"></script>
+  <script src="src/battle/battle-intelligence.js?v=20260907-planner-v40"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -16185,6 +16185,7 @@
         stageDeltaText,
         stageText,
         turnEngineState,
+        resolvePendingFastDamage,
         legalBattleActions,
         pendingLethalFastWindow,
         orderedBattleActors,
@@ -22181,18 +22182,24 @@
         sides: {
           A: {
             id: left.p?.id || "A",
+            pokemonId: left.p?.id || "A",
             hp: left.hp,
             energy: left.energy,
             attack: left.attack,
+            attackStage: left.attackStage || 0,
+            defenseStage: left.defenseStage || 0,
             readyTurn: battleTurns.A,
             fastMove: left.fast,
             chargedMoves: validChargedMoves(left)
           },
           B: {
             id: right.p?.id || "B",
+            pokemonId: right.p?.id || "B",
             hp: right.hp,
             energy: right.energy,
             attack: right.attack,
+            attackStage: right.attackStage || 0,
+            defenseStage: right.defenseStage || 0,
             readyTurn: battleTurns.B,
             fastMove: right.fast,
             chargedMoves: validChargedMoves(right)
@@ -22203,6 +22210,18 @@
           ...(typeof technicalIssueInjection !== "undefined" ? technicalIssueInjection?.pendingEvents || [] : [])
         ]
       });
+    }
+
+    // Pending Fast damage is registered with a trace value, but its final
+    // damage must use the active combatants and stat stages at impact time.
+    function resolvePendingFastDamage(event) {
+      const source = event?.sourceSide === "A" ? left : right;
+      const target = event?.targetSide === "A" ? left : right;
+      if (!source || !target || !source.fast) return Number(event?.damage || 0);
+      const move = source.fast.id === event.moveId
+        ? source.fast
+        : ({ ...source.fast, id: event.moveId || source.fast.id, name: event.moveName || source.fast.name });
+      return estimate(source, target, move);
     }
 
     function legalBattleActions(combatant, currentTurn = null) {
@@ -22245,7 +22264,7 @@
       const resolved = [];
       dueTurns.forEach(resolveTurn => {
         const state = api.createState({ ...turnEngineState(resolveTurn), currentTurn: resolveTurn, pendingEvents: manualPendingFastEvents });
-        const phase = api.resolveDueFastImpacts(state, resolveTurn);
+        const phase = api.resolveDueFastImpacts(state, resolveTurn, { damageResolver: resolvePendingFastDamage });
         left.hp = phase.state.sides.A.hp;
         left.energy = phase.state.sides.A.energy;
         right.hp = phase.state.sides.B.hp;
@@ -22254,6 +22273,8 @@
           const event = Number.isInteger(impact.timelineIndex) ? timeline[impact.timelineIndex] : null;
           if (event) {
             event.fastImpactStatus = impact.status;
+            event.damageAtRegistration = Number(event.damageAtRegistration ?? event.damage ?? 0);
+            event.damage = Number(impact.damage || 0);
             event.resolutionTurn = impact.resolveTurn;
             event.resolveTurn = impact.resolveTurn;
             event.energyAfter = Number((impact.sourceSide === "A" ? left : right)?.energy || 0);
@@ -28936,18 +28957,24 @@
         sides: {
           A: {
             id: left.p?.id || "A",
+            pokemonId: left.p?.id || "A",
             hp: phaseBefore.A.hp,
             energy: phaseBefore.A.energy,
             attack: left.attack,
+            attackStage: left.attackStage || 0,
+            defenseStage: left.defenseStage || 0,
             readyTurn: battleTurns.A,
             fastMove: left.fast,
             chargedMoves: validChargedMoves(left)
           },
           B: {
             id: right.p?.id || "B",
+            pokemonId: right.p?.id || "B",
             hp: phaseBefore.B.hp,
             energy: phaseBefore.B.energy,
             attack: right.attack,
+            attackStage: right.attackStage || 0,
+            defenseStage: right.defenseStage || 0,
             readyTurn: battleTurns.B,
             fastMove: right.fast,
             chargedMoves: validChargedMoves(right)
@@ -28955,7 +28982,7 @@
         },
         pendingEvents
       });
-      const phase = turnApi.resolveDueFastImpacts(phaseState, impactTurns[0]);
+      const phase = turnApi.resolveDueFastImpacts(phaseState, impactTurns[0], { damageResolver: resolvePendingFastDamage });
       left.hp = phase.state.sides.A.hp;
       right.hp = phase.state.sides.B.hp;
 
@@ -28968,7 +28995,7 @@
         const energyBefore = phaseBefore[side].energy;
         attacker.energy = Math.max(0, Math.min(100, energyBefore + Math.max(0, Number(attacker.fast.energyGain || 0))));
         const resolvedImpact = phase.events.find(event => event.id === pendingEvents[index].id);
-        const damage = resolvedImpact?.status === "resolved" ? pendingEvents[index].damage : 0;
+        const damage = resolvedImpact?.status === "resolved" ? Number(resolvedImpact.damage || 0) : 0;
         const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
           actionLifecycle: plan.hybridLifecycle,
           manualAction: manualActionsBySide[side] || null,
@@ -28977,6 +29004,7 @@
           hpAfter: targetSide === "A" ? left.hp : right.hp
         });
         event.resolveTurn = impactTurns[index];
+        event.damageAtRegistration = Number(pendingEvents[index].damageAtRegistration ?? pendingEvents[index].damage ?? 0);
         event.simultaneousFastPhase = true;
         recordedEvents.push(event);
         completeAutomaticActionLifecycle(plan.hybridLifecycle, event, attacker, defender, {
@@ -35829,7 +35857,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260904-v23").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260907-v24").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

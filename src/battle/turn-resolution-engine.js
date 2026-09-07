@@ -18,9 +18,12 @@ function createPvPeakTurnEngineApi() {
   function normalizeSide(side = {}) {
     return {
       id: side.id || null,
+      pokemonId: side.pokemonId || side.id || null,
       hp: Math.max(0, numeric(side.hp)),
       energy: Math.max(0, Math.min(100, numeric(side.energy))),
       attack: numeric(side.attack),
+      attackStage: numeric(side.attackStage),
+      defenseStage: numeric(side.defenseStage),
       readyTurn: Math.max(0, numeric(side.readyTurn)),
       fastMove: side.fastMove || null,
       chargedMoves: (side.chargedMoves || []).filter(Boolean)
@@ -217,6 +220,7 @@ function createPvPeakTurnEngineApi() {
       moveId: input.moveId || null,
       moveName: input.moveName || "Fast Move",
       damage: Math.max(0, numeric(input.damage)),
+      damageAtRegistration: Math.max(0, numeric(input.damageAtRegistration, input.damage)),
       energyGain: Math.max(0, numeric(input.energyGain)),
       startTurn,
       duration,
@@ -255,6 +259,15 @@ function createPvPeakTurnEngineApi() {
     return hasReadyCharge && canActBeforeEvent(state, event.targetSide, event);
   }
 
+  function resolvedFastDamage(state, event, options = {}) {
+    const resolver = options.damageResolver;
+    if (typeof resolver === "function") {
+      const value = Number(resolver(event, state));
+      if (Number.isFinite(value)) return Math.max(0, value);
+    }
+    return Math.max(0, numeric(event?.damage));
+  }
+
   function nextPendingLethalImpact(state, sideId) {
     const side = state?.sides?.[sideId];
     if (!side || side.hp <= 0) return null;
@@ -267,7 +280,7 @@ function createPvPeakTurnEngineApi() {
     ) || null;
   }
 
-  function resolveFastImpact(state, event) {
+  function resolveFastImpact(state, event, options = {}) {
     const next = createState(state);
     const source = next.sides[event.sourceSide];
     const target = next.sides[event.targetSide];
@@ -275,15 +288,17 @@ function createPvPeakTurnEngineApi() {
     if (!source || !target || source.hp <= 0) {
       resolvedEvent.status = "denied";
     } else {
+      const damage = resolvedFastDamage(next, event, options);
       source.energy = Math.max(0, Math.min(100, source.energy + Math.max(0, numeric(event.energyGain))));
-      target.hp = Math.max(0, target.hp - Math.max(0, numeric(event.damage)));
+      target.hp = Math.max(0, target.hp - damage);
+      resolvedEvent.damage = damage;
       resolvedEvent.status = "resolved";
     }
     next.pendingEvents = next.pendingEvents.filter(candidate => candidate.id !== event.id);
     return { state: next, event: resolvedEvent, outcome: terminalOutcome(next) };
   }
 
-  function resolveDueFastImpacts(state, turn = state?.currentTurn) {
+  function resolveDueFastImpacts(state, turn = state?.currentTurn, options = {}) {
     const next = createState({ ...state, currentTurn: numeric(turn) });
     const due = eventsDue(next.pendingEvents, turn).filter(event => event.type === "fast-impact");
     const resolvedEvents = [];
@@ -302,8 +317,10 @@ function createPvPeakTurnEngineApi() {
         if (!aliveAtPhaseStart[event.sourceSide] || !next.sides[event.targetSide]) {
           resolvedEvent.status = "denied";
         } else {
+          const damage = resolvedFastDamage(next, event, options);
           resolvedEvent.status = "resolved";
-          damageByTarget[event.targetSide] += Math.max(0, numeric(event.damage));
+          resolvedEvent.damage = damage;
+          damageByTarget[event.targetSide] += damage;
           energyBySource[event.sourceSide] += Math.max(0, numeric(event.energyGain));
         }
         resolvedEvents.push(resolvedEvent);
