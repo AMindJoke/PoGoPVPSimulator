@@ -1597,6 +1597,24 @@ function createPvPeakBattleIntelligenceApi() {
       rejected.push("TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION");
     }
     const timingWindowOpen = (opponentCooldown === 0 || opponentCooldown > targetCooldown) && targetCooldown > 0;
+    const waitEndTurn = Math.max(currentTurn, numeric(actor.readyTurn)) + ownTurns;
+    const opponentQueuedEnergy = (state?.pendingEvents || []).filter(event =>
+      event?.status !== "denied"
+      && event?.sourceSide === opponentOf(side)
+      && numeric(event?.metadata?.energyGain ?? event?.energyGain) > 0
+    ).reduce((sum, event) => sum + numeric(event?.metadata?.energyGain ?? event?.energyGain), 0);
+    const opponentEffectiveEnergy = clamp(numeric(opponent.energy) + opponentQueuedEnergy, 0, 100);
+    const opponentChargeWindow = (opponentMoves || []).some(move => {
+      const missing = Math.max(0, numeric(move.energyCost) - opponentEffectiveEnergy);
+      const fastCount = missing <= 0
+        ? 0
+        : Math.ceil(missing / Math.max(1, numeric(opponent.fastMove?.energyGain, 1)));
+      // The first Fast in the opponent's ready window can supply the energy
+      // for a Charged registration on that same window; later Fast moves add
+      // their normal duration before the threat becomes available.
+      const readyTurn = Math.max(currentTurn, opponent.readyTurn) + Math.max(0, fastCount - 1) * oppTurns;
+      return readyTurn <= waitEndTurn;
+    });
     const ownFastDamage = Math.max(0, numeric(
       typeof context.estimateFastDamage === "function"
         ? context.estimateFastDamage("actor")
@@ -1655,7 +1673,6 @@ function createPvPeakBattleIntelligenceApi() {
     let turnsPlanned = ownTurns + Math.floor(numeric(actor.energy) / moves[0].energyCost);
     if (numeric(actor.attack) < numeric(opponent.attack)) turnsPlanned++;
     const resourcesBecomeUnusableRaw = turnsPlanned > survival.turnsToLive;
-    const waitEndTurn = Math.max(currentTurn, numeric(actor.readyTurn)) + ownTurns;
     const opponentFastCountDuringWait = opponentReadyTurn <= waitEndTurn
       ? Math.max(0, Math.ceil((waitEndTurn - opponentReadyTurn) / oppTurns))
       : 0;
@@ -1704,6 +1721,22 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
     } else rejected.push("TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE");
 
+    // When the opponent is one legal Fast window away from a Charged move,
+    // preserve the current Charged resource and let that threat resolve first.
+    // This is the generic timing shape behind manual lines that absorb the
+    // opponent's first Charged move before starting the own Charged cycle.
+    if (!actorFaints
+      && projectedEnergy <= 100
+      && !immediateLethal
+      && !opponentChargedLethal
+      && opponentChargeWindow
+      && ownTurns < oppTurns
+      && dreStandard
+      && numeric(actor.shields) > 0
+      && numeric(opponent.shields) > 0) {
+      optimize = true;
+    }
+
     const fittedFastCount = Math.floor((ownTurns + 1) / oppTurns);
     const fittedFastLethal = numeric(actor.hp) <= oppFastDamage * fittedFastCount;
     if (fittedFastLethal) {
@@ -1736,6 +1769,9 @@ function createPvPeakBattleIntelligenceApi() {
         dreClosingOpportunity,
         waitEndTurn,
         opponentReadyAfterWait,
+        opponentQueuedEnergy,
+        opponentEffectiveEnergy,
+        opponentChargeWindow,
         canCloseAfterWait,
         resourcesBecomeUnusableRaw,
         resourcesBecomeUnusable,
