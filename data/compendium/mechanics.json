@@ -172,21 +172,21 @@
       "content": [
         {
           "id": "comparison",
-          "heading": "Compare current Attack",
+          "heading": "Compare priority Attack",
           "kind": "text",
-          "body": ["A Charged Attack is registered in the decision window but starts at the beginning of the next turn. Its damage and effects resolve before the end of Fast Attacks completing during that Charged sequence.", "When both sides register a Charged Attack in the same decision window, Charged Attack Priority uses the higher current Attack. The comparison uses battle Attack after active stat-stage modifiers; displayed CP does not decide it.", "A pending Fast does not turn the old DRE discussion into a random exception: the current turn sequence deterministically decides which legal Charged action resolves before the Fast impact."]
+          "body": ["A Charged Attack is registered in the decision window but starts at the beginning of the next turn. Its damage and effects resolve before the end of Fast Attacks completing during that Charged sequence.", "When both sides register a Charged Attack in the same decision window, Charged Attack Priority compares each side's priority Attack value; the higher value starts first. Temporary Attack stage changes during battle do not change CAP order in the simulator, and displayed CP does not decide it. Defense changes do not affect CAP; they only affect damage.", "A pending Fast does not turn the old DRE discussion into a random exception: the current turn sequence deterministically decides which legal Charged action resolves before the Fast impact."]
         },
         {
           "id": "sequence",
           "heading": "Resolution order",
           "kind": "steps",
-          "body": ["Both Charged Attacks are registered in the same decision window.", "Current Attack is compared and the higher-Attack side starts first on the next turn.", "The battle state is checked before the second registered action continues, and pending Fast impacts remain ordered by the same deterministic turn sequence."]
+          "body": ["Both Charged Attacks are registered in the same decision window.", "Priority Attack is compared and the higher-Attack side starts first on the next turn.", "The battle state is checked before the second registered action continues, and pending Fast impacts remain ordered by the same deterministic turn sequence."]
         },
         {
           "id": "tie-note",
-          "heading": "Equal Attack",
+          "heading": "Equal priority Attack",
           "kind": "key-point",
-          "body": ["Equal calculated Attack is retained as a tied-CAP condition in review metadata. Treat the tie itself as relevant evidence rather than inferring an advantage from species name or CP."]
+          "body": ["Equal priority Attack is retained as a tied-CAP condition in review metadata. Treat the tie itself as relevant evidence rather than inferring an advantage from species name or CP."]
         }
       ],
       "related": ["stat-stages", "battle-turns"],
@@ -203,7 +203,7 @@
           "id": "range",
           "heading": "Stage range",
           "kind": "text",
-          "body": ["Attack and Defense stages are tracked independently from −4 through +4. Effects cannot raise or lower a stat beyond those limits.", "Positive Attack stages increase outgoing damage calculations. Positive Defense stages increase the defending value; negative stages act in the opposite direction.", "If the target of a pending Fast uses a Charged Attack that lowers its own Defense, that self-debuff is applied before the pending opponent Fast reaches impact. The Fast belongs to the opponent; the changed Defense belongs to the target."]
+          "body": ["Attack and Defense stages are tracked independently from −4 through +4. Effects cannot raise or lower a stat beyond those limits.", "Positive Attack stages increase outgoing damage calculations. Positive Defense stages increase the defending value; negative stages act in the opposite direction."]
         },
         {
           "id": "multipliers",
@@ -215,7 +215,7 @@
           "id": "cmp-effect",
           "heading": "CAP interaction",
           "kind": "key-point",
-          "body": ["Because CAP compares current Attack, an Attack buff or debuff can change which side starts a simultaneous Charged Attack first. Defense changes affect damage, not CAP itself.", "Example: Pokémon A has a Fast pending on Pokémon B. B uses a self-debuffing Charged Attack before that impact. When A's Fast resolves, the calculation uses B's current Defense stage."]
+          "body": ["CAP compares priority Attack, not temporary Attack stages. Defense changes affect damage, not CAP itself."]
         }
       ],
       "related": ["charged-move-priority"],
@@ -268,6 +268,12 @@
           "heading": "What can happen before impact",
           "kind": "steps",
           "body": ["Check whether the target has a legal Charged or switch action in the current window.", "Resolve that action according to the next-turn, priority, and switch rules.", "Apply the pending Fast at its scheduled impact using the current valid battle state."]
+        },
+        {
+          "id": "impact-stat-state",
+          "heading": "Impact uses the current target state",
+          "kind": "example",
+          "body": ["Pokémon A has a Fast Attack pending on Pokémon B. Pokémon B uses a Charged Attack that lowers its own Defense before the pending Fast impact resolves. When A's Fast lands, it hits B and uses B's current Defense stage at impact time."]
         },
         {
           "id": "denied-impact",

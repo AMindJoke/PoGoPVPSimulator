@@ -39,7 +39,7 @@
       "id": "cmp",
       "term": "CAP",
       "expanded": "Charged Attack Priority",
-      "definition": "Charged Attack Priority: when both Pokémon register a Charged Attack together, current Attack determines which starts first on the next turn.",
+      "definition": "Charged Attack Priority: when both Pokémon register a Charged Attack together, the priority Attack value determines which starts first on the next turn; temporary Attack stage changes do not change CAP order.",
       "category": "Timing",
       "usage": "competitive",
       "aliases": ["CAP tie"],
