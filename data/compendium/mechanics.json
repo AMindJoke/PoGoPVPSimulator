@@ -276,7 +276,7 @@
           "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the registered event can be denied. Registered, resolved, and denied are different statuses; a denied event must not create a duplicate KO marker."]
         }
       ],
-      "related": ["fast-move-impact", "charged-attack-timing", "switching-timing", "timing-anomaly"],
+      "related": ["fast-move-impact", "charged-attack-timing", "switching-timing"],
       "lastUpdated": "2026-09-07"
     },
     {
@@ -338,35 +338,6 @@
       "lastUpdated": "2026-09-07"
     },
     {
-      "id": "timing-anomaly",
-      "title": "Timing Anomaly in Scenario Review",
-      "summary": "A manual reconstruction control for an observed irregularity, separate from normal battle timing.",
-      "category": "Scenario Review",
-      "keywords": ["timing anomaly", "manual reconstruction", "scenario review", "observed irregularity", "dre", "sneak", "leak"],
-      "content": [
-        {
-          "id": "boundary",
-          "heading": "Not an automatic battle rule",
-          "kind": "judge-note",
-          "body": ["Timing Anomaly is a Scenario Review/manual reconstruction feature. It lets a reviewer test an observed irregularity by selecting a pending Fast impact that occurred before the normal deterministic action order.", "Automatic battles use the current deterministic timing rules. Timing Anomaly must not be used to explain an ordinary Fast-versus-Charged result or to replace a tournament Judge ruling."]
-        },
-        {
-          "id": "historical-terms",
-          "heading": "Historical community terminology",
-          "kind": "compendium-note",
-          "body": ["DRE (Damage Registration Error), sneak, and leak are historical or community terms for interactions that were discussed under older timing behavior. They remain searchable for old reports, but they are not current random outcomes and are not substitutes for Pending Fast or Timing Anomaly."]
-        },
-        {
-          "id": "review-use",
-          "heading": "How to read a reconstruction",
-          "kind": "steps",
-          "body": ["First establish the normal current timeline and pending Fast state.", "Use Timing Anomaly only when the recording or scenario specifically requires an observed irregular branch.", "Keep the reconstructed branch separate from the automatic result and document the evidence for any Judge review."]
-        }
-      ],
-      "related": ["pending-fast", "fast-move-impact"],
-      "lastUpdated": "2026-09-07"
-    },
-    {
       "id": "disconnect-state",
       "title": "Disconnects and battle-state progression",
       "summary": "How the current system continues a battle when a client stops responding.",
@@ -386,7 +357,7 @@
           "body": ["A disconnect does not turn a pending Fast into an immediate impact or change the normal turn order. Reconstruct the recorded state and current turn order first; use the tournament review process for disputes."]
         }
       ],
-      "related": ["battle-turns", "pending-fast", "timing-anomaly"],
+      "related": ["battle-turns", "pending-fast"],
       "lastUpdated": "2026-09-07"
     }
   ]

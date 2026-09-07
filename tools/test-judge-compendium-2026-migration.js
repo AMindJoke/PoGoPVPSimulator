@@ -16,8 +16,11 @@ const glossaryText = id => [entry("glossary", id).term, entry("glossary", id).de
 
 [
   "fast-move-impact", "charged-attack-timing", "pending-fast", "switching-timing",
-  "post-charged-switch", "timing-anomaly", "disconnect-state"
+  "post-charged-switch", "disconnect-state"
 ].forEach(id => assert.ok(entry("mechanics", id), `Missing current 2026 mechanic: ${id}`));
+
+assert.ok(!entry("mechanics", "timing-anomaly"), "Timing Anomaly must not be presented as a current mechanic");
+assert.ok(!entry("glossary", "timing-anomaly"), "Timing Anomaly must not be presented as a current glossary term");
 
 assert.match(body("mechanics", "fast-move-impact"), /end of the appropriate turn/i);
 assert.match(body("mechanics", "pending-fast"), /registered/i);
@@ -31,7 +34,7 @@ assert.match(body("mechanics", "switching-timing"), /one turn.*zero turns.*zero 
 assert.match(body("mechanics", "post-charged-switch"), /zero-turn switch/i);
 assert.match(body("mechanics", "disconnect-state"), /continues to progress/i);
 
-const historical = body("mechanics", "timing-anomaly") + " " + body("rulings", "fast-attack-prevents-charged-attack");
+const historical = body("rulings", "fast-attack-prevents-charged-attack");
 assert.match(historical, /historical/i);
 assert.match(historical, /deterministic/i);
 assert.match(glossaryText("dre"), /Historical/i);
@@ -42,7 +45,9 @@ assert.strictEqual(model.search(index, "pending")[0].id, "pending-fast");
 assert.strictEqual(model.search(index, "damage transfer")[0].id, "switching-timing");
 assert.strictEqual(model.search(index, "self debuff")[0].id, "self-defense-debuff");
 assert.strictEqual(model.search(index, "zero turn")[0].id, "post-charged-switch");
-assert.ok(model.search(index, "sneak").some(result => result.id === "timing-anomaly"));
-assert.ok(model.search(index, "leak").some(result => result.id === "timing-anomaly"));
+assert.ok(model.search(index, "sneak").some(result => result.id === "sneak"));
+assert.ok(model.search(index, "leak").some(result => result.id === "sneak"));
+
+assert.doesNotMatch(JSON.stringify(raw), /Timing Anomaly|timing anomaly|timing-anomaly/i);
 
 console.log("Judge Compendium 2026 migration tests passed.");

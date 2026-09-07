@@ -50,12 +50,12 @@
       "id": "dre",
       "term": "DRE",
       "expanded": "Damage Registration Error",
-      "definition": "Historical community shorthand for reports where Fast damage appeared to prevent an available Charged Attack; under 2026 timing, use Pending Fast and Timing Anomaly for current explanations.",
+      "definition": "Historical community shorthand for reports where Fast damage appeared to prevent an available Charged Attack; use Pending Fast for confirmed current explanations.",
       "category": "Technical issues",
       "usage": "judge",
       "aliases": ["damage registration error", "Fast Attack prevents Charged Attack"],
       "keywords": ["pending fast damage", "technical review", "knockout"],
-      "related": ["fast-attack-prevents-charged-attack", "fast-move-impact", "timing-anomaly"]
+      "related": ["fast-attack-prevents-charged-attack", "fast-move-impact"]
     },
     {
       "id": "energy-cap",
@@ -88,7 +88,7 @@
       "usage": "simulator",
       "aliases": ["FA"],
       "keywords": ["duration", "energy gain", "impact"],
-      "related": ["fast-move-duration", "fast-move-impact", "timing-anomaly"]
+      "related": ["fast-move-duration", "fast-move-impact"]
     },
     {
       "id": "impact-turn",
@@ -141,8 +141,8 @@
       "definition": "Historical/community shorthand for a Fast Attack completing around an opposing Charged Attack window; current explanations should use the deterministic registration and impact sequence instead.",
       "category": "Timing",
       "usage": "judge",
-      "aliases": ["sneaked Fast Attack"],
-      "keywords": ["charged timing", "fast registration", "alignment"],
+      "aliases": ["sneaked Fast Attack", "fast sneak", "fast leak"],
+      "keywords": ["charged timing", "fast registration", "alignment", "leak"],
       "related": ["fast-move-duration", "fast-move-impact"]
     },
     {
@@ -188,17 +188,6 @@
       "aliases": ["pending damage", "lethal pending Fast"],
       "keywords": ["fast impact", "registered", "resolved", "denied", "charged before impact"],
       "related": ["pending-fast", "fast-move-impact", "charged-attack-timing"]
-    },
-    {
-      "id": "timing-anomaly",
-      "term": "Timing Anomaly",
-      "expanded": "Scenario Review reconstruction",
-      "definition": "A manual Scenario Review branch for reconstructing an observed irregularity; it is not part of ordinary automatic battle timing.",
-      "category": "Scenario Review",
-      "usage": "simulator",
-      "aliases": ["anomaly timing", "observed timing irregularity"],
-      "keywords": ["manual reconstruction", "pending Fast", "historical DRE", "sneak", "leak"],
-      "related": ["timing-anomaly", "pending-fast"]
     },
     {
       "id": "damage-transfer",

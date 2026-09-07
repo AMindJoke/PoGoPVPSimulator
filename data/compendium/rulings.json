@@ -112,7 +112,7 @@
       "title": "Historical DRE terminology",
       "summary": "How to interpret older DRE reports under the current deterministic timing system.",
       "category": "Historical terminology",
-      "keywords": ["dre", "damage registration error", "fast attack prevents charged attack", "charged attack", "knockout", "pending damage", "timing anomaly"],
+      "keywords": ["dre", "damage registration error", "fast attack prevents charged attack", "charged attack", "knockout", "pending damage"],
       "content": [
         {
           "id": "official-description",
@@ -124,13 +124,13 @@
           "id": "review-focus",
           "heading": "Review focus for an old report",
           "kind": "steps",
-          "body": ["Confirm the attempted Charged Attack, opposing Fast Attack, and visible battle state in the recording.", "Reconstruct the current registration, next-turn Charged start, switch ordering, and Fast impact turn.", "If the recording still shows an irregular branch, label it as a Timing Anomaly reconstruction rather than a normal DRE outcome.", "Compare the observed result with the current deterministic result and apply the general review-resolution standard."]
+          "body": ["Confirm the attempted Charged Attack, opposing Fast Attack, and visible battle state in the recording.", "Reconstruct the current registration, next-turn Charged start, switch ordering, and Fast impact turn.", "If the recording shows behavior not covered by the confirmed rules, record the observation for later review instead of presenting it as a new current rule.", "Compare the observed result with the current confirmed result and apply the general review-resolution standard."]
         },
         {
           "id": "tool-boundary",
           "heading": "Reconstruction is evidence support",
           "kind": "compendium-note",
-          "body": ["Scenario Review can test the normal current battle state or an explicitly selected Timing Anomaly branch, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, evidence, and significant impact."]
+          "body": ["Scenario Review can test the confirmed current battle state, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, evidence, and significant impact."]
         }
       ],
       "source": "Play! Pokémon Pokémon GO Tournament Handbook",

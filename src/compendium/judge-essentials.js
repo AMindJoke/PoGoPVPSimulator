@@ -18,7 +18,7 @@
     Object.freeze({ id: "post-charged", order: 9, title: "Post-Charged Switch", summary: "Use the distinct zero-turn switch window at sequence end.", targetType: "mechanics", targetId: "post-charged-switch" }),
     Object.freeze({ id: "stat-changes", order: 10, title: "Stat Changes", summary: "Track bounded stages and self-Defense debuffs before pending impact.", targetType: "mechanics", targetId: "stat-stages" }),
     Object.freeze({ id: "disconnects", order: 11, title: "Disconnect Progression", summary: "Keep battle state and feedback separate from client response.", targetType: "mechanics", targetId: "disconnect-state" }),
-    Object.freeze({ id: "intervention", order: 12, title: "Scenario Review & Judge Intervention", summary: "Separate normal timing from Timing Anomaly reconstruction and rulings.", targetType: "mechanics", targetId: "timing-anomaly" })
+    Object.freeze({ id: "intervention", order: 12, title: "Scenario Review & Judge Intervention", summary: "Use confirmed timing, evidence, and the tournament review process.", targetType: "rulings", targetId: "technical-review-request" })
   ]);
 
   function normalizeProgress(value) {
