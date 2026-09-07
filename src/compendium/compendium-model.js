@@ -15,7 +15,13 @@
     Object.freeze(["fast move", "fast attack"]),
     Object.freeze(["stat changes", "attack and defense stages"]),
     Object.freeze(["switch", "switching"]),
-    Object.freeze(["cmp", "charged attack priority"])
+    Object.freeze(["cmp", "charged attack priority"]),
+    Object.freeze(["pending damage", "pending fast"]),
+    Object.freeze(["damage transfer", "switching and damage transfer"]),
+    Object.freeze(["self debuff", "self defense debuff"]),
+    Object.freeze(["zero turn", "post charged switch"]),
+    Object.freeze(["fast sneak", "timing anomaly"]),
+    Object.freeze(["fast leak", "timing anomaly"])
   ]);
   const CATEGORIES = Object.freeze([
     Object.freeze({ id: "home", label: "Home", summary: "Start here or jump straight to a Compendium tool.", status: "foundation" }),

@@ -5,15 +5,15 @@
     {
       "id": "battle-turns",
       "title": "Battle turns",
-      "summary": "The half-second timing units used to register and resolve battle actions.",
-      "category": "Timing",
-      "keywords": ["turn", "timing", "half second", "0.5 seconds", "registration"],
+      "summary": "The fixed half-second timing units used to register and resolve battle actions.",
+      "category": "Current timing",
+      "keywords": ["turn", "timing", "half second", "0.5 seconds", "registration", "deterministic", "network"],
       "content": [
         {
           "id": "definition",
           "heading": "The smallest timing unit",
           "kind": "text",
-          "body": ["The simulator measures battle timing in turns. One turn lasts 0.5 seconds, and Fast Attack durations are expressed as whole turns.", "An action can be selected only when its Pokémon is ready. A Fast Attack keeps that Pokémon occupied for its full duration before another action can be registered."]
+          "body": ["The current Trainer Battle system measures timing in turns. One turn lasts 0.5 seconds, and Fast Attack durations are expressed as whole turns.", "Actions resolve from the shared battle state and turn order. Normal variation in network or device timing does not change the result for identical decisions in an identical state."]
         },
         {
           "id": "read-the-timeline",
@@ -43,16 +43,16 @@
           "id": "key-point",
           "heading": "Key point",
           "kind": "key-point",
-          "body": ["Turn numbers describe ordering. Seconds describe elapsed time. Keep the two separate when reconstructing an incident."]
+          "body": ["Turn numbers describe ordering. Seconds describe elapsed time. Keep the two separate when reconstructing an incident; a visual delay is not a different battle rule."]
         }
       ],
       "related": ["fast-move-duration", "fast-move-impact"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
     },
     {
       "id": "fast-move-duration",
       "title": "Fast Attack duration",
-      "summary": "How a Fast Attack's duration controls action availability and alignment.",
+      "summary": "How a Fast Attack's duration controls action availability, alignment, and its impact turn.",
       "category": "Fast Attacks",
       "keywords": ["fast attack", "duration", "cooldown", "alignment", "turns"],
       "content": [
@@ -60,7 +60,7 @@
           "id": "duration",
           "heading": "Duration locks the user",
           "kind": "text",
-          "body": ["A Fast Attack starts on its registration turn and occupies the user for the attack's listed duration. A 2-turn attack and a 3-turn attack therefore reach their next action windows at different times."]
+          "body": ["A Fast Attack starts on its registration turn and occupies the user for its listed duration. Its damage and energy are not applied merely because the move started; they wait for the appropriate end-of-turn impact.", "A 2-turn attack and a 3-turn attack therefore reach their next action windows and impact points at different times."]
         },
         {
           "id": "alignment-example",
@@ -86,24 +86,24 @@
           "id": "judge-use",
           "heading": "Why it matters",
           "kind": "key-point",
-          "body": ["Duration determines both the next legal action window and where Fast Attack impact appears on the reconstructed timeline."]
+          "body": ["Duration determines both the next legal action window and where Fast Attack impact appears on the reconstructed timeline. The action can be pending before that impact."]
         }
       ],
       "related": ["battle-turns", "fast-move-impact", "energy-generation"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
     },
     {
       "id": "fast-move-impact",
       "title": "Fast Attack impact",
-      "summary": "When Fast Attack damage and energy register in the simulator timeline.",
+      "summary": "When Fast Attack damage and energy are applied under the current end-of-turn rule.",
       "category": "Fast Attacks",
-      "keywords": ["fast attack", "impact", "damage registration", "energy registration", "simultaneous"],
+      "keywords": ["fast attack", "impact", "damage registration", "energy registration", "pending fast", "pending damage", "end of turn", "simultaneous"],
       "content": [
         {
           "id": "impact-rule",
           "heading": "Impact turn",
           "kind": "text",
-          "body": ["The impact turn is calculated as start turn + duration − 1. At that impact, the attack's damage and energy gain are resolved together.", "Fast Attack events that impact on the same turn are evaluated from the state at the start of that impact phase, so simultaneous damage can produce a simultaneous knockout."]
+          "body": ["Fast Attack damage is applied at the end of the appropriate turn after the move's duration. Energy is granted at the same moment as that damage. A Fast Attack that has started but not reached this point is a pending Fast.", "Pending status is a scheduled resolution, not an immediate knockout. The target can still have a legal Charged or switch action before impact when the current turn sequence permits it.", "Fast Attack events that impact on the same turn are evaluated from the state at that impact phase, so simultaneous damage can produce a simultaneous knockout."]
         },
         {
           "id": "three-turn-example",
@@ -128,11 +128,11 @@
           "id": "key-point",
           "heading": "Key point",
           "kind": "key-point",
-          "body": ["Registration, impact, and the next ready turn are separate facts. Use the event marker and state snapshot together when reviewing timing."]
+          "body": ["Registration, pending status, impact, and the next ready turn are separate facts. Use the event marker and state snapshot together when reviewing timing."]
         }
       ],
       "related": ["battle-turns", "fast-move-duration", "energy-generation"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
     },
     {
       "id": "energy-generation",
@@ -145,7 +145,7 @@
           "id": "gain-and-cap",
           "heading": "Gain at Fast Attack impact",
           "kind": "text",
-          "body": ["Fast Attack energy is added when that Fast Attack reaches its impact. Stored energy is capped at 100; any gain beyond the cap is not retained.", "A Charged Attack becomes available only when the Pokémon is ready to act and has at least the attack's energy cost. Resolving that action spends the listed cost.", "Energy gained by a Pokémon remains with that Pokémon until it is spent on a Charged Attack or the Pokémon faints. Energy cannot be transferred to another Pokémon, and switching the Pokémon out does not cause it to lose energy."]
+      "body": ["Fast Attack energy is added when that Fast Attack's damage is applied at impact. Stored energy is capped at 100; any gain beyond the cap is not retained.", "A Charged Attack becomes available when the Pokémon has enough energy and reaches its legal action window. The Charged action starts at the beginning of the next turn, and resolving it spends the listed cost.", "Energy remains with that Pokémon until it is spent on a Charged Attack or the Pokémon faints. Energy cannot be transferred to another Pokémon, and switching out does not remove stored energy."]
         },
         {
           "id": "example",
@@ -161,26 +161,26 @@
         }
       ],
       "related": ["fast-move-impact", "charged-move-priority"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
     },
     {
       "id": "charged-move-priority",
       "title": "Charged Attack Priority (CAP)",
-      "summary": "How simultaneous Charged Attack registrations are ordered by current Attack.",
+      "summary": "How Charged Attack registration and simultaneous priority work under the current turn model.",
       "category": "Charged Attacks",
-      "keywords": ["cap", "charged attack priority", "attack", "simultaneous charged"],
+      "keywords": ["cap", "cmp", "charged attack priority", "charged timing", "next turn", "pending fast", "attack", "simultaneous charged"],
       "content": [
         {
           "id": "comparison",
           "heading": "Compare current Attack",
           "kind": "text",
-          "body": ["When both sides register a Charged Attack in the same decision window, the simulator orders the Pokémon with the higher current Attack first. The comparison uses battle Attack after active stat-stage modifiers.", "A displayed CP value does not decide CAP. The relevant value is the Pokémon's calculated Attack in the reconstructed state."]
+          "body": ["A Charged Attack is registered in the decision window but starts at the beginning of the next turn. Its damage and effects resolve before the end of Fast Attacks completing during that Charged sequence.", "When both sides register a Charged Attack in the same decision window, Charged Attack Priority uses the higher current Attack. The comparison uses battle Attack after active stat-stage modifiers; displayed CP does not decide it.", "A pending Fast does not turn the old DRE discussion into a random exception: the current turn sequence deterministically decides which legal Charged action resolves before the Fast impact."]
         },
         {
           "id": "sequence",
           "heading": "Resolution order",
           "kind": "steps",
-          "body": ["Both Charged Attacks are registered in the same window.", "Current Attack is compared and the higher-Attack side resolves first.", "The battle state is checked before the second registered action continues."]
+          "body": ["Both Charged Attacks are registered in the same decision window.", "Current Attack is compared and the higher-Attack side starts first on the next turn.", "The battle state is checked before the second registered action continues, and pending Fast impacts remain ordered by the same deterministic turn sequence."]
         },
         {
           "id": "tie-note",
@@ -190,7 +190,7 @@
         }
       ],
       "related": ["stat-stages", "battle-turns"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
     },
     {
       "id": "stat-stages",
@@ -203,7 +203,7 @@
           "id": "range",
           "heading": "Stage range",
           "kind": "text",
-          "body": ["Attack and Defense stages are tracked independently from −4 through +4. Effects cannot raise or lower a stat beyond those limits.", "Positive Attack stages increase outgoing damage calculations. Positive Defense stages increase the defending value; negative stages act in the opposite direction."]
+          "body": ["Attack and Defense stages are tracked independently from −4 through +4. Effects cannot raise or lower a stat beyond those limits.", "Positive Attack stages increase outgoing damage calculations. Positive Defense stages increase the defending value; negative stages act in the opposite direction.", "If the target of a pending Fast uses a Charged Attack that lowers its own Defense, that self-debuff is applied before the pending opponent Fast reaches impact. The Fast belongs to the opponent; the changed Defense belongs to the target."]
         },
         {
           "id": "multipliers",
@@ -215,11 +215,179 @@
           "id": "cmp-effect",
           "heading": "CAP interaction",
           "kind": "key-point",
-          "body": ["Because CAP compares current Attack, an Attack buff or debuff can change which side resolves a simultaneous Charged Attack first."]
+          "body": ["Because CAP compares current Attack, an Attack buff or debuff can change which side starts a simultaneous Charged Attack first. Defense changes affect damage, not CAP itself.", "Example: Pokémon A has a Fast pending on Pokémon B. B uses a self-debuffing Charged Attack before that impact. When A's Fast resolves, the calculation uses B's current Defense stage."]
         }
       ],
       "related": ["charged-move-priority"],
-      "lastUpdated": "2026-08-17"
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "charged-attack-timing",
+      "title": "Charged Attack timing",
+      "summary": "How registration, next-turn start, and Fast completion fit together.",
+      "category": "Current timing",
+      "keywords": ["charged attack", "charged timing", "registration", "next turn", "same turn", "fast completion", "pending"],
+      "content": [
+        {
+          "id": "rule",
+          "heading": "Register now, start next turn",
+          "kind": "text",
+          "body": ["A Charged Attack is selected and registered in the current decision window, then begins at the start of the next turn. It is not an instant action on the trigger turn.", "During the Charged sequence, the Charged Attack's damage and effects apply before the end-of-turn impact of a Fast Attack completing in that sequence."]
+        },
+        {
+          "id": "example",
+          "heading": "Why the distinction matters",
+          "kind": "example",
+          "body": ["A Fast Attack may already be scheduled to deal lethal damage at the end of the turn. If the target has a legal Charged action in the current window, the next-turn Charged sequence can resolve according to the current timing rule before that pending impact; pending does not mean immediate KO."]
+        },
+        {
+          "id": "priority-note",
+          "heading": "Deterministic priority",
+          "kind": "key-point",
+          "body": ["The result is determined by registration, action readiness, Charged Attack Priority, and the pending impact turn. It is not decided by which device or connection delivered an input a fraction earlier."]
+        }
+      ],
+      "related": ["battle-turns", "fast-move-impact", "charged-move-priority", "pending-fast"],
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "pending-fast",
+      "title": "Pending Fast damage",
+      "summary": "How a started Fast Attack is scheduled, displayed, and resolved.",
+      "category": "Current timing",
+      "keywords": ["pending", "pending fast", "pending damage", "lethal fast", "fast impact", "registered", "resolved", "denied"],
+      "content": [
+        {
+          "id": "rule",
+          "heading": "Registered is not resolved",
+          "kind": "text",
+          "body": ["A Fast Attack can be registered and in progress before its damage reaches the end-of-turn impact. That scheduled event is a pending Fast. A pending Fast can be lethal without being an immediate knockout.", "The HP bar or timeline may briefly show pending damage before the game applies it. The damage animation is feedback after application, not a second damage event."]
+        },
+        {
+          "id": "legal-window",
+          "heading": "What can happen before impact",
+          "kind": "steps",
+          "body": ["Check whether the target has a legal Charged or switch action in the current window.", "Resolve that action according to the next-turn, priority, and switch rules.", "Apply the pending Fast at its scheduled impact using the current valid battle state."]
+        },
+        {
+          "id": "denied-impact",
+          "heading": "A denied impact is not a second knockout",
+          "kind": "key-point",
+          "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the registered event can be denied. Registered, resolved, and denied are different statuses; a denied event must not create a duplicate KO marker."]
+        }
+      ],
+      "related": ["fast-move-impact", "charged-attack-timing", "switching-timing", "timing-anomaly"],
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "switching-timing",
+      "title": "Switching and damage transfer",
+      "summary": "How voluntary, forced, and damage-absorbing switches are ordered.",
+      "category": "Switching",
+      "keywords": ["switch", "switching", "swap", "quick switch", "forced switch", "damage transfer", "incoming", "pending fast", "charged attack"],
+      "content": [
+        {
+          "id": "before-damage",
+          "heading": "The switch is applied before damage",
+          "kind": "text",
+          "body": ["Under the current rules, a legal switch is processed before the pending damage it is intended to absorb. When a Pokémon switches during the same turn an opponent Fast Attack completes, the incoming Pokémon receives that Fast damage.", "The same deterministic ordering applies across network and device conditions; the damage is not randomly assigned to the outgoing Pokémon."]
+        },
+        {
+          "id": "charged-target",
+          "heading": "Switching into a Charged Attack",
+          "kind": "example",
+          "body": ["If a switch is made during the same turn an opponent's Charged Attack starts, the incoming Pokémon is the Charged Attack's target. The relevant action window, not a visual animation delay, determines the recipient."]
+        },
+        {
+          "id": "costs",
+          "heading": "Three switch costs",
+          "kind": "steps",
+          "body": ["A quick or manual voluntary switch costs one turn.", "A forced switch after a knockout costs zero turns.", "A legal switch at the end of a Charged Attack sequence costs zero turns and uses the post-Charged window."]
+        }
+      ],
+      "related": ["pending-fast", "post-charged-switch", "charged-attack-timing"],
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "post-charged-switch",
+      "title": "Post-Charged switch window",
+      "summary": "The immediate zero-turn switch window at the end of a Charged Attack sequence.",
+      "category": "Switching",
+      "keywords": ["post charged", "post-charged switch", "zero turn", "0 turn", "switch window", "charged sequence"],
+      "content": [
+        {
+          "id": "rule",
+          "heading": "A distinct immediate window",
+          "kind": "text",
+          "body": ["At the end of a Charged Attack sequence, an eligible Pokémon can use the post-Charged switch window without paying the normal one-turn voluntary-switch cost. This is a zero-turn switch, not a general exemption from switch cooldowns."]
+        },
+        {
+          "id": "contrast",
+          "heading": "Do not combine the windows",
+          "kind": "key-point",
+          "body": ["A normal quick or manual switch still costs one turn. A forced switch still costs zero turns. Only the applicable post-Charged window grants the immediate zero-turn voluntary switch."]
+        },
+        {
+          "id": "example",
+          "heading": "Short example",
+          "kind": "example",
+          "body": ["After the Charged sequence finishes, a player uses the available post-Charged switch before the next normal action. The replacement enters immediately; later voluntary switches return to the normal one-turn cost when their cooldown allows."]
+        }
+      ],
+      "related": ["switching-timing", "charged-attack-timing"],
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "timing-anomaly",
+      "title": "Timing Anomaly in Scenario Review",
+      "summary": "A manual reconstruction control for an observed irregularity, separate from normal battle timing.",
+      "category": "Scenario Review",
+      "keywords": ["timing anomaly", "manual reconstruction", "scenario review", "observed irregularity", "dre", "sneak", "leak"],
+      "content": [
+        {
+          "id": "boundary",
+          "heading": "Not an automatic battle rule",
+          "kind": "judge-note",
+          "body": ["Timing Anomaly is a Scenario Review/manual reconstruction feature. It lets a reviewer test an observed irregularity by selecting a pending Fast impact that occurred before the normal deterministic action order.", "Automatic battles use the current deterministic timing rules. Timing Anomaly must not be used to explain an ordinary Fast-versus-Charged result or to replace a tournament Judge ruling."]
+        },
+        {
+          "id": "historical-terms",
+          "heading": "Historical community terminology",
+          "kind": "compendium-note",
+          "body": ["DRE (Damage Registration Error), sneak, and leak are historical or community terms for interactions that were discussed under older timing behavior. They remain searchable for old reports, but they are not current random outcomes and are not substitutes for Pending Fast or Timing Anomaly."]
+        },
+        {
+          "id": "review-use",
+          "heading": "How to read a reconstruction",
+          "kind": "steps",
+          "body": ["First establish the normal current timeline and pending Fast state.", "Use Timing Anomaly only when the recording or scenario specifically requires an observed irregular branch.", "Keep the reconstructed branch separate from the automatic result and document the evidence for any Judge review."]
+        }
+      ],
+      "related": ["pending-fast", "fast-move-impact"],
+      "lastUpdated": "2026-09-07"
+    },
+    {
+      "id": "disconnect-state",
+      "title": "Disconnects and battle-state progression",
+      "summary": "How the current system continues a battle when a client stops responding.",
+      "category": "Current timing",
+      "keywords": ["disconnect", "network", "connection", "battle state", "progression", "client", "feedback"],
+      "content": [
+        {
+          "id": "rule",
+          "heading": "The battle continues",
+          "kind": "text",
+          "body": ["Both players must connect before the battle begins. After that, the battle state continues to progress even if a client stops responding or a player stops touching the screen.", "KO results, energy gain, alignment, and the timing of registered actions follow the same turn-based state progression rather than waiting for a new input or a faster connection."]
+        },
+        {
+          "id": "boundary",
+          "heading": "What this does not mean",
+          "kind": "key-point",
+          "body": ["A disconnect does not turn a pending Fast into an immediate impact or change the normal turn order. Reconstruct the recorded state and current turn order first; use the tournament review process for disputes."]
+        }
+      ],
+      "related": ["battle-turns", "pending-fast", "timing-anomaly"],
+      "lastUpdated": "2026-09-07"
     }
   ]
 }

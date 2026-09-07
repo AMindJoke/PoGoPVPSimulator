@@ -22,24 +22,24 @@
       "usage": "competitive",
       "aliases": ["move catch", "catching"],
       "keywords": ["switch", "switching", "charged attack", "damage"],
-      "related": []
+      "related": ["switching-timing"]
     },
     {
       "id": "charged-move",
       "term": "Charged Attack",
       "expanded": "Charged Attack",
-      "definition": "An energy-spending battle action that becomes available when its energy cost and action timing requirements are met.",
+      "definition": "An energy-spending battle action registered in one decision window and started at the beginning of the next turn when legal.",
       "category": "Actions",
       "usage": "simulator",
       "aliases": ["CA"],
       "keywords": ["charged", "energy cost", "attack"],
-      "related": ["energy-generation", "charged-move-priority"]
+      "related": ["energy-generation", "charged-move-priority", "charged-attack-timing"]
     },
     {
       "id": "cmp",
       "term": "CAP",
       "expanded": "Charged Attack Priority",
-      "definition": "The ordering used when both Pokémon register a Charged Attack in the same decision window; current Attack determines which resolves first.",
+      "definition": "Charged Attack Priority: when both Pokémon register a Charged Attack together, current Attack determines which starts first on the next turn.",
       "category": "Timing",
       "usage": "competitive",
       "aliases": ["CAP tie"],
@@ -50,12 +50,12 @@
       "id": "dre",
       "term": "DRE",
       "expanded": "Damage Registration Error",
-      "definition": "Community shorthand for a technical timing issue in which Fast Attack damage incorrectly prevents an available Charged Attack from resolving.",
+      "definition": "Historical community shorthand for reports where Fast damage appeared to prevent an available Charged Attack; under 2026 timing, use Pending Fast and Timing Anomaly for current explanations.",
       "category": "Technical issues",
       "usage": "judge",
       "aliases": ["damage registration error", "Fast Attack prevents Charged Attack"],
       "keywords": ["pending fast damage", "technical review", "knockout"],
-      "related": ["fast-attack-prevents-charged-attack", "fast-move-impact"]
+      "related": ["fast-attack-prevents-charged-attack", "fast-move-impact", "timing-anomaly"]
     },
     {
       "id": "energy-cap",
@@ -83,18 +83,18 @@
       "id": "fast-move",
       "term": "Fast Attack",
       "expanded": "Fast Attack",
-      "definition": "A battle action with a fixed turn duration that generates energy and deals damage at its impact.",
+      "definition": "A battle action with a fixed turn duration; its damage and energy apply together at the appropriate end-of-turn impact.",
       "category": "Actions",
       "usage": "simulator",
       "aliases": ["FA"],
       "keywords": ["duration", "energy gain", "impact"],
-      "related": ["fast-move-duration", "fast-move-impact"]
+      "related": ["fast-move-duration", "fast-move-impact", "timing-anomaly"]
     },
     {
       "id": "impact-turn",
       "term": "Impact turn",
       "expanded": "Fast Attack impact",
-      "definition": "The turn when a Fast Attack's damage and energy gain are applied; the simulator calculates it as start turn + duration − 1.",
+      "definition": "The turn when a Fast Attack's damage and energy are applied together after its duration; the simulator calculates it as start turn + duration − 1.",
       "category": "Timing",
       "usage": "simulator",
       "aliases": ["damage registration turn"],
@@ -105,7 +105,7 @@
       "id": "one-turn-lag",
       "term": "One-turn lag",
       "expanded": "1-Turn Lag",
-      "definition": "The simulator's reconstruction label for an affected Pokémon losing exactly one turn before its selected Fast Attack. The official handbook addresses action delay more broadly as General Lag.",
+      "definition": "A historical or review label for a verified action delay of one turn; it is not ordinary current Fast timing and does not establish a rematch by itself.",
       "category": "Technical issues",
       "usage": "simulator",
       "aliases": ["1-turn lag", "technical lag", "General Lag"],
@@ -138,9 +138,9 @@
       "id": "sneak",
       "term": "Sneak",
       "expanded": "Fast Attack sneak",
-      "definition": "Competitive shorthand for a Fast Attack that registers around an opposing Charged Attack window and is allowed to complete afterward.",
+      "definition": "Historical/community shorthand for a Fast Attack completing around an opposing Charged Attack window; current explanations should use the deterministic registration and impact sequence instead.",
       "category": "Timing",
-      "usage": "competitive",
+      "usage": "judge",
       "aliases": ["sneaked Fast Attack"],
       "keywords": ["charged timing", "fast registration", "alignment"],
       "related": ["fast-move-duration", "fast-move-impact"]
@@ -177,6 +177,94 @@
       "aliases": ["undercharging"],
       "keywords": ["charged attack", "reduced damage", "farm"],
       "related": ["energy-generation"]
+    },
+    {
+      "id": "pending-fast",
+      "term": "Pending Fast",
+      "expanded": "Pending Fast damage",
+      "definition": "A registered Fast Attack whose damage and energy are scheduled for a later impact; pending status is not an immediate knockout.",
+      "category": "Current timing",
+      "usage": "simulator",
+      "aliases": ["pending damage", "lethal pending Fast"],
+      "keywords": ["fast impact", "registered", "resolved", "denied", "charged before impact"],
+      "related": ["pending-fast", "fast-move-impact", "charged-attack-timing"]
+    },
+    {
+      "id": "timing-anomaly",
+      "term": "Timing Anomaly",
+      "expanded": "Scenario Review reconstruction",
+      "definition": "A manual Scenario Review branch for reconstructing an observed irregularity; it is not part of ordinary automatic battle timing.",
+      "category": "Scenario Review",
+      "usage": "simulator",
+      "aliases": ["anomaly timing", "observed timing irregularity"],
+      "keywords": ["manual reconstruction", "pending Fast", "historical DRE", "sneak", "leak"],
+      "related": ["timing-anomaly", "pending-fast"]
+    },
+    {
+      "id": "damage-transfer",
+      "term": "Damage transfer",
+      "expanded": "Switch before pending damage",
+      "definition": "The current ordering in which a legal switch is applied before the pending Fast damage it is intended to absorb, so the incoming Pokémon receives that impact.",
+      "category": "Switching",
+      "usage": "simulator",
+      "aliases": ["catch damage", "incoming damage"],
+      "keywords": ["switch", "pending Fast", "incoming", "outgoing"],
+      "related": ["switching-timing", "pending-fast"]
+    },
+    {
+      "id": "quick-switch",
+      "term": "Quick switch",
+      "expanded": "Voluntary switch",
+      "definition": "A normal voluntary switch during battle; it costs one turn when legal and is distinct from forced and post-Charged switches.",
+      "category": "Switching",
+      "usage": "competitive",
+      "aliases": ["manual switch", "voluntary switch"],
+      "keywords": ["switch cost", "one turn", "cooldown"],
+      "related": ["switching-timing", "post-charged-switch"]
+    },
+    {
+      "id": "forced-switch",
+      "term": "Forced switch",
+      "expanded": "Knockout replacement",
+      "definition": "The replacement required after a Pokémon faints; it costs zero turns where the forced-switch rule applies.",
+      "category": "Switching",
+      "usage": "competitive",
+      "aliases": ["faint switch", "KO replacement"],
+      "keywords": ["switch cost", "zero turn", "faint"],
+      "related": ["switching-timing"]
+    },
+    {
+      "id": "post-charged-switch",
+      "term": "Post-Charged switch",
+      "expanded": "Zero-turn end-of-sequence switch",
+      "definition": "An eligible voluntary switch at the end of a Charged Attack sequence; it uses a distinct zero-turn window, not the normal one-turn cost.",
+      "category": "Switching",
+      "usage": "simulator",
+      "aliases": ["zero-turn switch", "0-turn switch", "free switch after Charged"],
+      "keywords": ["post charged", "switch window", "charged sequence"],
+      "related": ["post-charged-switch", "switching-timing"]
+    },
+    {
+      "id": "self-defense-debuff",
+      "term": "Self-Defense debuff",
+      "expanded": "Target-owned Defense drop",
+      "definition": "A Charged Attack effect that lowers the user's own Defense before an opponent's pending Fast reaches impact; that current Defense is used for the pending damage calculation.",
+      "category": "Battle state",
+      "usage": "simulator",
+      "aliases": ["self debuff", "self-defense drop"],
+      "keywords": ["pending Fast", "Defense stage", "stat change", "target"],
+      "related": ["stat-stages", "pending-fast"]
+    },
+    {
+      "id": "disconnect",
+      "term": "Disconnect progression",
+      "expanded": "Battle state continues",
+      "definition": "The current battle continues to progress after both players connect even if a client stops responding; turn order, KO, energy, and alignment remain state-driven.",
+      "category": "Current timing",
+      "usage": "judge",
+      "aliases": ["network disconnect", "client stops responding"],
+      "keywords": ["network", "battle state", "progression", "feedback"],
+      "related": ["disconnect-state", "battle-turns"]
     }
   ]
 }

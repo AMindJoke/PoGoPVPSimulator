@@ -109,28 +109,28 @@
     },
     {
       "id": "fast-attack-prevents-charged-attack",
-      "title": "Fast Attack prevents Charged Attack",
-      "summary": "Reviewing the known major issue often discussed as a damage registration error.",
-      "category": "Known major issues",
-      "keywords": ["dre", "damage registration error", "fast attack prevents charged attack", "charged attack", "knockout", "pending damage"],
+      "title": "Historical DRE terminology",
+      "summary": "How to interpret older DRE reports under the current deterministic timing system.",
+      "category": "Historical terminology",
+      "keywords": ["dre", "damage registration error", "fast attack prevents charged attack", "charged attack", "knockout", "pending damage", "timing anomaly"],
       "content": [
         {
           "id": "official-description",
-          "heading": "Known major issue",
+          "heading": "Historical term, current rule first",
           "kind": "text",
-          "body": ["The handbook lists a situation where one competitor attempts a Charged Attack while the opponent uses a Fast Attack, and the Fast Attack incorrectly knocks out the Charged Attack user's Pokémon.", "This belongs to the handbook's major-issue category because it can create an unfair advantage or disadvantage and usually affects the outcome."]
+          "body": ["DRE (Damage Registration Error) is community shorthand for older reports in which Fast damage appeared to prevent an available Charged Attack. It is not the name of a random current battle rule.", "Under the 2026 Trainer Battle timing system, Fast impacts, Charged starts, and switch resolution follow a deterministic turn order. Teach and review the current Pending Fast rule first; retain DRE only as a historical search term for older evidence."]
         },
         {
           "id": "review-focus",
-          "heading": "Review focus",
+          "heading": "Review focus for an old report",
           "kind": "steps",
-          "body": ["Confirm the attempted Charged Attack and opposing Fast Attack in the recording.", "Establish the relevant registration and impact timing.", "Determine whether the knockout occurred incorrectly.", "Compare the observed outcome with the outcome absent the technical issue.", "Apply the general review-resolution standard to the demonstrated impact."]
+          "body": ["Confirm the attempted Charged Attack, opposing Fast Attack, and visible battle state in the recording.", "Reconstruct the current registration, next-turn Charged start, switch ordering, and Fast impact turn.", "If the recording still shows an irregular branch, label it as a Timing Anomaly reconstruction rather than a normal DRE outcome.", "Compare the observed result with the current deterministic result and apply the general review-resolution standard."]
         },
         {
           "id": "tool-boundary",
           "heading": "Reconstruction is evidence support",
           "kind": "compendium-note",
-          "body": ["Scenario Review can help test the corrected battle state, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, the issue, and its significant impact."]
+          "body": ["Scenario Review can test the normal current battle state or an explicitly selected Timing Anomaly branch, but it does not issue the tournament ruling. The presiding Judge still evaluates the recording, evidence, and significant impact."]
         }
       ],
       "source": "Play! Pokémon Pokémon GO Tournament Handbook",
@@ -138,14 +138,14 @@
       "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
       "sourceSection": "Sections 6.7.1 and 6.7.3.2",
       "sourceUpdated": "2026-05-21",
-      "lastUpdated": "2026-08-17",
+      "lastUpdated": "2026-09-07",
       "relatedMechanics": ["fast-move-impact", "charged-move-priority", "energy-generation"],
       "relatedRulings": ["technical-review-resolution", "screen-recording-evidence"]
     },
     {
       "id": "general-lag-review",
       "title": "Lag affecting an action",
-      "summary": "Distinguishing action delay from visual-only lag during a technical review.",
+      "summary": "Distinguishing a verified action delay from normal deterministic timing and visual feedback.",
       "category": "Known technical issues",
       "keywords": ["general lag", "one-turn lag", "1-turn lag", "weak connection", "visual lag", "input delay", "action delay"],
       "content": [
@@ -153,7 +153,7 @@
           "id": "distinction",
           "heading": "Action delay versus visual delay",
           "kind": "text",
-          "body": ["The handbook treats General Lag as a major issue when there is a delay between a competitor's input and the associated game action. A weak-connection notice may accompany it.", "Visual Lag is listed separately as a minor issue when graphics are delayed but the underlying actions occur normally."]
+          "body": ["The current battle system is designed so ordinary within-turn network variation does not change identical decisions in an identical state. A technical review still distinguishes a verified delay between an input and its game action from a visual-only delay.", "Visual Lag means graphics are delayed while the underlying actions progress normally; it does not change Pending Fast, Charged, or switch rules."]
         },
         {
           "id": "review-focus",
@@ -165,7 +165,7 @@
           "id": "not-by-label",
           "heading": "Do not rule from the label alone",
           "kind": "key-point",
-          "body": ["Calling an incident “one-turn lag” does not by itself establish a rematch. The Judge must verify an actual delayed action and its impact on this game."]
+          "body": ["Calling an incident “one-turn lag” does not by itself establish a rematch or explain a DRE report. The Judge must verify an actual delayed action, separate it from normal timing, and evaluate its impact on this game."]
         }
       ],
       "source": "Play! Pokémon Pokémon GO Tournament Handbook",
@@ -173,7 +173,7 @@
       "sourceUrl": "https://mcdn.pokemon.com/pokemon-prod/raw/upload/v1/live/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-pokemon-go-tournament-handbook-en.pdf",
       "sourceSection": "Sections 6.7.1, 6.7.3.1 and 6.7.3.2",
       "sourceUpdated": "2026-05-21",
-      "lastUpdated": "2026-08-17",
+      "lastUpdated": "2026-09-07",
       "relatedMechanics": ["battle-turns", "fast-move-duration", "fast-move-impact"],
       "relatedRulings": ["technical-review-resolution", "screen-recording-evidence"]
     },

@@ -1,6 +1,6 @@
 # Judge Compendium content schemas
 
-All identifiers use stable lowercase slugs (`fast-move-timing`, `dre`) so future search, deep links, and Scenario Review integrations do not depend on display titles.
+All identifiers use stable lowercase slugs (`fast-move-impact`, `pending-fast`) so future search, deep links, and Scenario Review integrations do not depend on display titles. Historical identifiers such as `dre` remain only for old reports and search compatibility.
 
 Every JSON file has this envelope:
 
@@ -20,7 +20,7 @@ Required fields: `id`, `title`, `summary`, `category`, `keywords`, and `content`
 {
   "id": "duration-example",
   "heading": "Example",
-  "kind": "text | key-point | example | steps",
+  "kind": "text | key-point | example | judge-note | compendium-note | steps | timeline",
   "body": ["One or more paragraphs or steps."]
 }
 ```

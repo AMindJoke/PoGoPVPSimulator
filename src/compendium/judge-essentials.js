@@ -11,11 +11,14 @@
     Object.freeze({ id: "fast-attack-duration", order: 2, title: "Fast Attack Duration", summary: "Understand multi-turn Fast Attacks and action windows.", targetType: "mechanics", targetId: "fast-move-duration" }),
     Object.freeze({ id: "energy", order: 3, title: "Energy & Charged Attacks", summary: "Learn when energy is gained, capped, and spent.", targetType: "mechanics", targetId: "energy-generation" }),
     Object.freeze({ id: "cap", order: 4, title: "Charged Attack Priority (CAP)", summary: "Resolve simultaneous Charged Attacks using current Attack.", targetType: "mechanics", targetId: "charged-move-priority" }),
-    Object.freeze({ id: "shields", order: 5, title: "Shield Scenarios", summary: "Read the Protect Shield configurations used in matchup review.", targetType: "glossary", targetId: "shield-scenario" }),
-    Object.freeze({ id: "switching", order: 6, title: "Switching & Catches", summary: "Recognize the competitive term for redirecting an incoming Charged Attack.", targetType: "glossary", targetId: "catch" }),
-    Object.freeze({ id: "stat-changes", order: 7, title: "Stat Changes", summary: "Track bounded Attack and Defense stages.", targetType: "mechanics", targetId: "stat-stages" }),
-    Object.freeze({ id: "battle-end", order: 8, title: "Simultaneous Fast Attack Impacts", summary: "Review how simultaneous Fast Attack impacts can produce simultaneous knockouts.", targetType: "mechanics", targetId: "fast-move-impact" }),
-    Object.freeze({ id: "intervention", order: 9, title: "Errors & Judge Intervention", summary: "Start a technical review with the right evidence and process.", targetType: "rulings", targetId: "technical-review-request" })
+    Object.freeze({ id: "fast-impact", order: 5, title: "Fast Attack Impact", summary: "Separate registration, pending status, impact, and energy.", targetType: "mechanics", targetId: "fast-move-impact" }),
+    Object.freeze({ id: "pending-fast", order: 6, title: "Pending Fast Damage", summary: "Read a scheduled Fast impact without treating it as an immediate KO.", targetType: "mechanics", targetId: "pending-fast" }),
+    Object.freeze({ id: "charged-timing", order: 7, title: "Charged Attack Timing", summary: "Register now, start next turn, and resolve before eligible Fast impact.", targetType: "mechanics", targetId: "charged-attack-timing" }),
+    Object.freeze({ id: "switching", order: 8, title: "Switching & Damage Transfer", summary: "Apply switches before incoming damage and distinguish switch costs.", targetType: "mechanics", targetId: "switching-timing" }),
+    Object.freeze({ id: "post-charged", order: 9, title: "Post-Charged Switch", summary: "Use the distinct zero-turn switch window at sequence end.", targetType: "mechanics", targetId: "post-charged-switch" }),
+    Object.freeze({ id: "stat-changes", order: 10, title: "Stat Changes", summary: "Track bounded stages and self-Defense debuffs before pending impact.", targetType: "mechanics", targetId: "stat-stages" }),
+    Object.freeze({ id: "disconnects", order: 11, title: "Disconnect Progression", summary: "Keep battle state and feedback separate from client response.", targetType: "mechanics", targetId: "disconnect-state" }),
+    Object.freeze({ id: "intervention", order: 12, title: "Scenario Review & Judge Intervention", summary: "Separate normal timing from Timing Anomaly reconstruction and rulings.", targetType: "mechanics", targetId: "timing-anomaly" })
   ]);
 
   function normalizeProgress(value) {

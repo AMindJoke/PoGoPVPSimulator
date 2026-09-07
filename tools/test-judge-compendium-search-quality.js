@@ -18,7 +18,7 @@ assert.strictEqual(ids("cmp")[0], "charged-move-priority");
 assert.strictEqual(ids("charged move priority")[0], "charged-move-priority");
 assert.ok(ids("fast move").includes("fast-move"));
 assert.ok(ids("stat changes").includes("stat-stages"));
-assert.strictEqual(ids("switch")[0], "catch");
+assert.strictEqual(ids("switch")[0], "switching-timing");
 assert.ok(ids("dre").includes("dre"));
 assert.ok(ids("lag").includes("general-lag-review"));
 assert.ok(ids("shield").length > 0);
