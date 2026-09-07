@@ -69,7 +69,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260907-planner-v40"></script>
+  <script src="src/battle/battle-intelligence.js?v=20260907-planner-v41"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -16390,6 +16390,7 @@
         });
         globalThis.PvPeakPerfDebug = PvPeakPerfDebug;
         const workerStartupRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun("worker-startup") : null;
+        globalThis.BATTLE_DRE_STANDARD = globalThis.BATTLE_DRE_STANDARD !== false;
         globalThis.PVPEAK_DETERMINISTIC_PLANNER_TIME = true;
         const PvPeakTurnEngine = (${window.createPvPeakTurnEngineApi.toString()})();
         const plannerInitSpan = workerStartupRunId ? PvPeakPerfDebug.startSpan("planner.init", workerStartupRunId) : null;
@@ -28328,6 +28329,8 @@
         plannerMode: "CANONICAL",
         context: {
           callerContext: battleIntelligenceCallerContext(),
+          dreStandard: globalThis.BATTLE_DRE_STANDARD === true
+            || String(globalThis.BATTLE_DRE_STANDARD || "").toLowerCase() === "true",
           chargedTimingOptimization: !interruptedTimingRisksDominantChargedRoute(attacker, defender),
           canonicalOpponentLethalBeforeNextWindow: opponentPressureForcesThrow(attacker, defender),
           estimateFastDamage(side) {
@@ -35932,7 +35935,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260907-v26").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260907-v27").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

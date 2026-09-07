@@ -1545,7 +1545,9 @@ function createPvPeakBattleIntelligenceApi() {
     const currentTurn = Math.max(numeric(state?.currentTurn), numeric(actor.readyTurn));
     const chargedTriggerTurn = currentTurn + fastTurns;
     const opponentReadyTurn = Math.max(currentTurn, numeric(opponent.readyTurn));
-    if (chargedTriggerTurn >= opponentReadyTurn) return null;
+    const dreStandard = context?.dreStandard === true;
+    if (chargedTriggerTurn > opponentReadyTurn
+      || (chargedTriggerTurn === opponentReadyTurn && !dreStandard)) return null;
 
     const projectedEnergy = numeric(actor.energy) + numeric(actor.fastMove.energyGain);
     const remainingHp = Math.max(0, numeric(opponent.hp) - fastDamage);
@@ -1576,7 +1578,8 @@ function createPvPeakBattleIntelligenceApi() {
     const ownTurns = Math.max(1, numeric(actor.fastMove?.turns, 1));
     const oppTurns = Math.max(1, numeric(opponent.fastMove?.turns, 1));
     const currentTurn = numeric(state.currentTurn);
-    const opponentCooldown = Math.max(0, numeric(opponent.readyTurn) - currentTurn);
+    const opponentReadyTurn = Math.max(currentTurn, numeric(opponent.readyTurn));
+    const opponentCooldown = Math.max(0, opponentReadyTurn - currentTurn);
     let targetCooldown = 1;
     if (ownTurns >= 4) targetCooldown = 2;
     if (ownTurns >= 3 && oppTurns === 5) targetCooldown = 2;
@@ -1604,6 +1607,12 @@ function createPvPeakBattleIntelligenceApi() {
         ? context.estimateFastDamage("opponent")
         : opponent.fastMove?.damage
     ));
+    const dreStandard = context?.dreStandard === true;
+    const shieldedChargedWasteOpportunity = context?.dreStandard === true
+      && numeric(opponent.shields) === 1
+      && moves.length > 0
+      && typeof context.willOpponentShield === "function"
+      && moves.every(move => canonicalWouldShieldThreat(context, move));
     const fastClosure = canonicalFastClosureBeforeOpponentThreat({
       state,
       side,
@@ -1645,7 +1654,20 @@ function createPvPeakBattleIntelligenceApi() {
 
     let turnsPlanned = ownTurns + Math.floor(numeric(actor.energy) / moves[0].energyCost);
     if (numeric(actor.attack) < numeric(opponent.attack)) turnsPlanned++;
-    const resourcesBecomeUnusable = turnsPlanned > survival.turnsToLive;
+    const resourcesBecomeUnusableRaw = turnsPlanned > survival.turnsToLive;
+    const waitEndTurn = Math.max(currentTurn, numeric(actor.readyTurn)) + ownTurns;
+    const opponentFastCountDuringWait = opponentReadyTurn <= waitEndTurn
+      ? Math.max(0, Math.ceil((waitEndTurn - opponentReadyTurn) / oppTurns))
+      : 0;
+    const opponentReadyAfterWait = opponentReadyTurn + opponentFastCountDuringWait * oppTurns;
+    const canCloseAfterWait = moves.some(move =>
+      projectedEnergy >= numeric(move.energyCost)
+      && numeric(move.damage) >= Math.max(0, numeric(opponent.hp) - ownFastDamage)
+    );
+    const dreClosingOpportunity = dreStandard
+      && canCloseAfterWait
+      && waitEndTurn <= opponentReadyAfterWait;
+    const resourcesBecomeUnusable = resourcesBecomeUnusableRaw && !dreClosingOpportunity;
     if (resourcesBecomeUnusable && !canCloseBeforeOpponentThreat) {
       optimize = false;
       triggered.push("TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE");
@@ -1658,6 +1680,11 @@ function createPvPeakBattleIntelligenceApi() {
       optimize = false;
       triggered.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
     } else rejected.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
+
+    if (!actorFaints && projectedEnergy <= 100 && !immediateLethal
+      && (shieldedChargedWasteOpportunity || dreClosingOpportunity)) {
+      optimize = true;
+    }
 
     let opponentChargedLethal = false;
     for (const move of opponentMoves) {
@@ -1704,6 +1731,13 @@ function createPvPeakBattleIntelligenceApi() {
         turnsPlanned,
         turnsToLive: survival.turnsToLive,
         actorFaints,
+        shieldedChargedWasteOpportunity,
+        dreStandard,
+        dreClosingOpportunity,
+        waitEndTurn,
+        opponentReadyAfterWait,
+        canCloseAfterWait,
+        resourcesBecomeUnusableRaw,
         resourcesBecomeUnusable,
         immediateLethal,
         opponentChargedLethal,

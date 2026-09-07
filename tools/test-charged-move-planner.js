@@ -19,6 +19,7 @@ const pokemonMap = new Map(gamemaster.pokemon
   .map(pokemon => normalizePokemon(pokemon, moveMap))
   .map(pokemon => [pokemon.id, pokemon]));
 const adapter = createWorkerAdapter(extractLiveWorkerSource());
+const dreAdapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true });
 let sequence = 0;
 
 function clone(value) {
@@ -48,6 +49,21 @@ function simulate(config, shields) {
     bShields: shields,
     includeSwing: false,
     trace: true,
+    config
+  });
+}
+
+function simulateWith(simulator, config, shields) {
+  sequence++;
+  return simulator.simulate({
+    id: sequence,
+    key: `charged-principle-${sequence}`,
+    source: "charged-principle-test",
+    aShields: shields,
+    bShields: shields,
+    includeSwing: false,
+    trace: true,
+    debugTimeline: true,
     config
   });
 }
@@ -97,5 +113,34 @@ const quagsireSequence = Array.from(chargedDecisions(quagsire)
   .filter(decision => decision.side === "A")
   .map(decision => decision.chosenCandidate?.moveId));
 assert.deepStrictEqual(quagsireSequence, ["AQUA_TAIL", "MUD_BOMB", "AQUA_TAIL"]);
+
+const melmetalCorsolaConfig = createBattleConfig(
+  pokemonMap.get("melmetal"),
+  pokemonMap.get("corsola_galarian"),
+  DEFAULT_PROFILE,
+  moveMap,
+  standardMovesets,
+  pokemonMap
+);
+melmetalCorsolaConfig.left.shieldMode = "always";
+melmetalCorsolaConfig.right.shieldMode = "smart";
+const melmetalCorsola = simulateWith(dreAdapter, melmetalCorsolaConfig, 1);
+assert.strictEqual(melmetalCorsola.details.outcome, "B",
+  "DRE automatic planning must preserve Corsola's winning line against Melmetal.");
+assert.strictEqual(melmetalCorsola.details.aHp, 0);
+assert(melmetalCorsola.details.bHp > 0);
+const firstMelmetalCharged = melmetalCorsola.timelineTrace.find(event =>
+  event.trainer === "A" && event.kind === "charge"
+);
+const firstCorsolaCharged = melmetalCorsola.timelineTrace.find(event =>
+  event.trainer === "B" && event.kind === "charge"
+);
+assert(firstMelmetalCharged && firstCorsolaCharged);
+assert(melmetalCorsola.timelineTrace.some(event =>
+  event.trainer === "B"
+  && event.kind === "fast"
+  && event.start > firstMelmetalCharged.start
+  && event.start < firstCorsolaCharged.start
+), "Corsola must take a Fast before throwing the shielded Charged Move.");
 
 console.log("Charged Principle Engine parity tests passed.");
