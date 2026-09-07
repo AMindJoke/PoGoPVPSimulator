@@ -65,9 +65,15 @@
       if (!moveIds.has(code)) errors.push(`PREVIEW_MOVE_UNKNOWN:${code}`);
       if (!record(override)) { errors.push(`PREVIEW_MOVE_INVALID:${code}`); return; }
       if (!VALUE_STATUS.has(override.status)) errors.push(`PREVIEW_MOVE_STATUS_INVALID:${code}`);
+      if (options.requireConfirmed === true && override.status !== "confirmed") errors.push(`PREVIEW_MOVE_UNCONFIRMED:${code}`);
       const changedFields = Object.keys(override).filter(field => MOVE_FIELDS.has(field));
       if (!changedFields.length) errors.push(`PREVIEW_MOVE_VALUE_MISSING:${code}`);
       changedFields.forEach(field => {
+        const raw = override[field];
+        if (raw == null || (typeof raw === "string" && ["", "unknown", "tbd", "pending", "unresolved"].includes(raw.trim().toLowerCase()))) {
+          errors.push(`PREVIEW_MOVE_VALUE_UNRESOLVED:${code}:${field}`);
+          return;
+        }
         if (NUMERIC_MOVE_FIELDS.has(field) && !Number.isFinite(Number(override[field]))) errors.push(`PREVIEW_MOVE_NUMBER_INVALID:${code}:${field}`);
       });
       if (override.status === "estimated" && !cleanId(override.note)) errors.push(`PREVIEW_MOVE_ESTIMATE_NOTE_MISSING:${code}`);
