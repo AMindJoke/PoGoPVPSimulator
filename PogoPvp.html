@@ -35932,7 +35932,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260907-v24").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260907-v26").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
