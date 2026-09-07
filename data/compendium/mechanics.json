@@ -277,9 +277,9 @@
         },
         {
           "id": "denied-impact",
-          "heading": "A denied impact is not a second knockout",
+          "heading": "A denied Fast deals no damage",
           "kind": "key-point",
-          "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the registered event can be denied. Registered, resolved, and denied are different statuses; a denied impact does not deal damage or create an additional knockout."]
+          "body": ["If the Fast source is no longer valid or alive before impact under the applicable battle state, the pending Fast is not applied and deals no damage. Registered, resolved, and denied describe whether the scheduled Fast was accepted, applied, or invalidated."]
         }
       ],
       "related": ["fast-move-impact", "charged-attack-timing", "switching-timing"],

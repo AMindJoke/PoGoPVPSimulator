@@ -43,6 +43,8 @@ assert.doesNotMatch(stageCopy, /Fast pending on Pokémon B/i);
 const pendingFastCopy = body("mechanics", "pending-fast");
 assert.match(pendingFastCopy, /Pokémon A has a Fast Attack pending on Pokémon B/i);
 assert.match(pendingFastCopy, /B's current Defense stage at impact time/i);
+assert.match(pendingFastCopy, /pending Fast is not applied and deals no damage/i);
+assert.doesNotMatch(pendingFastCopy, /additional knockout|second knockout|KO marker/i);
 
 const historical = body("rulings", "fast-attack-prevents-charged-attack");
 assert.match(historical, /historical/i);
