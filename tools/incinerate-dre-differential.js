@@ -109,7 +109,7 @@ function run(options = {}) {
   const ranking = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "great-league-rankings.json"), "utf8"));
   const pool = (ranking.entries || []).slice(0, top);
   const incinerate = pool.filter(entry => entry.moveset?.fast === "INCINERATE");
-  const normalRuntime = loadRuntime();
+  const normalRuntime = loadRuntime({ dreStandard: false });
   const dreRuntime = loadRuntime({ dreStandard: true });
   const rows = [];
   let sequence = 0;

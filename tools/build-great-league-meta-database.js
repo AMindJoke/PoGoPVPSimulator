@@ -1245,7 +1245,7 @@ function main() {
   if (!scenarios.length) throw new Error("No shield scenarios selected.");
 
   console.log(`Loading live simulator matrix worker for ${generationSeasonId || "current"}...`);
-  const adapter = createWorkerAdapter(extractLiveWorkerSource());
+  const adapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true });
   const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
   if (externalOpponentWeights) {
     console.log(`Loaded ${externalOpponentWeights.size.toLocaleString()} opponent weights from ${weightSourcePath} (${weightMode}).`);
@@ -1389,6 +1389,7 @@ function main() {
     generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
+    dreStandard: true,
     matrixVersion: MATRIX_VERSION,
     engineVersion: MATRIX_VERSION,
     scoreVersion: MATCHUP_SCORE_VERSION,
