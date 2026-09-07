@@ -15,6 +15,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <script src="battle-data.js"></script>
+  <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
   <script src="data/seasons/season-generated-loader.js"></script>
   <script src="data/seasons/next-season.js"></script>
@@ -15558,7 +15559,9 @@
         buffsSelf: m.buffsSelf || null,
         buffsOpponent: m.buffsOpponent || null,
         buffTarget: m.buffTarget || null,
-        buffApplyChance: Number(m.buffApplyChance ?? 0)
+        buffApplyChance: Number(m.buffApplyChance ?? 0),
+        damageMethod: m.damageMethod || null,
+        tags: Array.isArray(m.tags) ? [...m.tags] : []
       }]));
 
       allPokemon = gm.pokemon
@@ -15566,6 +15569,7 @@
         .map(p => ({
           id: p.speciesId,
           name: p.speciesName,
+          originalFormId: p.originalFormId || p.speciesId,
           dex: p.dex || 0,
           released: p.released !== false,
           types: (p.types || []).filter(type => type && type !== "none"),
@@ -15575,6 +15579,7 @@
           defaultIVs: p.defaultIVs || {},
           fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
           charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+          extraChargedMoves: (p.extraChargedMoves || []).filter(id => moveMap.has(id)),
           eliteMoves: p.eliteMoves || [],
           tags: p.tags || [],
           form: window.PvPeakPokemonForms?.describe?.(p) || { id: p.speciesId, kind: "standard", isMega: false },
@@ -16177,6 +16182,8 @@
         transitionCombatantForm,
         applyFormChange,
         apply,
+        cramorantGulpMissileMove,
+        resolveCramorantGulpMissile,
         applyMoveBuffs,
         applyBuffArray,
         buffStageSnapshot,
@@ -21647,7 +21654,8 @@
         catalog[id] = {
           p: cloneMatrixPokemon(form),
           fastMoves: form.fast.map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean),
-          chargedMoves: form.charged.map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean)
+          chargedMoves: form.charged.map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean),
+          extraChargedMoves: (form.extraChargedMoves || []).map(moveId => cloneMatrixMove(moveMap.get(moveId))).filter(Boolean)
         };
       });
       formCatalogCache.set(pokemon.id, catalog);
@@ -21760,10 +21768,12 @@
       return {
         id: pokemon.id,
         name: pokemon.name,
+        originalFormId: pokemon.originalFormId || pokemon.id,
         dex: pokemon.dex,
         types: [...(pokemon.types || [])],
         fast: [...(pokemon.fast || [])],
         charged: [...(pokemon.charged || [])],
+        extraChargedMoves: [...(pokemon.extraChargedMoves || [])],
         atk: Number(pokemon.atk || 0),
         def: Number(pokemon.def || 0),
         hp: Number(pokemon.hp || 0),
@@ -21785,7 +21795,9 @@
         buffsSelf: Array.isArray(move.buffsSelf) ? [...move.buffsSelf] : move.buffsSelf || null,
         buffsOpponent: Array.isArray(move.buffsOpponent) ? [...move.buffsOpponent] : move.buffsOpponent || null,
         buffTarget: move.buffTarget || null,
-        buffApplyChance: Number(move.buffApplyChance || 0)
+        buffApplyChance: Number(move.buffApplyChance || 0),
+        damageMethod: move.damageMethod || null,
+        tags: Array.isArray(move.tags) ? [...move.tags] : []
       };
     }
 
@@ -21824,6 +21836,9 @@
     }
 
     function estimate(attacker, defender, move) {
+      if (move?.damageMethod === "percentMaxHP") {
+        return Math.max(1, Math.floor((Number(move.power || 0) / 100) * Number(defender.maxHp || defender.hp || 0)) + 1);
+      }
       const source = combatantForChargedEstimate(attacker, move);
       const rawDamage = move.power * effectiveAttack(source) * damageBonus * .5 / effectiveDefense(defender) * damageModifier(source, defender, move);
       return Math.max(1, Math.floor(rawDamage) + 1);
@@ -21936,13 +21951,21 @@
 
     function formChangeMatches(rule, trigger, move = null) {
       if (!rule || rule.trigger !== trigger) return false;
-      return !rule.moveId || rule.moveId === "ANY" || rule.moveId === move?.id;
+      const moveIds = Array.isArray(rule.moveIDs) ? rule.moveIDs : null;
+      return (!rule.moveId || rule.moveId === "ANY" || rule.moveId === move?.id)
+        && (!moveIds || moveIds.includes(move?.id));
     }
 
     function formChangeTargetId(combatant, rule) {
       if (!combatant || !rule) return null;
       if (rule.type === "toggle") {
         return combatant.p.id === rule.defaultFormId ? rule.alternativeFormId : rule.defaultFormId;
+      }
+      if (rule.alternativeFormId === "variable") {
+        const hpRatio = Number(combatant.maxHp || 0) > 0
+          ? Number(combatant.hp || 0) / Number(combatant.maxHp)
+          : 1;
+        return hpRatio > 0.5 ? "cramorant_gulping" : "cramorant_gorging";
       }
       return rule.alternativeFormId || null;
     }
@@ -22028,6 +22051,14 @@
       return targetId ? transitionCombatantForm(combatant, targetId, trigger, rule) : null;
     }
 
+    function resetCombatantFormOnSwitch(combatant) {
+      const rule = combatant?.p?.formChange;
+      if (!rule?.resetOnSwitch || !combatant?.formCatalog) return null;
+      const targetId = combatant.p.originalFormId || combatant.initialFormId || null;
+      if (!targetId || targetId === combatant.p.id) return null;
+      return transitionCombatantForm(combatant, targetId, "switch", rule);
+    }
+
     function statStageMultiplier(stage) {
       const value = Math.max(-4, Math.min(4, Number(stage || 0)));
       return value >= 0 ? (4 + value) / 4 : 4 / (4 - value);
@@ -22098,6 +22129,42 @@
       defender.hp = Math.max(0, defender.hp - damage);
       attacker.energy = Math.max(0, Math.min(100, attacker.energy + move.energyGain - move.energyCost));
       return damage;
+    }
+
+    function cramorantGulpMissileMove(combatant) {
+      const formId = combatant?.p?.id;
+      if (formId !== "cramorant_gulping" && formId !== "cramorant_gorging") return null;
+      return combatant.formCatalog?.[formId]?.extraChargedMoves?.[0] || null;
+    }
+
+    function resolveCramorantGulpMissile(defender, attacker, triggeringMove, shielded, chargeEvent = null) {
+      if (shielded || triggeringMove?.tags?.includes("instant")) return null;
+      const move = cramorantGulpMissileMove(defender);
+      if (!move || !attacker || !defender) return null;
+      const hpBefore = attacker.hp;
+      const stagesBeforeBuff = buffStageSnapshot(defender, attacker);
+      const damage = apply(defender, attacker, move, false);
+      const buffMessages = applyMoveBuffs(defender, attacker, move, true);
+      const event = recordTimeline(defender, move, "charge", damage, false, defender.energy, {
+        instant: true,
+        start: chargeEvent?.start ?? battleTurns[defender.trainer] ?? 0,
+        energyAfter: defender.energy,
+        hpBefore,
+        hpAfter: attacker.hp
+      });
+      event.instant = true;
+      event.ignoresFaint = true;
+      event.damageMethod = move.damageMethod || null;
+      event.unshieldedDamage = damage;
+      event.buffs = buffMessages;
+      event.buffEffects = appliedBuffEffects(defender, attacker, stagesBeforeBuff);
+      event.triggeringChargedMoveId = triggeringMove?.id || null;
+      event.formChanges = [];
+      const formChange = transitionCombatantForm(defender, "cramorant", "gulp_missile", defender.p?.formChange);
+      if (formChange) event.formChanges.push(formChange);
+      event.state = battleSnapshot();
+      add("T" + event.start + " - " + defender.trainer + ": " + defender.p.name + " spits " + move.name + ": " + damage + " damage." + (buffMessages.length ? " Buff: " + buffMessages.join(", ") + "." : ""), "charge");
+      return { event, formChange };
     }
 
     function applyMoveBuffs(attacker, defender, move, forceApply = null) {
@@ -22558,6 +22625,7 @@
       const switching = window.PvPeakManualSwitching;
       const active = side === "A" ? left : right;
       if (!switching || !active) return false;
+      resetCombatantFormOnSwitch(active);
       const beforeState = captureManualRuntimeSnapshot();
       let result;
       try {
@@ -22576,6 +22644,7 @@
         return false;
       }
       const incoming = result.active;
+      resetCombatantFormOnSwitch(incoming);
       incoming.trainer = side;
       incoming.shields = Number(active.shields || 0);
       manualSwitchState = result.switchState;
@@ -26613,6 +26682,12 @@
       chargeEvent.unshieldedDamage = unshieldedDamage;
       chargeEvent.protectedByForm = protectedByForm;
       chargeEvent.formChanges = formChanges;
+      const gulpMissile = resolveCramorantGulpMissile(defender, attacker, move, shielded, chargeEvent);
+      if (gulpMissile?.formChange) formChanges.push(gulpMissile.formChange);
+      if (gulpMissile) {
+        chargeEvent.gulpMissileEventId = gulpMissile.event.timelineEventId;
+        chargeEvent.formChanges = formChanges;
+      }
       if (options.aiReason) chargeEvent.aiReason = options.aiReason;
       if (shieldDecision.reason) chargeEvent.shieldReason = shieldDecision.reason;
       defender.chargedTaken++;
@@ -26970,8 +27045,8 @@
     }
 
     function recordTimeline(attacker, move, kind, damage, shielded, energyBeforeOverride = null, traceContext = {}) {
-      const duration = kind === "fast" ? Math.max(1, move.turns || 1) : 1;
-      const start = battleTurns[attacker.trainer] || 0;
+      const duration = traceContext.instant ? 0 : kind === "fast" ? Math.max(1, move.turns || 1) : 1;
+      const start = Number.isFinite(Number(traceContext.start)) ? Number(traceContext.start) : battleTurns[attacker.trainer] || 0;
       const energyBefore = energyBeforeOverride !== null
         ? energyBeforeOverride
         : kind === "fast"
@@ -27008,7 +27083,7 @@
       event.state = battleSnapshot();
       timeline.push(event);
       if (kind === "fast") battleTurns[attacker.trainer] = start + duration;
-      if (kind === "charge") battleTurns[attacker.trainer] = start + 1;
+      if (kind === "charge" && !traceContext.instant) battleTurns[attacker.trainer] = start + 1;
       if (typeof manualModeState !== "undefined" && manualModeState?.enabled) syncManualBattleTiming();
       return event;
     }

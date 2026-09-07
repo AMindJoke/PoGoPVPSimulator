@@ -155,6 +155,10 @@ function readWindowGlobal(relativePath, globalName) {
   const context = { window: {}, console };
   vm.createContext(context);
   vm.runInContext(code, context, { filename: relativePath, timeout: 30000 });
+  if (relativePath === "battle-data.js" && fs.existsSync(path.join(ROOT, "cramorant-data.js"))) {
+    const overlay = fs.readFileSync(path.join(ROOT, "cramorant-data.js"), "utf8");
+    vm.runInContext(overlay, context, { filename: "cramorant-data.js", timeout: 30000 });
+  }
   return context.window[globalName];
 }
 
@@ -296,7 +300,9 @@ function normalizeMove(move) {
     buffsSelf: move.buffsSelf || null,
     buffsOpponent: move.buffsOpponent || null,
     buffTarget: move.buffTarget || null,
-    buffApplyChance: Number(move.buffApplyChance ?? 0)
+    buffApplyChance: Number(move.buffApplyChance ?? 0),
+    damageMethod: move.damageMethod || null,
+    tags: Array.isArray(move.tags) ? [...move.tags] : []
   };
 }
 
@@ -304,6 +310,7 @@ function normalizePokemon(p, moveMap) {
   return {
     id: p.speciesId,
     name: p.speciesName,
+    originalFormId: p.originalFormId || p.speciesId,
     dex: p.dex || 0,
     released: p.released !== false,
     types: (p.types || []).filter(type => type && type !== "none"),
@@ -313,6 +320,7 @@ function normalizePokemon(p, moveMap) {
     defaultIVs: p.defaultIVs || {},
     fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
     charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+    extraChargedMoves: (p.extraChargedMoves || []).filter(id => moveMap.has(id)),
     eliteMoves: p.eliteMoves || [],
     tags: p.tags || [],
     formChange: p.formChange ? JSON.parse(JSON.stringify(p.formChange)) : null
@@ -560,7 +568,8 @@ function buildCombatantFormCatalog(pokemon, pokemonMap, moveMap) {
     catalog[id] = {
       p: cloneForMatrix(form),
       fastMoves: form.fast.map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean),
-      chargedMoves: form.charged.map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean)
+      chargedMoves: form.charged.map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean),
+      extraChargedMoves: (form.extraChargedMoves || []).map(moveId => cloneForMatrix(moveMap.get(moveId))).filter(Boolean)
     };
   });
   formCatalogCache.set(pokemon.id, catalog);

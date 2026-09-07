@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-07-v24-pending-fast-impact";
+const CACHE_VERSION = "2026-09-07-v25-cramorant";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -16,6 +16,7 @@ const CORE_ASSETS = [
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./battle-data.js",
+  "./cramorant-data.js",
   "./default-movesets.js",
   "./data/great-league-rankings.js",
   "./data/great-league-ranking-details.js",

@@ -125,4 +125,61 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   assert.equal(result.decisionTrace.finalState.B.defenseStage, 0);
 }
 
+{
+  const config = battleConfig("cramorant", "skarmory");
+  setSingleCharged(config.left, "DIVE");
+  config.left.energy = config.startEnergyA = 100;
+  config.right.charged = [null, null];
+  const result = simulate(config, 0, 0, "cramorant-form");
+  assert.equal(result.decisionTrace.finalState.A.pokemonId, "cramorant_gulping");
+}
+
+{
+  const config = battleConfig("cramorant", "swampert");
+  setSingleCharged(config.left, "DIVE");
+  setSingleCharged(config.right, "HYDRO_CANNON");
+  config.left.energy = config.startEnergyA = 100;
+  config.right.energy = config.startEnergyB = 100;
+  const result = simulate(config, 0, 0, "cramorant-missile");
+  const missile = result.decisionTrace.timelineActions.find(action => action.moveId === "GULP_MISSILE_ARROKUDA");
+  assert.ok(missile, "an unshielded Charged Attack should trigger Gulp Missile");
+  assert.equal(missile.hpChange, 21);
+  assert.equal(result.decisionTrace.finalState.B.defenseStage, -1);
+}
+
+{
+  const config = battleConfig("cramorant_gorging", "swampert");
+  config.left.charged = [null, null];
+  config.right.charged = [JSON.parse(JSON.stringify(moveMap.get("HYDRO_CANNON"))), null];
+  config.right.energy = config.startEnergyB = 100;
+  const result = simulate(config, 0, 0, "cramorant-gorging");
+  const missile = result.decisionTrace.timelineActions.find(action => action.moveId === "GULP_MISSILE_PIKACHU");
+  assert.ok(missile, "Gorging Cramorant should use the Pikachu missile");
+  assert.equal(result.decisionTrace.finalState.B.attackStage, -2);
+}
+
+{
+  const config = battleConfig("cramorant_gulping", "swampert");
+  config.left.charged = [null, null];
+  config.left.hp = 20;
+  config.right.charged = [JSON.parse(JSON.stringify(moveMap.get("HYDRO_CANNON"))), null];
+  config.right.energy = config.startEnergyB = 100;
+  config.right.hp = 100;
+  const result = simulate(config, 0, 0, "cramorant-missile-after-ko");
+  const missile = result.decisionTrace.timelineActions.find(action => action.moveId === "GULP_MISSILE_ARROKUDA");
+  assert.ok(missile, "Gulp Missile must fire even when the triggering attack KOs Cramorant");
+}
+
+{
+  const config = battleConfig("cramorant", "swampert");
+  config.left.p = JSON.parse(JSON.stringify(config.left.formCatalog.cramorant_gulping.p));
+  config.left.charged = [null, null];
+  config.right.charged = [JSON.parse(JSON.stringify(moveMap.get("HYDRO_CANNON"))), null];
+  config.right.energy = config.startEnergyB = 100;
+  config.right.hp = 1;
+  const result = simulate(config, 1, 0, "cramorant-shield");
+  assert.ok(!result.decisionTrace.timelineActions.some(action => action.moveId === "GULP_MISSILE_ARROKUDA"));
+  assert.equal(result.decisionTrace.finalState.A.pokemonId, "cramorant_gulping");
+}
+
 console.log("Special form mechanics regression checks passed.");
