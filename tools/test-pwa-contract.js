@@ -16,7 +16,10 @@ for (const size of [16, 32, 48]) {
   assert.ok(fs.existsSync(path.join(root, "assets", `go-pvp-favicon-${size}.png`)), `Missing ${size}px GO favicon.`);
 }
 assert.doesNotMatch(html, /rel="icon" href="assets\/app-icon\.svg"/, "The browser tab must not retain the old generic PvP icon.");
-assert.match(html, /navigator\.serviceWorker\.register\("\.\/sw\.js\?v=20260907-v24"\)/);
+const workerVersion = serviceWorker.match(/const CACHE_VERSION = "(\d{4})-(\d{2})-(\d{2})-(v\d+)-/);
+assert.ok(workerVersion, "The service worker must declare its cache version.");
+assert.ok(html.includes(`navigator.serviceWorker.register("./sw.js?v=${workerVersion.slice(1).join("").replace(/v/, "-v")}")`),
+  "The service worker registration must match the current cache version.");
 
 assert.match(html, /\* \{ box-sizing: border-box; \}/,
   "The page must retain its global layout reset.");

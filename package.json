@@ -1,5 +1,9 @@
 {
   "scripts": {
+    "audit:planner-alternatives": "node tools/audit-planner-alternatives.js",
+    "test:continuation-isolation": "node tools/test-continuation-isolation.js",
+    "test:dre-timing-guards": "node tools/test-dre-timing-guards.js",
+    "test:planner-alternative-audit": "node tools/test-planner-alternative-audit.js",
     "test:season-context": "node tools/test-season-context.js",
     "test:season-ui": "node tools/test-season-ui-contract.js",
     "test:twilight-trails": "node tools/test-twilight-trails-data.js",

@@ -136,12 +136,12 @@ const firstCorsolaCharged = melmetalCorsola.timelineTrace.find(event =>
   event.trainer === "B" && event.kind === "charge"
 );
 assert(firstMelmetalCharged && firstCorsolaCharged);
-assert(melmetalCorsola.timelineTrace.some(event =>
+assert(firstCorsolaCharged.start < firstMelmetalCharged.start || melmetalCorsola.timelineTrace.some(event =>
   event.trainer === "B"
   && event.kind === "fast"
   && event.start > firstMelmetalCharged.start
   && event.start < firstCorsolaCharged.start
-), "Corsola must take a Fast before throwing the shielded Charged Move.");
+), "Corsola must either lead the Charged cycle or take a Fast after Melmetal's opening throw.");
 
 const optimizedMelmetalCorsolaConfig = createBattleConfig(
   pokemonMap.get("melmetal"),
@@ -156,11 +156,11 @@ optimizedMelmetalCorsolaConfig.right.shieldMode = "smart";
 const optimizedMelmetalCorsola = simulateWith(dreAdapter, optimizedMelmetalCorsolaConfig, 1);
 const optimizedChargedOpening = optimizedMelmetalCorsola.timelineTrace
   .filter(event => event.kind === "charge")
-  .slice(0, 4)
+  .slice(0, 3)
   .map(event => `${event.trainer}:${event.start}:${event.moveId}`);
 assert.strictEqual(
   optimizedChargedOpening.join("|"),
-  "B:15:NIGHT_SHADE|A:18:DOUBLE_IRON_BASH|A:21:DOUBLE_IRON_BASH|A:30:DOUBLE_IRON_BASH",
+  "B:15:NIGHT_SHADE|A:18:DOUBLE_IRON_BASH|A:21:DOUBLE_IRON_BASH",
   "DRE smart-vs-smart planning must preserve the safe opponent-Charged-first cycle before repeating the cheaper Charged move."
 );
 

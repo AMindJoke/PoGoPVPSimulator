@@ -23,7 +23,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260907-planner-v40"></script>
+  <script src="src/reliability/battle-reliability.js?v=20260908-planner-v43"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -69,7 +69,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260907-planner-v42"></script>
+  <script src="src/battle/battle-intelligence.js?v=20260908-planner-v43"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -27462,6 +27462,7 @@
         timeline,
         initialTimelineState,
         battleTurns,
+        manualPendingFastEvents,
         suppressRender,
         activeAutoTurnContext,
         chargedContinuationOpening
@@ -27478,6 +27479,7 @@
         timeline = JSON.parse(JSON.stringify(saved.timeline || []));
         initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
         battleTurns = { ...saved.battleTurns };
+        manualPendingFastEvents = JSON.parse(JSON.stringify(saved.manualPendingFastEvents || []));
         suppressRender = true;
         activeAutoTurnContext = null;
         chargedContinuationOpening = null;
@@ -27523,6 +27525,7 @@
         timeline = saved.timeline;
         initialTimelineState = saved.initialTimelineState;
         battleTurns = saved.battleTurns;
+        manualPendingFastEvents = saved.manualPendingFastEvents;
         suppressRender = saved.suppressRender;
         activeAutoTurnContext = saved.activeAutoTurnContext;
         chargedContinuationOpening = saved.chargedContinuationOpening;
@@ -29734,6 +29737,7 @@
         timeline,
         initialTimelineState,
         battleTurns,
+        manualPendingFastEvents,
         suppressRender,
         activeAutoTurnContext,
         chargedContinuationOpening
@@ -29751,6 +29755,7 @@
         timeline = JSON.parse(JSON.stringify(saved.timeline || []));
         initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
         battleTurns = { ...saved.battleTurns };
+        manualPendingFastEvents = JSON.parse(JSON.stringify(saved.manualPendingFastEvents || []));
         suppressRender = true;
         activeAutoTurnContext = null;
         chargedContinuationOpening = options.timingFollowUpMoveId
@@ -29862,6 +29867,7 @@
         timeline = saved.timeline;
         initialTimelineState = saved.initialTimelineState;
         battleTurns = saved.battleTurns;
+        manualPendingFastEvents = saved.manualPendingFastEvents;
         suppressRender = saved.suppressRender;
         activeAutoTurnContext = saved.activeAutoTurnContext;
         chargedContinuationOpening = saved.chargedContinuationOpening;
@@ -29878,6 +29884,7 @@
         timeline,
         initialTimelineState,
         battleTurns,
+        manualPendingFastEvents,
         suppressRender,
         activeAutoTurnContext,
         chargedContinuationOpening
@@ -29895,6 +29902,7 @@
         timeline = JSON.parse(JSON.stringify(saved.timeline || []));
         initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
         battleTurns = { ...saved.battleTurns };
+        manualPendingFastEvents = JSON.parse(JSON.stringify(saved.manualPendingFastEvents || []));
         suppressRender = true;
         activeAutoTurnContext = null;
         chargedContinuationOpening = { trainer, moveId: move.id, completed: false };
@@ -29970,6 +29978,7 @@
         timeline = saved.timeline;
         initialTimelineState = saved.initialTimelineState;
         battleTurns = saved.battleTurns;
+        manualPendingFastEvents = saved.manualPendingFastEvents;
         suppressRender = saved.suppressRender;
         activeAutoTurnContext = saved.activeAutoTurnContext;
         chargedContinuationOpening = saved.chargedContinuationOpening;
@@ -35935,7 +35944,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260907-v27").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260908-v29").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

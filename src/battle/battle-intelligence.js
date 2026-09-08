@@ -1627,6 +1627,8 @@ function createPvPeakBattleIntelligenceApi() {
     ));
     const dreStandard = context?.dreStandard === true;
     const shieldedChargedWasteOpportunity = context?.dreStandard === true
+      && ownTurns < oppTurns
+      && timingWindowOpen
       && numeric(opponent.shields) === 1
       && moves.length > 0
       && typeof context.willOpponentShield === "function"
@@ -1682,6 +1684,7 @@ function createPvPeakBattleIntelligenceApi() {
       && numeric(move.damage) >= Math.max(0, numeric(opponent.hp) - ownFastDamage)
     );
     const dreClosingOpportunity = dreStandard
+      && numeric(opponent.shields) === 0
       && canCloseAfterWait
       && waitEndTurn <= opponentReadyAfterWait;
     const resourcesBecomeUnusable = resourcesBecomeUnusableRaw && !dreClosingOpportunity;
