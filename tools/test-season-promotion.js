@@ -21,7 +21,9 @@ const gameMaster = loadWindow("battle-data.js", "BATTLE_GAMEMASTER");
 const catalog = loadWindow("data/seasons/season-catalog.js", "BATTLE_SEASON_CATALOG");
 const draft = loadWindow("data/seasons/next-season.js", "BATTLE_NEXT_SEASON");
 
-const provisional = Promotion.validateFinalPreview(draft, gameMaster, { requireGenerated: false });
+assert.deepEqual(Promotion.validateFinalPreview(draft, gameMaster, { requireGenerated: false }).errors, []);
+const provisionalFixture = { ...draft, moveOverrides: { ...draft.moveOverrides, AIR_CUTTER: { ...draft.moveOverrides.AIR_CUTTER, status: "estimated" } } };
+const provisional = Promotion.validateFinalPreview(provisionalFixture, gameMaster, { requireGenerated: false });
 assert(provisional.errors.some(error => error.startsWith("PREVIEW_MOVE_UNCONFIRMED:")), "Unconfirmed provisional values must block promotion.");
 
 const unresolved = Promotion.applyConfirmedCorrections(draft, {

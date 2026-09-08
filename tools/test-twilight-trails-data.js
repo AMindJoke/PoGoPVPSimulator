@@ -40,9 +40,9 @@ const previewMove = id => context.activeSeasonData.gameMaster.moves.find(move =>
 assert.equal(currentMove("LUNGE").power, 60);
 assert.equal(previewMove("LUNGE").power, 70);
 assert.equal(previewMove("AIR_CUTTER").energy, 40);
-assert.equal(previewMove("AIR_CUTTER").buffApplyChance, 0.1);
+assert.equal(previewMove("AIR_CUTTER").buffApplyChance, 0.125);
 assert.equal(previewMove("BULLDOZE").power, 80);
-assert.equal(previewMove("BULLDOZE").energy, 50);
+assert.equal(previewMove("BULLDOZE").energy, 55);
 assert.equal(previewMove("BULLDOZE").buffApplyChance, 1);
 assert.equal(previewMove("DRAINING_KISS").power, 80);
 assert.deepEqual(Array.from(previewMove("DRAINING_KISS").buffs), [0, 1]);
@@ -50,8 +50,8 @@ assert.equal(previewMove("MIRROR_COAT").energy, 45);
 assert.equal(previewMove("BITE").energyGain, 4);
 assert.equal(previewMove("TAKE_DOWN").energyGain, 9);
 assert.equal(previewMove("SCRATCH").energyGain, 4);
-assert.equal(previewMove("SHADOW_FORCE").energy, 80);
-assert.equal(draft.moveOverrides.AIR_CUTTER.status, "estimated");
+assert.equal(previewMove("SHADOW_FORCE").energy, 65);
+assert.equal(draft.moveOverrides.AIR_CUTTER.status, "confirmed");
 assert.equal(draft.moveOverrides.LUNGE.status, "confirmed");
 
 const pokemon = id => context.activeSeasonData.gameMaster.pokemon.find(entry => entry.speciesId === id);
@@ -63,4 +63,17 @@ assert(pokemon("skarmory_shadow").chargedMoves.includes("DRILL_RUN"));
 assert(pokemon("toxtricity_low_key").chargedMoves.includes("SWIFT"));
 assert(!gm.pokemon.find(entry => entry.speciesId === "volbeat").chargedMoves.includes("LUNGE"), "Availability overrides must not mutate Current Season.");
 
-console.log("Twilight Trails draft data tests passed.");
+const supplied = require("../data/seasons/twilight-trails/confirmed-moves-20260908.json").moves;
+assert.equal(Object.keys(supplied).length, 27);
+assert.equal(draft.dataVersion, "twilight-trails-confirmed-1");
+for (const [id, values] of Object.entries(supplied)) {
+  assert.equal(draft.moveOverrides[id].status, "confirmed");
+  for (const [field, expected] of Object.entries(values)) {
+    assert.deepEqual(JSON.parse(JSON.stringify(previewMove(id)[field])), expected, `${id}.${field}`);
+  }
+  for (const field of ["turns", "cooldown", "buffs", "buffTarget", "buffApplyChance"]) {
+    if (Object.hasOwn(values, field)) continue;
+    assert.deepEqual(previewMove(id)[field], currentMove(id)[field], `${id}.${field} must retain its existing value`);
+  }
+}
+console.log("Twilight Trails confirmed move data tests passed.");

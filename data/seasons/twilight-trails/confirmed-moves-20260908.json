@@ -1,0 +1,33 @@
+{
+  "source": "Live move values supplied by the user on 2026-09-08",
+  "energyConvention": "Positive costs for Charged Attacks; positive energyGain for Fast Attacks",
+  "moves": {
+    "MOONBLAST": { "power": 90, "energy": 50 },
+    "SHADOW_FORCE": { "energy": 65 },
+    "BLAZE_KICK": { "energy": 35 },
+    "INFESTATION": { "power": 10 },
+    "POISON_FANG": { "power": 50 },
+    "LUNGE": { "power": 70 },
+    "BUBBLE_BEAM": { "power": 50, "energy": 50 },
+    "IRON_HEAD": { "power": 85 },
+    "BULLDOZE": { "power": 80, "energy": 55, "buffApplyChance": 1, "buffs": [0, -1], "buffTarget": "opponent" },
+    "BODY_SLAM": { "power": 65, "energy": 40 },
+    "PSYCHO_BOOST": { "power": 85 },
+    "DOUBLE_IRON_BASH": { "power": 70 },
+    "RAGE_FIST": { "power": 55, "energy": 40 },
+    "MAGNET_BOMB": { "energy": 40 },
+    "DARK_PULSE": { "energy": 45 },
+    "AIR_CUTTER": { "power": 60, "energy": 40, "buffApplyChance": 0.125, "buffs": [1, 0], "buffTarget": "self" },
+    "LOW_KICK": { "power": 6 },
+    "MIRROR_COAT": { "power": 75, "energy": 45 },
+    "BITE": { "power": 2, "energyGain": 4 },
+    "SCRATCH": { "power": 3, "energyGain": 4 },
+    "CHARGE_BEAM": { "power": 6 },
+    "BRINE": { "power": 100, "energy": 60 },
+    "HIGH_HORSEPOWER": { "energy": 55 },
+    "DRAINING_KISS": { "power": 80, "buffApplyChance": 1, "buffs": [0, 1], "buffTarget": "self" },
+    "SHADOW_BALL": { "power": 90 },
+    "SAND_TOMB": { "power": 55, "energy": 45 },
+    "TAKE_DOWN": { "power": 14, "energyGain": 9 }
+  }
+}
