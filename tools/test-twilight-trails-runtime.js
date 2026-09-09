@@ -14,9 +14,8 @@ vm.createContext(browser);
 for (const relative of [
   "battle-data.js",
   "default-movesets.js",
-  "data/seasons/twilight-trails/great-league-rankings.js",
-  "data/seasons/twilight-trails/great-league-ranking-details.js",
-  "data/seasons/twilight-trails/default-movesets.js",
+  "data/great-league-rankings.js",
+  "data/great-league-ranking-details.js",
   "data/seasons/next-season.js",
   "data/seasons/season-catalog.js"
 ]) {
@@ -28,14 +27,14 @@ const context = Season.create({
   catalog: browser.BATTLE_SEASON_CATALOG,
   gameMaster: browser.BATTLE_GAMEMASTER,
   defaultMovesets: browser.BATTLE_DEFAULT_MOVESETS,
-  rankings: { entries: ["current-sentinel"] },
-  rankingDetails: { entries: {} },
+  rankings: browser.GREAT_LEAGUE_RANKINGS,
+  rankingDetails: browser.GREAT_LEAGUE_RANKING_DETAILS,
   location: { search: "?season=twilight-trails" }
 });
 
-assert.equal(context.previewAvailable, true);
+assert.equal(context.previewAvailable, false);
 assert.equal(context.activeSeasonData.id, "twilight-trails");
-assert.equal(context.activeSeasonData.status, "preview");
+assert.equal(context.activeSeasonData.status, "current");
 assert.equal(context.activeSeasonData.rankings.entries.length, 1542);
 assert.equal(Object.keys(context.activeSeasonData.rankingDetails.entries).length, 1542);
 assert.equal(context.activeSeasonData.rankings.metadata.seasonId, "twilight-trails");
@@ -57,7 +56,16 @@ assert.match(context.activeSeasonData.rankings.metadata.weightSource, /great-lea
 assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, context.activeSeasonData.rankings.metadata.generatedAt);
 assert.equal(context.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
 assert.equal(context.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");
-assert.equal(currentBodySlam.energy, 35, "Resolving the preview must not mutate Current Season data.");
+assert.equal(currentBodySlam.energy, 40, "Confirmed move values must be canonical.");
+for (const requested of ["", "?season=current-2026-06-28", "?season=twilight-trails", "?season=unknown"]) {
+  const resolved = Season.create({ catalog: browser.BATTLE_SEASON_CATALOG, gameMaster: browser.BATTLE_GAMEMASTER,
+    rankings: browser.GREAT_LEAGUE_RANKINGS, rankingDetails: browser.GREAT_LEAGUE_RANKING_DETAILS,
+    location: { search: requested }, storage: { getItem: () => "current-2026-06-28" } });
+  assert.equal(resolved.activeSeasonData.id, "twilight-trails");
+  assert.equal(resolved.activeSeasonData.status, "current");
+  assert.equal(resolved.previewAvailable, false);
+  assert.equal(resolved.errors.length, 0);
+}
 assert.equal(context.errors.length, 0);
 
 console.log("Twilight Trails runtime integration tests passed.");

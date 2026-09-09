@@ -16,13 +16,14 @@ for (const relative of ["battle-data.js", "data/seasons/next-season.js", "data/s
 const gm = browser.BATTLE_GAMEMASTER;
 const draft = browser.BATTLE_NEXT_SEASON;
 assert.equal(draft.id, "twilight-trails");
-assert.equal(draft.enabled, true, "The complete preview descriptor must be available.");
+assert.equal(draft.enabled, false, "The promoted season must not be offered as a preview.");
 assert.equal(draft.rankingVersion, "great-league-twilight-trails-confirmed-v43-global-1");
 assert.equal(draft.pendingValues.length, 0);
 assert.deepEqual(Season.validateCatalog(browser.BATTLE_SEASON_CATALOG, gm), []);
 
 const runnablePreview = {
   ...draft,
+  id: "future-season",
   enabled: true,
   pendingValues: [],
   generated: { rankings: { entries: [] }, rankingDetails: { entries: {} } }
@@ -32,12 +33,12 @@ const context = Season.create({
   gameMaster: gm,
   rankings: { entries: ["current"] },
   rankingDetails: { entries: {} },
-  location: { search: "?season=twilight-trails" }
+  location: { search: "?season=future-season" }
 });
 assert.equal(context.activeSeasonData.status, "preview");
 const currentMove = id => gm.moves.find(move => move.moveId === id);
 const previewMove = id => context.activeSeasonData.gameMaster.moves.find(move => move.moveId === id);
-assert.equal(currentMove("LUNGE").power, 60);
+assert.equal(currentMove("LUNGE").power, 70);
 assert.equal(previewMove("LUNGE").power, 70);
 assert.equal(previewMove("AIR_CUTTER").energy, 40);
 assert.equal(previewMove("AIR_CUTTER").buffApplyChance, 0.125);
@@ -61,7 +62,7 @@ assert(pokemon("muk_alolan_shadow").chargedMoves.includes("ICE_PUNCH"));
 assert(pokemon("aerodactyl_mega").chargedMoves.includes("BRUTAL_SWING"));
 assert(pokemon("skarmory_shadow").chargedMoves.includes("DRILL_RUN"));
 assert(pokemon("toxtricity_low_key").chargedMoves.includes("SWIFT"));
-assert(!gm.pokemon.find(entry => entry.speciesId === "volbeat").chargedMoves.includes("LUNGE"), "Availability overrides must not mutate Current Season.");
+assert(gm.pokemon.find(entry => entry.speciesId === "volbeat").chargedMoves.includes("LUNGE"), "Promoted availability must be present in canonical data.");
 
 const supplied = require("../data/seasons/twilight-trails/confirmed-moves-20260908.json").moves;
 assert.equal(Object.keys(supplied).length, 27);
@@ -69,6 +70,7 @@ assert.equal(draft.dataVersion, "twilight-trails-confirmed-1");
 for (const [id, values] of Object.entries(supplied)) {
   assert.equal(draft.moveOverrides[id].status, "confirmed");
   for (const [field, expected] of Object.entries(values)) {
+    assert.deepEqual(JSON.parse(JSON.stringify(currentMove(id)[field])), expected, `canonical ${id}.${field}`);
     assert.deepEqual(JSON.parse(JSON.stringify(previewMove(id)[field])), expected, `${id}.${field}`);
   }
   for (const field of ["turns", "cooldown", "buffs", "buffTarget", "buffApplyChance"]) {

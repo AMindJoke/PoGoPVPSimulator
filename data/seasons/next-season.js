@@ -10,7 +10,7 @@
     label: "Twilight Trails",
     dataVersion: "twilight-trails-confirmed-1",
     rankingVersion: "great-league-twilight-trails-confirmed-v43-global-1",
-    enabled: true,
+    enabled: false,
     sourceUrl,
     moveOverrides: Object.freeze({
       AIR_CUTTER: confirmed({ power: 60, energy: 40, buffApplyChance: 0.125, buffs: [1, 0], buffTarget: "self" }),
@@ -76,6 +76,7 @@
       rankingDetails: "data/seasons/twilight-trails/great-league-ranking-details.js",
       defaultMovesets: "data/seasons/twilight-trails/default-movesets.js"
     }),
+    generatedGlobals: Object.freeze({ rankings: "TWILIGHT_TRAILS_RANKINGS", rankingDetails: "TWILIGHT_TRAILS_RANKING_DETAILS", defaultMovesets: "TWILIGHT_TRAILS_DEFAULT_MOVESETS" }),
     generated: root.TWILIGHT_TRAILS_RANKINGS && root.TWILIGHT_TRAILS_RANKING_DETAILS
       ? Object.freeze({
           rankings: root.TWILIGHT_TRAILS_RANKINGS,

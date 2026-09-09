@@ -63,7 +63,7 @@ assert.equal(simulated.writesPerformed, false);
 const futureCatalog = {
   schemaVersion: 1,
   current: promotedCatalog.current,
-  next: { ...draft, id: "future-season", label: "Future Season", dataVersion: "future-draft-1", generated: { rankings: { entries: [] }, rankingDetails: { entries: {} } } }
+  next: { ...draft, enabled: true, id: "future-season", label: "Future Season", dataVersion: "future-draft-1", generated: { rankings: { entries: [] }, rankingDetails: { entries: {} } } }
 };
 const futureContext = Season.create({
   catalog: futureCatalog,
