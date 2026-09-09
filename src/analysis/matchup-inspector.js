@@ -19,7 +19,7 @@ const CACHE_RESULT_FIELDS = [
   "outpacePressureEdge"
 ];
 
-const MATCHUP_SCORE_VERSION = "resource-score-v3";
+const MATCHUP_SCORE_VERSION = "resource-score-v4";
 const MIN_TERMINAL_OUTCOME_EDGE = 18;
 const LEGACY_HP_EDGE_WEIGHT = 270;
 const MATCHUP_HP_EDGE_WEIGHT = 450;
@@ -27,6 +27,19 @@ const MATCHUP_HP_EDGE_WEIGHT = 450;
 function rescoreCachedResult(result) {
   if (!result) return result;
   const direction = result.winnerSide === "A" ? 1 : result.winnerSide === "B" ? -1 : 0;
+  const currentResources = [result.hpEdge, result.energyEdge, result.shieldEdge,
+    result.readyEdge, result.dangerEdge, result.closingCostEdge,
+    result.farmPressureEdge, result.outpacePressureEdge]
+    .reduce((sum, value) => sum + Number(value || 0), 0);
+  const currentWinnerEdge = direction * (MIN_TERMINAL_OUTCOME_EDGE + Math.max(0, -currentResources * direction));
+  // Modern compact caches retain exact hpEdge, but round HP ratios to 4 decimals.
+  // Preserve their engine score; only legacy 270-weight results need migration.
+  const modernHpEdge = (Number(result.hpRatioA) - Number(result.hpRatioB)) * MATCHUP_HP_EDGE_WEIGHT;
+  const modern = result.hpEdgeWeight === MATCHUP_HP_EDGE_WEIGHT
+    || (Number.isFinite(result.score) && Number.isFinite(modernHpEdge) && Number.isFinite(result.hpEdge)
+      && Math.abs(Number(result.winnerEdge) - currentWinnerEdge) < .000001
+      && Math.abs(result.hpEdge - modernHpEdge) <= .0450001);
+  if (modern) return { ...result, hpEdgeWeight: MATCHUP_HP_EDGE_WEIGHT };
   if (!direction) return { ...result, score: 500, winnerEdge: 0 };
   const migratedHpEdge = Number(result.hpEdge || 0) * MATCHUP_HP_EDGE_WEIGHT / LEGACY_HP_EDGE_WEIGHT;
   const resourceEdge = [
@@ -43,7 +56,8 @@ function rescoreCachedResult(result) {
     ...result,
     score: Math.max(0, Math.min(1000, Math.round(500 + resourceEdge + winnerEdge))),
     winnerEdge,
-    hpEdge: migratedHpEdge
+    hpEdge: migratedHpEdge,
+    hpEdgeWeight: MATCHUP_HP_EDGE_WEIGHT
   };
 }
 

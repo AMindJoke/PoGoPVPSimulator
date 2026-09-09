@@ -20456,7 +20456,7 @@
       const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
       const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
       const modelText = model
-        ? " Scores use internal role categories, iterative opponent-strength weighting, and a competitive geometric overall."
+        ? " Scores use equal-shield categories, opponent-strength weights, and a competitive geometric overall."
         : "";
       return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${modelText}</div>`;
     }
@@ -35944,7 +35944,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260909-v32").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260909-v33").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

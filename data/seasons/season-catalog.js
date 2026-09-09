@@ -10,7 +10,7 @@
       id: "twilight-trails",
       label: "Twilight Trails",
       dataVersion: "twilight-trails-confirmed-1",
-      rankingVersion: "great-league-twilight-trails-confirmed-v43-global-1"
+      rankingVersion: "great-league-twilight-trails-v43-score-v4-meta70-1"
     }),
     next: root.BATTLE_NEXT_SEASON?.enabled ? Object.freeze({
       ...root.BATTLE_NEXT_SEASON,

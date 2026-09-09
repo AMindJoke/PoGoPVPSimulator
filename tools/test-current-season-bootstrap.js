@@ -35,7 +35,8 @@ for (const [search, stored] of [["", ""], ["", "twilight-trails"], ["", "current
   assert.equal(season.activeSeasonData.id, "twilight-trails");
   assert.equal(season.activeSeasonData.status, "current");
   assert.equal(season.activeSeasonData.rankings.entries.length, 1542);
-  assert.equal(season.activeSeasonData.rankings.entries[0].overallScore, 705);
+  assert.equal(season.activeSeasonData.rankings.entries[0].overallScore, 591);
+  assert.equal(season.activeSeasonData.rankings.metadata.scoreVersion, "resource-score-v4");
   assert.equal(season.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
   assert.equal(season.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");
   assert.ok(!loaded.some(file => file.startsWith("data/seasons/twilight-trails/")), "Current must load canonical assets directly.");
