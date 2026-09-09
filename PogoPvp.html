@@ -18,7 +18,7 @@
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
   <script src="data/seasons/season-generated-loader.js"></script>
-  <script src="data/seasons/next-season.js?v=20260908-confirmed-1"></script>
+  <script src="data/seasons/next-season.js?v=20260909-global-ranking"></script>
   <script src="data/seasons/season-catalog.js"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -35944,7 +35944,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260908-v30").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260909-v31").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

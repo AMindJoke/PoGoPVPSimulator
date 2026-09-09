@@ -813,6 +813,7 @@ function simulateCachedCell({ adapter, cache, seqRef, profile, attacker, defende
     return { key, result: inflateCacheResult(cache.baseCells[cacheKey]) };
   }
   matchupCacheStats.misses++;
+  if (args.has("--cache-only")) throw new Error(`Missing compatible cached matchup: ${attacker.id} vs ${defender.id} ${shieldState}`);
   const workerResult = adapter.simulate({
     id: ++seqRef.value,
     source: "offline-ranking",
@@ -1553,6 +1554,9 @@ function mergeRankingChunks() {
       mergedFromChunks: files.length,
       pokemonCount: entries.length,
       cells: totalCells,
+      completedSimulations: chunks.reduce((sum, chunk) => sum + Number(chunk.metadata.completedSimulations || 0), 0),
+      theoreticalSimulations: chunks.reduce((sum, chunk) => sum + Number(chunk.metadata.theoreticalSimulations || 0), 0),
+      baseCells: chunks.reduce((sum, chunk) => sum + Number(chunk.metadata.baseCells || 0), 0),
       matchupCache: mergedMatchupCache,
       offset: 0,
       limit: null,

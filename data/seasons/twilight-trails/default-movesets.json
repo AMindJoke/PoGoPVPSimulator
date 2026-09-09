@@ -331,7 +331,7 @@
   "cradily": {
     "fast": "INFESTATION",
     "charged": [
-      "BULLDOZE",
+      "ROCK_TOMB",
       "GRASS_KNOT"
     ]
   },
@@ -918,7 +918,7 @@
   "cradily_b": {
     "fast": "INFESTATION",
     "charged": [
-      "BULLDOZE",
+      "ROCK_TOMB",
       "GRASS_KNOT"
     ]
   },
@@ -1303,7 +1303,7 @@
   "cradily_shadow": {
     "fast": "INFESTATION",
     "charged": [
-      "BULLDOZE",
+      "ROCK_TOMB",
       "GRASS_KNOT"
     ]
   },
@@ -3100,7 +3100,7 @@
   "zygarde": {
     "fast": "DRAGON_TAIL",
     "charged": [
-      "BULLDOZE",
+      "CRUNCH",
       "EARTHQUAKE"
     ]
   },
@@ -3248,7 +3248,7 @@
     "fast": "SAND_ATTACK",
     "charged": [
       "NIGHT_SLASH",
-      "BULLDOZE"
+      "ROCK_TOMB"
     ]
   },
   "beedrill": {
@@ -4249,7 +4249,7 @@
     "fast": "MUD_SLAP",
     "charged": [
       "EARTH_POWER",
-      "BULLDOZE"
+      "WRAP"
     ]
   },
   "absol_shadow": {
@@ -5645,7 +5645,7 @@
   "krokorok": {
     "fast": "MUD_SLAP",
     "charged": [
-      "BULLDOZE",
+      "CRUNCH",
       "EARTHQUAKE"
     ]
   },
@@ -5785,7 +5785,7 @@
   "zygarde_10": {
     "fast": "DRAGON_TAIL",
     "charged": [
-      "BULLDOZE",
+      "CRUNCH",
       "EARTHQUAKE"
     ]
   },
@@ -6310,7 +6310,7 @@
     "fast": "MUD_SLAP",
     "charged": [
       "EARTH_POWER",
-      "BULLDOZE"
+      "WRAP"
     ]
   },
   "infernape": {
@@ -7555,7 +7555,7 @@
     "fast": "SMACK_DOWN",
     "charged": [
       "STONE_EDGE",
-      "BULLDOZE"
+      "ROCK_BLAST"
     ]
   },
   "lycanroc_midnight": {
@@ -7590,7 +7590,7 @@
     "fast": "SMACK_DOWN",
     "charged": [
       "STONE_EDGE",
-      "BULLDOZE"
+      "ROCK_BLAST"
     ]
   },
   "snubbull_shadow": {
