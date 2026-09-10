@@ -1,0 +1,32 @@
+"use strict";
+const fs = require("fs");
+const path = require("path");
+const assert = require("node:assert/strict");
+const { CACHE_RESULT_FIELDS } = require("../src/analysis/matchup-inspector");
+const root = path.resolve(__dirname, "..");
+const dir = path.join(root, "reports/moveset-refresh-20260910");
+const manifest = JSON.parse(fs.readFileSync(path.join(dir, "manifest.json"), "utf8"));
+assert.ok(manifest.completed);
+const archive = path.join(dir, "replaced-cells");
+fs.mkdirSync(archive, { recursive: true });
+let count = 0;
+for (const file of fs.readdirSync(path.join(dir, "overlays"))) {
+  const overlay = JSON.parse(fs.readFileSync(path.join(dir, "overlays", file), "utf8"));
+  const target = path.join(root, "data/seasons/twilight-trails/matchup-cache/great-league/rank1", file);
+  const cache = JSON.parse(fs.readFileSync(target, "utf8"));
+  assert.equal(cache.matrixVersion, manifest.engineVersion);
+  assert.equal(cache.dataVersion, manifest.dataVersion);
+  const removed = Object.fromEntries(Object.entries(cache.cells).filter(([key]) => overlay.replaceAll || manifest.selected[JSON.parse(key.split("|")[0]).id]));
+  const backup = path.join(archive, file);
+  if (!fs.existsSync(backup)) fs.writeFileSync(backup, JSON.stringify({ attackerSignature: cache.attackerSignature, generatedAt: cache.generatedAt, cells: removed }) + "\n");
+  cache.cells = Object.fromEntries(Object.entries(cache.cells).filter(([key]) => !(key in removed)));
+  for (const [key, value] of Object.entries(overlay.cells)) cache.cells[key] = Array.isArray(value) ? value : CACHE_RESULT_FIELDS.map(field => value[field]);
+  cache.attackerSignature = overlay.attackerSignature;
+  cache.generatedAt = new Date().toISOString();
+  assert.equal(Object.keys(cache.cells).length, 4623);
+  fs.writeFileSync(target, JSON.stringify(cache) + "\n");
+  count++;
+  if (count % 200 === 0) console.log(`${count}/1542`);
+}
+assert.equal(count, 1542);
+console.log("Local caches refreshed; replaced cells archived for rollback.");

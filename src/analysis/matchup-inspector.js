@@ -211,6 +211,7 @@ function buildFromCacheFiles({ a, b, aCache, bCache, shieldStates = ["0-0", "1-1
 }
 
 module.exports = {
+  CACHE_RESULT_FIELDS,
   MATCHUP_SCORE_VERSION,
   inflateCacheResult,
   rescoreCachedResult,

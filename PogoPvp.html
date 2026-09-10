@@ -2527,6 +2527,9 @@
       box-sizing: border-box;
       padding: 12px 14px 14px 40px;
     }
+    .meta-alternatives { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+    .meta-alternatives > strong { font-size: 12px; }
+    .meta-alternative-moves { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: 6px; min-width: 0; }
     .meta-matchups {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -20372,7 +20375,9 @@
 
     function metaRankingDetailsHtml(entry) {
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
-      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins", "wins", detail.wins, entry)}${metaMatchupGroup("Key Losses", "losses", detail.losses, entry)}</div></div>`;
+      const alternatives = (detail.alternativeMovesets || []).slice(1);
+      const alternateHtml = alternatives.length ? `<section class="meta-alternatives" aria-label="Alternative movesets"><strong>Alternative movesets</strong>${alternatives.map(set => `<div class="meta-alternative-moves">${[metaMovePill(moveMap.get(set.fast), "fast"), ...set.charged.map(id => metaMovePill(moveMap.get(id), "charged"))].join("")}</div>`).join("")}</section>` : "";
+      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins", "wins", detail.wins, entry)}${metaMatchupGroup("Key Losses", "losses", detail.losses, entry)}</div>${alternateHtml}</div>`;
     }
 
     function metaMatchupGroup(label, className, rows, sourceEntry) {
@@ -35944,7 +35949,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260909-v33").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260910-v34").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

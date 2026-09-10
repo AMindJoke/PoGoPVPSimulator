@@ -416,7 +416,7 @@ function standardMovesetFor(p, standardMovesets) {
 }
 
 function fastMoveScore(move) {
-  return (move.energyGain * 2.2) + move.power;
+  return ((move.energyGain * 2.2) + move.power) / Math.max(1, move.turns || 1);
 }
 
 function chargedMoveScore(move) {

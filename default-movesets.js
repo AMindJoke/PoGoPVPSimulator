@@ -2679,9 +2679,9 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "vigoroth": {
-    "fast": "COUNTER",
+    "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
+      "BRICK_BREAK",
       "ROCK_SLIDE"
     ]
   },
@@ -3133,9 +3133,9 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "vigoroth_shadow": {
-    "fast": "COUNTER",
+    "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
+      "BRICK_BREAK",
       "ROCK_SLIDE"
     ]
   },
@@ -5804,10 +5804,10 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "rillaboom": {
-    "fast": "RAZOR_LEAF",
+    "fast": "SCRATCH",
     "charged": [
-      "DRUM_BEATING",
-      "EARTH_POWER"
+      "EARTH_POWER",
+      "DRUM_BEATING"
     ]
   },
   "dugtrio_alolan_shadow": {
