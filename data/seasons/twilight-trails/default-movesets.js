@@ -553,7 +553,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "morpeko_full_belly": {
-    "fast": "CHARGE_BEAM",
+    "fast": "BITE",
     "charged": [
       "AURA_WHEEL_ELECTRIC",
       "PSYCHIC_FANGS"
@@ -2309,7 +2309,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "pawmot": {
-    "fast": "CHARGE_BEAM",
+    "fast": "LOW_KICK",
     "charged": [
       "BRICK_BREAK",
       "WILD_CHARGE"
@@ -2323,7 +2323,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "avalugg": {
-    "fast": "ICE_FANG",
+    "fast": "BITE",
     "charged": [
       "AVALANCHE",
       "BODY_SLAM"
@@ -2546,7 +2546,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "dachsbun": {
-    "fast": "CHARM",
+    "fast": "BITE",
     "charged": [
       "BODY_SLAM",
       "PLAY_ROUGH"
@@ -2679,7 +2679,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "vigoroth": {
-    "fast": "COUNTER",
+    "fast": "SCRATCH",
     "charged": [
       "BODY_SLAM",
       "ROCK_SLIDE"
@@ -3133,7 +3133,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "vigoroth_shadow": {
-    "fast": "COUNTER",
+    "fast": "SCRATCH",
     "charged": [
       "BODY_SLAM",
       "ROCK_SLIDE"
@@ -3518,7 +3518,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "aipom_shadow": {
-    "fast": "ASTONISH",
+    "fast": "SCRATCH",
     "charged": [
       "SWIFT",
       "AERIAL_ACE"
@@ -3574,7 +3574,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "drilbur_shadow": {
-    "fast": "MUD_SLAP",
+    "fast": "SCRATCH",
     "charged": [
       "DRILL_RUN",
       "ROCK_TOMB"
@@ -3735,7 +3735,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "aipom": {
-    "fast": "ASTONISH",
+    "fast": "SCRATCH",
     "charged": [
       "SWIFT",
       "AERIAL_ACE"
@@ -3798,7 +3798,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "arcanine_shadow": {
-    "fast": "FIRE_FANG",
+    "fast": "BITE",
     "charged": [
       "WILD_CHARGE",
       "BULLDOZE"
@@ -3917,7 +3917,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "drilbur": {
-    "fast": "MUD_SLAP",
+    "fast": "SCRATCH",
     "charged": [
       "DRILL_RUN",
       "ROCK_TOMB"
@@ -3945,7 +3945,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "arcanine": {
-    "fast": "FIRE_FANG",
+    "fast": "BITE",
     "charged": [
       "WILD_CHARGE",
       "BULLDOZE"
@@ -4120,7 +4120,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "mienshao": {
-    "fast": "FORCE_PALM",
+    "fast": "LOW_KICK",
     "charged": [
       "BLAZE_KICK",
       "GRASS_KNOT"
@@ -4141,7 +4141,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "grafaiai": {
-    "fast": "MUD_SLAP",
+    "fast": "SCRATCH",
     "charged": [
       "FOUL_PLAY",
       "SLUDGE_BOMB"
@@ -4309,7 +4309,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "delphox_shadow": {
-    "fast": "FIRE_SPIN",
+    "fast": "SCRATCH",
     "charged": [
       "PSYSHOCK",
       "BLAST_BURN"
@@ -4448,7 +4448,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "delphox": {
-    "fast": "FIRE_SPIN",
+    "fast": "SCRATCH",
     "charged": [
       "PSYSHOCK",
       "BLAST_BURN"
@@ -4657,7 +4657,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "kabuto_shadow": {
-    "fast": "MUD_SHOT",
+    "fast": "SCRATCH",
     "charged": [
       "AQUA_JET",
       "ROCK_TOMB"
@@ -4762,7 +4762,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "kabuto": {
-    "fast": "MUD_SHOT",
+    "fast": "SCRATCH",
     "charged": [
       "AQUA_JET",
       "ROCK_TOMB"
@@ -4881,7 +4881,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "espurr": {
-    "fast": "CONFUSION",
+    "fast": "SCRATCH",
     "charged": [
       "PSYSHOCK",
       "ENERGY_BALL"
@@ -5391,7 +5391,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "grotle_shadow": {
-    "fast": "RAZOR_LEAF",
+    "fast": "BITE",
     "charged": [
       "ENERGY_BALL",
       "BODY_SLAM"
@@ -5734,7 +5734,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "grotle": {
-    "fast": "RAZOR_LEAF",
+    "fast": "BITE",
     "charged": [
       "BODY_SLAM",
       "ENERGY_BALL"
@@ -5804,10 +5804,10 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "rillaboom": {
-    "fast": "RAZOR_LEAF",
+    "fast": "SCRATCH",
     "charged": [
-      "DRUM_BEATING",
-      "EARTH_POWER"
+      "EARTH_POWER",
+      "DRUM_BEATING"
     ]
   },
   "dugtrio_alolan_shadow": {
@@ -5881,7 +5881,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "granbull_shadow": {
-    "fast": "CHARM",
+    "fast": "BITE",
     "charged": [
       "CLOSE_COMBAT",
       "CRUNCH"
@@ -5951,7 +5951,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "ambipom_shadow": {
-    "fast": "ASTONISH",
+    "fast": "SCRATCH",
     "charged": [
       "AERIAL_ACE",
       "LOW_SWEEP"
@@ -6217,7 +6217,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "persian_alolan": {
-    "fast": "FEINT_ATTACK",
+    "fast": "SCRATCH",
     "charged": [
       "FOUL_PLAY",
       "PLAY_ROUGH"
@@ -6279,7 +6279,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "thwackey": {
-    "fast": "RAZOR_LEAF",
+    "fast": "SCRATCH",
     "charged": [
       "ENERGY_BALL",
       "GRASS_KNOT"
@@ -6384,7 +6384,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "luxio": {
-    "fast": "SPARK",
+    "fast": "BITE",
     "charged": [
       "WILD_CHARGE",
       "CRUNCH"
@@ -6482,7 +6482,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "granbull": {
-    "fast": "CHARM",
+    "fast": "BITE",
     "charged": [
       "CLOSE_COMBAT",
       "CRUNCH"
@@ -6503,7 +6503,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "persian": {
-    "fast": "FEINT_ATTACK",
+    "fast": "SCRATCH",
     "charged": [
       "NIGHT_SLASH",
       "POWER_GEM"
@@ -6699,7 +6699,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "persian_shadow": {
-    "fast": "FEINT_ATTACK",
+    "fast": "SCRATCH",
     "charged": [
       "NIGHT_SLASH",
       "POWER_GEM"
@@ -6930,7 +6930,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "luxio_shadow": {
-    "fast": "SPARK",
+    "fast": "BITE",
     "charged": [
       "WILD_CHARGE",
       "CRUNCH"
@@ -7021,7 +7021,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "ambipom": {
-    "fast": "ASTONISH",
+    "fast": "SCRATCH",
     "charged": [
       "AERIAL_ACE"
     ]
@@ -7041,7 +7041,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "noivern": {
-    "fast": "AIR_SLASH",
+    "fast": "BITE",
     "charged": [
       "HEAT_WAVE",
       "HURRICANE"
@@ -7209,7 +7209,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "noivern_shadow": {
-    "fast": "AIR_SLASH",
+    "fast": "BITE",
     "charged": [
       "HEAT_WAVE",
       "HURRICANE"
@@ -7223,7 +7223,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "boltund": {
-    "fast": "SPARK",
+    "fast": "BITE",
     "charged": [
       "CRUNCH",
       "THUNDER"
@@ -7811,7 +7811,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "tornadus_incarnate_shadow": {
-    "fast": "AIR_SLASH",
+    "fast": "BITE",
     "charged": [
       "HURRICANE",
       "GRASS_KNOT"
@@ -7853,7 +7853,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "axew_shadow": {
-    "fast": "IRON_TAIL",
+    "fast": "SCRATCH",
     "charged": [
       "AQUA_TAIL",
       "DRAGON_CLAW"
@@ -7895,21 +7895,21 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "tornadus_incarnate": {
-    "fast": "AIR_SLASH",
+    "fast": "BITE",
     "charged": [
       "HURRICANE",
       "GRASS_KNOT"
     ]
   },
   "anorith_shadow": {
-    "fast": "STRUGGLE_BUG",
+    "fast": "SCRATCH",
     "charged": [
       "AQUA_JET",
       "ANCIENT_POWER"
     ]
   },
   "anorith": {
-    "fast": "STRUGGLE_BUG",
+    "fast": "SCRATCH",
     "charged": [
       "AQUA_JET",
       "ANCIENT_POWER"

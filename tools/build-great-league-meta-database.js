@@ -13,6 +13,7 @@ const battleIntelligence = require("../src/battle/battle-intelligence");
 const pokemonForms = require("../src/battle/pokemon-form");
 const seasonContext = require("../src/season/season-context");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
+const rankingWeightUpdate = require("../src/analysis/ranking-weight-update");
 
 const ROOT = path.resolve(__dirname, "..");
 const CP_CAP = 1500;
@@ -62,6 +63,7 @@ const mergeOffsets = mergeOffsetsArg
 const splitMatchups = args.has("--split-matchups");
 const fullOutput = args.has("--full-output");
 const useMatchupCache = args.has("--matchup-cache");
+const allowLegacyCache = args.has("--allow-legacy-cache");
 const opponentPoolArg = process.argv.find(arg => arg.startsWith("--opponents="));
 const opponentPoolMode = opponentPoolArg ? opponentPoolArg.split("=")[1] : allPokemonRanking ? "meta" : "same";
 const rankingModelArg = process.argv.find(arg => arg.startsWith("--ranking-model="));
@@ -136,6 +138,10 @@ function scoreToOpponentWeight(score, mode = weightMode) {
 function loadExternalOpponentWeights(filePath) {
   if (!filePath) return null;
   const data = readJsonPath(filePath);
+  if (args.has("--gradual-weights")) {
+    if (weightMode !== "competitive") throw new Error("Gradual weights require competitive mode.");
+    return rankingWeightUpdate.updateWeights(data);
+  }
   const map = new Map();
   for (const entry of data.entries || []) {
     const score = modeScoreForEntry(entry, weightMode);
@@ -681,7 +687,8 @@ function readCompatibleCache(file, attackerSignature, requirePreviewIdentity = f
   try {
     const cache = JSON.parse(fs.readFileSync(file, "utf8"));
     matchupCacheStats.filesRead++;
-    if (cache.matrixVersion !== MATRIX_VERSION || cache.attackerSignature !== attackerSignature) return null;
+    const legacyTimingCache = allowLegacyCache && cache.matrixVersion === "battle-planner-v43";
+    if ((!legacyTimingCache && cache.matrixVersion !== MATRIX_VERSION) || cache.attackerSignature !== attackerSignature) return null;
     if (requirePreviewIdentity && (
       cache.seasonId !== activeGenerationPreview?.id ||
       cache.dataVersion !== activeGenerationPreview?.dataVersion
@@ -1419,6 +1426,10 @@ function main() {
     splitMatchups,
     weightSource: weightSourcePath || null,
     weightMode: externalOpponentWeights ? weightMode : null,
+    ...(args.has("--gradual-weights") && externalOpponentWeights ? {
+      weightUpdate: { method: rankingWeightUpdate.METHOD, retainedShare: .5, transitionWidth: 20,
+        weights: Object.fromEntries(externalOpponentWeights) }
+    } : {}),
     matchupCache: {
       enabled: useMatchupCache,
       hits: matchupCacheStats.hits,
@@ -1481,6 +1492,20 @@ function main() {
   };
 
   validateOutput({ rankings, matchups, pool, opponentPool, profiles, scenarios, selfMatchupsSkipped });
+  const rankingOutputArg = process.argv.find(arg => arg.startsWith("--ranking-output="));
+  if (rankingOutputArg) {
+    const target = path.resolve(ROOT, rankingOutputArg.slice("--ranking-output=".length));
+    const relative = path.relative(ROOT, target);
+    if (relative.startsWith("..") || path.isAbsolute(relative) || !relative.startsWith(`reports${path.sep}`)) {
+      throw new Error("Experimental ranking output must be inside the repository reports directory.");
+    }
+    writeJson(relative, rankings);
+    const quality = runQualityPipeline({ datasetPath: relative, writeMetadata: false, writeReport: false });
+    console.log(`Dataset quality report: ${quality.status}.`);
+    if (quality.status !== "VALID") throw new Error("Experimental ranking failed dataset validation.");
+    console.log(`Wrote ${relative}. Cache hits: ${matchupCacheStats.hits}, misses: ${matchupCacheStats.misses}.`);
+    return;
+  }
   const rankingPath = chunkOutput
     ? generationPath("ranking-chunks", `great-league-rankings-${String(offset).padStart(4, "0")}.json`)
     : generationPath("great-league-rankings.json");

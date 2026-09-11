@@ -1655,6 +1655,12 @@ function createPvPeakBattleIntelligenceApi() {
     const canCloseWithFastThenCharged = !!fastThenChargedClosure;
     const canCloseBeforeOpponentThreat = canCloseWithFast || canCloseWithFastThenCharged;
     let optimize = timingWindowOpen && context.chargedTimingOptimization !== false && !!fast;
+    // Once the actor already has a legal Charged Move, do not overfarm into
+    // an opponent who can also register one during the same wait window. A
+    // shielded Charged is still strategically meaningful here: throwing now
+    // can force the opponent's shield and preserve the correct cycle.
+    const actorChargedReady = numeric(actor.energy) >= numeric(moves[0]?.energyCost);
+    if (optimize && actorChargedReady && opponentChargeWindow) optimize = false;
     const actorFaints = numeric(actor.hp) <= oppFastDamage;
     if (actorFaints) {
       optimize = false;
@@ -1702,6 +1708,7 @@ function createPvPeakBattleIntelligenceApi() {
     } else rejected.push("TIMING-018_DO_NOT_WAIT_IF_CHARGED_ALREADY_KOS");
 
     if (!actorFaints && projectedEnergy <= 100 && !immediateLethal
+      && !opponentChargeWindow
       && (shieldedChargedWasteOpportunity || dreClosingOpportunity)) {
       optimize = true;
     }
@@ -1733,6 +1740,7 @@ function createPvPeakBattleIntelligenceApi() {
       && !immediateLethal
       && !opponentChargedLethal
       && opponentChargeWindow
+      && !actorChargedReady
       && ownTurns < oppTurns
       && dreStandard
       && numeric(actor.shields) > 0
