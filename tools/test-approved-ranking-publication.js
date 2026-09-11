@@ -19,8 +19,9 @@ for (const [file, name, expected] of [["data/great-league-rankings.js", "GREAT_L
   assert.deepEqual(JSON.parse(JSON.stringify(sandbox.window[name])), expected);
 }
 const byId = new Map(ranking.entries.map(e => [e.id, e]));
+const expectedMatchups = (ranking.entries.length - 1) * 3;
 for (const entry of ranking.entries) {
-  assert.equal(entry.matchups, 4623);
+  assert.equal(entry.matchups, expectedMatchups);
   assert.equal(entry.wins + entry.losses + entry.ties, entry.matchups);
   assert.equal(entry.overallScore, entry.competitiveScore);
   for (const row of details.entries[entry.id].wins) { assert.ok(row.score > 500); assert.equal(row.rank, byId.get(row.id).rank); }

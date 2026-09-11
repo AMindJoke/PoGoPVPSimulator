@@ -340,6 +340,8 @@ function isShadow(p) {
 function isEligibleGreatLeaguePokemon(p) {
   if (!p || p.released === false || !p.fast.length || !p.charged.length) return false;
   if (pokemonForms.isMega(p) || pokemonForms.kind(p) === pokemonForms.FORM_KINDS.PRIMAL) return false;
+  // These forms are not currently obtainable below the Great League CP cap.
+  if (p.id === "giratina_altered" || p.id === "mewtwo_armored") return false;
   return true;
 }
 
