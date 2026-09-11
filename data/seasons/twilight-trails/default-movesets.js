@@ -8028,7 +8028,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     "fast": "PECK",
     "charged": [
       "FLY",
-      "SURF"
+      "DIVE"
     ]
   }
 };

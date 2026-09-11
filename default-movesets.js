@@ -8028,7 +8028,7 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "PECK",
     "charged": [
       "FLY",
-      "SURF"
+      "DIVE"
     ]
   }
 };

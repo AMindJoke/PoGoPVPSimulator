@@ -1,0 +1,265 @@
+{
+  "generatedAt": "2026-09-11T20:06:16.955Z",
+  "seasonId": "twilight-trails",
+  "engineVersion": "battle-planner-v44",
+  "dataVersion": "twilight-trails-confirmed-1",
+  "fieldSize": 1539,
+  "methodology": "Equal-weight comparison against the published full field; opponent moves frozen from Cramorant rank1 cache.",
+  "results": [
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "baseline",
+      "score": 615,
+      "shieldScores": [
+        627.8758934372969,
+        607.5568551007148,
+        610.1786874593893
+      ],
+      "wins": [
+        1120,
+        1108,
+        1093
+      ],
+      "losses": [
+        381,
+        407,
+        423
+      ],
+      "opponents": 1539
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "baseline",
+      "score": 626,
+      "shieldScores": [
+        621.414554905783,
+        627.4717348927875,
+        629.8044184535413
+      ],
+      "wins": [
+        1114,
+        1193,
+        1167
+      ],
+      "losses": [
+        386,
+        288,
+        307
+      ],
+      "opponents": 1539
+    },
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "smart",
+      "score": 618,
+      "shieldScores": [
+        627.8758934372969,
+        612.9447693307343,
+        613.1306042884991
+      ],
+      "wins": [
+        1120,
+        1116,
+        1095
+      ],
+      "losses": [
+        381,
+        385,
+        418
+      ],
+      "opponents": 1539
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "smart",
+      "score": 628,
+      "shieldScores": [
+        621.414554905783,
+        631.441845354126,
+        632.5782975958415
+      ],
+      "wins": [
+        1114,
+        1185,
+        1162
+      ],
+      "losses": [
+        386,
+        291,
+        314
+      ],
+      "opponents": 1539
+    },
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "both-smart",
+      "score": 610,
+      "shieldScores": [
+        627.8758934372969,
+        602.5776478232618,
+        600.8544509421703
+      ],
+      "wins": [
+        1120,
+        1110,
+        1099
+      ],
+      "losses": [
+        381,
+        393,
+        413
+      ],
+      "opponents": 1539
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "both-smart",
+      "score": 621,
+      "shieldScores": [
+        621.414554905783,
+        617.2326185834958,
+        623.2397660818714
+      ],
+      "wins": [
+        1114,
+        1179,
+        1164
+      ],
+      "losses": [
+        386,
+        291,
+        310
+      ],
+      "opponents": 1539
+    }
+  ],
+  "top100": [
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "baseline",
+      "score": 494,
+      "shieldScores": [
+        511.5959595959596,
+        496.1010101010101,
+        474.1313131313131
+      ],
+      "wins": [
+        41,
+        43,
+        40
+      ],
+      "losses": [
+        56,
+        55,
+        57
+      ],
+      "opponents": 99
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "baseline",
+      "score": 516,
+      "shieldScores": [
+        508.3131313131313,
+        520.979797979798,
+        518.1717171717172
+      ],
+      "wins": [
+        43,
+        51,
+        47
+      ],
+      "losses": [
+        55,
+        44,
+        44
+      ],
+      "opponents": 99
+    },
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "smart",
+      "score": 503,
+      "shieldScores": [
+        511.5959595959596,
+        509.4040404040404,
+        487
+      ],
+      "wins": [
+        41,
+        45,
+        42
+      ],
+      "losses": [
+        56,
+        52,
+        55
+      ],
+      "opponents": 99
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "smart",
+      "score": 513,
+      "shieldScores": [
+        508.3131313131313,
+        516.939393939394,
+        514.7373737373738
+      ],
+      "wins": [
+        43,
+        48,
+        45
+      ],
+      "losses": [
+        55,
+        45,
+        48
+      ],
+      "opponents": 99
+    },
+    {
+      "set": "PECK/FLY/SURF",
+      "mode": "both-smart",
+      "score": 493,
+      "shieldScores": [
+        511.5959595959596,
+        497.4141414141414,
+        469.6363636363636
+      ],
+      "wins": [
+        41,
+        45,
+        38
+      ],
+      "losses": [
+        56,
+        54,
+        59
+      ],
+      "opponents": 99
+    },
+    {
+      "set": "PECK/FLY/DIVE",
+      "mode": "both-smart",
+      "score": 505,
+      "shieldScores": [
+        508.3131313131313,
+        500.17171717171715,
+        506.42424242424244
+      ],
+      "wins": [
+        43,
+        44,
+        43
+      ],
+      "losses": [
+        55,
+        47,
+        49
+      ],
+      "opponents": 99
+    }
+  ],
+  "simulations": 29484
+}

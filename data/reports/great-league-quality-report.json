@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T19:13:37.999Z",
+  "generatedAt": "2026-09-11T20:25:23.460Z",
   "status": "VALID",
   "generation": {
     "datasetVersion": 1,
@@ -10,14 +10,14 @@
       "currentEngineVersion": "battle-planner-v44",
       "datasetEngineVersion": "battle-planner-v44",
       "datasetVersion": 1,
-      "generatedAt": "2026-09-11T19:13:37.841Z",
+      "generatedAt": "2026-09-11T20:24:40.681Z",
       "stale": false,
       "staleReason": null
     },
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "gameMasterHash": "5991b30a3b18edc71fd5307e3db9108f9df1357a443ecbe132a6ab44bb510648",
     "gitCommitSha": "ebb3616",
-    "datasetGeneratedAt": "2026-09-11T19:13:37.841Z"
+    "datasetGeneratedAt": "2026-09-11T20:24:40.681Z"
   },
   "coverage": {
     "pokemonIncluded": 1540,
@@ -58,18 +58,18 @@
     "files": [
       {
         "path": "data/great-league-rankings.json",
-        "bytes": 6944516
+        "bytes": 6944828
       },
       {
         "path": "data/great-league-rankings.js",
-        "bytes": 6944548
+        "bytes": 6944860
       },
       {
         "path": "data/rankings/great-league-full.json",
-        "bytes": 6944516
+        "bytes": 6944828
       }
     ],
-    "totalBytes": 20833580
+    "totalBytes": 20834516
   },
   "validation": {
     "valid": true,
@@ -186,6 +186,14 @@
       },
       {
         "rank": 13,
+        "name": "Cramorant",
+        "score": 536,
+        "rawScore": 627,
+        "competitiveScore": 536,
+        "winRate": 0.7524
+      },
+      {
+        "rank": 14,
         "name": "Clodsire",
         "score": 536,
         "rawScore": 618,
@@ -193,7 +201,7 @@
         "winRate": 0.7806
       },
       {
-        "rank": 14,
+        "rank": 15,
         "name": "Charjabug",
         "score": 534,
         "rawScore": 627,
@@ -201,7 +209,7 @@
         "winRate": 0.7158
       },
       {
-        "rank": 15,
+        "rank": 16,
         "name": "Jellicent",
         "score": 534,
         "rawScore": 630,
@@ -209,7 +217,7 @@
         "winRate": 0.7613
       },
       {
-        "rank": 16,
+        "rank": 17,
         "name": "Sableye (Shadow)",
         "score": 534,
         "rawScore": 640,
@@ -217,7 +225,7 @@
         "winRate": 0.7793
       },
       {
-        "rank": 17,
+        "rank": 18,
         "name": "Medicham",
         "score": 534,
         "rawScore": 627,
@@ -225,7 +233,7 @@
         "winRate": 0.781
       },
       {
-        "rank": 18,
+        "rank": 19,
         "name": "Ninetales",
         "score": 532,
         "rawScore": 623,
@@ -233,7 +241,7 @@
         "winRate": 0.7477
       },
       {
-        "rank": 19,
+        "rank": 20,
         "name": "Stunfisk",
         "score": 532,
         "rawScore": 610,
@@ -241,7 +249,7 @@
         "winRate": 0.7228
       },
       {
-        "rank": 20,
+        "rank": 21,
         "name": "Azumarill",
         "score": 532,
         "rawScore": 606,
@@ -249,7 +257,7 @@
         "winRate": 0.7345
       },
       {
-        "rank": 21,
+        "rank": 22,
         "name": "Sableye",
         "score": 532,
         "rawScore": 627,
@@ -257,7 +265,7 @@
         "winRate": 0.7719
       },
       {
-        "rank": 22,
+        "rank": 23,
         "name": "Ninetales (Shadow)",
         "score": 532,
         "rawScore": 627,
@@ -265,7 +273,7 @@
         "winRate": 0.7507
       },
       {
-        "rank": 23,
+        "rank": 24,
         "name": "Mandibuzz",
         "score": 532,
         "rawScore": 620,
@@ -273,7 +281,7 @@
         "winRate": 0.7481
       },
       {
-        "rank": 24,
+        "rank": 25,
         "name": "Lapras",
         "score": 532,
         "rawScore": 603,
@@ -281,7 +289,7 @@
         "winRate": 0.7527
       },
       {
-        "rank": 25,
+        "rank": 26,
         "name": "Melmetal",
         "score": 531,
         "rawScore": 637,
@@ -289,7 +297,7 @@
         "winRate": 0.7834
       },
       {
-        "rank": 26,
+        "rank": 27,
         "name": "Empoleon (Shadow)",
         "score": 530,
         "rawScore": 620,
@@ -297,7 +305,7 @@
         "winRate": 0.7654
       },
       {
-        "rank": 27,
+        "rank": 28,
         "name": "Bastiodon",
         "score": 530,
         "rawScore": 630,
@@ -305,7 +313,7 @@
         "winRate": 0.716
       },
       {
-        "rank": 28,
+        "rank": 29,
         "name": "Furret",
         "score": 530,
         "rawScore": 613,
@@ -313,20 +321,12 @@
         "winRate": 0.741
       },
       {
-        "rank": 29,
+        "rank": 30,
         "name": "Fearow",
         "score": 530,
         "rawScore": 623,
         "competitiveScore": 530,
         "winRate": 0.7397
-      },
-      {
-        "rank": 30,
-        "name": "Cramorant",
-        "score": 529,
-        "rawScore": 617,
-        "competitiveScore": 529,
-        "winRate": 0.7193
       },
       {
         "rank": 31,

@@ -6,7 +6,7 @@ window.GREAT_LEAGUE_RANKINGS = {
     "seasonId": "twilight-trails",
     "dataVersion": "twilight-trails-confirmed-1",
     "gameMasterHash": "5991b30a3b18edc71fd5307e3db9108f9df1357a443ecbe132a6ab44bb510648",
-    "generatedAt": "2026-09-11T19:13:37.841Z",
+    "generatedAt": "2026-09-11T20:24:40.681Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "dreStandard": true,
@@ -55,7 +55,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "writes": 0,
       "filesRead": 3079,
       "filesWritten": 0,
-      "recursiveReads": 7110180
+      "recursiveReads": 4617
     },
     "generationDurationSeconds": 290,
     "theoreticalSimulations": 7110180,
@@ -142,15 +142,15 @@ window.GREAT_LEAGUE_RANKINGS = {
         "note": "Candidate tier is a light prior, not a manual ranking override. Strong spice can still rise, but core/common candidates no longer compete on simulation output alone."
       }
     },
-    "recursiveWeightPasses": 4,
+    "recursiveWeightPasses": 12,
     "recursiveWeighting": {
       "model": "competitive-meta-v2",
-      "passes": 2,
+      "passes": 4,
       "metaSeedCount": 128,
       "curatedMetaWeightCount": 118,
       "curatedMetaSchemaVersion": 2,
-      "cellsRead": 7110180,
-      "filesRead": 1540,
+      "cellsRead": 4617,
+      "filesRead": 1,
       "parameters": {
         "version": 2,
         "label": "competitive-meta-v2",
@@ -183,9 +183,18 @@ window.GREAT_LEAGUE_RANKINGS = {
       }
     },
     "validationPassed": true,
-    "validationGeneratedAt": "2026-09-11T19:14:37.157Z",
+    "validationGeneratedAt": "2026-09-11T20:25:23.460Z",
     "validationReport": "data/reports/great-league-quality-report.md",
-    "gitCommitSha": "ebb3616"
+    "gitCommitSha": "ebb3616",
+    "selectiveRefresh": {
+      "pokemonIds": [
+        "cramorant"
+      ],
+      "engineVersion": "battle-planner-v44",
+      "refreshedAt": "2026-09-11T20:24:40.682Z",
+      "cellsRead": 4617,
+      "note": "Only matchups involving the listed changed Pokemon were regenerated; unaffected ranking rows retain their prior simulations."
+    }
   },
   "entries": [
     {
@@ -2397,6 +2406,190 @@ window.GREAT_LEAGUE_RANKINGS = {
     },
     {
       "rank": 13,
+      "id": "cramorant",
+      "name": "Cramorant",
+      "profile": "rank1",
+      "averageScore": 626,
+      "externalWeightedAverageScore": 527,
+      "weightedAverageScore": 573,
+      "rawScore": 627,
+      "weightedScore": 573,
+      "competitiveScore": 536,
+      "overallScore": 536,
+      "categoryScores": {
+        "closer": {
+          "label": "0 Shields",
+          "weight": 1,
+          "averageScore": 621,
+          "dampenedScore": 573,
+          "weightedScore": 568,
+          "metaScore": 516,
+          "consistencyScore": 544,
+          "competitiveScore": 529,
+          "rawRating": 62,
+          "weightedRating": 57,
+          "metaRating": 52,
+          "competitiveRating": 53,
+          "score": 53,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1114,
+          "losses": 386,
+          "ties": 39,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "FLY",
+                "uses": 1539
+              },
+              {
+                "id": "DIVE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "core": {
+          "label": "1 Shield",
+          "weight": 1,
+          "averageScore": 627,
+          "dampenedScore": 579,
+          "weightedScore": 575,
+          "metaScore": 533,
+          "consistencyScore": 553,
+          "competitiveScore": 544,
+          "rawRating": 63,
+          "weightedRating": 58,
+          "metaRating": 53,
+          "competitiveRating": 54,
+          "score": 54,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1193,
+          "losses": 288,
+          "ties": 58,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "FLY",
+                "uses": 1539
+              },
+              {
+                "id": "DIVE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "lead": {
+          "label": "2 Shields",
+          "weight": 1,
+          "averageScore": 630,
+          "dampenedScore": 575,
+          "weightedScore": 571,
+          "metaScore": 531,
+          "consistencyScore": 547,
+          "competitiveScore": 540,
+          "rawRating": 63,
+          "weightedRating": 57,
+          "metaRating": 53,
+          "competitiveRating": 54,
+          "score": 54,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1167,
+          "losses": 307,
+          "ties": 65,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "FLY",
+                "uses": 1539
+              },
+              {
+                "id": "DIVE",
+                "uses": 1539
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 94.21,
+      "matchups": 4617,
+      "wins": 3474,
+      "losses": 981,
+      "ties": 162,
+      "winRate": 0.7524,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 621,
+          "dampenedScore": 573,
+          "weightedScore": 568,
+          "metaScore": 516,
+          "matchups": 1539,
+          "wins": 1114,
+          "losses": 386,
+          "ties": 39
+        },
+        "1-1": {
+          "averageScore": 627,
+          "dampenedScore": 579,
+          "weightedScore": 575,
+          "metaScore": 533,
+          "matchups": 1539,
+          "wins": 1193,
+          "losses": 288,
+          "ties": 58
+        },
+        "2-2": {
+          "averageScore": 630,
+          "dampenedScore": 575,
+          "weightedScore": 571,
+          "metaScore": 531,
+          "matchups": 1539,
+          "wins": 1167,
+          "losses": 307,
+          "ties": 65
+        }
+      },
+      "types": [
+        "flying",
+        "water"
+      ],
+      "dex": 845,
+      "moveset": {
+        "fast": "PECK",
+        "charged": [
+          "FLY",
+          "DIVE"
+        ]
+      },
+      "dampenedAverageScore": 576,
+      "metaScore": 527,
+      "simulationCompetitiveScore": 537,
+      "candidatePriorScore": 535,
+      "candidateMetaTier": "unweighted"
+    },
+    {
+      "rank": 14,
       "id": "clodsire",
       "name": "Clodsire",
       "profile": "rank1",
@@ -2580,7 +2773,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 14,
+      "rank": 15,
       "id": "charjabug",
       "name": "Charjabug",
       "profile": "rank1",
@@ -2764,7 +2957,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 15,
+      "rank": 16,
       "id": "jellicent",
       "name": "Jellicent",
       "profile": "rank1",
@@ -2948,7 +3141,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 16,
+      "rank": 17,
       "id": "sableye_shadow",
       "name": "Sableye (Shadow)",
       "profile": "rank1",
@@ -3132,7 +3325,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 17,
+      "rank": 18,
       "id": "medicham",
       "name": "Medicham",
       "profile": "rank1",
@@ -3316,7 +3509,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 18,
+      "rank": 19,
       "id": "ninetales",
       "name": "Ninetales",
       "profile": "rank1",
@@ -3499,7 +3692,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 19,
+      "rank": 20,
       "id": "stunfisk",
       "name": "Stunfisk",
       "profile": "rank1",
@@ -3683,7 +3876,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 20,
+      "rank": 21,
       "id": "azumarill",
       "name": "Azumarill",
       "profile": "rank1",
@@ -3867,7 +4060,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 21,
+      "rank": 22,
       "id": "sableye",
       "name": "Sableye",
       "profile": "rank1",
@@ -4051,7 +4244,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 22,
+      "rank": 23,
       "id": "ninetales_shadow",
       "name": "Ninetales (Shadow)",
       "profile": "rank1",
@@ -4234,7 +4427,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 23,
+      "rank": 24,
       "id": "mandibuzz",
       "name": "Mandibuzz",
       "profile": "rank1",
@@ -4418,7 +4611,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 24,
+      "rank": 25,
       "id": "lapras",
       "name": "Lapras",
       "profile": "rank1",
@@ -4602,7 +4795,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 25,
+      "rank": 26,
       "id": "melmetal",
       "name": "Melmetal",
       "profile": "rank1",
@@ -4785,7 +4978,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 26,
+      "rank": 27,
       "id": "empoleon_shadow",
       "name": "Empoleon (Shadow)",
       "profile": "rank1",
@@ -4969,7 +5162,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 27,
+      "rank": 28,
       "id": "bastiodon",
       "name": "Bastiodon",
       "profile": "rank1",
@@ -5153,7 +5346,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 28,
+      "rank": 29,
       "id": "furret",
       "name": "Furret",
       "profile": "rank1",
@@ -5336,7 +5529,7 @@ window.GREAT_LEAGUE_RANKINGS = {
       "candidateMetaTier": "core"
     },
     {
-      "rank": 29,
+      "rank": 30,
       "id": "fearow",
       "name": "Fearow",
       "profile": "rank1",
@@ -5518,190 +5711,6 @@ window.GREAT_LEAGUE_RANKINGS = {
       "simulationCompetitiveScore": 517,
       "candidatePriorScore": 563,
       "candidateMetaTier": "core"
-    },
-    {
-      "rank": 30,
-      "id": "cramorant",
-      "name": "Cramorant",
-      "profile": "rank1",
-      "averageScore": 615,
-      "externalWeightedAverageScore": 517,
-      "weightedAverageScore": 563,
-      "rawScore": 617,
-      "weightedScore": 563,
-      "competitiveScore": 529,
-      "overallScore": 529,
-      "categoryScores": {
-        "closer": {
-          "label": "0 Shields",
-          "weight": 1,
-          "averageScore": 628,
-          "dampenedScore": 576,
-          "weightedScore": 571,
-          "metaScore": 517,
-          "consistencyScore": 547,
-          "competitiveScore": 531,
-          "rawRating": 63,
-          "weightedRating": 57,
-          "metaRating": 52,
-          "competitiveRating": 53,
-          "score": 53,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1120,
-          "losses": 381,
-          "ties": 38,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PECK",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "FLY",
-                "uses": 1539
-              },
-              {
-                "id": "SURF",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "core": {
-          "label": "1 Shield",
-          "weight": 1,
-          "averageScore": 608,
-          "dampenedScore": 566,
-          "weightedScore": 561,
-          "metaScore": 517,
-          "consistencyScore": 538,
-          "competitiveScore": 528,
-          "rawRating": 61,
-          "weightedRating": 56,
-          "metaRating": 52,
-          "competitiveRating": 53,
-          "score": 53,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1108,
-          "losses": 407,
-          "ties": 24,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PECK",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "FLY",
-                "uses": 1539
-              },
-              {
-                "id": "SURF",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "lead": {
-          "label": "2 Shields",
-          "weight": 1,
-          "averageScore": 610,
-          "dampenedScore": 561,
-          "weightedScore": 556,
-          "metaScore": 506,
-          "consistencyScore": 530,
-          "competitiveScore": 518,
-          "rawRating": 61,
-          "weightedRating": 56,
-          "metaRating": 51,
-          "competitiveRating": 52,
-          "score": 52,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1093,
-          "losses": 423,
-          "ties": 23,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PECK",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "FLY",
-                "uses": 1539
-              },
-              {
-                "id": "SURF",
-                "uses": 1539
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 99.41,
-      "matchups": 4617,
-      "wins": 3321,
-      "losses": 1211,
-      "ties": 85,
-      "winRate": 0.7193,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 628,
-          "dampenedScore": 576,
-          "weightedScore": 571,
-          "metaScore": 517,
-          "matchups": 1539,
-          "wins": 1120,
-          "losses": 381,
-          "ties": 38
-        },
-        "1-1": {
-          "averageScore": 608,
-          "dampenedScore": 566,
-          "weightedScore": 561,
-          "metaScore": 517,
-          "matchups": 1539,
-          "wins": 1108,
-          "losses": 407,
-          "ties": 24
-        },
-        "2-2": {
-          "averageScore": 610,
-          "dampenedScore": 561,
-          "weightedScore": 556,
-          "metaScore": 506,
-          "matchups": 1539,
-          "wins": 1093,
-          "losses": 423,
-          "ties": 23
-        }
-      },
-      "types": [
-        "flying",
-        "water"
-      ],
-      "dex": 845,
-      "moveset": {
-        "fast": "PECK",
-        "charged": [
-          "FLY",
-          "SURF"
-        ]
-      },
-      "dampenedAverageScore": 568,
-      "metaScore": 517,
-      "simulationCompetitiveScore": 527,
-      "candidatePriorScore": 535,
-      "candidateMetaTier": "unweighted"
     },
     {
       "rank": 31,
