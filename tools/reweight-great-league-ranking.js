@@ -11,7 +11,10 @@ const RANKING_JS_PATH = path.join(ROOT, "data", "great-league-rankings.js");
 const FULL_RANKING_PATH = path.join(ROOT, "data", "rankings", "great-league-full.json");
 const META_PATH = path.join(ROOT, "data", "great-league-meta.json");
 const META_WEIGHTS_PATH = path.join(ROOT, "data", "great-league-meta-weights.json");
-const CACHE_DIR = path.join(ROOT, "data", "matchup-cache", "great-league", "rank1");
+const CACHE_DIRS = [
+  path.join(ROOT, "data", "seasons", "twilight-trails", "matchup-cache", "great-league", "rank1"),
+  path.join(ROOT, "data", "matchup-cache", "great-league", "rank1")
+];
 
 const CATEGORIES = [
   { key: "closer", label: "0 Shields", state: "0-0", weight: 1 },
@@ -155,9 +158,9 @@ function stableBaselineWeight(entry, metaIds, metaWeights) {
   return clamp(MODEL.minWeight, MODEL.maxWeight, weight);
 }
 
-function candidatePriorScore(entry, entryMeta) {
+function candidatePriorScore(entry, entryMeta, metaIds = new Set()) {
   const meta = entryMeta && entryMeta.get(entry.id);
-  const tier = meta && meta.tier ? meta.tier : "unweighted";
+  const tier = meta && meta.tier ? meta.tier : (metaIds.has(entry.id) ? "common" : "unweighted");
   const tierScore = MODEL.candidatePriorScores[tier] || MODEL.candidatePriorScores.unweighted;
   const confidence = meta && Number.isFinite(Number(meta.confidence))
     ? clamp(0.1, 1, Number(meta.confidence))
@@ -222,6 +225,14 @@ function parseCacheCellKey(key) {
   return { opponentId, shieldState };
 }
 
+function findCacheFile(id) {
+  for (const directory of CACHE_DIRS) {
+    const file = path.join(directory, `${id}.json`);
+    if (fs.existsSync(file)) return file;
+  }
+  return null;
+}
+
 function cellScore(value) {
   return Number(inflateCacheResult(value)?.score);
 }
@@ -234,8 +245,8 @@ function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), select
 
   for (const base of ranking.entries) {
     if (selectiveIds && !selectiveIds.has(base.id)) continue;
-    const file = path.join(CACHE_DIR, `${base.id}.json`);
-    if (!fs.existsSync(file)) continue;
+    const file = findCacheFile(base.id);
+    if (!file) continue;
     const cache = readJson(file);
     filesRead++;
 
@@ -249,11 +260,20 @@ function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), select
     let losses = 0;
     let ties = 0;
 
+    // Cache files can retain older defender signatures after a moveset update.
+    // Collapse those historical copies to one current cell per opponent/state;
+    // iteration order leaves the newest signature as the winner.
+    const currentCells = new Map();
     for (const [key, value] of Object.entries(cache.cells || {})) {
       const parsed = parseCacheCellKey(key);
       if (!parsed || !knownIds.has(parsed.opponentId)) continue;
+      if (parsed.opponentId === base.id) continue;
       const categoryDef = CATEGORIES.find(category => category.state === parsed.shieldState);
       if (!categoryDef) continue;
+      currentCells.set(`${parsed.opponentId}|${parsed.shieldState}`, { parsed, categoryDef, value });
+    }
+
+    for (const { parsed, categoryDef, value } of currentCells.values()) {
       const score = cellScore(value);
       if (!Number.isFinite(score)) continue;
       const dampened = dampenScore(score);
@@ -332,7 +352,7 @@ function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), select
     const weightedScore = scoreFromCategoryValues(categoryScores, "weightedRating");
     const metaScore = scoreFromCategoryValues(categoryScores, "metaRating");
     const simulationCompetitiveScore = scoreFromCategoryValues(categoryScores, "competitiveRating");
-    const priorScore = candidatePriorScore(base, entryMeta);
+    const priorScore = candidatePriorScore(base, entryMeta, metaIds);
     const competitiveScore = applyCandidatePrior(simulationCompetitiveScore, priorScore);
     const dampenedAverage = matchups ? dampenedScoreTotal / matchups : null;
 
@@ -386,10 +406,12 @@ function accumulateRows(ranking, weights, metaIds, entryMeta = new Map(), select
 
 function run(options = {}) {
   const passes = Math.max(1, Number(options.passes || MODEL.passes));
+  const rankingPath = options.rankingPath || RANKING_PATH;
+  const outputPath = options.outputPath || null;
   const selectiveIds = options.pokemonIds instanceof Set && options.pokemonIds.size
     ? options.pokemonIds
     : null;
-  const ranking = readJson(RANKING_PATH);
+  const ranking = readJson(rankingPath);
   const meta = fs.existsSync(META_PATH) ? readJson(META_PATH) : { pokemon: [] };
   const metaWeightConfig = loadMetaWeightConfig();
   const metaIds = new Set([...(meta.pokemon || []), ...metaWeightConfig.ids]);
@@ -504,16 +526,26 @@ function run(options = {}) {
     entries: current
   };
 
-  writeJson(RANKING_PATH, output);
-  writeJson(FULL_RANKING_PATH, output);
-  fs.writeFileSync(RANKING_JS_PATH, `window.GREAT_LEAGUE_RANKINGS = ${JSON.stringify(output, null, 2)};\n`, "utf8");
-  const report = runQualityPipeline({ datasetPath: "data/great-league-rankings.json", writeMetadata: true, writeReport: true });
+  if (outputPath) {
+    const relativeOutput = path.relative(ROOT, path.resolve(ROOT, outputPath));
+    if (relativeOutput.startsWith("..") || path.isAbsolute(relativeOutput) || !relativeOutput.startsWith(`reports${path.sep}`)) {
+      throw new Error("Experimental reweight output must be inside the repository reports directory.");
+    }
+    writeJson(relativeOutput, output);
+  } else {
+    writeJson(RANKING_PATH, output);
+    writeJson(FULL_RANKING_PATH, output);
+    fs.writeFileSync(RANKING_JS_PATH, `window.GREAT_LEAGUE_RANKINGS = ${JSON.stringify(output, null, 2)};\n`, "utf8");
+  }
+  const qualityPath = outputPath ? path.relative(ROOT, path.resolve(ROOT, outputPath)) : "data/great-league-rankings.json";
+  const report = runQualityPipeline({ datasetPath: qualityPath, writeMetadata: !outputPath, writeReport: !outputPath });
   return {
     summaries,
     validation: {
       status: report.status,
-      errors: report.errors ? report.errors.length : 0,
-      warnings: report.warnings ? report.warnings.length : 0
+      errors: report.validation && report.validation.issues ? report.validation.issues.length : 0,
+      warnings: report.validation && report.validation.warnings ? report.validation.warnings.length : 0,
+      issues: report.validation && report.validation.issues ? report.validation.issues.slice(0, 20) : []
     },
     top: current.slice(0, 25).map(entry => ({ rank: entry.rank, name: entry.name, score: entry.competitiveScore, metaScore: entry.metaScore }))
   };
@@ -527,7 +559,14 @@ if (require.main === module) {
     .split(",")
     .map(value => value.trim())
     .filter(Boolean));
-  const result = run({ passes, pokemonIds });
+  const inputArg = process.argv.find(arg => arg.startsWith("--input="));
+  const outputArg = process.argv.find(arg => arg.startsWith("--output="));
+  const result = run({
+    passes,
+    pokemonIds,
+    rankingPath: inputArg ? inputArg.split("=").slice(1).join("=") : undefined,
+    outputPath: outputArg ? outputArg.split("=").slice(1).join("=") : undefined
+  });
   console.log(JSON.stringify(result, null, 2));
 }
 
