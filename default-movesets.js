@@ -511,7 +511,7 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "dunsparce": {
-    "fast": "ROLLOUT",
+    "fast": "BITE",
     "charged": [
       "DRILL_RUN",
       "ROCK_SLIDE"
@@ -2681,8 +2681,8 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "vigoroth": {
     "fast": "SCRATCH",
     "charged": [
-      "BRICK_BREAK",
-      "ROCK_SLIDE"
+      "BODY_SLAM",
+      "BULLDOZE"
     ]
   },
   "kartana": {
@@ -8022,6 +8022,13 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "CHARGE_BEAM",
     "charged": [
       "BODY_SLAM"
+    ]
+  },
+  "cramorant": {
+    "fast": "PECK",
+    "charged": [
+      "FLY",
+      "SURF"
     ]
   }
 };

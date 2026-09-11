@@ -511,7 +511,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     ]
   },
   "dunsparce": {
-    "fast": "ROLLOUT",
+    "fast": "BITE",
     "charged": [
       "DRILL_RUN",
       "ROCK_SLIDE"
@@ -2682,7 +2682,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     "fast": "SCRATCH",
     "charged": [
       "BODY_SLAM",
-      "ROCK_SLIDE"
+      "BULLDOZE"
     ]
   },
   "kartana": {
@@ -8022,6 +8022,13 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     "fast": "CHARGE_BEAM",
     "charged": [
       "BODY_SLAM"
+    ]
+  },
+  "cramorant": {
+    "fast": "PECK",
+    "charged": [
+      "FLY",
+      "SURF"
     ]
   }
 };

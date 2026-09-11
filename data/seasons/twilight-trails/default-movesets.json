@@ -511,7 +511,7 @@
     ]
   },
   "dunsparce": {
-    "fast": "ROLLOUT",
+    "fast": "BITE",
     "charged": [
       "DRILL_RUN",
       "ROCK_SLIDE"
@@ -2682,7 +2682,7 @@
     "fast": "SCRATCH",
     "charged": [
       "BODY_SLAM",
-      "ROCK_SLIDE"
+      "BULLDOZE"
     ]
   },
   "kartana": {
@@ -8022,6 +8022,13 @@
     "fast": "CHARGE_BEAM",
     "charged": [
       "BODY_SLAM"
+    ]
+  },
+  "cramorant": {
+    "fast": "PECK",
+    "charged": [
+      "FLY",
+      "SURF"
     ]
   }
 }
