@@ -2681,8 +2681,8 @@
   "vigoroth": {
     "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
-      "BULLDOZE"
+      "BRICK_BREAK",
+      "ROCK_SLIDE"
     ]
   },
   "kartana": {
@@ -3135,7 +3135,7 @@
   "vigoroth_shadow": {
     "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
+      "BRICK_BREAK",
       "ROCK_SLIDE"
     ]
   },

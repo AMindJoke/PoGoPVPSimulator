@@ -6,7 +6,7 @@
     "seasonId": "twilight-trails",
     "dataVersion": "twilight-trails-confirmed-1",
     "gameMasterHash": "5991b30a3b18edc71fd5307e3db9108f9df1357a443ecbe132a6ab44bb510648",
-    "generatedAt": "2026-09-11T20:24:40.681Z",
+    "generatedAt": "2026-09-11T21:16:07.017Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "dreStandard": true,
@@ -55,7 +55,7 @@
       "writes": 0,
       "filesRead": 3079,
       "filesWritten": 0,
-      "recursiveReads": 4617
+      "recursiveReads": 9234
     },
     "generationDurationSeconds": 290,
     "theoreticalSimulations": 7110180,
@@ -142,15 +142,15 @@
         "note": "Candidate tier is a light prior, not a manual ranking override. Strong spice can still rise, but core/common candidates no longer compete on simulation output alone."
       }
     },
-    "recursiveWeightPasses": 12,
+    "recursiveWeightPasses": 14,
     "recursiveWeighting": {
       "model": "competitive-meta-v2",
-      "passes": 4,
+      "passes": 1,
       "metaSeedCount": 128,
       "curatedMetaWeightCount": 118,
       "curatedMetaSchemaVersion": 2,
-      "cellsRead": 4617,
-      "filesRead": 1,
+      "cellsRead": 9234,
+      "filesRead": 2,
       "parameters": {
         "version": 2,
         "label": "competitive-meta-v2",
@@ -183,16 +183,17 @@
       }
     },
     "validationPassed": true,
-    "validationGeneratedAt": "2026-09-11T20:25:23.460Z",
+    "validationGeneratedAt": "2026-09-11T21:16:28.290Z",
     "validationReport": "data/reports/great-league-quality-report.md",
     "gitCommitSha": "ebb3616",
     "selectiveRefresh": {
       "pokemonIds": [
-        "cramorant"
+        "vigoroth",
+        "vigoroth_shadow"
       ],
       "engineVersion": "battle-planner-v44",
-      "refreshedAt": "2026-09-11T20:24:40.682Z",
-      "cellsRead": 4617,
+      "refreshedAt": "2026-09-11T21:16:07.018Z",
+      "cellsRead": 9234,
       "note": "Only matchups involving the listed changed Pokemon were regenerated; unaffected ranking rows retain their prior simulations."
     }
   },
@@ -2590,6 +2591,189 @@
     },
     {
       "rank": 14,
+      "id": "vigoroth",
+      "name": "Vigoroth",
+      "profile": "rank1",
+      "averageScore": 623,
+      "externalWeightedAverageScore": 526,
+      "weightedAverageScore": 576,
+      "rawScore": 623,
+      "weightedScore": 576,
+      "competitiveScore": 536,
+      "overallScore": 536,
+      "categoryScores": {
+        "closer": {
+          "label": "0 Shields",
+          "weight": 1,
+          "averageScore": 579,
+          "dampenedScore": 550,
+          "weightedScore": 545,
+          "metaScore": 490,
+          "consistencyScore": 522,
+          "competitiveScore": 504,
+          "rawRating": 58,
+          "weightedRating": 55,
+          "metaRating": 49,
+          "competitiveRating": 50,
+          "score": 50,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1057,
+          "losses": 475,
+          "ties": 7,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "BULLDOZE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "core": {
+          "label": "1 Shield",
+          "weight": 1,
+          "averageScore": 639,
+          "dampenedScore": 591,
+          "weightedScore": 587,
+          "metaScore": 540,
+          "consistencyScore": 568,
+          "competitiveScore": 552,
+          "rawRating": 64,
+          "weightedRating": 59,
+          "metaRating": 54,
+          "competitiveRating": 55,
+          "score": 55,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1311,
+          "losses": 222,
+          "ties": 6,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "BULLDOZE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "lead": {
+          "label": "2 Shields",
+          "weight": 1,
+          "averageScore": 651,
+          "dampenedScore": 592,
+          "weightedScore": 588,
+          "metaScore": 551,
+          "consistencyScore": 570,
+          "competitiveScore": 561,
+          "rawRating": 65,
+          "weightedRating": 59,
+          "metaRating": 55,
+          "competitiveRating": 56,
+          "score": 56,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1311,
+          "losses": 228,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "BULLDOZE",
+                "uses": 1539
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 81.94,
+      "matchups": 4617,
+      "wins": 3679,
+      "losses": 925,
+      "ties": 13,
+      "winRate": 0.7968,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 579,
+          "dampenedScore": 550,
+          "weightedScore": 545,
+          "metaScore": 490,
+          "matchups": 1539,
+          "wins": 1057,
+          "losses": 475,
+          "ties": 7
+        },
+        "1-1": {
+          "averageScore": 639,
+          "dampenedScore": 591,
+          "weightedScore": 587,
+          "metaScore": 540,
+          "matchups": 1539,
+          "wins": 1311,
+          "losses": 222,
+          "ties": 6
+        },
+        "2-2": {
+          "averageScore": 651,
+          "dampenedScore": 592,
+          "weightedScore": 588,
+          "metaScore": 551,
+          "matchups": 1539,
+          "wins": 1311,
+          "losses": 228,
+          "ties": 0
+        }
+      },
+      "types": [
+        "normal"
+      ],
+      "dex": 288,
+      "moveset": {
+        "fast": "SCRATCH",
+        "charged": [
+          "BRICK_BREAK",
+          "ROCK_SLIDE"
+        ]
+      },
+      "dampenedAverageScore": 578,
+      "metaScore": 526,
+      "simulationCompetitiveScore": 536,
+      "candidatePriorScore": 535,
+      "candidateMetaTier": "unweighted"
+    },
+    {
+      "rank": 15,
       "id": "clodsire",
       "name": "Clodsire",
       "profile": "rank1",
@@ -2773,7 +2957,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 15,
+      "rank": 16,
       "id": "charjabug",
       "name": "Charjabug",
       "profile": "rank1",
@@ -2957,7 +3141,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 16,
+      "rank": 17,
       "id": "jellicent",
       "name": "Jellicent",
       "profile": "rank1",
@@ -3141,7 +3325,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 17,
+      "rank": 18,
       "id": "sableye_shadow",
       "name": "Sableye (Shadow)",
       "profile": "rank1",
@@ -3325,7 +3509,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 18,
+      "rank": 19,
       "id": "medicham",
       "name": "Medicham",
       "profile": "rank1",
@@ -3509,7 +3693,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 19,
+      "rank": 20,
       "id": "ninetales",
       "name": "Ninetales",
       "profile": "rank1",
@@ -3692,7 +3876,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 20,
+      "rank": 21,
       "id": "stunfisk",
       "name": "Stunfisk",
       "profile": "rank1",
@@ -3876,7 +4060,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 21,
+      "rank": 22,
       "id": "azumarill",
       "name": "Azumarill",
       "profile": "rank1",
@@ -4060,7 +4244,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 22,
+      "rank": 23,
       "id": "sableye",
       "name": "Sableye",
       "profile": "rank1",
@@ -4244,7 +4428,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 23,
+      "rank": 24,
       "id": "ninetales_shadow",
       "name": "Ninetales (Shadow)",
       "profile": "rank1",
@@ -4427,7 +4611,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 24,
+      "rank": 25,
       "id": "mandibuzz",
       "name": "Mandibuzz",
       "profile": "rank1",
@@ -4611,7 +4795,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 25,
+      "rank": 26,
       "id": "lapras",
       "name": "Lapras",
       "profile": "rank1",
@@ -4795,7 +4979,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 26,
+      "rank": 27,
       "id": "melmetal",
       "name": "Melmetal",
       "profile": "rank1",
@@ -4978,7 +5162,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 27,
+      "rank": 28,
       "id": "empoleon_shadow",
       "name": "Empoleon (Shadow)",
       "profile": "rank1",
@@ -5162,7 +5346,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 28,
+      "rank": 29,
       "id": "bastiodon",
       "name": "Bastiodon",
       "profile": "rank1",
@@ -5346,7 +5530,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 29,
+      "rank": 30,
       "id": "furret",
       "name": "Furret",
       "profile": "rank1",
@@ -5529,7 +5713,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 30,
+      "rank": 31,
       "id": "fearow",
       "name": "Fearow",
       "profile": "rank1",
@@ -5713,7 +5897,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 31,
+      "rank": 32,
       "id": "kingdra",
       "name": "Kingdra",
       "profile": "rank1",
@@ -5897,7 +6081,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 32,
+      "rank": 33,
       "id": "mantine",
       "name": "Mantine",
       "profile": "rank1",
@@ -6081,7 +6265,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 33,
+      "rank": 34,
       "id": "zweilous",
       "name": "Zweilous",
       "profile": "rank1",
@@ -6265,7 +6449,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 34,
+      "rank": 35,
       "id": "malamar_shadow",
       "name": "Malamar (Shadow)",
       "profile": "rank1",
@@ -6449,7 +6633,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 35,
+      "rank": 36,
       "id": "snorlax",
       "name": "Snorlax",
       "profile": "rank1",
@@ -6632,7 +6816,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 36,
+      "rank": 37,
       "id": "snorlax_shadow",
       "name": "Snorlax (Shadow)",
       "profile": "rank1",
@@ -6815,7 +6999,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 37,
+      "rank": 38,
       "id": "moltres_galarian",
       "name": "Moltres (Galarian)",
       "profile": "rank1",
@@ -6999,7 +7183,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 38,
+      "rank": 39,
       "id": "talonflame",
       "name": "Talonflame",
       "profile": "rank1",
@@ -7183,7 +7367,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 39,
+      "rank": 40,
       "id": "togekiss",
       "name": "Togekiss",
       "profile": "rank1",
@@ -7367,7 +7551,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 40,
+      "rank": 41,
       "id": "charjabug_shadow",
       "name": "Charjabug (Shadow)",
       "profile": "rank1",
@@ -7551,7 +7735,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 41,
+      "rank": 42,
       "id": "kingdra_shadow",
       "name": "Kingdra (Shadow)",
       "profile": "rank1",
@@ -7735,7 +7919,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 42,
+      "rank": 43,
       "id": "empoleon",
       "name": "Empoleon",
       "profile": "rank1",
@@ -7919,7 +8103,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 43,
+      "rank": 44,
       "id": "jumpluff",
       "name": "Jumpluff",
       "profile": "rank1",
@@ -8103,7 +8287,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 44,
+      "rank": 45,
       "id": "quagsire_shadow",
       "name": "Quagsire (Shadow)",
       "profile": "rank1",
@@ -8287,7 +8471,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 45,
+      "rank": 46,
       "id": "lickilicky",
       "name": "Lickilicky",
       "profile": "rank1",
@@ -8470,7 +8654,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 46,
+      "rank": 47,
       "id": "rillaboom",
       "name": "Rillaboom",
       "profile": "rank1",
@@ -8653,7 +8837,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 47,
+      "rank": 48,
       "id": "goodra",
       "name": "Goodra",
       "profile": "rank1",
@@ -8836,7 +9020,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 48,
+      "rank": 49,
       "id": "diggersby",
       "name": "Diggersby",
       "profile": "rank1",
@@ -9020,7 +9204,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 49,
+      "rank": 50,
       "id": "politoed_shadow",
       "name": "Politoed (Shadow)",
       "profile": "rank1",
@@ -9203,7 +9387,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 50,
+      "rank": 51,
       "id": "feraligatr",
       "name": "Feraligatr",
       "profile": "rank1",
@@ -9386,7 +9570,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 51,
+      "rank": 52,
       "id": "turtonator",
       "name": "Turtonator",
       "profile": "rank1",
@@ -9570,7 +9754,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 52,
+      "rank": 53,
       "id": "regidrago",
       "name": "Regidrago",
       "profile": "rank1",
@@ -9753,7 +9937,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 53,
+      "rank": 54,
       "id": "spidops",
       "name": "Spidops",
       "profile": "rank1",
@@ -9936,7 +10120,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 54,
+      "rank": 55,
       "id": "dondozo",
       "name": "Dondozo",
       "profile": "rank1",
@@ -10119,7 +10303,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 55,
+      "rank": 56,
       "id": "jumpluff_shadow",
       "name": "Jumpluff (Shadow)",
       "profile": "rank1",
@@ -10303,7 +10487,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 56,
+      "rank": 57,
       "id": "ninetales_alolan_shadow",
       "name": "Ninetales (Alolan) (Shadow)",
       "profile": "rank1",
@@ -10487,7 +10671,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 57,
+      "rank": 58,
       "id": "ninetales_alolan",
       "name": "Ninetales (Alolan)",
       "profile": "rank1",
@@ -10671,7 +10855,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 58,
+      "rank": 59,
       "id": "cradily_b",
       "name": "Cradily",
       "profile": "rank1",
@@ -10855,7 +11039,190 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 59,
+      "rank": 60,
+      "id": "vigoroth_shadow",
+      "name": "Vigoroth (Shadow)",
+      "profile": "rank1",
+      "averageScore": 617,
+      "externalWeightedAverageScore": 516,
+      "weightedAverageScore": 566,
+      "rawScore": 619,
+      "weightedScore": 566,
+      "competitiveScore": 520,
+      "overallScore": 520,
+      "categoryScores": {
+        "closer": {
+          "label": "0 Shields",
+          "weight": 1,
+          "averageScore": 579,
+          "dampenedScore": 550,
+          "weightedScore": 544,
+          "metaScore": 486,
+          "consistencyScore": 520,
+          "competitiveScore": 501,
+          "rawRating": 58,
+          "weightedRating": 54,
+          "metaRating": 49,
+          "competitiveRating": 50,
+          "score": 50,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1040,
+          "losses": 487,
+          "ties": 12,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "ROCK_SLIDE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "core": {
+          "label": "1 Shield",
+          "weight": 1,
+          "averageScore": 626,
+          "dampenedScore": 582,
+          "weightedScore": 577,
+          "metaScore": 524,
+          "consistencyScore": 557,
+          "competitiveScore": 538,
+          "rawRating": 63,
+          "weightedRating": 58,
+          "metaRating": 52,
+          "competitiveRating": 54,
+          "score": 54,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1238,
+          "losses": 300,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "ROCK_SLIDE",
+                "uses": 1539
+              }
+            ]
+          }
+        },
+        "lead": {
+          "label": "2 Shields",
+          "weight": 1,
+          "averageScore": 646,
+          "dampenedScore": 585,
+          "weightedScore": 581,
+          "metaScore": 540,
+          "consistencyScore": 561,
+          "competitiveScore": 550,
+          "rawRating": 65,
+          "weightedRating": 58,
+          "metaRating": 54,
+          "competitiveRating": 55,
+          "score": 55,
+          "matchups": 1539,
+          "metaMatchups": 128,
+          "wins": 1256,
+          "losses": 279,
+          "ties": 4,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SCRATCH",
+                "uses": 1539
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 1539
+              },
+              {
+                "id": "ROCK_SLIDE",
+                "uses": 1539
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 87.24,
+      "matchups": 4617,
+      "wins": 3534,
+      "losses": 1066,
+      "ties": 17,
+      "winRate": 0.7654,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 579,
+          "dampenedScore": 550,
+          "weightedScore": 544,
+          "metaScore": 486,
+          "matchups": 1539,
+          "wins": 1040,
+          "losses": 487,
+          "ties": 12
+        },
+        "1-1": {
+          "averageScore": 626,
+          "dampenedScore": 582,
+          "weightedScore": 577,
+          "metaScore": 524,
+          "matchups": 1539,
+          "wins": 1238,
+          "losses": 300,
+          "ties": 1
+        },
+        "2-2": {
+          "averageScore": 646,
+          "dampenedScore": 585,
+          "weightedScore": 581,
+          "metaScore": 540,
+          "matchups": 1539,
+          "wins": 1256,
+          "losses": 279,
+          "ties": 4
+        }
+      },
+      "types": [
+        "normal"
+      ],
+      "dex": 288,
+      "moveset": {
+        "fast": "SCRATCH",
+        "charged": [
+          "BRICK_BREAK",
+          "ROCK_SLIDE"
+        ]
+      },
+      "dampenedAverageScore": 572,
+      "metaScore": 516,
+      "simulationCompetitiveScore": 530,
+      "candidatePriorScore": 495,
+      "candidateMetaTier": "unweighted"
+    },
+    {
+      "rank": 61,
       "id": "quagsire",
       "name": "Quagsire",
       "profile": "rank1",
@@ -11039,7 +11406,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 60,
+      "rank": 62,
       "id": "feraligatr_shadow",
       "name": "Feraligatr (Shadow)",
       "profile": "rank1",
@@ -11222,7 +11589,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 61,
+      "rank": 63,
       "id": "swampert",
       "name": "Swampert",
       "profile": "rank1",
@@ -11406,7 +11773,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 62,
+      "rank": 64,
       "id": "swampert_shadow",
       "name": "Swampert (Shadow)",
       "profile": "rank1",
@@ -11590,7 +11957,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 63,
+      "rank": 65,
       "id": "abomasnow_shadow",
       "name": "Abomasnow (Shadow)",
       "profile": "rank1",
@@ -11774,7 +12141,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 64,
+      "rank": 66,
       "id": "abomasnow",
       "name": "Abomasnow",
       "profile": "rank1",
@@ -11958,7 +12325,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 65,
+      "rank": 67,
       "id": "dunsparce",
       "name": "Dunsparce",
       "profile": "rank1",
@@ -12141,7 +12508,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 66,
+      "rank": 68,
       "id": "gliscor",
       "name": "Gliscor",
       "profile": "rank1",
@@ -12325,7 +12692,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 67,
+      "rank": 69,
       "id": "altaria_shadow",
       "name": "Altaria (Shadow)",
       "profile": "rank1",
@@ -12509,7 +12876,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 68,
+      "rank": 70,
       "id": "spiritomb",
       "name": "Spiritomb",
       "profile": "rank1",
@@ -12693,7 +13060,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 69,
+      "rank": 71,
       "id": "walrein",
       "name": "Walrein",
       "profile": "rank1",
@@ -12877,7 +13244,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 70,
+      "rank": 72,
       "id": "corviknight_shadow",
       "name": "Corviknight (Shadow)",
       "profile": "rank1",
@@ -13061,7 +13428,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 71,
+      "rank": 73,
       "id": "giratina_altered_shadow",
       "name": "Giratina (Altered) (Shadow)",
       "profile": "rank1",
@@ -13245,7 +13612,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 72,
+      "rank": 74,
       "id": "electrode_hisuian",
       "name": "Electrode (Hisuian)",
       "profile": "rank1",
@@ -13429,7 +13796,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 73,
+      "rank": 75,
       "id": "wigglytuff",
       "name": "Wigglytuff",
       "profile": "rank1",
@@ -13613,7 +13980,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 74,
+      "rank": 76,
       "id": "bastiodon_shadow",
       "name": "Bastiodon (Shadow)",
       "profile": "rank1",
@@ -13797,7 +14164,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 75,
+      "rank": 77,
       "id": "dragonair_shadow",
       "name": "Dragonair (Shadow)",
       "profile": "rank1",
@@ -13980,7 +14347,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 76,
+      "rank": 78,
       "id": "pidgeot",
       "name": "Pidgeot",
       "profile": "rank1",
@@ -14164,7 +14531,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 77,
+      "rank": 79,
       "id": "pidgeot_shadow",
       "name": "Pidgeot (Shadow)",
       "profile": "rank1",
@@ -14348,7 +14715,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 78,
+      "rank": 80,
       "id": "blastoise",
       "name": "Blastoise",
       "profile": "rank1",
@@ -14531,7 +14898,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 79,
+      "rank": 81,
       "id": "zweilous_shadow",
       "name": "Zweilous (Shadow)",
       "profile": "rank1",
@@ -14715,7 +15082,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 80,
+      "rank": 82,
       "id": "muk_alolan_shadow",
       "name": "Muk (Alolan) (Shadow)",
       "profile": "rank1",
@@ -14899,7 +15266,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 81,
+      "rank": 83,
       "id": "sealeo_shadow",
       "name": "Sealeo (Shadow)",
       "profile": "rank1",
@@ -15083,7 +15450,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 82,
+      "rank": 84,
       "id": "morgrem",
       "name": "Morgrem",
       "profile": "rank1",
@@ -15267,7 +15634,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 83,
+      "rank": 85,
       "id": "togedemaru",
       "name": "Togedemaru",
       "profile": "rank1",
@@ -15451,7 +15818,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 84,
+      "rank": 86,
       "id": "shelgon",
       "name": "Shelgon",
       "profile": "rank1",
@@ -15634,7 +16001,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 85,
+      "rank": 87,
       "id": "umbreon",
       "name": "Umbreon",
       "profile": "rank1",
@@ -15817,7 +16184,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 86,
+      "rank": 88,
       "id": "hydreigon_shadow",
       "name": "Hydreigon (Shadow)",
       "profile": "rank1",
@@ -16001,7 +16368,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 87,
+      "rank": 89,
       "id": "oinkologne_female",
       "name": "Oinkologne (Female)",
       "profile": "rank1",
@@ -16184,7 +16551,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 88,
+      "rank": 90,
       "id": "thievul",
       "name": "Thievul",
       "profile": "rank1",
@@ -16367,7 +16734,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 89,
+      "rank": 91,
       "id": "houndoom_shadow",
       "name": "Houndoom (Shadow)",
       "profile": "rank1",
@@ -16551,7 +16918,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 90,
+      "rank": 92,
       "id": "shelgon_shadow",
       "name": "Shelgon (Shadow)",
       "profile": "rank1",
@@ -16734,7 +17101,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 91,
+      "rank": 93,
       "id": "walrein_shadow",
       "name": "Walrein (Shadow)",
       "profile": "rank1",
@@ -16918,190 +17285,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 92,
-      "id": "vigoroth",
-      "name": "Vigoroth",
-      "profile": "rank1",
-      "averageScore": 601,
-      "externalWeightedAverageScore": 493,
-      "weightedAverageScore": 557,
-      "rawScore": 600,
-      "weightedScore": 557,
-      "competitiveScore": 515,
-      "overallScore": 515,
-      "categoryScores": {
-        "closer": {
-          "label": "0 Shields",
-          "weight": 1,
-          "averageScore": 589,
-          "dampenedScore": 557,
-          "weightedScore": 550,
-          "metaScore": 485,
-          "consistencyScore": 529,
-          "competitiveScore": 502,
-          "rawRating": 59,
-          "weightedRating": 55,
-          "metaRating": 49,
-          "competitiveRating": 50,
-          "score": 50,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1111,
-          "losses": 423,
-          "ties": 5,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "BULLDOZE",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "core": {
-          "label": "1 Shield",
-          "weight": 1,
-          "averageScore": 610,
-          "dampenedScore": 570,
-          "weightedScore": 563,
-          "metaScore": 490,
-          "consistencyScore": 541,
-          "competitiveScore": 510,
-          "rawRating": 61,
-          "weightedRating": 56,
-          "metaRating": 49,
-          "competitiveRating": 51,
-          "score": 51,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1209,
-          "losses": 328,
-          "ties": 2,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "BULLDOZE",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "lead": {
-          "label": "2 Shields",
-          "weight": 1,
-          "averageScore": 605,
-          "dampenedScore": 562,
-          "weightedScore": 556,
-          "metaScore": 498,
-          "consistencyScore": 534,
-          "competitiveScore": 513,
-          "rawRating": 60,
-          "weightedRating": 56,
-          "metaRating": 50,
-          "competitiveRating": 51,
-          "score": 51,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1153,
-          "losses": 384,
-          "ties": 2,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "BULLDOZE",
-                "uses": 1539
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 88.27,
-      "matchups": 4617,
-      "wins": 3473,
-      "losses": 1135,
-      "ties": 9,
-      "winRate": 0.7522,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 589,
-          "dampenedScore": 557,
-          "weightedScore": 550,
-          "metaScore": 485,
-          "matchups": 1539,
-          "wins": 1111,
-          "losses": 423,
-          "ties": 5
-        },
-        "1-1": {
-          "averageScore": 610,
-          "dampenedScore": 570,
-          "weightedScore": 563,
-          "metaScore": 490,
-          "matchups": 1539,
-          "wins": 1209,
-          "losses": 328,
-          "ties": 2
-        },
-        "2-2": {
-          "averageScore": 605,
-          "dampenedScore": 562,
-          "weightedScore": 556,
-          "metaScore": 498,
-          "matchups": 1539,
-          "wins": 1153,
-          "losses": 384,
-          "ties": 2
-        }
-      },
-      "types": [
-        "normal"
-      ],
-      "dex": 288,
-      "moveset": {
-        "fast": "SCRATCH",
-        "charged": [
-          "BODY_SLAM",
-          "BULLDOZE"
-        ]
-      },
-      "dampenedAverageScore": 563,
-      "metaScore": 493,
-      "simulationCompetitiveScore": 507,
-      "candidatePriorScore": 535,
-      "candidateMetaTier": "unweighted"
-    },
-    {
-      "rank": 93,
+      "rank": 94,
       "id": "politoed",
       "name": "Politoed",
       "profile": "rank1",
@@ -17284,7 +17468,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 94,
+      "rank": 95,
       "id": "annihilape",
       "name": "Annihilape",
       "profile": "rank1",
@@ -17468,7 +17652,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 95,
+      "rank": 96,
       "id": "florges",
       "name": "Florges",
       "profile": "rank1",
@@ -17651,7 +17835,7 @@
       "candidateMetaTier": "core"
     },
     {
-      "rank": 96,
+      "rank": 97,
       "id": "machoke_shadow",
       "name": "Machoke (Shadow)",
       "profile": "rank1",
@@ -17834,7 +18018,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 97,
+      "rank": 98,
       "id": "gastrodon",
       "name": "Gastrodon",
       "profile": "rank1",
@@ -18018,7 +18202,7 @@
       "candidateMetaTier": "common"
     },
     {
-      "rank": 98,
+      "rank": 99,
       "id": "deoxys_defense",
       "name": "Deoxys (Defense)",
       "profile": "rank1",
@@ -18201,7 +18385,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 99,
+      "rank": 100,
       "id": "araquanid",
       "name": "Araquanid",
       "profile": "rank1",
@@ -18385,7 +18569,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 100,
+      "rank": 101,
       "id": "swanna",
       "name": "Swanna",
       "profile": "rank1",
@@ -18569,7 +18753,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 101,
+      "rank": 102,
       "id": "articuno",
       "name": "Articuno",
       "profile": "rank1",
@@ -18753,7 +18937,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 102,
+      "rank": 103,
       "id": "bellibolt",
       "name": "Bellibolt",
       "profile": "rank1",
@@ -18936,7 +19120,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 103,
+      "rank": 104,
       "id": "seismitoad",
       "name": "Seismitoad",
       "profile": "rank1",
@@ -19120,7 +19304,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 104,
+      "rank": 105,
       "id": "araquanid_shadow",
       "name": "Araquanid (Shadow)",
       "profile": "rank1",
@@ -19304,7 +19488,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 105,
+      "rank": 106,
       "id": "dusclops_shadow",
       "name": "Dusclops (Shadow)",
       "profile": "rank1",
@@ -19487,7 +19671,7 @@
       "candidateMetaTier": "spice"
     },
     {
-      "rank": 106,
+      "rank": 107,
       "id": "pachirisu",
       "name": "Pachirisu",
       "profile": "rank1",
@@ -19670,7 +19854,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 107,
+      "rank": 108,
       "id": "nidorina",
       "name": "Nidorina",
       "profile": "rank1",
@@ -19853,7 +20037,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 108,
+      "rank": 109,
       "id": "cresselia",
       "name": "Cresselia",
       "profile": "rank1",
@@ -20036,7 +20220,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 109,
+      "rank": 110,
       "id": "typhlosion_shadow",
       "name": "Typhlosion (Shadow)",
       "profile": "rank1",
@@ -20219,7 +20403,7 @@
       "candidateMetaTier": "unweighted"
     },
     {
-      "rank": 110,
+      "rank": 111,
       "id": "muk_alolan",
       "name": "Muk (Alolan)",
       "profile": "rank1",
@@ -20397,189 +20581,6 @@
         ]
       },
       "dampenedAverageScore": 574,
-      "metaScore": 503,
-      "simulationCompetitiveScore": 520,
-      "candidatePriorScore": 495,
-      "candidateMetaTier": "unweighted"
-    },
-    {
-      "rank": 111,
-      "id": "vigoroth_shadow",
-      "name": "Vigoroth (Shadow)",
-      "profile": "rank1",
-      "averageScore": 616,
-      "externalWeightedAverageScore": 503,
-      "weightedAverageScore": 563,
-      "rawScore": 613,
-      "weightedScore": 563,
-      "competitiveScore": 513,
-      "overallScore": 513,
-      "categoryScores": {
-        "closer": {
-          "label": "0 Shields",
-          "weight": 1,
-          "averageScore": 580,
-          "dampenedScore": 550,
-          "weightedScore": 544,
-          "metaScore": 482,
-          "consistencyScore": 520,
-          "competitiveScore": 498,
-          "rawRating": 58,
-          "weightedRating": 54,
-          "metaRating": 48,
-          "competitiveRating": 50,
-          "score": 50,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1043,
-          "losses": 484,
-          "ties": 12,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "ROCK_SLIDE",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "core": {
-          "label": "1 Shield",
-          "weight": 1,
-          "averageScore": 625,
-          "dampenedScore": 580,
-          "weightedScore": 574,
-          "metaScore": 508,
-          "consistencyScore": 554,
-          "competitiveScore": 526,
-          "rawRating": 62,
-          "weightedRating": 57,
-          "metaRating": 51,
-          "competitiveRating": 53,
-          "score": 53,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1225,
-          "losses": 311,
-          "ties": 3,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "ROCK_SLIDE",
-                "uses": 1539
-              }
-            ]
-          }
-        },
-        "lead": {
-          "label": "2 Shields",
-          "weight": 1,
-          "averageScore": 644,
-          "dampenedScore": 583,
-          "weightedScore": 577,
-          "metaScore": 518,
-          "consistencyScore": 556,
-          "competitiveScore": 534,
-          "rawRating": 64,
-          "weightedRating": 58,
-          "metaRating": 52,
-          "competitiveRating": 53,
-          "score": 53,
-          "matchups": 1539,
-          "metaMatchups": 128,
-          "wins": 1237,
-          "losses": 298,
-          "ties": 4,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "SCRATCH",
-                "uses": 1539
-              }
-            ],
-            "charged": [
-              {
-                "id": "BODY_SLAM",
-                "uses": 1539
-              },
-              {
-                "id": "ROCK_SLIDE",
-                "uses": 1539
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 87.89,
-      "matchups": 4617,
-      "wins": 3505,
-      "losses": 1093,
-      "ties": 19,
-      "winRate": 0.7592,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 580,
-          "dampenedScore": 550,
-          "weightedScore": 544,
-          "metaScore": 482,
-          "matchups": 1539,
-          "wins": 1043,
-          "losses": 484,
-          "ties": 12
-        },
-        "1-1": {
-          "averageScore": 625,
-          "dampenedScore": 580,
-          "weightedScore": 574,
-          "metaScore": 508,
-          "matchups": 1539,
-          "wins": 1225,
-          "losses": 311,
-          "ties": 3
-        },
-        "2-2": {
-          "averageScore": 644,
-          "dampenedScore": 583,
-          "weightedScore": 577,
-          "metaScore": 518,
-          "matchups": 1539,
-          "wins": 1237,
-          "losses": 298,
-          "ties": 4
-        }
-      },
-      "types": [
-        "normal"
-      ],
-      "dex": 288,
-      "moveset": {
-        "fast": "SCRATCH",
-        "charged": [
-          "BODY_SLAM",
-          "ROCK_SLIDE"
-        ]
-      },
-      "dampenedAverageScore": 571,
       "metaScore": 503,
       "simulationCompetitiveScore": 520,
       "candidatePriorScore": 495,

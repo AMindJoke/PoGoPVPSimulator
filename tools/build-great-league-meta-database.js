@@ -445,6 +445,7 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
     const baseId = id.replace(/_shadow(_|$)/, "_").replace(/_shadow$/, "");
     const current = resolved[id] || resolved[baseId] || null;
     const availability = preview?.pokemonMoveOverrides?.[id] || null;
+    const explicit = preview?.defaultMovesets?.[id] || null;
     const affectedFast = (pokemon.fastMoves || []).filter(moveId => changedMoveIds.has(moveId));
     const affectedCharged = (pokemon.chargedMoves || []).filter(moveId => changedMoveIds.has(moveId));
     const addedFast = availability?.fast?.add || [];
@@ -454,6 +455,13 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
 
     const validFast = moveId => (pokemon.fastMoves || []).includes(moveId) && normalizedMoves.has(moveId);
     const validCharged = moveId => (pokemon.chargedMoves || []).includes(moveId) && normalizedMoves.has(moveId);
+    if (explicit && validFast(explicit.fast)) {
+      const charged = (explicit.charged || []).filter(validCharged).slice(0, 2);
+      if (charged.length) {
+        resolved[id] = { fast: explicit.fast, charged };
+        continue;
+      }
+    }
     let fast = validFast(current?.fast) ? current.fast : null;
     for (const candidate of [...new Set([...affectedFast, ...addedFast].filter(validFast))]) {
       if (!fast || fastMoveScore(normalizedMoves.get(candidate)) > fastMoveScore(normalizedMoves.get(fast))) fast = candidate;

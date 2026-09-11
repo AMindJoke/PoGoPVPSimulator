@@ -2681,8 +2681,8 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
   "vigoroth": {
     "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
-      "BULLDOZE"
+      "BRICK_BREAK",
+      "ROCK_SLIDE"
     ]
   },
   "kartana": {
@@ -3135,7 +3135,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
   "vigoroth_shadow": {
     "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
+      "BRICK_BREAK",
       "ROCK_SLIDE"
     ]
   },

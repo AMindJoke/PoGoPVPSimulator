@@ -1,7 +1,7 @@
 # Great League Dataset Quality Report
 
 Status: **Dataset VALID**
-Generated: 2026-09-11T20:25:23.460Z
+Generated: 2026-09-11T21:16:28.290Z
 
 ## Generation
 - Dataset version: 1
@@ -21,10 +21,10 @@ Generated: 2026-09-11T20:25:23.460Z
 - Skipped simulations: 0
 
 ## Output
-- data/great-league-rankings.json: 6.944.828 bytes
-- data/great-league-rankings.js: 6.944.860 bytes
-- data/rankings/great-league-full.json: 6.944.828 bytes
-- Total dataset size: 20.834.516 bytes
+- data/great-league-rankings.json: 6.944.860 bytes
+- data/great-league-rankings.js: 6.944.892 bytes
+- data/rankings/great-league-full.json: 6.944.860 bytes
+- Total dataset size: 20.834.612 bytes
 
 ## Validation
 - No blocking issues found.
@@ -44,43 +44,43 @@ Generated: 2026-09-11T20:25:23.460Z
 - #11 Corviknight: 537
 - #12 Malamar: 537
 - #13 Cramorant: 536
-- #14 Clodsire: 536
-- #15 Charjabug: 534
-- #16 Jellicent: 534
-- #17 Sableye (Shadow): 534
-- #18 Medicham: 534
-- #19 Ninetales: 532
-- #20 Stunfisk: 532
-- #21 Azumarill: 532
-- #22 Sableye: 532
-- #23 Ninetales (Shadow): 532
-- #24 Mandibuzz: 532
-- #25 Lapras: 532
-- #26 Melmetal: 531
-- #27 Empoleon (Shadow): 530
-- #28 Bastiodon: 530
-- #29 Furret: 530
-- #30 Fearow: 530
-- #31 Kingdra: 529
-- #32 Mantine: 529
-- #33 Zweilous: 529
-- #34 Malamar (Shadow): 529
-- #35 Snorlax: 529
-- #36 Snorlax (Shadow): 529
-- #37 Moltres (Galarian): 529
-- #38 Talonflame: 527
-- #39 Togekiss: 527
-- #40 Charjabug (Shadow): 526
-- #41 Kingdra (Shadow): 526
-- #42 Empoleon: 525
-- #43 Jumpluff: 525
-- #44 Quagsire (Shadow): 525
-- #45 Lickilicky: 525
-- #46 Rillaboom: 524
-- #47 Goodra: 524
-- #48 Diggersby: 523
-- #49 Politoed (Shadow): 523
-- #50 Feraligatr: 523
+- #14 Vigoroth: 536
+- #15 Clodsire: 536
+- #16 Charjabug: 534
+- #17 Jellicent: 534
+- #18 Sableye (Shadow): 534
+- #19 Medicham: 534
+- #20 Ninetales: 532
+- #21 Stunfisk: 532
+- #22 Azumarill: 532
+- #23 Sableye: 532
+- #24 Ninetales (Shadow): 532
+- #25 Mandibuzz: 532
+- #26 Lapras: 532
+- #27 Melmetal: 531
+- #28 Empoleon (Shadow): 530
+- #29 Bastiodon: 530
+- #30 Furret: 530
+- #31 Fearow: 530
+- #32 Kingdra: 529
+- #33 Mantine: 529
+- #34 Zweilous: 529
+- #35 Malamar (Shadow): 529
+- #36 Snorlax: 529
+- #37 Snorlax (Shadow): 529
+- #38 Moltres (Galarian): 529
+- #39 Talonflame: 527
+- #40 Togekiss: 527
+- #41 Charjabug (Shadow): 526
+- #42 Kingdra (Shadow): 526
+- #43 Empoleon: 525
+- #44 Jumpluff: 525
+- #45 Quagsire (Shadow): 525
+- #46 Lickilicky: 525
+- #47 Rillaboom: 524
+- #48 Goodra: 524
+- #49 Diggersby: 523
+- #50 Politoed (Shadow): 523
 
 ### Bottom 20
 - #1540 Magikarp (Shadow): 376

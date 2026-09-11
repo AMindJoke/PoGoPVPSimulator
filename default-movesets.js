@@ -2681,8 +2681,8 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "vigoroth": {
     "fast": "SCRATCH",
     "charged": [
-      "BODY_SLAM",
-      "BULLDOZE"
+      "BRICK_BREAK",
+      "ROCK_SLIDE"
     ]
   },
   "kartana": {

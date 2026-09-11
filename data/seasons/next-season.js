@@ -70,6 +70,11 @@
       toxtricity_low_key: add([], ["SWIFT"]), toxtricity_amped: add([], ["SWIFT"]),
       snorlax: add(["PSYWAVE"]), snorlax_shadow: add(["PSYWAVE"])
     }),
+    defaultMovesets: Object.freeze({
+      cramorant: Object.freeze({ fast: "PECK", charged: Object.freeze(["FLY", "DIVE"]) }),
+      vigoroth: Object.freeze({ fast: "SCRATCH", charged: Object.freeze(["BRICK_BREAK", "ROCK_SLIDE"]) }),
+      vigoroth_shadow: Object.freeze({ fast: "SCRATCH", charged: Object.freeze(["BRICK_BREAK", "ROCK_SLIDE"]) })
+    }),
     pendingValues: Object.freeze([]),
     generatedAssets: Object.freeze({
       rankings: "data/seasons/twilight-trails/great-league-rankings.js",
