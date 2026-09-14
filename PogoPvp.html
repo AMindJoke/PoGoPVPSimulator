@@ -17731,11 +17731,13 @@
       return member ? findPokemon(member.pokemonId) : null;
     }
 
-    function teamBuilderMoveLine(moveId, fallback = "Move unavailable") {
+    function teamBuilderMoveLine(moveId, fallback = "Move unavailable", eliteMoves = new Set()) {
       const move = moveMap.get(moveId);
       if (!move) return `<span class="team-card-move"><i style="--move-type:#8a8f96"></i>${escapeHtml(fallback)}</span>`;
       const color = typeColors[move.type] || "#8a8f96";
-      return `<span class="team-card-move"><i style="--move-type:${color}"></i>${escapeHtml(move.name)}</span>`;
+      const legacy = eliteMoves.has(moveId);
+      const legacyAttributes = legacy ? ` title="Elite or legacy move" aria-label="${escapeHtml(move.name)}. Elite or legacy move."` : "";
+      return `<span class="team-card-move"${legacyAttributes}><i style="--move-type:${color}"></i>${escapeHtml(move.name)}${legacy ? " *" : ""}</span>`;
     }
 
     function teamBuilderBuildLabel(build = {}) {
@@ -17752,7 +17754,8 @@
       if (!pokemon) return renderTeamBuilderSlot(null, slot);
       const primaryColor = typeColors[pokemon.types?.[0]] || "var(--accent)";
       const types = pokemon.types.map(type => `<span class="type-badge" style="background:${typeColors[type] || "#66788c"};color:${contrastText(typeColors[type] || "#66788c")}">${title(type)}</span>`).join("");
-      return `<article class="team-slot" data-team-slot="${slot}" style="--team-type:${primaryColor}"><div class="team-card"><div class="team-card-sprite-wrap"><img class="team-card-sprite" data-team-sprite="${slot}" alt="">${member.shadow ? '<span class="team-card-shadow">Shadow</span>' : ""}</div><div class="team-card-copy"><div class="team-card-heading"><h3>${escapeHtml(pokemon.name)}</h3><span class="team-card-slot-number">#${slot + 1}</span></div><div class="team-card-types">${types}</div><div class="team-card-moves">${teamBuilderMoveLine(member.fastMoveId)}${member.chargedMoveIds.map(moveId => teamBuilderMoveLine(moveId)).join("")}</div><div class="team-card-build">${escapeHtml(teamBuilderBuildLabel(member.build))}</div><div class="team-card-actions"><button type="button" data-team-edit="${slot}" aria-label="Edit moves and build for ${escapeHtml(pokemon.name)}">Edit build</button><button class="secondary" type="button" data-team-replace="${slot}">Replace</button><button class="secondary team-remove" type="button" data-team-remove="${slot}" aria-label="Remove ${escapeHtml(pokemon.name)} from slot ${slot + 1}" title="Remove">×</button></div></div></div></article>`;
+      const eliteMoves = new Set(pokemon.eliteMoves || []);
+      return `<article class="team-slot" data-team-slot="${slot}" style="--team-type:${primaryColor}"><div class="team-card"><div class="team-card-sprite-wrap"><img class="team-card-sprite" data-team-sprite="${slot}" alt="">${member.shadow ? '<span class="team-card-shadow">Shadow</span>' : ""}</div><div class="team-card-copy"><div class="team-card-heading"><h3>${escapeHtml(pokemon.name)}</h3><span class="team-card-slot-number">#${slot + 1}</span></div><div class="team-card-types">${types}</div><div class="team-card-moves">${teamBuilderMoveLine(member.fastMoveId, "Move unavailable", eliteMoves)}${member.chargedMoveIds.map(moveId => teamBuilderMoveLine(moveId, "Move unavailable", eliteMoves)).join("")}</div><div class="team-card-build">${escapeHtml(teamBuilderBuildLabel(member.build))}</div><div class="team-card-actions"><button type="button" data-team-edit="${slot}" aria-label="Edit moves and build for ${escapeHtml(pokemon.name)}">Edit build</button><button class="secondary" type="button" data-team-replace="${slot}">Replace</button><button class="secondary team-remove" type="button" data-team-remove="${slot}" aria-label="Remove ${escapeHtml(pokemon.name)} from slot ${slot + 1}" title="Remove">×</button></div></div></div></article>`;
     }
 
     function renderTeamBuilder() {
@@ -18732,7 +18735,8 @@
         const member = teamBuilderFinalSlotCandidates.get(item.candidateId);
         const pokemon = findPokemon(item.candidateId);
         const types = (pokemon?.types || []).map(type => `<span class="type-badge" style="background:${typeColors[type] || "#66788c"};color:${contrastText(typeColors[type] || "#66788c")}">${title(type)}</span>`).join("");
-        const moves = [teamBuilderMoveLine(member?.fastMoveId, "Fast Move unavailable"), ...(member?.chargedMoveIds || []).map(id => teamBuilderMoveLine(id, "Charged Move unavailable"))].join("");
+        const eliteMoves = new Set(pokemon?.eliteMoves || []);
+        const moves = [teamBuilderMoveLine(member?.fastMoveId, "Fast Move unavailable", eliteMoves), ...(member?.chargedMoveIds || []).map(id => teamBuilderMoveLine(id, "Charged Move unavailable", eliteMoves))].join("");
         const score = `${item.optimizationScore >= 0 ? "+" : ""}${item.optimizationScore}`;
         return `<article class="team-final-slot-result"><span class="team-final-slot-rank">${index + 1}</span><img data-team-final-slot-sprite="${index}" alt=""><div class="team-final-slot-copy"><strong>${escapeHtml(pokemon?.name || item.candidateId)}</strong><div class="team-final-slot-types">${types}</div><div class="team-final-slot-metrics"><span>0-answer <b>${item.zeroAnswerBefore}&rarr;${item.zeroAnswerAfter}</b></span><span>1-answer <b>${item.oneAnswerBefore}&rarr;${item.oneAnswerAfter}</b></span></div><div class="team-final-slot-moves">${moves}</div></div><div class="team-final-slot-action"><span class="team-final-slot-score">${score}<small>improvement points</small></span><button type="button" data-team-add-final-slot="${escapeHtml(item.candidateId)}">Add to team</button></div></article>`;
       }).join("");

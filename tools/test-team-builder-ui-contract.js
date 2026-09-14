@@ -60,6 +60,9 @@ assert.match(html, /mask:\s*url\("data:image\/svg\+xml,[^\n]+circle[^\n]+rect x=
 assert.match(html, /\.team-slot:not\(\.is-empty\)::after\s*\{[\s\S]{0,1800}pointer-events:\s*none;/, "The selected-card background mark must not intercept Team Builder interactions.");
 assert.match(html, /renderPokemonSuggestionList\(\$\("teamBuilderPickerResults"\)/, "Team Builder must reuse the simulator Pokemon result component.");
 assert.match(html, /teamBuilderDefaultMember[\s\S]{0,700}metaMovesForPokemon\(pokemon\)/, "Cards must use the existing default competitive moveset resolution.");
+assert.match(html, /function teamBuilderMoveLine\(moveId, fallback = "Move unavailable", eliteMoves = new Set\(\)\)[\s\S]{0,700}Elite or legacy move/, "Team Builder move lines must identify elite or legacy moves accessibly.");
+assert.match(html, /function renderTeamBuilderSlot\(member, slot\)[\s\S]{0,900}new Set\(pokemon\.eliteMoves \|\| \[\]\)[\s\S]{0,900}teamBuilderMoveLine\(member\.fastMoveId, "Move unavailable", eliteMoves\)/, "Roster cards must mark legacy moves from the selected Pokemon form.");
+assert.match(html, /function renderTeamBuilderFinalSlotRanking\(\)[\s\S]{0,1800}new Set\(pokemon\?\.eliteMoves \|\| \[\]\)[\s\S]{0,500}teamBuilderMoveLine\(member\?\.fastMoveId, "Fast Move unavailable", eliteMoves\)/, "Final Slot Finder cards must use the same legacy move marker.");
 assert.match(html, /function teamBuilderResolvedBuild[\s\S]{0,1400}rankingsForPokemon\(pokemon\)[\s\S]{0,1400}statsForIvSpread\(pokemon/, "Team Builder must reuse the simulator's IV optimization and stat calculation.");
 assert.match(html, /function saveTeamBuilderEditor[\s\S]{0,1200}PvPeakTeamBuilder\.setMember/, "Moves and builds must commit atomically to semantic state.");
 assert.match(html, /function toggleTeamBuilderShadow[\s\S]{0,1400}teamBuilderShadowCounterpart/, "Shadow editing must use existing Pokemon form records.");
