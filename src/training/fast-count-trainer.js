@@ -132,7 +132,7 @@
     const imageUrl = typeof options.imageUrl === "function" ? options.imageUrl : () => "";
     const fallbackImageUrl = typeof options.fallbackImageUrl === "function" ? options.fallbackImageUrl : () => "";
     const stats = readStats(storage);
-    const firstBuild = catalog.byId.get("araquanid") || catalog.builds[0];
+    const firstBuild = catalog.builds[0];
     const state = {
       mode: "guided",
       difficulty: "beginner",
@@ -154,6 +154,8 @@
       history: [],
       stats,
       pokemonPickerOpen: false,
+      pokemonQuery: firstBuild?.name || "",
+      pokemonActiveIndex: 0,
       mounted: false
     };
     let container = null;
@@ -305,6 +307,8 @@
       state.selectedId = id;
       state.activeBuild = catalog.byId.get(id);
       state.pokemonPickerOpen = false;
+      state.pokemonQuery = state.activeBuild.name;
+      state.pokemonActiveIndex = 0;
       resetSession();
     }
 
@@ -324,6 +328,38 @@
       return build.types.map(type => `<span style="--type-color:${TYPE_COLORS[type] || TYPE_COLORS.normal}">${escapeHtml(title(type))}</span>`).join("");
     }
 
+    function matchingPokemon() {
+      const query = String(state.pokemonQuery || "").trim().toLocaleLowerCase();
+      return catalog.builds
+        .filter(build => !query || build.name.toLocaleLowerCase().includes(query) || build.id.toLocaleLowerCase().includes(query))
+        .slice(0, 10);
+    }
+
+    function pokemonPickerResults() {
+      const matches = matchingPokemon();
+      if (!matches.length) return `<p class="fast-count-picker-empty">No current meta Pokémon found.</p>`;
+      return matches.map((entry, index) => {
+        const sprite = imageUrl(entry);
+        const fallback = fallbackImageUrl(entry);
+        const charged = entry.chargedMoves.map(move => move.name).join(" / ");
+        return `<button id="fastCountPokemonOption${index}" type="button" role="option" data-fast-count-pokemon-option="${escapeHtml(entry.id)}" aria-selected="${entry.id === state.selectedId}" class="${index === state.pokemonActiveIndex ? "is-active" : ""}">
+          <img src="${escapeHtml(sprite)}" data-fast-count-sprite data-fallback="${escapeHtml(fallback)}" alt="">
+          <span><strong>${entry.rank < 9999 ? `#${entry.rank} · ` : ""}${escapeHtml(entry.name)}</strong><small>${escapeHtml(entry.fastMove.name)} · ${escapeHtml(charged)}</small></span>
+        </button>`;
+      }).join("");
+    }
+
+    function pokemonPicker() {
+      const activeId = state.pokemonPickerOpen && matchingPokemon().length ? `fastCountPokemonOption${state.pokemonActiveIndex}` : "";
+      return `<div class="fast-count-picker">
+        <label for="fastCountPokemonSearch">Choose Pokémon</label>
+        <div class="fast-count-picker-control">
+          <input id="fastCountPokemonSearch" type="search" autocomplete="off" value="${escapeHtml(state.pokemonQuery)}" placeholder="Search Pokémon" role="combobox" aria-autocomplete="list" aria-expanded="${state.pokemonPickerOpen}" aria-controls="fastCountPokemonSuggestions"${activeId ? ` aria-activedescendant="${activeId}"` : ""} data-fast-count-pokemon-search>
+          <div id="fastCountPokemonSuggestions" class="fast-count-picker-options" role="listbox"${state.pokemonPickerOpen ? "" : " hidden"}>${state.pokemonPickerOpen ? pokemonPickerResults() : ""}</div>
+        </div>
+      </div>`;
+    }
+
     function pokemonContext(build) {
       if (!build) return `<section class="fast-count-context"><p>No eligible current-season builds were found.</p></section>`;
       const sprite = imageUrl(build);
@@ -335,8 +371,7 @@
           <div><span class="fast-count-rank">Great League${build.rank < 9999 ? ` · #${build.rank}` : ""}</span><h2>${escapeHtml(build.name)}</h2><div class="fast-count-types">${typeBadges(build)}</div></div>
         </div>
         <div class="fast-count-moves"><span class="fast-count-context-label">Fast Move</span>${moveChip(build.fastMove, "fast", showEnergy)}<span class="fast-count-context-label">Charged Moves</span>${build.chargedMoves.map(move => moveChip(move, "charged", showEnergy)).join("")}</div>
-        ${state.mode === "meta" ? `<button class="secondary fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : `<button class="secondary fast-count-change" type="button" data-fast-count-picker-toggle aria-expanded="${state.pokemonPickerOpen}">Change Pokémon</button>`}
-        ${state.pokemonPickerOpen && state.mode !== "meta" ? `<label class="fast-count-picker"><span>Current meta builds</span><select data-fast-count-pokemon>${catalog.builds.map(entry => `<option value="${escapeHtml(entry.id)}"${entry.id === state.selectedId ? " selected" : ""}>${entry.rank < 9999 ? `#${entry.rank} · ` : ""}${escapeHtml(entry.name)}</option>`).join("")}</select></label>` : ""}
+        ${state.mode === "meta" ? `<button class="secondary fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : pokemonPicker()}
       </section>`;
     }
 
@@ -471,14 +506,37 @@
       if (focusTarget === "next") container.querySelector("[data-fast-count-next]")?.focus({ preventScroll: true });
       if (focusTarget === "challenge") container.querySelector("[data-fast-count-answer]")?.focus({ preventScroll: true });
       if (focusTarget === "summary") container.querySelector("[data-fast-count-summary]")?.focus({ preventScroll: true });
-      container.querySelector("[data-fast-count-sprite]")?.addEventListener("error", event => {
+      bindSpriteFallbacks(container);
+    }
+
+    function bindSpriteFallbacks(scope) {
+      scope?.querySelectorAll("[data-fast-count-sprite]").forEach(img => img.addEventListener("error", event => {
         const img = event.currentTarget;
         const fallback = img.dataset.fallback;
         if (fallback && img.src !== fallback) {
           img.dataset.fallback = "";
           img.src = fallback;
         } else img.hidden = true;
-      });
+      }));
+    }
+
+    function refreshPokemonPicker() {
+      const input = container.querySelector("[data-fast-count-pokemon-search]");
+      const list = container.querySelector("#fastCountPokemonSuggestions");
+      if (!input || !list) return;
+      const matches = matchingPokemon();
+      state.pokemonActiveIndex = Math.max(0, Math.min(state.pokemonActiveIndex, Math.max(0, matches.length - 1)));
+      input.setAttribute("aria-expanded", String(state.pokemonPickerOpen));
+      if (state.pokemonPickerOpen && matches.length) input.setAttribute("aria-activedescendant", `fastCountPokemonOption${state.pokemonActiveIndex}`);
+      else input.removeAttribute("aria-activedescendant");
+      list.hidden = !state.pokemonPickerOpen;
+      list.innerHTML = state.pokemonPickerOpen ? pokemonPickerResults() : "";
+      bindPickerOptions();
+      bindSpriteFallbacks(list);
+    }
+
+    function bindPickerOptions() {
+      container.querySelectorAll("[data-fast-count-pokemon-option]").forEach(button => button.addEventListener("click", () => setPokemon(button.dataset.fastCountPokemonOption)));
     }
 
     function bind() {
@@ -486,8 +544,35 @@
       container.querySelectorAll("[data-fast-count-answer]").forEach(button => button.addEventListener("click", () => answerCount(button.dataset.fastCountAnswer)));
       container.querySelector("[data-fast-count-next]")?.addEventListener("click", nextExercise);
       container.querySelector("[data-fast-count-shortcut-form]")?.addEventListener("submit", event => { event.preventDefault(); answerShortcut(event.currentTarget); });
-      container.querySelector("[data-fast-count-picker-toggle]")?.addEventListener("click", () => { state.pokemonPickerOpen = !state.pokemonPickerOpen; render("picker"); });
-      container.querySelector("[data-fast-count-pokemon]")?.addEventListener("change", event => setPokemon(event.target.value));
+      const pokemonSearch = container.querySelector("[data-fast-count-pokemon-search]");
+      pokemonSearch?.addEventListener("focus", () => {
+        state.pokemonPickerOpen = true;
+        state.pokemonActiveIndex = 0;
+        refreshPokemonPicker();
+      });
+      pokemonSearch?.addEventListener("input", event => {
+        state.pokemonQuery = event.target.value;
+        state.pokemonPickerOpen = true;
+        state.pokemonActiveIndex = 0;
+        refreshPokemonPicker();
+      });
+      pokemonSearch?.addEventListener("keydown", event => {
+        const matches = matchingPokemon();
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          state.pokemonActiveIndex = Math.max(0, Math.min(Math.max(0, matches.length - 1), state.pokemonActiveIndex + direction));
+          state.pokemonPickerOpen = true;
+          refreshPokemonPicker();
+        } else if (event.key === "Enter" && state.pokemonPickerOpen && matches[state.pokemonActiveIndex]) {
+          event.preventDefault();
+          setPokemon(matches[state.pokemonActiveIndex].id);
+        } else if (event.key === "Escape") {
+          state.pokemonPickerOpen = false;
+          refreshPokemonPicker();
+        }
+      });
+      bindPickerOptions();
       container.querySelector("[data-fast-count-new-meta]")?.addEventListener("click", () => {
         state.activeBuild = weightedPick(catalog.builds, random, state.activeBuild?.id);
         state.bank = 0;
@@ -509,7 +594,7 @@
           state.pokemonPickerOpen = true;
           state.sessionDone = false;
           render();
-          container.querySelector("[data-fast-count-pokemon]")?.focus();
+          container.querySelector("[data-fast-count-pokemon-search]")?.focus();
         }
       });
     }

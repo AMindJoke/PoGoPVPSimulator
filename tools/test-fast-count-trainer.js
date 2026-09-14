@@ -25,6 +25,9 @@ assert(catalog.builds.every(build => build.rank <= 150));
 assert(catalog.builds.every(build => build.fastMove.energyGain > 0));
 assert(catalog.builds.every(build => build.chargedMoves.length >= 1));
 
+const initialTrainer = trainer.createTrainer({ catalog });
+assert.equal(initialTrainer.getState().selectedId, catalog.builds[0].id, "The default selection must follow the current ranking order.");
+
 const araquanid = catalog.byId.get("araquanid");
 assert(araquanid, "Araquanid must remain a permanent regression case in the current meta pool.");
 assert.equal(araquanid.fastMove.id, "INFESTATION");
