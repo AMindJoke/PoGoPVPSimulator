@@ -180,6 +180,22 @@
         body.ui-lab .moves-stack .hp { height: 27px; margin-top: 7px; }
         body.ui-lab .moves-stack .resource-row { margin-top: 4px; }
         body.ui-lab .energy-panel { padding-top: 1px; }
+        body.ui-lab[data-view="simulator"]:not(.battle-setup-ready) .scenario-setup-helper {
+          display: block;
+          width: min(100%, 640px);
+          margin: 0 auto;
+          padding: 0 4px;
+          color: var(--muted);
+          font-size: 11px;
+          line-height: 1.35;
+          text-align: center;
+        }
+        body.ui-lab[data-view="simulator"] #battleCta:disabled {
+          opacity: .56;
+          filter: saturate(.3);
+          box-shadow: none;
+          cursor: not-allowed;
+        }
 
         @media (max-width: 900px) {
           body.ui-lab:not([data-view="scenario-review"]) .setup { grid-template-columns: 1fr; column-gap: 0; }
@@ -287,6 +303,8 @@
 
           function ensureBadge() {
             document.body.classList.add('ui-lab');
+            const helper = document.querySelector('.scenario-setup-helper');
+            if (helper) helper.textContent = 'Choose both Pokémon to compare the matchup.';
             const title = document.querySelector('header');
             if (title && !document.querySelector('.ui-lab-badge')) {
               const badge = document.createElement('span');
