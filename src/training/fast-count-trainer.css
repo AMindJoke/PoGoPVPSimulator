@@ -1,0 +1,354 @@
+.fast-count-trainer-view {
+  width: min(100%, 1320px);
+  margin: 0 auto;
+}
+
+.fast-count-shell {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+  color: var(--ink);
+}
+
+.fast-count-trainer-view section {
+  width: 100%;
+  max-width: none;
+}
+
+.fast-count-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 4px 2px 2px;
+}
+
+.fast-count-head > div:first-child { min-width: 0; }
+.fast-count-eyebrow {
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.fast-count-head h1 { margin: 2px 0 3px; font-size: 25px; line-height: 1.1; letter-spacing: 0; }
+.fast-count-head p { max-width: 630px; margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.4; }
+
+.fast-count-session-status {
+  flex: 0 0 150px;
+  display: grid;
+  gap: 5px;
+  text-align: right;
+}
+.fast-count-session-status > span { color: var(--muted); font-size: 11px; font-weight: 800; }
+.fast-count-session-status > span strong { color: var(--ink); font-size: 17px; }
+.fast-count-session-status [role="progressbar"] { height: 5px; overflow: hidden; border-radius: 3px; background: var(--line); }
+.fast-count-session-status [role="progressbar"] i { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+
+.fast-count-mode-bar {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--soft);
+}
+.fast-count-mode-bar button {
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+.fast-count-mode-bar button:hover { background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--ink); transform: none; }
+.fast-count-mode-bar button[aria-selected="true"] { background: var(--panel); color: var(--accent-dark); box-shadow: 0 1px 4px var(--shadow), inset 0 -2px 0 var(--accent); }
+
+.fast-count-toolbar {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.fast-count-toolbar:empty { display: none; }
+.fast-count-difficulty { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; font-weight: 800; }
+.fast-count-difficulty select { min-height: 32px; padding: 4px 28px 4px 8px; font-size: 11px; }
+.fast-count-rail-toggle { min-height: 32px; padding: 5px 9px; font-size: 10px; }
+
+.fast-count-workspace {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(210px, .72fr) minmax(390px, 1.55fr) minmax(210px, .78fr);
+  grid-template-areas: "context center side";
+  gap: 10px;
+  align-items: start;
+}
+.fast-count-context,
+.fast-count-challenge,
+.fast-count-learn,
+.fast-count-summary,
+.fast-count-side {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--panel-shadow);
+}
+.fast-count-context { grid-area: context; display: grid; gap: 11px; padding: 14px; }
+.fast-count-center { grid-area: center; min-width: 0; display: grid; gap: 10px; }
+.fast-count-side { grid-area: side; display: grid; gap: 12px; padding: 13px; }
+
+.fast-count-pokemon-head { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: center; gap: 9px; }
+.fast-count-pokemon-head img { width: 74px; height: 74px; object-fit: contain; }
+.fast-count-rank { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+.fast-count-pokemon-head h2 { margin: 2px 0 5px; overflow-wrap: anywhere; font-size: 18px; line-height: 1.08; letter-spacing: 0; }
+.fast-count-types { display: flex; flex-wrap: wrap; gap: 3px; }
+.fast-count-types span { padding: 2px 6px; border: 1px solid color-mix(in srgb, var(--type-color) 55%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--type-color) 16%, var(--panel)); color: var(--ink); font-size: 8px; font-weight: 850; }
+.fast-count-moves { display: grid; gap: 5px; }
+.fast-count-context-label { margin-top: 2px; color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+.fast-count-move-chip {
+  min-width: 0;
+  min-height: 37px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--move-color) 38%, var(--line));
+  border-left: 4px solid var(--move-color);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--move-color) 8%, var(--panel));
+}
+.fast-count-move-chip > span { min-width: 0; overflow-wrap: anywhere; font-size: 10.5px; font-weight: 850; line-height: 1.15; }
+.fast-count-move-chip strong { color: var(--ink); font-size: 13px; white-space: nowrap; }
+.fast-count-move-chip small { color: var(--muted); font-size: 7px; font-weight: 750; }
+.fast-count-change { width: 100%; min-height: 34px; font-size: 10px; }
+.fast-count-picker { display: grid; gap: 4px; }
+.fast-count-picker > span { color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+.fast-count-picker select { width: 100%; min-height: 36px; font-size: 11px; }
+
+.fast-count-challenge { padding: 16px; }
+.fast-count-challenge-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 13px; }
+.fast-count-previous { color: var(--muted); font-size: 10px; }
+.fast-count-previous strong { color: var(--ink); }
+.fast-count-mode-note { padding: 3px 6px; border-radius: 4px; background: var(--soft); color: var(--muted); font-size: 8px; font-weight: 800; }
+.fast-count-next-move {
+  width: min(100%, 430px);
+  margin: 0 auto 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 10px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--move-color) 45%, var(--line));
+  border-left: 5px solid var(--move-color);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--move-color) 10%, var(--panel));
+}
+.fast-count-next-move > span { grid-column: 1 / -1; color: var(--muted); font-size: 8px; font-weight: 900; text-transform: uppercase; }
+.fast-count-next-move strong { min-width: 0; overflow-wrap: anywhere; font-size: 17px; }
+.fast-count-next-move small { color: var(--muted); font-size: 10px; font-weight: 800; }
+.fast-count-challenge h2 { margin: 0; font-size: 18px; line-height: 1.25; text-align: center; letter-spacing: 0; }
+.fast-count-challenge h2 strong { color: var(--accent-dark); }
+.fast-count-clue { min-height: 18px; margin: 6px 0 14px; color: var(--muted); font-size: 10.5px; text-align: center; }
+.fast-count-clue strong { color: var(--ink); }
+.fast-count-answers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.fast-count-answers button {
+  min-width: 0;
+  min-height: 62px;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: 7px;
+  background: var(--soft);
+  color: var(--ink);
+  box-shadow: none;
+}
+.fast-count-answers button:hover:not(:disabled) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); transform: translateY(-1px); }
+.fast-count-answers button span { font-size: 23px; font-weight: 900; line-height: 1; }
+.fast-count-answers button small { color: var(--muted); font-size: 7px; font-weight: 750; }
+.fast-count-answers button.is-answer { border-color: var(--good); background: color-mix(in srgb, var(--good) 13%, var(--panel)); }
+.fast-count-answers button.is-wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--panel)); }
+
+.fast-count-feedback {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--good);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--good) 6%, var(--soft));
+}
+.fast-count-feedback.is-incorrect { border-left-color: var(--danger); background: color-mix(in srgb, var(--danger) 5%, var(--soft)); }
+.fast-count-feedback > strong { font-size: 12px; }
+.fast-count-feedback > p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.fast-count-feedback > button { justify-self: start; min-height: 30px; padding: 4px 8px; font-size: 9px; }
+.fast-count-math {
+  display: grid;
+  grid-template-columns: minmax(54px, 1fr) auto minmax(70px, 1.2fr) auto minmax(54px, 1fr) auto minmax(70px, 1.2fr) auto minmax(54px, 1fr);
+  align-items: center;
+  gap: 4px;
+}
+.fast-count-math span { min-width: 0; display: grid; gap: 2px; font-size: 15px; font-weight: 900; text-align: center; }
+.fast-count-math small { min-width: 0; color: var(--muted); font-size: 7px; font-weight: 750; line-height: 1.15; overflow-wrap: anywhere; }
+.fast-count-math b { color: var(--muted); font-size: 11px; }
+.fast-count-next { width: 100%; min-height: 40px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+.fast-count-rail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+}
+.fast-count-rail > div:first-child { display: grid; }
+.fast-count-rail > div:first-child strong { font-size: 9px; }
+.fast-count-rail > div:first-child span { color: var(--muted); font-size: 7px; }
+.fast-count-rail-track { min-width: 0; display: grid; grid-template-columns: repeat(var(--rail-count), minmax(0, 1fr)); gap: 2px; }
+.fast-count-rail-track span { min-width: 0; height: 24px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 3px; background: var(--soft); color: var(--muted); font-size: 8px; font-weight: 800; }
+.fast-count-rail-track span.is-active { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+.fast-count-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.fast-count-stats span { min-width: 0; display: grid; gap: 2px; padding: 7px 4px; border: 1px solid var(--line); border-radius: 5px; background: var(--soft); text-align: center; }
+.fast-count-stats small { color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
+.fast-count-stats strong { font-size: 15px; }
+.fast-count-history { display: grid; gap: 5px; }
+.fast-count-history h2 { margin: 0 0 2px; font-size: 11px; }
+.fast-count-history > div { min-width: 0; display: grid; grid-template-columns: 17px minmax(0, 1fr) auto; align-items: center; gap: 5px; padding: 6px; border-radius: 5px; background: var(--soft); }
+.fast-count-history > div > span { color: var(--good); font-weight: 900; text-align: center; }
+.fast-count-history > div.is-incorrect > span { color: var(--danger); }
+.fast-count-history p { min-width: 0; display: grid; margin: 0; }
+.fast-count-history p strong { overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.fast-count-history p small { overflow: hidden; color: var(--muted); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.fast-count-history b { font-size: 9px; white-space: nowrap; }
+.fast-count-empty { margin: 0; padding: 12px 7px; color: var(--muted); font-size: 9px; line-height: 1.4; text-align: center; }
+.fast-count-how { border-top: 1px solid var(--line); }
+.fast-count-how summary { padding: 10px 2px 2px; color: var(--accent-dark); font-size: 10px; font-weight: 850; cursor: pointer; }
+.fast-count-how div { display: grid; gap: 6px; padding-top: 8px; }
+.fast-count-how p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.fast-count-how p strong { color: var(--ink); }
+
+.fast-count-learn { padding: 16px; }
+.fast-count-learn-intro { margin-bottom: 13px; }
+.fast-count-learn-intro > span { color: var(--accent); font-size: 10px; font-weight: 900; }
+.fast-count-learn-intro h2 { margin: 3px 0 5px; font-size: 18px; letter-spacing: 0; }
+.fast-count-learn-intro p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.fast-count-learn-grid { display: grid; gap: 8px; }
+.fast-count-learn-grid article { padding: 11px; border: 1px solid color-mix(in srgb, var(--move-color) 35%, var(--line)); border-left: 4px solid var(--move-color); border-radius: 6px; background: color-mix(in srgb, var(--move-color) 6%, var(--soft)); }
+.fast-count-learn-grid article header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fast-count-learn-grid article header span { font-size: 12px; font-weight: 900; }
+.fast-count-learn-grid article header strong { font-size: 14px; white-space: nowrap; }
+.fast-count-learn-grid article header small { margin-left: 2px; color: var(--muted); font-size: 7px; }
+.fast-count-learn-grid article > p { margin: 6px 0; color: var(--muted); font-size: 9px; }
+.fast-count-derivation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.fast-count-derivation span { display: grid; gap: 2px; padding: 6px; border-radius: 4px; background: var(--panel); font-size: 16px; font-weight: 900; text-align: center; }
+.fast-count-derivation small { color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
+.fast-count-rule { color: var(--ink) !important; font-weight: 750; }
+.fast-count-learn > button { width: 100%; min-height: 40px; margin-top: 10px; }
+
+.fast-count-shortcut-given { display: flex; justify-content: center; gap: 14px; margin: 9px 0 14px; color: var(--muted); font-size: 10px; }
+.fast-count-shortcut-given strong { color: var(--ink); }
+.fast-count-shortcut-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.fast-count-shortcut-form label { display: grid; gap: 2px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); text-align: center; }
+.fast-count-shortcut-form label > span { font-size: 10px; font-weight: 900; }
+.fast-count-shortcut-form label > small { color: var(--muted); font-size: 7px; }
+.fast-count-shortcut-form input { width: 100%; min-height: 38px; padding: 4px; font-size: 18px; font-weight: 900; text-align: center; }
+.fast-count-shortcut-form > button { grid-column: 1 / -1; min-height: 40px; }
+
+.fast-count-summary { display: grid; justify-items: center; gap: 9px; padding: 28px 16px; text-align: center; }
+.fast-count-summary > span { color: var(--accent); font-size: 9px; font-weight: 900; text-transform: uppercase; }
+.fast-count-summary h2 { margin: 0; font-size: 22px; letter-spacing: 0; }
+.fast-count-summary > div:not(.fast-count-summary-actions) { display: flex; gap: 7px; }
+.fast-count-summary > div > strong { min-width: 90px; display: grid; gap: 2px; padding: 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); font-size: 20px; }
+.fast-count-summary > div > strong small { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+.fast-count-summary-actions { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 5px; }
+.fast-count-summary-actions button { min-height: 38px; padding: 6px; font-size: 10px; }
+
+.fast-count-trainer-view button:focus-visible,
+.fast-count-trainer-view input:focus-visible,
+.fast-count-trainer-view select:focus-visible,
+.fast-count-trainer-view summary:focus-visible,
+.fast-count-feedback:focus-visible,
+.fast-count-summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 34%, transparent); outline-offset: 2px; }
+
+@media (max-width: 1050px) and (min-width: 761px) {
+  .fast-count-workspace { grid-template-columns: minmax(200px, .68fr) minmax(390px, 1.4fr); grid-template-areas: "context center" "side center"; }
+}
+
+@media (max-width: 760px) {
+  .fast-count-trainer-view { width: 100%; }
+  .fast-count-shell { gap: 8px; }
+  .fast-count-head { align-items: center; padding-inline: 2px; }
+  .fast-count-head h1 { font-size: 21px; }
+  .fast-count-head p { display: none; }
+  .fast-count-session-status { flex-basis: 96px; }
+  .fast-count-mode-bar { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .fast-count-mode-bar::-webkit-scrollbar { display: none; }
+  .fast-count-mode-bar button { flex: 0 0 auto; min-height: 42px; padding-inline: 12px; scroll-snap-align: start; }
+  .fast-count-toolbar { justify-content: space-between; }
+  .fast-count-workspace { grid-template-columns: minmax(0, 1fr); grid-template-areas: "center" "context" "side"; }
+  .fast-count-challenge { padding: 13px; }
+  .fast-count-context { padding: 12px; }
+  .fast-count-pokemon-head { grid-template-columns: 64px minmax(0, 1fr); }
+  .fast-count-pokemon-head img { width: 64px; height: 64px; }
+  .fast-count-pokemon-head h2 { font-size: 17px; }
+  .fast-count-moves { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fast-count-context-label { grid-column: 1 / -1; }
+  .fast-count-move-fast { grid-column: 1 / -1; }
+  .fast-count-next-move { margin-bottom: 12px; }
+  .fast-count-challenge h2 { font-size: 17px; }
+  .fast-count-answers button { min-height: 60px; }
+  .fast-count-rail { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .fast-count-rail > div:first-child { grid-template-columns: auto 1fr; gap: 5px; }
+  .fast-count-side { grid-template-columns: minmax(0, 1fr); }
+  .fast-count-history h2 { font-size: 12px; }
+}
+
+@media (max-width: 430px) {
+  .fast-count-head h1 { font-size: 19px; }
+  .fast-count-eyebrow { font-size: 8px; }
+  .fast-count-session-status { flex-basis: 82px; }
+  .fast-count-mode-note { display: none; }
+  .fast-count-next-move strong { font-size: 15px; }
+  .fast-count-answers { gap: 5px; }
+  .fast-count-answers button { min-height: 57px; padding: 4px; }
+  .fast-count-answers button span { font-size: 21px; }
+  .fast-count-math { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
+  .fast-count-math b { display: none; }
+  .fast-count-math span { font-size: 13px; }
+  .fast-count-math small { font-size: 6px; }
+  .fast-count-rail-track { gap: 1px; }
+  .fast-count-rail-track span { height: 22px; font-size: 7px; }
+  .fast-count-shortcut-given { align-items: center; flex-direction: column; gap: 3px; }
+  .fast-count-shortcut-form { gap: 4px; }
+  .fast-count-shortcut-form label { padding: 6px 4px; }
+  .fast-count-shortcut-form input { font-size: 16px; }
+  .fast-count-summary-actions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 350px) {
+  .fast-count-head { gap: 8px; }
+  .fast-count-session-status { flex-basis: 72px; }
+  .fast-count-session-status > span { font-size: 9px; }
+  .fast-count-session-status > span strong { font-size: 15px; }
+  .fast-count-challenge { padding: 11px; }
+  .fast-count-answers button { min-height: 54px; }
+  .fast-count-pokemon-head { grid-template-columns: 56px minmax(0, 1fr); }
+  .fast-count-pokemon-head img { width: 56px; height: 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fast-count-trainer-view * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

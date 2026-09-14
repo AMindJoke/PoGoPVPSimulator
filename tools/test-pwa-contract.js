@@ -27,7 +27,7 @@ assert.match(html, /body \{\s*margin: 0;/,
   "The page must retain its base body layout styles.");
 assert.match(html, /\.pokemon-arena-bg \{\s*position: fixed;/,
   "The decorative arena must not occupy document flow and hide the app below the fold.");
-assert.match(html, /#homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView \{ display: none; \}/,
+assert.match(html, /#homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #fastCountTrainerView, #compendiumView \{ display: none; \}/,
   "The application view visibility contract must remain present.");
 assert.match(html, /event\.fastImpactStatus === "denied"[\s\S]*Number\(event\.hpAfter/,
   "Denied pending Fast impacts must not render as duplicate KO markers.");

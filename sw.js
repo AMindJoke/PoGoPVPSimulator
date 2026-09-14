@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-14-v36-current-meta-details";
+const CACHE_VERSION = "2026-09-14-v37-fast-count-trainer";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -74,6 +74,9 @@ const CORE_ASSETS = [
   "./src/battle/manual-scenario-share.js",
   "./src/battle/manual-scenario-library.js",
   "./src/battle/energy-trainer.js",
+  "./src/training/fast-count-engine.js",
+  "./src/training/fast-count-trainer.js",
+  "./src/training/fast-count-trainer.css",
   "./src/battle/manual-snapshots.js",
   "./src/battle/matchup-planner.js",
   "./src/battle/matchup-planner-adapter.js",

@@ -48,11 +48,11 @@ includes('var(--line)');
 const homeTargets = [...html.matchAll(/data-home-target="([^"]+)"/g)].map(match => match[1]);
 assert.deepStrictEqual(
   new Set(homeTargets),
-  new Set(["scenario-review", "compendium", "simulator", "team-builder", "meta", "analysis"]),
-  "Home actions must expose all six first-class tools."
+  new Set(["scenario-review", "compendium", "simulator", "team-builder", "meta", "analysis", "fast-count-trainer"]),
+  "Home actions must expose all seven first-class tools."
 );
 
-for (const id of ["simulatorTab", "scenarioReviewTab", "teamBuilderTab", "metaTab", "analysisTab", "compendiumTab"]) {
+for (const id of ["simulatorTab", "scenarioReviewTab", "teamBuilderTab", "metaTab", "analysisTab", "fastCountTrainerTab", "compendiumTab"]) {
   includes(`id="${id}"`, `Existing navigation destination ${id} must remain available.`);
 }
 

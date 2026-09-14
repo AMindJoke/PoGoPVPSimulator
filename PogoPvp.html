@@ -14,6 +14,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
+  <link rel="stylesheet" href="src/training/fast-count-trainer.css">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -65,6 +66,8 @@
   <script src="src/battle/manual-scenario-share.js"></script>
   <script src="src/battle/manual-scenario-library.js"></script>
   <script src="src/battle/energy-trainer.js"></script>
+  <script src="src/training/fast-count-engine.js"></script>
+  <script src="src/training/fast-count-trainer.js"></script>
   <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
@@ -516,13 +519,14 @@
     body[data-view="scenario-review"] #counts {
       display: none;
     }
-    #homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #compendiumView { display: none; }
+    #homeView, #simulatorView, #metaView, #analysisView, #teamBuilderView, #fastCountTrainerView, #compendiumView { display: none; }
     body[data-view="home"] #homeView,
     body[data-view="simulator"] #simulatorView,
     body[data-view="scenario-review"] #simulatorView,
     body[data-view="meta"] #metaView,
     body[data-view="analysis"] #analysisView,
     body[data-view="team-builder"] #teamBuilderView,
+    body[data-view="fast-count-trainer"] #fastCountTrainerView,
     body[data-view="compendium"] #compendiumView { display: grid; }
 
     .compendium-view { width: min(100%, 1260px); min-width: 0; margin: 0 auto; gap: 12px; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
@@ -13802,6 +13806,7 @@
     .home-tool-card.is-compendium { --tool-accent: #237da4; }
     .home-tool-card.is-simulator { --tool-accent: #30856d; }
     .home-tool-card.is-builder { --tool-accent: #c47637; }
+    .home-tool-card.is-trainer { --tool-accent: #27805f; }
     .home-tool-card.is-meta { --tool-accent: #596db0; }
     .home-tool-card.is-analysis { --tool-accent: #a64f78; }
     .home-tool-icon {
@@ -14005,6 +14010,7 @@
       <button id="metaTab" type="button" data-view-target="meta">Meta</button>
       <button id="analysisTab" type="button" data-view-target="analysis">Pokemon Analysis</button>
       <button id="teamBuilderTab" type="button" data-view-target="team-builder">Team Builder</button>
+      <button id="fastCountTrainerTab" type="button" data-view-target="fast-count-trainer">Fast Count</button>
       <button id="compendiumTab" type="button" data-view-target="compendium">Compendium</button>
     </nav>
   </header>
@@ -14049,6 +14055,11 @@
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1M5 27c.5-3 2-4 4-4s3.5 1 4 4M19 27c.5-3 2-4 4-4s3.5 1 4 4"/></svg></span>
               <span class="home-tool-copy"><strong>Team Builder</strong><span id="homeBuilderDescription">Build and evaluate competitive teams. Check coverage, bulk and consistency.</span></span>
               <span class="home-tool-action">Open Team Builder <span aria-hidden="true">→</span></span>
+            </button>
+            <button class="home-tool-card is-trainer" type="button" data-home-target="fast-count-trainer" aria-describedby="homeTrainerDescription">
+              <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 7h16M8 16h16M8 25h16"/><circle cx="11" cy="7" r="3"/><circle cx="20" cy="16" r="3"/><circle cx="15" cy="25" r="3"/></svg></span>
+              <span class="home-tool-copy"><strong>Fast Count Trainer</strong><span id="homeTrainerDescription">Practice the universal energy-bank method with current Great League movesets.</span></span>
+              <span class="home-tool-action">Start Training <span aria-hidden="true">→</span></span>
             </button>
             <button class="home-tool-card is-compendium" type="button" data-home-target="compendium" aria-describedby="homeCompendiumDescription">
               <span class="home-tool-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6h8c2 0 3 1 3 3v17c0-2-1-3-3-3H7zM25 6h-5c-1.3 0-2 .7-2 2v18c0-2 1-3 3-3h4z"/><path d="M10 11h5M10 15h5M21 11h2M21 15h2"/></svg></span>
@@ -14838,6 +14849,8 @@
       </section>
     </div>
 
+    <div id="fastCountTrainerView" class="app-view fast-count-trainer-view" aria-label="Fast Count Trainer"></div>
+
     <div id="compendiumView" class="app-view compendium-view">
       <div class="compendium-workspace">
         <aside id="compendiumSidebar" class="compendium-sidebar">
@@ -15319,6 +15332,7 @@
     const teamBuilderMetaRegistry = window.PvPeakTeamBuilderMeta?.createRegistry?.() || null;
     let teamBuilderMetaDefinition = null;
     let teamBuilderMetaLoadingId = null;
+    let fastCountTrainerController = null;
     const teamBuilderAnalysisCache = window.PvPeakTeamBuilderAnalysis?.createCache?.(window.localStorage) || null;
     let teamBuilderAnalysisPlan = [];
     let teamBuilderThreatAnalysisPlan = [];
@@ -17548,7 +17562,7 @@
       $("compendiumArticleTitle").focus?.();
     }
 
-    const supportedAppViews = new Set(["home", "simulator", "scenario-review", "meta", "analysis", "team-builder", "compendium"]);
+    const supportedAppViews = new Set(["home", "simulator", "scenario-review", "meta", "analysis", "team-builder", "fast-count-trainer", "compendium"]);
 
     function readAppViewFromLocation(locationLike = window.location) {
       const candidate = new URLSearchParams(locationLike.search || "").get("view");
@@ -17611,6 +17625,7 @@
       }
       if (next === "analysis") renderPokemonAnalysis();
       if (next === "team-builder") renderTeamBuilder();
+      if (next === "fast-count-trainer") renderFastCountTrainer();
       if (next === "compendium") {
         renderJudgeCompendium();
         if (previous !== "compendium") syncCompendiumRoute(currentCompendiumRoute());
@@ -17869,6 +17884,29 @@
         teamBuilderFeedback("That league is not available yet.");
       }
       renderTeamBuilder();
+    }
+
+    function renderFastCountTrainer() {
+      const host = $("fastCountTrainerView");
+      const trainerApi = window.PvPeakFastCountTrainer;
+      if (!host || !trainerApi) return;
+      if (!fastCountTrainerController) {
+        try {
+          fastCountTrainerController = trainerApi.createTrainer({
+            gameMaster: gm,
+            defaultMovesets: standardMovesets,
+            rankings: metaRankingData || activeSeasonData.rankings,
+            storage: window.localStorage,
+            imageUrl: build => imageUrl(findPokemon(build.id) || build),
+            fallbackImageUrl: build => fallbackImageUrl(findPokemon(build.id) || build)
+          });
+          fastCountTrainerController.mount(host);
+        } catch (error) {
+          host.innerHTML = `<section class="fast-count-challenge"><h2>Fast Count Trainer is unavailable</h2><p>${escapeHtml(error?.message || "Current-season training data could not be loaded.")}</p></section>`;
+        }
+        return;
+      }
+      fastCountTrainerController.render();
     }
 
     function renderTeamBuilderMeta() {
@@ -35978,7 +36016,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260911-timing-window-fix").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260914-v37").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
