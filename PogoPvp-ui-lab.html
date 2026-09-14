@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GO Judge Hub UI Lab</title>
+  <style>
+    html, body { min-height: 100%; margin: 0; background: #f4f1e9; color: #182b3a; font-family: system-ui, sans-serif; }
+    .ui-lab-loader { display: grid; min-height: 100vh; place-items: center; padding: 24px; color: #35576b; font-weight: 750; }
+  </style>
+</head>
+<body>
+  <div class="ui-lab-loader">Loading UI Lab…</div>
+  <script>
+    (() => {
+      const labCss = String.raw`
+        /* UI Lab only: the source page receives this class before its runtime starts. */
+        body.ui-lab {
+          --lab-edge: min(20px, 2.2vw);
+          --lab-space: 12px;
+          --lab-quiet: color-mix(in srgb, var(--soft) 72%, var(--panel));
+        }
+        body.ui-lab header { position: relative; }
+        body.ui-lab .app-tabs { gap: 3px; }
+        body.ui-lab .app-tabs button { min-height: 36px; padding: 7px 11px; }
+        body.ui-lab .ui-lab-badge {
+          display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; padding: 4px 7px;
+          border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line)); border-radius: 999px;
+          background: color-mix(in srgb, var(--accent) 8%, var(--panel)); color: var(--accent-dark);
+          font-size: 8px; font-weight: 950; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap;
+        }
+        body.ui-lab .ui-lab-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+        body.ui-lab main { gap: var(--lab-space); padding: var(--lab-edge); }
+
+        /* Battle setup: retain the opposing sides and make their internals scan in compact bands. */
+        body.ui-lab:not([data-view="scenario-review"]) .setup {
+          position: relative; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 1180px); margin: 0 auto; gap: 30px; align-items: start;
+        }
+        body.ui-lab:not([data-view="scenario-review"]) .setup::after {
+          content: "VS"; position: absolute; top: 128px; left: 50%; z-index: 2; display: grid; width: 34px; height: 34px; place-items: center;
+          border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--accent-dark); font-size: 10px; font-weight: 950; transform: translateX(-50%);
+        }
+        body.ui-lab .trainer-card { display: grid; grid-template-columns: minmax(190px, .85fr) minmax(250px, 1.15fr); gap: 12px; width: auto; max-width: none; min-width: 0; padding: 12px; }
+        body.ui-lab .setup > .trainer-card { width: auto; max-width: none; }
+        body.ui-lab .trainer-card > .moves-stack { width: 100% !important; min-width: 250px; max-width: none !important; }
+        body.ui-lab .trainer-card > .control-stack:first-child,
+        body.ui-lab .trainer-card > .field-box { grid-column: 1; }
+        body.ui-lab .trainer-card > .moves-stack { grid-column: 2; grid-row: 1 / span 2; }
+        body.ui-lab .trainer-card .pokemon-info { gap: 8px; }
+        body.ui-lab .trainer-card .pokemon-name { margin: 0; font-size: 18px; }
+        body.ui-lab .trainer-card .pokemon-sprite { width: 72px; height: 72px; }
+        body.ui-lab .trainer-card .pokemon-stats,
+        body.ui-lab .trainer-card .stats { gap: 3px; }
+        body.ui-lab .trainer-card .stat-row { min-height: 18px; }
+        body.ui-lab .trainer-card .iv-details { margin-top: 3px; }
+        body.ui-lab .trainer-card .resource-row { margin-top: 8px; }
+        body.ui-lab .control-stack { gap: 8px; }
+        body.ui-lab .section-kicker { margin-bottom: 2px; font-size: 8px; }
+        body.ui-lab .move-group { gap: 4px; }
+        body.ui-lab .move-group-title { margin: 0; font-size: 11px; }
+        body.ui-lab .moves-stack .move-group,
+        body.ui-lab .moves-stack label { min-width: 0; }
+        body.ui-lab .moves-stack label { display: grid; grid-template-columns: 64px minmax(0, 1fr); width: 100%; align-items: center; gap: 7px; }
+        body.ui-lab .moves-stack label > span { position: static; width: auto; height: auto; padding: 0; margin: 0; overflow: visible; clip: auto; white-space: nowrap; border: 0; color: var(--muted); font-size: 9px; font-weight: 850; }
+        body.ui-lab .moves-stack label select.move-select { width: 100% !important; max-width: none !important; min-height: 36px; padding-left: 10px !important; color: #fff !important; font-size: 12px !important; text-indent: 0 !important; }
+        body.ui-lab .shield-resource-row { margin: 0; }
+        body.ui-lab .shield-count-toggle { min-height: 40px; }
+        body.ui-lab .options-panel { margin-top: 1px; }
+        body.ui-lab .options-panel > summary { min-height: 31px; padding-block: 5px; font-size: 10px; }
+        body.ui-lab .options-panel .advanced-body { gap: 7px; padding-top: 7px; }
+        body.ui-lab .advanced-ai-section { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 12px; }
+        body.ui-lab .bait-control, body.ui-lab .shield-mode-row { display: grid; gap: 4px; }
+        body.ui-lab .start-energy-control { display: grid; grid-template-columns: auto 44px minmax(0, 1fr); align-items: center; gap: 6px; }
+        body.ui-lab .energy-stepper { display: flex; gap: 4px; }
+        body.ui-lab .energy-stepper button { min-height: 30px; padding: 4px 7px; font-size: 9px; }
+        body.ui-lab .hp { margin-top: 2px; }
+        body.ui-lab .battle-cta-row { position: sticky; z-index: 7; bottom: 10px; justify-content: center; gap: 8px; margin: -2px 0 0; pointer-events: none; }
+        body.ui-lab .battle-cta-row > * { pointer-events: auto; }
+        body.ui-lab .battle-cta { min-height: 46px; min-width: 180px; box-shadow: 0 8px 16px color-mix(in srgb, var(--accent) 20%, transparent); }
+        body.ui-lab .battle-reset { min-height: 38px; }
+        body.ui-lab .battle-cta:focus-visible,
+        body.ui-lab button:focus-visible,
+        body.ui-lab select:focus-visible,
+        body.ui-lab input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 46%, transparent); outline-offset: 2px; }
+
+        /* Derived UI-only result band; it reads existing DOM values and does not calculate battles. */
+        body.ui-lab .ui-lab-outcome {
+          display: none; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px;
+          max-width: 1180px; width: 100%; margin: 0 auto; padding: 11px 14px;
+          border: 1px solid color-mix(in srgb, var(--lab-outcome, var(--accent)) 40%, var(--line));
+          border-left: 4px solid var(--lab-outcome, var(--accent)); border-radius: 10px;
+          background: color-mix(in srgb, var(--lab-outcome, var(--accent)) 7%, var(--panel));
+        }
+        body.ui-lab .ui-lab-outcome.is-visible { display: grid; }
+        body.ui-lab .ui-lab-outcome-copy { min-width: 0; }
+        body.ui-lab .ui-lab-outcome-kicker { display: block; color: var(--muted); font-size: 8px; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+        body.ui-lab .ui-lab-outcome strong { display: block; margin-top: 2px; font-size: 16px; }
+        body.ui-lab .ui-lab-outcome small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+        body.ui-lab .ui-lab-outcome-stats { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+        body.ui-lab .ui-lab-outcome-stats span { padding: 5px 7px; border-radius: 7px; background: var(--panel); color: var(--ink); font-size: 9px; font-weight: 850; white-space: nowrap; }
+        body.ui-lab .analysis-grid { gap: 10px; }
+        body.ui-lab .timeline { padding: 12px; border-radius: 10px; }
+        body.ui-lab .timeline-head h2, body.ui-lab .matrix-head h2 { font-size: 17px; }
+        body.ui-lab .manual-panel, body.ui-lab .log-panel { border-radius: 10px; }
+        body.ui-lab .manual-panel { padding: 12px; }
+        body.ui-lab .manual-panel h2 { font-size: 15px; }
+
+        /* Scenario Review: preserve the technical work surface and increase decision contrast. */
+        body.ui-lab[data-view="scenario-review"] .manual-decision-panel { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 8%, transparent); }
+        body.ui-lab[data-view="scenario-review"] .manual-decision-banner { gap: 9px; }
+        body.ui-lab[data-view="scenario-review"] .manual-decision-primary { padding: 8px 10px; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); border-radius: 8px; }
+        body.ui-lab[data-view="scenario-review"] .manual-editor-actions .actions > button:not(.secondary) { min-height: 50px; }
+        body.ui-lab[data-view="scenario-review"] .manual-scenario-panel,
+        body.ui-lab[data-view="scenario-review"] .manual-overlay-controls { opacity: .82; }
+        body.ui-lab[data-view="scenario-review"] .manual-technical-issues { background: var(--lab-quiet); }
+
+        /* Team Builder: roster and preparation become a compact tool, not a landing page. */
+        body.ui-lab .team-builder-shell { width: min(100%, 1200px); gap: 12px; }
+        body.ui-lab #teamBuilderView .team-builder-head { align-items: center; gap: 14px; margin-bottom: 10px; padding: 13px 16px; }
+        body.ui-lab .team-builder-head-copy > span { margin-bottom: 2px; font-size: 8px; }
+        body.ui-lab .team-builder-head h2 { font-size: clamp(21px, 2.2vw, 29px); }
+        body.ui-lab .team-builder-head p { margin-top: 4px; font-size: 11px; }
+        body.ui-lab .team-builder-head-actions { gap: 6px; }
+        body.ui-lab .team-builder-summary { margin: 2px 0 0; }
+        body.ui-lab .team-roster-grid { gap: 9px; }
+        body.ui-lab .team-slot { min-height: 148px; border-radius: 10px; }
+        body.ui-lab .team-card { gap: 8px; padding: 9px; }
+        body.ui-lab .team-card-sprite-wrap { width: 68px; height: 100%; }
+        body.ui-lab .team-card-sprite { width: 64px; height: 64px; }
+        body.ui-lab .team-card-heading h3 { font-size: 13px; }
+        body.ui-lab .team-card-moves { gap: 3px; }
+        body.ui-lab .team-card-actions { gap: 5px; }
+        body.ui-lab .team-card-actions button { min-height: 30px; padding: 4px 7px; font-size: 9px; }
+        body.ui-lab .team-slot.is-empty, body.ui-lab .team-slot.is-empty .team-slot-empty { min-height: 112px; }
+        body.ui-lab .team-slot.is-empty .team-slot-empty { padding: 10px; }
+        body.ui-lab .team-slot.is-empty .team-slot-empty b { width: 30px; height: 30px; font-size: 18px; }
+        body.ui-lab .team-meta-setup { margin-top: 12px; padding: 13px 16px; border-radius: 10px; }
+        body.ui-lab .team-meta-head { margin-bottom: 9px; }
+        body.ui-lab .team-meta-head h3 { font-size: 15px; }
+        body.ui-lab .team-meta-head p { margin-top: 3px; font-size: 10px; }
+        body.ui-lab .team-meta-roster { margin-top: 8px; }
+        body.ui-lab .team-analysis-engine { margin-top: 9px; padding-top: 9px; }
+        body.ui-lab .team-analysis-actions button { min-height: 36px; }
+        body.ui-lab .team-final-slot { margin-top: 10px; padding: 12px 16px; border-radius: 10px; }
+        body.ui-lab .team-coverage, body.ui-lab .team-insights { margin-top: 12px; padding: 12px 14px; border-radius: 10px; }
+        body.ui-lab .team-coverage-table thead th { height: 54px; }
+        body.ui-lab .team-coverage-opponent img { width: 38px; height: 38px; }
+        body.ui-lab .team-matchup-cell { min-height: 32px; }
+        body.ui-lab .team-analysis-ready { color: var(--good); font-weight: 850; }
+
+        /* Compendium: reference data and filters appear earlier with less framing. */
+        body.ui-lab .compendium-view { gap: 9px; }
+        body.ui-lab .compendium-workspace { grid-template-columns: 188px minmax(0, 1fr); gap: 9px; }
+        body.ui-lab .compendium-sidebar { gap: 7px; padding: 9px; border-radius: 10px; }
+        body.ui-lab .compendium-category { min-height: 34px; padding: 5px 7px; }
+        body.ui-lab .compendium-search-panel { padding: 9px; border-radius: 9px; }
+        body.ui-lab #compendiumSearch { min-height: 42px; padding-block: 7px; font-size: 13px; }
+        body.ui-lab .compendium-search-status { margin-top: 4px; }
+        body.ui-lab .compendium-stage, body.ui-lab .compendium-article { min-height: 0; padding: 15px 18px; border-radius: 10px; box-shadow: none; }
+        body.ui-lab .compendium-stage-head { margin-bottom: 10px; }
+        body.ui-lab .compendium-stage-head h3 { font-size: 19px; }
+        body.ui-lab .move-reference-toolbar, body.ui-lab .pokemon-reference-toolbar { gap: 7px; margin: 8px 0; }
+        body.ui-lab .move-reference-row { min-height: 52px; padding: 6px 9px; }
+        body.ui-lab .move-reference-row strong { font-size: 11px; }
+        body.ui-lab .compendium-article-section { margin-top: 14px; padding-top: 13px; }
+        body.ui-lab .compendium-article-section p { line-height: 1.55; }
+
+        @media (max-width: 900px) {
+          body.ui-lab header { padding-bottom: 6px; }
+          body.ui-lab .app-tabs { position: relative; padding-right: 54px; }
+          body.ui-lab .app-tabs::after { content: "Swipe ›"; position: absolute; right: 0; top: 3px; bottom: 3px; display: grid; place-items: center; width: 50px; background: linear-gradient(90deg, transparent, var(--panel) 35%); color: var(--muted); font-size: 8px; font-weight: 850; pointer-events: none; }
+          body.ui-lab .ui-lab-badge { position: absolute; top: 11px; right: 58px; margin: 0; }
+          body.ui-lab:not([data-view="scenario-review"]) .setup { grid-template-columns: 1fr; gap: 9px; }
+          body.ui-lab:not([data-view="scenario-review"]) .setup::after { display: none; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+          body.ui-lab .trainer-card > .moves-stack { min-width: 0; }
+          body.ui-lab .trainer-card > .control-stack:first-child,
+          body.ui-lab .trainer-card > .field-box,
+          body.ui-lab .trainer-card > .moves-stack { grid-column: auto; grid-row: auto; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .pokemon-info { display: grid; grid-template-columns: 66px minmax(0, 1fr); align-items: center; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .pokemon-sprite { width: 62px; height: 62px; grid-row: span 2; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .pokemon-stats,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .stats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .stat-row { display: block; min-height: 0; text-align: center; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .stat-row > span { display: block; font-size: 8px; }
+          body.ui-lab .moves-stack label { grid-template-columns: 72px minmax(0, 1fr); }
+          body.ui-lab .moves-stack label select.move-select { min-height: 42px; font-size: 14px; }
+          body.ui-lab .advanced-ai-section { grid-template-columns: 1fr; }
+          body.ui-lab .battle-cta-row { bottom: 7px; }
+          body.ui-lab .battle-cta { flex: 1; min-width: 0; min-height: 46px; }
+          body.ui-lab .ui-lab-outcome { grid-template-columns: 1fr; gap: 8px; padding: 11px; }
+          body.ui-lab .ui-lab-outcome-stats { justify-content: flex-start; }
+
+          body.ui-lab[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] { min-height: 244px; }
+          body.ui-lab[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-mobile-controls-shell { display: block; max-height: 208px; overflow: auto; }
+          body.ui-lab[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-decision-panel { display: block; }
+          body.ui-lab[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-decision-primary { order: -1; }
+          body.ui-lab[data-view="scenario-review"] .manual-editor-actions { gap: 7px; }
+          body.ui-lab[data-view="scenario-review"] .manual-editor-actions .actions > button { min-height: 48px; }
+          body.ui-lab[data-view="scenario-review"] .manual-scenario-panel,
+          body.ui-lab[data-view="scenario-review"] .manual-overlay-controls { display: none; }
+
+          body.ui-lab .team-builder-shell { width: min(100% - 16px, 680px); margin-top: 8px; }
+          body.ui-lab #teamBuilderView .team-builder-head { padding: 11px 12px; }
+          body.ui-lab .team-builder-head-actions { display: grid; grid-template-columns: 1fr auto; align-items: end; }
+          body.ui-lab .team-builder-share { min-height: 40px; }
+          body.ui-lab .team-roster-grid { grid-template-columns: 1fr; gap: 7px; }
+          body.ui-lab .team-slot { min-height: 118px; }
+          body.ui-lab .team-card { grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; }
+          body.ui-lab .team-card-sprite-wrap { width: 58px; }
+          body.ui-lab .team-card-sprite { width: 54px; height: 54px; }
+          body.ui-lab .team-card-actions { grid-column: auto; flex-direction: column; }
+          body.ui-lab .team-card-actions button:first-child { min-width: 62px; }
+          body.ui-lab .team-slot.is-empty, body.ui-lab .team-slot.is-empty .team-slot-empty { min-height: 72px; }
+          body.ui-lab .team-slot.is-empty .team-slot-empty { display: flex; flex-direction: row; justify-content: center; gap: 8px; }
+          body.ui-lab .team-meta-setup, body.ui-lab .team-final-slot, body.ui-lab .team-coverage { padding: 11px; }
+          body.ui-lab .team-final-slot-entry { gap: 8px; }
+          body.ui-lab .team-final-slot-entry button, body.ui-lab .team-analysis-actions button { min-height: 42px; }
+
+          body.ui-lab .compendium-workspace { display: block; }
+          body.ui-lab .compendium-sidebar { position: static; margin-bottom: 8px; }
+          body.ui-lab .compendium-categories { display: flex; overflow-x: auto; gap: 4px; }
+          body.ui-lab .compendium-category { flex: 0 0 auto; min-width: 92px; }
+          body.ui-lab .compendium-search-panel { margin-bottom: 8px; }
+          body.ui-lab .compendium-stage, body.ui-lab .compendium-article { padding: 12px; }
+          body.ui-lab .move-reference-toolbar { display: grid; grid-template-columns: 1fr 1fr; }
+          body.ui-lab .move-reference-toolbar > :first-child { grid-column: 1 / -1; }
+          body.ui-lab .move-reference-filter-row { overflow-x: auto; padding-bottom: 2px; }
+          body.ui-lab .move-reference-row { grid-template-columns: 34px minmax(0, 1fr) auto; min-height: 58px; }
+          body.ui-lab .move-reference-row > :nth-child(n+3):not(:last-child) { display: none; }
+        }
+        @media (max-width: 360px) {
+          body.ui-lab .app-tabs button { padding-inline: 10px; }
+          body.ui-lab .ui-lab-badge { display: none; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .pokemon-stats,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          body.ui-lab .team-card-moves { font-size: 8px; }
+        }
+      `;
+
+      const labScript = '<script>' + String.raw`
+        (() => {
+          const byId = id => document.getElementById(id);
+          const text = id => (byId(id)?.textContent || '').trim();
+          const number = value => Number(String(value).match(/\d+/)?.[0] || 0);
+          const hp = id => {
+            const value = text(id);
+            const parts = value.match(/(\d+)\s*\/\s*(\d+)/);
+            return parts ? { current: Number(parts[1]), max: Number(parts[2]) } : null;
+          };
+          const shieldCount = prefix => Number(byId(prefix + 'Shields')?.value || 0);
+          const name = prefix => text(prefix + 'BattleName') || byId(prefix + 'Search')?.value || (prefix === 'p1' ? 'Pokémon A' : 'Pokémon B');
+          const energy = prefix => (byId(prefix + 'EnergyPanel')?.textContent || '').match(/\d+/)?.[0] || '0';
+
+          function ensureBadge() {
+            document.body.classList.add('ui-lab');
+            const title = document.querySelector('header');
+            if (title && !document.querySelector('.ui-lab-badge')) {
+              const badge = document.createElement('span');
+              badge.className = 'ui-lab-badge'; badge.textContent = 'UI Lab';
+              title.appendChild(badge);
+            }
+          }
+          function ensureOutcome() {
+            const grid = document.querySelector('.analysis-grid');
+            if (!grid || byId('uiLabOutcome')) return;
+            const box = document.createElement('section');
+            box.id = 'uiLabOutcome'; box.className = 'ui-lab-outcome'; box.setAttribute('aria-live', 'polite');
+            box.innerHTML = '<div class="ui-lab-outcome-copy"><span class="ui-lab-outcome-kicker">Match result</span><strong></strong><small></small></div><div class="ui-lab-outcome-stats"></div>';
+            grid.insertBefore(box, grid.firstChild);
+          }
+          function updateOutcome() {
+            ensureOutcome();
+            const box = byId('uiLabOutcome');
+            const a = hp('p1HpText'); const b = hp('p2HpText');
+            if (!box || !a || !b || (!a.current && !b.current)) { if (box?.classList.contains('is-visible')) box.classList.remove('is-visible'); return; }
+            const winner = a.current > b.current ? { side: 'p1', state: a } : b.current > a.current ? { side: 'p2', state: b } : null;
+            if (!winner) { if (box.classList.contains('is-visible')) box.classList.remove('is-visible'); return; }
+            const winnerName = name(winner.side);
+            const duration = Array.from(document.querySelectorAll('.timeline-grid *')).map(node => node.textContent || '').join(' ').match(/T\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?s/)?.[0] || 'Battle complete';
+            const stats = [
+              winner.state.current + '/' + winner.state.max + ' HP',
+              energy(winner.side) + ' energy',
+              shieldCount(winner.side) + ' shield' + (shieldCount(winner.side) === 1 ? '' : 's')
+            ];
+            const key = [winner.side, winnerName, duration, ...stats].join('|');
+            if (box.dataset.key !== key) {
+              box.dataset.key = key;
+              box.style.setProperty('--lab-outcome', winner.side === 'p1' ? '#13836b' : '#6e55a9');
+              box.querySelector('strong').textContent = winnerName + ' wins';
+              box.querySelector('small').textContent = duration;
+              box.querySelector('.ui-lab-outcome-stats').innerHTML = stats.map(value => '<span>' + value + '</span>').join('');
+            }
+            box.classList.add('is-visible');
+          }
+          function improveTeamState() {
+            const status = byId('teamBuilderAnalysisStatus'); const meta = byId('teamBuilderMetaStatus');
+            if (!status || !meta) return;
+            if (/all\s+\d+\s+deterministic matchups are ready/i.test(status.textContent)) {
+              if (meta.textContent !== 'Competitive field ready. Deterministic matchup coverage is prepared.') meta.textContent = 'Competitive field ready. Deterministic matchup coverage is prepared.';
+              meta.classList.add('team-analysis-ready');
+            } else { meta.classList.remove('team-analysis-ready'); }
+          }
+          function exposeMobileDecision() {
+            if (!matchMedia('(max-width: 900px)').matches || document.body.dataset.view !== 'scenario-review') return;
+            const shell = byId('manualMobileBottomSheetShell');
+            const handle = byId('manualMobileSheetHandle');
+            if (shell && handle && shell.dataset.state === 'collapsed' && !shell.dataset.uiLabOpened) {
+              shell.dataset.uiLabOpened = 'true'; handle.click();
+            }
+          }
+          function refresh() { ensureBadge(); updateOutcome(); improveTeamState(); exposeMobileDecision(); }
+          let refreshQueued = false;
+          const observer = new MutationObserver(() => {
+            if (refreshQueued) return;
+            refreshQueued = true;
+            requestAnimationFrame(() => { refreshQueued = false; refresh(); });
+          });
+          observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['data-view', 'class', 'hidden'] });
+          window.addEventListener('resize', exposeMobileDecision, { passive: true });
+          window.addEventListener('load', () => { refresh(); setTimeout(refresh, 80); });
+          refresh();
+        })();
+      ` + '</' + 'script>';
+
+      fetch('PogoPvp.html', { cache: 'no-store' })
+        .then(response => {
+          if (!response.ok) throw new Error('Could not load the shared application document.');
+          return response.text();
+        })
+        .then(source => {
+          source = source.replace(/<body(\s[^>]*)?>/i, (_, attrs = '') => '<body' + attrs + ' class="ui-lab">');
+          source = source.replace('</head>', '<style id="uiLabStyles">' + labCss + '</style></head>');
+          source = source.replace('</body>', labScript + '</body>');
+          document.open(); document.write(source); document.close();
+        })
+        .catch(error => { document.body.innerHTML = '<main class="ui-lab-loader">UI Lab could not start: ' + error.message + '</main>'; });
+    })();
+  </script>
+</body>
+</html>
