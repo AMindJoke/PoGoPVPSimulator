@@ -51,6 +51,9 @@
     .eyebrow { display: block; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
     .scenario-bar h1 { margin: 3px 0 0; font-size: 20px; letter-spacing: -.03em; }
     .scenario-actions { display: flex; align-items: center; gap: 8px; }
+    .scenario-status { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .scenario-status b { color: var(--ink); font-size: 11px; }
+    .mode-chip { border: 1px solid #b8d7dc; border-radius: 999px; padding: 5px 8px; background: var(--accent-soft); color: #176274; font-size: 9px; font-weight: 900; white-space: nowrap; }
     .segmented { display: inline-flex; border: 1px solid #bcc8cb; border-radius: 6px; overflow: hidden; background: #fff; }
     .segmented button { min-width: 52px; border: 0; border-right: 1px solid #d8dfdf; padding: 7px 9px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 850; }
     .segmented button:last-child { border-right: 0; }
@@ -67,10 +70,10 @@
     .fighter-name strong { display: block; font-size: 18px; line-height: 1.05; }
     .fighter-name span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; font-weight: 750; }
     .type-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
-    .type-chip { border-radius: 999px; padding: 3px 7px; color: #fff; font-size: 9px; font-weight: 900; }
-    .type-grass { background: var(--grass); }
-    .type-ice { background: var(--ice); }
-    .type-normal { background: var(--normal); }
+    .type-chip { border: 1px solid currentColor; border-radius: 999px; padding: 3px 7px; font-size: 9px; font-weight: 900; }
+    .type-grass { background: #e1f0df; color: #245e39; }
+    .type-ice { background: #e0f2f5; color: #1a6473; }
+    .type-normal { background: #eee9df; color: #5d5038; }
     .rank { color: var(--muted); font-size: 9px; font-weight: 900; text-align: right; white-space: nowrap; }
     .hp-row { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 7px; margin-top: 13px; font-size: 10px; font-weight: 850; }
     .hp-track { height: 10px; overflow: hidden; border-radius: 999px; background: #dfe6e4; }
@@ -82,8 +85,13 @@
     .orb { display: grid; width: 25px; height: 25px; place-items: center; border: 2px solid currentColor; border-radius: 50%; font-size: 8px; font-weight: 950; }
     .orb.blue { color: var(--accent); }
     .orb.purple { color: var(--shadow); }
-    .shield-count { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 800; }
-    .shield-count b { color: var(--ink); font-size: 13px; }
+    .shield-picker { display: grid; grid-template-columns: auto auto; align-items: center; gap: 7px; }
+    .shield-picker-label { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 850; }
+    .shield-glyph { display: inline-grid; width: 15px; height: 17px; place-items: center; color: #8e43ad; font-size: 13px; line-height: 1; }
+    .shield-options { display: inline-flex; overflow: hidden; border: 1px solid #c8ced0; border-radius: 6px; background: #fff; }
+    .shield-options button { min-width: 29px; min-height: 27px; border: 0; border-right: 1px solid #d9dede; background: transparent; color: var(--muted); font-size: 10px; font-weight: 900; }
+    .shield-options button:last-child { border-right: 0; }
+    .shield-options button.active { background: #8e43ad; color: #fff; }
     .statline { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--line); }
     .statline span { display: block; color: var(--muted); font-size: 9px; font-weight: 750; }
     .statline strong { display: block; margin-top: 2px; font-size: 12px; }
@@ -118,16 +126,19 @@
     .section-head h2 { margin: 0; font-size: 15px; }
     .section-head span { color: var(--muted); font-size: 10px; }
     .timeline { padding: 0 13px 13px; overflow-x: auto; }
-    .ruler, .lane { display: grid; grid-template-columns: 100px repeat(12, minmax(34px, 1fr)); min-width: 620px; align-items: center; }
-    .ruler { color: var(--muted); font-size: 8px; font-weight: 800; }
-    .ruler span:not(:first-child) { border-left: 1px solid var(--line); padding: 4px 4px; }
-    .lane { min-height: 40px; border-top: 1px solid var(--line); background: repeating-linear-gradient(90deg, transparent 0, transparent calc(8.333% - 1px), rgba(205,211,208,.55) calc(8.333% - 1px), rgba(205,211,208,.55) 8.333%); }
-    .lane-label { display: flex; align-items: center; gap: 7px; padding-right: 8px; background: var(--panel); color: var(--ink); font-size: 10px; font-weight: 900; }
+    .timeline-ruler, .timeline-lane { display: grid; grid-template-columns: 108px minmax(500px, 1fr); min-width: 608px; align-items: center; }
+    .timeline-ruler { color: var(--muted); font-size: 8px; font-weight: 800; }
+    .timeline-ruler > div { display: flex; justify-content: space-between; padding: 4px 5px; }
+    .timeline-lane { min-height: 48px; border-top: 1px solid var(--line); }
+    .lane-label { display: flex; align-items: center; gap: 7px; min-height: 48px; padding-right: 8px; background: var(--panel); color: var(--ink); font-size: 10px; font-weight: 900; }
     .lane-label img { width: 28px; height: 28px; object-fit: contain; }
-    .event { justify-self: center; border-radius: 4px; padding: 5px 6px; color: #fff; font-size: 8px; font-weight: 900; white-space: nowrap; }
+    .timeline-track { position: relative; height: 48px; overflow: hidden; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), rgba(205,211,208,.6) calc(12.5% - 1px), rgba(205,211,208,.6) 12.5%); }
+    .event { position: absolute; top: 50%; display: inline-flex; align-items: center; gap: 4px; transform: translateY(-50%); border-radius: 999px; padding: 5px 8px; color: #fff; font-size: 8px; font-weight: 900; white-space: nowrap; }
     .event.fast { background: var(--ice); }
     .event.charged { background: var(--grass); }
     .event.shield { background: var(--shadow); }
+    .event.fast-run { background: #4c9ba9; }
+    .event.fast-run::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.82); }
     .matrix-section { overflow: hidden; }
     .matrix-wrap { overflow-x: auto; padding: 0 13px 13px; }
     .matrix { display: grid; grid-template-columns: 105px repeat(3, minmax(92px, 1fr)); min-width: 420px; gap: 4px; }
@@ -137,6 +148,7 @@
     .matrix .win { background: var(--good-soft); border-color: #bbd9c5; color: var(--good); }
     .matrix .loss { background: #f7e8ec; border-color: #e3c4cb; color: #a64d60; }
     .matrix .draw { background: #f3eedf; border-color: #dfd2ae; color: var(--warn); }
+    .matrix .current { outline: 2px solid var(--accent); outline-offset: -2px; }
     @media (max-width: 800px) {
       .topbar { gap: 10px; padding-inline: 12px; }
       .brand { min-width: 142px; }
@@ -165,7 +177,8 @@
       .brand strong { font-size: 13px; }
       .brand small { font-size: 7px; }
       .nav button { padding: 7px 8px; }
-      .scenario-actions { display: grid; grid-template-columns: 1fr auto; }
+      .scenario-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+      .scenario-status { flex: 1 1 130px; min-width: 0; }
       .segmented { width: 100%; }
       .segmented button { flex: 1; }
       .moves { grid-template-columns: 1fr; }
@@ -184,25 +197,25 @@
   <main>
     <section class="scenario-bar" aria-label="Battle scenario">
       <div><span class="eyebrow">Battle desk</span><h1>Great League matchup</h1></div>
-      <div class="scenario-actions"><div class="segmented" role="group" aria-label="Shield scenario"><button>0-0</button><button class="active">1-1</button><button>2-2</button></div><button class="ghost">Reset</button></div>
+      <div class="scenario-actions"><span class="scenario-status">Scenario <b>Custom shields</b></span><span class="mode-chip">Smart shield logic</span><button class="ghost">Reset</button></div>
     </section>
 
     <section class="duel" aria-label="Battle setup">
       <article class="fighter a">
         <div class="fighter-head"><img src="https://img.pokemondb.net/sprites/home/normal/abomasnow.png" alt="Abomasnow"><div class="fighter-name"><strong>Abomasnow</strong><span>CP 1495 · Rank 14</span><div class="type-chips"><span class="type-chip type-grass">Grass</span><span class="type-chip type-ice">Ice</span></div></div><span class="rank">A</span></div>
         <div class="hp-row"><span>HP</span><div class="hp-track"><div class="hp-fill"></div></div><strong>24 / 143</strong></div>
-        <div class="resource-row"><span class="resource"><span class="orb blue">EN</span><span><strong>5</strong> energy</span></span><span class="shield-count">Shields <b>1</b></span></div>
+        <div class="resource-row"><span class="resource"><span class="orb blue">EN</span><span><strong>5</strong> energy</span></span><span class="shield-picker"><span class="shield-picker-label"><span class="shield-glyph">◆</span>Shields</span><span class="shield-options" role="group" aria-label="Abomasnow shields"><button>0</button><button class="active">1</button><button>2</button></span></span></div>
         <div class="statline"><div><span>Attack</span><strong>117.9</strong></div><div><span>Defense</span><strong>112.0</strong></div><div><span>Stamina</span><strong>143</strong></div></div>
         <div class="moves"><div class="move-block"><span class="move-label">Fast</span><div class="move fast"><strong>Powder Snow</strong><small>+8</small></div></div><div class="move-block"><span class="move-label">Charged</span><div class="move charged"><strong>Weather Ball</strong><small>35</small></div><div class="move charged" style="margin-top:4px"><strong>Energy Ball</strong><small>45</small></div></div></div>
         <details class="advanced"><summary>Advanced settings</summary><div class="advanced-body"><span>IV profile: Default</span><span>Shield logic: Smart</span><span>Baiting: Selective</span><span>Start energy: 0</span></div></details>
       </article>
 
-      <div class="duel-center"><span class="vs">VS</span><span class="scenario-note">1-1 shields<br>Smart logic</span><button class="primary">Battle</button></div>
+      <div class="duel-center"><span class="vs">VS</span><span class="scenario-note">A: 1 shield · B: 2 shields<br>Smart logic</span><button class="primary">Battle</button></div>
 
       <article class="fighter b">
         <div class="fighter-head"><img src="https://img.pokemondb.net/sprites/home/normal/lickilicky.png" alt="Lickilicky"><div class="fighter-name"><strong>Lickilicky</strong><span>CP 1499 · Rank 3</span><div class="type-chips"><span class="type-chip type-normal">Normal</span></div></div><span class="rank">B</span></div>
         <div class="hp-row"><span>HP</span><div class="hp-track"><div class="hp-fill"></div></div><strong>160 / 160</strong></div>
-        <div class="resource-row"><span class="resource"><span class="orb purple">EN</span><span><strong>0</strong> energy</span></span><span class="shield-count">Shields <b>1</b></span></div>
+        <div class="resource-row"><span class="resource"><span class="orb purple">EN</span><span><strong>0</strong> energy</span></span><span class="shield-picker"><span class="shield-picker-label"><span class="shield-glyph">◆</span>Shields</span><span class="shield-options" role="group" aria-label="Lickilicky shields"><button>0</button><button>1</button><button class="active">2</button></span></span></div>
         <div class="statline"><div><span>Attack</span><strong>105.7</strong></div><div><span>Defense</span><strong>125.6</strong></div><div><span>Stamina</span><strong>160</strong></div></div>
         <div class="moves"><div class="move-block"><span class="move-label">Fast</span><div class="move normal"><strong>Rollout</strong><small>+13</small></div></div><div class="move-block"><span class="move-label">Charged</span><div class="move normal"><strong>Body Slam</strong><small>40</small></div><div class="move shadow" style="margin-top:4px"><strong>Shadow Ball</strong><small>55</small></div></div></div>
         <details class="advanced"><summary>Advanced settings</summary><div class="advanced-body"><span>IV profile: Default</span><span>Shield logic: Smart</span><span>Baiting: Selective</span><span>Start energy: 0</span></div></details>
@@ -211,9 +224,9 @@
 
     <section class="result" aria-label="Match result"><div><span class="eyebrow">Match result</span><strong>Abomasnow wins</strong><small>Closes with Weather Ball at turn 32</small></div><div class="result-stats"><span>24 HP</span><span>5 energy</span><span>1 shield</span><span>T32 · 16.0s</span></div></section>
 
-    <section class="timeline-section" aria-label="Battle timeline"><div class="section-head"><h2>Timeline</h2><span>Click an event to inspect its state</span></div><div class="timeline"><div class="ruler"><span></span><span>0</span><span>4</span><span>8</span><span>12</span><span>16</span><span>20</span><span>24</span><span>28</span><span>32</span><span>36</span><span>40</span><span>44</span></div><div class="lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/abomasnow.png" alt="">Abomasnow</span><span class="event fast" style="grid-column:2">Fast</span><span class="event fast" style="grid-column:3">Fast</span><span class="event fast" style="grid-column:4">Fast</span><span class="event charged" style="grid-column:7">Weather Ball</span><span class="event fast" style="grid-column:9">Fast</span><span class="event charged" style="grid-column:11">Energy Ball</span></div><div class="lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/lickilicky.png" alt="">Lickilicky</span><span class="event fast" style="grid-column:2">Fast</span><span class="event fast" style="grid-column:4">Fast</span><span class="event shield" style="grid-column:7">Shield</span><span class="event charged" style="grid-column:8">Body Slam</span><span class="event fast" style="grid-column:10">Fast</span><span class="event shield" style="grid-column:12">KO</span></div></div></section>
+    <section class="timeline-section" aria-label="Battle timeline"><div class="section-head"><h2>Timeline</h2><span>Fast moves are grouped to keep long battles readable</span></div><div class="timeline"><div class="timeline-ruler"><span></span><div><span>0</span><span>4</span><span>8</span><span>12</span><span>16</span><span>20</span><span>24</span><span>28</span><span>32</span><span>36</span><span>40</span></div></div><div class="timeline-lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/abomasnow.png" alt="">Abomasnow</span><div class="timeline-track"><span class="event fast-run" style="left:2%;width:27%">6× Fast</span><span class="event charged" style="left:39%">Weather Ball</span><span class="event fast-run" style="left:55%;width:15%">3× Fast</span><span class="event charged" style="left:76%">Energy Ball</span></div></div><div class="timeline-lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/lickilicky.png" alt="">Lickilicky</span><div class="timeline-track"><span class="event fast-run" style="left:2%;width:20%">4× Fast</span><span class="event shield" style="left:40%">Shield</span><span class="event charged" style="left:48%">Body Slam</span><span class="event fast-run" style="left:64%;width:14%">2× Fast</span><span class="event shield" style="left:88%">KO</span></div></div></div></section>
 
-    <section class="matrix-section" aria-label="Matchup matrix"><div class="section-head"><h2>Matchup matrix</h2><span>Abomasnow vs Lickilicky</span></div><div class="matrix-wrap"><div class="matrix"><div class="head"></div><div class="head">0 shields</div><div class="head">1 shield</div><div class="head">2 shields</div><div class="row-head">Abomasnow</div><div class="win">Win<br><small>143 HP</small></div><div class="win">Win<br><small>24 HP</small></div><div class="draw">Close</div><div class="row-head">Lickilicky</div><div class="loss">Loss</div><div class="loss">Loss</div><div class="win">Win</div></div></div></section>
+    <section class="matrix-section" aria-label="Matchup matrix"><div class="section-head"><h2>Matchup matrix</h2><span>Rows: Abomasnow shields · Columns: Lickilicky shields</span></div><div class="matrix-wrap"><div class="matrix"><div class="head"></div><div class="head">B 0</div><div class="head">B 1</div><div class="head">B 2</div><div class="row-head">A 0</div><div class="win">A wins</div><div class="win">A wins</div><div class="draw">Close</div><div class="row-head">A 1</div><div class="win">A wins</div><div class="win">A wins</div><div class="current win">A wins<br><small>24 HP</small></div><div class="row-head">A 2</div><div class="win">A wins</div><div class="draw">Close</div><div class="loss">B wins</div></div></div></section>
   </main>
 </body>
 </html>
