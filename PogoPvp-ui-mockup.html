@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GO Judge Hub - Battle Desk Mockup</title>
+  <style>
+    :root {
+      --ink: #172b3a;
+      --muted: #687681;
+      --navy: #0d2634;
+      --paper: #f4f1e9;
+      --panel: rgba(255, 255, 255, .74);
+      --line: #d6d9d3;
+      --accent: #147d9f;
+      --accent-soft: #e0f0f3;
+      --good: #23865f;
+      --good-soft: #e4f2e9;
+      --warn: #9a6a1d;
+      --ice: #36a9c1;
+      --normal: #897b5a;
+      --grass: #3e9954;
+      --shadow: #724da1;
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--paper); }
+    body {
+      min-height: 100vh; margin: 0; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      background: var(--paper) url("assets/paper-grain.svg") repeat; font-size: 14px;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      position: relative; display: flex; align-items: center; gap: 18px; min-height: 64px; padding: 10px clamp(14px, 4vw, 52px);
+      background: var(--navy); color: #fff; border-bottom: 3px solid #e0ad3b;
+    }
+    .brand { display: flex; align-items: center; gap: 9px; min-width: 190px; }
+    .brand img { width: 37px; height: 37px; object-fit: contain; filter: brightness(0) invert(1); }
+    .brand strong { display: block; font-size: 15px; line-height: 1; letter-spacing: -.02em; }
+    .brand small { display: block; margin-top: 3px; color: rgba(255,255,255,.66); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
+    .nav { display: flex; align-items: center; gap: 3px; min-width: 0; max-width: 100%; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav button { flex: 0 0 auto; border: 0; border-radius: 5px; padding: 8px 11px; background: transparent; color: rgba(255,255,255,.72); font-size: 11px; font-weight: 800; }
+    .nav button.active { background: #fff; color: var(--ink); }
+    .nav-hint { display: none; }
+    .lab-tag { flex: 0 0 auto; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 5px 8px; color: rgba(255,255,255,.8); font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    main { width: min(1240px, calc(100% - 28px)); margin: 18px auto 40px; display: grid; gap: 12px; }
+    .scenario-bar, .result, .timeline-section, .matrix-section { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+    .scenario-bar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 10px 13px; }
+    .eyebrow { display: block; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .scenario-bar h1 { margin: 3px 0 0; font-size: 20px; letter-spacing: -.03em; }
+    .scenario-actions { display: flex; align-items: center; gap: 8px; }
+    .segmented { display: inline-flex; border: 1px solid #bcc8cb; border-radius: 6px; overflow: hidden; background: #fff; }
+    .segmented button { min-width: 52px; border: 0; border-right: 1px solid #d8dfdf; padding: 7px 9px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 850; }
+    .segmented button:last-child { border-right: 0; }
+    .segmented button.active { background: var(--accent); color: #fff; }
+    .ghost { border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; background: #fff; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .duel {
+      display: grid; grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr); gap: 12px; align-items: stretch;
+    }
+    .fighter { min-width: 0; padding: 14px; border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: var(--radius); background: rgba(255,255,255,.78); }
+    .fighter.b { border-top-color: var(--shadow); }
+    .fighter-head { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+    .fighter-head img { width: 64px; height: 64px; object-fit: contain; }
+    .fighter-name { min-width: 0; }
+    .fighter-name strong { display: block; font-size: 18px; line-height: 1.05; }
+    .fighter-name span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; font-weight: 750; }
+    .type-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+    .type-chip { border-radius: 999px; padding: 3px 7px; color: #fff; font-size: 9px; font-weight: 900; }
+    .type-grass { background: var(--grass); }
+    .type-ice { background: var(--ice); }
+    .type-normal { background: var(--normal); }
+    .rank { color: var(--muted); font-size: 9px; font-weight: 900; text-align: right; white-space: nowrap; }
+    .hp-row { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 7px; margin-top: 13px; font-size: 10px; font-weight: 850; }
+    .hp-track { height: 10px; overflow: hidden; border-radius: 999px; background: #dfe6e4; }
+    .hp-fill { height: 100%; width: 16%; background: var(--good); }
+    .fighter.b .hp-fill { width: 100%; }
+    .resource-row { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 9px; }
+    .resource { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .resource strong { color: var(--ink); font-size: 13px; }
+    .orb { display: grid; width: 25px; height: 25px; place-items: center; border: 2px solid currentColor; border-radius: 50%; font-size: 8px; font-weight: 950; }
+    .orb.blue { color: var(--accent); }
+    .orb.purple { color: var(--shadow); }
+    .shield-count { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .shield-count b { color: var(--ink); font-size: 13px; }
+    .statline { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--line); }
+    .statline span { display: block; color: var(--muted); font-size: 9px; font-weight: 750; }
+    .statline strong { display: block; margin-top: 2px; font-size: 12px; }
+    .moves { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 13px; }
+    .move-block { min-width: 0; }
+    .move-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+    .move { display: flex; align-items: center; justify-content: space-between; gap: 7px; min-width: 0; border: 1px solid color-mix(in srgb, var(--move) 40%, var(--line)); border-left: 4px solid var(--move); border-radius: 6px; padding: 8px 8px; background: color-mix(in srgb, var(--move) 12%, #fff); }
+    .move strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .move small { flex: 0 0 auto; color: var(--muted); font-size: 9px; font-weight: 850; }
+    .move.fast { --move: var(--ice); }
+    .move.charged { --move: var(--grass); }
+    .move.normal { --move: var(--normal); }
+    .move.shadow { --move: var(--shadow); }
+    .advanced { margin-top: 11px; }
+    .advanced summary { cursor: pointer; color: var(--accent); font-size: 10px; font-weight: 900; list-style: none; }
+    .advanced summary::-webkit-details-marker { display: none; }
+    .advanced summary::after { content: "+"; float: right; font-size: 15px; line-height: 10px; }
+    .advanced[open] summary::after { content: "-"; }
+    .advanced-body { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; color: var(--muted); font-size: 10px; }
+    .advanced-body span { border: 1px solid var(--line); border-radius: 5px; padding: 6px; background: rgba(255,255,255,.66); }
+    .duel-center { display: grid; align-content: center; justify-items: center; gap: 10px; }
+    .vs { display: grid; width: 42px; height: 42px; place-items: center; border: 2px solid #c5d0d2; border-radius: 50%; background: #fff; color: var(--muted); font-size: 11px; font-weight: 950; }
+    .scenario-note { color: var(--muted); font-size: 9px; font-weight: 850; text-align: center; }
+    .primary { width: 100%; border: 0; border-radius: 7px; padding: 12px 10px; background: var(--accent); color: #fff; box-shadow: 0 3px 0 #0b607b; font-size: 12px; font-weight: 950; }
+    .primary:hover { background: #116f8d; }
+    .result { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 15px; padding: 10px 13px; border-left: 4px solid var(--good); background: var(--good-soft); }
+    .result strong { display: block; margin-top: 2px; font-size: 17px; }
+    .result small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .result-stats { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .result-stats span { border: 1px solid #c8dfd0; border-radius: 5px; padding: 6px 8px; background: rgba(255,255,255,.55); color: var(--ink); font-size: 10px; font-weight: 850; white-space: nowrap; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 11px 13px 8px; }
+    .section-head h2 { margin: 0; font-size: 15px; }
+    .section-head span { color: var(--muted); font-size: 10px; }
+    .timeline { padding: 0 13px 13px; overflow-x: auto; }
+    .ruler, .lane { display: grid; grid-template-columns: 100px repeat(12, minmax(34px, 1fr)); min-width: 620px; align-items: center; }
+    .ruler { color: var(--muted); font-size: 8px; font-weight: 800; }
+    .ruler span:not(:first-child) { border-left: 1px solid var(--line); padding: 4px 4px; }
+    .lane { min-height: 40px; border-top: 1px solid var(--line); background: repeating-linear-gradient(90deg, transparent 0, transparent calc(8.333% - 1px), rgba(205,211,208,.55) calc(8.333% - 1px), rgba(205,211,208,.55) 8.333%); }
+    .lane-label { display: flex; align-items: center; gap: 7px; padding-right: 8px; background: var(--panel); color: var(--ink); font-size: 10px; font-weight: 900; }
+    .lane-label img { width: 28px; height: 28px; object-fit: contain; }
+    .event { justify-self: center; border-radius: 4px; padding: 5px 6px; color: #fff; font-size: 8px; font-weight: 900; white-space: nowrap; }
+    .event.fast { background: var(--ice); }
+    .event.charged { background: var(--grass); }
+    .event.shield { background: var(--shadow); }
+    .matrix-section { overflow: hidden; }
+    .matrix-wrap { overflow-x: auto; padding: 0 13px 13px; }
+    .matrix { display: grid; grid-template-columns: 105px repeat(3, minmax(92px, 1fr)); min-width: 420px; gap: 4px; }
+    .matrix > div { min-height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 5px; background: rgba(255,255,255,.56); color: var(--muted); font-size: 10px; font-weight: 850; text-align: center; }
+    .matrix .head { min-height: 27px; border: 0; background: transparent; color: var(--ink); font-size: 9px; }
+    .matrix .row-head { justify-items: start; padding-left: 8px; color: var(--ink); }
+    .matrix .win { background: var(--good-soft); border-color: #bbd9c5; color: var(--good); }
+    .matrix .loss { background: #f7e8ec; border-color: #e3c4cb; color: #a64d60; }
+    .matrix .draw { background: #f3eedf; border-color: #dfd2ae; color: var(--warn); }
+    @media (max-width: 800px) {
+      .topbar { gap: 10px; padding-inline: 12px; }
+      .brand { min-width: 142px; }
+      .brand img { width: 32px; height: 32px; }
+      .nav button { padding-inline: 9px; font-size: 10px; }
+      main { width: min(calc(100% - 16px), 600px); min-width: 0; grid-template-columns: minmax(0, 1fr); margin-top: 9px; }
+      .scenario-bar { display: grid; gap: 9px; }
+      .scenario-actions { justify-content: space-between; }
+      .duel { grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 8px; }
+      .duel-center { grid-row: 2; grid-template-columns: auto minmax(0, 1fr) minmax(102px, 140px); min-width: 0; display: grid; align-items: center; gap: 8px; padding: 3px 0; }
+      .vs { width: 34px; height: 34px; }
+      .scenario-note { text-align: left; }
+      .fighter { padding: 11px; }
+      .fighter.b { grid-row: 2; }
+      .duel-center { grid-row: 3; }
+      .fighter-head { grid-template-columns: 54px minmax(0,1fr) auto; gap: 8px; }
+      .fighter-head img { width: 54px; height: 54px; }
+      .fighter-name strong { font-size: 16px; }
+      .result { grid-template-columns: 1fr; gap: 7px; }
+      .result-stats { justify-content: flex-start; }
+      .nav-hint { position: absolute; right: 4px; bottom: 8px; display: grid; width: 22px; height: 26px; place-items: center; border-left: 1px solid rgba(255,255,255,.3); background: linear-gradient(90deg, transparent, var(--navy) 42%); color: rgba(255,255,255,.82); font-size: 19px; line-height: 1; pointer-events: none; }
+    }
+    @media (max-width: 420px) {
+      .lab-tag { display: none; }
+      .topbar { min-height: 56px; }
+      .brand strong { font-size: 13px; }
+      .brand small { font-size: 7px; }
+      .nav button { padding: 7px 8px; }
+      .scenario-actions { display: grid; grid-template-columns: 1fr auto; }
+      .segmented { width: 100%; }
+      .segmented button { flex: 1; }
+      .moves { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="assets/go-pvp-mark.png" alt="GO PvP"><div><strong>GO Judge Hub</strong><small>Battle Desk</small></div></div>
+    <nav class="nav" aria-label="Primary views">
+      <button>Home</button><button class="active">Battle</button><button>Scenario Review</button><button>Meta</button><button>Team Builder</button><button>Compendium</button>
+    </nav>
+    <span class="nav-hint" aria-hidden="true">›</span>
+    <span class="lab-tag">UI mockup</span>
+  </header>
+  <main>
+    <section class="scenario-bar" aria-label="Battle scenario">
+      <div><span class="eyebrow">Battle desk</span><h1>Great League matchup</h1></div>
+      <div class="scenario-actions"><div class="segmented" role="group" aria-label="Shield scenario"><button>0-0</button><button class="active">1-1</button><button>2-2</button></div><button class="ghost">Reset</button></div>
+    </section>
+
+    <section class="duel" aria-label="Battle setup">
+      <article class="fighter a">
+        <div class="fighter-head"><img src="https://img.pokemondb.net/sprites/home/normal/abomasnow.png" alt="Abomasnow"><div class="fighter-name"><strong>Abomasnow</strong><span>CP 1495 · Rank 14</span><div class="type-chips"><span class="type-chip type-grass">Grass</span><span class="type-chip type-ice">Ice</span></div></div><span class="rank">A</span></div>
+        <div class="hp-row"><span>HP</span><div class="hp-track"><div class="hp-fill"></div></div><strong>24 / 143</strong></div>
+        <div class="resource-row"><span class="resource"><span class="orb blue">EN</span><span><strong>5</strong> energy</span></span><span class="shield-count">Shields <b>1</b></span></div>
+        <div class="statline"><div><span>Attack</span><strong>117.9</strong></div><div><span>Defense</span><strong>112.0</strong></div><div><span>Stamina</span><strong>143</strong></div></div>
+        <div class="moves"><div class="move-block"><span class="move-label">Fast</span><div class="move fast"><strong>Powder Snow</strong><small>+8</small></div></div><div class="move-block"><span class="move-label">Charged</span><div class="move charged"><strong>Weather Ball</strong><small>35</small></div><div class="move charged" style="margin-top:4px"><strong>Energy Ball</strong><small>45</small></div></div></div>
+        <details class="advanced"><summary>Advanced settings</summary><div class="advanced-body"><span>IV profile: Default</span><span>Shield logic: Smart</span><span>Baiting: Selective</span><span>Start energy: 0</span></div></details>
+      </article>
+
+      <div class="duel-center"><span class="vs">VS</span><span class="scenario-note">1-1 shields<br>Smart logic</span><button class="primary">Battle</button></div>
+
+      <article class="fighter b">
+        <div class="fighter-head"><img src="https://img.pokemondb.net/sprites/home/normal/lickilicky.png" alt="Lickilicky"><div class="fighter-name"><strong>Lickilicky</strong><span>CP 1499 · Rank 3</span><div class="type-chips"><span class="type-chip type-normal">Normal</span></div></div><span class="rank">B</span></div>
+        <div class="hp-row"><span>HP</span><div class="hp-track"><div class="hp-fill"></div></div><strong>160 / 160</strong></div>
+        <div class="resource-row"><span class="resource"><span class="orb purple">EN</span><span><strong>0</strong> energy</span></span><span class="shield-count">Shields <b>1</b></span></div>
+        <div class="statline"><div><span>Attack</span><strong>105.7</strong></div><div><span>Defense</span><strong>125.6</strong></div><div><span>Stamina</span><strong>160</strong></div></div>
+        <div class="moves"><div class="move-block"><span class="move-label">Fast</span><div class="move normal"><strong>Rollout</strong><small>+13</small></div></div><div class="move-block"><span class="move-label">Charged</span><div class="move normal"><strong>Body Slam</strong><small>40</small></div><div class="move shadow" style="margin-top:4px"><strong>Shadow Ball</strong><small>55</small></div></div></div>
+        <details class="advanced"><summary>Advanced settings</summary><div class="advanced-body"><span>IV profile: Default</span><span>Shield logic: Smart</span><span>Baiting: Selective</span><span>Start energy: 0</span></div></details>
+      </article>
+    </section>
+
+    <section class="result" aria-label="Match result"><div><span class="eyebrow">Match result</span><strong>Abomasnow wins</strong><small>Closes with Weather Ball at turn 32</small></div><div class="result-stats"><span>24 HP</span><span>5 energy</span><span>1 shield</span><span>T32 · 16.0s</span></div></section>
+
+    <section class="timeline-section" aria-label="Battle timeline"><div class="section-head"><h2>Timeline</h2><span>Click an event to inspect its state</span></div><div class="timeline"><div class="ruler"><span></span><span>0</span><span>4</span><span>8</span><span>12</span><span>16</span><span>20</span><span>24</span><span>28</span><span>32</span><span>36</span><span>40</span><span>44</span></div><div class="lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/abomasnow.png" alt="">Abomasnow</span><span class="event fast" style="grid-column:2">Fast</span><span class="event fast" style="grid-column:3">Fast</span><span class="event fast" style="grid-column:4">Fast</span><span class="event charged" style="grid-column:7">Weather Ball</span><span class="event fast" style="grid-column:9">Fast</span><span class="event charged" style="grid-column:11">Energy Ball</span></div><div class="lane"><span class="lane-label"><img src="https://img.pokemondb.net/sprites/home/normal/lickilicky.png" alt="">Lickilicky</span><span class="event fast" style="grid-column:2">Fast</span><span class="event fast" style="grid-column:4">Fast</span><span class="event shield" style="grid-column:7">Shield</span><span class="event charged" style="grid-column:8">Body Slam</span><span class="event fast" style="grid-column:10">Fast</span><span class="event shield" style="grid-column:12">KO</span></div></div></section>
+
+    <section class="matrix-section" aria-label="Matchup matrix"><div class="section-head"><h2>Matchup matrix</h2><span>Abomasnow vs Lickilicky</span></div><div class="matrix-wrap"><div class="matrix"><div class="head"></div><div class="head">0 shields</div><div class="head">1 shield</div><div class="head">2 shields</div><div class="row-head">Abomasnow</div><div class="win">Win<br><small>143 HP</small></div><div class="win">Win<br><small>24 HP</small></div><div class="draw">Close</div><div class="row-head">Lickilicky</div><div class="loss">Loss</div><div class="loss">Loss</div><div class="win">Win</div></div></div></section>
+  </main>
+</body>
+</html>
