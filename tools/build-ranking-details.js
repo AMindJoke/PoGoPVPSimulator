@@ -12,6 +12,10 @@ const outputRoot = path.join(root, ...(seasonId ? ["data", "seasons", seasonId] 
 const rankingPath = path.join(outputRoot, "great-league-rankings.json");
 const analysisPath = path.join(outputRoot, "analysis", "great-league-analysis.json");
 const cacheDir = path.join(outputRoot, "matchup-cache", "great-league", "rank1");
+const cacheRootArg = process.argv.find(arg => arg.startsWith("--cache-root="));
+const configuredCacheDir = cacheRootArg
+  ? path.resolve(root, cacheRootArg.slice("--cache-root=".length))
+  : cacheDir;
 const fallbackCacheDir = seasonId ? path.join(root, "data", "matchup-cache", "great-league", "rank1") : null;
 const outputJson = path.join(outputRoot, "great-league-ranking-details.json");
 const outputJs = path.join(outputRoot, "great-league-ranking-details.js");
@@ -36,7 +40,7 @@ const details = existingOutput?.entries && typeof existingOutput.entries === "ob
 
 entries.forEach((entry, index) => {
   if (selectiveIds.size && !selectiveIds.has(entry.id)) return;
-  const cachePath = path.join(cacheDir, `${entry.id}.json`);
+  const cachePath = path.join(configuredCacheDir, `${entry.id}.json`);
   const fallbackCachePath = fallbackCacheDir ? path.join(fallbackCacheDir, `${entry.id}.json`) : null;
   const cellsByOpponent = new Map();
   const ingestCache = file => {

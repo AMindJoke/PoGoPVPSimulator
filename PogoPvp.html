@@ -19461,10 +19461,35 @@
       return "Flexible pick";
     }
 
+    function metaTopRankMap(limit = 50) {
+      ensureMetaRankingData();
+      const allEntries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
+      const preferred = allEntries.filter(entry => entry.profile === metaRankingPreferredProfile);
+      const ranked = (preferred.length ? preferred : allEntries)
+        .filter(entry => entry && entry.id && Number.isFinite(Number(entry.rank)))
+        .sort((a, b) => Number(a.rank) - Number(b.rank));
+      const maxRank = Number.isFinite(Number(limit)) ? Number(limit) : Infinity;
+      return new Map(ranked
+        .filter(entry => Number(entry.rank) > 0 && Number(entry.rank) <= maxRank)
+        .map(entry => [entry.id, Number(entry.rank)]));
+    }
+
+    function currentMetaMatchupRows(rows, sourceId, limit = 50) {
+      const ranks = metaTopRankMap(limit);
+      return (Array.isArray(rows) ? rows : [])
+        .map(item => {
+          const id = item?.id || item?.opponentId;
+          return id && ranks.has(id) ? { ...item, id, rank: ranks.get(id) } : null;
+        })
+        .filter(item => item && item.id !== sourceId);
+    }
+
     function analysisModel(entry) {
       const pokemon = findPokemon(entry.id);
       const recommended = metaRankingMoves(entry, pokemon);
       const detailEntry = window.GREAT_LEAGUE_RANKING_DETAILS?.entries?.[entry.id] || null;
+      const currentWins = currentMetaMatchupRows(detailEntry?.wins, entry.id);
+      const currentLosses = currentMetaMatchupRows(detailEntry?.losses, entry.id);
       const recommendedIds = new Set([recommended.fast, ...recommended.charged].filter(Boolean).map(move => move.id));
       const moveModel = (move, kind) => ({
         id: move.id,
@@ -19574,8 +19599,8 @@
         };
       };
       const thresholdOpponents = [
-        ...(detailEntry?.wins || []).slice(0, 3),
-        ...(detailEntry?.losses || []).slice(0, 3)
+        ...currentWins.slice(0, 3),
+        ...currentLosses.slice(0, 3)
       ];
       const thresholdCombatants = thresholdOpponents.map(item => {
         const opponent = findPokemon(item.id);
@@ -19691,8 +19716,8 @@
         losses: Number(entry.losses || 0),
         matchups: Number(entry.matchups || 0),
         categories: categoryEntries,
-        keyWins: (detailEntry?.wins || []).map(matchupModel),
-        keyLosses: (detailEntry?.losses || []).map(matchupModel),
+        keyWins: currentWins.map(matchupModel),
+        keyLosses: currentLosses.map(matchupModel),
         ratings,
         quickFacts,
         identityTraits,
@@ -20375,14 +20400,18 @@
 
     function metaRankingDetailsHtml(entry) {
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
+      const currentWins = currentMetaMatchupRows(detail.wins, entry.p.id);
+      const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
       const alternatives = (detail.alternativeMovesets || []).slice(1);
       const alternateHtml = alternatives.length ? `<section class="meta-alternatives" aria-label="Alternative movesets"><strong>Alternative movesets</strong>${alternatives.map(set => `<div class="meta-alternative-moves">${[metaMovePill(moveMap.get(set.fast), "fast"), ...set.charged.map(id => metaMovePill(moveMap.get(id), "charged"))].join("")}</div>`).join("")}</section>` : "";
-      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins", "wins", detail.wins, entry)}${metaMatchupGroup("Key Losses", "losses", detail.losses, entry)}</div>${alternateHtml}</div>`;
+      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins · Top 50", "wins", currentWins, entry)}${metaMatchupGroup("Key Losses · Top 50", "losses", currentLosses, entry)}</div>${alternateHtml}</div>`;
     }
 
     function metaMatchupGroup(label, className, rows, sourceEntry) {
       const items = Array.isArray(rows)
-        ? [...rows].sort((a, b) => metaKeyMatchupScore(b) - metaKeyMatchupScore(a)).slice(0, 5)
+        ? [...rows].sort((a, b) => className === "losses"
+          ? metaKeyMatchupScore(a) - metaKeyMatchupScore(b)
+          : metaKeyMatchupScore(b) - metaKeyMatchupScore(a)).slice(0, 5)
         : [];
       const cards = items.length
         ? items.map(item => metaKeyMatchupCard(item, sourceEntry)).join("")

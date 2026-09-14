@@ -17,18 +17,29 @@
     };
   }
 
-  function selectRelevantMatchups(cells, rankById, limit = 3) {
+  // Key matchups describe the current competitive field, not the full
+  // simulator candidate pool. Keep only the configured top slice and then
+  // rank wins/losses by the actual matchup margin so stale rank ordering
+  // cannot surface a lower-ranked or obsolete opponent as a key result.
+  function selectRelevantMatchups(cells, rankById, limit = 3, topLimit = 50) {
     const rows = Array.isArray(cells) ? cells : [];
     const ranks = rankById && typeof rankById.get === "function"
       ? rankById
       : new Map(Object.entries(rankById || {}));
+    const maxRank = Number.isFinite(Number(topLimit)) ? Number(topLimit) : Infinity;
     const relevant = rows
       .filter(row => row && row.opponentId && Number.isFinite(Number(row.score)) && Number.isFinite(Number(ranks.get(row.opponentId))))
       .map(row => ({ ...row, opponentRank: Number(ranks.get(row.opponentId)) }))
-      .sort((a, b) => a.opponentRank - b.opponentRank || Math.abs(a.score - 500) - Math.abs(b.score - 500) || a.opponentId.localeCompare(b.opponentId));
+      .filter(row => row.opponentRank > 0 && row.opponentRank <= maxRank);
     return {
-      wins: relevant.filter(row => row.score > 500).slice(0, limit),
-      losses: relevant.filter(row => row.score < 500).slice(0, limit)
+      wins: relevant
+        .filter(row => row.score > 500)
+        .sort((a, b) => b.score - a.score || a.opponentRank - b.opponentRank || a.opponentId.localeCompare(b.opponentId))
+        .slice(0, limit),
+      losses: relevant
+        .filter(row => row.score < 500)
+        .sort((a, b) => a.score - b.score || a.opponentRank - b.opponentRank || a.opponentId.localeCompare(b.opponentId))
+        .slice(0, limit)
     };
   }
 

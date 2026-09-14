@@ -18,10 +18,13 @@ Object.values(ratings).forEach(value => assert(value >= 0 && value <= 5));
 const matchups = selectRelevantMatchups([
   { opponentId: "top", score: 550 },
   { opponentId: "lower", score: 700 },
-  { opponentId: "loss", score: 450 }
-], new Map([["top", 1], ["lower", 10], ["loss", 2]]), 3);
-assert.strictEqual(matchups.wins[0].opponentId, "top");
-assert.strictEqual(matchups.losses[0].opponentId, "loss");
+  { opponentId: "loss", score: 450 },
+  { opponentId: "severe-loss", score: 250 },
+  { opponentId: "outside-top50", score: 900 }
+], new Map([["top", 1], ["lower", 10], ["loss", 2], ["severe-loss", 20], ["outside-top50", 51]]), 3);
+assert.strictEqual(matchups.wins[0].opponentId, "lower");
+assert.strictEqual(matchups.losses[0].opponentId, "severe-loss");
+assert.deepStrictEqual(matchups.wins.map(row => row.opponentId), ["lower", "top"]);
 assert.strictEqual(orientMatchupScore(612), 612);
 assert.strictEqual(orientMatchupScore(388, true), 612);
 assert.ok(Number.isNaN(orientMatchupScore("missing")));
