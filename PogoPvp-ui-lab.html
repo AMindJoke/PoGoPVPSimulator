@@ -197,6 +197,46 @@
           cursor: not-allowed;
         }
 
+        /* Desktop Battle: use the available width to keep state and moves in one scan. */
+        @media (min-width: 901px) {
+          body.ui-lab:not([data-view="scenario-review"]) .setup {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            width: min(100%, 1180px);
+            gap: 20px;
+            align-items: start;
+          }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card {
+            display: grid;
+            grid-template-columns: minmax(190px, .84fr) minmax(250px, 1.16fr);
+            column-gap: 12px;
+            width: auto;
+            max-width: none;
+            box-sizing: border-box;
+            padding: 12px;
+          }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card > .control-stack:first-child,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card > .field-box { grid-column: 1; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card > .moves-stack {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            min-width: 0;
+            margin-top: 0;
+          }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .stat-bars,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .overall,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .resource-row,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .move-group,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .moves-stack .hp { max-width: 100%; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .pokemon-picker,
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .moves-stack label { max-width: 100%; }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .shield-count-toggle {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            width: 100%;
+          }
+          body.ui-lab:not([data-view="scenario-review"]) .trainer-card .shield-count-toggle button { min-width: 0; }
+          body.ui-lab:not([data-view="scenario-review"]) .battle-cta-row { width: min(100%, 1180px); }
+        }
+
         @media (max-width: 900px) {
           body.ui-lab:not([data-view="scenario-review"]) .setup { grid-template-columns: 1fr; column-gap: 0; }
           body.ui-lab:not([data-view="scenario-review"]) .setup::after { display: none; }
