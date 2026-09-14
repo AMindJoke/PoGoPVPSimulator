@@ -165,6 +165,71 @@
         body.ui-lab .compendium-article-section { margin-top: 14px; padding-top: 13px; }
         body.ui-lab .compendium-article-section p { line-height: 1.55; }
 
+        /* Lab refinement: make the secondary surfaces visibly task-oriented while keeping the production shell intact. */
+        body.ui-lab #teamBuilderView .team-builder-head {
+          border-left: 4px solid var(--accent); border-radius: 8px; box-shadow: none;
+          background: color-mix(in srgb, var(--accent) 4%, var(--panel));
+        }
+        body.ui-lab #teamBuilderView .team-builder-head-copy p { max-width: 44ch; }
+        body.ui-lab #teamBuilderView .team-builder-summary { margin-inline: 2px; }
+        body.ui-lab #teamBuilderView .team-builder-summary span {
+          padding: 4px 8px; border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+          border-radius: 999px; background: color-mix(in srgb, var(--accent) 7%, var(--panel)); color: var(--accent-dark);
+        }
+        body.ui-lab #teamBuilderView .team-roster-grid { gap: 8px; }
+        body.ui-lab #teamBuilderView .team-slot {
+          min-height: 136px; border-radius: 8px; box-shadow: none;
+          background: color-mix(in srgb, var(--panel) 94%, var(--soft));
+        }
+        body.ui-lab #teamBuilderView .team-slot::after { opacity: .48; }
+        body.ui-lab #teamBuilderView .team-slot.is-empty { min-height: 92px; }
+        body.ui-lab #teamBuilderView .team-card { grid-template-columns: 70px minmax(0, 1fr); gap: 8px; padding: 10px; }
+        body.ui-lab #teamBuilderView .team-card-sprite-wrap { width: 70px; height: 82px; }
+        body.ui-lab #teamBuilderView .team-card-sprite { width: 62px; height: 62px; }
+        body.ui-lab #teamBuilderView .team-card-moves { gap: 3px; margin: 7px 0 8px; }
+        body.ui-lab #teamBuilderView .team-card-actions button { min-height: 28px; }
+        body.ui-lab #teamBuilderView .team-meta-setup {
+          border-left: 4px solid color-mix(in srgb, var(--accent) 76%, var(--line));
+          border-radius: 8px; box-shadow: none; background: color-mix(in srgb, var(--panel) 96%, var(--soft));
+        }
+        body.ui-lab #teamBuilderView .team-analysis-engine {
+          margin-top: 8px; padding: 9px; border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+          border-radius: 8px; background: color-mix(in srgb, var(--accent) 4%, var(--subtle));
+        }
+        body.ui-lab #teamBuilderView .team-analysis-actions button:first-child { min-width: 148px; }
+
+        body.ui-lab .compendium-sidebar { position: sticky; top: 10px; align-self: start; }
+        body.ui-lab .compendium-hero { padding: 10px 10px 8px; }
+        body.ui-lab .compendium-hero p:last-of-type { display: none; }
+        body.ui-lab .compendium-hero-mark { width: 30px; height: 30px; }
+        body.ui-lab .compendium-category { border-radius: 6px; }
+        body.ui-lab .compendium-search-panel {
+          position: sticky; top: 10px; z-index: 4; border-color: color-mix(in srgb, var(--accent) 25%, var(--line));
+          box-shadow: 0 4px 14px color-mix(in srgb, var(--ink) 8%, transparent);
+          background: color-mix(in srgb, var(--panel) 94%, var(--accent));
+        }
+        body.ui-lab .compendium-stage,
+        body.ui-lab .compendium-article { border-top: 3px solid color-mix(in srgb, var(--accent) 54%, var(--line)); }
+
+        body.ui-lab[data-view="scenario-review"] .manual-decision-banner {
+          padding: 9px; border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+          border-left: 4px solid var(--accent); border-radius: 8px;
+          background: color-mix(in srgb, var(--accent) 4%, var(--panel));
+        }
+        body.ui-lab[data-view="scenario-review"] .manual-decision-primary { padding: 7px 9px; background: transparent; }
+        body.ui-lab[data-view="scenario-review"] #manualActionsA,
+        body.ui-lab[data-view="scenario-review"] #manualActionsB {
+          padding: 9px; border: 1px solid var(--line); border-radius: 8px;
+          background: color-mix(in srgb, var(--panel) 96%, var(--soft));
+        }
+        body.ui-lab[data-view="scenario-review"] #manualActionsA .manual-editor-kicker,
+        body.ui-lab[data-view="scenario-review"] #manualActionsB .manual-editor-kicker { color: var(--muted); }
+        body.ui-lab[data-view="scenario-review"] .manual-editor-command-bar { align-self: stretch; }
+        body.ui-lab[data-view="scenario-review"] .manual-continue-auto {
+          min-height: 46px; border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+          background: color-mix(in srgb, var(--accent) 10%, var(--panel)); color: var(--accent-dark);
+        }
+
         @media (max-width: 900px) {
           body.ui-lab header { padding-bottom: 6px; }
           body.ui-lab .app-tabs { position: relative; padding-right: 54px; }
@@ -251,6 +316,8 @@
           const shieldCount = prefix => Number(byId(prefix + 'Shields')?.value || 0);
           const name = prefix => text(prefix + 'BattleName') || byId(prefix + 'Search')?.value || (prefix === 'p1' ? 'Pokémon A' : 'Pokémon B');
           const energy = prefix => (byId(prefix + 'EnergyPanel')?.textContent || '').match(/\d+/)?.[0] || '0';
+          const resultText = () => (byId('battleReview')?.innerText || byId('battleReview')?.textContent || '').trim();
+          const timelineTime = () => text('timelineHoverLabel') || text('manualTimelineGrid').match(/T\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?s/)?.[0] || '';
 
           function ensureBadge() {
             document.body.classList.add('ui-lab');
@@ -273,11 +340,14 @@
             ensureOutcome();
             const box = byId('uiLabOutcome');
             const a = hp('p1HpText'); const b = hp('p2HpText');
-            if (!box || !a || !b || (!a.current && !b.current)) { if (box?.classList.contains('is-visible')) box.classList.remove('is-visible'); return; }
-            const winner = a.current > b.current ? { side: 'p1', state: a } : b.current > a.current ? { side: 'p2', state: b } : null;
-            if (!winner) { if (box.classList.contains('is-visible')) box.classList.remove('is-visible'); return; }
-            const winnerName = name(winner.side);
-            const duration = Array.from(document.querySelectorAll('.timeline-grid *')).map(node => node.textContent || '').join(' ').match(/T\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?s/)?.[0] || 'Battle complete';
+            const review = resultText();
+            const resultLine = review.split(/\n+/).find(line => /\bwins\s+with\b/i.test(line)) || '';
+            const resultMatch = resultLine.match(/^(.+?)\s+wins\s+with\s+(\d+)\s+HP\s+and\s+(\d+)\s+energy/i);
+            if (!box || !a || !b || !resultMatch) { if (box?.classList.contains('is-visible')) box.classList.remove('is-visible'); return; }
+            const winnerName = resultMatch[1].trim();
+            const winnerSide = winnerName === name('p1') ? 'p1' : winnerName === name('p2') ? 'p2' : (a.current >= b.current ? 'p1' : 'p2');
+            const winner = { side: winnerSide, state: winnerSide === 'p1' ? a : b };
+            const duration = timelineTime() || 'Battle complete';
             const stats = [
               winner.state.current + '/' + winner.state.max + ' HP',
               energy(winner.side) + ' energy',
@@ -319,6 +389,8 @@
           observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['data-view', 'class', 'hidden'] });
           window.addEventListener('resize', exposeMobileDecision, { passive: true });
           window.addEventListener('load', () => { refresh(); setTimeout(refresh, 80); });
+          // The simulator streams timeline labels independently from the result panel; a light poll keeps the derived summary in sync.
+          window.setInterval(updateOutcome, 180);
           refresh();
         })();
       ` + '</' + 'script>';
