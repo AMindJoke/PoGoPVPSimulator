@@ -31,16 +31,29 @@ assert.match(trainer, /data-fast-count-pokemon-search/);
 assert.match(trainer, /role="combobox"/);
 assert.match(trainer, /role="listbox"/);
 assert.match(trainer, /ArrowDown/);
+assert.match(trainer, /data-fast-count-open-mode/);
+assert.match(trainer, /fast-count-mode-sheet/);
+assert.match(trainer, /role="dialog" aria-modal="true"/);
+assert.match(trainer, /data-fast-count-open-details/);
+assert.match(trainer, /fast-count-details-sheet/);
+assert.match(trainer, /event\.key === "Escape"/);
+assert.match(trainer, /event\.key === "Tab"/);
+assert.match(trainer, /button:not\(\[disabled\]\), input:not\(\[disabled\]\), select:not\(\[disabled\]\), summary/);
+assert.match(trainer, /fast-count-feedback-result/);
+assert.match(trainer, /fast-count-equation/);
 assert.match(trainer, /state\.difficulty !== "advanced"/);
 assert.match(trainer, /state\.difficulty === "beginner"/);
 assert.match(trainer, /state\.mode === "learn" \|\| state\.sessionDone/);
 
-for (const width of [1050, 760, 430, 350]) {
+for (const width of [900, 760, 430, 350]) {
   assert.match(styles, new RegExp(`max-width:\\s*${width}px`), `missing ${width}px responsive rule`);
 }
 assert.match(styles, /prefers-reduced-motion:\s*reduce/);
-assert.match(styles, /grid-template-areas:\s*"center"\s*"context"\s*"side"/);
-assert.match(styles, /\.fast-count-move-fast\s*\{\s*grid-column:\s*1 \/ -1/);
+assert.match(styles, /grid-template-columns:\s*minmax\(470px, 1\.7fr\) minmax\(245px, \.72fr\)/);
+assert.match(styles, /\.fast-count-mode-bar\s*\{\s*display:\s*none/);
+assert.match(styles, /\.fast-count-workspace > \.fast-count-side\s*\{\s*display:\s*none/);
+assert.match(styles, /max-height:\s*min\(88dvh, 760px\)/);
+assert.match(styles, /grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
 
 for (const asset of [
   "src/training/fast-count-engine.js",
