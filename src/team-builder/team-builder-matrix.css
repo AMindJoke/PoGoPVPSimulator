@@ -95,6 +95,15 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
   overscroll-behavior: contain;
 }
 
+#teamBuilderView .team-coverage-table {
+  width: var(--matrix-desktop-width, 100%);
+  min-width: 0;
+  max-width: 100%;
+}
+
+#teamBuilderView .team-coverage-opponent-column { width: 210px; }
+#teamBuilderView .team-coverage-matchup-column { width: 130px; }
+
 #teamBuilderView .team-coverage-table th,
 #teamBuilderView .team-coverage-table td {
   padding: 6px 8px;
@@ -184,24 +193,31 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
 #teamBuilderView .team-matchup-cell.is-pending { opacity: .58; }
 
 @media (max-width: 760px) {
-  #teamBuilderView .team-coverage { padding: 12px; }
+  #teamBuilderView .team-coverage { padding: 10px; }
   #teamBuilderView .team-coverage-head { align-items: stretch; }
   #teamBuilderView .team-coverage-status-legend { width: 100%; gap: 10px; }
   #teamBuilderView .team-coverage-status-legend > span { grid-template-columns: 42px auto; }
   #teamBuilderView .team-coverage-status-legend .team-matchup-cell { width: 42px; }
   #teamBuilderView .team-coverage-desktop { display: block; width: 100%; max-height: min(70vh, 620px); overflow: auto; }
   #teamBuilderView .team-coverage-mobile { display: none; }
-  #teamBuilderView .team-coverage-table { min-width: 652px; }
+  #teamBuilderView .team-coverage-table {
+    width: var(--matrix-mobile-width, 100%);
+    min-width: 0;
+    max-width: none;
+  }
+  #teamBuilderView .team-coverage-opponent-column { width: 100px; }
+  #teamBuilderView .team-coverage-matchup-column { width: 39px; }
   #teamBuilderView .team-coverage-table .team-coverage-opponent-head,
-  #teamBuilderView .team-coverage-table tbody th { width: 148px; }
+  #teamBuilderView .team-coverage-table tbody th { width: 100px; }
   #teamBuilderView .team-coverage-table th,
-  #teamBuilderView .team-coverage-table td { padding: 5px; }
+  #teamBuilderView .team-coverage-table td { padding: 3px; }
   #teamBuilderView .team-coverage-table thead th { height: 64px; }
   #teamBuilderView .team-coverage-pokemon-head img { width: 34px; height: 34px; }
-  #teamBuilderView .team-coverage-pokemon-head span { max-width: 76px; font-size: 9px; }
-  #teamBuilderView .team-coverage-opponent { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 5px; }
-  #teamBuilderView .team-coverage-opponent img { width: 34px; height: 34px; }
+  #teamBuilderView .team-coverage-pokemon-head span { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 7px; }
+  #teamBuilderView .team-coverage-opponent { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 3px; }
+  #teamBuilderView .team-coverage-opponent img { width: 24px; height: 24px; }
   #teamBuilderView .team-coverage-opponent-copy strong { font-size: 10px; }
   #teamBuilderView .team-coverage-opponent-copy small { display: none; }
-  #teamBuilderView .team-coverage-answer-count { min-width: 25px; font-size: 9px; }
+  #teamBuilderView .team-coverage-answer-count { min-width: 18px; font-size: 7px; }
+  #teamBuilderView .team-matchup-cell::after { display: none; }
 }

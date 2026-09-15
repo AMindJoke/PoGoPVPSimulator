@@ -163,7 +163,11 @@ assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\
 assert.match(html, /@media \(max-width: 430px\)[\s\S]{0,180}team-roster-grid[\s\S]{0,80}1fr/, "Very narrow mobile widths must use one column.");
 assert.match(html, /#teamBuilderEditorModal \.team-editor-section \{[^}]*max-width: none/, "Global section sizing must not compress the build editor.");
 assert.doesNotMatch(html, /team-builder-placeholder/);
-assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table \.team-coverage-opponent-head,[\s\S]{0,120}team-coverage-table tbody th \{ width: 148px/, "Mobile must keep a compact sticky first column while the matrix scrolls.");
-assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260915-v1/);
+assert.match(html, /const matrixDesktopWidth = 210 \+ teamEntries\.length \* 130;[\s\S]{0,180}const matrixMobileWidth = 100 \+ teamEntries\.length \* 39;/, "Partial teams must keep fixed compact matchup columns instead of stretching across the matrix.");
+assert.match(html, /<colgroup><col class="team-coverage-opponent-column">[\s\S]{0,180}team-coverage-matchup-column/, "Coverage tables must define explicit reusable column geometry.");
+assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table tbody th \{ width: 100px/, "Mobile must keep a compact sticky first column while the matrix scrolls.");
+assert.match(matrixStyles, /team-coverage-matchup-column \{ width: 39px; \}/, "Six mobile matchup columns must use the compact width budget.");
+assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
+assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260915-v2/);
 
 console.log("Team Builder UI contract tests passed.");
