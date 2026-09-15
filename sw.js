@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-15-v40-fast-count-readability";
+const CACHE_VERSION = "2026-09-15-v41-team-builder-matrix";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -46,6 +46,7 @@ const CORE_ASSETS = [
   "./src/team-builder/team-builder-state.js",
   "./src/team-builder/team-builder-meta.js",
   "./src/team-builder/team-builder-analysis.js",
+  "./src/team-builder/team-builder-matrix.css",
   "./src/team-builder/team-builder-share.js",
   "./src/team-builder/team-builder-battle-link.js",
   "./src/compendium/compendium-model.js",

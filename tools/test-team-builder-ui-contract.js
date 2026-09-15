@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
+const matrixStyles = fs.readFileSync(path.join(__dirname, "..", "src", "team-builder", "team-builder-matrix.css"), "utf8");
 
 assert.match(html, /src="src\/team-builder\/team-builder-state\.js"/);
 assert.match(html, /src="src\/team-builder\/team-builder-meta\.js"/);
@@ -77,12 +78,12 @@ assert.match(html, /function simulateTeamBuilderMatchupCell[\s\S]{0,1600}runAuto
 assert.match(html, /All \$\{total\} deterministic matchups are ready from cache/, "Phase 4 must report prepared engine data without rendering the Phase 5 matrix.");
 assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_BUILDER_THREAT_POOL_SIZE/, "Threat coverage must extend the selected meta with the local ranked competitive field.");
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
-assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,2200}#9a9690[\s\S]{0,350}#075f68[\s\S]{0,650}#c94229/, "The seven-level scale must use the requested gray, teal, and coral family with stronger endpoints.");
-assert.match(html, /--result-surface:\$\{palette\.surface\}[\s\S]{0,180}--result-text:\$\{palette\.text\}[\s\S]{0,180}--result-mark:\$\{palette\.mark\}/, "Every result tier must coordinate surface, text, and categorical mark contrast.");
-assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,500}9650[^\n]+9660[\s\S]{0,250}is-\$\{visual\.tier\}/, "Categorical capsules must use one directional mark whose visual intensity follows the result tier.");
+assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,650}presentation\.tier === "dominant" \? "hard" : "soft"[\s\S]{0,180}state: `\$\{strength\}-\$\{outcome\}`/, "The five-state UI must reuse the established tiers, mapping only dominant to Hard and clear/slight to Soft.");
+assert.match(matrixStyles, /--matrix-hard-win-bg: #1769e8[\s\S]{0,700}--matrix-hard-loss-bg: #f1253e/, "The matrix must define vivid blue/red endpoints and explicit soft and neutral surfaces.");
+assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,300}favorable" \? "W" : "L"[\s\S]{0,180}team-matchup-symbol/, "Matrix cells must use W, L, and a dash rather than arrows or visible ratings.");
 assert.equal((html.match(/class="team-coverage-status-legend"/g) || []).length, 2, "Both coverage matrices must explain the same categorical marks.");
-assert.match(html, /Seven result levels: a faded arrow is slight[^\"]+bright arrow is dominant[^\"]+dash is neutral/, "The compact categorical legend must remain fully accessible.");
-assert.match(html, /\.team-matchup-mark\.is-slight \{[^}]+rgba\(255,255,255,\.46\)[^}]*\}[\s\S]{0,100}\.team-matchup-mark\.is-dominant \{[^}]+color: #fff/, "Coverage marks must communicate severity through symbol intensity, with dominant outcomes strongest.");
+assert.match(html, /querySelectorAll\("#teamBuilderView \.team-coverage-status-legend"\)[\s\S]{0,250}aria-label", "Matchup result legend"/, "Both five-state legends must be named accessibly when the matrices render.");
+for (const state of ["hard-win", "soft-win", "neutral", "soft-loss", "hard-loss"]) assert.match(matrixStyles, new RegExp(`team-matchup-cell\\.result-${state}`), `missing ${state} matrix state`);
 assert.match(html, /const rank = options\.showThreatSummary \? teamBuilderThreatGroups\.findIndex[^\n]+\+ 1 : row \+ 1;[\s\S]{0,900}class="team-coverage-rank">\$\{rank\}/, "Filtered coverage rows must preserve their original threat rank.");
 assert.match(html, /\.team-coverage-table thead \{[^}]+position: sticky[^}]+z-index: 30[^}]+isolation: isolate[\s\S]{0,500}\.team-coverage-table tbody \{[^}]+z-index: 0/, "The complete Pokemon header row must remain in a higher stacking context than matchup cells while the matrix scrolls.");
 assert.match(html, /const shadow = \/\\s\*\\\(Shadow\\\)\$\/i[\s\S]{0,450}team-coverage-form-badge/, "Shadow team members must use a compact form badge instead of compressing the header name.");
@@ -91,18 +92,18 @@ assert.match(html, /data-result-tooltip="\$\{escapeHtml\(`\$\{category\} · Rati
 assert.match(html, /function teamBuilderThreatFilteredGroups\(\)[\s\S]{0,1400}uncovered[\s\S]{0,300}hard-losses[\s\S]{0,300}close/, "Threat Coverage must support search and the All, Uncovered, Hard losses, and Close matchups filters.");
 assert.match(html, /function teamBuilderThreatVisibleGroups\(\)[\s\S]{0,250}slice\(0, 20\)[\s\S]{0,900}Show top 20[\s\S]{0,100}Show all/, "Threat Coverage must default to the top 20 while allowing the full filtered list to expand.");
 assert.match(html, /function bindTeamBuilderCoverageFocus\(box\)[\s\S]{0,1000}is-row-focus[\s\S]{0,300}is-column-focus/, "Pointer focus must link the active matchup to its row and team column.");
-assert.match(html, /\.team-coverage-opponent img \{[^}]+width: 48px[^}]+height: 48px/, "Threat and Meta identity rows must use meaningfully recognizable opponent sprites.");
-assert.match(html, /\.team-coverage-opponent-copy strong \{ font-size: 10px/, "Threat identity rows must keep the Pokemon name readable.");
-assert.match(html, /\.team-coverage-opponent-copy small \{ color: var\(--muted\); font-size: 7\.5px/, "Threat identity rows must keep a distinct compact summary line beneath the name.");
+assert.match(matrixStyles, /\.team-coverage-opponent img \{ width: 44px; height: 44px/, "Threat and Meta identity rows must use compact recognizable opponent sprites.");
+assert.match(matrixStyles, /\.team-coverage-opponent-copy strong \{ font-size: 12px/, "Threat identity rows must keep the Pokemon name readable.");
+assert.match(matrixStyles, /\.team-coverage-opponent-copy small \{ font-size: 9px/, "Threat identity rows must keep a distinct compact summary line beneath the name.");
 assert.match(html, /function teamBuilderAnswerGroupLabel\(answerCount\)[\s\S]{0,180}answerCount === 1 \? "ANSWER" : "ANSWERS"/, "Answer-group labels must use correct singular and plural wording.");
 assert.match(html, /answerCount !== previousAnswerCount[\s\S]{0,260}class="team-answer-divider"[\s\S]{0,450}previousAnswerCount = answerCount/, "Threat rows must insert exactly one subtle divider whenever the answer count changes.");
 assert.match(html, /const answerText = summary \? `\$\{summary\.answerCount\}\/\$\{summary\.teamSize\}`[\s\S]{0,1800}team-coverage-answer-count[^\n]+\$\{answerText\}/, "Each threat row must expose answer count against the current populated team size as primary information.");
 assert.match(html, /const selectedCount = teamBuilderState\?\.team\?\.filter\(Boolean\)\.length \|\| 0;/, "Coverage progress must derive the real populated team size.");
 assert.match(html, /\$\("teamBuilderAnalyze"\)\.disabled = !hasTeam \|\| !total \|\| teamBuilderAnalysisActive \|\| cached === total;/, "Coverage preparation must remain available for incomplete teams with at least one member.");
 assert.match(html, /function startTeamBuilderAnalysis\(\)[\s\S]{0,300}!teamBuilderState\.team\.filter\(Boolean\)\.length \|\| !coveragePlan\.length/, "Canonical coverage analysis must only reject an empty team, not a 4\/6 or 5\/6 team.");
-assert.match(html, /\.team-matchup-cell \.team-matchup-mark \{[^}]+color: var\(--result-color\) !important[^}]+opacity: 1/, "Every non-neutral heatmap outcome, including close matchups, must keep a fully visible directional arrow whose tier is conveyed by its semantic shade.");
+assert.match(matrixStyles, /\.team-matchup-cell \{[^}]+min-height: 44px[^}]+border-radius: 8px/, "Matrix cells must share one compact accessible geometry.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
-assert.match(html, /function renderTeamBuilderCoverageMobile[\s\S]{0,2200}teamBuilderMobileOpponentIndex/, "Mobile coverage must use a focused opponent presentation.");
+assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3600}team-coverage-desktop \{ display: block[\s\S]{0,180}overflow: auto[\s\S]{0,200}team-coverage-mobile \{ display: none/, "Mobile must preserve the horizontally scrollable semantic table.");
 assert.match(html, /function openTeamBuilderMatchup[\s\S]{0,900}teamBuilderBattleLaunchPayload[\s\S]{0,500}createUrl\(window\.location\.href, payload\)[\s\S]{0,180}window\.open\(url, "_blank", "noopener,noreferrer"\)/, "Every prepared cell must open its canonical Battle simulation in a new browser tab.");
 assert.match(html, /function loadTeamBuilderBattleFromLocation[\s\S]{0,900}applyTeamBuilderBattleSide\("p1", payload\.left\)[\s\S]{0,350}runBattleToEnd\(\{ runtimeContext: "matrix", scrollTarget: "timeline" \}\)/, "Direct Team Builder Battle links must restore both canonical combatants and run the matrix-context simulation.");
 assert.match(html, /Opens Battle simulation in a new tab/, "Coverage matchup controls must announce their new-tab behavior accessibly.");
@@ -162,6 +163,7 @@ assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\
 assert.match(html, /@media \(max-width: 430px\)[\s\S]{0,180}team-roster-grid[\s\S]{0,80}1fr/, "Very narrow mobile widths must use one column.");
 assert.match(html, /#teamBuilderEditorModal \.team-editor-section \{[^}]*max-width: none/, "Global section sizing must not compress the build editor.");
 assert.doesNotMatch(html, /team-builder-placeholder/);
-assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,3200}team-coverage-desktop[\s\S]{0,100}display: none[\s\S]{0,300}team-coverage-mobile[\s\S]{0,100}display: block/, "Mobile must not compress the desktop matrix.");
+assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table \.team-coverage-opponent-head,[\s\S]{0,120}team-coverage-table tbody th \{ width: 148px/, "Mobile must keep a compact sticky first column while the matrix scrolls.");
+assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260915-v1/);
 
 console.log("Team Builder UI contract tests passed.");

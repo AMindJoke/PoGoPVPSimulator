@@ -15,6 +15,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
+  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260915-v1">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -18280,38 +18281,32 @@
 
     function teamBuilderResultVisual(result) {
       const presentation = window.PvPeakTeamBuilderAnalysis.resultPresentation(result);
-      const palette = presentation.tone === "neutral"
-        ? { color: "#9a9690", surface: "#f0efed", border: "#d4d1cd", text: "#383633", mark: "#9a9690" }
-        : presentation.tone === "favorable"
-          ? presentation.tier === "dominant"
-            ? { color: "#075f68", surface: "#b9dde0", border: "#72b1b7", text: "#123a3e", mark: "#075f68" }
-            : presentation.tier === "clear"
-              ? { color: "#0e7c86", surface: "#d4eaec", border: "#9fc9cd", text: "#153f43", mark: "#0e7c86" }
-              : { color: "#3f98a0", surface: "#e9f4f4", border: "#c7dedf", text: "#1e4c50", mark: "#3f98a0" }
-          : presentation.tier === "dominant"
-            ? { color: "#c94229", surface: "#f1bfb3", border: "#e0836d", text: "#5b2117", mark: "#c94229" }
-            : presentation.tier === "clear"
-              ? { color: "#e85c3c", surface: "#f8d9d1", border: "#eda996", text: "#6b291b", mark: "#e85c3c" }
-              : { color: "#ed8068", surface: "#fcede9", border: "#f3cdc4", text: "#663026", mark: "#ed8068" };
-      return {
-        ...presentation,
-        ...palette,
-        style: `--result-color:${palette.color};--result-surface:${palette.surface};--result-border-color:${palette.border};--result-text:${palette.text};--result-mark:${palette.mark}`
-      };
+      if (presentation.tone === "neutral") return { ...presentation, state: "neutral" };
+      const outcome = presentation.tone === "favorable" ? "win" : "loss";
+      // Presentation only: dominant becomes Hard; the existing clear and slight tiers share Soft.
+      const strength = presentation.tier === "dominant" ? "hard" : "soft";
+      return { ...presentation, state: `${strength}-${outcome}` };
     }
 
     function teamBuilderResultMarkHtml(visual) {
-      const symbol = visual.tone === "neutral"
-        ? "&mdash;"
-        : visual.tone === "favorable" ? "&#9650;" : "&#9660;";
-      const classes = `team-matchup-mark is-${visual.tier}`;
-      return `<i class="${classes}" aria-hidden="true">${symbol}</i>`;
+      const symbol = visual.tone === "neutral" ? "&mdash;" : visual.tone === "favorable" ? "W" : "L";
+      return `<i class="team-matchup-symbol" aria-hidden="true">${symbol}</i>`;
     }
 
     function teamBuilderResultCategory(visual) {
-      if (visual.tone === "neutral") return "Neutral";
-      const outcome = visual.tone === "favorable" ? "win" : "loss";
-      return visual.tier === "dominant" ? `Dominant ${outcome}` : visual.tier === "clear" ? outcome[0].toUpperCase() + outcome.slice(1) : `Slight ${outcome}`;
+      if (visual.state === "neutral") return "Neutral";
+      return visual.state.split("-").map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
+    }
+
+    function teamBuilderMatrixLegendHtml() {
+      const items = [
+        ["hard-win", "W", "Hard Win", "Strong advantage"],
+        ["soft-win", "W", "Soft Win", "Slight advantage"],
+        ["neutral", "&mdash;", "Neutral", "Even matchup"],
+        ["soft-loss", "L", "Soft Loss", "Slight disadvantage"],
+        ["hard-loss", "L", "Hard Loss", "Strong disadvantage"]
+      ];
+      return items.map(([state, symbol, label, detail]) => `<span role="listitem"><i class="team-matchup-cell result-${state}" aria-hidden="true"><strong><span class="team-matchup-symbol">${symbol}</span></strong></i><b>${label}</b><small>${detail}</small></span>`).join("");
     }
 
     function renderTeamBuilderCoverage() {
@@ -18335,6 +18330,11 @@
         $("teamBuilderReplacement")?.classList.remove("is-visible");
         return;
       }
+      document.querySelectorAll("#teamBuilderView .team-coverage-status-legend").forEach(legend => {
+        legend.setAttribute("role", "list");
+        legend.setAttribute("aria-label", "Matchup result legend");
+        legend.innerHTML = teamBuilderMatrixLegendHtml();
+      });
       if (threatReady) {
         teamBuilderThreatGroups = threatGroups;
         $("teamBuilderThreatCoverageSubtitle").textContent = `${threatGroups.length} threats · hardest first`;
@@ -18360,8 +18360,8 @@
       const accessible = `${pokemon?.name || `Team slot ${slot + 1}`} versus ${findPokemon(opponentId)?.name || opponentId}: ${category}, battle rating ${result.score}`;
       const mark = teamBuilderResultMarkHtml(visual);
       const launchLabel = `${accessible}. Opens Battle simulation in a new tab.`;
-      if (mobile) return `<button class="team-mobile-matchup result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(launchLabel)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
-      return `<button class="team-matchup-cell result-${visual.tier}" style="${visual.style}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score} · Open Battle ↗`)}" aria-label="${escapeHtml(launchLabel)}"><strong>${mark}</strong></button>`;
+      if (mobile) return `<button class="team-mobile-matchup result-${visual.state}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(launchLabel)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
+      return `<button class="team-matchup-cell result-${visual.state}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score} · Open Battle ↗`)}" aria-label="${escapeHtml(launchLabel)}"><strong>${mark}</strong></button>`;
     }
 
     function teamBuilderThreatFilteredGroups() {
@@ -36020,7 +36020,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260915-v40").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260915-v41").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
