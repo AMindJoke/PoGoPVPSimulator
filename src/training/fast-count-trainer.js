@@ -399,7 +399,7 @@
       const activeMode = MODES.find(mode => mode.id === state.mode) || MODES[1];
       return `<div class="fast-count-head">
         <div class="fast-count-title"><span class="fast-count-eyebrow">Training tools</span><h1>Fast Count</h1></div>
-        <button class="fast-count-mode-trigger" type="button" data-fast-count-open-mode aria-haspopup="dialog" aria-expanded="${state.modeSheetOpen}"><span aria-hidden="true">${activeMode.icon}</span>${escapeHtml(activeMode.label)}<i aria-hidden="true">⌄</i></button>
+        <button class="fast-count-mode-trigger" type="button" data-fast-count-open-mode aria-haspopup="dialog" aria-expanded="${state.modeSheetOpen}"><span class="fast-count-mode-trigger-icon" aria-hidden="true">${activeMode.icon}</span><span class="fast-count-mode-trigger-copy"><small>Mode:</small> ${escapeHtml(activeMode.label)}</span><i aria-hidden="true">⌄</i></button>
         <div class="fast-count-session-status"${state.mode === "learn" ? " hidden" : ""}><span><strong>${Math.min(SESSION_LENGTH, state.sessionCompleted + (state.answered ? 0 : 1))}</strong> / ${SESSION_LENGTH}</span><div role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.sessionCompleted}"><i style="width:${progress}%"></i></div><span class="fast-count-streak" aria-label="Current streak">🔥 ${state.streak}</span></div>
       </div>${modeBar()}`;
     }

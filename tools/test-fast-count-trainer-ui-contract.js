@@ -32,6 +32,8 @@ assert.match(trainer, /role="combobox"/);
 assert.match(trainer, /role="listbox"/);
 assert.match(trainer, /ArrowDown/);
 assert.match(trainer, /data-fast-count-open-mode/);
+assert.match(trainer, /fast-count-mode-trigger-copy[^>]*><small>Mode:<\/small>/,
+  "The compact mode selector must explain that its current value changes the practice mode.");
 assert.match(trainer, /fast-count-mode-sheet/);
 assert.match(trainer, /role="dialog" aria-modal="true"/);
 assert.match(trainer, /data-fast-count-open-details/);

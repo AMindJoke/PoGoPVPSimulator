@@ -18,7 +18,9 @@
 .fast-count-head h1 { margin: 2px 0 0; font-size: 27px; line-height: 1; letter-spacing: -.02em; }
 .fast-count-mode-trigger { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 13px; border: 1px solid #d69b08; border-radius: 10px; background: #fff1b6; color: #15244a; box-shadow: 0 2px 0 rgba(133,92,0,.12); font-size: 12px; font-weight: 900; }
 .fast-count-mode-trigger:hover { background: #ffe88e; transform: none; }
-.fast-count-mode-trigger > span { color: var(--fc-blue-dark); font-size: 15px; }
+.fast-count-mode-trigger > .fast-count-mode-trigger-icon { color: var(--fc-blue-dark); font-size: 15px; }
+.fast-count-mode-trigger-copy { color: inherit; font-size: 12px; white-space: nowrap; }
+.fast-count-mode-trigger-copy small { color: inherit; font-size: inherit; font-weight: 750; opacity: .7; }
 .fast-count-mode-trigger i { font-style: normal; }
 .fast-count-session-status { min-width: 0; display: grid; grid-template-columns: auto minmax(70px, 1fr) auto; align-items: center; gap: 8px; }
 .fast-count-session-status > span { color: var(--muted); font-size: 11px; font-weight: 850; white-space: nowrap; }
