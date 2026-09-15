@@ -380,15 +380,15 @@
     }
 
     function modeBar() {
-      return `<div class="fast-count-mode-bar" role="tablist" aria-label="Training mode">${MODES.map(mode => `<button type="button" role="tab" data-fast-count-mode="${mode.id}" aria-selected="${state.mode === mode.id}" title="${escapeHtml(mode.description)}"><span>${escapeHtml(mode.short)}</span></button>`).join("")}</div>`;
+      return `<div class="fast-count-mode-bar" role="tablist" aria-label="Training mode">${MODES.map(mode => `<button class="ui-button ui-button--ghost ui-button--md" type="button" role="tab" data-fast-count-mode="${mode.id}" aria-selected="${state.mode === mode.id}" title="${escapeHtml(mode.description)}"><span>${escapeHtml(mode.short)}</span></button>`).join("")}</div>`;
     }
 
     function modeSheet() {
       if (!state.modeSheetOpen) return "";
       return `<div class="fast-count-sheet-layer" data-fast-count-close-mode>
         <section class="fast-count-sheet fast-count-mode-sheet" role="dialog" aria-modal="true" aria-labelledby="fastCountModeTitle" data-fast-count-sheet tabindex="-1">
-          <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountModeTitle">Practice mode</h2><button type="button" aria-label="Close mode selector" data-fast-count-close-mode>×</button></header>
-          <div class="fast-count-mode-list">${MODES.map(mode => `<button type="button" data-fast-count-mode="${mode.id}" aria-pressed="${state.mode === mode.id}" class="${state.mode === mode.id ? "is-selected" : ""}"><span class="fast-count-mode-icon" aria-hidden="true">${mode.icon}</span><span><strong>${escapeHtml(mode.label)}</strong><small>${escapeHtml(mode.description)}</small></span><i aria-hidden="true"></i></button>`).join("")}</div>
+          <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountModeTitle">Practice mode</h2><button class="ui-button ui-button--ghost ui-button--md" type="button" aria-label="Close mode selector" data-fast-count-close-mode>×</button></header>
+          <div class="fast-count-mode-list">${MODES.map(mode => `<button type="button" data-fast-count-mode="${mode.id}" aria-pressed="${state.mode === mode.id}" class="ui-button ui-button--secondary ui-button--lg ${state.mode === mode.id ? "is-selected" : ""}"><span class="fast-count-mode-icon" aria-hidden="true">${mode.icon}</span><span><strong>${escapeHtml(mode.label)}</strong><small>${escapeHtml(mode.description)}</small></span><i aria-hidden="true"></i></button>`).join("")}</div>
           <div class="fast-count-method-key" aria-label="Fast Count method"><h3>How it works</h3><p><strong>Base</strong><span>count from zero</span></p><p><strong>Threshold</strong><span>bank needed to save one Fast</span></p><p><strong>Gain</strong><span>carry added after a normal cycle</span></p></div>
         </section>
       </div>`;
@@ -399,7 +399,7 @@
       const activeMode = MODES.find(mode => mode.id === state.mode) || MODES[1];
       return `<div class="fast-count-head">
         <div class="fast-count-title"><span class="fast-count-eyebrow">Training tools</span><h1>Fast Count</h1></div>
-        <button class="fast-count-mode-trigger" type="button" data-fast-count-open-mode aria-haspopup="dialog" aria-expanded="${state.modeSheetOpen}"><span class="fast-count-mode-trigger-icon" aria-hidden="true">${activeMode.icon}</span><span class="fast-count-mode-trigger-copy"><small>Mode:</small> ${escapeHtml(activeMode.label)}</span><i aria-hidden="true">⌄</i></button>
+        <button class="ui-button ui-button--secondary ui-button--md fast-count-mode-trigger" type="button" data-fast-count-open-mode aria-haspopup="dialog" aria-expanded="${state.modeSheetOpen}"><span class="fast-count-mode-trigger-icon" aria-hidden="true">${activeMode.icon}</span><span class="fast-count-mode-trigger-copy"><small>Mode:</small> ${escapeHtml(activeMode.label)}</span><i aria-hidden="true">⌄</i></button>
         <div class="fast-count-session-status"${state.mode === "learn" ? " hidden" : ""}><span><strong>${Math.min(SESSION_LENGTH, state.sessionCompleted + (state.answered ? 0 : 1))}</strong> / ${SESSION_LENGTH}</span><div role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.sessionCompleted}"><i style="width:${progress}%"></i></div><span class="fast-count-streak" aria-label="Current streak">🔥 ${state.streak}</span></div>
       </div>${modeBar()}`;
     }
@@ -440,7 +440,7 @@
         <div class="fast-count-math"><p><span>Previous bank</span><strong>${exercise.energyBefore}</strong></p><p><span>${exercise.fastCount} × ${escapeHtml(exercise.fastMove.name)}</span><strong class="is-positive">+${exercise.energyGained}</strong></p><p><span>Energy reached</span><strong>${exercise.energyAtThrow}</strong></p><p><span>${escapeHtml(exercise.chargedMove.name)} cost</span><strong class="is-negative">−${exercise.chargedCost}</strong></p><p><span>New bank</span><strong>${exercise.energyAfter}</strong></p></div>
         <p class="fast-count-equation">${equation}</p>
         ${exercise.capWaste ? `<p>${exercise.capWaste} energy is lost at the 100-energy cap.</p>` : ""}
-        ${state.mode === "memory" && !state.showMemoryBank ? `<button class="secondary" type="button" data-fast-count-show-bank>Show bank on the rail</button>` : ""}
+        ${state.mode === "memory" && !state.showMemoryBank ? `<button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-show-bank>Show bank on the rail</button>` : ""}
       </section>`;
     }
 
@@ -450,7 +450,7 @@
       const previous = exercise.previousMove
         ? `<div class="fast-count-throw is-previous" style="--move-color:${TYPE_COLORS[exercise.previousMove.type] || TYPE_COLORS.normal}"><span>Just thrown</span><strong>${escapeHtml(exercise.previousMove.name)}</strong></div>`
         : `<div class="fast-count-throw is-previous"><span>Just thrown</span><strong>Start of sequence</strong></div>`;
-      if (state.answered) return `<section class="fast-count-challenge is-feedback" aria-label="Answer feedback">${feedbackPanel(exercise)}<button class="fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next"}<span aria-hidden="true">→</span></button></section>`;
+      if (state.answered) return `<section class="fast-count-challenge is-feedback ${state.correct ? "is-correct" : "is-incorrect"}" aria-label="Answer feedback">${feedbackPanel(exercise)}<button class="ui-button ui-button--primary ui-button--lg fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next"}<span aria-hidden="true">→</span></button></section>`;
       return `<section class="fast-count-challenge" aria-labelledby="fastCountQuestion">
         <div class="fast-count-throw-context">${previous}<div class="fast-count-throw is-next" style="--move-color:${TYPE_COLORS[exercise.chargedMove.type] || TYPE_COLORS.normal}"><span>Next</span><strong>${escapeHtml(exercise.chargedMove.name)}</strong>${visibility.values ? `<small>${exercise.chargedCost} energy</small>` : ""}</div></div>
         <h2 id="fastCountQuestion"><span>How many</span><strong>${escapeHtml(exercise.fastMove.name)}?</strong></h2>
@@ -470,10 +470,10 @@
           <label><span>Base</span><small>From zero</small><input name="base" inputmode="numeric" type="number" min="0" max="100" required${state.answered ? ` value="${escapeHtml(state.answer?.base)}" disabled` : ""}></label>
           <label><span>Threshold</span><small>Bank needed</small><input name="threshold" inputmode="numeric" type="number" min="0" max="100" required${state.answered ? ` value="${escapeHtml(state.answer?.threshold)}" disabled` : ""}></label>
           <label><span>Gain</span><small>Carry added</small><input name="gain" inputmode="numeric" type="number" min="0" max="100" required${state.answered ? ` value="${escapeHtml(state.answer?.gain)}" disabled` : ""}></label>
-          ${state.answered ? "" : `<button type="submit">Check shortcut</button>`}
+          ${state.answered ? "" : `<button class="ui-button ui-button--primary ui-button--lg" type="submit">Check shortcut</button>`}
         </form>
         ${feedbackPanel(exercise)}
-        ${state.answered ? `<button class="fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next shortcut"}<span aria-hidden="true">→</span></button>` : ""}
+        ${state.answered ? `<button class="ui-button ui-button--primary ui-button--lg fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next shortcut"}<span aria-hidden="true">→</span></button>` : ""}
       </section>`;
     }
 
@@ -487,7 +487,7 @@
           const enough = shortcut.base * shortcut.fastEnergy;
           return `<article style="--move-color:${TYPE_COLORS[move.type] || TYPE_COLORS.normal}"><header><span>${escapeHtml(move.name)}</span><strong>${move.energyCost}<small> energy</small></strong></header><p>${below} is not enough. ${enough} is enough.</p><div class="fast-count-derivation"><span><small>Base</small>${shortcut.base}</span><span><small>Threshold</small>${shortcut.threshold}</span><span><small>Gain</small>${shortcut.gain}</span></div><p class="fast-count-rule">${shortcut.shorterCyclePossible ? `At ${shortcut.threshold} bank, use ${shortcut.shorterCount} instead of ${shortcut.base} Fast Attacks.` : "The cost divides exactly: the normal cycle does not become shorter."}</p></article>`;
         }).join("")}</div>
-        <button type="button" data-fast-count-start-guided>Practice this Pokémon <span aria-hidden="true">→</span></button>
+        <button class="ui-button ui-button--primary ui-button--lg" type="button" data-fast-count-start-guided>Practice this Pokémon <span aria-hidden="true">→</span></button>
       </section>`;
     }
 
@@ -502,11 +502,11 @@
 
     function detailsPanel(build) {
       if (!state.detailsOpen) return "";
-      const railToggle = state.mode === "learn" || state.sessionDone ? "" : `<button class="secondary fast-count-rail-toggle" type="button" data-fast-count-rail-toggle aria-pressed="${state.stats.railVisible}">${state.stats.railVisible ? "Hide" : "Show"} Energy Rail</button>`;
+      const railToggle = state.mode === "learn" || state.sessionDone ? "" : `<button class="ui-button ui-button--secondary ui-button--md fast-count-rail-toggle" type="button" data-fast-count-rail-toggle aria-pressed="${state.stats.railVisible}">${state.stats.railVisible ? "Hide" : "Show"} Energy Rail</button>`;
       return `<div class="fast-count-sheet-layer" data-fast-count-close-details>
         <section class="fast-count-sheet fast-count-details-sheet" role="dialog" aria-modal="true" aria-labelledby="fastCountDetailsTitle" data-fast-count-sheet tabindex="-1">
-          <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountDetailsTitle">Details & settings</h2><button type="button" aria-label="Close details" data-fast-count-close-details>×</button></header>
-          <div class="fast-count-details-controls">${difficultyControl()}${railToggle}${state.mode === "meta" ? `<button class="secondary fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : pokemonPicker()}</div>
+          <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountDetailsTitle">Details & settings</h2><button class="ui-button ui-button--ghost ui-button--md" type="button" aria-label="Close details" data-fast-count-close-details>×</button></header>
+          <div class="fast-count-details-controls">${difficultyControl()}${railToggle}${state.mode === "meta" ? `<button class="ui-button ui-button--secondary ui-button--md fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : pokemonPicker()}</div>
           ${historyPanel()}
         </section>
       </div>`;
@@ -514,7 +514,7 @@
 
     function summaryPanel() {
       const accuracy = state.sessionCompleted ? Math.round((state.sessionCorrect / state.sessionCompleted) * 100) : 0;
-      return `<section class="fast-count-summary" tabindex="-1" data-fast-count-summary><span>Session complete</span><h2>${state.sessionCorrect} / ${state.sessionCompleted} correct</h2><div><strong>${accuracy}%<small>accuracy</small></strong><strong>${state.sessionBestStreak}<small>best streak</small></strong></div><div class="fast-count-summary-actions"><button type="button" data-fast-count-again>Practice again</button><button class="secondary" type="button" data-fast-count-summary-mode>Change mode</button><button class="secondary" type="button" data-fast-count-summary-pokemon>${state.mode === "meta" ? "New meta Pokémon" : "New Pokémon"}</button></div></section>`;
+      return `<section class="fast-count-summary" tabindex="-1" data-fast-count-summary><span>Session complete</span><h2>${state.sessionCorrect} / ${state.sessionCompleted} correct</h2><div><strong>${accuracy}%<small>accuracy</small></strong><strong>${state.sessionBestStreak}<small>best streak</small></strong></div><div class="fast-count-summary-actions"><button class="ui-button ui-button--primary ui-button--md" type="button" data-fast-count-again>Practice again</button><button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-mode>Change mode</button><button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-pokemon>${state.mode === "meta" ? "New meta Pokémon" : "New Pokémon"}</button></div></section>`;
     }
 
     function difficultyControl() {
@@ -531,7 +531,7 @@
         : state.sessionDone
           ? summaryPanel()
           : state.exercise?.kind === "shortcut" ? shortcutChallenge(state.exercise) : countChallenge(state.exercise);
-      container.innerHTML = `<div class="fast-count-shell">${sessionHeader()}<div class="fast-count-workspace"><main class="fast-count-main">${pokemonContext(build)}${main}${state.mode !== "learn" && !state.sessionDone && !state.answered ? energyRail(build, railBank, state.mode === "memory" && state.showMemoryBank) : ""}<button class="secondary fast-count-details-trigger" type="button" data-fast-count-open-details aria-haspopup="dialog" aria-expanded="${state.detailsOpen}">ⓘ Details & settings <span aria-hidden="true">›</span></button></main>${historyPanel()}</div>${modeSheet()}${detailsPanel(build)}</div>`;
+      container.innerHTML = `<div class="fast-count-shell">${sessionHeader()}<div class="fast-count-workspace"><main class="fast-count-main">${pokemonContext(build)}${main}${state.mode !== "learn" && !state.sessionDone && !state.answered ? energyRail(build, railBank, state.mode === "memory" && state.showMemoryBank) : ""}<button class="ui-button ui-button--ghost ui-button--md fast-count-details-trigger" type="button" data-fast-count-open-details aria-haspopup="dialog" aria-expanded="${state.detailsOpen}">ⓘ Details & settings <span aria-hidden="true">›</span></button></main>${historyPanel()}</div>${modeSheet()}${detailsPanel(build)}</div>`;
       bind();
       if (focusTarget === "next") container.querySelector("[data-fast-count-next]")?.focus({ preventScroll: true });
       if (focusTarget === "challenge") container.querySelector("[data-fast-count-answer]")?.focus({ preventScroll: true });

@@ -8,6 +8,7 @@ const html = read("PogoPvp.html");
 const trainer = read("src/training/fast-count-trainer.js");
 const styles = read("src/training/fast-count-trainer.css");
 const serviceWorker = read("sw.js");
+const specimen = read("FastCount-UI-Foundation.html");
 
 assert.match(html, /src\/training\/fast-count-engine\.js/);
 assert.match(html, /src\/training\/fast-count-trainer\.js/);
@@ -56,6 +57,19 @@ assert.match(styles, /\.fast-count-mode-bar\s*\{\s*display:\s*none/);
 assert.match(styles, /\.fast-count-workspace > \.fast-count-side\s*\{\s*display:\s*none/);
 assert.match(styles, /max-height:\s*min\(88dvh, 760px\)/);
 assert.match(styles, /grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+for (const token of ["space-1", "space-6", "radius-sm", "radius-lg", "control-sm", "control-md", "control-lg", "font-xs", "font-title", "border-width", "surface-raised", "success-soft", "focus-ring", "shadow-md"]) {
+  assert.match(styles, new RegExp(`--ui-${token}:`), `missing UI foundation token: ${token}`);
+}
+for (const primitive of ["ui-button--primary", "ui-button--secondary", "ui-button--ghost", "ui-button--danger", "ui-surface--card", "ui-surface--emphasis", "ui-feedback--success", "ui-answer", "ui-bank-cells", "ui-move-row"]) {
+  assert.match(specimen, new RegExp(primitive), `specimen is missing ${primitive}`);
+}
+assert.match(specimen, /src\/training\/fast-count-trainer\.css/);
+assert.doesNotMatch(html, /FastCount-UI-Foundation\.html/, "The specimen must remain direct-URL only.");
+assert.doesNotMatch(serviceWorker, /FastCount-UI-Foundation\.html/, "The specimen must not enter the production offline shell.");
+for (const source of [...specimen.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]).filter(Boolean)) new Function(source);
+assert.doesNotMatch(styles, /font-size:\s*(?:7|8|9|11|13|15|17|19|22|23|25|27|29|34)px/, "Typography must use the foundation scale.");
+assert.doesNotMatch(styles, /gap:\s*(?:5|6|7|9|10|11|13|14|17|19)px/, "Spacing must use the foundation scale.");
+assert.doesNotMatch(styles, /min-height:\s*(?:38|39|42|44|46|49|50|58|61|62|70)px/, "Controls must use the foundation size system.");
 
 for (const asset of [
   "src/training/fast-count-engine.js",
