@@ -14,7 +14,8 @@ Fast Count is the pilot implementation for a future GO Judge Hub design system. 
 ## Scales
 
 - Spacing: `4 / 8 / 12 / 16 / 24 / 32px`
-- Typography: `10 / 12 / 14 / 16 / 20 / 28 / 32px`, with tight `1.2` and body `1.5` line heights
+- Desktop typography: `12 / 14 / 16 / 18 / 22 / 30 / 36px`, with tight `1.2` and body `1.5` line heights
+- Compact typography up to 760px: `10 / 12 / 14 / 16 / 20 / 28 / 32px`
 - Weights: `400 / 600 / 700 / 800`
 - Controls: `32 / 40 / 48px` for SM, MD and LG
 - Radius: `6 / 10 / 14px` for SM, MD and LG; round only for circular or status elements
@@ -26,7 +27,7 @@ Fast Count is the pilot implementation for a future GO Judge Hub design system. 
 
 Buttons share one base with primary, secondary, ghost and danger variants and SM/MD/LG sizes. Inputs and selects use the MD control. Flat, card and emphasis surfaces share the same border and radius family. Progress, feedback, answers, bank cells and move rows use the same semantic and focus tokens.
 
-Type-driven components set only `--move-color`. The foundation derives strong, normal and soft roles from it, so geometry remains identical across types.
+Type-driven components set only `--move-color`. Move chips use the saturated type color, a strong edge and explicit `Fast` / `Charged` labels; supporting surfaces derive normal and soft roles from the same source.
 
 ## Color
 

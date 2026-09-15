@@ -21,11 +21,11 @@
     Object.freeze({ id: "advanced", label: "Advanced" })
   ]);
   const TYPE_COLORS = Object.freeze({
-    normal: "#8a8f96", fire: "#d95f22", water: "#2f78d6", electric: "#b88700",
-    grass: "#3b9140", ice: "#238fa8", fighting: "#b83a32", poison: "#8748ad",
-    ground: "#9a672f", flying: "#5b7fc0", psychic: "#ca447a", bug: "#718f25",
-    rock: "#806c45", ghost: "#5b5194", dragon: "#535bc9", dark: "#49413d",
-    steel: "#627c89", fairy: "#ca589f"
+    normal: "#737b83", fire: "#f05a28", water: "#1689e5", electric: "#c89500",
+    grass: "#24a83b", ice: "#148b9b", fighting: "#df285d", poison: "#a342c2",
+    ground: "#cf6426", flying: "#4f7ed0", psychic: "#ed3f72", bug: "#5c8f12",
+    rock: "#8c6f2e", ghost: "#6f55c5", dragon: "#146fc5", dark: "#51465f",
+    steel: "#397f99", fairy: "#e04db4"
   });
 
   function escapeHtml(value) {
@@ -326,7 +326,8 @@
     function moveChip(move, kind, showEnergy = true) {
       const color = TYPE_COLORS[move?.type] || TYPE_COLORS.normal;
       const value = kind === "fast" ? `+${move.energyGain}` : `${move.energyCost}`;
-      return `<span class="fast-count-move-chip fast-count-move-${kind}" style="--move-color:${color}"><span>${escapeHtml(move.name)}</span>${showEnergy ? `<strong>${value}<small> energy</small></strong>` : ""}</span>`;
+      const kindLabel = kind === "fast" ? "Fast" : "Charged";
+      return `<span class="fast-count-move-chip fast-count-move-${kind}" style="--move-color:${color}"><span><small class="fast-count-move-kind">${kindLabel}</small>${escapeHtml(move.name)}</span>${showEnergy ? `<strong>${value}<small> energy</small></strong>` : ""}</span>`;
     }
 
     function typeBadges(build) {
@@ -451,7 +452,7 @@
         ? `<div class="fast-count-throw is-previous" style="--move-color:${TYPE_COLORS[exercise.previousMove.type] || TYPE_COLORS.normal}"><span>Just thrown</span><strong>${escapeHtml(exercise.previousMove.name)}</strong></div>`
         : `<div class="fast-count-throw is-previous"><span>Just thrown</span><strong>Start of sequence</strong></div>`;
       if (state.answered) return `<section class="fast-count-challenge is-feedback ${state.correct ? "is-correct" : "is-incorrect"}" aria-label="Answer feedback">${feedbackPanel(exercise)}<button class="ui-button ui-button--primary ui-button--lg fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next"}<span aria-hidden="true">→</span></button></section>`;
-      return `<section class="fast-count-challenge" aria-labelledby="fastCountQuestion">
+      return `<section class="fast-count-challenge" style="--fast-move-color:${TYPE_COLORS[exercise.fastMove.type] || TYPE_COLORS.normal}" aria-labelledby="fastCountQuestion">
         <div class="fast-count-throw-context">${previous}<div class="fast-count-throw is-next" style="--move-color:${TYPE_COLORS[exercise.chargedMove.type] || TYPE_COLORS.normal}"><span>Next</span><strong>${escapeHtml(exercise.chargedMove.name)}</strong>${visibility.values ? `<small>${exercise.chargedCost} energy</small>` : ""}</div></div>
         <h2 id="fastCountQuestion"><span>How many</span><strong>${escapeHtml(exercise.fastMove.name)}?</strong></h2>
         ${visibility.values ? `<p class="fast-count-clue">Each Fast Attack generates <strong>${exercise.fastEnergy}</strong> energy${visibility.bank ? ` · Bank: <strong>${exercise.energyBefore}</strong>` : ""}</p>` : `<p class="fast-count-clue">Keep both the move values and current bank in memory.</p>`}

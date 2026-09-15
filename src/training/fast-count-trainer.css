@@ -4,7 +4,7 @@
   --ui-space-1: 4px; --ui-space-2: 8px; --ui-space-3: 12px; --ui-space-4: 16px; --ui-space-5: 24px; --ui-space-6: 32px;
   --ui-radius-sm: 6px; --ui-radius-md: 10px; --ui-radius-lg: 14px; --ui-radius-round: 999px;
   --ui-control-sm: 32px; --ui-control-md: 40px; --ui-control-lg: 48px;
-  --ui-font-xs: 10px; --ui-font-sm: 12px; --ui-font-md: 14px; --ui-font-lg: 16px; --ui-font-xl: 20px; --ui-font-title: 28px; --ui-font-display: 32px;
+  --ui-font-xs: 12px; --ui-font-sm: 14px; --ui-font-md: 16px; --ui-font-lg: 18px; --ui-font-xl: 22px; --ui-font-title: 30px; --ui-font-display: 36px;
   --ui-line-tight: 1.2; --ui-line-body: 1.5;
   --ui-weight-regular: 400; --ui-weight-medium: 600; --ui-weight-semibold: 700; --ui-weight-bold: 800;
   --ui-border-width: 1px; --ui-border-strong-width: 2px; --ui-border-color: #c9d3df; --ui-border-strong: #8ea2b7;
@@ -14,8 +14,8 @@
   --ui-success: #078348; --ui-success-soft: #dcf5e7; --ui-danger: #c9254c; --ui-danger-soft: #fde3e9; --ui-warning: #9a6800; --ui-warning-soft: #fff0b3;
   --ui-focus-ring: 0 0 0 3px rgba(22,119,232,.32); --ui-shadow-sm: 0 2px 6px rgba(23,33,47,.12); --ui-shadow-md: 0 12px 28px rgba(23,33,47,.18);
   --ui-icon-sm: 16px; --ui-icon-md: 20px; --ui-icon-lg: 24px;
-  --ui-card-padding: var(--ui-space-3); --ui-sheet-padding: var(--ui-space-4);
-  --ui-type-strong: var(--move-color, #66788c); --ui-type-normal: color-mix(in srgb, var(--ui-type-strong) 72%, var(--ui-border-color)); --ui-type-soft: color-mix(in srgb, var(--ui-type-strong) 16%, var(--ui-surface));
+  --ui-card-padding: var(--ui-space-4); --ui-sheet-padding: var(--ui-space-4);
+  --ui-type-strong: var(--move-color, #66788c); --ui-type-normal: color-mix(in srgb, var(--ui-type-strong) 88%, #17212f); --ui-type-soft: color-mix(in srgb, var(--ui-type-strong) 24%, var(--ui-surface));
   --ui-progress-track: #d7e0e9; --ui-progress-fill: var(--ui-success);
   --fc-blue: var(--ui-accent); --fc-blue-dark: var(--ui-accent-strong); --fc-green: var(--ui-success); --fc-red: var(--ui-danger); --fc-gold: #e0a817; --fc-paper: var(--ui-surface-raised);
   color: var(--ui-text);
@@ -79,11 +79,13 @@ body[data-theme="dark"] .fast-count-trainer-view, body[data-theme="neo"] .fast-c
 .fast-count-pokemon-head h2 { margin: 0 0 var(--ui-space-1); overflow-wrap: anywhere; font-size: var(--ui-font-xl); line-height: var(--ui-line-tight); }
 .fast-count-types { display: none; }
 .fast-count-moves { min-width: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--ui-space-2); }
-.fast-count-move-chip, .ui-move-row { min-width: 0; min-height: var(--ui-control-md); display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: var(--ui-space-1); padding: var(--ui-space-2); border: var(--ui-border-width) solid var(--ui-type-normal); border-left: var(--ui-space-1) solid var(--ui-type-strong); border-radius: var(--ui-radius-md); background: var(--ui-type-soft); color: var(--ui-text); }
-.fast-count-move-chip > span, .ui-move-row > span { min-width: 0; overflow-wrap: anywhere; font-size: var(--ui-font-sm); font-weight: var(--ui-weight-bold); line-height: var(--ui-line-tight); }
-.fast-count-move-chip > strong, .ui-move-row > strong { color: var(--ui-type-strong); font-size: var(--ui-font-md); font-weight: var(--ui-weight-bold); }
+.fast-count-move-chip, .fast-count-throw[style*="--move-color"], .fast-count-learn-grid article, .ui-move-row, .ui-chip--type { --ui-type-strong: var(--move-color, #66788c); --ui-type-normal: color-mix(in srgb, var(--ui-type-strong) 88%, #17212f); --ui-type-soft: color-mix(in srgb, var(--ui-type-strong) 24%, var(--ui-surface)); }
+.fast-count-move-chip, .ui-move-row { min-width: 0; min-height: var(--ui-control-md); display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: var(--ui-space-2); padding: var(--ui-space-2) var(--ui-space-3); border: var(--ui-border-strong-width) solid var(--ui-type-normal); border-left-width: 6px; border-radius: var(--ui-radius-md); background: linear-gradient(135deg, var(--ui-type-strong), color-mix(in srgb, var(--ui-type-strong) 78%, #fff)); color: #fff; box-shadow: var(--ui-shadow-sm); }
+.fast-count-move-chip > span, .ui-move-row > span { min-width: 0; display: grid; gap: 2px; overflow-wrap: anywhere; font-size: var(--ui-font-sm); font-weight: var(--ui-weight-bold); line-height: var(--ui-line-tight); }
+.fast-count-move-chip > strong, .ui-move-row > strong { color: #fff; font-size: var(--ui-font-md); font-weight: var(--ui-weight-bold); }
 .fast-count-move-chip small { display: none; }
-.fast-count-pokemon-head .fast-count-move-chip { min-height: var(--ui-control-sm); padding-block: var(--ui-space-1); }
+.fast-count-move-chip .fast-count-move-kind { display: block; color: rgba(255,255,255,.82); font-size: 10px; font-weight: var(--ui-weight-bold); letter-spacing: .08em; text-transform: uppercase; }
+.fast-count-pokemon-head .fast-count-move-chip { min-height: var(--ui-control-md); }
 .fast-count-challenge { display: grid; gap: var(--ui-space-3); text-align: center; }
 .fast-count-throw-context { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--ui-space-2); }
 .fast-count-throw { min-width: 0; min-height: calc(var(--ui-control-lg) + var(--ui-space-2)); display: grid; align-content: center; gap: var(--ui-space-1); padding: var(--ui-space-2) var(--ui-space-3); border: var(--ui-border-width) solid var(--ui-type-normal); border-left: var(--ui-space-1) solid var(--ui-type-strong); border-radius: var(--ui-radius-md); background: var(--ui-type-soft); text-align: left; }
@@ -92,7 +94,7 @@ body[data-theme="dark"] .fast-count-trainer-view, body[data-theme="neo"] .fast-c
 .fast-count-throw small { color: var(--ui-type-strong); font-size: var(--ui-font-xs); font-weight: var(--ui-weight-bold); }
 .fast-count-challenge > h2 { display: grid; gap: var(--ui-space-1); margin: 0; font-size: var(--ui-font-xl); line-height: var(--ui-line-tight); }
 .fast-count-challenge > h2 span { font-weight: var(--ui-weight-semibold); }
-.fast-count-challenge > h2 strong { color: var(--ui-success); font-size: var(--ui-font-title); }
+.fast-count-challenge > h2 strong { color: var(--fast-move-color, var(--ui-success)); font-size: var(--ui-font-title); }
 .fast-count-clue { margin: 0; color: var(--ui-text-muted); font-size: var(--ui-font-sm); }
 .fast-count-clue strong { color: var(--ui-text); }
 .fast-count-answers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--ui-space-2); }
@@ -187,6 +189,7 @@ body[data-theme="dark"] :is(.fast-count-mode-trigger,.fast-count-mode-bar button
 
 @media (max-width: 900px) and (min-width: 761px) { .fast-count-workspace { grid-template-columns: minmax(440px,1.5fr) minmax(220px,.7fr); } .fast-count-context { grid-template-columns: minmax(190px,.8fr) minmax(230px,1.2fr); } }
 @media (max-width: 760px) {
+  .fast-count-trainer-view, .fast-count-foundation-specimen { --ui-font-xs: 10px; --ui-font-sm: 12px; --ui-font-md: 14px; --ui-font-lg: 16px; --ui-font-xl: 20px; --ui-font-title: 28px; --ui-font-display: 32px; --ui-card-padding: var(--ui-space-3); }
   body[data-view="fast-count-trainer"] > header { --ui-space-1: 4px; --ui-space-2: 8px; --ui-space-3: 12px; --ui-control-lg: 48px; --ui-font-sm: 12px; display: grid; grid-template-columns: minmax(0,1fr) auto; row-gap: var(--ui-space-2); padding: var(--ui-space-2); }
   body[data-view="fast-count-trainer"] > header .app-tabs { grid-column: 1/-1; width: 100%; max-width: 100%; margin: 0; display: flex; gap: var(--ui-space-1); overflow-x: auto; padding: var(--ui-space-1); scroll-snap-type: x proximity; scrollbar-width: none; }
   body[data-view="fast-count-trainer"] > header .app-tabs::-webkit-scrollbar { display: none; } body[data-view="fast-count-trainer"] > header .app-tabs button { flex: 0 0 auto; min-height: var(--ui-control-lg); padding-inline: var(--ui-space-3); font-size: var(--ui-font-sm); scroll-snap-align: start; }

@@ -14,7 +14,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
-  <link rel="stylesheet" href="src/training/fast-count-trainer.css">
+  <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -67,7 +67,7 @@
   <script src="src/battle/manual-scenario-library.js"></script>
   <script src="src/battle/energy-trainer.js"></script>
   <script src="src/training/fast-count-engine.js"></script>
-  <script src="src/training/fast-count-trainer.js"></script>
+  <script src="src/training/fast-count-trainer.js?v=20260915-readability-v1"></script>
   <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
@@ -36020,7 +36020,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260915-v39").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260915-v40").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

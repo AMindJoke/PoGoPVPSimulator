@@ -44,6 +44,8 @@ assert.match(trainer, /event\.key === "Tab"/);
 assert.match(trainer, /button:not\(\[disabled\]\), input:not\(\[disabled\]\), select:not\(\[disabled\]\), summary/);
 assert.match(trainer, /fast-count-feedback-result/);
 assert.match(trainer, /fast-count-equation/);
+assert.match(trainer, /fast-count-move-kind/);
+assert.match(trainer, /--fast-move-color:/);
 assert.match(trainer, /state\.difficulty !== "advanced"/);
 assert.match(trainer, /state\.difficulty === "beginner"/);
 assert.match(trainer, /state\.mode === "learn" \|\| state\.sessionDone/);
@@ -64,10 +66,12 @@ for (const primitive of ["ui-button--primary", "ui-button--secondary", "ui-butto
   assert.match(specimen, new RegExp(primitive), `specimen is missing ${primitive}`);
 }
 assert.match(specimen, /src\/training\/fast-count-trainer\.css/);
+assert.match(html, /fast-count-trainer\.css\?v=20260915-readability-v1/);
+assert.match(html, /fast-count-trainer\.js\?v=20260915-readability-v1/);
 assert.doesNotMatch(html, /FastCount-UI-Foundation\.html/, "The specimen must remain direct-URL only.");
 assert.doesNotMatch(serviceWorker, /FastCount-UI-Foundation\.html/, "The specimen must not enter the production offline shell.");
 for (const source of [...specimen.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]).filter(Boolean)) new Function(source);
-assert.doesNotMatch(styles, /font-size:\s*(?:7|8|9|11|13|15|17|19|22|23|25|27|29|34)px/, "Typography must use the foundation scale.");
+assert.doesNotMatch(styles, /font-size:\s*(?:7|8|9|11|13|15|17|19|23|25|27|29|34)px/, "Typography must use the foundation scale.");
 assert.doesNotMatch(styles, /gap:\s*(?:5|6|7|9|10|11|13|14|17|19)px/, "Spacing must use the foundation scale.");
 assert.doesNotMatch(styles, /min-height:\s*(?:38|39|42|44|46|49|50|58|61|62|70)px/, "Controls must use the foundation size system.");
 
