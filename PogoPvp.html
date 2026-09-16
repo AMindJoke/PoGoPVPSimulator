@@ -15,7 +15,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
-  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v6">
+  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -18322,7 +18322,8 @@
       return items.map(([state, label, detail]) => {
         const tone = state === "neutral" ? "neutral" : state.endsWith("win") ? "favorable" : "unfavorable";
         const mark = teamBuilderResultMarkHtml({ state, tone });
-        return `<span role="listitem"><i class="team-matchup-cell result-${state}" aria-hidden="true"><strong>${mark}</strong></i><b>${label}</b><small>${detail}</small></span>`;
+        const iconClass = state === "neutral" ? "" : " has-status-icon";
+        return `<span role="listitem"><i class="team-matchup-cell result-${state}${iconClass}" aria-hidden="true"><strong>${mark}</strong></i><b>${label}</b><small>${detail}</small></span>`;
       }).join("");
     }
 
@@ -18378,7 +18379,8 @@
       const mark = teamBuilderResultMarkHtml(visual);
       const launchLabel = `${accessible}. Opens Battle simulation in a new tab.`;
       if (mobile) return `<button class="team-mobile-matchup result-${visual.state}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" aria-label="${escapeHtml(launchLabel)}"><img data-team-mobile-slot-sprite="${slot}" alt=""><span><strong>${escapeHtml(pokemon?.name || `Slot ${slot + 1}`)}</strong><span class="team-mobile-result-line">${mark}</span></span></button>`;
-      return `<button class="team-matchup-cell result-${visual.state}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score} · Open Battle ↗`)}" aria-label="${escapeHtml(launchLabel)}"><strong>${mark}</strong></button>`;
+      const iconClass = visual.state === "neutral" ? "" : " has-status-icon";
+      return `<button class="team-matchup-cell result-${visual.state}${iconClass}" type="button" data-team-matchup-slot="${slot}" data-team-matchup-opponent="${escapeHtml(opponentId)}" data-result-tooltip="${escapeHtml(`${category} · Rating ${result.score} · Open Battle ↗`)}" aria-label="${escapeHtml(launchLabel)}"><strong>${mark}</strong></button>`;
     }
 
     function teamBuilderThreatFilteredGroups() {
@@ -36040,7 +36042,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260916-v47").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260916-v48").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

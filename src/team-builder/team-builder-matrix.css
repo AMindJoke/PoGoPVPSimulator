@@ -154,6 +154,19 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
 #teamBuilderView .team-matchup-cell.result-soft-loss { border-color: var(--matrix-soft-loss-border); background: var(--matrix-soft-loss-bg); color: var(--matrix-soft-loss-text); }
 #teamBuilderView .team-matchup-cell.result-hard-loss { border-color: var(--matrix-hard-loss-border); background: var(--matrix-hard-loss-bg); color: var(--matrix-hard-loss-text); box-shadow: inset 0 0 0 1px rgba(120, 0, 18, .16); }
 
+#teamBuilderView .team-matchup-cell.has-status-icon {
+  min-height: 40px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+#teamBuilderView .team-coverage-status-legend .team-matchup-cell.has-status-icon {
+  width: 40px;
+  min-height: 40px;
+}
+
 #teamBuilderView .team-matchup-cell:hover,
 #teamBuilderView .team-matchup-cell:focus-visible {
   outline: 3px solid color-mix(in srgb, currentColor 30%, transparent);
@@ -180,9 +193,9 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
 }
 
 #teamBuilderView .team-matchup-symbol.is-icon {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
 }
 
 #teamBuilderView .team-matchup-icon {
@@ -238,6 +251,8 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
   #teamBuilderView .team-coverage-opponent-copy strong { font-size: 9px; }
   #teamBuilderView .team-coverage-opponent-copy small { display: none; }
   #teamBuilderView .team-coverage-answer-count { min-width: 0; font-size: 6px; text-align: center; }
-  #teamBuilderView .team-matchup-symbol.is-icon { width: 26px; height: 26px; min-width: 26px; }
+  #teamBuilderView .team-matchup-cell.has-status-icon { min-height: 36px; }
+  #teamBuilderView .team-coverage-status-legend .team-matchup-cell.has-status-icon { width: 36px; min-height: 36px; }
+  #teamBuilderView .team-matchup-symbol.is-icon { width: 36px; height: 36px; min-width: 36px; }
   #teamBuilderView .team-matchup-cell::after { display: none; }
 }
