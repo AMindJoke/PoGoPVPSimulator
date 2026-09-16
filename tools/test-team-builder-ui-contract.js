@@ -166,8 +166,11 @@ assert.doesNotMatch(html, /team-builder-placeholder/);
 assert.match(html, /const matrixDesktopWidth = 210 \+ teamEntries\.length \* 130;[\s\S]{0,180}const matrixMobileWidth = 100 \+ teamEntries\.length \* 39;/, "Partial teams must keep fixed compact matchup columns instead of stretching across the matrix.");
 assert.match(html, /<colgroup><col class="team-coverage-opponent-column">[\s\S]{0,180}team-coverage-matchup-column/, "Coverage tables must define explicit reusable column geometry.");
 assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table tbody th \{ width: 100px/, "Mobile must keep a compact sticky first column while the matrix scrolls.");
-assert.match(matrixStyles, /team-coverage-matchup-column \{ width: 39px; \}/, "Six mobile matchup columns must use the compact width budget.");
+assert.match(html, /--matrix-team-count:\$\{teamEntries\.length\}/, "Coverage tables must expose the active team size for responsive column distribution.");
+assert.match(matrixStyles, /team-coverage-matchup-column \{[\s\S]{0,100}width: calc\(\(100% - 100px\) \/ var\(--matrix-team-count, 6\)\);/, "Mobile matchup columns must shrink together when a complete team reaches the card edge.");
+assert.match(matrixStyles, /team-coverage-pokemon-head img \{ width: 100%; max-width: 34px; height: auto; aspect-ratio: 1; \}/, "Mobile header sprites must shrink with narrow complete-team columns without creating overflow.");
+assert.match(matrixStyles, /width: min\(100%, var\(--matrix-mobile-width, 100%\)\);[\s\S]{0,100}min-width: min\(280px, var\(--matrix-mobile-width, 100%\)\);/, "Complete mobile teams must fit common phone widths while very narrow screens retain a safe scroll floor.");
 assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
-assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260915-v2/);
+assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v4/);
 
 console.log("Team Builder UI contract tests passed.");

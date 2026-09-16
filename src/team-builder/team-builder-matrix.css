@@ -201,18 +201,20 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
   #teamBuilderView .team-coverage-desktop { display: block; width: 100%; max-height: min(70vh, 620px); overflow: auto; }
   #teamBuilderView .team-coverage-mobile { display: none; }
   #teamBuilderView .team-coverage-table {
-    width: var(--matrix-mobile-width, 100%);
-    min-width: 0;
-    max-width: none;
+    width: min(100%, var(--matrix-mobile-width, 100%));
+    min-width: min(280px, var(--matrix-mobile-width, 100%));
+    max-width: 100%;
   }
   #teamBuilderView .team-coverage-opponent-column { width: 100px; }
-  #teamBuilderView .team-coverage-matchup-column { width: 39px; }
+  #teamBuilderView .team-coverage-matchup-column {
+    width: calc((100% - 100px) / var(--matrix-team-count, 6));
+  }
   #teamBuilderView .team-coverage-table .team-coverage-opponent-head,
   #teamBuilderView .team-coverage-table tbody th { width: 100px; }
   #teamBuilderView .team-coverage-table th,
   #teamBuilderView .team-coverage-table td { padding: 3px; }
   #teamBuilderView .team-coverage-table thead th { height: 64px; }
-  #teamBuilderView .team-coverage-pokemon-head img { width: 34px; height: 34px; }
+  #teamBuilderView .team-coverage-pokemon-head img { width: 100%; max-width: 34px; height: auto; aspect-ratio: 1; }
   #teamBuilderView .team-coverage-pokemon-head span { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 7px; }
   #teamBuilderView .team-coverage-opponent { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 3px; }
   #teamBuilderView .team-coverage-opponent img { width: 24px; height: 24px; }

@@ -15,7 +15,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
-  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260915-v2">
+  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v4">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -18440,7 +18440,7 @@
         return `${divider}<tr><th scope="row"><div class="team-coverage-opponent"><span class="team-coverage-opponent-sprite"><b class="team-coverage-rank">${rank}</b><img data-team-coverage-${spritePrefix}-opponent-sprite="${row}" alt=""></span><span class="team-coverage-opponent-copy" title="${escapeHtml(`${opponent?.name || group.opponentId}${detail ? ` · ${detail}` : ""}`)}"><strong>${escapeHtml(opponent?.name || group.opponentId)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</span>${options.showThreatSummary ? `<b class="team-coverage-answer-count" aria-label="${answerText} answers">${answerText}</b>` : ""}</div></th>${cells}</tr>`;
       }).join("");
       const box = $(boxId);
-      box.innerHTML = `<table class="team-coverage-table" style="--matrix-desktop-width:${matrixDesktopWidth}px;--matrix-mobile-width:${matrixMobileWidth}px">${columns}<thead><tr><th class="team-coverage-opponent-head" scope="col">${escapeHtml(opponentHeader)}</th>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+      box.innerHTML = `<table class="team-coverage-table" style="--matrix-desktop-width:${matrixDesktopWidth}px;--matrix-mobile-width:${matrixMobileWidth}px;--matrix-team-count:${teamEntries.length}">${columns}<thead><tr><th class="team-coverage-opponent-head" scope="col">${escapeHtml(opponentHeader)}</th>${header}</tr></thead><tbody>${rows}</tbody></table>`;
       teamEntries.forEach(({ member, slot }) => {
         const pokemon = member && findPokemon(member.pokemonId);
         const image = box.querySelector(`[data-team-coverage-${spritePrefix}-header-sprite="${slot}"]`);
@@ -36023,7 +36023,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260915-v42").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260916-v44").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
