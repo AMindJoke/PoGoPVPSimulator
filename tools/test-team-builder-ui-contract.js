@@ -80,7 +80,9 @@ assert.match(html, /function teamBuilderThreatOpponentIds\(\)[\s\S]{0,1000}TEAM_
 assert.match(html, /function teamBuilderCombinedCoveragePlan\(\)[\s\S]{0,300}teamBuilderThreatAnalysisPlan[\s\S]{0,150}teamBuilderAnalysisPlan/, "Meta and broader threat jobs must share one deduplicated canonical analysis run.");
 assert.match(html, /function teamBuilderResultVisual\(result\)[\s\S]{0,650}presentation\.tier === "dominant" \? "hard" : "soft"[\s\S]{0,180}state: `\$\{strength\}-\$\{outcome\}`/, "The five-state UI must reuse the established tiers, mapping only dominant to Hard and clear/slight to Soft.");
 assert.match(matrixStyles, /--matrix-hard-win-bg: #1769e8[\s\S]{0,700}--matrix-hard-loss-bg: #f1253e/, "The matrix must define vivid blue/red endpoints and explicit soft and neutral surfaces.");
-assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,300}favorable" \? "W" : "L"[\s\S]{0,180}team-matchup-symbol/, "Matrix cells must use W, L, and a dash rather than arrows or visible ratings.");
+assert.match(html, /function teamBuilderResultMarkHtml\(visual\)[\s\S]{0,300}favorable" \? "W" : "L"[\s\S]{0,500}team-matchup-symbol/, "Matrix cells must use W, L, and a dash rather than arrows or visible ratings.");
+assert.match(html, /function teamBuilderResultIconPath\(state\)[\s\S]{0,500}win-hard\.svg[\s\S]{0,220}win-soft\.svg[\s\S]{0,220}loss-soft\.svg[\s\S]{0,220}loss-hard\.svg/, "Matrix result states must use the supplied hard and soft win/loss icons.");
+assert.match(html, /team-matchup-icon[^>]+src="\$\{iconPath\}"/, "Matrix result icons must be rendered as decorative local images.");
 assert.equal((html.match(/class="team-coverage-status-legend"/g) || []).length, 2, "Both coverage matrices must explain the same categorical marks.");
 assert.match(html, /querySelectorAll\("#teamBuilderView \.team-coverage-status-legend"\)[\s\S]{0,250}aria-label", "Matchup result legend"/, "Both five-state legends must be named accessibly when the matrices render.");
 for (const state of ["hard-win", "soft-win", "neutral", "soft-loss", "hard-loss"]) assert.match(matrixStyles, new RegExp(`team-matchup-cell\\.result-${state}`), `missing ${state} matrix state`);
@@ -174,6 +176,6 @@ assert.match(matrixStyles, /grid-template-areas: "sprite" "copy" "count";[\s\S]{
 assert.match(matrixStyles, /team-coverage-form-badge \{[\s\S]{0,180}max-width: 100%;[\s\S]{0,180}font-size: 5px;/, "Mobile form badges must fit fully inside narrow team headers.");
 assert.match(matrixStyles, /width: min\(100%, var\(--matrix-mobile-width, 100%\)\);[\s\S]{0,100}min-width: min\(280px, var\(--matrix-mobile-width, 100%\)\);/, "Complete mobile teams must fit common phone widths while very narrow screens retain a safe scroll floor.");
 assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
-assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v5/);
+assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v6/);
 
 console.log("Team Builder UI contract tests passed.");

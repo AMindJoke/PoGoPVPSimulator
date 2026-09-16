@@ -179,6 +179,19 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
   line-height: 1;
 }
 
+#teamBuilderView .team-matchup-symbol.is-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+}
+
+#teamBuilderView .team-matchup-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 #teamBuilderView .team-matchup-cell::after {
   padding: 6px 8px;
   font-size: 9px;
@@ -225,5 +238,6 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
   #teamBuilderView .team-coverage-opponent-copy strong { font-size: 9px; }
   #teamBuilderView .team-coverage-opponent-copy small { display: none; }
   #teamBuilderView .team-coverage-answer-count { min-width: 0; font-size: 6px; text-align: center; }
+  #teamBuilderView .team-matchup-symbol.is-icon { width: 26px; height: 26px; min-width: 26px; }
   #teamBuilderView .team-matchup-cell::after { display: none; }
 }
