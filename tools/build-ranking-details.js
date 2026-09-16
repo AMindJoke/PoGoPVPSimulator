@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis/ranking-details");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
+const G = require("./build-great-league-meta-database");
 
 const root = path.resolve(__dirname, "..");
 const seasonArg = process.argv.find(arg => arg.startsWith("--season="));
@@ -31,6 +32,19 @@ const entries = (ranking.entries || []).filter(entry => entry.profile === "rank1
 const rankById = new Map(entries.map(entry => [entry.id, Number(entry.rank)]));
 const entryById = new Map(entries.map(entry => [entry.id, entry]));
 const analysisById = new Map((analysis.entries || []).map(entry => [entry.pokemon?.a?.id, entry]));
+const sourceData = G.generationData();
+const moveMap = new Map(sourceData.gameMaster.moves.map(move => [move.moveId, G.normalizeMove(move)]));
+const pokemonMap = new Map(sourceData.gameMaster.pokemon
+  .filter(pokemon => pokemon && pokemon.speciesId && pokemon.baseStats)
+  .map(pokemon => G.normalizePokemon(pokemon, moveMap))
+  .map(pokemon => [pokemon.id, pokemon]));
+const expectedOpponentSignatures = new Map(entries.map(entry => {
+  const pokemon = pokemonMap.get(entry.id);
+  const combatant = pokemon
+    ? G.createCombatant(pokemon, "B", G.RANK1_PROFILE, moveMap, sourceData.standardMovesets, pokemonMap)
+    : null;
+  return [entry.id, G.combatantStateSignature(combatant)];
+}));
 const existingOutput = selectiveIds.size && fs.existsSync(outputJson)
   ? JSON.parse(fs.readFileSync(outputJson, "utf8"))
   : null;
@@ -46,6 +60,7 @@ entries.forEach((entry, index) => {
   const ingestCache = file => {
     if (!file || !fs.existsSync(file)) return;
     const cache = JSON.parse(fs.readFileSync(file, "utf8"));
+    if (cache.matrixVersion !== G.MATRIX_VERSION || cache.scoreVersion !== MATCHUP_SCORE_VERSION) return;
     Object.entries(cache.cells || {}).forEach(([key, value]) => {
       if (!key.endsWith("|1-1|standard")) return;
       const signature = key.slice(0, key.indexOf("|"));
@@ -55,6 +70,7 @@ entries.forEach((entry, index) => {
           opponentId = JSON.parse(signature).id || opponentId;
         } catch (_) {}
       }
+      if (expectedOpponentSignatures.get(opponentId) !== signature) return;
       const score = Number(inflateCacheResult(value)?.score);
       if (opponentId !== entry.id && Number.isFinite(score)) cellsByOpponent.set(opponentId, { opponentId, score });
     });
@@ -62,6 +78,9 @@ entries.forEach((entry, index) => {
   ingestCache(fallbackCachePath);
   ingestCache(cachePath);
   const cells = [...cellsByOpponent.values()];
+  if (cells.length !== entries.length - 1) {
+    throw new Error(`${entry.id}: expected ${entries.length - 1} current-signature 1-1 matchups, found ${cells.length}.`);
+  }
   const relevant = selectRelevantMatchups(cells, rankById, 5);
   const mapRow = row => ({
     id: row.opponentId,

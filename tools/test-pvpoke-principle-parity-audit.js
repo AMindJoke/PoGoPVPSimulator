@@ -7,8 +7,8 @@ const Principles = require("../src/battle/battle-principles");
 const Fixtures = require("../data/pvpoke-first-decision-parity-fixtures");
 
 const root = path.resolve(__dirname, "..");
-const audit = fs.readFileSync(path.join(root, "docs", "CANONICAL_PRINCIPLE_PARITY.md"), "utf8");
-const adaptations = fs.readFileSync(path.join(root, "docs", "CANONICAL_ADAPTATIONS.md"), "utf8");
+const audit = fs.readFileSync(path.join(root, "docs", "PVPOKE_PRINCIPLE_PARITY.md"), "utf8");
+const adaptations = fs.readFileSync(path.join(root, "docs", "PVPOKE_PARITY_ADAPTATIONS.md"), "utf8");
 const planner = fs.readFileSync(path.join(root, "src", "battle", "battle-intelligence.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
 

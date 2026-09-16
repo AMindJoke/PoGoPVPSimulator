@@ -5,11 +5,17 @@
   const sourceUrl = "https://pokemongo.com/news/go-battle-league-twilight-trails";
   const confirmed = values => Object.freeze({ ...values, status: "confirmed", note: "Live move values supplied by the user on 2026-09-08.", sourceUrl });
   const add = (fast = [], charged = []) => Object.freeze({ fast: Object.freeze({ add: Object.freeze(fast) }), charged: Object.freeze({ add: Object.freeze(charged) }), status: "confirmed", sourceUrl });
+  const metaSet = (fast, charged, alternativeFast, alternativeCharged) => Object.freeze({
+    fast,
+    charged: Object.freeze(charged),
+    metaOverride: true,
+    alternatives: Object.freeze([Object.freeze({ fast: alternativeFast, charged: Object.freeze(alternativeCharged) })])
+  });
   root.BATTLE_NEXT_SEASON = Object.freeze({
     id: "twilight-trails",
     label: "Twilight Trails",
     dataVersion: "twilight-trails-confirmed-1",
-    rankingVersion: "great-league-twilight-trails-confirmed-v43-global-1",
+    rankingVersion: "great-league-twilight-trails-confirmed-v45-score-v5-1",
     enabled: false,
     sourceUrl,
     moveOverrides: Object.freeze({
@@ -73,7 +79,13 @@
     defaultMovesets: Object.freeze({
       cramorant: Object.freeze({ fast: "PECK", charged: Object.freeze(["FLY", "DIVE"]) }),
       vigoroth: Object.freeze({ fast: "SCRATCH", charged: Object.freeze(["BRICK_BREAK", "ROCK_SLIDE"]) }),
-      vigoroth_shadow: Object.freeze({ fast: "SCRATCH", charged: Object.freeze(["BRICK_BREAK", "ROCK_SLIDE"]) })
+      vigoroth_shadow: Object.freeze({ fast: "SCRATCH", charged: Object.freeze(["BRICK_BREAK", "ROCK_SLIDE"]) }),
+      victreebel: metaSet("SUCKER_PUNCH", ["LEAF_BLADE", "ACID_SPRAY"], "ACID", ["LEAF_BLADE", "SLUDGE_BOMB"]),
+      victreebel_shadow: metaSet("SUCKER_PUNCH", ["LEAF_BLADE", "ACID_SPRAY"], "ACID", ["LEAF_BLADE", "SLUDGE_BOMB"]),
+      annihilape: metaSet("LOW_KICK", ["RAGE_FIST", "ICE_PUNCH"], "LOW_KICK", ["SHADOW_BALL", "ICE_PUNCH"]),
+      annihilape_shadow: metaSet("LOW_KICK", ["RAGE_FIST", "ICE_PUNCH"], "LOW_KICK", ["SHADOW_BALL", "ICE_PUNCH"]),
+      quagsire: metaSet("MUD_SHOT", ["AQUA_TAIL", "STONE_EDGE"], "MUD_SHOT", ["AQUA_TAIL", "MUD_BOMB"]),
+      quagsire_shadow: metaSet("MUD_SHOT", ["AQUA_TAIL", "STONE_EDGE"], "MUD_SHOT", ["AQUA_TAIL", "MUD_BOMB"])
     }),
     pendingValues: Object.freeze([]),
     generatedAssets: Object.freeze({

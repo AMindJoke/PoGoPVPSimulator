@@ -52,14 +52,22 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "MUD_SHOT",
     "charged": [
       "AQUA_TAIL",
-      "MUD_BOMB"
+      "STONE_EDGE"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "MUD_SHOT", "charged": ["AQUA_TAIL", "MUD_BOMB"] }
     ]
   },
   "quagsire": {
     "fast": "MUD_SHOT",
     "charged": [
       "AQUA_TAIL",
-      "MUD_BOMB"
+      "STONE_EDGE"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "MUD_SHOT", "charged": ["AQUA_TAIL", "MUD_BOMB"] }
     ]
   },
   "jellicent": {
@@ -1016,8 +1024,12 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "annihilape": {
     "fast": "LOW_KICK",
     "charged": [
-      "SHADOW_BALL",
+      "RAGE_FIST",
       "ICE_PUNCH"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "LOW_KICK", "charged": ["SHADOW_BALL", "ICE_PUNCH"] }
     ]
   },
   "ledian": {
@@ -1135,8 +1147,12 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "annihilape_shadow": {
     "fast": "LOW_KICK",
     "charged": [
-      "SHADOW_BALL",
+      "RAGE_FIST",
       "ICE_PUNCH"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "LOW_KICK", "charged": ["SHADOW_BALL", "ICE_PUNCH"] }
     ]
   },
   "charjabug_shadow": {
@@ -1805,10 +1821,14 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "victreebel_shadow": {
-    "fast": "ACID",
+    "fast": "SUCKER_PUNCH",
     "charged": [
       "LEAF_BLADE",
-      "SLUDGE_BOMB"
+      "ACID_SPRAY"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "ACID", "charged": ["LEAF_BLADE", "SLUDGE_BOMB"] }
     ]
   },
   "hypno_shadow": {
@@ -2043,10 +2063,14 @@ window.BATTLE_DEFAULT_MOVESETS = {
     ]
   },
   "victreebel": {
-    "fast": "ACID",
+    "fast": "SUCKER_PUNCH",
     "charged": [
       "LEAF_BLADE",
-      "SLUDGE_BOMB"
+      "ACID_SPRAY"
+    ],
+    "metaOverride": true,
+    "alternatives": [
+      { "fast": "ACID", "charged": ["LEAF_BLADE", "SLUDGE_BOMB"] }
     ]
   },
   "mawile_shadow": {

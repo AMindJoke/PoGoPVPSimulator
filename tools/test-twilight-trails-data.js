@@ -17,7 +17,7 @@ const gm = browser.BATTLE_GAMEMASTER;
 const draft = browser.BATTLE_NEXT_SEASON;
 assert.equal(draft.id, "twilight-trails");
 assert.equal(draft.enabled, false, "The promoted season must not be offered as a preview.");
-assert.equal(draft.rankingVersion, "great-league-twilight-trails-confirmed-v43-global-1");
+assert.equal(draft.rankingVersion, "great-league-twilight-trails-confirmed-v45-score-v5-1");
 assert.equal(draft.pendingValues.length, 0);
 assert.deepEqual(Season.validateCatalog(browser.BATTLE_SEASON_CATALOG, gm), []);
 

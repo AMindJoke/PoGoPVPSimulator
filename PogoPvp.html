@@ -18,14 +18,14 @@
   <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
-  <script src="default-movesets.js"></script>
-  <script src="data/seasons/next-season.js?v=20260909-current"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20260909-current"></script>
+  <script src="default-movesets.js?v=20260916-meta-v1"></script>
+  <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20260916-v45-score-v5-meta2"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260911-timing-window-fix"></script>
+  <script src="src/reliability/battle-reliability.js?v=20260916-planner-v45"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -73,7 +73,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260911-timing-window-fix"></script>
+  <script src="src/battle/battle-intelligence.js?v=20260916-planner-v45"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -16399,6 +16399,14 @@
         const MAX_OUTPACE_PRESSURE_EDGE = ${MAX_OUTPACE_PRESSURE_EDGE};
         const MATCHUP_HP_EDGE_WEIGHT = ${MATCHUP_HP_EDGE_WEIGHT};
         const MIN_TERMINAL_OUTCOME_EDGE = ${MIN_TERMINAL_OUTCOME_EDGE};
+        const MATCHUP_SCORE_HP_WEIGHT = ${MATCHUP_SCORE_HP_WEIGHT};
+        const MATCHUP_SCORE_SHIELD_WEIGHT = ${MATCHUP_SCORE_SHIELD_WEIGHT};
+        const MATCHUP_SCORE_ENERGY_WEIGHT = ${MATCHUP_SCORE_ENERGY_WEIGHT};
+        const MATCHUP_SCORE_READINESS_WEIGHT = ${MATCHUP_SCORE_READINESS_WEIGHT};
+        const MATCHUP_SCORE_FUTURE_EDGE_CAP = ${MATCHUP_SCORE_FUTURE_EDGE_CAP};
+        const MATCHUP_SCORE_TACTICAL_WEIGHT = ${MATCHUP_SCORE_TACTICAL_WEIGHT};
+        const MATCHUP_SCORE_TACTICAL_EDGE_CAP = ${MATCHUP_SCORE_TACTICAL_EDGE_CAP};
+        const MATCHUP_OUTCOME_EDGE = ${MATCHUP_OUTCOME_EDGE};
         const PvPeakPerfDebug = (${perfFactory.toString()})({
           root: globalThis,
           enabled: ${perfDebugEnabled},
@@ -16561,7 +16569,7 @@
           lastChargedDecisionDiagnostics = [];
           runAutomaticBattleToEnd(1000);
           const completedBattleInsights = JSON.parse(JSON.stringify(battleInsights));
-          let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
+          let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false, calibrated: true });
           result = applyAdvantagePressureFloor(result, {
             aShields,
             bShields,
@@ -18201,7 +18209,7 @@
         battleIntelligenceRuntimeContext = "matrix";
         suppressRender = true;
         runAutomaticBattleToEnd(1000);
-        return scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
+        return scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false, calibrated: true });
       } finally {
         restoreBattleState(snapshot);
         battleIntelligenceRuntimeContext = previousContext;
@@ -18390,7 +18398,7 @@
         const summary = group.threatSummary;
         if (!summary || teamBuilderThreatFilter === "all") return true;
         if (teamBuilderThreatFilter === "uncovered") return summary.answerCount === 0;
-        if (teamBuilderThreatFilter === "hard-losses") return summary.hardLossCount >= Math.ceil(summary.teamSize / 2) || summary.worstScore <= 249;
+        if (teamBuilderThreatFilter === "hard-losses") return summary.hardLossCount >= Math.ceil(summary.teamSize / 2) || summary.worstScore <= 250;
         if (teamBuilderThreatFilter === "close") return group.cells.some(result => result && Math.abs(Number(result.score) - 500) <= 100);
         return true;
       });
@@ -20312,6 +20320,9 @@
       if (!p) return null;
       const moves = metaMovesForPokemon(p);
       if (!moves.fast || !moves.charged.length) return null;
+      const activeMovesetKey = [moves.fast.id, ...moves.charged.map(move => move.id)].join("|");
+      const publishedMovesetKey = [entry.moveset?.fast, ...(entry.moveset?.charged || [])].filter(Boolean).join("|");
+      const movesetScoreStale = Boolean(publishedMovesetKey && activeMovesetKey !== publishedMovesetKey);
       return {
         p,
         id: entry.id,
@@ -20328,7 +20339,10 @@
         competitiveScore: entry.competitiveScore || null,
         categoryScores: entry.categoryScores || null,
         rankingData: entry,
-        sourceTitle: `${cellCount.toLocaleString()} precomputed matchup cells`,
+        sourceTitle: movesetScoreStale
+          ? `${cellCount.toLocaleString()} precomputed matchup cells; score from previous moveset`
+          : `${cellCount.toLocaleString()} precomputed matchup cells`,
+        movesetScoreStale,
         tags: []
       };
     }
@@ -20466,9 +20480,35 @@
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
       const currentWins = currentMetaMatchupRows(detail.wins, entry.p.id);
       const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
-      const alternatives = (detail.alternativeMovesets || []).slice(1);
+      const alternatives = metaAlternativeMovesets(entry, detail);
       const alternateHtml = alternatives.length ? `<section class="meta-alternatives" aria-label="Alternative movesets"><strong>Alternative movesets</strong>${alternatives.map(set => `<div class="meta-alternative-moves">${[metaMovePill(moveMap.get(set.fast), "fast"), ...set.charged.map(id => metaMovePill(moveMap.get(id), "charged"))].join("")}</div>`).join("")}</section>` : "";
-      return `<div class="meta-detail-content"><div class="meta-matchups">${metaMatchupGroup("Key Wins · Top 50", "wins", currentWins, entry)}${metaMatchupGroup("Key Losses · Top 50", "losses", currentLosses, entry)}</div>${alternateHtml}</div>`;
+      const matchupsHtml = entry.movesetScoreStale
+        ? `<p class="hint">The ranking score and key matchups still reflect the previous moveset. Live battles and Team Builder simulations use the updated moveset shown above.</p>`
+        : `<div class="meta-matchups">${metaMatchupGroup("Key Wins · Top 50", "wins", currentWins, entry)}${metaMatchupGroup("Key Losses · Top 50", "losses", currentLosses, entry)}</div>`;
+      return `<div class="meta-detail-content">${matchupsHtml}${alternateHtml}</div>`;
+    }
+
+    function metaAlternativeMovesets(entry, detail) {
+      const pokemon = entry?.p;
+      if (!pokemon) return [];
+      const standard = standardMovesetFor(pokemon);
+      const declared = Array.isArray(standard?.alternatives) ? standard.alternatives : [];
+      const generated = Array.isArray(detail?.alternativeMovesets) ? detail.alternativeMovesets : [];
+      const primary = metaRankingMoves(metaRankingDatasetEntry(pokemon.id), pokemon);
+      const primaryKey = [primary.fast?.id, ...primary.charged.map(move => move.id)].filter(Boolean).join("|");
+      const seen = new Set([primaryKey]);
+      return [...declared, ...generated].reduce((sets, set) => {
+        const fast = set?.fast;
+        const charged = Array.isArray(set?.charged)
+          ? set.charged.filter(id => pokemon.charged.includes(id) && moveMap.has(id)).slice(0, selectedChargedMoveLimit(pokemon))
+          : [];
+        if (!fast || !pokemon.fast.includes(fast) || !moveMap.has(fast) || !charged.length) return sets;
+        const key = [fast, ...charged].join("|");
+        if (seen.has(key)) return sets;
+        seen.add(key);
+        sets.push({ fast, charged });
+        return sets;
+      }, []);
     }
 
     function metaMatchupGroup(label, className, rows, sourceEntry) {
@@ -20527,8 +20567,10 @@
     }
 
     function metaRankingMoves(rankingEntry, pokemon) {
-      const fastId = rankingEntry?.moveset?.fast;
-      const chargedIds = Array.isArray(rankingEntry?.moveset?.charged) ? rankingEntry.moveset.charged : [];
+      const standard = standardMovesetFor(pokemon);
+      const source = standard?.metaOverride ? standard : rankingEntry?.moveset;
+      const fastId = source?.fast;
+      const chargedIds = Array.isArray(source?.charged) ? source.charged : [];
       const fast = fastId && pokemon.fast.includes(fastId) ? moveMap.get(fastId) : null;
       const charged = chargedIds.filter(id => pokemon.charged.includes(id)).map(id => moveMap.get(id)).filter(Boolean).slice(0, selectedChargedMoveLimit(pokemon));
       if (fast && charged.length) return { fast, charged };
@@ -20696,7 +20738,7 @@
       battleIntelligenceRuntimeContext = "matrix";
       suppressRender = true;
       runAutomaticBattleToEnd(1000);
-      const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false });
+      const result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: false, calibrated: true });
       restoreBattleState(snapshot);
       battleIntelligenceRuntimeContext = previousIntelligenceContext;
       suppressRender = false;
@@ -33965,7 +34007,7 @@
       battleTurns = { A: 0, B: 0 };
       runAutomaticBattleToEnd(1000);
       const completedBattleInsights = JSON.parse(JSON.stringify(battleInsights));
-      let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false });
+      let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false, calibrated: true });
       result = applyAdvantagePressureFloor(result, {
         aShields,
         bShields,
@@ -34081,6 +34123,18 @@
     const MAX_OUTPACE_PRESSURE_EDGE = 55;
     const MATCHUP_HP_EDGE_WEIGHT = 450;
     const MIN_TERMINAL_OUTCOME_EDGE = 18;
+    // Score calibration: keep the simulation ledger in its native units, then
+    // combine it with weights that reflect what matters most to a player.
+    // HP remains the strongest signal, while shields and future pressure are
+    // deliberately damped so a single resource does not dominate the result.
+    const MATCHUP_SCORE_HP_WEIGHT = 0.90;
+    const MATCHUP_SCORE_SHIELD_WEIGHT = 0.35;
+    const MATCHUP_SCORE_ENERGY_WEIGHT = 0.70;
+    const MATCHUP_SCORE_READINESS_WEIGHT = 0.55;
+    const MATCHUP_SCORE_FUTURE_EDGE_CAP = 90;
+    const MATCHUP_SCORE_TACTICAL_WEIGHT = 0.40;
+    const MATCHUP_SCORE_TACTICAL_EDGE_CAP = 70;
+    const MATCHUP_OUTCOME_EDGE = 25;
 
     function scoreShieldMatrixResult(a, b, options = {}) {
       const simultaneousFaint = a.hp <= 0 && b.hp <= 0;
@@ -34096,11 +34150,32 @@
       const closingCostEdge = closingCostPressure(b, a) - closingCostPressure(a, b);
       const farmPressureEdge = farmDownPressure(a, b) - farmDownPressure(b, a);
       const outpacePressureEdge = outpacePressure(a, b) - outpacePressure(b, a);
-      const resourceEdge = hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
-      const winnerEdge = terminalOutcomeEdge(a, b, resourceEdge);
+      const calibrated = options.calibrated === true;
+      const futurePressureEdge = calibrated ? Math.max(
+        -MATCHUP_SCORE_FUTURE_EDGE_CAP,
+        Math.min(
+          MATCHUP_SCORE_FUTURE_EDGE_CAP,
+          energyEdge * MATCHUP_SCORE_ENERGY_WEIGHT + (readyEdge + dangerEdge) * MATCHUP_SCORE_READINESS_WEIGHT
+        )
+      ) : energyEdge + readyEdge + dangerEdge;
+      const tacticalPressureEdge = calibrated ? Math.max(
+        -MATCHUP_SCORE_TACTICAL_EDGE_CAP,
+        Math.min(
+          MATCHUP_SCORE_TACTICAL_EDGE_CAP,
+          (closingCostEdge + farmPressureEdge + outpacePressureEdge) * MATCHUP_SCORE_TACTICAL_WEIGHT
+        )
+      ) : closingCostEdge + farmPressureEdge + outpacePressureEdge;
+      const resourceEdge = calibrated
+        ? hpEdge * MATCHUP_SCORE_HP_WEIGHT + shieldEdge * MATCHUP_SCORE_SHIELD_WEIGHT + futurePressureEdge + tacticalPressureEdge
+        : hpEdge + energyEdge + shieldEdge + readyEdge + dangerEdge + closingCostEdge + farmPressureEdge + outpacePressureEdge;
+      const winnerEdge = calibrated ? terminalOutcomeEdge(a, b) : terminalOutcomeEdge(a, b, resourceEdge);
       const resourceTotal = 500 + winnerEdge + resourceEdge;
       const rawTotal = simultaneousFaint ? 500 : resourceTotal;
-      const rawScore = Math.max(0, Math.min(1000, Math.round(rawTotal)));
+      let rawScore = Math.max(0, Math.min(1000, Math.round(rawTotal)));
+      // A terminal KO always carries the winner's side across the neutral
+      // boundary, even when the remaining resource ledger is very close.
+      if (calibrated && !simultaneousFaint && winnerEdge > 0 && rawScore <= 500) rawScore = 501;
+      if (calibrated && !simultaneousFaint && winnerEdge < 0 && rawScore >= 500) rawScore = 499;
       const flipPotential = options.includeSwing ? detectFlippableMatchup(a, b, options) : null;
       const swing = flipPotential && flipPotential.visible ? flipPotential.best : null;
       const flipAdjustedScore = scoreWithFlipCloseness(rawScore, a, b, swing);
@@ -34116,9 +34191,11 @@
         `shields ${formatEdge(shieldEdge)}`,
         `ready ${formatEdge(readyEdge)}`,
         `danger ${formatEdge(dangerEdge)}`,
+        `future pressure ${formatEdge(futurePressureEdge)}`,
         `closing cost ${formatEdge(closingCostEdge)}`,
         `farm pressure ${formatEdge(farmPressureEdge)}`,
         `outpace ${formatEdge(outpacePressureEdge)}`,
+        `tactical pressure ${formatEdge(tacticalPressureEdge)}`,
         `flip closeness ${formatEdge(flipClosenessEdge)}`
       ].join(" | ");
       return {
@@ -34141,9 +34218,12 @@
           closingCostEdge,
           farmPressureEdge,
           outpacePressureEdge,
+          futurePressureEdge,
+          tacticalPressureEdge,
           resourceEdge,
           flipClosenessEdge,
           flipPotential,
+          scoreCalibration: calibrated ? "resource-v1" : "legacy",
           total
         }
       };
@@ -34152,6 +34232,7 @@
     function terminalOutcomeEdge(a, b, resourceEdge) {
       const direction = a.hp > 0 && b.hp <= 0 ? 1 : b.hp > 0 && a.hp <= 0 ? -1 : 0;
       if (!direction) return 0;
+      if (resourceEdge === undefined) return direction * MATCHUP_OUTCOME_EDGE;
       const alignedResourceEdge = Number(resourceEdge || 0) * direction;
       const outcomeCorrection = Math.max(0, -alignedResourceEdge);
       return direction * (MIN_TERMINAL_OUTCOME_EDGE + outcomeCorrection);
@@ -36042,7 +36123,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260916-v48").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260916-v51").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

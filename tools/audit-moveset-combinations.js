@@ -5,8 +5,8 @@ const path = require("path");
 const assert = require("node:assert/strict");
 const { Worker, isMainThread, workerData } = require("node:worker_threads");
 const root = path.resolve(__dirname, "..");
-const out = path.join(root, "reports/moveset-combinations-20260910");
-const ids = ["rillaboom", "vigoroth", "vigoroth_shadow"];
+const out = path.join(root, "reports/moveset-combinations-20260911");
+const ids = ["rillaboom", "vigoroth", "vigoroth_shadow", "cramorant"];
 const read = p => JSON.parse(fs.readFileSync(path.join(root, p), "utf8"));
 const write = (name, value) => fs.writeFileSync(path.join(out, name), JSON.stringify(value, null, 2) + "\n");
 fs.mkdirSync(out, { recursive: true });
@@ -15,7 +15,8 @@ function audit(id) {
   const G = require("./build-great-league-meta-database");
   const { createRuntime } = require("./run-battle-regressions");
   const ranking = read("data/great-league-rankings.json");
-  const weights = ranking.metadata.weightUpdate.weights;
+  const weights = ranking.metadata.weightUpdate?.weights
+    || Object.fromEntries(ranking.entries.map(entry => [entry.id, 1]));
   const runtime = createRuntime();
   const adapter = G.createWorkerAdapter(G.extractLiveWorkerSource(), { dreStandard: true });
   const pokemon = runtime.pokemonMap.get(id);

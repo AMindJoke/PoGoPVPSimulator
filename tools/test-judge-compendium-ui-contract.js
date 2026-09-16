@@ -13,7 +13,7 @@ includes('data-view-target="compendium"');
 includes('id="compendiumView"');
 includes('body[data-view="compendium"] #compendiumView { display: grid; }');
 includes('background: color-mix(in srgb, #102737 94%, #163c53); color: #fff;', "The Compendium sidebar must remain dark in every theme instead of deriving its surface from --ink");
-includes('"team-builder", "compendium"');
+includes('"team-builder", "fast-count-trainer", "compendium"');
 includes('if (next === "compendium") {');
 includes('renderJudgeCompendium();');
 

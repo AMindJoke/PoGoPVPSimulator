@@ -66,6 +66,22 @@ const useMatchupCache = args.has("--matchup-cache");
 const allowLegacyCache = args.has("--allow-legacy-cache");
 const opponentPoolArg = process.argv.find(arg => arg.startsWith("--opponents="));
 const opponentPoolMode = opponentPoolArg ? opponentPoolArg.split("=")[1] : allPokemonRanking ? "meta" : "same";
+const opponentAddArg = process.argv.find(arg => arg.startsWith("--opponents-add="));
+const opponentAddIds = opponentAddArg
+  ? opponentAddArg.split("=").slice(1).join("=").split(",").map(value => value.trim()).filter(Boolean)
+  : [];
+const opponentRemoveArg = process.argv.find(arg => arg.startsWith("--opponents-remove="));
+const opponentRemoveIds = opponentRemoveArg
+  ? opponentRemoveArg.split("=").slice(1).join("=").split(",").map(value => value.trim()).filter(Boolean)
+  : [];
+const opponentFileArg = process.argv.find(arg => arg.startsWith("--opponents-file="));
+const opponentFilePath = opponentFileArg ? opponentFileArg.split("=").slice(1).join("=") : "";
+const opponentTopArg = process.argv.find(arg => arg.startsWith("--opponents-top="));
+const opponentTop = opponentTopArg ? Math.max(0, Number(opponentTopArg.split("=")[1] || 0)) : 0;
+const priorityFileArg = process.argv.find(arg => arg.startsWith("--priority-file="));
+const priorityFilePath = priorityFileArg ? priorityFileArg.split("=").slice(1).join("=") : "";
+const priorityMultiplierArg = process.argv.find(arg => arg.startsWith("--priority-multiplier="));
+const priorityMultiplier = priorityMultiplierArg ? Math.max(1, Number(priorityMultiplierArg.split("=")[1] || 1)) : 1;
 const rankingModelArg = process.argv.find(arg => arg.startsWith("--ranking-model="));
 const rankingModelMode = rankingModelArg ? rankingModelArg.split("=")[1] : "role";
 const activeRankingCategories = rankingModelMode === "equal-shields"
@@ -148,6 +164,15 @@ function loadExternalOpponentWeights(filePath) {
     map.set(entry.id, scoreToOpponentWeight(score, weightMode));
   }
   return map;
+}
+
+function loadPriorityIds(filePath) {
+  if (!filePath) return [];
+  const data = readJsonPath(filePath);
+  if (Array.isArray(data)) return data.filter(Boolean);
+  if (Array.isArray(data.pokemon)) return data.pokemon.filter(Boolean);
+  if (Array.isArray(data.entries)) return data.entries.map(entry => entry && entry.id).filter(Boolean);
+  return [];
 }
 
 function modeScoreForEntry(entry, mode) {
@@ -458,7 +483,7 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
     if (explicit && validFast(explicit.fast)) {
       const charged = (explicit.charged || []).filter(validCharged).slice(0, 2);
       if (charged.length) {
-        resolved[id] = { fast: explicit.fast, charged };
+        resolved[id] = { ...current, ...explicit, fast: explicit.fast, charged };
         continue;
       }
     }
@@ -478,7 +503,7 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
       const weakestIndex = chargedMoveScore(normalizedMoves.get(charged[0])) <= chargedMoveScore(normalizedMoves.get(charged[1])) ? 0 : 1;
       if (chargedMoveScore(normalizedMoves.get(candidate)) > chargedMoveScore(normalizedMoves.get(charged[weakestIndex]))) charged[weakestIndex] = candidate;
     }
-    if (fast && charged.length) resolved[id] = { fast, charged };
+    if (fast && charged.length) resolved[id] = { ...current, fast, charged };
   }
   return resolved;
 }
@@ -699,6 +724,7 @@ function readCompatibleCache(file, attackerSignature, requirePreviewIdentity = f
     matchupCacheStats.filesRead++;
     const legacyTimingCache = allowLegacyCache && cache.matrixVersion === "battle-planner-v43";
     if ((!legacyTimingCache && cache.matrixVersion !== MATRIX_VERSION) || cache.attackerSignature !== attackerSignature) return null;
+    if (!legacyTimingCache && cache.scoreVersion !== MATCHUP_SCORE_VERSION) return null;
     if (requirePreviewIdentity && (
       cache.seasonId !== activeGenerationPreview?.id ||
       cache.dataVersion !== activeGenerationPreview?.dataVersion
@@ -729,6 +755,7 @@ function saveMatchupCacheFile(cache) {
     league: "great",
     generatedAt: new Date().toISOString(),
     matrixVersion: MATRIX_VERSION,
+    scoreVersion: MATCHUP_SCORE_VERSION,
     seasonId: activeGenerationPreview?.id || null,
     dataVersion: activeGenerationPreview?.dataVersion || null,
     attackerSignature: cache.attackerSignature,
@@ -1249,7 +1276,19 @@ function main() {
     .filter(isEligibleGreatLeaguePokemon)
     .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
   const skippedPokemon = metaConfig.pokemon.filter(id => !allPokemon.has(id));
-  const metaPool = metaConfig.pokemon.map(id => allPokemon.get(id)).filter(Boolean);
+  let fileOpponentIds = [];
+  if (opponentFilePath) {
+    const opponentData = readJsonPath(opponentFilePath);
+    fileOpponentIds = Array.isArray(opponentData)
+      ? opponentData
+      : (opponentData.entries || []).map(entry => entry && entry.id).filter(Boolean);
+    if (opponentTop) fileOpponentIds = fileOpponentIds.slice(0, opponentTop);
+  }
+  const configuredOpponentIds = [...new Set([
+    ...(fileOpponentIds.length ? fileOpponentIds : metaConfig.pokemon),
+    ...opponentAddIds
+  ])].filter(id => !opponentRemoveIds.includes(id));
+  const metaPool = configuredOpponentIds.map(id => allPokemon.get(id)).filter(Boolean);
   let pool = allPokemonRanking ? eligiblePokemon : metaPool;
   let opponentPool = opponentPoolMode === "all"
     ? eligiblePokemon
@@ -1276,6 +1315,15 @@ function main() {
   const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
   if (externalOpponentWeights) {
     console.log(`Loaded ${externalOpponentWeights.size.toLocaleString()} opponent weights from ${weightSourcePath} (${weightMode}).`);
+  }
+  const priorityIds = new Set(loadPriorityIds(priorityFilePath));
+  if (externalOpponentWeights && priorityMultiplier > 1 && priorityIds.size) {
+    for (const id of priorityIds) {
+      if (externalOpponentWeights.has(id)) {
+        externalOpponentWeights.set(id, Math.min(3.2, externalOpponentWeights.get(id) * priorityMultiplier));
+      }
+    }
+    console.log(`Applied ${priorityMultiplier}x priority to ${priorityIds.size} configured opponents.`);
   }
   const selfMatchupsSkipped = opponentPool === pool || opponentPoolMode === "all";
   const total = profiles.length * scenarios.length * pool.reduce((sum, p) => (
@@ -1436,6 +1484,8 @@ function main() {
     splitMatchups,
     weightSource: weightSourcePath || null,
     weightMode: externalOpponentWeights ? weightMode : null,
+    priorityFile: priorityFilePath || null,
+    priorityMultiplier: priorityMultiplier > 1 ? priorityMultiplier : null,
     ...(args.has("--gradual-weights") && externalOpponentWeights ? {
       weightUpdate: { method: rankingWeightUpdate.METHOD, retainedShare: .5, transitionWidth: 20,
         weights: Object.fromEntries(externalOpponentWeights) }
@@ -1644,6 +1694,7 @@ module.exports = {
   createWorkerAdapter,
   normalizeMove,
   normalizePokemon,
+  generationData,
   buildPreviewMovesets,
   defaultStats,
   statsForIvSpread,

@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-09-11T21:16:28.290Z",
+  "generatedAt": "2026-09-16T12:29:50.486Z",
   "status": "VALID",
   "generation": {
     "datasetVersion": 1,
-    "simulatorVersion": "battle-planner-v44",
-    "currentEngineVersion": "battle-planner-v44",
+    "simulatorVersion": "battle-planner-v45",
+    "currentEngineVersion": "battle-planner-v45",
     "provenance": {
       "source": "offline-generated",
-      "currentEngineVersion": "battle-planner-v44",
-      "datasetEngineVersion": "battle-planner-v44",
+      "currentEngineVersion": "battle-planner-v45",
+      "datasetEngineVersion": "battle-planner-v45",
       "datasetVersion": 1,
-      "generatedAt": "2026-09-11T21:16:07.017Z",
+      "generatedAt": "2026-09-16T12:23:55.975Z",
       "stale": false,
       "staleReason": null
     },
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "gameMasterHash": "5991b30a3b18edc71fd5307e3db9108f9df1357a443ecbe132a6ab44bb510648",
-    "gitCommitSha": "ebb3616",
-    "datasetGeneratedAt": "2026-09-11T21:16:07.017Z"
+    "gitCommitSha": "d981046",
+    "datasetGeneratedAt": "2026-09-16T12:23:55.975Z"
   },
   "coverage": {
     "pokemonIncluded": 1540,
@@ -49,27 +49,27 @@
     "retries": 0
   },
   "performance": {
-    "totalRuntimeSeconds": 290,
-    "averageSimulationMs": 0.0408,
-    "simulationsPerSecond": 24517.86,
-    "peakMemoryBytes": 1865879552
+    "totalRuntimeSeconds": 101,
+    "averageSimulationMs": 0.0142,
+    "simulationsPerSecond": 70397.82,
+    "peakMemoryBytes": 608030720
   },
   "output": {
     "files": [
       {
         "path": "data/great-league-rankings.json",
-        "bytes": 6944860
+        "bytes": 5536691
       },
       {
         "path": "data/great-league-rankings.js",
-        "bytes": 6944892
+        "bytes": 5536723
       },
       {
         "path": "data/rankings/great-league-full.json",
-        "bytes": 6944860
+        "bytes": 5536691
       }
     ],
-    "totalBytes": 20834612
+    "totalBytes": 16610105
   },
   "validation": {
     "valid": true,
@@ -91,1184 +91,1217 @@
       {
         "rank": 1,
         "name": "Mimikyu",
-        "score": 563,
-        "rawScore": 688,
-        "competitiveScore": 563,
+        "score": 635,
+        "rawScore": 685,
+        "competitiveScore": 635,
         "winRate": 0.8709
       },
       {
         "rank": 2,
         "name": "Tinkaton",
-        "score": 556,
-        "rawScore": 652,
-        "competitiveScore": 556,
-        "winRate": 0.8404
+        "score": 596,
+        "rawScore": 646,
+        "competitiveScore": 596,
+        "winRate": 0.8408
       },
       {
         "rank": 3,
-        "name": "Forretress",
-        "score": 546,
-        "rawScore": 633,
-        "competitiveScore": 546,
-        "winRate": 0.7405
+        "name": "Carbink",
+        "score": 587,
+        "rawScore": 647,
+        "competitiveScore": 587,
+        "winRate": 0.7618
       },
       {
         "rank": 4,
-        "name": "Carbink",
-        "score": 544,
+        "name": "Corsola (Galarian)",
+        "score": 580,
         "rawScore": 650,
-        "competitiveScore": 544,
-        "winRate": 0.7607
+        "competitiveScore": 580,
+        "winRate": 0.8126
       },
       {
         "rank": 5,
-        "name": "Forretress (Shadow)",
-        "score": 541,
-        "rawScore": 630,
-        "competitiveScore": 541,
-        "winRate": 0.7241
+        "name": "Turtonator",
+        "score": 576,
+        "rawScore": 653,
+        "competitiveScore": 576,
+        "winRate": 0.7758
       },
       {
         "rank": 6,
-        "name": "Corsola (Galarian)",
-        "score": 541,
-        "rawScore": 650,
-        "competitiveScore": 541,
-        "winRate": 0.8133
-      },
-      {
-        "rank": 7,
-        "name": "Altaria",
-        "score": 539,
-        "rawScore": 627,
-        "competitiveScore": 539,
-        "winRate": 0.7815
-      },
-      {
-        "rank": 8,
-        "name": "Guzzlord",
-        "score": 539,
-        "rawScore": 639,
-        "competitiveScore": 539,
-        "winRate": 0.7576
-      },
-      {
-        "rank": 9,
-        "name": "Cradily",
-        "score": 539,
-        "rawScore": 613,
-        "competitiveScore": 539,
-        "winRate": 0.7566
-      },
-      {
-        "rank": 10,
-        "name": "Talonflame (Shadow)",
-        "score": 539,
-        "rawScore": 638,
-        "competitiveScore": 539,
-        "winRate": 0.6872
-      },
-      {
-        "rank": 11,
-        "name": "Corviknight",
-        "score": 537,
-        "rawScore": 633,
-        "competitiveScore": 537,
-        "winRate": 0.8293
-      },
-      {
-        "rank": 12,
-        "name": "Malamar",
-        "score": 537,
-        "rawScore": 627,
-        "competitiveScore": 537,
-        "winRate": 0.7906
-      },
-      {
-        "rank": 13,
-        "name": "Cramorant",
-        "score": 536,
-        "rawScore": 627,
-        "competitiveScore": 536,
-        "winRate": 0.7524
-      },
-      {
-        "rank": 14,
-        "name": "Vigoroth",
-        "score": 536,
-        "rawScore": 623,
-        "competitiveScore": 536,
-        "winRate": 0.7968
-      },
-      {
-        "rank": 15,
-        "name": "Clodsire",
-        "score": 536,
-        "rawScore": 618,
-        "competitiveScore": 536,
-        "winRate": 0.7806
-      },
-      {
-        "rank": 16,
-        "name": "Charjabug",
-        "score": 534,
-        "rawScore": 627,
-        "competitiveScore": 534,
-        "winRate": 0.7158
-      },
-      {
-        "rank": 17,
-        "name": "Jellicent",
-        "score": 534,
-        "rawScore": 630,
-        "competitiveScore": 534,
+        "name": "Pidgeot",
+        "score": 576,
+        "rawScore": 636,
+        "competitiveScore": 576,
         "winRate": 0.7613
       },
       {
-        "rank": 18,
-        "name": "Sableye (Shadow)",
-        "score": 534,
-        "rawScore": 640,
-        "competitiveScore": 534,
-        "winRate": 0.7793
-      },
-      {
-        "rank": 19,
-        "name": "Medicham",
-        "score": 534,
-        "rawScore": 627,
-        "competitiveScore": 534,
-        "winRate": 0.781
-      },
-      {
-        "rank": 20,
-        "name": "Ninetales",
-        "score": 532,
-        "rawScore": 623,
-        "competitiveScore": 532,
-        "winRate": 0.7477
-      },
-      {
-        "rank": 21,
-        "name": "Stunfisk",
-        "score": 532,
-        "rawScore": 610,
-        "competitiveScore": 532,
-        "winRate": 0.7228
-      },
-      {
-        "rank": 22,
-        "name": "Azumarill",
-        "score": 532,
-        "rawScore": 606,
-        "competitiveScore": 532,
-        "winRate": 0.7345
-      },
-      {
-        "rank": 23,
-        "name": "Sableye",
-        "score": 532,
-        "rawScore": 627,
-        "competitiveScore": 532,
-        "winRate": 0.7719
-      },
-      {
-        "rank": 24,
-        "name": "Ninetales (Shadow)",
-        "score": 532,
-        "rawScore": 627,
-        "competitiveScore": 532,
-        "winRate": 0.7507
-      },
-      {
-        "rank": 25,
-        "name": "Mandibuzz",
-        "score": 532,
-        "rawScore": 620,
-        "competitiveScore": 532,
-        "winRate": 0.7481
-      },
-      {
-        "rank": 26,
-        "name": "Lapras",
-        "score": 532,
-        "rawScore": 603,
-        "competitiveScore": 532,
-        "winRate": 0.7527
-      },
-      {
-        "rank": 27,
-        "name": "Melmetal",
-        "score": 531,
-        "rawScore": 637,
-        "competitiveScore": 531,
-        "winRate": 0.7834
-      },
-      {
-        "rank": 28,
-        "name": "Empoleon (Shadow)",
-        "score": 530,
-        "rawScore": 620,
-        "competitiveScore": 530,
-        "winRate": 0.7654
-      },
-      {
-        "rank": 29,
-        "name": "Bastiodon",
-        "score": 530,
-        "rawScore": 630,
-        "competitiveScore": 530,
-        "winRate": 0.716
-      },
-      {
-        "rank": 30,
-        "name": "Furret",
-        "score": 530,
-        "rawScore": 613,
-        "competitiveScore": 530,
-        "winRate": 0.741
-      },
-      {
-        "rank": 31,
-        "name": "Fearow",
-        "score": 530,
-        "rawScore": 623,
-        "competitiveScore": 530,
+        "rank": 7,
+        "name": "Pidgeot (Shadow)",
+        "score": 576,
+        "rawScore": 636,
+        "competitiveScore": 576,
         "winRate": 0.7397
       },
       {
-        "rank": 32,
-        "name": "Kingdra",
-        "score": 529,
-        "rawScore": 626,
-        "competitiveScore": 529,
-        "winRate": 0.8113
-      },
-      {
-        "rank": 33,
-        "name": "Mantine",
-        "score": 529,
-        "rawScore": 620,
-        "competitiveScore": 529,
-        "winRate": 0.7819
-      },
-      {
-        "rank": 34,
-        "name": "Zweilous",
-        "score": 529,
-        "rawScore": 627,
-        "competitiveScore": 529,
-        "winRate": 0.7572
-      },
-      {
-        "rank": 35,
-        "name": "Malamar (Shadow)",
-        "score": 529,
-        "rawScore": 637,
-        "competitiveScore": 529,
-        "winRate": 0.8016
-      },
-      {
-        "rank": 36,
-        "name": "Snorlax",
-        "score": 529,
-        "rawScore": 630,
-        "competitiveScore": 529,
-        "winRate": 0.8001
-      },
-      {
-        "rank": 37,
-        "name": "Snorlax (Shadow)",
-        "score": 529,
-        "rawScore": 630,
-        "competitiveScore": 529,
-        "winRate": 0.7901
-      },
-      {
-        "rank": 38,
-        "name": "Moltres (Galarian)",
-        "score": 529,
-        "rawScore": 627,
-        "competitiveScore": 529,
-        "winRate": 0.7384
-      },
-      {
-        "rank": 39,
-        "name": "Talonflame",
-        "score": 527,
-        "rawScore": 630,
-        "competitiveScore": 527,
-        "winRate": 0.7102
-      },
-      {
-        "rank": 40,
-        "name": "Togekiss",
-        "score": 527,
-        "rawScore": 630,
-        "competitiveScore": 527,
-        "winRate": 0.7323
-      },
-      {
-        "rank": 41,
-        "name": "Charjabug (Shadow)",
-        "score": 526,
-        "rawScore": 633,
-        "competitiveScore": 526,
+        "rank": 8,
+        "name": "Swanna (Shadow)",
+        "score": 576,
+        "rawScore": 629,
+        "competitiveScore": 576,
         "winRate": 0.7251
       },
       {
-        "rank": 42,
-        "name": "Kingdra (Shadow)",
-        "score": 526,
+        "rank": 9,
+        "name": "Regidrago",
+        "score": 573,
+        "rawScore": 643,
+        "competitiveScore": 573,
+        "winRate": 0.8419
+      },
+      {
+        "rank": 10,
+        "name": "Malamar (Shadow)",
+        "score": 573,
+        "rawScore": 637,
+        "competitiveScore": 573,
+        "winRate": 0.801
+      },
+      {
+        "rank": 11,
+        "name": "Sableye (Shadow)",
+        "score": 573,
+        "rawScore": 636,
+        "competitiveScore": 573,
+        "winRate": 0.7784
+      },
+      {
+        "rank": 12,
+        "name": "Corviknight",
+        "score": 573,
+        "rawScore": 633,
+        "competitiveScore": 573,
+        "winRate": 0.8282
+      },
+      {
+        "rank": 13,
+        "name": "Skeledirge",
+        "score": 572,
+        "rawScore": 642,
+        "competitiveScore": 572,
+        "winRate": 0.7232
+      },
+      {
+        "rank": 14,
+        "name": "Araquanid",
+        "score": 570,
+        "rawScore": 633,
+        "competitiveScore": 570,
+        "winRate": 0.7964
+      },
+      {
+        "rank": 15,
+        "name": "Swanna",
+        "score": 570,
         "rawScore": 630,
-        "competitiveScore": 526,
-        "winRate": 0.7992
+        "competitiveScore": 570,
+        "winRate": 0.7312
+      },
+      {
+        "rank": 16,
+        "name": "Cramorant",
+        "score": 570,
+        "rawScore": 627,
+        "competitiveScore": 570,
+        "winRate": 0.7518
+      },
+      {
+        "rank": 17,
+        "name": "Dusclops (Shadow)",
+        "score": 567,
+        "rawScore": 633,
+        "competitiveScore": 567,
+        "winRate": 0.7726
+      },
+      {
+        "rank": 18,
+        "name": "Araquanid (Shadow)",
+        "score": 567,
+        "rawScore": 633,
+        "competitiveScore": 567,
+        "winRate": 0.7789
+      },
+      {
+        "rank": 19,
+        "name": "Dusclops",
+        "score": 567,
+        "rawScore": 627,
+        "competitiveScore": 567,
+        "winRate": 0.7737
+      },
+      {
+        "rank": 20,
+        "name": "Mantine",
+        "score": 567,
+        "rawScore": 617,
+        "competitiveScore": 567,
+        "winRate": 0.781
+      },
+      {
+        "rank": 21,
+        "name": "Giratina (Altered) (Shadow)",
+        "score": 566,
+        "rawScore": 637,
+        "competitiveScore": 566,
+        "winRate": 0.7981
+      },
+      {
+        "rank": 22,
+        "name": "Spiritomb",
+        "score": 566,
+        "rawScore": 629,
+        "competitiveScore": 566,
+        "winRate": 0.752
+      },
+      {
+        "rank": 23,
+        "name": "Corviknight (Shadow)",
+        "score": 566,
+        "rawScore": 630,
+        "competitiveScore": 566,
+        "winRate": 0.8135
+      },
+      {
+        "rank": 24,
+        "name": "Jellicent",
+        "score": 566,
+        "rawScore": 620,
+        "competitiveScore": 566,
+        "winRate": 0.7598
+      },
+      {
+        "rank": 25,
+        "name": "Morgrem",
+        "score": 563,
+        "rawScore": 630,
+        "competitiveScore": 563,
+        "winRate": 0.7475
+      },
+      {
+        "rank": 26,
+        "name": "Malamar",
+        "score": 563,
+        "rawScore": 630,
+        "competitiveScore": 563,
+        "winRate": 0.7903
+      },
+      {
+        "rank": 27,
+        "name": "Sableye",
+        "score": 563,
+        "rawScore": 627,
+        "competitiveScore": 563,
+        "winRate": 0.7704
+      },
+      {
+        "rank": 28,
+        "name": "Melmetal",
+        "score": 560,
+        "rawScore": 633,
+        "competitiveScore": 560,
+        "winRate": 0.7828
+      },
+      {
+        "rank": 29,
+        "name": "Rapidash (Shadow)",
+        "score": 560,
+        "rawScore": 633,
+        "competitiveScore": 560,
+        "winRate": 0.7262
+      },
+      {
+        "rank": 30,
+        "name": "Kingdra (Shadow)",
+        "score": 560,
+        "rawScore": 630,
+        "competitiveScore": 560,
+        "winRate": 0.8001
+      },
+      {
+        "rank": 31,
+        "name": "Bombirdier",
+        "score": 560,
+        "rawScore": 626,
+        "competitiveScore": 560,
+        "winRate": 0.7351
+      },
+      {
+        "rank": 32,
+        "name": "Houndoom (Shadow)",
+        "score": 560,
+        "rawScore": 627,
+        "competitiveScore": 560,
+        "winRate": 0.705
+      },
+      {
+        "rank": 33,
+        "name": "Kingdra",
+        "score": 560,
+        "rawScore": 623,
+        "competitiveScore": 560,
+        "winRate": 0.8118
+      },
+      {
+        "rank": 34,
+        "name": "Altaria",
+        "score": 560,
+        "rawScore": 627,
+        "competitiveScore": 560,
+        "winRate": 0.781
+      },
+      {
+        "rank": 35,
+        "name": "Medicham",
+        "score": 560,
+        "rawScore": 623,
+        "competitiveScore": 560,
+        "winRate": 0.7817
+      },
+      {
+        "rank": 36,
+        "name": "Togekiss",
+        "score": 560,
+        "rawScore": 623,
+        "competitiveScore": 560,
+        "winRate": 0.7316
+      },
+      {
+        "rank": 37,
+        "name": "Moltres (Galarian)",
+        "score": 559,
+        "rawScore": 627,
+        "competitiveScore": 559,
+        "winRate": 0.7375
+      },
+      {
+        "rank": 38,
+        "name": "Talonflame (Shadow)",
+        "score": 559,
+        "rawScore": 618,
+        "competitiveScore": 559,
+        "winRate": 0.6866
+      },
+      {
+        "rank": 39,
+        "name": "Sandslash (Alolan) (Shadow)",
+        "score": 557,
+        "rawScore": 633,
+        "competitiveScore": 557,
+        "winRate": 0.7529
+      },
+      {
+        "rank": 40,
+        "name": "Drifblim (Shadow)",
+        "score": 557,
+        "rawScore": 621,
+        "competitiveScore": 557,
+        "winRate": 0.708
+      },
+      {
+        "rank": 41,
+        "name": "Bastiodon",
+        "score": 557,
+        "rawScore": 627,
+        "competitiveScore": 557,
+        "winRate": 0.715
+      },
+      {
+        "rank": 42,
+        "name": "Ninetales (Alolan) (Shadow)",
+        "score": 557,
+        "rawScore": 620,
+        "competitiveScore": 557,
+        "winRate": 0.7243
       },
       {
         "rank": 43,
-        "name": "Empoleon",
-        "score": 525,
-        "rawScore": 623,
-        "competitiveScore": 525,
-        "winRate": 0.7713
+        "name": "Dondozo",
+        "score": 557,
+        "rawScore": 610,
+        "competitiveScore": 557,
+        "winRate": 0.729
       },
       {
         "rank": 44,
-        "name": "Jumpluff",
-        "score": 525,
-        "rawScore": 616,
-        "competitiveScore": 525,
-        "winRate": 0.7245
+        "name": "Bastiodon (Shadow)",
+        "score": 556,
+        "rawScore": 630,
+        "competitiveScore": 556,
+        "winRate": 0.7145
       },
       {
         "rank": 45,
-        "name": "Quagsire (Shadow)",
-        "score": 525,
-        "rawScore": 597,
-        "competitiveScore": 525,
-        "winRate": 0.6976
+        "name": "Guzzlord",
+        "score": 556,
+        "rawScore": 629,
+        "competitiveScore": 556,
+        "winRate": 0.7566
       },
       {
         "rank": 46,
-        "name": "Lickilicky",
-        "score": 525,
-        "rawScore": 597,
-        "competitiveScore": 525,
-        "winRate": 0.7035
+        "name": "Hydreigon (Shadow)",
+        "score": 556,
+        "rawScore": 627,
+        "competitiveScore": 556,
+        "winRate": 0.7633
       },
       {
         "rank": 47,
-        "name": "Rillaboom",
-        "score": 524,
-        "rawScore": 593,
-        "competitiveScore": 524,
-        "winRate": 0.7299
+        "name": "Altaria (Shadow)",
+        "score": 556,
+        "rawScore": 627,
+        "competitiveScore": 556,
+        "winRate": 0.7687
       },
       {
         "rank": 48,
         "name": "Goodra",
-        "score": 524,
-        "rawScore": 626,
-        "competitiveScore": 524,
-        "winRate": 0.7799
+        "score": 556,
+        "rawScore": 619,
+        "competitiveScore": 556,
+        "winRate": 0.7797
       },
       {
         "rank": 49,
-        "name": "Diggersby",
-        "score": 523,
-        "rawScore": 607,
-        "competitiveScore": 523,
-        "winRate": 0.7067
+        "name": "Drifblim",
+        "score": 556,
+        "rawScore": 616,
+        "competitiveScore": 556,
+        "winRate": 0.7446
       },
       {
         "rank": 50,
-        "name": "Politoed (Shadow)",
-        "score": 523,
-        "rawScore": 583,
-        "competitiveScore": 523,
-        "winRate": 0.6987
+        "name": "Jirachi",
+        "score": 553,
+        "rawScore": 637,
+        "competitiveScore": 553,
+        "winRate": 0.7392
       }
     ],
     "bottom20": [
       {
         "rank": 1540,
         "name": "Magikarp (Shadow)",
-        "score": 376,
-        "rawScore": 23,
-        "competitiveScore": 376,
+        "score": 56,
+        "rawScore": 60,
+        "competitiveScore": 56,
         "winRate": 0.0004
       },
       {
         "rank": 1539,
-        "name": "Magikarp",
-        "score": 376,
-        "rawScore": 28,
-        "competitiveScore": 376,
-        "winRate": 0.0004
+        "name": "Feebas (Shadow)",
+        "score": 58,
+        "rawScore": 69,
+        "competitiveScore": 58,
+        "winRate": 0.0019
       },
       {
         "rank": 1538,
-        "name": "Feebas (Shadow)",
-        "score": 376,
-        "rawScore": 36,
-        "competitiveScore": 376,
-        "winRate": 0.0019
+        "name": "Magikarp",
+        "score": 60,
+        "rawScore": 70,
+        "competitiveScore": 60,
+        "winRate": 0.0004
       },
       {
         "rank": 1537,
         "name": "Feebas",
-        "score": 376,
-        "rawScore": 42,
-        "competitiveScore": 376,
+        "score": 67,
+        "rawScore": 77,
+        "competitiveScore": 67,
         "winRate": 0.0024
       },
       {
         "rank": 1536,
         "name": "Blipbug",
-        "score": 376,
-        "rawScore": 76,
-        "competitiveScore": 376,
+        "score": 110,
+        "rawScore": 137,
+        "competitiveScore": 110,
         "winRate": 0.0039
       },
       {
         "rank": 1535,
-        "name": "Weedle",
-        "score": 376,
-        "rawScore": 104,
-        "competitiveScore": 376,
-        "winRate": 0.0052
+        "name": "Slaking (Shadow)",
+        "score": 120,
+        "rawScore": 156,
+        "competitiveScore": 120,
+        "winRate": 0.0524
       },
       {
         "rank": 1534,
         "name": "Weedle (Shadow)",
-        "score": 376,
-        "rawScore": 101,
-        "competitiveScore": 376,
+        "score": 123,
+        "rawScore": 150,
+        "competitiveScore": 123,
         "winRate": 0.0071
       },
       {
         "rank": 1533,
-        "name": "Happiny",
-        "score": 376,
-        "rawScore": 110,
-        "competitiveScore": 376,
-        "winRate": 0.0097
+        "name": "Weedle",
+        "score": 126,
+        "rawScore": 150,
+        "competitiveScore": 126,
+        "winRate": 0.0052
       },
       {
         "rank": 1532,
         "name": "Kricketot",
-        "score": 376,
-        "rawScore": 109,
-        "competitiveScore": 376,
+        "score": 130,
+        "rawScore": 160,
+        "competitiveScore": 130,
         "winRate": 0.0113
       },
       {
         "rank": 1531,
-        "name": "Kakuna (Shadow)",
-        "score": 378,
-        "rawScore": 117,
-        "competitiveScore": 378,
-        "winRate": 0.0078
+        "name": "Wynaut",
+        "score": 132,
+        "rawScore": 168,
+        "competitiveScore": 132,
+        "winRate": 0.0284
       },
       {
         "rank": 1530,
-        "name": "Silcoon",
-        "score": 378,
-        "rawScore": 118,
-        "competitiveScore": 378,
-        "winRate": 0.0037
+        "name": "Happiny",
+        "score": 133,
+        "rawScore": 157,
+        "competitiveScore": 133,
+        "winRate": 0.0097
       },
       {
         "rank": 1529,
-        "name": "Cascoon",
-        "score": 378,
-        "rawScore": 118,
-        "competitiveScore": 378,
-        "winRate": 0.0037
+        "name": "Kakuna (Shadow)",
+        "score": 133,
+        "rawScore": 157,
+        "competitiveScore": 133,
+        "winRate": 0.0078
       },
       {
         "rank": 1528,
         "name": "Kakuna",
-        "score": 378,
-        "rawScore": 117,
-        "competitiveScore": 378,
+        "score": 136,
+        "rawScore": 160,
+        "competitiveScore": 136,
         "winRate": 0.0074
       },
       {
         "rank": 1527,
-        "name": "Wimpod",
-        "score": 381,
-        "rawScore": 139,
-        "competitiveScore": 381,
-        "winRate": 0.0162
-      },
-      {
-        "rank": 1526,
-        "name": "Zigzagoon",
-        "score": 381,
-        "rawScore": 139,
-        "competitiveScore": 381,
-        "winRate": 0.0178
-      },
-      {
-        "rank": 1525,
-        "name": "Wynaut",
-        "score": 381,
-        "rawScore": 148,
-        "competitiveScore": 381,
-        "winRate": 0.0284
-      },
-      {
-        "rank": 1524,
         "name": "Slakoth (Shadow)",
-        "score": 381,
-        "rawScore": 150,
-        "competitiveScore": 381,
+        "score": 136,
+        "rawScore": 173,
+        "competitiveScore": 136,
         "winRate": 0.0325
       },
       {
+        "rank": 1526,
+        "name": "Silcoon",
+        "score": 139,
+        "rawScore": 160,
+        "competitiveScore": 139,
+        "winRate": 0.0037
+      },
+      {
+        "rank": 1525,
+        "name": "Cascoon",
+        "score": 139,
+        "rawScore": 160,
+        "competitiveScore": 139,
+        "winRate": 0.0037
+      },
+      {
+        "rank": 1524,
+        "name": "Pichu",
+        "score": 140,
+        "rawScore": 177,
+        "competitiveScore": 140,
+        "winRate": 0.037
+      },
+      {
         "rank": 1523,
-        "name": "Slaking (Shadow)",
-        "score": 381,
-        "rawScore": 143,
-        "competitiveScore": 381,
-        "winRate": 0.0524
+        "name": "Slaking",
+        "score": 141,
+        "rawScore": 183,
+        "competitiveScore": 141,
+        "winRate": 0.0591
       },
       {
         "rank": 1522,
-        "name": "Azurill",
-        "score": 383,
-        "rawScore": 160,
-        "competitiveScore": 383,
-        "winRate": 0.0197
+        "name": "Wimpod",
+        "score": 143,
+        "rawScore": 173,
+        "competitiveScore": 143,
+        "winRate": 0.0162
       },
       {
         "rank": 1521,
-        "name": "Cleffa",
-        "score": 383,
-        "rawScore": 163,
-        "competitiveScore": 383,
-        "winRate": 0.0232
+        "name": "Snom",
+        "score": 143,
+        "rawScore": 187,
+        "competitiveScore": 143,
+        "winRate": 0.0321
       }
     ],
     "largestShieldDifferences": [
       {
-        "rank": 125,
+        "rank": 458,
         "name": "Aegislash (Shield)",
-        "zero": 683,
-        "one": 566,
-        "two": 449,
-        "spread": 234
+        "zero": 678,
+        "one": 550,
+        "two": 452,
+        "spread": 226
       },
       {
-        "rank": 909,
+        "rank": 1134,
         "name": "Regice (Shadow)",
-        "zero": 571,
-        "one": 436,
+        "zero": 577,
+        "one": 435,
         "two": 362,
-        "spread": 209
+        "spread": 215
       },
       {
-        "rank": 718,
-        "name": "Gigalith (Shadow)",
-        "zero": 589,
-        "one": 522,
-        "two": 400,
-        "spread": 189
-      },
-      {
-        "rank": 1451,
-        "name": "Pikachu",
-        "zero": 337,
-        "one": 230,
-        "two": 149,
-        "spread": 188
-      },
-      {
-        "rank": 1081,
-        "name": "Zamazenta (Hero)",
-        "zero": 537,
-        "one": 463,
-        "two": 352,
-        "spread": 185
-      },
-      {
-        "rank": 704,
-        "name": "Regice",
-        "zero": 587,
-        "one": 480,
-        "two": 403,
-        "spread": 184
-      },
-      {
-        "rank": 981,
-        "name": "Zacian (Hero)",
-        "zero": 557,
-        "one": 493,
-        "two": 373,
-        "spread": 184
-      },
-      {
-        "rank": 906,
+        "rank": 988,
         "name": "Mewtwo (Shadow)",
-        "zero": 586,
-        "one": 477,
-        "two": 403,
-        "spread": 183
+        "zero": 604,
+        "one": 485,
+        "two": 402,
+        "spread": 202
       },
       {
-        "rank": 1438,
+        "rank": 836,
+        "name": "Gigalith (Shadow)",
+        "zero": 604,
+        "one": 535,
+        "two": 406,
+        "spread": 198
+      },
+      {
+        "rank": 652,
+        "name": "Yveltal",
+        "zero": 444,
+        "one": 552,
+        "two": 641,
+        "spread": 197
+      },
+      {
+        "rank": 979,
+        "name": "Regice",
+        "zero": 592,
+        "one": 483,
+        "two": 401,
+        "spread": 191
+      },
+      {
+        "rank": 1113,
+        "name": "Zamazenta (Hero)",
+        "zero": 542,
+        "one": 472,
+        "two": 351,
+        "spread": 191
+      },
+      {
+        "rank": 996,
+        "name": "Zacian (Hero)",
+        "zero": 563,
+        "one": 506,
+        "two": 373,
+        "spread": 190
+      },
+      {
+        "rank": 638,
+        "name": "Gardevoir (Shadow)",
+        "zero": 446,
+        "one": 573,
+        "two": 633,
+        "spread": 187
+      },
+      {
+        "rank": 820,
+        "name": "Glimmet",
+        "zero": 422,
+        "one": 537,
+        "two": 603,
+        "spread": 181
+      },
+      {
+        "rank": 657,
+        "name": "Geodude (Shadow)",
+        "zero": 451,
+        "one": 563,
+        "two": 628,
+        "spread": 177
+      },
+      {
+        "rank": 658,
+        "name": "Toxicroak (Shadow)",
+        "zero": 634,
+        "one": 540,
+        "two": 460,
+        "spread": 174
+      },
+      {
+        "rank": 1486,
         "name": "Pikachu (Shaymin Scarf)",
-        "zero": 353,
-        "one": 267,
-        "two": 171,
-        "spread": 182
+        "zero": 361,
+        "one": 279,
+        "two": 188,
+        "spread": 173
       },
       {
-        "rank": 350,
+        "rank": 687,
+        "name": "Girafarig (Shadow)",
+        "zero": 450,
+        "one": 558,
+        "two": 622,
+        "spread": 172
+      },
+      {
+        "rank": 1498,
+        "name": "Pikachu",
+        "zero": 346,
+        "one": 247,
+        "two": 174,
+        "spread": 172
+      },
+      {
+        "rank": 496,
         "name": "Registeel (Shadow)",
-        "zero": 652,
+        "zero": 650,
         "one": 559,
         "two": 479,
-        "spread": 173
+        "spread": 171
       },
       {
-        "rank": 698,
-        "name": "Gardevoir (Shadow)",
-        "zero": 466,
-        "one": 582,
-        "two": 639,
-        "spread": 173
+        "rank": 1015,
+        "name": "Hoopa (Unbound)",
+        "zero": 399,
+        "one": 520,
+        "two": 570,
+        "spread": 171
       },
       {
-        "rank": 1439,
-        "name": "Pikachu (5th Anniversary)",
-        "zero": 343,
-        "one": 225,
-        "two": 173,
+        "rank": 405,
+        "name": "Blaziken (Shadow)",
+        "zero": 642,
+        "one": 563,
+        "two": 472,
         "spread": 170
       },
       {
-        "rank": 539,
-        "name": "Toxicroak (Shadow)",
-        "zero": 623,
-        "one": 531,
-        "two": 460,
-        "spread": 163
-      },
-      {
-        "rank": 863,
-        "name": "Yveltal",
-        "zero": 463,
-        "one": 556,
-        "two": 626,
-        "spread": 163
-      },
-      {
-        "rank": 612,
-        "name": "Girafarig (Shadow)",
-        "zero": 467,
-        "one": 568,
-        "two": 628,
-        "spread": 161
-      },
-      {
-        "rank": 1200,
-        "name": "Cacnea",
-        "zero": 472,
-        "one": 360,
-        "two": 313,
-        "spread": 159
-      },
-      {
-        "rank": 825,
+        "rank": 864,
         "name": "Landorus (Incarnate) (Shadow)",
-        "zero": 586,
-        "one": 501,
-        "two": 428,
-        "spread": 158
+        "zero": 597,
+        "one": 507,
+        "two": 427,
+        "spread": 170
       },
       {
-        "rank": 1353,
-        "name": "Deoxys",
-        "zero": 404,
-        "one": 286,
-        "two": 246,
-        "spread": 158
-      },
-      {
-        "rank": 274,
-        "name": "Swoobat",
-        "zero": 518,
-        "one": 627,
-        "two": 673,
-        "spread": 155
-      },
-      {
-        "rank": 862,
-        "name": "Rotom (Heat)",
-        "zero": 580,
-        "one": 478,
-        "two": 425,
-        "spread": 155
+        "rank": 761,
+        "name": "Tornadus (Therian)",
+        "zero": 450,
+        "one": 536,
+        "two": 618,
+        "spread": 168
       }
     ],
     "largestRankingSurprises": [
       {
-        "rank": 1540,
-        "name": "Magikarp (Shadow)",
-        "score": 376,
-        "rawScore": 23,
-        "competitiveScore": 376,
-        "winRate": 0.0004,
-        "scoreStdDev": 4.66,
-        "delta": 353
+        "rank": 998,
+        "name": "Deerling",
+        "score": 413,
+        "rawScore": 515,
+        "competitiveScore": 413,
+        "winRate": 0.4834,
+        "scoreStdDev": 199.61,
+        "delta": 102
       },
       {
-        "rank": 1539,
-        "name": "Magikarp",
-        "score": 376,
-        "rawScore": 28,
-        "competitiveScore": 376,
-        "winRate": 0.0004,
-        "scoreStdDev": 4.68,
-        "delta": 348
+        "rank": 784,
+        "name": "Gabite",
+        "score": 449,
+        "rawScore": 546,
+        "competitiveScore": 449,
+        "winRate": 0.5523,
+        "scoreStdDev": 196.68,
+        "delta": 97
       },
       {
-        "rank": 1538,
-        "name": "Feebas (Shadow)",
-        "score": 376,
-        "rawScore": 36,
-        "competitiveScore": 376,
-        "winRate": 0.0019,
-        "scoreStdDev": 14.22,
-        "delta": 340
+        "rank": 889,
+        "name": "Koffing (Shadow)",
+        "score": 433,
+        "rawScore": 530,
+        "competitiveScore": 433,
+        "winRate": 0.5309,
+        "scoreStdDev": 182.69,
+        "delta": 97
       },
       {
-        "rank": 1537,
-        "name": "Feebas",
-        "score": 376,
-        "rawScore": 42,
-        "competitiveScore": 376,
-        "winRate": 0.0024,
-        "scoreStdDev": 15.1,
-        "delta": 334
+        "rank": 870,
+        "name": "Garbodor (Shadow)",
+        "score": 436,
+        "rawScore": 533,
+        "competitiveScore": 436,
+        "winRate": 0.525,
+        "scoreStdDev": 180.71,
+        "delta": 97
       },
       {
-        "rank": 1536,
-        "name": "Blipbug",
-        "score": 376,
-        "rawScore": 76,
-        "competitiveScore": 376,
-        "winRate": 0.0039,
-        "scoreStdDev": 18.34,
-        "delta": 300
+        "rank": 1155,
+        "name": "Gible (Shadow)",
+        "score": 369,
+        "rawScore": 465,
+        "competitiveScore": 369,
+        "winRate": 0.3797,
+        "scoreStdDev": 206.08,
+        "delta": 96
       },
       {
-        "rank": 1534,
-        "name": "Weedle (Shadow)",
-        "score": 376,
-        "rawScore": 101,
-        "competitiveScore": 376,
-        "winRate": 0.0071,
-        "scoreStdDev": 24.11,
-        "delta": 275
+        "rank": 1207,
+        "name": "Beldum (Shadow)",
+        "score": 345,
+        "rawScore": 441,
+        "competitiveScore": 345,
+        "winRate": 0.3279,
+        "scoreStdDev": 205.12,
+        "delta": 96
       },
       {
-        "rank": 1535,
-        "name": "Weedle",
-        "score": 376,
-        "rawScore": 104,
-        "competitiveScore": 376,
-        "winRate": 0.0052,
-        "scoreStdDev": 22.69,
-        "delta": 272
+        "rank": 767,
+        "name": "Gabite (Shadow)",
+        "score": 452,
+        "rawScore": 548,
+        "competitiveScore": 452,
+        "winRate": 0.5608,
+        "scoreStdDev": 202.34,
+        "delta": 96
       },
       {
-        "rank": 1532,
-        "name": "Kricketot",
-        "score": 376,
-        "rawScore": 109,
-        "competitiveScore": 376,
-        "winRate": 0.0113,
-        "scoreStdDev": 30.96,
-        "delta": 267
+        "rank": 1183,
+        "name": "Gible",
+        "score": 359,
+        "rawScore": 455,
+        "competitiveScore": 359,
+        "winRate": 0.3554,
+        "scoreStdDev": 197.85,
+        "delta": 96
       },
       {
-        "rank": 1533,
-        "name": "Happiny",
-        "score": 376,
-        "rawScore": 110,
-        "competitiveScore": 376,
-        "winRate": 0.0097,
-        "scoreStdDev": 28.52,
-        "delta": 266
+        "rank": 1204,
+        "name": "Chespin",
+        "score": 346,
+        "rawScore": 442,
+        "competitiveScore": 346,
+        "winRate": 0.3316,
+        "scoreStdDev": 192.55,
+        "delta": 96
       },
       {
-        "rank": 1531,
-        "name": "Kakuna (Shadow)",
-        "score": 378,
-        "rawScore": 117,
-        "competitiveScore": 378,
-        "winRate": 0.0078,
-        "scoreStdDev": 26.73,
-        "delta": 261
+        "rank": 917,
+        "name": "Weepinbell (Shadow)",
+        "score": 429,
+        "rawScore": 523,
+        "competitiveScore": 429,
+        "winRate": 0.5452,
+        "scoreStdDev": 211.37,
+        "delta": 94
       },
       {
-        "rank": 1528,
-        "name": "Kakuna",
-        "score": 378,
-        "rawScore": 117,
-        "competitiveScore": 378,
-        "winRate": 0.0074,
-        "scoreStdDev": 25.75,
-        "delta": 261
+        "rank": 999,
+        "name": "Deino (Shadow)",
+        "score": 413,
+        "rawScore": 507,
+        "competitiveScore": 413,
+        "winRate": 0.4951,
+        "scoreStdDev": 190.94,
+        "delta": 94
       },
       {
-        "rank": 1529,
-        "name": "Cascoon",
-        "score": 378,
-        "rawScore": 118,
-        "competitiveScore": 378,
-        "winRate": 0.0037,
-        "scoreStdDev": 21.27,
-        "delta": 260
+        "rank": 666,
+        "name": "Lileep (Shadow)",
+        "score": 466,
+        "rawScore": 560,
+        "competitiveScore": 466,
+        "winRate": 0.6052,
+        "scoreStdDev": 184.11,
+        "delta": 94
       },
       {
-        "rank": 1530,
-        "name": "Silcoon",
-        "score": 378,
-        "rawScore": 118,
-        "competitiveScore": 378,
-        "winRate": 0.0037,
-        "scoreStdDev": 21.27,
-        "delta": 260
+        "rank": 1159,
+        "name": "Eevee",
+        "score": 366,
+        "rawScore": 460,
+        "competitiveScore": 366,
+        "winRate": 0.337,
+        "scoreStdDev": 158.95,
+        "delta": 94
       },
       {
-        "rank": 1489,
-        "name": "Sunkern",
-        "score": 386,
-        "rawScore": 140,
-        "competitiveScore": 386,
-        "winRate": 0.0269,
-        "scoreStdDev": 46.18,
-        "delta": 246
-      },
-      {
-        "rank": 1526,
-        "name": "Zigzagoon",
-        "score": 381,
-        "rawScore": 139,
-        "competitiveScore": 381,
-        "winRate": 0.0178,
-        "scoreStdDev": 37.49,
-        "delta": 242
-      },
-      {
-        "rank": 1527,
-        "name": "Wimpod",
-        "score": 381,
-        "rawScore": 139,
-        "competitiveScore": 381,
-        "winRate": 0.0162,
-        "scoreStdDev": 35,
-        "delta": 242
-      },
-      {
-        "rank": 1523,
-        "name": "Slaking (Shadow)",
-        "score": 381,
-        "rawScore": 143,
-        "competitiveScore": 381,
-        "winRate": 0.0524,
-        "scoreStdDev": 59.74,
-        "delta": 238
-      },
-      {
-        "rank": 1520,
-        "name": "Tyrogue",
+        "rank": 1115,
+        "name": "Naganadel",
         "score": 383,
-        "rawScore": 146,
+        "rawScore": 476,
         "competitiveScore": 383,
-        "winRate": 0.0288,
-        "scoreStdDev": 48.7,
-        "delta": 237
+        "winRate": 0.4113,
+        "scoreStdDev": 218.1,
+        "delta": 93
       },
       {
-        "rank": 1519,
-        "name": "Snom",
+        "rank": 962,
+        "name": "Stakataka",
+        "score": 422,
+        "rawScore": 515,
+        "competitiveScore": 422,
+        "winRate": 0.4815,
+        "scoreStdDev": 215.02,
+        "delta": 93
+      },
+      {
+        "rank": 1020,
+        "name": "Oddish (Shadow)",
+        "score": 410,
+        "rawScore": 503,
+        "competitiveScore": 410,
+        "winRate": 0.4893,
+        "scoreStdDev": 210.69,
+        "delta": 93
+      },
+      {
+        "rank": 353,
+        "name": "Escavalier (Shadow)",
+        "score": 506,
+        "rawScore": 599,
+        "competitiveScore": 506,
+        "winRate": 0.66,
+        "scoreStdDev": 207.34,
+        "delta": 93
+      },
+      {
+        "rank": 1116,
+        "name": "Stantler (Shadow)",
         "score": 383,
-        "rawScore": 149,
+        "rawScore": 476,
         "competitiveScore": 383,
-        "winRate": 0.0321,
-        "scoreStdDev": 49.23,
-        "delta": 234
+        "winRate": 0.3866,
+        "scoreStdDev": 177.55,
+        "delta": 93
       },
       {
-        "rank": 1525,
-        "name": "Wynaut",
-        "score": 381,
-        "rawScore": 148,
-        "competitiveScore": 381,
-        "winRate": 0.0284,
-        "scoreStdDev": 48.05,
-        "delta": 233
+        "rank": 1184,
+        "name": "Chespin (Shadow)",
+        "score": 359,
+        "rawScore": 451,
+        "competitiveScore": 359,
+        "winRate": 0.3537,
+        "scoreStdDev": 199.51,
+        "delta": 92
       },
       {
-        "rank": 1524,
-        "name": "Slakoth (Shadow)",
-        "score": 381,
-        "rawScore": 150,
-        "competitiveScore": 381,
-        "winRate": 0.0325,
-        "scoreStdDev": 50.47,
-        "delta": 231
+        "rank": 1178,
+        "name": "Dialga",
+        "score": 361,
+        "rawScore": 453,
+        "competitiveScore": 361,
+        "winRate": 0.3801,
+        "scoreStdDev": 193.18,
+        "delta": 92
       },
       {
-        "rank": 1510,
-        "name": "Pichu",
-        "score": 383,
-        "rawScore": 153,
-        "competitiveScore": 383,
-        "winRate": 0.0368,
-        "scoreStdDev": 48.84,
-        "delta": 230
+        "rank": 932,
+        "name": "Weepinbell",
+        "score": 426,
+        "rawScore": 517,
+        "competitiveScore": 426,
+        "winRate": 0.5395,
+        "scoreStdDev": 206.35,
+        "delta": 91
       },
       {
-        "rank": 1511,
-        "name": "Bounsweet",
-        "score": 383,
-        "rawScore": 159,
-        "competitiveScore": 383,
-        "winRate": 0.0212,
-        "scoreStdDev": 41.9,
-        "delta": 224
+        "rank": 975,
+        "name": "Gloom (Shadow)",
+        "score": 419,
+        "rawScore": 510,
+        "competitiveScore": 419,
+        "winRate": 0.4836,
+        "scoreStdDev": 206.03,
+        "delta": 91
       },
       {
-        "rank": 1522,
-        "name": "Azurill",
-        "score": 383,
-        "rawScore": 160,
-        "competitiveScore": 383,
-        "winRate": 0.0197,
-        "scoreStdDev": 40.86,
-        "delta": 223
+        "rank": 963,
+        "name": "Genesect (Burn)",
+        "score": 422,
+        "rawScore": 513,
+        "competitiveScore": 422,
+        "winRate": 0.5389,
+        "scoreStdDev": 204.55,
+        "delta": 91
       },
       {
-        "rank": 1521,
-        "name": "Cleffa",
-        "score": 383,
-        "rawScore": 163,
-        "competitiveScore": 383,
-        "winRate": 0.0232,
-        "scoreStdDev": 44.68,
-        "delta": 220
+        "rank": 580,
+        "name": "Lileep",
+        "score": 476,
+        "rawScore": 567,
+        "competitiveScore": 476,
+        "winRate": 0.6203,
+        "scoreStdDev": 176.05,
+        "delta": 91
+      },
+      {
+        "rank": 850,
+        "name": "Exeggutor (Shadow)",
+        "score": 439,
+        "rawScore": 529,
+        "competitiveScore": 439,
+        "winRate": 0.5263,
+        "scoreStdDev": 219.11,
+        "delta": 90
       }
     ],
     "extremeHighWinRate": [],
     "extremeLowWinRate": [
       {
-        "rank": 1406,
-        "name": "Lotad",
-        "score": 398,
-        "rawScore": 247,
-        "competitiveScore": 398,
-        "winRate": 0.094
-      },
-      {
-        "rank": 1420,
-        "name": "Hoppip (Shadow)",
-        "score": 396,
-        "rawScore": 204,
-        "competitiveScore": 396,
-        "winRate": 0.0832
-      },
-      {
-        "rank": 1421,
-        "name": "Hoppip",
-        "score": 396,
-        "rawScore": 211,
-        "competitiveScore": 396,
-        "winRate": 0.0812
-      },
-      {
-        "rank": 1423,
-        "name": "Seedot",
-        "score": 396,
-        "rawScore": 219,
-        "competitiveScore": 396,
-        "winRate": 0.0749
-      },
-      {
-        "rank": 1440,
-        "name": "Seedot (Shadow)",
-        "score": 393,
-        "rawScore": 208,
-        "competitiveScore": 393,
-        "winRate": 0.0773
-      },
-      {
-        "rank": 1459,
-        "name": "Rolycoly",
-        "score": 393,
-        "rawScore": 250,
-        "competitiveScore": 393,
-        "winRate": 0.0934
-      },
-      {
-        "rank": 1460,
-        "name": "Patrat",
-        "score": 393,
-        "rawScore": 265,
-        "competitiveScore": 393,
-        "winRate": 0.0858
-      },
-      {
-        "rank": 1465,
-        "name": "Patrat (Shadow)",
-        "score": 391,
-        "rawScore": 254,
-        "competitiveScore": 391,
-        "winRate": 0.0908
-      },
-      {
-        "rank": 1466,
-        "name": "Unown",
-        "score": 391,
-        "rawScore": 259,
-        "competitiveScore": 391,
-        "winRate": 0.0905
-      },
-      {
-        "rank": 1467,
+        "rank": 1432,
         "name": "Jigglypuff",
-        "score": 391,
-        "rawScore": 280,
-        "competitiveScore": 391,
+        "score": 237,
+        "rawScore": 287,
+        "competitiveScore": 237,
         "winRate": 0.0821
       },
       {
-        "rank": 1468,
-        "name": "Whismur (Shadow)",
-        "score": 391,
-        "rawScore": 243,
-        "competitiveScore": 391,
-        "winRate": 0.0704
+        "rank": 1434,
+        "name": "Unown",
+        "score": 235,
+        "rawScore": 294,
+        "competitiveScore": 235,
+        "winRate": 0.0905
       },
       {
-        "rank": 1472,
-        "name": "Rattata (Alolan) (Shadow)",
-        "score": 391,
-        "rawScore": 255,
-        "competitiveScore": 391,
-        "winRate": 0.0938
+        "rank": 1438,
+        "name": "Marill",
+        "score": 233,
+        "rawScore": 273,
+        "competitiveScore": 233,
+        "winRate": 0.0609
       },
       {
-        "rank": 1473,
-        "name": "Rattata (Alolan)",
-        "score": 391,
-        "rawScore": 249,
-        "competitiveScore": 391,
-        "winRate": 0.0849
+        "rank": 1445,
+        "name": "Lotad",
+        "score": 226,
+        "rawScore": 272,
+        "competitiveScore": 226,
+        "winRate": 0.0931
       },
       {
-        "rank": 1474,
-        "name": "Rattata (Shadow)",
-        "score": 391,
-        "rawScore": 251,
-        "competitiveScore": 391,
-        "winRate": 0.0977
+        "rank": 1449,
+        "name": "Patrat",
+        "score": 222,
+        "rawScore": 272,
+        "competitiveScore": 222,
+        "winRate": 0.086
       },
       {
-        "rank": 1475,
+        "rank": 1457,
+        "name": "Rolycoly",
+        "score": 216,
+        "rawScore": 270,
+        "competitiveScore": 216,
+        "winRate": 0.0934
+      },
+      {
+        "rank": 1458,
+        "name": "Applin",
+        "score": 216,
+        "rawScore": 263,
+        "competitiveScore": 216,
+        "winRate": 0.0533
+      },
+      {
+        "rank": 1461,
         "name": "Smeargle",
-        "score": 391,
-        "rawScore": 253,
-        "competitiveScore": 391,
+        "score": 213,
+        "rawScore": 273,
+        "competitiveScore": 213,
         "winRate": 0.0886
       },
       {
-        "rank": 1476,
+        "rank": 1463,
+        "name": "Skitty",
+        "score": 213,
+        "rawScore": 263,
+        "competitiveScore": 213,
+        "winRate": 0.0691
+      },
+      {
+        "rank": 1464,
+        "name": "Patrat (Shadow)",
+        "score": 212,
+        "rawScore": 265,
+        "competitiveScore": 212,
+        "winRate": 0.091
+      },
+      {
+        "rank": 1465,
+        "name": "Rookidee (Shadow)",
+        "score": 210,
+        "rawScore": 263,
+        "competitiveScore": 210,
+        "winRate": 0.0741
+      },
+      {
+        "rank": 1466,
+        "name": "Wurmple",
+        "score": 210,
+        "rawScore": 261,
+        "competitiveScore": 210,
+        "winRate": 0.0652
+      },
+      {
+        "rank": 1467,
+        "name": "Whismur (Shadow)",
+        "score": 210,
+        "rawScore": 260,
+        "competitiveScore": 210,
+        "winRate": 0.0704
+      },
+      {
+        "rank": 1468,
+        "name": "Rattata (Alolan) (Shadow)",
+        "score": 208,
+        "rawScore": 266,
+        "competitiveScore": 208,
+        "winRate": 0.0938
+      },
+      {
+        "rank": 1469,
+        "name": "Whismur",
+        "score": 207,
+        "rawScore": 253,
+        "competitiveScore": 207,
+        "winRate": 0.06
+      },
+      {
+        "rank": 1470,
+        "name": "Tynamo",
+        "score": 206,
+        "rawScore": 242,
+        "competitiveScore": 206,
+        "winRate": 0.0459
+      },
+      {
+        "rank": 1472,
         "name": "Wooper (Paldean)",
-        "score": 391,
-        "rawScore": 257,
-        "competitiveScore": 391,
+        "score": 203,
+        "rawScore": 263,
+        "competitiveScore": 203,
         "winRate": 0.0838
       },
       {
-        "rank": 1477,
-        "name": "Rattata",
-        "score": 391,
-        "rawScore": 249,
-        "competitiveScore": 391,
-        "winRate": 0.0838
+        "rank": 1473,
+        "name": "Zigzagoon (Galarian) (Shadow)",
+        "score": 203,
+        "rawScore": 259,
+        "competitiveScore": 203,
+        "winRate": 0.0717
+      },
+      {
+        "rank": 1474,
+        "name": "Burmy (Plant)",
+        "score": 203,
+        "rawScore": 245,
+        "competitiveScore": 203,
+        "winRate": 0.0442
+      },
+      {
+        "rank": 1475,
+        "name": "Burmy (Sandy)",
+        "score": 203,
+        "rawScore": 245,
+        "competitiveScore": 203,
+        "winRate": 0.0442
+      },
+      {
+        "rank": 1476,
+        "name": "Burmy (Trash)",
+        "score": 203,
+        "rawScore": 245,
+        "competitiveScore": 203,
+        "winRate": 0.0442
       },
       {
         "rank": 1478,
-        "name": "Skitty",
-        "score": 391,
-        "rawScore": 246,
-        "competitiveScore": 391,
-        "winRate": 0.0691
+        "name": "Rattata (Alolan)",
+        "score": 202,
+        "rawScore": 260,
+        "competitiveScore": 202,
+        "winRate": 0.0849
       },
       {
         "rank": 1479,
         "name": "Sentret",
-        "score": 388,
-        "rawScore": 246,
-        "competitiveScore": 388,
+        "score": 200,
+        "rawScore": 260,
+        "competitiveScore": 200,
         "winRate": 0.0765
       },
       {
-        "rank": 1480,
-        "name": "Ralts (Shadow)",
-        "score": 388,
-        "rawScore": 230,
-        "competitiveScore": 388,
-        "winRate": 0.0743
-      },
-      {
         "rank": 1481,
-        "name": "Whismur",
-        "score": 388,
-        "rawScore": 240,
-        "competitiveScore": 388,
-        "winRate": 0.06
+        "name": "Zigzagoon (Galarian)",
+        "score": 200,
+        "rawScore": 253,
+        "competitiveScore": 200,
+        "winRate": 0.0641
       },
       {
-        "rank": 1483,
-        "name": "Zigzagoon (Galarian) (Shadow)",
-        "score": 388,
-        "rawScore": 243,
-        "competitiveScore": 388,
-        "winRate": 0.0717
-      },
-      {
-        "rank": 1484,
-        "name": "Marill",
-        "score": 388,
-        "rawScore": 263,
-        "competitiveScore": 388,
-        "winRate": 0.0609
-      },
-      {
-        "rank": 1485,
-        "name": "Wurmple",
-        "score": 388,
-        "rawScore": 223,
-        "competitiveScore": 388,
-        "winRate": 0.0652
-      },
-      {
-        "rank": 1486,
-        "name": "Tynamo",
-        "score": 388,
-        "rawScore": 206,
-        "competitiveScore": 388,
-        "winRate": 0.0459
+        "rank": 1482,
+        "name": "Rookidee",
+        "score": 200,
+        "rawScore": 250,
+        "competitiveScore": 200,
+        "winRate": 0.0678
       }
     ],
-    "suspiciousScores": []
+    "suspiciousScores": [
+      {
+        "rank": 1537,
+        "name": "Feebas",
+        "score": 67,
+        "rawScore": 77,
+        "competitiveScore": 67,
+        "winRate": 0.0024
+      },
+      {
+        "rank": 1538,
+        "name": "Magikarp",
+        "score": 60,
+        "rawScore": 70,
+        "competitiveScore": 60,
+        "winRate": 0.0004
+      },
+      {
+        "rank": 1539,
+        "name": "Feebas (Shadow)",
+        "score": 58,
+        "rawScore": 69,
+        "competitiveScore": 58,
+        "winRate": 0.0019
+      },
+      {
+        "rank": 1540,
+        "name": "Magikarp (Shadow)",
+        "score": 56,
+        "rawScore": 60,
+        "competitiveScore": 56,
+        "winRate": 0.0004
+      }
+    ]
   },
   "goldenMatchups": {
     "total": 3,

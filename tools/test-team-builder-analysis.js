@@ -57,8 +57,8 @@ assert.deepEqual(Analysis.resultPresentation({ score: 500 }), { tone: "neutral",
 assert.deepEqual(Analysis.resultPresentation({ score: 499 }), { tone: "unfavorable", tier: "slight" });
 assert.deepEqual(Analysis.resultPresentation({ score: 350 }), { tone: "unfavorable", tier: "slight" });
 assert.deepEqual(Analysis.resultPresentation({ score: 349 }), { tone: "unfavorable", tier: "clear" });
-assert.deepEqual(Analysis.resultPresentation({ score: 250 }), { tone: "unfavorable", tier: "clear" });
-assert.deepEqual(Analysis.resultPresentation({ score: 249 }), { tone: "unfavorable", tier: "dominant" });
+assert.deepEqual(Analysis.resultPresentation({ score: 251 }), { tone: "unfavorable", tier: "clear" });
+assert.deepEqual(Analysis.resultPresentation({ score: 250 }), { tone: "unfavorable", tier: "dominant" });
 const grouped = Analysis.groupResults(plan, restored);
 assert.equal(grouped.length, 2, "Coverage results must group by unique meta opponent.");
 assert.equal(grouped[0].cells.length, 6, "Every opponent row must preserve all six team slots.");

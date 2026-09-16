@@ -4,8 +4,10 @@
 // current attacker/defender signatures that are absent are simulated.
 const fs = require("fs");
 const path = require("path");
+process.argv.push("--season=twilight-trails");
 const G = require("./build-great-league-meta-database");
 const { createRuntime } = require("./run-battle-regressions");
+const { MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 
 const ROOT = path.resolve(__dirname, "..");
 const args = new Set(process.argv.slice(2));
@@ -15,10 +17,16 @@ const scanOnly = args.has("--scan-only");
 const season = "twilight-trails";
 const profile = G.RANK1_PROFILE;
 const cacheDir = path.join(ROOT, "data", "seasons", season, "matchup-cache", "great-league", profile);
-const runtime = createRuntime();
+const sourceData = G.generationData();
+const moveMap = new Map(sourceData.gameMaster.moves.map(move => [move.moveId, G.normalizeMove(move)]));
+const pokemonMap = new Map(sourceData.gameMaster.pokemon
+  .filter(pokemon => pokemon && pokemon.speciesId && pokemon.baseStats)
+  .map(pokemon => G.normalizePokemon(pokemon, moveMap))
+  .map(pokemon => [pokemon.id, pokemon]));
+const standardMovesets = sourceData.standardMovesets;
 const adapter = scanOnly ? null : G.createWorkerAdapter(G.extractLiveWorkerSource(), { dreStandard: true });
 const ranking = JSON.parse(fs.readFileSync(path.join(ROOT, "data/great-league-rankings.json"), "utf8"));
-const pokemon = ranking.entries.map(entry => runtime.pokemonMap.get(entry.id)).filter(Boolean);
+const pokemon = ranking.entries.map(entry => pokemonMap.get(entry.id)).filter(Boolean);
 
 function key(config, shieldState) {
   return [G.combatantStateSignature(config.right), shieldState, "standard"].join("|");
@@ -45,8 +53,7 @@ for (const attacker of selected) {
   const before = Object.keys(cache.cells).length;
   let missing = 0;
   for (const opponent of pokemon) {
-    if (opponent.id === attacker.id) continue;
-    const config = G.createBattleConfig(attacker, opponent, profile, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap);
+    const config = G.createBattleConfig(attacker, opponent, profile, moveMap, standardMovesets, pokemonMap);
     for (const shields of [0, 1, 2]) {
       const shieldState = `${shields}-${shields}`;
       const cellKey = key(config, shieldState);
@@ -69,9 +76,10 @@ for (const attacker of selected) {
   }
   totalMissing += missing;
   if (!scanOnly) {
-    const signatureConfig = G.createBattleConfig(attacker, attacker, profile, runtime.moveMap, runtime.standardMovesets, runtime.pokemonMap);
+    const signatureConfig = G.createBattleConfig(attacker, attacker, profile, moveMap, standardMovesets, pokemonMap);
     cache.generatedAt = new Date().toISOString();
     cache.matrixVersion = G.MATRIX_VERSION;
+    cache.scoreVersion = MATCHUP_SCORE_VERSION;
     cache.seasonId = season;
     cache.dataVersion = "twilight-trails-confirmed-1";
     cache.attackerSignature = G.combatantStateSignature(signatureConfig.left);

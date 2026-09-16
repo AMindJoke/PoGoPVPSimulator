@@ -130,7 +130,7 @@
     });
     return Object.freeze({
       tone: "unfavorable",
-      tier: score <= 249 ? "dominant" : score <= 349 ? "clear" : "slight"
+      tier: score <= 250 ? "dominant" : score <= 349 ? "clear" : "slight"
     });
   }
 

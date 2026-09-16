@@ -19,44 +19,59 @@ const CACHE_RESULT_FIELDS = [
   "outpacePressureEdge"
 ];
 
-const MATCHUP_SCORE_VERSION = "resource-score-v4";
-const MIN_TERMINAL_OUTCOME_EDGE = 18;
+const MATCHUP_SCORE_VERSION = "resource-score-v5";
 const LEGACY_HP_EDGE_WEIGHT = 270;
 const MATCHUP_HP_EDGE_WEIGHT = 450;
+const MATCHUP_SCORE_HP_WEIGHT = 0.90;
+const MATCHUP_SCORE_SHIELD_WEIGHT = 0.35;
+const MATCHUP_SCORE_ENERGY_WEIGHT = 0.70;
+const MATCHUP_SCORE_READINESS_WEIGHT = 0.55;
+const MATCHUP_SCORE_FUTURE_EDGE_CAP = 90;
+const MATCHUP_SCORE_TACTICAL_WEIGHT = 0.40;
+const MATCHUP_SCORE_TACTICAL_EDGE_CAP = 70;
+const MATCHUP_OUTCOME_EDGE = 25;
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
 
 function rescoreCachedResult(result) {
   if (!result) return result;
   const direction = result.winnerSide === "A" ? 1 : result.winnerSide === "B" ? -1 : 0;
-  const currentResources = [result.hpEdge, result.energyEdge, result.shieldEdge,
-    result.readyEdge, result.dangerEdge, result.closingCostEdge,
-    result.farmPressureEdge, result.outpacePressureEdge]
-    .reduce((sum, value) => sum + Number(value || 0), 0);
-  const currentWinnerEdge = direction * (MIN_TERMINAL_OUTCOME_EDGE + Math.max(0, -currentResources * direction));
   // Modern compact caches retain exact hpEdge, but round HP ratios to 4 decimals.
-  // Preserve their engine score; only legacy 270-weight results need migration.
+  // Only legacy 270-weight results need their raw HP ledger migrated.
   const modernHpEdge = (Number(result.hpRatioA) - Number(result.hpRatioB)) * MATCHUP_HP_EDGE_WEIGHT;
   const modern = result.hpEdgeWeight === MATCHUP_HP_EDGE_WEIGHT
-    || (Number.isFinite(result.score) && Number.isFinite(modernHpEdge) && Number.isFinite(result.hpEdge)
-      && Math.abs(Number(result.winnerEdge) - currentWinnerEdge) < .000001
+    || (Number.isFinite(modernHpEdge) && Number.isFinite(result.hpEdge)
       && Math.abs(result.hpEdge - modernHpEdge) <= .0450001);
-  if (modern) return { ...result, hpEdgeWeight: MATCHUP_HP_EDGE_WEIGHT };
-  if (!direction) return { ...result, score: 500, winnerEdge: 0 };
-  const migratedHpEdge = Number(result.hpEdge || 0) * MATCHUP_HP_EDGE_WEIGHT / LEGACY_HP_EDGE_WEIGHT;
-  const resourceEdge = [
-    migratedHpEdge,
-    result.energyEdge,
-    result.shieldEdge,
-    result.readyEdge,
-    result.dangerEdge,
-    result.closingCostEdge,
-    result.farmPressureEdge
-  ].reduce((sum, value) => sum + Number(value || 0), 0);
-  const winnerEdge = direction * (MIN_TERMINAL_OUTCOME_EDGE + Math.max(0, -resourceEdge * direction));
+  const hpEdge = modern
+    ? Number(result.hpEdge || 0)
+    : Number(result.hpEdge || 0) * MATCHUP_HP_EDGE_WEIGHT / LEGACY_HP_EDGE_WEIGHT;
+  const futurePressureEdge = clamp(
+    Number(result.energyEdge || 0) * MATCHUP_SCORE_ENERGY_WEIGHT
+      + (Number(result.readyEdge || 0) + Number(result.dangerEdge || 0)) * MATCHUP_SCORE_READINESS_WEIGHT,
+    -MATCHUP_SCORE_FUTURE_EDGE_CAP,
+    MATCHUP_SCORE_FUTURE_EDGE_CAP
+  );
+  const tacticalPressureEdge = clamp(
+    (Number(result.closingCostEdge || 0) + Number(result.farmPressureEdge || 0)
+      + Number(result.outpacePressureEdge || 0)) * MATCHUP_SCORE_TACTICAL_WEIGHT,
+    -MATCHUP_SCORE_TACTICAL_EDGE_CAP,
+    MATCHUP_SCORE_TACTICAL_EDGE_CAP
+  );
+  const resourceEdge = hpEdge * MATCHUP_SCORE_HP_WEIGHT
+    + Number(result.shieldEdge || 0) * MATCHUP_SCORE_SHIELD_WEIGHT
+    + futurePressureEdge
+    + tacticalPressureEdge;
+  const winnerEdge = direction * MATCHUP_OUTCOME_EDGE;
+  let score = direction ? clamp(Math.round(500 + resourceEdge + winnerEdge), 0, 1000) : 500;
+  if (direction > 0 && score <= 500) score = 501;
+  if (direction < 0 && score >= 500) score = 499;
   return {
     ...result,
-    score: Math.max(0, Math.min(1000, Math.round(500 + resourceEdge + winnerEdge))),
+    score,
     winnerEdge,
-    hpEdge: migratedHpEdge,
+    hpEdge,
     hpEdgeWeight: MATCHUP_HP_EDGE_WEIGHT
   };
 }
