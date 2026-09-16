@@ -15,7 +15,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
-  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v4">
+  <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v5">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js"></script>
@@ -18415,7 +18415,7 @@
       const team = teamBuilderState.team;
       const teamEntries = team.map((member, slot) => member ? { member, slot } : null).filter(Boolean);
       const matrixDesktopWidth = 210 + teamEntries.length * 130;
-      const matrixMobileWidth = 100 + teamEntries.length * 39;
+      const matrixMobileWidth = 76 + teamEntries.length * 43;
       const columns = `<colgroup><col class="team-coverage-opponent-column">${teamEntries.map(() => '<col class="team-coverage-matchup-column">').join("")}</colgroup>`;
       const header = teamEntries.map(({ member, slot }) => {
         const pokemon = member && findPokemon(member.pokemonId);
@@ -36023,7 +36023,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260916-v44").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260916-v45").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

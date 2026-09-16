@@ -163,14 +163,16 @@ assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\
 assert.match(html, /@media \(max-width: 430px\)[\s\S]{0,180}team-roster-grid[\s\S]{0,80}1fr/, "Very narrow mobile widths must use one column.");
 assert.match(html, /#teamBuilderEditorModal \.team-editor-section \{[^}]*max-width: none/, "Global section sizing must not compress the build editor.");
 assert.doesNotMatch(html, /team-builder-placeholder/);
-assert.match(html, /const matrixDesktopWidth = 210 \+ teamEntries\.length \* 130;[\s\S]{0,180}const matrixMobileWidth = 100 \+ teamEntries\.length \* 39;/, "Partial teams must keep fixed compact matchup columns instead of stretching across the matrix.");
+assert.match(html, /const matrixDesktopWidth = 210 \+ teamEntries\.length \* 130;[\s\S]{0,180}const matrixMobileWidth = 76 \+ teamEntries\.length \* 43;/, "Partial teams must keep compact matchup columns while reserving less mobile width for opponent labels.");
 assert.match(html, /<colgroup><col class="team-coverage-opponent-column">[\s\S]{0,180}team-coverage-matchup-column/, "Coverage tables must define explicit reusable column geometry.");
-assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table tbody th \{ width: 100px/, "Mobile must keep a compact sticky first column while the matrix scrolls.");
+assert.match(matrixStyles, /@media \(max-width: 760px\)[\s\S]{0,3800}team-coverage-table tbody th \{ width: 76px/, "Mobile must keep a narrow sticky first column while the matrix scrolls.");
 assert.match(html, /--matrix-team-count:\$\{teamEntries\.length\}/, "Coverage tables must expose the active team size for responsive column distribution.");
-assert.match(matrixStyles, /team-coverage-matchup-column \{[\s\S]{0,100}width: calc\(\(100% - 100px\) \/ var\(--matrix-team-count, 6\)\);/, "Mobile matchup columns must shrink together when a complete team reaches the card edge.");
-assert.match(matrixStyles, /team-coverage-pokemon-head img \{ width: 100%; max-width: 34px; height: auto; aspect-ratio: 1; \}/, "Mobile header sprites must shrink with narrow complete-team columns without creating overflow.");
+assert.match(matrixStyles, /team-coverage-matchup-column \{[\s\S]{0,100}width: calc\(\(100% - 76px\) \/ var\(--matrix-team-count, 6\)\);/, "Mobile matchup columns must share the width recovered from the opponent label column.");
+assert.match(matrixStyles, /team-coverage-pokemon-head img \{ width: 100%; max-width: 38px; height: auto; aspect-ratio: 1; \}/, "Mobile header sprites must use the wider team columns without creating overflow.");
+assert.match(matrixStyles, /grid-template-areas: "sprite" "copy" "count";[\s\S]{0,180}text-align: center;/, "Mobile opponent identities must stack sprite, name, and answer count vertically.");
+assert.match(matrixStyles, /team-coverage-form-badge \{[\s\S]{0,180}max-width: 100%;[\s\S]{0,180}font-size: 5px;/, "Mobile form badges must fit fully inside narrow team headers.");
 assert.match(matrixStyles, /width: min\(100%, var\(--matrix-mobile-width, 100%\)\);[\s\S]{0,100}min-width: min\(280px, var\(--matrix-mobile-width, 100%\)\);/, "Complete mobile teams must fit common phone widths while very narrow screens retain a safe scroll floor.");
 assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
-assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v4/);
+assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v5/);
 
 console.log("Team Builder UI contract tests passed.");

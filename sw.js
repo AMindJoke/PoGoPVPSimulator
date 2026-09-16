@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-16-v44-team-builder-matrix-fit";
+const CACHE_VERSION = "2026-09-16-v45-team-builder-matrix-vertical-labels";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [

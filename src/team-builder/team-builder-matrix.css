@@ -205,21 +205,25 @@ body[data-theme="neo"] #teamBuilderView .team-coverage {
     min-width: min(280px, var(--matrix-mobile-width, 100%));
     max-width: 100%;
   }
-  #teamBuilderView .team-coverage-opponent-column { width: 100px; }
+  #teamBuilderView .team-coverage-opponent-column { width: 76px; }
   #teamBuilderView .team-coverage-matchup-column {
-    width: calc((100% - 100px) / var(--matrix-team-count, 6));
+    width: calc((100% - 76px) / var(--matrix-team-count, 6));
   }
   #teamBuilderView .team-coverage-table .team-coverage-opponent-head,
-  #teamBuilderView .team-coverage-table tbody th { width: 100px; }
+  #teamBuilderView .team-coverage-table tbody th { width: 76px; }
   #teamBuilderView .team-coverage-table th,
   #teamBuilderView .team-coverage-table td { padding: 3px; }
   #teamBuilderView .team-coverage-table thead th { height: 64px; }
-  #teamBuilderView .team-coverage-pokemon-head img { width: 100%; max-width: 34px; height: auto; aspect-ratio: 1; }
+  #teamBuilderView .team-coverage-pokemon-head img { width: 100%; max-width: 38px; height: auto; aspect-ratio: 1; }
   #teamBuilderView .team-coverage-pokemon-head span { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 7px; }
-  #teamBuilderView .team-coverage-opponent { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 3px; }
-  #teamBuilderView .team-coverage-opponent img { width: 24px; height: 24px; }
-  #teamBuilderView .team-coverage-opponent-copy strong { font-size: 10px; }
+  #teamBuilderView .team-coverage-form-badge { box-sizing: border-box; max-width: 100%; padding: 1px 2px; overflow: hidden; font-size: 5px; letter-spacing: 0; text-overflow: clip; }
+  #teamBuilderView .team-coverage-opponent { grid-template-columns: minmax(0, 1fr); grid-template-areas: "sprite" "copy" "count"; justify-items: center; gap: 1px; text-align: center; }
+  #teamBuilderView .team-coverage-opponent-sprite { grid-area: sprite; }
+  #teamBuilderView .team-coverage-opponent-copy { grid-area: copy; width: 100%; gap: 0; }
+  #teamBuilderView .team-coverage-answer-count { grid-area: count; }
+  #teamBuilderView .team-coverage-opponent img { width: 28px; height: 28px; }
+  #teamBuilderView .team-coverage-opponent-copy strong { font-size: 9px; }
   #teamBuilderView .team-coverage-opponent-copy small { display: none; }
-  #teamBuilderView .team-coverage-answer-count { min-width: 18px; font-size: 7px; }
+  #teamBuilderView .team-coverage-answer-count { min-width: 0; font-size: 6px; text-align: center; }
   #teamBuilderView .team-matchup-cell::after { display: none; }
 }
