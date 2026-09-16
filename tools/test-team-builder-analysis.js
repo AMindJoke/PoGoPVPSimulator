@@ -182,6 +182,15 @@ const finalSlotRanking = Analysis.rankTeamCandidates({
   }
 });
 assert.deepEqual(finalSlotRanking.map(item => item.candidateId), ["fixes-zero", "only-one-to-two"], "A deterministic 0-to-1 repair must outrank broader but less structural gains.");
+const scoreFirstRanking = Analysis.rankTeamCandidates({
+  mode: "append",
+  baselineGroups: appendBaseline,
+  candidates: {
+    "broad-high-score": { "zero-answer": { score: 400 }, "one-answer": { score: 1000 }, covered: { score: 1000 } },
+    "structural-low-score": { "zero-answer": { score: 501 }, "one-answer": { score: 400 }, covered: { score: 300 } }
+  }
+});
+assert.deepEqual(scoreFirstRanking.map(item => item.candidateId), ["broad-high-score", "structural-low-score"], "Final-slot candidates must be ordered by improvement points before structural tie-breakers.");
 assert.deepEqual(
   Analysis.rankTeamCandidates({ mode: "append", baselineGroups: appendBaseline, candidates: Object.fromEntries(Object.entries({
     "only-one-to-two": { "zero-answer": { score: 400 }, "one-answer": { score: 700 }, covered: { score: 800 } },

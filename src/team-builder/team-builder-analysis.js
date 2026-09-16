@@ -401,10 +401,10 @@
       candidateByOpponent
     })).filter(Boolean).sort((a, b) => mode === "replace"
       ? b.replacementScore - a.replacementScore || b.averageDelta - a.averageDelta || b.hardLossesFixed - a.hardLossesFixed || a.newHardLosses - b.newHardLosses || a.candidateId.localeCompare(b.candidateId)
-      : b.zeroToOne - a.zeroToOne
+      : b.optimizationScore - a.optimizationScore
+        || b.zeroToOne - a.zeroToOne
         || b.oneToTwo - a.oneToTwo
         || b.criticalThreatsFixed - a.criticalThreatsFixed
-        || b.optimizationScore - a.optimizationScore
         || b.averageCoverageDelta - a.averageCoverageDelta
         || a.candidateId.localeCompare(b.candidateId)
     );

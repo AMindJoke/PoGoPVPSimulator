@@ -125,6 +125,7 @@ assert.match(html, /function renderTeamBuilderFinalSlotFinder\(\)[\s\S]{0,500}se
 assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,800}teamBuilderMetaDefinition\?\.pokemonIds[\s\S]{0,500}speciesKey/, "Final-slot and replacement candidates must share the league/meta pool and Species Clause filtering.");
 assert.match(html, /function prepareTeamBuilderFinalSlotPlan\(\)[\s\S]{0,1800}PvPeakTeamBuilderAnalysis\.createPlan[\s\S]{0,500}finalSlotCandidateId/, "Final Slot Finder must reuse canonical cached matchup jobs.");
 assert.match(html, /function teamBuilderFinalSlotRanking\(\)[\s\S]{0,1400}rankTeamCandidates\([\s\S]{0,200}mode: "append"/, "Final-slot results must use the shared deterministic optimization layer.");
+assert.match(html, /team-final-slot-method">Highest improvement points first<\//, "Final-slot results must explain that improvement points determine the visible order.");
 assert.match(html, /function applyTeamBuilderFinalSlot\(candidateId\)[\s\S]{0,300}findIndex\(candidate => !candidate\)[\s\S]{0,500}PvPeakTeamBuilder\.setMember/, "Add to team must fill the next empty canonical slot.");
 assert.match(html, /0-answer <b>\$\{item\.zeroAnswerBefore\}&rarr;\$\{item\.zeroAnswerAfter\}<\/b>/, "Final Slot Finder answer deltas must use a stable HTML arrow entity.");
 assert.match(html, /\.team-final-slot-metrics \{[^}]*font-size: 9px/, "Final Slot Finder metrics must remain comfortably readable.");
