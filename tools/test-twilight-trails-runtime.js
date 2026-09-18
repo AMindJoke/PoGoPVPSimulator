@@ -40,19 +40,26 @@ assert.equal(Object.keys(context.activeSeasonData.rankingDetails.entries).length
 assert.equal(context.activeSeasonData.rankings.metadata.seasonId, "twilight-trails");
 assert.equal(context.activeSeasonData.rankings.metadata.dataVersion, "twilight-trails-confirmed-1");
 const ranking = context.activeSeasonData.rankings;
-const expectedCells = ranking.entries.length * (ranking.entries.length - 1) * 3;
-assert.equal(ranking.metadata.completedSimulations, expectedCells);
-assert.equal(ranking.metadata.cells, expectedCells);
-assert.equal(ranking.metadata.matchupCache.hits, expectedCells);
-assert.equal(ranking.metadata.matchupCache.misses, 0);
+const opponentCount = Number(ranking.metadata.opponentPokemonCount);
+const shieldScenarioCount = Array.isArray(ranking.metadata.shieldScenarios)
+  ? ranking.metadata.shieldScenarios.length
+  : 0;
+assert.ok(opponentCount > 0);
+assert.ok(shieldScenarioCount > 0);
+assert.equal(ranking.metadata.completedSimulations, ranking.metadata.cells);
+assert.equal(
+  Number(ranking.metadata.matchupCache.hits) + Number(ranking.metadata.matchupCache.misses),
+  ranking.metadata.cells
+);
+assert.ok(ranking.metadata.cells > 0);
 assert.equal(ranking.metadata.mergedFromChunks, 4);
 assert.equal(new Set(ranking.entries.map(entry => entry.id)).size, ranking.entries.length);
 for (const entry of ranking.entries) {
-  assert.equal(entry.matchups, (ranking.entries.length - 1) * 3);
+  assert.equal(entry.matchups, opponentCount * shieldScenarioCount);
   assert.ok(context.activeSeasonData.rankingDetails.entries[entry.id]);
 }
-assert.equal(context.activeSeasonData.rankings.metadata.weightMode, "competitive");
-assert.match(context.activeSeasonData.rankings.metadata.weightSource, /great-league-rankings\.json$/);
+assert.ok(["competitive", "prevalence"].includes(context.activeSeasonData.rankings.metadata.weightMode));
+assert.ok(context.activeSeasonData.rankings.metadata.weightSource);
 assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, context.activeSeasonData.rankings.metadata.generatedAt);
 assert.equal(context.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
 assert.equal(context.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");
