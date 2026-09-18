@@ -2005,6 +2005,14 @@
       background-color: rgba(255,255,255,.96);
       color: #17212f;
     }
+    .meta-ranking-role-label {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     .meta-actions input::placeholder { color: #687587; }
     .meta-actions #metaRefresh {
       border-color: rgba(255,255,255,.42);
@@ -2067,6 +2075,7 @@
     }
     #metaSearch { width: 168px; }
     #metaMoveFilter { width: 148px; }
+    #metaRankingRole { width: 132px; }
     .meta-ranking {
       display: grid;
       gap: 6px;
@@ -2141,6 +2150,7 @@
     }
     .meta-score {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -2158,6 +2168,16 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 3px 8px rgba(23,33,47,.12);
       font-size: 15px;
       font-weight: 950;
+    }
+    .meta-score small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-align: center;
+      white-space: nowrap;
     }
     .meta-moves {
       display: flex;
@@ -10255,6 +10275,7 @@
         width: 100%;
       }
       #metaSearch { grid-column: 1 / -1; }
+      #metaRankingRole,
       #metaCompareToggle,
       #metaRefresh { width: 100%; }
       .meta-active-filters { gap: 4px; }
@@ -14723,6 +14744,15 @@
             </span>
           </div>
           <div class="meta-actions">
+            <label class="meta-ranking-role-label" for="metaRankingRole">Ranking</label>
+            <select id="metaRankingRole" aria-label="Ranking view">
+              <option value="overall">Overall</option>
+              <option value="lead">Lead</option>
+              <option value="closer">Closer</option>
+              <option value="switch">Switch</option>
+              <option value="charger">Charger</option>
+              <option value="attacker">Attacker</option>
+            </select>
             <input id="metaSearch" type="search" placeholder="Pokemon name" aria-label="Filter by Pokemon name">
             <select id="metaTypeFilter" aria-label="Filter by Pokemon type">
               <option value="">All types</option>
@@ -15286,6 +15316,7 @@
     const metaRankingDataUrl = activeSeasonData.status === "preview"
       ? `data/seasons/${activeSeasonData.id}/great-league-rankings.json`
       : "data/great-league-rankings.json";
+    const metaRoleRankingDataUrl = "data/great-league-role-rankings.json";
     const metaRankingPreferredProfile = "rank1";
     const metaMatchupCache = new Map();
     const metaCombatantSignatureCache = new Map();
@@ -15297,6 +15328,11 @@
     let metaBuildTotal = 0;
     let metaBuildDone = 0;
     let metaRankingData = activeSeasonData.rankings || null;
+    let metaRoleRankingData = null;
+    let metaRoleRankingLoading = false;
+    let metaRoleRankingLoadError = "";
+    let metaRoleRankingLoadPromise = null;
+    let metaRankingRole = "overall";
     let metaRankingLoading = false;
     let metaRankingLoadError = "";
     let metaRankingLoadPromise = null;
@@ -15783,6 +15819,7 @@
       restoreTeamBuilderState();
       $("analysisPokemon").onchange = () => renderPokemonAnalysis($("analysisPokemon").value);
       $("analysisBackToMeta").onclick = () => setAppView("meta");
+      $("metaRankingRole").onchange = () => setMetaRankingRole($("metaRankingRole").value);
       $("metaSearch").oninput = scheduleMetaFilterRender;
       $("metaMoveFilter").oninput = scheduleMetaFilterRender;
       $("metaTypeFilter").onchange = () => {
@@ -16056,6 +16093,7 @@
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
+      ensureMetaRoleRankingData();
       renderMetaRankings();
       updateBattleAvailability();
       const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
@@ -19524,7 +19562,15 @@
     }
 
     function analysisRole(entry) {
-      const categoryLabels = { lead: "Lead specialist", core: "Core battler", closer: "Closer" };
+      const categoryLabels = {
+        lead: "Lead specialist",
+        core: "Core battler",
+        closer: "Closer",
+        switch: "Switch specialist",
+        charger: "Charger",
+        attacker: "Attacker",
+        consistency: "Consistent generalist"
+      };
       const categories = Object.entries(entry?.categoryScores || {});
       const strongest = categories.sort((a, b) => Number(b[1]?.competitiveScore || b[1]?.score || 0) - Number(a[1]?.competitiveScore || a[1]?.score || 0))[0]?.[0];
       if (strongest && categoryLabels[strongest]) return categoryLabels[strongest];
@@ -19535,7 +19581,9 @@
 
     function metaTopRankMap(limit = 50) {
       ensureMetaRankingData();
-      const allEntries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
+      ensureMetaRoleRankingData();
+      const source = activeMetaRankingSource();
+      const allEntries = Array.isArray(source?.entries) ? source.entries : [];
       const preferred = allEntries.filter(entry => entry.profile === metaRankingPreferredProfile);
       const ranked = (preferred.length ? preferred : allEntries)
         .filter(entry => entry && entry.id && Number.isFinite(Number(entry.rank)))
@@ -20001,13 +20049,73 @@
         });
     }
 
+    function ensureMetaRoleRankingData() {
+      if (metaRoleRankingData || metaRoleRankingLoading || metaRoleRankingLoadPromise) return;
+      if (typeof fetch !== "function") {
+        metaRoleRankingLoadError = "Role ranking JSON cannot be loaded in this browser context.";
+        return;
+      }
+      const controller = typeof AbortController === "function" ? new AbortController() : null;
+      const timeout = setTimeout(() => {
+        if (controller) controller.abort();
+        if (!controller && metaRoleRankingLoading) {
+          metaRoleRankingLoadError = "Role ranking JSON timed out.";
+          metaRoleRankingLoading = false;
+          metaRoleRankingLoadPromise = null;
+          renderMetaRankings();
+        }
+      }, 8000);
+      metaRoleRankingLoading = true;
+      metaRoleRankingLoadError = "";
+      metaRoleRankingLoadPromise = fetch(metaRoleRankingDataUrl, {
+        cache: "no-store",
+        signal: controller ? controller.signal : undefined
+      })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (!data || !Array.isArray(data.entries)) throw new Error("Invalid role ranking file");
+          metaRoleRankingData = data;
+          metaOfflineRowsCache = null;
+        })
+        .catch(error => {
+          metaRoleRankingLoadError = error && error.name === "AbortError"
+            ? "Role ranking JSON timed out."
+            : error && error.message ? error.message : String(error);
+        })
+        .finally(() => {
+          clearTimeout(timeout);
+          metaRoleRankingLoading = false;
+          metaRoleRankingLoadPromise = null;
+          renderMetaRankings();
+        });
+    }
+
+    function setMetaRankingRole(role) {
+      const allowed = new Set(["overall", "lead", "closer", "switch", "charger", "attacker"]);
+      metaRankingRole = allowed.has(role) ? role : "overall";
+      if ($("metaRankingRole") && $("metaRankingRole").value !== metaRankingRole) $("metaRankingRole").value = metaRankingRole;
+      metaOfflineRowsCache = null;
+      metaFilterSignature = "";
+      resetMetaProgressiveRender();
+      ensureMetaRoleRankingData();
+      renderMetaRankings();
+    }
+
     function reloadMetaRankingData() {
       metaRankingData = activeSeasonData.rankings || null;
+      metaRoleRankingData = null;
+      metaRoleRankingLoadError = "";
+      metaRoleRankingLoadPromise = null;
+      metaRoleRankingLoading = false;
       metaOfflineRowsCache = null;
       metaRankingLoadError = "";
       metaRankingLoadPromise = null;
       metaRankingLoading = false;
       resetMetaProgressiveRender();
+      ensureMetaRoleRankingData();
       renderMetaRankings();
     }
 
@@ -20178,6 +20286,27 @@
       }, 100);
     }
 
+    function metaRankingRoleLabel(role = metaRankingRole) {
+      return ({
+        overall: "Overall",
+        lead: "Lead",
+        closer: "Closer",
+        switch: "Switch",
+        charger: "Charger",
+        attacker: "Attacker"
+      })[role] || "Overall";
+    }
+
+    function metaRoleRankingAvailable() {
+      if (!metaRoleRankingData || !Array.isArray(metaRoleRankingData.entries)) return false;
+      const sourceSeason = metaRoleRankingData.metadata?.seasonId;
+      return !activeSeasonData?.id || !sourceSeason || sourceSeason === activeSeasonData.id;
+    }
+
+    function activeMetaRankingSource() {
+      return metaRoleRankingAvailable() ? metaRoleRankingData : metaRankingData;
+    }
+
     function metaLoadMoreHtml(visible, total) {
       if (visible >= total) return "";
       const nextCount = Math.min(metaRenderBatchSize, total - visible);
@@ -20210,13 +20339,15 @@
       if (!box || !allPokemon.length) return;
       renderMetaActiveFilters();
       ensureMetaRankingData();
+      ensureMetaRoleRankingData();
       let rows = [];
-      const usingOfflineRanking = metaRankingData && Array.isArray(metaRankingData.entries);
+      const roleRankingReady = metaRankingRole === "overall" || metaRoleRankingAvailable();
+      const usingOfflineRanking = metaRankingData && Array.isArray(metaRankingData.entries) && roleRankingReady;
       try {
         const query = normalizeSearchText($("metaSearch")?.value || "");
         const typeFilter = normalizeSearchText($("metaTypeFilter")?.value || "");
         const moveQuery = normalizeSearchText($("metaMoveFilter")?.value || "");
-        const nextFilterSignature = `${query}|${typeFilter}|${moveQuery}`;
+        const nextFilterSignature = `${metaRankingRole}|${query}|${typeFilter}|${moveQuery}`;
         if (nextFilterSignature !== metaFilterSignature) {
           metaFilterSignature = nextFilterSignature;
           resetMetaProgressiveRender();
@@ -20234,6 +20365,14 @@
       }
       if (metaRankingLoading && !rows.length) {
         box.innerHTML = `<div class="matrix-loading">Loading offline Great League ranking...</div>`;
+        return;
+      }
+      if (metaRankingRole !== "overall" && metaRoleRankingLoading) {
+        box.innerHTML = `<div class="matrix-loading">Loading ${escapeHtml(metaRankingRoleLabel(metaRankingRole))} ranking...</div>`;
+        return;
+      }
+      if (metaRankingRole !== "overall" && metaRoleRankingLoadError && !roleRankingReady) {
+        box.innerHTML = `<div class="matrix-loading">${escapeHtml(metaRoleRankingLoadError)}</div>`;
         return;
       }
       if (!usingOfflineRanking) {
@@ -20270,7 +20409,8 @@
 
     function updateMetaStatus(rows, usingOfflineRanking) {
       if (!$("metaPoolCount")) return;
-      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
+      const source = activeMetaRankingSource();
+      const metadata = source && source.metadata ? source.metadata : null;
       $("metaPoolCount").textContent = metadata ? metadata.pokemonCount : rows.length;
       $("metaCachedCells").textContent = metadata
         ? Number(metadata.cells || 0).toLocaleString()
@@ -20290,14 +20430,39 @@
     }
 
     function metaOfflineRankingRows(query, typeFilter = "", moveQuery = "") {
-      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : {};
+      const roleDataActive = metaRoleRankingAvailable();
+      const sourceData = roleDataActive ? metaRoleRankingData : metaRankingData;
+      const metadata = sourceData && sourceData.metadata ? sourceData.metadata : {};
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
       if (!metaOfflineRowsCache) {
         const preferredEntries = metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile);
         const entries = preferredEntries.length ? preferredEntries : metaRankingData.entries;
+        const roleEntries = new Map((metaRoleRankingData?.entries || [])
+          .filter(entry => entry.profile === metaRankingPreferredProfile)
+          .map(entry => [entry.id, entry]));
+        const candidatePriorActive = roleDataActive
+          && Number(metadata.candidatePriorWeight || metadata.rankingModel?.candidatePrior?.weight || 0) > 0;
         metaOfflineRowsCache = entries
-          .map(entry => metaOfflineRankingEntry(entry, shieldCount, cellCount))
+          .map(baseEntry => {
+            const roleEntry = roleEntries.get(baseEntry.id);
+            const sourceEntry = roleDataActive && roleEntry
+              ? { ...baseEntry, ...roleEntry, categoryScores: roleEntry.categoryScores }
+              : baseEntry;
+            const row = metaOfflineRankingEntry(sourceEntry, shieldCount, cellCount, candidatePriorActive);
+            if (!row || metaRankingRole === "overall") return row;
+            const category = roleEntry?.categoryScores?.[metaRankingRole];
+            const roleScore = Number(category?.competitiveScore ?? category?.score ?? category?.averageScore);
+            if (!Number.isFinite(roleScore)) return null;
+            return {
+              ...row,
+              score: Math.round(roleScore),
+              matchupScore: Math.round(roleScore),
+              roleScore: Math.round(roleScore),
+              roleViewActive: true,
+              roleViewLabel: metaRankingRoleLabel(metaRankingRole)
+            };
+          })
           .filter(Boolean)
           .map(entry => ({
             ...entry,
@@ -20306,6 +20471,20 @@
               entry.moves.fast?.name,
               ...entry.moves.charged.map(move => move.name)
             ].filter(Boolean).join(" "))
+          }))
+          .sort((a, b) => metaRankingRole === "overall" && roleDataActive
+            ? Number(b.score || 0) - Number(a.score || 0)
+              || Number(a.rankingData?.rank || 9999) - Number(b.rankingData?.rank || 9999)
+              || String(a.name).localeCompare(String(b.name))
+            : metaRankingRole === "overall"
+              ? Number(a.rank || 9999) - Number(b.rank || 9999)
+              : Number(b.score || 0) - Number(a.score || 0)
+                || String(a.name).localeCompare(String(b.name)))
+          .map((entry, index) => ({
+            ...entry,
+            rank: metaRankingRole === "overall"
+              ? (roleDataActive ? (entry.rankingData?.rank || index + 1) : entry.rank)
+              : index + 1
           }));
       }
       return metaOfflineRowsCache.filter(entry =>
@@ -20315,7 +20494,7 @@
       );
     }
 
-    function metaOfflineRankingEntry(entry, shieldCount, cellCount) {
+    function metaOfflineRankingEntry(entry, shieldCount, cellCount, candidatePriorActive = false) {
       const p = findPokemon(entry.id);
       if (!p) return null;
       const moves = metaMovesForPokemon(p);
@@ -20323,20 +20502,28 @@
       const activeMovesetKey = [moves.fast.id, ...moves.charged.map(move => move.id)].join("|");
       const publishedMovesetKey = [entry.moveset?.fast, ...(entry.moveset?.charged || [])].filter(Boolean).join("|");
       const movesetScoreStale = Boolean(publishedMovesetKey && activeMovesetKey !== publishedMovesetKey);
+      const displayScore = candidatePriorActive
+        ? (entry.metaViabilityScore ?? entry.overallScore ?? entry.competitiveScore ?? entry.weightedScore ?? entry.averageScore)
+        : (entry.competitiveScore ?? entry.overallScore ?? entry.weightedScore ?? entry.averageScore);
       return {
         p,
         id: entry.id,
         name: entry.name || p.name,
         profile: entry.profile || "default",
         rank: entry.rank,
-        score: entry.competitiveScore || entry.overallScore || entry.weightedScore || entry.averageScore,
+        score: displayScore,
         stats: null,
         moves,
-        matchupScore: entry.competitiveScore || entry.overallScore || entry.weightedScore || entry.averageScore,
+        matchupScore: displayScore,
         averageScore: entry.averageScore,
         rawScore: entry.rawScore || null,
         weightedScore: entry.weightedScore || null,
         competitiveScore: entry.competitiveScore || null,
+        roleScore: entry.roleScore || null,
+        candidatePriorScore: entry.candidatePriorScore || null,
+        metaViabilityScore: entry.metaViabilityScore || null,
+        candidatePriorActive,
+        roleViewActive: false,
         categoryScores: entry.categoryScores || null,
         rankingData: entry,
         sourceTitle: movesetScoreStale
@@ -20397,6 +20584,11 @@
         return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
       }).join("");
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
+      const scoreBreakdown = entry.roleViewActive && Number.isFinite(Number(entry.roleScore))
+        ? `${entry.roleViewLabel} ${Math.round(Number(entry.roleScore))}`
+        : entry.candidatePriorActive && Number.isFinite(Number(entry.roleScore))
+          ? `Role ${Math.round(Number(entry.roleScore))} · Prior ${Math.round(Number(entry.candidatePriorScore || 500))}`
+          : "";
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
       const movesetHtml = [
         metaMovePill(entry.moves.fast, "fast"),
@@ -20425,6 +20617,7 @@
         <span class="meta-type-stage" aria-hidden="true"><i class="meta-type-emblem primary"></i><i class="meta-type-emblem secondary"></i></span>
         <span class="meta-score" title="${escapeHtml(moveText)}">
           <strong>${entry.score}</strong>
+          ${scoreBreakdown ? `<small>${escapeHtml(scoreBreakdown)}</small>` : ""}
         </span>
       </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entry.p.id)}"></div></div></div>`;
     }
@@ -20560,7 +20753,8 @@
     }
 
     function metaRankingDatasetEntry(pokemonId) {
-      const entries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
+      const source = activeMetaRankingSource();
+      const entries = Array.isArray(source?.entries) ? source.entries : [];
       return entries.find(entry => entry.id === pokemonId && entry.profile === metaRankingPreferredProfile)
         || entries.find(entry => entry.id === pokemonId)
         || null;
@@ -20589,16 +20783,26 @@
     }
 
     function metaRankingLegend() {
-      const metadata = metaRankingData && metaRankingData.metadata ? metaRankingData.metadata : null;
+      const source = activeMetaRankingSource();
+      const metadata = source && source.metadata ? source.metadata : null;
       const cells = metadata ? Number(metadata.cells || 0).toLocaleString() : "";
       const model = metadata && metadata.rankingModel ? metadata.rankingModel : null;
       const states = metadata && metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
       const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
+      const roleText = metaRankingRole !== "overall"
+        ? ` Showing the ${metaRankingRoleLabel(metaRankingRole)} role score; Consistency is intentionally omitted from this selector.`
+        : metaRoleRankingAvailable()
+          ? " Showing the role-aware Overall score; Consistency contributes to Overall but remains hidden from the selector."
+          : "";
       const modelText = model
-        ? " Scores use equal-shield categories, opponent-strength weights, and a competitive geometric overall."
+        ? model.mode === "role"
+          ? model.candidatePrior
+            ? ` Scores blend the role score (${Math.round((1 - Number(model.candidatePrior.weight || 0)) * 100)}%) with the candidate prior (${Math.round(Number(model.candidatePrior.weight || 0) * 100)}%). The available role views are Lead, Closer, Switch, Charger, and Attacker.`
+            : ` Scores combine Lead, Closer, Switch, Charger, and Attacker roles with opponent-strength weights${Number(model.advantageTurns) ? ` and a ${Number(model.advantageTurns)}-turn energy advantage for Switch/Charger` : ""}.`
+          : " Scores use equal-shield categories, opponent-strength weights, and a competitive geometric overall."
         : "";
-      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${modelText}</div>`;
+      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${roleText}${modelText}</div>`;
     }
 
     function metaStatsForPokemon(p) {

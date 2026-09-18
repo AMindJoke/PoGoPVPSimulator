@@ -97,7 +97,11 @@ function validateDataset(dataset, options = {}) {
 
   const profiles = Array.isArray(metadata.profiles) && metadata.profiles.length ? metadata.profiles : ["rank1"];
   const shieldStates = Array.isArray(metadata.shieldScenarios) ? metadata.shieldScenarios.map(expectedShieldKey) : [];
-  const selfSkipped = metadata.opponentPool === "all";
+  // The generator skips self-matchups whenever candidates and opponents are
+  // the same pool (including the meta-only role ranking). Older datasets did
+  // not record this explicitly, so retain the all-pool fallback.
+  const selfSkipped = metadata.selfMatchupsSkipped === true
+    || (metadata.selfMatchupsSkipped === undefined && metadata.opponentPool === "all");
   const expectedOpponents = Number(metadata.opponentPokemonCount || 0);
   const expectedPerShield = expectedOpponents ? expectedOpponents - (selfSkipped ? 1 : 0) : null;
   const expectedMatchups = expectedPerShield && shieldStates.length ? expectedPerShield * shieldStates.length : null;

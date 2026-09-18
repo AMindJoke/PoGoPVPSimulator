@@ -23,12 +23,11 @@ const MATRIX_VERSION = battleReliability.BATTLE_ENGINE_VERSION;
 const DEFAULT_PROFILE = "default";
 const RANK1_PROFILE = "rank1";
 const ROLE_RANKING_CATEGORIES = [
-  { key: "lead", label: "Lead", weight: 1.1 },
+  { key: "lead", label: "Lead", weight: 1 },
   { key: "closer", label: "Closer", weight: 1 },
-  { key: "switch", label: "Switch", weight: .95 },
-  { key: "charger", label: "Charger", weight: .9 },
-  { key: "attacker", label: "Attacker", weight: .9 },
-  { key: "consistency", label: "Consistency", weight: .85 }
+  { key: "switch", label: "Switch", weight: 1 },
+  { key: "charger", label: "Charger", weight: 1 },
+  { key: "attacker", label: "Attacker", weight: 1 }
 ];
 const EQUAL_SHIELD_RANKING_CATEGORIES = [
   { key: "closer", label: "0 Shields", weight: 1 },
@@ -36,8 +35,9 @@ const EQUAL_SHIELD_RANKING_CATEGORIES = [
   { key: "lead", label: "2 Shields", weight: 1 }
 ];
 const CATEGORY_WEIGHT_ITERATIONS = 4;
-const COMPETITIVE_WEIGHT_ITERATIONS = 6;
-const ADVANTAGE_TURNS = 6;
+const COMPETITIVE_WEIGHT_ITERATIONS = 1;
+const SWITCH_ADVANTAGE_TURNS = 4;
+const CHARGER_ADVANTAGE_TURNS = 6;
 const rank1StatsCachePath = path.join(ROOT, "data", "great-league-rank1-stats-cache.json");
 const statsCache = new Map();
 const movesCache = new Map();
@@ -82,6 +82,12 @@ const priorityFileArg = process.argv.find(arg => arg.startsWith("--priority-file
 const priorityFilePath = priorityFileArg ? priorityFileArg.split("=").slice(1).join("=") : "";
 const priorityMultiplierArg = process.argv.find(arg => arg.startsWith("--priority-multiplier="));
 const priorityMultiplier = priorityMultiplierArg ? Math.max(1, Number(priorityMultiplierArg.split("=")[1] || 1)) : 1;
+const candidatePriorSourceArg = process.argv.find(arg => arg.startsWith("--candidate-prior-source="));
+const candidatePriorSourcePath = candidatePriorSourceArg ? candidatePriorSourceArg.split("=").slice(1).join("=") : "";
+const candidatePriorWeightArg = process.argv.find(arg => arg.startsWith("--candidate-prior-weight="));
+const candidatePriorWeight = candidatePriorWeightArg
+  ? Math.max(0, Math.min(1, Number(candidatePriorWeightArg.split("=")[1] || 0)))
+  : 0;
 const rankingModelArg = process.argv.find(arg => arg.startsWith("--ranking-model="));
 const rankingModelMode = rankingModelArg ? rankingModelArg.split("=")[1] : "role";
 const activeRankingCategories = rankingModelMode === "equal-shields"
@@ -151,6 +157,17 @@ function scoreToOpponentWeight(score, mode = weightMode) {
   return Math.max(.12, Math.min(3.2, Math.pow(Math.max(.05, value / 500), 3.2)));
 }
 
+function normalizeExplicitOpponentWeights(values) {
+  const pairs = Object.entries(values || {})
+    .map(([id, value]) => [id, Number(value)])
+    .filter(([, value]) => Number.isFinite(value) && value > 0);
+  if (!pairs.length) throw new Error("Opponent prevalence weights must contain at least one positive value.");
+  const mean = pairs.reduce((sum, [, value]) => sum + value, 0) / pairs.length;
+  const normalized = pairs.map(([id, value]) => [id, Math.max(.05, Math.min(4, value / mean))]);
+  const normalizedMean = normalized.reduce((sum, [, value]) => sum + value, 0) / normalized.length;
+  return new Map(normalized.map(([id, value]) => [id, value / normalizedMean]));
+}
+
 function loadExternalOpponentWeights(filePath) {
   if (!filePath) return null;
   const data = readJsonPath(filePath);
@@ -158,12 +175,45 @@ function loadExternalOpponentWeights(filePath) {
     if (weightMode !== "competitive") throw new Error("Gradual weights require competitive mode.");
     return rankingWeightUpdate.updateWeights(data);
   }
+  const explicitWeights = data.weights || data.opponentWeights;
+  if (explicitWeights && typeof explicitWeights === "object" && !Array.isArray(explicitWeights)) {
+    if (weightMode !== "prevalence") {
+      throw new Error("Explicit opponent weights require --weight-mode=prevalence.");
+    }
+    return normalizeExplicitOpponentWeights(explicitWeights);
+  }
+  if (weightMode === "prevalence") {
+    const entries = Array.isArray(data.entries) ? data.entries : [];
+    const values = Object.fromEntries(entries
+      .map(entry => [entry?.id, entry?.weight ?? entry?.prevalence ?? entry?.frequency])
+      .filter(([id, value]) => id && Number.isFinite(Number(value)) && Number(value) > 0));
+    return normalizeExplicitOpponentWeights(values);
+  }
   const map = new Map();
   for (const entry of data.entries || []) {
     const score = modeScoreForEntry(entry, weightMode);
     map.set(entry.id, scoreToOpponentWeight(score, weightMode));
   }
   return map;
+}
+
+function loadCandidatePrior(filePath) {
+  if (!filePath) return null;
+  const data = readJsonPath(filePath);
+  const map = new Map();
+  for (const entry of data.entries || []) {
+    const score = Number(entry?.overallScore ?? entry?.competitiveScore ?? entry?.weightedScore ?? entry?.averageScore);
+    if (entry?.id && Number.isFinite(score)) map.set(entry.id, score);
+  }
+  if (!map.size) throw new Error("Candidate prior source must contain scored entries.");
+  return map;
+}
+
+function blendCandidateScore(roleScore, priorScore, weight = 0) {
+  const blendWeight = Math.max(0, Math.min(1, Number(weight) || 0));
+  const role = Number.isFinite(Number(roleScore)) ? Number(roleScore) : 500;
+  const prior = Number.isFinite(Number(priorScore)) ? Number(priorScore) : 500;
+  return Math.round(((1 - blendWeight) * role) + (blendWeight * prior));
 }
 
 function loadPriorityIds(filePath) {
@@ -222,6 +272,13 @@ function generationData() {
 
 function gameMasterHash(gameMaster) {
   return crypto.createHash("sha256").update(JSON.stringify(gameMaster)).digest("hex");
+}
+
+// Moveset defaults live outside the Game Master. Track them separately so a
+// ranking can prove which move policy produced its scores and stale reports
+// cannot look current merely because the battle data hash is unchanged.
+function movesetHash(movesets) {
+  return crypto.createHash("sha256").update(JSON.stringify(movesets || {})).digest("hex");
 }
 
 function loadPersistentRank1Stats() {
@@ -630,11 +687,29 @@ function cloneBattleConfig(config) {
   return JSON.parse(JSON.stringify(config));
 }
 
-function fastEnergyInTurns(fastMove, turns = ADVANTAGE_TURNS) {
+function fastEnergyInTurns(fastMove, turns) {
   if (!fastMove) return 0;
   const moveTurns = Math.max(1, Number(fastMove.turns || 1));
-  const uses = Math.max(1, Math.ceil(turns / moveTurns));
+  // Count only fast attacks that can actually complete within the advantage
+  // window. A five-turn move with six turns of advantage completes once, not
+  // twice; rounding up was materially inflating slow fast-move users.
+  const uses = Math.max(0, Math.floor(Math.max(0, turns) / moveTurns));
   return Math.max(0, Math.min(100, uses * Number(fastMove.energyGain || 0)));
+}
+
+function chargerScoreModifier(pokemon, profile, moveMap, standardMovesets) {
+  const stats = profile === RANK1_PROFILE ? rank1Stats(pokemon) : defaultStats(pokemon);
+  const moves = selectMoves(pokemon, moveMap, standardMovesets);
+  if (!moves.fast || !moves.charged.length) return 1;
+  const stab = pokemon.types.includes(moves.fast.type) ? 1.2 : 1;
+  const shadowAttack = isShadow(pokemon) ? 1.2 : 1;
+  const fastMoveDpt = ((moves.fast.power * stab * shadowAttack) * (stats.attack / 100))
+    / Math.max(1, moves.fast.turns || 1);
+  const cheapestChargedMove = Math.min(...moves.charged.map(move => Math.max(0, Number(move.energyCost || 0))));
+  const maximumEnergyRemaining = Math.max(0, 100 - cheapestChargedMove);
+  const farmPressure = Math.pow(Math.max(0.0001, fastMoveDpt / 5), 1 / 6);
+  const energyCarryover = Math.sqrt(maximumEnergyRemaining / 100);
+  return Math.pow(Math.max(0.0001, energyCarryover * farmPressure), 1 / 6);
 }
 
 function categoryTemplate() {
@@ -650,6 +725,8 @@ function categoryTemplate() {
     losses: 0,
     ties: 0,
     opponentScores: {},
+    opponentWeightMultipliers: {},
+    opponentBaseWeights: {},
     moveUsage: {
       fast: {},
       charged: {}
@@ -685,6 +762,44 @@ function compactResult(result, aId, bId) {
     closingCostEdge: Number(details.closingCostEdge || 0),
     farmPressureEdge: Number(details.farmPressureEdge || 0),
     outpacePressureEdge: Number(details.outpacePressureEdge || 0)
+  };
+}
+
+// Keep the ranking curve aligned with PvPoke's Battle Rating treatment:
+// soften very large wins, curve hard losses, and let the Switch category
+// weight hard losses more heavily so it rewards genuinely safe pivots.
+function normalizeBattleRating(score) {
+  let value = Math.max(0, Number(score ?? 500));
+  if (value > 700) value = 700 + Math.sqrt(value - 700);
+  if (value < 300) value = Math.pow(300, (300 + value) / 600);
+  return value;
+}
+
+function categoryCellMetrics(categoryKey, result, opponentWeight = 1, bShields = 0) {
+  const hpRatioA = Number(result?.hpRatioA);
+  const hpRatioB = Number(result?.hpRatioB);
+  // The coverage matrix keeps the simulator's richer resource score. Role
+  // rankings need the conventional Battle Rating instead: remaining HP plus
+  // damage dealt, each worth half of the 0-1000 scale. Mixing the matrix score
+  // into roles double-counted saved energy and shields and strongly favored
+  // bulky Dark types even when they lost most of the actual matchups.
+  let battleRating = Number.isFinite(hpRatioA) && Number.isFinite(hpRatioB)
+    ? (hpRatioA + (1 - hpRatioB)) * 500
+    : Number(result?.score ?? 500);
+  // PvPoke rewards a win for consuming the opponent's shields and for
+  // retaining shields. shieldEdge is 75 points per shield difference, so
+  // the exact adjustment can be reconstructed from the compact cache result.
+  if (battleRating > 500) {
+    battleRating += (100 * Number(bShields || 0)) + ((100 / 75) * Number(result?.shieldEdge || 0));
+  }
+  const score = normalizeBattleRating(battleRating);
+  const safetyMultiplier = categoryKey === "switch" && score < 500
+    ? 1 + (Math.pow(500 - score, 2) / 20000)
+    : 1;
+  return {
+    score,
+    safetyMultiplier,
+    effectiveWeight: Number(opponentWeight || 1) * safetyMultiplier
   };
 }
 
@@ -951,7 +1066,7 @@ function writeSplitMatchupIndex(metadata) {
   });
 }
 
-function createRankingAggregator(pool, profiles, scenarios) {
+function createRankingAggregator(pool, profiles, scenarios, moveMap, standardMovesets) {
   const entries = new Map();
   for (const profile of profiles) {
     for (const p of pool) {
@@ -967,6 +1082,7 @@ function createRankingAggregator(pool, profiles, scenarios) {
         losses: 0,
         ties: 0,
         scoreSquaredTotal: 0,
+        chargerScoreModifier: chargerScoreModifier(p, profile, moveMap, standardMovesets),
         categories: categoryTemplate(),
         shieldStates: Object.fromEntries(scenarios.map(([a, b]) => [`${a}-${b}`, {
           scoreTotal: 0,
@@ -986,13 +1102,16 @@ function createRankingAggregator(pool, profiles, scenarios) {
 function updateCategory(entry, key, cell, moveset, opponentWeight = 1) {
   const category = entry && entry.categories ? entry.categories[key] : null;
   if (!category) return;
-  const score = cell.result.score;
+  const metrics = categoryCellMetrics(key, cell.result, opponentWeight, cell.bShields);
+  const score = metrics.score;
   category.scoreTotal += score;
-  category.weightedScoreTotal += score * opponentWeight;
-  category.weightTotal += opponentWeight;
+  category.weightedScoreTotal += score * metrics.effectiveWeight;
+  category.weightTotal += metrics.effectiveWeight;
   category.scoreSquaredTotal += score * score;
   category.matchups++;
   category.opponentScores[cell.defenderId] = score;
+  category.opponentWeightMultipliers[cell.defenderId] = metrics.safetyMultiplier;
+  category.opponentBaseWeights[cell.defenderId] = Number(opponentWeight || 1);
   addMoveUsage(category, moveset);
   if (cell.result.winnerSide === "A") category.wins++;
   else if (cell.result.winnerSide === "B") category.losses++;
@@ -1008,23 +1127,23 @@ function updateBaseCategories(entry, cell, moveset, opponentWeight = 1) {
     if (aShields === 2) updateCategory(entry, "lead", cell, moveset, opponentWeight);
     return;
   }
-  if (aShields === 2 && bShields === 2) updateCategory(entry, "lead", cell, moveset, opponentWeight);
+  if (aShields === 1 && bShields === 1) updateCategory(entry, "lead", cell, moveset, opponentWeight);
   if (aShields === 0 && bShields === 0) updateCategory(entry, "closer", cell, moveset, opponentWeight);
-  if (aShields === 0 && bShields === 2) updateCategory(entry, "attacker", cell, moveset, opponentWeight);
-  if (aShields === bShields) updateCategory(entry, "consistency", cell, moveset, opponentWeight);
+  if (aShields === 0 && bShields === 1) updateCategory(entry, "attacker", cell, moveset, opponentWeight);
 }
 
 function updateRanking(entries, cell, opponentWeight = 1) {
   const entry = entries.get(`${cell.profile}:${cell.attackerId}`);
   if (!entry) return;
+  const score = categoryCellMetrics("base", cell.result, opponentWeight, cell.bShields).score;
   const state = entry.shieldStates[cell.shieldState];
-  entry.scoreTotal += cell.result.score;
-  entry.weightedScoreTotal += cell.result.score * opponentWeight;
+  entry.scoreTotal += score;
+  entry.weightedScoreTotal += score * opponentWeight;
   entry.scoreWeightTotal += opponentWeight;
-  entry.scoreSquaredTotal += cell.result.score * cell.result.score;
+  entry.scoreSquaredTotal += score * score;
   entry.matchups++;
-  state.scoreTotal += cell.result.score;
-  state.weightedScoreTotal += cell.result.score * opponentWeight;
+  state.scoreTotal += score;
+  state.weightedScoreTotal += score * opponentWeight;
   state.scoreWeightTotal += opponentWeight;
   state.matchups++;
   if (cell.result.winnerSide === "A") {
@@ -1046,7 +1165,10 @@ function weightedCategoryAverage(category, opponentWeights) {
   let total = 0;
   let weightTotal = 0;
   for (const [opponentId, score] of scores) {
-    const weight = opponentWeights.get(opponentId) || 1;
+    const safetyMultiplier = category.opponentWeightMultipliers?.[opponentId] || 1;
+    const baseWeight = category.opponentBaseWeights?.[opponentId] || 1;
+    const recursiveWeight = opponentWeights.has(opponentId) ? opponentWeights.get(opponentId) : 1;
+    const weight = baseWeight * recursiveWeight * safetyMultiplier;
     total += Number(score || 0) * weight;
     weightTotal += weight;
   }
@@ -1057,9 +1179,11 @@ function rawCategoryAverage(category) {
   return category.matchups ? category.scoreTotal / category.matchups : null;
 }
 
-function scoreToCategoryPercent(score) {
+function scoreToCategoryPercent(score, categoryLeader = 1000) {
   if (!Number.isFinite(score)) return null;
-  return Math.max(1, Math.min(100, score / 10));
+  const leader = Number(categoryLeader);
+  if (!Number.isFinite(leader) || leader <= 0) return null;
+  return Math.max(1, Math.min(100, (score / leader) * 100));
 }
 
 function geometricMean(values) {
@@ -1110,6 +1234,29 @@ function buildOpponentWeights(entries, options = {}) {
   return weights;
 }
 
+function buildCategoryOpponentWeights(entries, categoryKey, options = {}) {
+  const iterations = options.iterations ?? 1;
+  const exponent = options.exponent ?? 1.65;
+  const cutoffIncrease = options.cutoffIncrease ?? .06;
+  const weights = new Map([...entries.values()].map(entry => [entry.id, 1]));
+  for (let i = 0; i < iterations; i++) {
+    const averages = new Map([...entries.values()].map(entry => {
+      const category = entry.categories[categoryKey];
+      return [entry.id, category ? weightedCategoryAverage(category, weights) : 500];
+    }));
+    const bestScore = Math.max(...averages.values(), 1);
+    const cutoff = .1 + (cutoffIncrease * i);
+    const next = new Map(weights);
+    for (const [entryId, weightedAverage] of averages) {
+      const normalized = Math.max((weightedAverage / bestScore) - cutoff, 0);
+      next.set(entryId, Math.pow(normalized, exponent));
+    }
+    weights.clear();
+    for (const [key, value] of next) weights.set(key, value);
+  }
+  return weights;
+}
+
 function scoreFromCategoryValues(categoryScores, fieldName) {
   const weightedCategoryValues = activeRankingCategories.flatMap(category => {
     const score = categoryScores[category.key] && categoryScores[category.key][fieldName];
@@ -1119,15 +1266,38 @@ function scoreFromCategoryValues(categoryScores, fieldName) {
   return Number.isFinite(overallPercent) ? Math.round(overallPercent * 10) : null;
 }
 
-function finalizeRankings(entries, externalOpponentWeights = null) {
+function finalizeRankings(entries, externalOpponentWeights = null, candidatePrior = null, candidatePriorWeight = 0) {
   const opponentWeights = buildOpponentWeights(entries);
-  const competitiveOpponentWeights = buildOpponentWeights(entries, {
-    iterations: COMPETITIVE_WEIGHT_ITERATIONS,
-    minWeight: .12,
-    maxWeight: 3.2,
-    exponent: 3.2,
-    floor: 520
-  });
+  const equalShieldCategories = new Set(["lead", "closer", "core"]);
+  const competitiveOpponentWeights = Object.fromEntries(activeRankingCategories.map(categoryDef => {
+    if (!equalShieldCategories.has(categoryDef.key)) {
+      return [categoryDef.key, new Map()];
+    }
+    return [categoryDef.key, buildCategoryOpponentWeights(entries, categoryDef.key, {
+      iterations: COMPETITIVE_WEIGHT_ITERATIONS,
+      exponent: 1.65,
+      cutoffIncrease: .06
+    })];
+  }));
+  const competitiveCategoryAverage = (category, categoryKey) =>
+    weightedCategoryAverage(category, competitiveOpponentWeights[categoryKey] || new Map());
+  const categoryLeaders = {
+    raw: {},
+    weighted: {},
+    competitive: {}
+  };
+  const categoryModifier = (entry, categoryKey) => categoryKey === "charger"
+    ? Number(entry.chargerScoreModifier || 1)
+    : 1;
+  for (const categoryDef of activeRankingCategories) {
+    const categoryEntries = [...entries.values()].map(entry => ({ entry, category: entry.categories[categoryDef.key] }));
+    const rawValues = categoryEntries.map(({ entry, category }) => rawCategoryAverage(category) * categoryModifier(entry, categoryDef.key)).filter(Number.isFinite);
+    const weightedValues = categoryEntries.map(({ entry, category }) => weightedCategoryAverage(category, opponentWeights) * categoryModifier(entry, categoryDef.key)).filter(Number.isFinite);
+    const competitiveValues = categoryEntries.map(({ entry, category }) => competitiveCategoryAverage(category, categoryDef.key) * categoryModifier(entry, categoryDef.key)).filter(Number.isFinite);
+    categoryLeaders.raw[categoryDef.key] = Math.max(...rawValues, 1);
+    categoryLeaders.weighted[categoryDef.key] = Math.max(...weightedValues, 1);
+    categoryLeaders.competitive[categoryDef.key] = Math.max(...competitiveValues, 1);
+  }
   const rows = [...entries.values()].map(entry => {
     const shieldStates = Object.fromEntries(Object.entries(entry.shieldStates).map(([key, value]) => [key, {
       averageScore: value.matchups ? Math.round(value.scoreTotal / value.matchups) : null,
@@ -1139,21 +1309,23 @@ function finalizeRankings(entries, externalOpponentWeights = null) {
     const categoryScores = {};
     for (const categoryDef of activeRankingCategories) {
       const category = entry.categories[categoryDef.key];
-      const rawAverage = rawCategoryAverage(category);
-      const weightedAverage = weightedCategoryAverage(category, opponentWeights);
-      const competitiveAverage = externalOpponentWeights && category.weightTotal
-        ? category.weightedScoreTotal / category.weightTotal
-        : weightedCategoryAverage(category, competitiveOpponentWeights);
+      const modifier = categoryModifier(entry, categoryDef.key);
+      const rawAverage = rawCategoryAverage(category) * modifier;
+      const weightedAverage = weightedCategoryAverage(category, opponentWeights) * modifier;
+      const competitiveAverage = competitiveCategoryAverage(category, categoryDef.key) * modifier;
+      const rawLeader = categoryLeaders.raw[categoryDef.key];
+      const weightedLeader = categoryLeaders.weighted[categoryDef.key];
+      const competitiveLeader = categoryLeaders.competitive[categoryDef.key];
       categoryScores[categoryDef.key] = {
         label: categoryDef.label,
         weight: categoryDef.weight,
         averageScore: Number.isFinite(rawAverage) ? Math.round(rawAverage) : null,
         weightedScore: Number.isFinite(weightedAverage) ? Math.round(weightedAverage) : null,
         competitiveScore: Number.isFinite(competitiveAverage) ? Math.round(competitiveAverage) : null,
-        rawRating: Number.isFinite(rawAverage) ? Math.round(scoreToCategoryPercent(rawAverage)) : null,
-        weightedRating: Number.isFinite(weightedAverage) ? Math.round(scoreToCategoryPercent(weightedAverage)) : null,
-        competitiveRating: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage)) : null,
-        score: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage)) : null,
+        rawRating: Number.isFinite(rawAverage) ? Math.round(scoreToCategoryPercent(rawAverage, rawLeader)) : null,
+        weightedRating: Number.isFinite(weightedAverage) ? Math.round(scoreToCategoryPercent(weightedAverage, weightedLeader)) : null,
+        competitiveRating: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage, competitiveLeader)) : null,
+        score: Number.isFinite(competitiveAverage) ? Math.round(scoreToCategoryPercent(competitiveAverage, competitiveLeader)) : null,
         matchups: category.matchups,
         wins: category.wins,
         losses: category.losses,
@@ -1164,7 +1336,9 @@ function finalizeRankings(entries, externalOpponentWeights = null) {
     const rawScore = scoreFromCategoryValues(categoryScores, "rawRating");
     const weightedScore = scoreFromCategoryValues(categoryScores, "weightedRating");
     const competitiveScore = scoreFromCategoryValues(categoryScores, "competitiveRating");
-    const overallScore = competitiveScore;
+    const priorScore = candidatePrior?.has(entry.id) ? candidatePrior.get(entry.id) : 500;
+    const metaViabilityScore = blendCandidateScore(competitiveScore, priorScore, candidatePriorWeight);
+    const overallScore = metaViabilityScore;
     return {
       id: entry.id,
       name: entry.name,
@@ -1175,6 +1349,9 @@ function finalizeRankings(entries, externalOpponentWeights = null) {
       rawScore,
       weightedScore,
       competitiveScore,
+      roleScore: competitiveScore,
+      candidatePriorScore: candidatePrior ? Math.round(priorScore) : null,
+      metaViabilityScore,
       overallScore,
       categoryScores,
       scoreStdDev: entry.matchups ? Number(Math.sqrt(Math.max(0, (entry.scoreSquaredTotal / entry.matchups) - Math.pow(entry.scoreTotal / entry.matchups, 2))).toFixed(2)) : null,
@@ -1301,9 +1478,15 @@ function main() {
     ? metaConfig.ivProfiles
     : [DEFAULT_PROFILE, RANK1_PROFILE];
   const profiles = (profileFilter || configuredProfiles).filter(profile => [DEFAULT_PROFILE, RANK1_PROFILE].includes(profile));
+  // Role rankings need the asymmetric 0-1 shield state for Attackers. Keep
+  // equal-shields as the explicit lightweight model. The role model only
+  // needs the three equal states plus 0-1; --all-shield-states remains
+  // available for diagnostics that intentionally require every combination.
   const scenarios = includeAllShieldStates
     ? metaConfig.shieldScenarios
-    : metaConfig.shieldScenarios.filter(([a, b]) => a === b);
+    : rankingModelMode !== "equal-shields"
+      ? metaConfig.shieldScenarios.filter(([a, b]) => a === b || (a === 0 && b === 1))
+      : metaConfig.shieldScenarios.filter(([a, b]) => a === b);
 
   if (!pool.length) throw new Error("Great League ranking pool is empty.");
   if (!opponentPool.length) throw new Error("Great League opponent pool is empty.");
@@ -1313,6 +1496,13 @@ function main() {
   console.log(`Loading live simulator matrix worker for ${generationSeasonId || "current"}...`);
   const adapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true });
   const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
+  if (candidatePriorWeight > 0 && !candidatePriorSourcePath) {
+    throw new Error("--candidate-prior-weight requires --candidate-prior-source.");
+  }
+  const candidatePrior = loadCandidatePrior(candidatePriorSourcePath);
+  if (candidatePrior) {
+    console.log(`Loaded ${candidatePrior.size.toLocaleString()} candidate prior scores from ${candidatePriorSourcePath} (${Math.round(candidatePriorWeight * 100)}% blend).`);
+  }
   if (externalOpponentWeights) {
     console.log(`Loaded ${externalOpponentWeights.size.toLocaleString()} opponent weights from ${weightSourcePath} (${weightMode}).`);
   }
@@ -1333,7 +1523,7 @@ function main() {
 
   const generatedAt = new Date().toISOString();
   const cells = [];
-  const rankingAggregator = createRankingAggregator(pool, profiles, scenarios);
+  const rankingAggregator = createRankingAggregator(pool, profiles, scenarios, moveMap, standardMovesets);
   let done = 0;
   const seqRef = { value: 0 };
   const extraCategoryCellsPerPair = rankingModelMode === "equal-shields" ? 0 : 2;
@@ -1393,11 +1583,11 @@ function main() {
         }
         const categoryEntry = rankingAggregator.get(`${profile}:${a.id}`);
         if (categoryEntry && rankingModelMode !== "equal-shields") {
-          const bonusEnergy = fastEnergyInTurns(config.left.fast, ADVANTAGE_TURNS);
           for (const extraCategory of [
-            { key: "switch", aShields: 2, bShields: 2 },
-            { key: "charger", aShields: 1, bShields: 1 }
+            { key: "switch", aShields: 1, bShields: 1, advantageTurns: SWITCH_ADVANTAGE_TURNS },
+            { key: "charger", aShields: 1, bShields: 1, advantageTurns: CHARGER_ADVANTAGE_TURNS }
           ]) {
+            const bonusEnergy = fastEnergyInTurns(config.left.fast, extraCategory.advantageTurns);
             const energyConfig = cloneBattleConfig(config);
             energyConfig.startEnergyA = bonusEnergy;
             const shieldState = `${extraCategory.aShields}-${extraCategory.bShields}`;
@@ -1461,6 +1651,7 @@ function main() {
     seasonId: sourceData.preview?.id || null,
     dataVersion: sourceData.preview?.dataVersion || null,
     gameMasterHash: gameMasterHash(gamemaster),
+    movesetHash: movesetHash(standardMovesets),
     generatedAt,
     generator: "tools/build-great-league-meta-database.js",
     simulatorSource: "PogoPvp.html buildMatrixComputeWorkerSource()",
@@ -1476,6 +1667,10 @@ function main() {
     pokemonCount: pool.length,
     opponentPool: opponentPoolMode,
     opponentPokemonCount: opponentPool.length,
+    selfMatchupsSkipped,
+    candidatePriorSource: candidatePriorSourcePath || null,
+    candidatePriorWeight: candidatePriorWeight || null,
+    candidatePriorCoverage: candidatePrior ? pool.filter(pokemon => candidatePrior.has(pokemon.id)).length : null,
     skippedPokemon,
     profiles,
     shieldScenarios: scenarios,
@@ -1513,14 +1708,29 @@ function main() {
       version: 1,
       mode: rankingModelMode,
       categories: activeRankingCategories,
-      weighting: "iterative-opponent-strength",
+      weighting: externalOpponentWeights
+        ? (weightMode === "prevalence" ? "external-opponent-prevalence" : "external-opponent-strength")
+        : "iterative-opponent-strength",
       weightingIterations: CATEGORY_WEIGHT_ITERATIONS,
       competitiveWeightingIterations: COMPETITIVE_WEIGHT_ITERATIONS,
-      overall: rankingModelMode === "equal-shields"
-        ? "competitive weighted geometric mean of equal-shield category scores"
-        : "weighted geometric mean of category scores",
-      exposedScores: ["rawScore", "weightedScore", "competitiveScore"],
-      advantageTurns: ADVANTAGE_TURNS,
+      competitiveWeightExponent: 1.65,
+      competitiveWeightCutoff: 0.1,
+      competitiveWeightCutoffIncrease: 0.06,
+      overall: candidatePriorWeight > 0
+        ? `candidate-prior blend (${Math.round((1 - candidatePriorWeight) * 100)}% normalized role score, ${Math.round(candidatePriorWeight * 100)}% candidate prior)`
+        : rankingModelMode === "equal-shields"
+          ? "competitive weighted geometric mean of category scores normalized to each category leader"
+          : "weighted geometric mean of category scores normalized to each category leader",
+      candidatePrior: candidatePriorWeight > 0 ? {
+        source: candidatePriorSourcePath,
+        weight: candidatePriorWeight,
+        missingCandidatesUseScore: 500
+      } : null,
+      exposedScores: ["rawScore", "weightedScore", "competitiveScore", "roleScore", "metaViabilityScore"],
+      advantageTurns: {
+        switch: SWITCH_ADVANTAGE_TURNS,
+        charger: CHARGER_ADVANTAGE_TURNS
+      },
       notes: rankingModelMode === "equal-shields"
         ? [
           "The main ranking simulates every candidate against every eligible opponent.",
@@ -1530,14 +1740,18 @@ function main() {
           "Competitive score strongly discounts low-ranked field noise and is used as the displayed overall score."
         ]
         : [
-          "Lead, Closer, Attacker, and Consistency use standard shield-state simulations.",
-          "Switch uses two-shield simulations with starting energy generated by the candidate fast move over the configured advantage turns.",
-          "Charger uses one-shield simulations with the same starting-energy advantage.",
-          "Category scores are weighted by opponent strength before the overall score is calculated."
+          "Lead uses the one-shield scenario; Closer uses zero shields; Attacker starts down one shield.",
+          "Switch uses one-shield simulations with energy generated over four turns.",
+          "Charger uses one-shield simulations with energy generated over six turns, then factors fast-move pressure and maximum energy carryover.",
+          "Role Battle Ratings use remaining HP plus damage dealt; the coverage matrix keeps the simulator resource score.",
+          "Battle Ratings use a soft cap above 700 and a hard-loss curve below 300.",
+          "Switch gives extra weight to losses below 500 to favor safe pivots.",
+          "Equal-shield categories use separate one-pass recursive opponent weights (exponent 1.65, cutoff 0.1); energy-advantage categories use uniform opponent weights unless an explicit prevalence file is supplied.",
+          "Category scores are normalized to each category leader before the geometric mean."
         ]
     }
   };
-  const finalizedRankingEntries = finalizeRankings(rankingAggregator, externalOpponentWeights);
+  const finalizedRankingEntries = finalizeRankings(rankingAggregator, externalOpponentWeights, candidatePrior, candidatePriorWeight);
   const rankings = {
     schemaVersion: RANKING_SCHEMA_VERSION,
     league: "great",
@@ -1691,11 +1905,15 @@ module.exports = {
   RANK1_PROFILE,
   readWindowGlobal,
   extractLiveWorkerSource,
+  movesetHash,
   createWorkerAdapter,
   normalizeMove,
   normalizePokemon,
   generationData,
   buildPreviewMovesets,
+  normalizeExplicitOpponentWeights,
+  loadCandidatePrior,
+  blendCandidateScore,
   defaultStats,
   statsForIvSpread,
   rank1Stats,
@@ -1703,5 +1921,6 @@ module.exports = {
   createCombatant,
   createBattleConfig,
   cloneBattleConfig,
+  fastEnergyInTurns,
   compactResult
 };
