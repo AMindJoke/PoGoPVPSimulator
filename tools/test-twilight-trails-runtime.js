@@ -63,6 +63,10 @@ assert.ok(context.activeSeasonData.rankings.metadata.weightSource);
 assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, context.activeSeasonData.rankings.metadata.generatedAt);
 assert.equal(context.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
 assert.equal(context.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");
+assert.equal(JSON.stringify(context.activeSeasonData.defaultMovesets.florges), JSON.stringify({
+  fast: "FAIRY_WIND",
+  charged: ["MOONBLAST", "CHILLING_WATER"]
+}));
 assert.equal(currentBodySlam.energy, 40, "Confirmed move values must be canonical.");
 for (const requested of ["", "?season=current-2026-06-28", "?season=twilight-trails", "?season=unknown"]) {
   const resolved = Season.create({ catalog: browser.BATTLE_SEASON_CATALOG, gameMaster: browser.BATTLE_GAMEMASTER,

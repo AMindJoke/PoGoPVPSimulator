@@ -25,6 +25,7 @@ const selectiveIds = new Set((pokemonArg ? pokemonArg.split("=").slice(1).join("
   .split(",")
   .map(value => value.trim())
   .filter(Boolean));
+const allowPartialCache = process.argv.includes("--allow-partial-cache");
 
 const ranking = JSON.parse(fs.readFileSync(rankingPath, "utf8"));
 const analysis = JSON.parse(fs.readFileSync(analysisPath, "utf8"));
@@ -79,7 +80,10 @@ entries.forEach((entry, index) => {
   ingestCache(cachePath);
   const cells = [...cellsByOpponent.values()];
   if (cells.length !== entries.length - 1) {
-    throw new Error(`${entry.id}: expected ${entries.length - 1} current-signature 1-1 matchups, found ${cells.length}.`);
+    if (!allowPartialCache || !cells.length) {
+      throw new Error(`${entry.id}: expected ${entries.length - 1} current-signature 1-1 matchups, found ${cells.length}.`);
+    }
+    process.stdout.write(`Using partial current-signature cache for ${entry.id}: ${cells.length}/${entries.length - 1} 1-1 matchups.\n`);
   }
   const relevant = selectRelevantMatchups(cells, rankById, 5);
   const mapRow = row => ({

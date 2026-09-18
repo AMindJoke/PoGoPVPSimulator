@@ -312,7 +312,7 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "FAIRY_WIND",
     "charged": [
       "MOONBLAST",
-      "DISARMING_VOICE"
+      "CHILLING_WATER"
     ]
   },
   "lapras_shadow": {
