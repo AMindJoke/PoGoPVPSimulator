@@ -2013,6 +2013,14 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
+    .meta-ranking-role-context {
+      grid-column: 1 / -1;
+      margin-top: -3px;
+      color: rgba(255,255,255,.78);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .meta-ranking-role-context strong { color: #fff; }
     .meta-actions input::placeholder { color: #687587; }
     .meta-actions #metaRefresh {
       border-color: rgba(255,255,255,.42);
@@ -2178,6 +2186,32 @@
       line-height: 1.1;
       text-align: center;
       white-space: nowrap;
+    }
+    .meta-role-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--accent) 8%, var(--soft));
+    }
+    .meta-role-summary span {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+    .meta-role-summary strong { color: var(--ink); font-size: 12px; }
+    .meta-role-summary small { color: var(--muted); font-size: 9px; }
+    .meta-role-detail-note {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
     }
     .meta-moves {
       display: flex;
@@ -10278,6 +10312,10 @@
       #metaRankingRole,
       #metaCompareToggle,
       #metaRefresh { width: 100%; }
+      .meta-ranking-role-context { font-size: 10px; }
+      .meta-role-summary { gap: 4px; padding: 6px; }
+      .meta-role-summary strong { font-size: 11px; }
+      .meta-role-summary small { font-size: 8px; }
       .meta-active-filters { gap: 4px; }
       .meta-back-to-top {
         right: 10px;
@@ -14779,6 +14817,7 @@
             <button id="metaCompareToggle" class="secondary" type="button" aria-pressed="false">Compare</button>
             <button id="metaRefresh" class="secondary" type="button">Refresh</button>
           </div>
+          <div id="metaRankingRoleContext" class="meta-ranking-role-context" role="status" aria-live="polite"></div>
           <div id="metaActiveFilters" class="meta-active-filters" aria-live="polite" hidden></div>
         </div>
         <div id="metaRanking" class="meta-ranking"></div>
@@ -16094,6 +16133,7 @@
       refreshPokemonLists();
       resetBattleStateFromSetup();
       ensureMetaRoleRankingData();
+      updateMetaRankingRoleContext();
       renderMetaRankings();
       updateBattleAvailability();
       const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
@@ -20097,6 +20137,7 @@
       const allowed = new Set(["overall", "lead", "closer", "switch", "charger", "attacker"]);
       metaRankingRole = allowed.has(role) ? role : "overall";
       if ($("metaRankingRole") && $("metaRankingRole").value !== metaRankingRole) $("metaRankingRole").value = metaRankingRole;
+      updateMetaRankingRoleContext();
       metaOfflineRowsCache = null;
       metaFilterSignature = "";
       resetMetaProgressiveRender();
@@ -20297,6 +20338,52 @@
       })[role] || "Overall";
     }
 
+    function metaRankingRoleDefinition(role = metaRankingRole) {
+      return ({
+        overall: {
+          label: "Overall",
+          context: "Combines Lead, Closer, Switch, Charger and Attacker performance, with the configured meta prior.",
+          short: "All modeled roles"
+        },
+        lead: {
+          label: "Lead",
+          context: "Starts at equal shields (1-1).",
+          short: "1-1 shields"
+        },
+        closer: {
+          label: "Closer",
+          context: "Starts with no shields on either side (0-0).",
+          short: "0-0 shields"
+        },
+        switch: {
+          label: "Switch",
+          context: "Equal shields with a four-turn energy advantage on entry.",
+          short: "+4 turns energy"
+        },
+        charger: {
+          label: "Charger",
+          context: "Equal shields with a six-turn energy advantage and carryover.",
+          short: "+6 turns energy"
+        },
+        attacker: {
+          label: "Attacker",
+          context: "Starts one shield behind the opponent (0-1).",
+          short: "0-1 shields"
+        }
+      })[role] || null;
+    }
+
+    function updateMetaRankingRoleContext() {
+      const node = $("metaRankingRoleContext");
+      if (!node) return;
+      const definition = metaRankingRoleDefinition();
+      if (!definition) {
+        node.textContent = "";
+        return;
+      }
+      node.innerHTML = `<strong>${escapeHtml(definition.label)}</strong> · ${escapeHtml(definition.context)}`;
+    }
+
     function metaRoleRankingAvailable() {
       if (!metaRoleRankingData || !Array.isArray(metaRoleRankingData.entries)) return false;
       const sourceSeason = metaRoleRankingData.metadata?.seasonId;
@@ -20460,7 +20547,8 @@
               matchupScore: Math.round(roleScore),
               roleScore: Math.round(roleScore),
               roleViewActive: true,
-              roleViewLabel: metaRankingRoleLabel(metaRankingRole)
+              roleViewLabel: metaRankingRoleLabel(metaRankingRole),
+              roleSnapshot: category
             };
           })
           .filter(Boolean)
@@ -20524,6 +20612,7 @@
         metaViabilityScore: entry.metaViabilityScore || null,
         candidatePriorActive,
         roleViewActive: false,
+        roleSnapshot: null,
         categoryScores: entry.categoryScores || null,
         rankingData: entry,
         sourceTitle: movesetScoreStale
@@ -20585,7 +20674,7 @@
       }).join("");
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const scoreBreakdown = entry.roleViewActive && Number.isFinite(Number(entry.roleScore))
-        ? `${entry.roleViewLabel} ${Math.round(Number(entry.roleScore))}`
+        ? `${entry.roleViewLabel} ${Math.round(Number(entry.roleScore))} · ${entry.roleSnapshot?.wins ?? "-"}-${entry.roleSnapshot?.losses ?? "-"}-${entry.roleSnapshot?.ties ?? "-"}`
         : entry.candidatePriorActive && Number.isFinite(Number(entry.roleScore))
           ? `Role ${Math.round(Number(entry.roleScore))} · Prior ${Math.round(Number(entry.candidatePriorScore || 500))}`
           : "";
@@ -20675,10 +20764,19 @@
       const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
       const alternatives = metaAlternativeMovesets(entry, detail);
       const alternateHtml = alternatives.length ? `<section class="meta-alternatives" aria-label="Alternative movesets"><strong>Alternative movesets</strong>${alternatives.map(set => `<div class="meta-alternative-moves">${[metaMovePill(moveMap.get(set.fast), "fast"), ...set.charged.map(id => metaMovePill(moveMap.get(id), "charged"))].join("")}</div>`).join("")}</section>` : "";
+      const roleSnapshot = metaRankingRole !== "overall" ? entry.roleSnapshot || entry.rankingData?.categoryScores?.[metaRankingRole] : null;
+      const roleSummary = roleSnapshot
+        ? `<section class="meta-role-summary" aria-label="${escapeHtml(metaRankingRoleLabel(metaRankingRole))} role summary"><span><strong>${escapeHtml(metaRankingRoleLabel(metaRankingRole))}</strong><small>${escapeHtml(metaRankingRoleDefinition(metaRankingRole)?.short || "Selected role")}</small></span><span><strong>${Number(roleSnapshot.competitiveScore ?? roleSnapshot.score ?? 0)}</strong><small>role score</small></span><span><strong>${roleSnapshot.wins ?? 0}-${roleSnapshot.losses ?? 0}-${roleSnapshot.ties ?? 0}</strong><small>${roleSnapshot.matchups ?? 0} modeled matchups</small></span></section>`
+        : "";
+      const matchupLabel = metaRankingRole === "overall" ? "Key Wins · Top 50" : "Overall Key Wins · Top 50";
+      const lossLabel = metaRankingRole === "overall" ? "Key Losses · Top 50" : "Overall Key Losses · Top 50";
+      const roleNote = metaRankingRole === "overall"
+        ? ""
+        : `<p class="meta-role-detail-note">The selected role has its own score and W/L/T summary above. Key matchup cards remain Overall until role-specific matchup details are generated.</p>`;
       const matchupsHtml = entry.movesetScoreStale
         ? `<p class="hint">The ranking score and key matchups still reflect the previous moveset. Live battles and Team Builder simulations use the updated moveset shown above.</p>`
-        : `<div class="meta-matchups">${metaMatchupGroup("Key Wins · Top 50", "wins", currentWins, entry)}${metaMatchupGroup("Key Losses · Top 50", "losses", currentLosses, entry)}</div>`;
-      return `<div class="meta-detail-content">${matchupsHtml}${alternateHtml}</div>`;
+        : `<div class="meta-matchups">${metaMatchupGroup(matchupLabel, "wins", currentWins, entry)}${metaMatchupGroup(lossLabel, "losses", currentLosses, entry)}</div>`;
+      return `<div class="meta-detail-content">${roleSummary}${roleNote}${matchupsHtml}${alternateHtml}</div>`;
     }
 
     function metaAlternativeMovesets(entry, detail) {
