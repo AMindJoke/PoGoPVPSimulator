@@ -1,7 +1,11 @@
 window.GREAT_LEAGUE_RANKING_DETAILS = {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-18T18:20:20.880Z",
+  "generatedAt": "2026-09-21T07:20:20.087Z",
   "sourceRankingGeneratedAt": "2026-09-18T18:16:18.771Z",
+  "sourceMovesetHash": "8f86a491113bf60cfcc623616f015f675bb18f93f686f02ea22fec9f10064d33",
+  "sourceGameMasterHash": "5991b30a3b18edc71fd5307e3db9108f9df1357a443ecbe132a6ab44bb510648",
+  "sourceMatrixVersion": "battle-planner-v45",
+  "top50Size": 50,
   "scoreVersion": "resource-score-v5",
   "entries": {
     "mimikyu": {
@@ -12,6 +16,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -85,6 +90,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "charjabug",
@@ -158,6 +164,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "guzzlord",
@@ -231,6 +238,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jumpluff",
@@ -304,6 +312,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jellicent",
@@ -377,6 +386,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jellicent",
@@ -450,6 +460,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -523,6 +534,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "feraligatr",
@@ -596,6 +608,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -669,6 +682,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "araquanid",
@@ -742,6 +756,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jellicent",
@@ -815,6 +830,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "bellibolt",
@@ -888,6 +904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "clodsire",
@@ -961,6 +978,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "snorlax",
@@ -1034,6 +1052,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "snorlax",
@@ -1107,6 +1126,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jellicent",
@@ -1180,6 +1200,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "snorlax",
@@ -1253,6 +1274,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jellicent",
@@ -1326,6 +1348,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -1399,6 +1422,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "charjabug",
@@ -1472,6 +1496,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "marowak",
@@ -1545,6 +1570,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "cramorant",
@@ -1618,6 +1644,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "cramorant",
@@ -1691,6 +1718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -1764,36 +1792,37 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 11,
-          "score": 709
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 14,
+          "score": 751
         },
         {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 17,
-          "score": 702
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 19,
+          "score": 749
         },
         {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 5,
-          "score": 691
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 16,
+          "score": 741
         },
         {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 690
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 39,
+          "score": 732
         },
         {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 18,
-          "score": 673
+          "id": "bombirdier",
+          "name": "Bombirdier",
+          "rank": 50,
+          "score": 732
         }
       ],
       "losses": [
@@ -1816,16 +1845,16 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 326
         },
         {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 31,
+          "score": 418
+        },
+        {
           "id": "jellicent",
           "name": "Jellicent",
           "rank": 45,
           "score": 418
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 33,
-          "score": 443
         }
       ]
     },
@@ -1837,6 +1866,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -1910,6 +1940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "cramorant",
@@ -1983,6 +2014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "cramorant",
@@ -2056,6 +2088,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "corviknight",
@@ -2129,6 +2162,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -2202,6 +2236,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "mandibuzz",
@@ -2275,6 +2310,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "spidops",
@@ -2348,6 +2384,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "seismitoad",
@@ -2421,6 +2458,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -2494,6 +2532,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -2567,6 +2606,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "jumpluff",
@@ -2640,6 +2680,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "seismitoad",
@@ -2713,6 +2754,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "bellibolt",
@@ -2786,6 +2828,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "spiritomb",
@@ -2859,6 +2902,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -2932,6 +2976,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -3005,6 +3050,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "cramorant",
@@ -3078,6 +3124,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -3151,6 +3198,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "empoleon",
@@ -3224,6 +3272,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "clodsire",
@@ -3297,6 +3346,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "bellibolt",
@@ -3370,6 +3420,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "marowak",
@@ -3443,6 +3494,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "furret",
@@ -3516,6 +3568,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "morgrem",
@@ -3589,6 +3642,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 49,
       "wins": [
         {
           "id": "marowak",
@@ -3662,6 +3716,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -3735,6 +3790,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -3808,6 +3864,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -3881,6 +3938,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -3954,6 +4012,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -4027,6 +4086,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -4100,6 +4160,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -4173,6 +4234,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -4246,6 +4308,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -4319,6 +4382,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -4392,6 +4456,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -4465,6 +4530,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -4538,6 +4604,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -4611,6 +4678,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -4684,6 +4752,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -4757,6 +4826,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -4830,6 +4900,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -4903,6 +4974,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -4976,6 +5048,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -5049,6 +5122,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -5122,6 +5196,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -5195,6 +5270,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -5268,6 +5344,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -5341,6 +5418,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -5414,6 +5492,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -5487,6 +5566,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -5560,6 +5640,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -5633,6 +5714,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -5706,6 +5788,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -5779,6 +5862,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -5852,6 +5936,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -5925,6 +6010,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -5998,6 +6084,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -6071,6 +6158,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -6144,6 +6232,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -6217,6 +6306,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -6290,6 +6380,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -6363,6 +6454,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -6436,6 +6528,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -6509,6 +6602,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -6582,6 +6676,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -6655,6 +6750,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -6728,6 +6824,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -6801,6 +6898,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -6874,6 +6972,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -6947,6 +7046,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -7020,6 +7120,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -7093,6 +7194,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -7166,6 +7268,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -7239,6 +7342,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -7312,6 +7416,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -7385,6 +7490,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -7458,6 +7564,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -7531,6 +7638,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -7604,6 +7712,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -7677,6 +7786,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -7750,6 +7860,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -7823,6 +7934,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -7896,6 +8008,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -7969,6 +8082,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -8042,6 +8156,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -8115,6 +8230,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth",
@@ -8188,6 +8304,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -8261,6 +8378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -8334,6 +8452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -8407,6 +8526,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -8480,6 +8600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -8553,6 +8674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -8626,6 +8748,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -8699,6 +8822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -8772,6 +8896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -8845,6 +8970,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -8918,6 +9044,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -8991,6 +9118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -9064,6 +9192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -9137,6 +9266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -9210,6 +9340,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -9283,6 +9414,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -9356,6 +9488,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -9429,6 +9562,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -9502,6 +9636,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -9575,6 +9710,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -9648,6 +9784,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -9721,6 +9858,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -9794,6 +9932,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -9867,6 +10006,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -9940,6 +10080,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -10013,6 +10154,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -10086,6 +10228,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -10159,6 +10302,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -10232,6 +10376,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -10305,6 +10450,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -10378,6 +10524,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -10451,6 +10598,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -10524,6 +10672,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -10597,6 +10746,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -10670,6 +10820,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye_shadow",
@@ -10743,6 +10894,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -10816,6 +10968,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -10889,6 +11042,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye",
@@ -10962,6 +11116,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -11035,6 +11190,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -11108,6 +11264,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -11181,6 +11338,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -11254,6 +11412,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -11327,6 +11486,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -11400,6 +11560,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -11473,6 +11634,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -11546,6 +11708,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -11619,6 +11782,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -11692,6 +11856,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -11765,6 +11930,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -11838,6 +12004,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -11911,6 +12078,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -11984,6 +12152,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -12057,6 +12226,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -12130,6 +12300,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -12203,6 +12374,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -12276,6 +12448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -12349,6 +12522,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -12422,6 +12596,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -12495,6 +12670,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -12568,6 +12744,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -12641,6 +12818,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -12714,6 +12892,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -12787,6 +12966,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -12860,6 +13040,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -12933,6 +13114,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -13006,6 +13188,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -13079,6 +13262,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -13152,6 +13336,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -13225,6 +13410,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -13298,6 +13484,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -13371,6 +13558,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -13444,6 +13632,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -13517,6 +13706,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -13590,6 +13780,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -13663,6 +13854,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -13736,6 +13928,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -13809,6 +14002,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -13882,6 +14076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -13955,6 +14150,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -14028,6 +14224,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -14101,6 +14298,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -14174,6 +14372,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -14247,6 +14446,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -14320,6 +14520,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -14393,6 +14594,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -14466,6 +14668,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -14539,6 +14742,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -14612,6 +14816,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -14685,6 +14890,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -14758,6 +14964,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -14831,6 +15038,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -14904,6 +15112,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -14977,6 +15186,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth",
@@ -15050,6 +15260,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -15123,6 +15334,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -15196,6 +15408,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax_shadow",
@@ -15269,6 +15482,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -15342,6 +15556,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -15415,6 +15630,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -15488,6 +15704,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -15561,6 +15778,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -15634,6 +15852,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -15707,6 +15926,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -15780,6 +16000,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -15853,6 +16074,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -15926,6 +16148,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -15999,6 +16222,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -16072,6 +16296,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -16145,6 +16370,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -16218,6 +16444,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -16291,6 +16518,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -16364,6 +16592,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -16437,6 +16666,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -16510,6 +16740,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -16583,6 +16814,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -16656,6 +16888,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -16729,6 +16962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -16802,6 +17036,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -16875,6 +17110,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -16948,6 +17184,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -17021,6 +17258,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -17094,6 +17332,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -17167,6 +17406,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -17240,6 +17480,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -17313,6 +17554,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -17386,6 +17628,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -17459,6 +17702,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -17532,6 +17776,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "kingdra",
@@ -17605,6 +17850,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -17678,6 +17924,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -17751,6 +17998,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -17824,6 +18072,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -17897,6 +18146,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -17970,6 +18220,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -18043,6 +18294,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -18116,6 +18368,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -18189,6 +18442,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -18262,6 +18516,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -18335,6 +18590,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -18408,6 +18664,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -18481,6 +18738,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -18554,6 +18812,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -18627,6 +18886,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -18700,6 +18960,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -18773,6 +19034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -18846,6 +19108,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -18919,6 +19182,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -18992,6 +19256,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -19065,6 +19330,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -19138,6 +19404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -19211,6 +19478,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -19284,6 +19552,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -19357,6 +19626,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -19430,6 +19700,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -19503,6 +19774,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -19576,6 +19848,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -19649,6 +19922,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -19722,6 +19996,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -19795,6 +20070,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -19868,6 +20144,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye_shadow",
@@ -19941,6 +20218,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -20014,6 +20292,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -20087,6 +20366,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -20160,6 +20440,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -20233,6 +20514,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -20306,6 +20588,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -20379,6 +20662,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -20452,6 +20736,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -20525,6 +20810,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -20598,6 +20884,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -20671,6 +20958,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -20744,6 +21032,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -20817,6 +21106,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -20890,6 +21180,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -20963,6 +21254,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -21036,6 +21328,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -21109,6 +21402,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -21182,6 +21476,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -21255,6 +21550,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -21328,6 +21624,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -21401,6 +21698,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -21474,6 +21772,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -21547,6 +21846,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -21620,6 +21920,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -21693,6 +21994,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -21766,6 +22068,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -21839,6 +22142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -21912,6 +22216,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -21985,6 +22290,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -22058,6 +22364,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -22131,6 +22438,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -22204,6 +22512,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -22277,6 +22586,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -22350,6 +22660,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -22423,6 +22734,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "kingdra",
@@ -22496,6 +22808,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -22569,6 +22882,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -22642,6 +22956,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -22715,6 +23030,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -22788,6 +23104,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -22861,6 +23178,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -22934,6 +23252,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -23007,6 +23326,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -23080,6 +23400,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -23153,6 +23474,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -23226,6 +23548,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -23299,6 +23622,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -23372,6 +23696,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -23445,6 +23770,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -23518,6 +23844,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -23591,6 +23918,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -23664,6 +23992,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -23737,6 +24066,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -23810,6 +24140,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -23883,6 +24214,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -23956,6 +24288,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -24029,6 +24362,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -24102,6 +24436,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -24175,6 +24510,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -24248,6 +24584,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -24321,6 +24658,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -24394,6 +24732,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -24467,6 +24806,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -24540,6 +24880,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -24613,6 +24954,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -24686,6 +25028,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -24759,6 +25102,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -24832,6 +25176,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -24905,6 +25250,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -24978,6 +25324,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -25051,6 +25398,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -25124,6 +25472,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -25197,6 +25546,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -25270,6 +25620,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -25343,6 +25694,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -25416,6 +25768,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -25489,6 +25842,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -25562,6 +25916,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -25635,6 +25990,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -25708,6 +26064,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -25781,6 +26138,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -25854,6 +26212,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -25927,6 +26286,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -26000,6 +26360,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -26073,6 +26434,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -26146,6 +26508,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -26219,6 +26582,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -26292,6 +26656,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -26365,6 +26730,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -26438,6 +26804,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -26511,6 +26878,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -26584,6 +26952,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -26657,6 +27026,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -26730,6 +27100,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -26803,6 +27174,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -26876,6 +27248,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -26949,6 +27322,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -27022,6 +27396,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -27095,6 +27470,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -27168,6 +27544,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -27241,6 +27618,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -27314,6 +27692,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -27387,6 +27766,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -27460,6 +27840,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -27533,6 +27914,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -27606,6 +27988,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -27667,6 +28050,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -27740,6 +28124,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -27813,6 +28198,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -27886,6 +28272,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -27959,6 +28346,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -28032,6 +28420,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -28105,6 +28494,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -28178,6 +28568,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -28251,6 +28642,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -28324,6 +28716,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -28397,6 +28790,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -28470,6 +28864,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -28543,6 +28938,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -28616,6 +29012,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -28689,6 +29086,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -28762,6 +29160,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -28835,6 +29234,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -28908,6 +29308,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -28981,6 +29382,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -29054,6 +29456,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -29127,6 +29530,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -29200,6 +29604,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -29273,6 +29678,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -29346,6 +29752,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -29419,6 +29826,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -29492,6 +29900,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -29565,6 +29974,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -29638,6 +30048,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -29711,6 +30122,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -29784,6 +30196,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -29857,6 +30270,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -29930,6 +30344,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -30003,6 +30418,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -30076,6 +30492,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -30149,6 +30566,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -30222,6 +30640,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -30295,6 +30714,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -30368,6 +30788,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -30441,6 +30862,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -30514,6 +30936,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -30587,6 +31010,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -30660,6 +31084,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -30733,6 +31158,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -30806,6 +31232,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -30879,6 +31306,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -30952,6 +31380,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -31025,6 +31454,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth",
@@ -31098,6 +31528,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -31171,6 +31602,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -31244,6 +31676,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -31317,6 +31750,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -31390,6 +31824,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -31463,6 +31898,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -31536,6 +31972,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -31609,6 +32046,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -31682,6 +32120,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -31755,6 +32194,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -31828,6 +32268,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -31901,6 +32342,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -31974,6 +32416,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -32047,6 +32490,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -32120,6 +32564,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -32193,6 +32638,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -32266,6 +32712,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -32339,6 +32786,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -32412,6 +32860,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -32485,6 +32934,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -32558,6 +33008,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -32631,6 +33082,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -32704,6 +33156,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -32777,6 +33230,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -32850,6 +33304,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -32923,6 +33378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -32996,6 +33452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -33069,6 +33526,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -33142,6 +33600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -33215,6 +33674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -33288,6 +33748,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -33361,6 +33822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -33434,6 +33896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -33507,6 +33970,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -33580,6 +34044,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -33653,6 +34118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -33726,6 +34192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -33793,6 +34260,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -33866,6 +34334,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix",
@@ -33939,6 +34408,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -34012,6 +34482,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -34085,6 +34556,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -34158,6 +34630,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -34231,6 +34704,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -34304,6 +34778,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -34377,6 +34852,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -34450,6 +34926,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -34523,6 +35000,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -34596,6 +35074,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -34669,6 +35148,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -34742,6 +35222,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -34815,6 +35296,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -34888,6 +35370,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -34961,6 +35444,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -35034,6 +35518,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -35107,6 +35592,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -35180,6 +35666,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -35253,6 +35740,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -35326,6 +35814,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -35399,6 +35888,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -35472,6 +35962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -35545,6 +36036,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -35618,6 +36110,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -35691,6 +36184,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -35764,6 +36258,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -35837,6 +36332,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -35910,6 +36406,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -35983,6 +36480,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -36056,6 +36554,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -36129,6 +36628,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -36202,6 +36702,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -36275,6 +36776,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -36348,6 +36850,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax_shadow",
@@ -36421,6 +36924,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -36494,6 +36998,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -36567,6 +37072,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -36640,6 +37146,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -36713,6 +37220,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -36786,6 +37294,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -36859,6 +37368,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -36932,6 +37442,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -37005,6 +37516,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -37078,6 +37590,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -37151,6 +37664,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -37224,6 +37738,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -37297,6 +37812,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -37370,6 +37886,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -37443,6 +37960,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -37516,6 +38034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -37589,6 +38108,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -37662,6 +38182,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax_shadow",
@@ -37735,6 +38256,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -37808,6 +38330,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -37881,6 +38404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -37954,6 +38478,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -38027,6 +38552,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -38100,6 +38626,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -38173,6 +38700,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -38246,6 +38774,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -38319,6 +38848,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -38392,6 +38922,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -38465,6 +38996,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -38538,6 +39070,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -38611,6 +39144,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -38684,6 +39218,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -38757,6 +39292,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "kingdra",
@@ -38830,6 +39366,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -38903,6 +39440,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -38976,6 +39514,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -39049,6 +39588,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -39122,6 +39662,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -39195,6 +39736,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -39262,6 +39804,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -39335,6 +39878,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -39408,6 +39952,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -39481,6 +40026,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -39554,6 +40100,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -39627,6 +40174,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -39700,6 +40248,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -39773,6 +40322,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -39846,6 +40396,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -39919,6 +40470,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -39992,6 +40544,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -40065,6 +40618,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -40138,6 +40692,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -40211,6 +40766,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -40284,6 +40840,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -40357,6 +40914,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -40430,6 +40988,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -40503,6 +41062,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -40576,6 +41136,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -40649,6 +41210,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -40722,6 +41284,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -40795,6 +41358,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -40868,6 +41432,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -40941,6 +41506,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -41014,6 +41580,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -41087,6 +41654,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -41160,6 +41728,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -41233,6 +41802,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -41306,6 +41876,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -41379,6 +41950,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -41452,6 +42024,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -41525,6 +42098,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -41598,6 +42172,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -41671,6 +42246,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -41744,6 +42320,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -41817,6 +42394,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -41890,6 +42468,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -41963,6 +42542,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -42036,6 +42616,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -42109,6 +42690,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -42182,6 +42764,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye",
@@ -42255,6 +42838,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -42328,6 +42912,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -42401,6 +42986,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -42474,6 +43060,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -42547,6 +43134,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -42620,6 +43208,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -42693,6 +43282,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -42766,6 +43356,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -42839,6 +43430,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -42912,6 +43504,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -42985,6 +43578,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -43058,6 +43652,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -43131,6 +43726,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -43204,6 +43800,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -43277,6 +43874,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -43350,6 +43948,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -43423,6 +44022,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -43496,6 +44096,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -43569,6 +44170,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -43642,6 +44244,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -43715,6 +44318,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -43788,6 +44392,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -43861,6 +44466,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -43934,6 +44540,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -44007,6 +44614,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -44080,6 +44688,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -44141,6 +44750,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -44214,6 +44824,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -44287,6 +44898,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -44360,6 +44972,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -44433,6 +45046,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -44506,6 +45120,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -44567,6 +45182,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -44640,6 +45256,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -44713,6 +45330,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -44786,6 +45404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -44859,6 +45478,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -44920,6 +45540,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -44993,6 +45614,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -45066,6 +45688,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -45139,6 +45762,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -45212,6 +45836,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -45285,6 +45910,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -45358,6 +45984,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -45431,6 +46058,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -45504,6 +46132,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -45577,6 +46206,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -45650,6 +46280,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -45723,6 +46354,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -45796,6 +46428,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -45869,6 +46502,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -45942,6 +46576,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -46015,6 +46650,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -46082,6 +46718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -46155,6 +46792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -46228,6 +46866,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -46301,6 +46940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -46374,6 +47014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -46447,6 +47088,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -46520,6 +47162,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -46593,6 +47236,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -46666,6 +47310,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -46739,6 +47384,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -46812,6 +47458,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -46885,6 +47532,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -46958,6 +47606,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -47031,6 +47680,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -47104,6 +47754,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -47177,6 +47828,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -47250,6 +47902,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -47323,6 +47976,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -47396,6 +48050,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -47469,6 +48124,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -47542,6 +48198,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -47615,6 +48272,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -47688,6 +48346,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -47761,6 +48420,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -47834,6 +48494,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -47907,6 +48568,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -47980,6 +48642,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -48053,6 +48716,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -48126,6 +48790,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -48199,6 +48864,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -48272,6 +48938,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -48345,6 +49012,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -48418,6 +49086,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -48491,6 +49160,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -48564,6 +49234,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -48637,6 +49308,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -48710,6 +49382,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -48783,6 +49456,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -48856,6 +49530,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -48929,6 +49604,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -49002,6 +49678,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -49075,6 +49752,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -49148,6 +49826,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -49209,6 +49888,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -49282,6 +49962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 5
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -49355,6 +50036,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -49428,6 +50110,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -49483,6 +50166,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -49556,6 +50240,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -49629,6 +50314,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -49702,6 +50388,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -49775,6 +50462,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -49848,6 +50536,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -49921,6 +50610,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -49994,6 +50684,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -50067,6 +50758,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -50140,6 +50832,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -50213,6 +50906,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -50286,6 +50980,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -50359,6 +51054,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -50432,6 +51128,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -50505,6 +51202,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -50578,6 +51276,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -50651,6 +51350,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -50724,6 +51424,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -50797,6 +51498,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -50870,6 +51572,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -50943,6 +51646,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -51016,6 +51720,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -51089,6 +51794,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -51162,6 +51868,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -51223,6 +51930,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -51296,6 +52004,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -51369,6 +52078,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -51442,6 +52152,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -51515,6 +52226,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -51588,6 +52300,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -51661,6 +52374,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -51734,6 +52448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -51807,6 +52522,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "goodra",
@@ -51880,6 +52596,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -51953,6 +52670,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -52026,6 +52744,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -52099,6 +52818,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -52172,6 +52892,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -52245,6 +52966,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -52318,6 +53040,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -52391,6 +53114,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -52464,6 +53188,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -52537,6 +53262,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -52610,6 +53336,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -52683,6 +53410,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth",
@@ -52756,6 +53484,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -52829,6 +53558,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -52884,6 +53614,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -52951,6 +53682,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -53006,6 +53738,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -53079,6 +53812,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye",
@@ -53152,6 +53886,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -53225,6 +53960,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -53298,6 +54034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -53371,6 +54108,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -53444,6 +54182,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -53517,6 +54256,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -53590,6 +54330,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -53663,6 +54404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -53736,6 +54478,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -53809,6 +54552,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -53882,6 +54626,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -53955,6 +54700,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -54010,6 +54756,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -54083,6 +54830,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -54156,6 +54904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -54229,6 +54978,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -54302,6 +55052,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -54375,6 +55126,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -54448,6 +55200,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -54521,6 +55274,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -54594,6 +55348,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -54667,6 +55422,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -54740,6 +55496,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -54813,6 +55570,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -54886,6 +55644,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -54959,6 +55718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -55032,6 +55792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -55105,6 +55866,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -55178,6 +55940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -55251,6 +56014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -55318,6 +56082,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -55391,6 +56156,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -55464,6 +56230,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -55537,6 +56304,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -55610,6 +56378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -55683,6 +56452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -55744,6 +56514,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -55817,6 +56588,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -55890,6 +56662,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -55963,6 +56736,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -56036,6 +56810,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -56109,6 +56884,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -56182,6 +56958,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -56255,6 +57032,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -56328,6 +57106,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -56401,6 +57180,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -56474,6 +57254,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -56547,6 +57328,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -56620,6 +57402,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -56693,6 +57476,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -56766,6 +57550,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -56839,6 +57624,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -56912,6 +57698,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -56985,6 +57772,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -57058,6 +57846,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -57131,6 +57920,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -57204,6 +57994,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -57277,6 +58068,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -57350,6 +58142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -57423,6 +58216,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -57496,6 +58290,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -57569,6 +58364,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -57642,6 +58438,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -57715,6 +58512,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -57788,6 +58586,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -57861,6 +58660,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix",
@@ -57934,6 +58734,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -58007,6 +58808,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -58080,6 +58882,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -58153,6 +58956,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -58226,6 +59030,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -58293,6 +59098,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -58366,6 +59172,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -58439,6 +59246,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -58512,6 +59320,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -58585,6 +59394,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -58658,6 +59468,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -58731,6 +59542,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -58804,6 +59616,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -58877,6 +59690,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -58950,6 +59764,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -59023,6 +59838,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -59096,6 +59912,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -59169,6 +59986,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -59242,6 +60060,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -59315,6 +60134,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -59388,6 +60208,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -59461,6 +60282,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -59534,6 +60356,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -59607,6 +60430,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -59680,6 +60504,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -59753,6 +60578,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -59826,6 +60652,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -59899,6 +60726,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -59972,6 +60800,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -60039,6 +60868,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -60081,6 +60911,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -60154,6 +60985,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -60227,6 +61059,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -60300,6 +61133,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -60373,6 +61207,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -60446,6 +61281,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -60519,6 +61355,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -60592,6 +61429,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -60665,6 +61503,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -60738,6 +61577,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -60805,6 +61645,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -60878,6 +61719,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -60920,6 +61762,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -60993,6 +61836,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -61066,6 +61910,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -61139,6 +61984,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -61212,6 +62058,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -61285,6 +62132,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -61358,6 +62206,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -61431,6 +62280,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -61492,6 +62342,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -61565,6 +62416,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -61638,6 +62490,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -61711,6 +62564,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -61784,6 +62638,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -61857,6 +62712,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -61930,6 +62786,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -62003,6 +62860,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -62076,6 +62934,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -62149,6 +63008,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -62222,6 +63082,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -62295,6 +63156,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -62368,6 +63230,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -62441,6 +63304,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -62514,6 +63378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -62587,6 +63452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -62660,6 +63526,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -62727,6 +63594,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -62800,6 +63668,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -62873,6 +63742,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -62946,6 +63816,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -63019,6 +63890,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -63074,6 +63946,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -63147,6 +64020,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -63202,6 +64076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -63275,6 +64150,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -63348,6 +64224,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -63421,6 +64298,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -63494,6 +64372,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -63567,6 +64446,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -63640,6 +64520,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -63713,6 +64594,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -63774,6 +64656,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -63847,6 +64730,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -63920,6 +64804,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -63993,6 +64878,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -64054,6 +64940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -64127,6 +65014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -64200,6 +65088,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -64273,6 +65162,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -64328,6 +65218,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -64401,6 +65292,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -64462,6 +65354,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -64535,6 +65428,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -64608,6 +65502,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -64675,6 +65570,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -64748,6 +65644,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -64821,6 +65718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -64894,6 +65792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -64967,6 +65866,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -65040,6 +65940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -65113,6 +66014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -65186,6 +66088,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -65259,6 +66162,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -65332,6 +66236,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -65405,6 +66310,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -65478,6 +66384,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -65551,6 +66458,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -65624,6 +66532,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -65697,6 +66606,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -65758,6 +66668,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -65825,6 +66736,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -65898,6 +66810,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -65971,6 +66884,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -66026,6 +66940,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -66099,6 +67014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -66172,6 +67088,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -66245,6 +67162,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -66318,6 +67236,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -66360,6 +67279,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -66433,6 +67353,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -66482,6 +67403,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -66555,6 +67477,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -66610,6 +67533,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -66683,6 +67607,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -66756,6 +67681,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "kingdra",
@@ -66829,6 +67755,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -66902,6 +67829,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -66975,6 +67903,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -67048,6 +67977,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -67121,6 +68051,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -67194,6 +68125,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -67267,6 +68199,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -67340,6 +68273,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -67413,6 +68347,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -67486,6 +68421,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -67559,6 +68495,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -67632,6 +68569,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -67705,6 +68643,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -67747,6 +68686,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -67814,6 +68754,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -67881,6 +68822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -67954,6 +68896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -68027,6 +68970,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -68100,6 +69044,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -68173,6 +69118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -68246,6 +69192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -68319,6 +69266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -68392,6 +69340,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -68447,6 +69396,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -68520,6 +69470,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -68593,6 +69544,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -68648,6 +69600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -68721,6 +69674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -68794,6 +69748,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -68867,6 +69822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -68940,6 +69896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -69013,6 +69970,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -69086,6 +70044,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -69159,6 +70118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -69232,6 +70192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -69305,6 +70266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -69378,6 +70340,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -69451,6 +70414,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -69524,6 +70488,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -69597,6 +70562,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -69664,6 +70630,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -69737,6 +70704,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -69804,6 +70772,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -69853,6 +70822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -69926,6 +70896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -69999,6 +70970,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -70072,6 +71044,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -70145,6 +71118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -70200,6 +71174,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -70273,6 +71248,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -70346,6 +71322,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -70401,6 +71378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -70474,6 +71452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -70529,6 +71508,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -70590,6 +71570,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -70651,6 +71632,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -70724,6 +71706,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -70797,6 +71780,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -70870,6 +71854,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -70943,6 +71928,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -71016,6 +72002,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -71089,6 +72076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -71138,6 +72126,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -71211,6 +72200,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -71253,6 +72243,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -71326,6 +72317,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "vigoroth_shadow",
@@ -71381,6 +72373,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -71454,6 +72447,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -71527,6 +72521,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -71576,6 +72571,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -71649,6 +72645,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -71691,6 +72688,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spidops",
@@ -71764,6 +72762,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye_shadow",
@@ -71837,6 +72836,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -71910,6 +72910,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -71977,6 +72978,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -72038,6 +73040,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -72087,6 +73090,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -72160,6 +73164,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -72233,6 +73238,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -72282,6 +73288,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -72331,6 +73338,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -72380,6 +73388,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -72453,6 +73462,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -72502,6 +73512,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -72575,6 +73586,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -72648,6 +73660,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -72721,6 +73734,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -72794,6 +73808,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -72855,6 +73870,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -72928,6 +73944,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -72989,6 +74006,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -73062,6 +74080,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -73123,6 +74142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -73196,6 +74216,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -73269,6 +74290,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -73336,6 +74358,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -73409,6 +74432,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -73482,6 +74506,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -73555,6 +74580,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -73628,6 +74654,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -73701,6 +74728,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -73774,6 +74802,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -73847,6 +74876,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -73902,6 +74932,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -73963,6 +74994,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -74036,6 +75068,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -74085,6 +75118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -74140,6 +75174,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -74201,6 +75236,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -74274,6 +75310,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -74316,6 +75353,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -74389,6 +75427,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -74462,6 +75501,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "dunsparce",
@@ -74535,6 +75575,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -74590,6 +75631,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -74632,6 +75674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -74705,6 +75748,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -74760,6 +75804,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -74815,6 +75860,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -74888,6 +75934,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -74943,6 +75990,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -75016,6 +76064,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -75083,6 +76132,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -75150,6 +76200,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -75223,6 +76274,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -75272,6 +76324,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -75345,6 +76398,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -75418,6 +76472,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -75460,6 +76515,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -75533,6 +76589,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -75582,6 +76639,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -75649,6 +76707,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -75722,6 +76781,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -75764,6 +76824,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -75825,6 +76886,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -75898,6 +76960,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -75959,6 +77022,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -76032,6 +77096,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -76105,6 +77170,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -76178,6 +77244,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -76251,6 +77318,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -76318,6 +77386,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -76379,6 +77448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -76452,6 +77522,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -76513,6 +77584,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -76568,6 +77640,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -76623,6 +77696,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -76678,6 +77752,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -76751,6 +77826,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -76824,6 +77900,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -76885,6 +77962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -76958,6 +78036,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -77013,6 +78092,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax_shadow",
@@ -77062,6 +78142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -77111,6 +78192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -77184,6 +78266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -77257,6 +78340,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -77306,6 +78390,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -77367,6 +78452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -77440,6 +78526,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -77513,6 +78600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -77586,6 +78674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -77659,6 +78748,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -77732,6 +78822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -77805,6 +78896,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -77847,6 +78939,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -77896,6 +78989,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -77957,6 +79051,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -78030,6 +79125,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -78097,6 +79193,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -78170,6 +79267,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -78243,6 +79341,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -78310,6 +79409,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -78365,6 +79465,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -78420,6 +79521,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -78493,6 +79595,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -78560,6 +79663,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -78615,6 +79719,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "spiritomb",
@@ -78664,6 +79769,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -78737,6 +79843,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -78798,6 +79905,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -78871,6 +79979,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -78944,6 +80053,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -79017,6 +80127,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -79059,6 +80170,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -79114,6 +80226,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -79175,6 +80288,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -79248,6 +80362,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -79290,6 +80405,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mimikyu",
@@ -79345,6 +80461,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "araquanid",
@@ -79406,6 +80523,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -79461,6 +80579,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -79528,6 +80647,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -79601,6 +80721,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -79662,6 +80783,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -79704,6 +80826,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -79765,6 +80888,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -79832,6 +80956,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -79899,6 +81024,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -79948,6 +81074,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -79997,6 +81124,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "charjabug",
@@ -80070,6 +81198,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -80131,6 +81260,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -80198,6 +81328,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -80247,6 +81378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -80320,6 +81452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -80375,6 +81508,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -80442,6 +81576,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -80491,6 +81626,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -80558,6 +81694,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -80625,6 +81762,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -80698,6 +81836,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -80765,6 +81904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -80838,6 +81978,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -80893,6 +82034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -80954,6 +82096,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -80996,6 +82139,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -81051,6 +82195,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -81124,6 +82269,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -81185,6 +82331,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -81246,6 +82393,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -81288,6 +82436,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -81337,6 +82486,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -81398,6 +82548,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -81447,6 +82598,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -81508,6 +82660,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -81581,6 +82734,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -81623,6 +82777,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bombirdier",
@@ -81672,6 +82827,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -81727,6 +82883,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -81782,6 +82939,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -81843,6 +83001,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -81916,6 +83075,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -81958,6 +83118,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -82031,6 +83192,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -82104,6 +83266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -82177,6 +83340,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -82226,6 +83390,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -82281,6 +83446,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -82354,6 +83520,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -82415,6 +83582,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -82457,6 +83625,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -82506,6 +83675,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -82548,6 +83718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -82621,6 +83792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -82670,6 +83842,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -82743,6 +83916,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -82785,6 +83959,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -82858,6 +84033,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -82900,6 +84076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -82967,6 +84144,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix",
@@ -83040,6 +84218,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -83089,6 +84268,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -83162,6 +84342,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -83211,6 +84392,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -83253,6 +84435,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "wartortle",
@@ -83326,6 +84509,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight_shadow",
@@ -83393,6 +84577,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -83448,6 +84633,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -83521,6 +84707,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -83563,6 +84750,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -83624,6 +84812,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -83691,6 +84880,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -83746,6 +84936,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -83788,6 +84979,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -83861,6 +85053,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -83903,6 +85096,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -83952,6 +85146,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -84013,6 +85208,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -84086,6 +85282,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -84159,6 +85356,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -84232,6 +85430,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84274,6 +85473,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -84335,6 +85535,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84377,6 +85578,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84419,6 +85621,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -84486,6 +85689,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84528,6 +85732,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -84601,6 +85806,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84643,6 +85849,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -84704,6 +85911,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "muk_alolan",
@@ -84777,6 +85985,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -84826,6 +86035,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -84899,6 +86109,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -84941,6 +86152,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "melmetal",
@@ -84996,6 +86208,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85038,6 +86251,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85080,6 +86294,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -85141,6 +86356,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -85202,6 +86418,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -85275,6 +86492,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85317,6 +86535,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -85366,6 +86585,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85408,6 +86628,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -85481,6 +86702,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85523,6 +86745,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 5,
         "closingPotential": 4
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -85584,6 +86807,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -85639,6 +86863,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax_shadow",
@@ -85688,6 +86913,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -85761,6 +86987,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85803,6 +87030,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85845,6 +87073,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -85887,6 +87116,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -85960,6 +87190,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -86033,6 +87264,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -86088,6 +87320,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -86143,6 +87376,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -86192,6 +87426,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "sableye_shadow",
@@ -86241,6 +87476,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "snorlax",
@@ -86308,6 +87544,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -86363,6 +87600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -86412,6 +87650,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -86461,6 +87700,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -86510,6 +87750,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -86552,6 +87793,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -86619,6 +87861,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -86661,6 +87904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "thievul",
@@ -86728,6 +87972,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -86770,6 +88015,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -86819,6 +88065,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -86874,6 +88121,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -86916,6 +88164,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -86983,6 +88232,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87025,6 +88275,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -87098,6 +88349,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -87153,6 +88405,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87195,6 +88448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -87244,6 +88498,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87286,6 +88541,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "furret",
@@ -87359,6 +88615,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87401,6 +88658,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87443,6 +88701,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -87492,6 +88751,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -87547,6 +88807,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -87620,6 +88881,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87662,6 +88924,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -87711,6 +88974,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -87760,6 +89024,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corviknight",
@@ -87809,6 +89074,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87851,6 +89117,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87893,6 +89160,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -87935,6 +89203,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -88008,6 +89277,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -88057,6 +89327,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "mandibuzz",
@@ -88106,6 +89377,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88148,6 +89420,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -88203,6 +89476,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88245,6 +89519,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88287,6 +89562,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "steelix_shadow",
@@ -88342,6 +89618,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ampharos",
@@ -88391,6 +89668,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -88440,6 +89718,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -88495,6 +89774,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -88568,6 +89848,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -88623,6 +89904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88665,6 +89947,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88707,6 +89990,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88749,6 +90033,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88791,6 +90076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -88858,6 +90144,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -88900,6 +90187,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -88949,6 +90237,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -89004,6 +90293,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -89053,6 +90343,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89095,6 +90386,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -89144,6 +90436,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "rillaboom",
@@ -89193,6 +90486,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "empoleon",
@@ -89242,6 +90536,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89284,6 +90579,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89326,6 +90622,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89368,6 +90665,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89410,6 +90708,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -89483,6 +90782,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -89544,6 +90844,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89586,6 +90887,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89628,6 +90930,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -89701,6 +91004,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89743,6 +91047,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -89816,6 +91121,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -89865,6 +91171,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "marowak",
@@ -89920,6 +91227,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -89962,6 +91270,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -90023,6 +91332,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90065,6 +91375,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -90120,6 +91431,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90162,6 +91474,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90204,6 +91517,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90246,6 +91560,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "guzzlord",
@@ -90301,6 +91616,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90343,6 +91659,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90385,6 +91702,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90427,6 +91745,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -90482,6 +91801,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -90531,6 +91851,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -90580,6 +91901,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90622,6 +91944,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "feraligatr",
@@ -90677,6 +92000,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 4,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90719,6 +92043,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90761,6 +92086,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -90828,6 +92154,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -90901,6 +92228,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90943,6 +92271,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -90985,6 +92314,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91027,6 +92357,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91069,6 +92400,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91111,6 +92443,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91153,6 +92486,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91195,6 +92529,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91237,6 +92572,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91279,6 +92615,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "electrode_hisuian",
@@ -91328,6 +92665,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -91389,6 +92727,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91431,6 +92770,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -91480,6 +92820,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -91553,6 +92894,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91595,6 +92937,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91637,6 +92980,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91679,6 +93023,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91721,6 +93066,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91763,6 +93109,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -91812,6 +93159,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91854,6 +93202,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -91909,6 +93258,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91951,6 +93301,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -91993,6 +93344,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92035,6 +93387,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "umbreon",
@@ -92090,6 +93443,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -92139,6 +93493,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar_shadow",
@@ -92188,6 +93543,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -92249,6 +93605,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92291,6 +93648,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92333,6 +93691,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "malamar",
@@ -92388,6 +93747,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92430,6 +93790,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92472,6 +93833,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92514,6 +93876,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92556,6 +93919,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92598,6 +93962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92640,6 +94005,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -92689,6 +94055,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92731,6 +94098,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92773,6 +94141,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "corsola_galarian",
@@ -92828,6 +94197,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92870,6 +94240,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92912,6 +94283,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92954,6 +94326,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -92996,6 +94369,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -93051,6 +94425,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93093,6 +94468,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93135,6 +94511,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93177,6 +94554,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93219,6 +94597,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "ninetales_shadow",
@@ -93268,6 +94647,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93310,6 +94690,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93352,6 +94733,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93394,6 +94776,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93436,6 +94819,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93478,6 +94862,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93520,6 +94905,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93562,6 +94948,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93604,6 +94991,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93646,6 +95034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93688,6 +95077,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93730,6 +95120,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93772,6 +95163,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93814,6 +95206,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93856,6 +95249,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93898,6 +95292,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93940,6 +95335,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -93982,6 +95378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "altaria",
@@ -94031,6 +95428,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94073,6 +95471,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94115,6 +95514,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94157,6 +95557,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94199,6 +95600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -94248,6 +95650,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94290,6 +95693,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94332,6 +95736,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94374,6 +95779,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94416,6 +95822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 2
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -94471,6 +95878,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94513,6 +95921,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94555,6 +95964,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -94604,6 +96014,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jellicent",
@@ -94653,6 +96064,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94695,6 +96107,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94737,6 +96150,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "clodsire",
@@ -94792,6 +96206,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94834,6 +96249,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94876,6 +96292,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "morgrem",
@@ -94925,6 +96342,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -94967,6 +96385,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95009,6 +96428,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95051,6 +96471,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95093,6 +96514,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95135,6 +96557,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95177,6 +96600,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95219,6 +96643,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95261,6 +96686,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95303,6 +96729,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95345,6 +96772,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95387,6 +96815,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95429,6 +96858,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "bellibolt",
@@ -95478,6 +96908,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95520,6 +96951,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95562,6 +96994,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95604,6 +97037,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -95659,6 +97093,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 3,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95701,6 +97136,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95743,6 +97179,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "tinkaton",
@@ -95792,6 +97229,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95834,6 +97272,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "jumpluff",
@@ -95883,6 +97322,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95925,6 +97365,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -95967,6 +97408,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96009,6 +97451,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96051,6 +97494,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "quagsire_shadow",
@@ -96106,6 +97550,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96148,6 +97593,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96190,6 +97636,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96232,6 +97679,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "stunfisk",
@@ -96287,6 +97735,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "florges",
@@ -96342,6 +97791,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96384,6 +97834,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96426,6 +97877,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96468,6 +97920,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96510,6 +97963,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96552,6 +98006,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96594,6 +98049,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96636,6 +98092,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -96685,6 +98142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96727,6 +98185,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96769,6 +98228,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96811,6 +98271,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96853,6 +98314,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96895,6 +98357,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96937,6 +98400,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -96979,6 +98443,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97021,6 +98486,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "seismitoad",
@@ -97070,6 +98536,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97112,6 +98579,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97154,6 +98622,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97196,6 +98665,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97238,6 +98708,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97280,6 +98751,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97322,6 +98794,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97364,6 +98837,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "pachirisu",
@@ -97419,6 +98893,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97461,6 +98936,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97503,6 +98979,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97545,6 +99022,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97587,6 +99065,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97629,6 +99108,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97671,6 +99151,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97713,6 +99194,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97755,6 +99237,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97797,6 +99280,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97839,6 +99323,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97881,6 +99366,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97923,6 +99409,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -97965,6 +99452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98007,6 +99495,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [
         {
           "id": "cramorant",
@@ -98056,6 +99545,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98098,6 +99588,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98140,6 +99631,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98182,6 +99674,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98224,6 +99717,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98266,6 +99760,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98308,6 +99803,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98350,6 +99846,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98392,6 +99889,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98434,6 +99932,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98476,6 +99975,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98518,6 +100018,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98560,6 +100061,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98602,6 +100104,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98644,6 +100147,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98686,6 +100190,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98728,6 +100233,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98770,6 +100276,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98812,6 +100319,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98854,6 +100362,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98896,6 +100405,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98938,6 +100448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -98980,6 +100491,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99022,6 +100534,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99064,6 +100577,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99106,6 +100620,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99148,6 +100663,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99190,6 +100706,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99232,6 +100749,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99274,6 +100792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99316,6 +100835,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99358,6 +100878,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99400,6 +100921,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99442,6 +100964,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99484,6 +101007,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99526,6 +101050,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99568,6 +101093,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99610,6 +101136,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99652,6 +101179,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99694,6 +101222,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99736,6 +101265,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99778,6 +101308,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99820,6 +101351,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 2,
         "closingPotential": 1
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99862,6 +101394,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 0,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99904,6 +101437,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99946,6 +101480,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -99988,6 +101523,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100030,6 +101566,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100072,6 +101609,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100114,6 +101652,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100156,6 +101695,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100198,6 +101738,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100240,6 +101781,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100282,6 +101824,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {
@@ -100324,6 +101867,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "technicalDifficulty": 1,
         "closingPotential": 0
       },
+      "top50Coverage": 50,
       "wins": [],
       "losses": [
         {

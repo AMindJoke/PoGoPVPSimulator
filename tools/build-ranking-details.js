@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const vm = require("vm");
 const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis/ranking-details");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 const G = require("./build-great-league-meta-database");
@@ -25,12 +26,24 @@ const selectiveIds = new Set((pokemonArg ? pokemonArg.split("=").slice(1).join("
   .split(",")
   .map(value => value.trim())
   .filter(Boolean));
-const allowPartialCache = process.argv.includes("--allow-partial-cache");
+const syncCurrent = process.argv.includes("--sync-current");
+if (syncCurrent) {
+  if (!seasonId) throw new Error("--sync-current requires --season.");
+  if (selectiveIds.size) throw new Error("--sync-current requires a complete details generation.");
+  const catalogContext = {};
+  catalogContext.globalThis = catalogContext;
+  vm.createContext(catalogContext);
+  vm.runInContext(fs.readFileSync(path.join(root, "data", "seasons", "season-catalog.js"), "utf8"), catalogContext);
+  if (catalogContext.BATTLE_SEASON_CATALOG?.current?.id !== seasonId) {
+    throw new Error(`${seasonId} is not the current season; refusing to replace canonical details.`);
+  }
+}
 
 const ranking = JSON.parse(fs.readFileSync(rankingPath, "utf8"));
 const analysis = JSON.parse(fs.readFileSync(analysisPath, "utf8"));
 const entries = (ranking.entries || []).filter(entry => entry.profile === "rank1");
 const rankById = new Map(entries.map(entry => [entry.id, Number(entry.rank)]));
+const topIds = new Set(entries.filter(entry => Number(entry.rank) <= 50).map(entry => entry.id));
 const entryById = new Map(entries.map(entry => [entry.id, entry]));
 const analysisById = new Map((analysis.entries || []).map(entry => [entry.pokemon?.a?.id, entry]));
 const sourceData = G.generationData();
@@ -79,11 +92,9 @@ entries.forEach((entry, index) => {
   ingestCache(fallbackCachePath);
   ingestCache(cachePath);
   const cells = [...cellsByOpponent.values()];
-  if (cells.length !== entries.length - 1) {
-    if (!allowPartialCache || !cells.length) {
-      throw new Error(`${entry.id}: expected ${entries.length - 1} current-signature 1-1 matchups, found ${cells.length}.`);
-    }
-    process.stdout.write(`Using partial current-signature cache for ${entry.id}: ${cells.length}/${entries.length - 1} 1-1 matchups.\n`);
+  const missingTop = [...topIds].filter(id => id !== entry.id && !cellsByOpponent.has(id));
+  if (missingTop.length) {
+    throw new Error(`${entry.id}: missing current-signature 1-1 matchups against top 50: ${missingTop.join(", ")}.`);
   }
   const relevant = selectRelevantMatchups(cells, rankById, 5);
   const mapRow = row => ({
@@ -94,6 +105,7 @@ entries.forEach((entry, index) => {
   });
   details[entry.id] = {
     ratings: buildRankingRatings(entry, analysisById.get(entry.id) || {}),
+    top50Coverage: topIds.size - (topIds.has(entry.id) ? 1 : 0),
     wins: relevant.wins.map(mapRow),
     losses: relevant.losses.map(mapRow)
   };
@@ -104,11 +116,20 @@ const output = {
   schemaVersion: 1,
   generatedAt: new Date().toISOString(),
   sourceRankingGeneratedAt: ranking.metadata?.generatedAt || null,
+  sourceMovesetHash: ranking.metadata?.movesetHash || null,
+  sourceGameMasterHash: ranking.metadata?.gameMasterHash || null,
+  sourceMatrixVersion: ranking.metadata?.matrixVersion || null,
+  top50Size: topIds.size,
   scoreVersion: MATCHUP_SCORE_VERSION,
   entries: details
 };
 const json = `${JSON.stringify(output, null, 2)}\n`;
 fs.writeFileSync(outputJson, json);
 const globalName = seasonId ? "TWILIGHT_TRAILS_RANKING_DETAILS" : "GREAT_LEAGUE_RANKING_DETAILS";
-fs.writeFileSync(outputJs, `window.${globalName} = ${JSON.stringify(output)};\n`);
+fs.writeFileSync(outputJs, `window.${globalName} = ${JSON.stringify(output, null, 2)};\n`);
+if (syncCurrent) {
+  fs.writeFileSync(path.join(root, "data", "great-league-ranking-details.json"), json);
+  fs.writeFileSync(path.join(root, "data", "great-league-ranking-details.js"),
+    `window.GREAT_LEAGUE_RANKING_DETAILS = ${JSON.stringify(output, null, 2)};\n`);
+}
 process.stdout.write(`Wrote ${outputJson} and ${outputJs}\n`);

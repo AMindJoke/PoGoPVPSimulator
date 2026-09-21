@@ -61,6 +61,21 @@ for (const entry of ranking.entries) {
 assert.ok(["competitive", "prevalence"].includes(context.activeSeasonData.rankings.metadata.weightMode));
 assert.ok(context.activeSeasonData.rankings.metadata.weightSource);
 assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, context.activeSeasonData.rankings.metadata.generatedAt);
+assert.equal(context.activeSeasonData.rankingDetails.sourceMovesetHash, ranking.metadata.movesetHash);
+assert.equal(context.activeSeasonData.rankingDetails.sourceGameMasterHash, ranking.metadata.gameMasterHash);
+assert.equal(context.activeSeasonData.rankingDetails.sourceMatrixVersion, ranking.metadata.matrixVersion);
+assert.equal(context.activeSeasonData.rankingDetails.top50Size, 50);
+const topRanks = new Map(ranking.entries.slice(0, 50).map(entry => [entry.id, entry.rank]));
+for (const entry of ranking.entries) {
+  const detail = context.activeSeasonData.rankingDetails.entries[entry.id];
+  assert.equal(detail.top50Coverage, 50 - Number(topRanks.has(entry.id)), `${entry.id}: incomplete top 50 details`);
+  for (const kind of ["wins", "losses"]) {
+    for (const matchup of detail[kind] || []) {
+      assert.equal(matchup.rank, topRanks.get(matchup.id), `${entry.id}: stale ${kind} opponent rank`);
+      assert.ok(kind === "wins" ? matchup.score > 500 : matchup.score < 500, `${entry.id}: invalid ${kind} result`);
+    }
+  }
+}
 assert.equal(context.activeSeasonData.gameMaster.moves.find(move => move.moveId === "BODY_SLAM").energy, 40);
 assert.equal(context.activeSeasonData.defaultMovesets.houndoom.fast, "INCINERATE");
 assert.equal(JSON.stringify(context.activeSeasonData.defaultMovesets.florges), JSON.stringify({

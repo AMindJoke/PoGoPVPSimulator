@@ -2185,7 +2185,7 @@
       font-weight: 800;
       line-height: 1.1;
       text-align: center;
-      white-space: nowrap;
+      white-space: normal;
     }
     .meta-role-summary {
       display: grid;
@@ -19647,7 +19647,7 @@
     function analysisModel(entry) {
       const pokemon = findPokemon(entry.id);
       const recommended = metaRankingMoves(entry, pokemon);
-      const detailEntry = window.GREAT_LEAGUE_RANKING_DETAILS?.entries?.[entry.id] || null;
+      const detailEntry = metaRankingDetailsCurrent() ? metaRankingDetails.entries?.[entry.id] || null : null;
       const currentWins = currentMetaMatchupRows(detailEntry?.wins, entry.id);
       const currentLosses = currentMetaMatchupRows(detailEntry?.losses, entry.id);
       const recommendedIds = new Set([recommended.fast, ...recommended.charged].filter(Boolean).map(move => move.id));
@@ -20338,6 +20338,16 @@
       })[role] || "Overall";
     }
 
+    function metaRankingDetailsCurrent() {
+      const source = activeMetaRankingSource();
+      const metadata = source?.metadata;
+      return Boolean(metadata && metaRankingDetails?.sourceRankingGeneratedAt === metadata.generatedAt
+        && metaRankingDetails.sourceMovesetHash === metadata.movesetHash
+        && metaRankingDetails.sourceGameMasterHash === metadata.gameMasterHash
+        && metaRankingDetails.sourceMatrixVersion === metadata.matrixVersion
+        && metaRankingDetails.top50Size === 50);
+    }
+
     function metaRankingRoleDefinition(role = metaRankingRole) {
       return ({
         overall: {
@@ -20674,10 +20684,8 @@
       }).join("");
       const sourceText = entry.sourceTitle || (entry.matchupScore === null ? "Signal score only" : `Matchup score ${entry.matchupScore}`);
       const scoreBreakdown = entry.roleViewActive && Number.isFinite(Number(entry.roleScore))
-        ? `${entry.roleViewLabel} ${Math.round(Number(entry.roleScore))} · ${entry.roleSnapshot?.wins ?? "-"}-${entry.roleSnapshot?.losses ?? "-"}-${entry.roleSnapshot?.ties ?? "-"}`
-        : entry.candidatePriorActive && Number.isFinite(Number(entry.roleScore))
-          ? `Role ${Math.round(Number(entry.roleScore))} · Prior ${Math.round(Number(entry.candidatePriorScore || 500))}`
-          : "";
+        ? `${entry.roleSnapshot?.wins ?? "-"}W · ${entry.roleSnapshot?.losses ?? "-"}L · ${entry.roleSnapshot?.ties ?? "-"}T`
+        : "";
       const moveText = `${sourceText} | ${entry.moves.fast.name} / ${entry.moves.charged.map(move => move.name).join(" + ")}`;
       const movesetHtml = [
         metaMovePill(entry.moves.fast, "fast"),
@@ -20759,6 +20767,10 @@
     }
 
     function metaRankingDetailsHtml(entry) {
+      const expectedCoverage = 50 - Number(Number(entry.rankingData?.rank) <= 50);
+      if (!metaRankingDetailsCurrent() || metaRankingDetails.entries?.[entry.p.id]?.top50Coverage !== expectedCoverage) {
+        return `<div class="meta-detail-content"><p class="hint">Key matchups are being updated for this ranking.</p></div>`;
+      }
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
       const currentWins = currentMetaMatchupRows(detail.wins, entry.p.id);
       const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
