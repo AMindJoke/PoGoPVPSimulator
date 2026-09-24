@@ -1792,13 +1792,22 @@
     .team-core-analysis-head { margin-bottom: 9px; }.team-core-analysis-head h4 { margin: 0; font-size: 14px; }.team-core-analysis-head p { margin: 4px 0 0; color: var(--muted); font-size: 9px; }
     .team-core-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .team-core-list { display: grid; gap: 6px; }
-    .team-core-row { display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 60px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .team-core-row { min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .team-core-row > summary { position: relative; display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 60px; padding: 7px 22px 7px 9px; cursor: pointer; list-style: none; }
+    .team-core-row > summary::-webkit-details-marker { display: none; }
+    .team-core-row > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    .team-core-toggle { position: absolute; right: 8px; top: calc(50% - 4px); width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); }
+    .team-core-row[open] .team-core-toggle { transform: rotate(225deg); }
+    .team-core-opponents { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 5px; max-height: 220px; margin: 0 9px 9px; padding: 9px 0 0; overflow-y: auto; border-top: 1px solid var(--line); list-style: none; }
+    .team-core-opponents li { display: flex; align-items: baseline; justify-content: space-between; gap: 5px; min-width: 0; padding: 5px 7px; border-radius: 5px; background: var(--subtle); font-size: 9px; }
+    .team-core-opponents li span { min-width: 0; overflow-wrap: anywhere; }.team-core-opponents li small { flex: none; color: var(--muted); font-size: 8px; }
     .team-core-sprites { display: flex; align-items: center; min-width: 68px; }
     .team-core-sprites img { width: 42px; height: 42px; object-fit: contain; }
     .team-core-sprites img + img { margin-left: -16px; }
     .team-core-sprites img.shadow-pokemon { border-radius: 50%; background: radial-gradient(circle, rgba(126,61,174,.2), transparent 68%); filter: drop-shadow(0 0 4px rgba(143,79,184,.65)); }
     .team-core-copy { min-width: 0; }.team-core-copy strong, .team-core-copy span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .team-core-copy strong { font-size: 10px; }.team-core-copy span { margin-top: 2px; color: var(--muted); font-size: 8px; }
+    .team-core-copy em { display: block; margin-top: 2px; color: var(--accent); font-size: 8px; font-style: normal; font-weight: 800; }
     .team-core-metric { min-width: 65px; padding: 5px 7px; border-radius: 7px; background: color-mix(in srgb, var(--core-color) 12%, var(--panel)); text-align: center; }
     .team-core-metric strong, .team-core-metric small { display: block; }.team-core-metric strong { color: var(--core-color); font-size: 12px; }.team-core-metric small { margin-top: 1px; color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
     .team-core-empty { min-height: 60px; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 9px; }
@@ -14912,7 +14921,7 @@
             <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Biggest threats</h4><span>Missing answers + loss severity</span></div><div id="teamBuilderThreatList" class="team-insight-list"></div></article>
             <article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Best covered</h4><span>Strong answers + average rating</span></div><div id="teamBuilderCoveredList" class="team-insight-list"></div></article>
           </div>
-          <div class="team-core-analysis"><div class="team-core-analysis-head"><h4>Core analysis</h4><p>Shared hard losses and opponents that depend on a single reliable answer.</p></div><div class="team-core-grid"><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Weak cores</h4><span>Pairs sharing hard losses</span></div><div id="teamBuilderWeakCoreList" class="team-core-list"></div></article><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Fragile answers</h4><span>Only one favorable matchup</span></div><div id="teamBuilderFragileAnswerList" class="team-core-list"></div></article></div></div>
+          <div class="team-core-analysis"><div class="team-core-analysis-head"><h4>Core analysis</h4><p>How each pair covers the selected meta.</p></div><div class="team-core-grid"><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Weak cores</h4><span>Pairs sharing hard losses</span></div><div id="teamBuilderWeakCoreList" class="team-core-list"></div></article><article class="team-insight-panel"><div class="team-insight-panel-title"><h4>Strong cores</h4><span>Pairs covering the most opponents</span></div><div id="teamBuilderStrongCoreList" class="team-core-list"></div></article></div></div>
         </section>
         <section id="teamBuilderReplacement" class="team-replacement" aria-labelledby="teamBuilderReplacementTitle">
           <div class="team-replacement-head"><div><h3 id="teamBuilderReplacementTitle">Replacement tool</h3><p>Compare simulated replacements against the weaknesses you want to improve.</p></div></div>
@@ -18676,36 +18685,33 @@
     function renderTeamBuilderCoreAnalysis(groups) {
       const analysis = window.PvPeakTeamBuilderAnalysis.analyzeCores(groups, teamBuilderState.team.length);
       const weakCores = analysis.weakCores.slice(0, 5);
-      const fragileAnswers = analysis.fragileAnswers.slice(0, 5);
+      const strongCores = analysis.strongCores.slice(0, 5);
       const weakList = $("teamBuilderWeakCoreList");
-      const fragileList = $("teamBuilderFragileAnswerList");
-      weakList.innerHTML = weakCores.length ? weakCores.map((core, index) => {
+      const strongList = $("teamBuilderStrongCoreList");
+      const renderCore = (core, index, kind) => {
         const first = findPokemon(teamBuilderState.team[core.slots[0]]?.pokemonId);
         const second = findPokemon(teamBuilderState.team[core.slots[1]]?.pokemonId);
+        const firstName = first?.name || `Slot ${core.slots[0] + 1}`;
+        const secondName = second?.name || `Slot ${core.slots[1] + 1}`;
         const opponentNames = core.opponents.slice(0, 3).map(item => findPokemon(item.opponentId)?.name || item.opponentId);
-        const detail = `${opponentNames.join(", ")}${core.sharedLossCount > opponentNames.length ? ` +${core.sharedLossCount - opponentNames.length}` : ""} · Avg ${core.averageLossScore}`;
-        return `<div class="team-core-row" style="--core-color:#bd5260"><div class="team-core-sprites"><img data-team-core-sprite="weak-${index}-0" alt=""><img data-team-core-sprite="weak-${index}-1" alt=""></div><div class="team-core-copy"><strong>${escapeHtml(first?.name || `Slot ${core.slots[0] + 1}`)} + ${escapeHtml(second?.name || `Slot ${core.slots[1] + 1}`)}</strong><span title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></div><div class="team-core-metric"><strong>${core.sharedLossCount}</strong><small>Shared losses</small></div></div>`;
-      }).join("") : `<div class="team-core-empty">No pair shares a hard loss in the completed matchup field.</div>`;
-      fragileList.innerHTML = fragileAnswers.length ? fragileAnswers.map((item, index) => {
-        const opponent = findPokemon(item.opponentId);
-        const answer = findPokemon(teamBuilderState.team[item.answerSlot]?.pokemonId);
-        const backup = item.backupSlot == null ? null : findPokemon(teamBuilderState.team[item.backupSlot]?.pokemonId);
-        const detail = `Only ${answer?.name || `slot ${item.answerSlot + 1}`} wins · Best backup ${backup?.name || "none"} ${item.backupScore}`;
-        return `<div class="team-core-row" style="--core-color:${teamBuilderSeverityColor(item.severityLabel)}"><div class="team-core-sprites"><img data-team-core-sprite="fragile-${index}-0" alt=""><img data-team-core-sprite="fragile-${index}-1" alt=""></div><div class="team-core-copy"><strong>${escapeHtml(opponent?.name || item.opponentId)}</strong><span title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></div><div class="team-core-metric"><strong>${item.hardLossCount}</strong><small>Hard losses</small></div></div>`;
-      }).join("") : `<div class="team-core-empty">No opponent currently depends on a single favorable answer.</div>`;
-      weakCores.forEach((core, index) => core.slots.forEach((slot, spriteIndex) => {
+        const extra = core.opponents.length > opponentNames.length ? ` +${core.opponents.length - opponentNames.length}` : "";
+        const detail = kind === "weak" ? `Avg ${core.averageLossScore}` : `${core.sharedWinCount} shared wins`;
+        const metric = kind === "weak" ? core.sharedLossCount : `${core.coverageCount}/${analysis.completedOpponents}`;
+        const metricLabel = kind === "weak" ? "Shared losses" : "Covered";
+        const opponents = core.opponents.map(item => {
+          const name = findPokemon(item.opponentId)?.name || item.opponentId;
+          const outcome = kind === "weak" ? `Avg ${item.averageScore}` : item.sharedWin ? "Both win" : `${item.firstScore > 500 ? firstName : secondName} wins`;
+          return `<li><span>${escapeHtml(name)}</span><small>${escapeHtml(outcome)}</small></li>`;
+        }).join("");
+        return `<details class="team-core-row" style="--core-color:${kind === "weak" ? "#bd5260" : "#2f8e62"}"><summary><div class="team-core-sprites"><img data-team-core-sprite="${kind}-${index}-0" alt=""><img data-team-core-sprite="${kind}-${index}-1" alt=""></div><div class="team-core-copy"><strong>${escapeHtml(firstName)} + ${escapeHtml(secondName)}</strong><span>${escapeHtml(opponentNames.join(", ") + extra)} · ${escapeHtml(detail)}</span><em>View all ${core.opponents.length} opponents</em></div><div class="team-core-metric"><strong>${metric}</strong><small>${metricLabel}</small></div><i class="team-core-toggle" aria-hidden="true"></i></summary><ul class="team-core-opponents">${opponents}</ul></details>`;
+      };
+      weakList.innerHTML = weakCores.length ? weakCores.map((core, index) => renderCore(core, index, "weak")).join("") : `<div class="team-core-empty">No pair shares a hard loss in the completed matchup field.</div>`;
+      strongList.innerHTML = strongCores.length ? strongCores.map((core, index) => renderCore(core, index, "strong")).join("") : `<div class="team-core-empty">No pair has a favorable matchup in the completed meta field.</div>`;
+      [[weakCores, weakList, "weak"], [strongCores, strongList, "strong"]].forEach(([cores, list, kind]) => cores.forEach((core, index) => core.slots.forEach((slot, spriteIndex) => {
         const pokemon = findPokemon(teamBuilderState.team[slot]?.pokemonId);
-        const image = weakList.querySelector(`[data-team-core-sprite="weak-${index}-${spriteIndex}"]`);
+        const image = list.querySelector(`[data-team-core-sprite="${kind}-${index}-${spriteIndex}"]`);
         if (pokemon && image) setPokemonImage(image, pokemon);
-      }));
-      fragileAnswers.forEach((item, index) => {
-        const pokemon = findPokemon(item.opponentId);
-        const answer = findPokemon(teamBuilderState.team[item.answerSlot]?.pokemonId);
-        const opponentImage = fragileList.querySelector(`[data-team-core-sprite="fragile-${index}-0"]`);
-        const answerImage = fragileList.querySelector(`[data-team-core-sprite="fragile-${index}-1"]`);
-        if (pokemon && opponentImage) setPokemonImage(opponentImage, pokemon);
-        if (answer && answerImage) setPokemonImage(answerImage, answer);
-      });
+      })));
       renderTeamBuilderFinalSlotFinder();
       renderTeamBuilderReplacementTool(groups);
     }

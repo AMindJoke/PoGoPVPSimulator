@@ -38,7 +38,7 @@ assert.match(html, /id="teamBuilderInsights" class="team-insights"[^>]+aria-labe
 assert.match(html, /id="teamBuilderThreatList" class="team-insight-list"/);
 assert.match(html, /id="teamBuilderCoveredList" class="team-insight-list"/);
 assert.match(html, /id="teamBuilderWeakCoreList" class="team-core-list"/);
-assert.match(html, /id="teamBuilderFragileAnswerList" class="team-core-list"/);
+assert.match(html, /id="teamBuilderStrongCoreList" class="team-core-list"/);
 assert.match(html, /id="teamBuilderReplacement" class="team-replacement"[^>]+aria-labelledby="teamBuilderReplacementTitle"/);
 assert.match(html, /id="teamBuilderReplacementMembers" class="team-replacement-members"/);
 assert.match(html, /id="teamBuilderReplacementThreats" class="team-replacement-threats"/);
@@ -116,8 +116,9 @@ assert.match(html, /function renderTeamBuilderInsights\(groups\)[\s\S]{0,500}ana
 assert.match(html, /insights\.threats\.slice\(0, 5\)[\s\S]{0,200}insights\.bestCovered\.slice\(0, 5\)/, "Threat and best-covered summaries must remain intentionally compact.");
 assert.match(html, /No favorable matchup[\s\S]{0,300}hard losses[\s\S]{0,100}Avg/, "Threat rows must explain missing answers and hard losses without relying on severity color.");
 assert.match(html, /function renderTeamBuilderCoreAnalysis\(groups\)[\s\S]{0,500}analyzeCores\(groups, teamBuilderState\.team\.length\)/, "Core Analysis must derive from the deterministic analysis module.");
-assert.match(html, /analysis\.weakCores\.slice\(0, 5\)[\s\S]{0,200}analysis\.fragileAnswers\.slice\(0, 5\)/, "Core summaries must remain compact and ranked.");
-assert.match(html, /Only \$\{answer\?\.name[\s\S]{0,300}Best backup/, "Fragile answers must identify both the sole answer and best simulated backup.");
+assert.match(html, /analysis\.weakCores\.slice\(0, 5\)[\s\S]{0,200}analysis\.strongCores\.slice\(0, 5\)/, "Core summaries must remain compact and ranked.");
+assert.match(html, /<details class="team-core-row"[\s\S]{0,1000}<ul class="team-core-opponents">\$\{opponents\}<\/ul><\/details>/, "Core rows must disclose every covered or shared-loss opponent on demand.");
+assert.match(html, /kind === "weak" \? `Avg \$\{item\.averageScore\}` : item\.sharedWin \? "Both win"/, "Expanded core rows must explain each listed matchup.");
 assert.match(html, /function prepareTeamBuilderReplacementPlan\(\)[\s\S]{0,2200}createPlan\([\s\S]{0,500}replacementCandidateId/, "Replacement candidates must use the canonical cached matchup plan.");
 assert.match(html, /function renderTeamBuilderReplacementRanking\(\)[\s\S]{0,1800}rankReplacementCandidates/, "Replacement ranking must come from the transparent analysis model.");
 assert.match(html, /hard losses fixed[\s\S]{0,200}answers gained[\s\S]{0,200}new hard losses/, "Replacement results must expose the scoring tradeoffs.");

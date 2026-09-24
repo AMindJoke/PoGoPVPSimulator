@@ -246,6 +246,40 @@
     }
     weakCores.sort((a, b) => b.sharedLossCount - a.sharedLossCount || a.averageLossScore - b.averageLossScore || a.slots[0] - b.slots[0] || a.slots[1] - b.slots[1]);
 
+    const strongCores = [];
+    for (let firstSlot = 0; firstSlot < teamSize; firstSlot += 1) {
+      for (let secondSlot = firstSlot + 1; secondSlot < teamSize; secondSlot += 1) {
+        const opponents = completeGroups.map(group => {
+          const firstScore = Number(group.cells[firstSlot].score ?? 500);
+          const secondScore = Number(group.cells[secondSlot].score ?? 500);
+          if (firstScore <= 500 && secondScore <= 500) return null;
+          return Object.freeze({
+            opponentId: group.opponentId,
+            firstScore,
+            secondScore,
+            bestScore: Math.max(firstScore, secondScore),
+            sharedWin: firstScore > 500 && secondScore > 500
+          });
+        }).filter(Boolean);
+        if (!opponents.length) continue;
+        strongCores.push(Object.freeze({
+          slots: Object.freeze([firstSlot, secondSlot]),
+          coverageCount: opponents.length,
+          sharedWinCount: opponents.filter(item => item.sharedWin).length,
+          sharedLossCount: completeGroups.filter(group =>
+            Number(group.cells[firstSlot].score ?? 500) <= 400 && Number(group.cells[secondSlot].score ?? 500) <= 400
+          ).length,
+          averageBestScore: Math.round(opponents.reduce((sum, item) => sum + item.bestScore, 0) / opponents.length),
+          opponents: Object.freeze(opponents)
+        }));
+      }
+    }
+    strongCores.sort((a, b) => b.coverageCount - a.coverageCount
+      || b.sharedWinCount - a.sharedWinCount
+      || a.sharedLossCount - b.sharedLossCount
+      || b.averageBestScore - a.averageBestScore
+      || a.slots[0] - b.slots[0] || a.slots[1] - b.slots[1]);
+
     const fragileAnswers = completeGroups.map(group => {
       const summary = summarizeOpponent(group);
       if (!summary || summary.answerCount !== 1) return null;
@@ -267,6 +301,7 @@
     return Object.freeze({
       completedOpponents: completeGroups.length,
       weakCores: Object.freeze(weakCores),
+      strongCores: Object.freeze(strongCores),
       fragileAnswers: Object.freeze(fragileAnswers)
     });
   }

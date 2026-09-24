@@ -120,6 +120,10 @@ assert.equal(coreInsights.completedOpponents, 3, "Core analysis must ignore inco
 assert.deepEqual(coreInsights.weakCores[0].slots, [0, 1], "The pair sharing the most hard losses must rank as the weakest core.");
 assert.equal(coreInsights.weakCores[0].sharedLossCount, 2);
 assert.deepEqual(coreInsights.weakCores[0].opponents.map(item => item.opponentId), ["shared-b", "shared-a"], "Shared threats must rank by simulated loss severity.");
+assert.deepEqual(coreInsights.strongCores[0].slots, [0, 2], "Strong cores must favor complementary meta coverage over a single member's wins.");
+assert.equal(coreInsights.strongCores[0].coverageCount, 3);
+assert.equal(coreInsights.strongCores[0].sharedWinCount, 0);
+assert.deepEqual(coreInsights.strongCores[0].opponents.map(item => item.opponentId), ["shared-a", "shared-b", "fragile"], "Every covered opponent must remain available for the expanded core list.");
 assert.equal(coreInsights.fragileAnswers.length, 1, "Only opponents with exactly one favorable answer are structurally fragile.");
 assert.deepEqual(
   { opponent: coreInsights.fragileAnswers[0].opponentId, answer: coreInsights.fragileAnswers[0].answerSlot, backup: coreInsights.fragileAnswers[0].backupSlot, backupScore: coreInsights.fragileAnswers[0].backupScore },
