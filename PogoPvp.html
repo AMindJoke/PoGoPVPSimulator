@@ -1802,7 +1802,7 @@
     .team-core-metric { min-width: 65px; padding: 5px 7px; border-radius: 7px; background: color-mix(in srgb, var(--core-color) 12%, var(--panel)); text-align: center; }
     .team-core-metric strong, .team-core-metric small { display: block; }.team-core-metric strong { color: var(--core-color); font-size: 12px; }.team-core-metric small { margin-top: 1px; color: var(--muted); font-size: 7px; font-weight: 850; text-transform: uppercase; }
     .team-core-empty { min-height: 60px; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 9px; }
-    .team-replacement { display: none; width: 100%; max-width: none; margin-top: 22px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
+    .team-replacement { display: none; z-index: 2; width: 100%; max-width: none; margin-top: 22px; padding: 18px 20px; overflow: visible; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); box-shadow: 0 7px 20px var(--shadow); }
     .team-replacement.is-visible { display: block; }
     .team-replacement-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
     .team-replacement-head h3 { margin: 0; font-size: 18px; }.team-replacement-head p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
@@ -1816,6 +1816,16 @@
     .team-replacement-threats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
     .team-replacement-threat { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 6px; min-height: 42px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); box-shadow: none; text-align: left; }
     .team-replacement-threat[aria-pressed="true"] { border-color: #bd5260; background: color-mix(in srgb, #bd5260 8%, var(--panel)); }.team-replacement-threat img { width: 30px; height: 30px; object-fit: contain; }.team-replacement-threat span { overflow: hidden; font-size: 8px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }.team-replacement-threat small { color: var(--muted); font-size: 7px; font-weight: 850; }
+    .team-replacement-custom-threat { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) 32px; gap: 4px; min-width: 0; }
+    .team-replacement-custom-threat .team-replacement-threat { min-width: 0; }
+    .team-replacement-remove { display: grid; place-items: center; min-height: 42px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--muted); box-shadow: none; font-size: 18px; line-height: 1; }
+    .team-replacement-search { position: relative; margin-top: 10px; }
+    .team-replacement-search label { display: block; margin-bottom: 5px; color: var(--ink); font-size: 10px; font-weight: 850; }
+    .team-replacement-search input { width: 100%; min-height: 38px; }
+    .team-replacement-search-results { display: none; position: absolute; z-index: 80; top: calc(100% + 3px); left: 0; right: 0; max-height: 220px; overflow-y: auto; padding: 5px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 12px 28px color-mix(in srgb, var(--ink) 14%, transparent); }
+    .team-replacement-search-results.is-open { display: grid; gap: 3px; }
+    .team-replacement-search-feedback { margin: 5px 0 0; color: var(--muted); font-size: 9px; }
+    .team-replacement-search-feedback:empty { display: none; }
     .team-replacement-engine { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; margin-top: 12px; padding: 12px 13px; border-radius: 10px; background: var(--subtle); }
     .team-replacement-progress { display: grid; gap: 5px; min-width: 0; }.team-replacement-progress-copy { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 8px; font-weight: 800; }.team-replacement-progress-copy span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .team-replacement-actions { display: flex; gap: 7px; }.team-replacement-actions button { min-height: 38px; }
@@ -14906,7 +14916,7 @@
         </section>
         <section id="teamBuilderReplacement" class="team-replacement" aria-labelledby="teamBuilderReplacementTitle">
           <div class="team-replacement-head"><div><h3 id="teamBuilderReplacementTitle">Replacement tool</h3><p>Compare simulated replacements against the weaknesses you want to improve.</p></div></div>
-          <div class="team-replacement-steps"><div class="team-replacement-step"><h4>1. Replace a team member</h4><p>Select the slot whose contribution should be compared.</p><div id="teamBuilderReplacementMembers" class="team-replacement-members"></div></div><div class="team-replacement-step"><h4>2. Improve against</h4><p>Select 1–5 current threats. The top three are selected by default.</p><div id="teamBuilderReplacementThreats" class="team-replacement-threats"></div></div></div>
+          <div class="team-replacement-steps"><div class="team-replacement-step"><h4>1. Replace a team member</h4><p>Select the slot whose contribution should be compared.</p><div id="teamBuilderReplacementMembers" class="team-replacement-members"></div></div><div class="team-replacement-step"><h4>2. Improve against</h4><p>Select up to 5 threats, suggested or custom. The top three are selected by default.</p><div id="teamBuilderReplacementThreats" class="team-replacement-threats"></div><div class="team-replacement-search"><label for="teamBuilderReplacementSearch">Add a custom threat</label><input id="teamBuilderReplacementSearch" type="search" autocomplete="off" placeholder="Search Pokemon or form" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="teamBuilderReplacementSearchResults"><div id="teamBuilderReplacementSearchResults" class="team-replacement-search-results" role="listbox"></div><p id="teamBuilderReplacementSearchFeedback" class="team-replacement-search-feedback" role="status"></p></div></div></div>
           <div class="team-replacement-engine"><div class="team-replacement-progress"><div class="team-replacement-progress-copy"><span id="teamBuilderReplacementStatus">Choose a member and at least one threat.</span><span id="teamBuilderReplacementCount">0 / 0</span></div><div id="teamBuilderReplacementProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Replacement candidate analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div><div class="team-replacement-actions"><button id="teamBuilderReplacementAnalyze" type="button">Evaluate replacements</button><button id="teamBuilderReplacementCancel" class="secondary" type="button" hidden>Cancel</button></div></div>
           <div id="teamBuilderReplacementResults" class="team-replacement-results"><h4>Best replacements</h4><p id="teamBuilderReplacementResultsCopy">Ranked by targeted simulated improvement.</p><p class="team-replacement-formula">Ranking score = average rating delta + 40 per hard loss fixed + 25 per favorable answer gained − 50 per new hard loss.</p><div id="teamBuilderReplacementRanking" class="team-replacement-ranking"></div></div>
         </section>
@@ -15429,6 +15439,8 @@
     let teamBuilderMatchupReturnFocus = null;
     let teamBuilderReplacementSlot = 0;
     let teamBuilderReplacementTargets = [];
+    let teamBuilderReplacementCustomThreatIds = [];
+    let teamBuilderReplacementTargetsInitialized = false;
     let teamBuilderReplacementPlan = [];
     let teamBuilderReplacementSourceSignature = "";
     const teamBuilderReplacementCandidates = new Map();
@@ -15788,6 +15800,17 @@
       $("teamBuilderAnalysisCancel").onclick = cancelTeamBuilderAnalysis;
       $("teamBuilderReplacementAnalyze").onclick = startTeamBuilderReplacementAnalysis;
       $("teamBuilderReplacementCancel").onclick = () => cancelTeamBuilderAnalysis(true);
+      $("teamBuilderReplacementSearch").oninput = renderTeamBuilderReplacementSearch;
+      $("teamBuilderReplacementSearch").onkeydown = event => {
+        if (event.key === "Escape") closeTeamBuilderReplacementSearch();
+        if (event.key === "Enter") {
+          const first = $("teamBuilderReplacementSearchResults").querySelector(".pokemon-suggestion");
+          if (first) { event.preventDefault(); first.click(); }
+        }
+      };
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".team-replacement-search")) closeTeamBuilderReplacementSearch();
+      });
       $("teamBuilderFinalSlotAnalyze").onclick = startTeamBuilderFinalSlotAnalysis;
       $("teamBuilderFinalSlotCancel").onclick = () => cancelTeamBuilderAnalysis(true);
       $("teamBuilderFinalSlotShowAll").onclick = () => { teamBuilderFinalSlotShowAll = !teamBuilderFinalSlotShowAll; renderTeamBuilderFinalSlotRanking(); };
@@ -18886,14 +18909,23 @@
       const completeTeam = teamBuilderState?.team?.every(Boolean);
       const resolvedGroups = groups || teamBuilderCurrentCoverageGroups();
       const insights = window.PvPeakTeamBuilderAnalysis.analyzeCoverage(resolvedGroups);
-      const availableThreats = insights.threats.slice(0, 8);
+      const suggestedThreats = insights.threats.slice(0, 8);
+      const suggestedIds = new Set(suggestedThreats.map(item => item.opponentId));
+      teamBuilderReplacementCustomThreatIds = teamBuilderReplacementCustomThreatIds.filter(id => !!findPokemon(id));
+      const availableThreats = [
+        ...suggestedThreats.map(item => ({ ...item, isCustom: false })),
+        ...teamBuilderReplacementCustomThreatIds.filter(id => !suggestedIds.has(id)).map(opponentId => ({ opponentId, isCustom: true }))
+      ];
       const visible = !!completeTeam && availableThreats.length > 0;
       section.classList.toggle("is-visible", visible);
       if (!visible) return;
       teamBuilderReplacementSlot = Math.max(0, Math.min(teamBuilderState.team.length - 1, teamBuilderReplacementSlot));
       const availableIds = new Set(availableThreats.map(item => item.opponentId));
       teamBuilderReplacementTargets = teamBuilderReplacementTargets.filter(id => availableIds.has(id)).slice(0, 5);
-      if (!teamBuilderReplacementTargets.length) teamBuilderReplacementTargets = availableThreats.slice(0, 3).map(item => item.opponentId);
+      if (!teamBuilderReplacementTargetsInitialized) {
+        teamBuilderReplacementTargets = suggestedThreats.slice(0, 3).map(item => item.opponentId);
+        teamBuilderReplacementTargetsInitialized = true;
+      }
       const members = $("teamBuilderReplacementMembers");
       members.innerHTML = teamBuilderState.team.map((member, slot) => {
         const pokemon = findPokemon(member.pokemonId);
@@ -18911,7 +18943,8 @@
       threats.innerHTML = availableThreats.map((summary, index) => {
         const pokemon = findPokemon(summary.opponentId);
         const selected = teamBuilderReplacementTargets.includes(summary.opponentId);
-        return `<button class="team-replacement-threat" type="button" data-team-replacement-threat="${escapeHtml(summary.opponentId)}" aria-pressed="${selected}"><img data-team-replacement-threat-sprite="${index}" alt=""><span>${escapeHtml(pokemon?.name || summary.opponentId)}</span><small>${summary.severity}</small></button>`;
+        const button = `<button class="team-replacement-threat" type="button" data-team-replacement-threat="${escapeHtml(summary.opponentId)}" aria-pressed="${selected}"><img data-team-replacement-threat-sprite="${index}" alt=""><span>${escapeHtml(pokemon?.name || summary.opponentId)}</span><small>${summary.isCustom ? "Custom" : summary.severity}</small></button>`;
+        return summary.isCustom ? `<div class="team-replacement-custom-threat">${button}<button class="team-replacement-remove" type="button" data-team-replacement-remove="${escapeHtml(summary.opponentId)}" aria-label="Remove ${escapeHtml(pokemon?.name || summary.opponentId)}">&times;</button></div>` : button;
       }).join("");
       availableThreats.forEach((summary, index) => {
         const pokemon = findPokemon(summary.opponentId);
@@ -18921,7 +18954,62 @@
       threats.querySelectorAll("[data-team-replacement-threat]").forEach(button => {
         button.onclick = () => toggleTeamBuilderReplacementThreat(button.dataset.teamReplacementThreat);
       });
+      threats.querySelectorAll("[data-team-replacement-remove]").forEach(button => {
+        button.onclick = () => removeTeamBuilderReplacementThreat(button.dataset.teamReplacementRemove);
+      });
       renderTeamBuilderReplacementProgress();
+    }
+
+    function closeTeamBuilderReplacementSearch() {
+      $("teamBuilderReplacementSearchResults").classList.remove("is-open");
+      $("teamBuilderReplacementSearch").setAttribute("aria-expanded", "false");
+    }
+
+    function renderTeamBuilderReplacementSearch() {
+      const input = $("teamBuilderReplacementSearch");
+      const results = $("teamBuilderReplacementSearchResults");
+      const query = normalizeSearchText(input.value);
+      if (!query) {
+        results.innerHTML = "";
+        closeTeamBuilderReplacementSearch();
+        return;
+      }
+      const suggestedIds = new Set(window.PvPeakTeamBuilderAnalysis.analyzeCoverage(teamBuilderCurrentCoverageGroups()).threats.slice(0, 8).map(item => item.opponentId));
+      const matches = allPokemon
+        .map(pokemon => ({ pokemon, score: pokemonSearchScore(pokemon, query) }))
+        .filter(item => item.score < 100 && item.pokemon.released && item.pokemon.fast.length && item.pokemon.charged.length && !suggestedIds.has(item.pokemon.id) && !teamBuilderReplacementCustomThreatIds.includes(item.pokemon.id))
+        .sort((a, b) => a.score - b.score || a.pokemon.name.localeCompare(b.pokemon.name))
+        .filter(item => metaStatsForPokemon(item.pokemon).cp <= 1500)
+        .slice(0, 20)
+        .map(item => item.pokemon);
+      renderPokemonSuggestionList(results, matches, { onSelect: addTeamBuilderReplacementThreat });
+      results.classList.add("is-open");
+      input.setAttribute("aria-expanded", "true");
+    }
+
+    function addTeamBuilderReplacementThreat(pokemon) {
+      if (teamBuilderAnalysisActive || teamBuilderReplacementCustomThreatIds.includes(pokemon.id)) return;
+      teamBuilderReplacementCustomThreatIds.push(pokemon.id);
+      $("teamBuilderReplacementSearch").value = "";
+      $("teamBuilderReplacementSearchResults").innerHTML = "";
+      closeTeamBuilderReplacementSearch();
+      if (teamBuilderReplacementTargets.length < 5) {
+        teamBuilderReplacementTargets.push(pokemon.id);
+        $("teamBuilderReplacementSearchFeedback").textContent = "";
+      } else {
+        $("teamBuilderReplacementSearchFeedback").textContent = "Threat added. Deselect another threat to include it in the evaluation.";
+      }
+      resetTeamBuilderReplacementEvaluation();
+      renderTeamBuilderReplacementTool();
+    }
+
+    function removeTeamBuilderReplacementThreat(opponentId) {
+      if (teamBuilderAnalysisActive) return;
+      teamBuilderReplacementCustomThreatIds = teamBuilderReplacementCustomThreatIds.filter(id => id !== opponentId);
+      teamBuilderReplacementTargets = teamBuilderReplacementTargets.filter(id => id !== opponentId);
+      $("teamBuilderReplacementSearchFeedback").textContent = "";
+      resetTeamBuilderReplacementEvaluation();
+      renderTeamBuilderReplacementTool();
     }
 
     function selectTeamBuilderReplacementSlot(slot) {
@@ -18936,6 +19024,11 @@
       const selected = teamBuilderReplacementTargets.includes(opponentId);
       if (selected) teamBuilderReplacementTargets = teamBuilderReplacementTargets.filter(id => id !== opponentId);
       else if (teamBuilderReplacementTargets.length < 5) teamBuilderReplacementTargets = [...teamBuilderReplacementTargets, opponentId];
+      else {
+        $("teamBuilderReplacementSearchFeedback").textContent = "Select up to five threats. Deselect one before adding another.";
+        return;
+      }
+      $("teamBuilderReplacementSearchFeedback").textContent = "";
       resetTeamBuilderReplacementEvaluation();
       renderTeamBuilderReplacementTool();
     }
@@ -18960,7 +19053,16 @@
         if (opponent) opponentSignatures[id] = matrixCombatantSignature(createMetaCombatant(opponent, "B"));
       });
       teamBuilderReplacementCandidates.clear();
-      const jobs = [];
+      const baselineJobs = window.PvPeakTeamBuilderAnalysis.createPlan({
+        seasonIdentity: activeSeasonData.identity,
+        engineVersion: matchupResultVersion,
+        providerId: teamBuilderState.analysisConfig.meta,
+        shields: teamBuilderState.analysisConfig.shields,
+        team: [teamBuilderState.team[teamBuilderReplacementSlot]],
+        opponentIds: teamBuilderReplacementTargets,
+        opponentSignatures
+      }).map(job => Object.freeze({ ...job, replacementBaseline: true }));
+      const jobs = [...baselineJobs];
       teamBuilderEligibleReplacementMembers().forEach(({ candidateId, member }) => {
         teamBuilderReplacementCandidates.set(candidateId, member);
         const candidateJobs = window.PvPeakTeamBuilderAnalysis.createPlan({
@@ -19022,11 +19124,14 @@
     function renderTeamBuilderReplacementRanking() {
       const expectedSignature = `${teamBuilderReplacementSlot}|${window.PvPeakTeamBuilderAnalysis.memberSignature(teamBuilderState.team[teamBuilderReplacementSlot])}|${teamBuilderReplacementTargets.join(",")}|${teamBuilderState.analysisConfig.shields}|${teamBuilderState.analysisConfig.meta}`;
       if (!teamBuilderReplacementPlan.length || teamBuilderReplacementSourceSignature !== expectedSignature) return;
-      const groups = teamBuilderCurrentCoverageGroups();
       const baselineByOpponent = {};
-      groups.filter(group => teamBuilderReplacementTargets.includes(group.opponentId)).forEach(group => { baselineByOpponent[group.opponentId] = group.cells[teamBuilderReplacementSlot]; });
+      teamBuilderReplacementPlan.filter(job => job.replacementBaseline).forEach(job => {
+        baselineByOpponent[job.opponentId] = teamBuilderAnalysisCache.get(job.key);
+      });
+      if (teamBuilderReplacementTargets.some(id => !baselineByOpponent[id])) return;
       const candidates = {};
       teamBuilderReplacementPlan.forEach(job => {
+        if (job.replacementBaseline) return;
         if (!candidates[job.replacementCandidateId]) candidates[job.replacementCandidateId] = {};
         candidates[job.replacementCandidateId][job.opponentId] = teamBuilderAnalysisCache.get(job.key);
       });
@@ -19062,6 +19167,7 @@
       } catch (_) { return; }
       persistTeamBuilderState();
       teamBuilderReplacementTargets = [];
+      teamBuilderReplacementTargetsInitialized = false;
       resetTeamBuilderReplacementEvaluation();
       renderTeamBuilder();
     }
