@@ -1890,8 +1890,8 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "piloswine": {
     "fast": "POWDER_SNOW",
     "charged": [
-      "HIGH_HORSEPOWER",
-      "STONE_EDGE"
+      "ICICLE_SPEAR",
+      "HIGH_HORSEPOWER"
     ]
   },
   "togetic": {
@@ -2174,8 +2174,8 @@ window.BATTLE_DEFAULT_MOVESETS = {
   "piloswine_shadow": {
     "fast": "POWDER_SNOW",
     "charged": [
-      "HIGH_HORSEPOWER",
-      "STONE_EDGE"
+      "ICICLE_SPEAR",
+      "HIGH_HORSEPOWER"
     ]
   },
   "scizor_shadow": {

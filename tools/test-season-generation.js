@@ -23,6 +23,19 @@ const moveResolved = Season.applyMoveOverrides(canonical, preview.moveOverrides)
 const resolved = Season.applyPokemonMoveOverrides(moveResolved, preview.pokemonMoveOverrides);
 const previewMovesets = Generator.buildPreviewMovesets(canonicalMovesets, resolved, preview);
 
+const expectedPiloswineCharged = ["ICICLE_SPEAR", "HIGH_HORSEPOWER"];
+const generatedMovesets = loadWindow("data/seasons/twilight-trails/default-movesets.js", "TWILIGHT_TRAILS_DEFAULT_MOVESETS");
+const generatedJson = JSON.parse(fs.readFileSync(path.join(root, "data/seasons/twilight-trails/default-movesets.json"), "utf8"));
+for (const id of ["piloswine", "piloswine_shadow"]) {
+  const species = canonical.pokemon.find(pokemon => pokemon.speciesId === id);
+  assert(species, `${id} must exist in the game master.`);
+  assert(species.chargedMoves.includes("ICICLE_SPEAR"), `${id} must be able to learn Icicle Spear.`);
+  for (const [source, movesets] of [["current", canonicalMovesets], ["season JS", generatedMovesets], ["season JSON", generatedJson]]) {
+    assert.equal(movesets[id].fast, "POWDER_SNOW", `${source}: ${id} fast move`);
+    assert.deepEqual(Array.from(movesets[id].charged), expectedPiloswineCharged, `${source}: ${id} charged moves`);
+  }
+}
+
 assert.equal(JSON.stringify(previewMovesets.lickilicky), JSON.stringify(canonicalMovesets.lickilicky), "An existing valid moveset must retain stable move ordering.");
 assert.equal(resolved.pokemon.find(pokemon => pokemon.speciesId === "houndoom").fastMoves.includes("INCINERATE"), true);
 assert.equal(resolved.pokemon.find(pokemon => pokemon.speciesId === "miltank").chargedMoves.includes("HIGH_HORSEPOWER"), true);
