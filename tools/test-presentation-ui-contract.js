@@ -38,5 +38,7 @@ assert(/\.manual-bring-next-candidate\[aria-selected="true"\]::after\s*\{[^}]*co
 assert(/:where\(button, input, select, textarea, \[tabindex\]\):focus-visible/.test(html), 'Shared controls need a consistent keyboard focus treatment');
 assert(/font-variant-numeric:\s*tabular-nums;/.test(html), 'Changing battle data must use stable numerals');
 assert(/@media \(prefers-reduced-motion: reduce\)/.test(html), 'Reduced-motion support must remain present');
+assert(/body\[data-view="simulator"\] \.setup\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/.test(html), 'Mobile Battle must keep both Pokemon cards side by side');
+assert(/body\[data-view="simulator"\]\.battle-setup-ready:not\(\.battle-results-visible\) \.battle-cta-row\s*\{[^}]*position:\s*relative;[^}]*width:\s*100%;/.test(html), 'Mobile Battle controls must stay in the flow above the bottom navigation');
 
 console.log('Presentation UI contract tests passed.');
