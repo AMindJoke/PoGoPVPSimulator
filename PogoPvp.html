@@ -14317,6 +14317,7 @@
       background-blend-mode: multiply;
     }
   </style>
+  <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
 </head>
 <body class="clarity-ui" data-view="home">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
@@ -16171,6 +16172,7 @@
       restoreTeamBuilderState();
       $("analysisPokemon").onchange = () => renderPokemonAnalysis($("analysisPokemon").value);
       $("analysisBackToMeta").onclick = () => setAppView("meta");
+      setupMetaMobileToolbar();
       $("metaRankingRole").onchange = () => setMetaRankingRole($("metaRankingRole").value);
       $("metaSearch").oninput = scheduleMetaFilterRender;
       $("metaMoveFilter").oninput = scheduleMetaFilterRender;
@@ -21167,19 +21169,6 @@
           loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
         };
       });
-      container.querySelectorAll("[data-meta-matchup-more]").forEach(button => {
-        button.onclick = event => {
-          event.stopPropagation();
-          const group = button.closest(".meta-matchup-group");
-          if (!group) return;
-          const expanded = group.classList.toggle("is-expanded");
-          group.classList.toggle("is-collapsed", !expanded);
-          button.setAttribute("aria-expanded", String(expanded));
-          const count = Number(button.dataset.moreCount || 0);
-          const label = button.dataset.moreLabel || "matchups";
-          button.textContent = expanded ? `Show fewer ${label}` : `Show ${count} more ${label}`;
-        };
-      });
     }
 
     function metaRankingDetailsHtml(entry) {
@@ -21239,12 +21228,7 @@
       const cards = items.length
         ? items.map(item => metaKeyMatchupCard(item, sourceEntry)).join("")
         : `<span class="meta-matchup-empty">No key ${className} available for the current dataset.</span>`;
-      const moreCount = Math.max(0, items.length - 2);
-      const moreLabel = className === "wins" ? "wins" : "losses";
-      const moreButton = moreCount
-        ? `<button type="button" class="meta-matchup-more" data-meta-matchup-more data-more-count="${moreCount}" data-more-label="${moreLabel}" aria-expanded="false">Show ${moreCount} more ${moreLabel}</button>`
-        : "";
-      return `<section class="meta-matchup-group ${className}${moreCount ? " is-collapsed" : ""}" aria-label="${label}"><strong>${label}</strong><div class="meta-matchup-list">${cards}</div>${moreButton}</section>`;
+      return `<section class="meta-matchup-group ${className}" aria-label="${label}"><strong>${label}</strong><div class="meta-matchup-list">${cards}</div></section>`;
     }
 
     function metaKeyMatchupCard(item, sourceEntry) {
@@ -21297,10 +21281,40 @@
       return metaMovesForPokemon(pokemon);
     }
 
+    function setupMetaMobileToolbar() {
+      const actions = document.querySelector(".meta-panel-head .meta-actions");
+      if (!actions || actions.dataset.uiLabToolbarReady) return;
+      const search = $("metaSearch");
+      const type = $("metaTypeFilter");
+      const move = $("metaMoveFilter");
+      const refresh = $("metaRefresh");
+      actions.dataset.uiLabToolbarReady = "true";
+      search.placeholder = "Search Pokemon";
+      refresh.title = "Refresh rankings";
+      refresh.setAttribute("aria-label", "Refresh rankings");
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "meta-lab-filter-toggle";
+      toggle.textContent = "Filters";
+      toggle.setAttribute("aria-controls", "metaLabFilterFields");
+      toggle.setAttribute("aria-expanded", "false");
+      const fields = document.createElement("div");
+      fields.id = "metaLabFilterFields";
+      fields.className = "meta-lab-filter-fields";
+      actions.insertBefore(toggle, type);
+      actions.insertBefore(fields, type);
+      fields.append(type, move);
+      toggle.addEventListener("click", () => {
+        const open = toggle.getAttribute("aria-expanded") !== "true";
+        toggle.setAttribute("aria-expanded", String(open));
+        fields.classList.toggle("is-open", open);
+      });
+    }
+
     function metaMovePill(move, kind = "charged") {
       const color = typeColors[move.type] || "#66788c";
       const moveKind = kind === "fast" ? "fast" : "charged";
-      return `<span class="meta-move-pill ${moveKind}" style="--move-type:${color};--move-text:${contrastText(color)}"><span>${escapeHtml(move.name)}</span></span>`;
+      return `<span class="meta-move-pill ${moveKind}" style="--move-type:${color};--move-text:${contrastText(color)};--move-icon:url('${metaTypeIconDataUri(move.type, color)}')"><span>${escapeHtml(move.name)}</span></span>`;
     }
 
     function metaTypeIconDataUri(type, color) {

@@ -3,6 +3,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'PogoPvp.html'), 'utf8');
+const metaMobileCss = fs.readFileSync(path.join(root, 'src', 'meta-mobile.css'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -40,5 +41,10 @@ assert(/font-variant-numeric:\s*tabular-nums;/.test(html), 'Changing battle data
 assert(/@media \(prefers-reduced-motion: reduce\)/.test(html), 'Reduced-motion support must remain present');
 assert(/body\[data-view="simulator"\] \.setup\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/.test(html), 'Mobile Battle must keep both Pokemon cards side by side');
 assert(/body\[data-view="simulator"\]\.battle-setup-ready:not\(\.battle-results-visible\) \.battle-cta-row\s*\{[^}]*position:\s*relative;[^}]*width:\s*100%;/.test(html), 'Mobile Battle controls must stay in the flow above the bottom navigation');
+assert(html.includes('src/meta-mobile.css?v='), 'Meta mobile styles must load in the main site');
+assert(metaMobileCss.includes('@media (max-width: 900px)') && metaMobileCss.includes('.meta-entry .meta-moves'), 'Meta mobile must keep moves alongside the Pokemon');
+assert(html.includes('setupMetaMobileToolbar();') && html.includes('meta-lab-filter-fields'), 'Meta mobile filters must remain available in the compact toolbar');
+assert(/sort\(\(a, b\)[\s\S]*?slice\(0, 5\)/.test(html), 'Meta details must show five key wins and losses');
+assert(!html.includes('Show ${moreCount} more ${moreLabel}'), 'Meta details must not hide three key matchups behind Show more');
 
 console.log('Presentation UI contract tests passed.');
