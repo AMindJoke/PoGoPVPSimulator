@@ -14024,6 +14024,72 @@
       .home-tool-icon { width: 42px; height: 42px; }
       .home-tool-copy > span:last-child { font-size: 10.5px; }
     }
+    .home-lab-bottom-nav, .home-lab-more-menu { display: none; }
+    .home-lab-more-menu[hidden] { display: none !important; }
+    @media (max-width: 900px) {
+      body > header .app-tabs { display: none !important; }
+      body > main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+      .home-lab-bottom-nav {
+        position: fixed; inset: auto 0 0; z-index: 40; display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr)); min-height: 66px;
+        padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line); background: var(--panel); box-shadow: none;
+      }
+      .home-lab-bottom-nav button {
+        position: relative; display: grid; justify-items: center; align-content: center; gap: 3px;
+        min-width: 0; min-height: 50px; padding: 4px 2px; border: 2px solid transparent;
+        border-radius: 7px; background: transparent; color: var(--muted);
+        font-size: 9px; font-weight: 800; line-height: 1.1; transform: none;
+      }
+      .home-lab-bottom-nav button:hover { background: color-mix(in srgb, var(--accent) 8%, var(--panel)); transform: none; }
+      .home-lab-bottom-nav button[aria-current="page"] {
+        border-color: #123b50; background: #187fa2; color: #fff;
+      }
+      .home-lab-bottom-nav button[aria-current="page"]::before {
+        content: ""; position: absolute; top: -2px; left: 10px; right: 10px;
+        height: 3px; background: #f4c95d;
+      }
+      .home-lab-bottom-nav .home-lab-nav-icon { display: grid; place-items: center; width: 25px; height: 25px; }
+      .home-lab-bottom-nav svg, .home-lab-more-item-icon svg {
+        width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2;
+        stroke-linecap: round; stroke-linejoin: round;
+      }
+      .home-lab-more-menu {
+        position: fixed; left: 50%; bottom: calc(74px + env(safe-area-inset-bottom)); z-index: 50;
+        display: grid; width: min(300px, calc(100vw - 24px)); gap: 8px; padding: 10px;
+        transform: translateX(-50%); border: 2px solid #123b50; border-radius: 10px;
+        background: #f7faf9; box-shadow: 0 7px 0 rgba(18,59,80,.18), 0 14px 28px rgba(18,59,80,.2);
+      }
+      .home-lab-more-menu > strong {
+        padding: 1px 4px 2px; color: #123b50; font-size: 11px;
+        letter-spacing: .04em; text-transform: uppercase;
+      }
+      .home-lab-more-menu-list { display: grid; gap: 6px; }
+      .home-lab-more-menu-list button {
+        position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto;
+        align-items: center; gap: 8px; min-height: 43px; padding: 6px 9px 6px 12px;
+        border: 2px solid #123b50; border-radius: 8px; background: #187fa2;
+        color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 2px 0 rgba(18,59,80,.2);
+        text-align: left; transform: none;
+      }
+      .home-lab-more-menu-list button::before {
+        content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+        border-radius: 6px 0 0 6px; background: #f4c95d;
+      }
+      .home-lab-more-menu-list button:hover {
+        border-color: #0b3144; background: #0d6688; color: #fff; transform: none;
+      }
+      .home-lab-more-item-icon {
+        display: grid; place-items: center; width: 30px; height: 30px;
+        border: 1px solid #f4c95d; border-radius: 50%; background: rgba(255,255,255,.13);
+      }
+      .home-lab-more-item-icon svg { width: 17px; height: 17px; }
+      .home-lab-more-item-label { min-width: 0; font-size: 11.5px; font-weight: 800; line-height: 1.15; }
+      .home-lab-more-menu-list button > span:last-child { color: #f4c95d; font-size: 17px; }
+      .home-lab-bottom-nav button:focus-visible, .home-lab-more-menu-list button:focus-visible {
+        outline: 3px solid #f4c95d; outline-offset: 2px;
+      }
+    }
     body:not([data-theme]) :where(
       .home-tool-card,
       .home-quick-start,
@@ -14965,6 +15031,23 @@
     </div>
   </main>
 
+  <section id="mobileMoreMenu" class="home-lab-more-menu" aria-label="More tools" hidden>
+    <strong>More tools</strong>
+    <div class="home-lab-more-menu-list">
+      <button type="button" data-more-target="scenario-review"><span class="home-lab-more-item-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 8h9v6H6zM17 18h9v6h-9zM10.5 14v4h11"/><circle cx="10.5" cy="18" r="2"/><circle cx="21.5" cy="14" r="2"/></svg></span><span class="home-lab-more-item-label">Scenario Review</span><span aria-hidden="true">&#8250;</span></button>
+      <button type="button" data-more-target="analysis"><span class="home-lab-more-item-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="14" cy="14" r="8"/><path d="m20 20 7 7M10 15l3-3 3 2 3-4"/></svg></span><span class="home-lab-more-item-label">Pokemon Analysis</span><span aria-hidden="true">&#8250;</span></button>
+      <button type="button" data-more-target="fast-count-trainer"><span class="home-lab-more-item-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 7h16M8 16h16M8 25h16"/><circle cx="11" cy="7" r="3"/><circle cx="20" cy="16" r="3"/><circle cx="15" cy="25" r="3"/></svg></span><span class="home-lab-more-item-label">Fast Count</span><span aria-hidden="true">&#8250;</span></button>
+      <button type="button" data-more-target="compendium"><span class="home-lab-more-item-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 6h8c2 0 3 1 3 3v17c0-2-1-3-3-3H7zM25 6h-5c-1.3 0-2 .7-2 2v18c0-2 1.7-3 3-3h4z"/><path d="M10 11h5M10 15h5M21 11h2M21 15h2"/></svg></span><span class="home-lab-more-item-label">Compendium</span><span aria-hidden="true">&#8250;</span></button>
+    </div>
+  </section>
+  <nav class="home-lab-bottom-nav" aria-label="Primary tools">
+    <button type="button" data-mobile-target="home" aria-label="Open Home" aria-current="page"><span class="home-lab-nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m5 14 11-9 11 9M8 12v13h16V12"/></svg></span><span>Home</span></button>
+    <button type="button" data-mobile-target="simulator" aria-label="Open Battle"><span class="home-lab-nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M18 4 9 17h7l-2 11 10-15h-7z"/></svg></span><span>Battle</span></button>
+    <button type="button" data-mobile-target="meta" aria-label="Open Meta"><span class="home-lab-nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 25V15h5v10zM14 25V9h5v16zM22 25V5h5v20zM5 27h23"/></svg></span><span>Meta</span></button>
+    <button type="button" data-mobile-target="team-builder" aria-label="Open Team"><span class="home-lab-nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="4"/><circle cx="9" cy="20" r="3"/><circle cx="23" cy="20" r="3"/><path d="M16 14v4M13 17l-2 1M19 17l2 1"/></svg></span><span>Team</span></button>
+    <button type="button" data-mobile-target="more" aria-label="Open More" aria-controls="mobileMoreMenu" aria-expanded="false"><span class="home-lab-nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="25" cy="16" r="1.5"/></svg></span><span>More</span></button>
+  </nav>
+
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
 
   <div class="modal team-picker-modal" id="teamBuilderPickerModal" role="dialog" aria-modal="true" aria-labelledby="teamBuilderPickerTitle" aria-hidden="true">
@@ -15778,6 +15861,26 @@
       });
       document.querySelectorAll("[data-home-target]").forEach(button => {
         button.onclick = () => navigateAppView(button.dataset.homeTarget);
+      });
+      document.querySelectorAll("[data-mobile-target]").forEach(button => {
+        button.onclick = () => {
+          const target = button.dataset.mobileTarget;
+          if (target === "more") {
+            setMobileMoreOpen($("mobileMoreMenu").hidden);
+          } else {
+            navigateAppView(target);
+          }
+        };
+      });
+      document.querySelectorAll("[data-more-target]").forEach(button => {
+        button.onclick = () => navigateAppView(button.dataset.moreTarget);
+      });
+      document.addEventListener("click", event => {
+        const menu = $("mobileMoreMenu");
+        if (!menu.hidden && !event.target.closest("#mobileMoreMenu, .home-lab-bottom-nav")) setMobileMoreOpen(false);
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") setMobileMoreOpen(false);
       });
       window.addEventListener("popstate", event => {
         const route = window.PvPeakCompendiumRouting?.readLocation?.(window.location);
@@ -17683,6 +17786,26 @@
 
     const supportedAppViews = new Set(["home", "simulator", "scenario-review", "meta", "analysis", "team-builder", "fast-count-trainer", "compendium"]);
 
+    function setMobileMoreOpen(open) {
+      const menu = $("mobileMoreMenu");
+      menu.hidden = !open;
+      document.querySelector('[data-mobile-target="more"]').setAttribute("aria-expanded", String(open));
+    }
+
+    function syncMobileNavigation(view) {
+      const moreViews = new Set(["scenario-review", "analysis", "fast-count-trainer", "compendium"]);
+      document.querySelectorAll("[data-mobile-target]").forEach(button => {
+        const target = button.dataset.mobileTarget;
+        const active = target === view || (target === "more" && moreViews.has(view));
+        if (active) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+      document.querySelectorAll("[data-more-target]").forEach(button => {
+        if (button.dataset.moreTarget === view) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+    }
+
     function readAppViewFromLocation(locationLike = window.location) {
       const candidate = new URLSearchParams(locationLike.search || "").get("view");
       return supportedAppViews.has(candidate) ? candidate : null;
@@ -17702,6 +17825,7 @@
 
     function navigateAppView(view, options = {}) {
       const next = supportedAppViews.has(view) ? view : "home";
+      setMobileMoreOpen(false);
       if (next === "compendium") {
         compendiumActiveCategory = "home";
         compendiumSelectedMoveId = null;
@@ -17729,6 +17853,8 @@
       }
       if (previous === "compendium" && next !== "compendium" && !appViewHistorySyncing) clearCompendiumRoute({ appView: next });
       document.body.dataset.view = next;
+      setMobileMoreOpen(false);
+      syncMobileNavigation(next);
       if (next !== "scenario-review") {
         document.body.classList.remove("scenario-manual-setup", "scenario-matchup-editing");
         manualMatchupEditMode = false;
