@@ -1,0 +1,158 @@
+body[data-view="home"] .home-shell {
+  width: min(100%, 960px);
+  gap: 16px;
+}
+
+body[data-view="home"] .home-tools-section { gap: 11px; }
+body[data-view="home"] .home-section-heading { align-items: end; padding: 0 2px; }
+body[data-view="home"] .home-section-heading h2 { margin: 0; font-size: 28px; letter-spacing: 0; }
+body[data-view="home"] .home-section-heading > p { max-width: 360px; font-size: 12px; }
+body[data-view="home"] .home-quick-start { display: none !important; }
+body[data-view="home"] .home-tool-grid-all {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+  min-height: 82px;
+  padding: 10px 13px;
+  overflow: hidden;
+  border: 2px solid #123b50;
+  border-radius: 8px;
+  background: #187fa2;
+  color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .18);
+  text-align: left;
+  transform: none;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 6px;
+  border-radius: 6px 0 0 6px;
+  background: #f4c95d;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card:hover,
+body[data-view="home"] .home-tool-grid-all > .home-tool-card:active {
+  border-color: #0b3144;
+  background: #0d6688;
+  color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .22);
+  transform: none;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card:focus-visible {
+  outline: 3px solid #f4c95d;
+  outline-offset: 3px;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid #f4c95d;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .13);
+  color: #fff;
+  box-shadow: none;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy { gap: 2px; }
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy strong {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy > span:last-child {
+  display: block;
+  color: rgba(255, 255, 255, .88);
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-action,
+body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-watermark { display: none; }
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator {
+  grid-column: 1 / -1;
+  min-height: 96px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 14px;
+  padding-inline: 14px;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-icon {
+  width: 58px;
+  height: 58px;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-copy strong { font-size: 23px; }
+body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-copy > span:last-child { font-size: 12px; }
+body[data-view="home"] .home-footer { padding-top: 0; }
+
+@media (max-width: 900px) {
+  body[data-view="home"] .home-shell { gap: 14px; }
+  body[data-view="home"] .home-section-heading { display: block; padding: 0; }
+  body[data-view="home"] .home-section-heading > p { margin-top: 5px; text-align: left; }
+  body[data-view="home"] .home-tool-grid-all { gap: 7px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card {
+    grid-template-columns: 43px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 78px;
+    padding: 8px 9px !important;
+  }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon { width: 43px; height: 43px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon svg { width: 25px; height: 25px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy strong { font-size: 14px; line-height: 1.12; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy > span:last-child { font-size: 10px; line-height: 1.15; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator {
+    min-height: 74px;
+    grid-template-columns: 54px minmax(0, 1fr);
+    padding-inline: 11px !important;
+  }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-icon { width: 54px; height: 54px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-icon svg { width: 42px; height: 42px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-copy strong { font-size: 23px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator .home-tool-copy > span:last-child { font-size: 12px; }
+}
+
+@media (max-width: 380px) {
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card { gap: 6px; padding-inline: 7px !important; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon { width: 38px; height: 38px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-icon svg { width: 22px; height: 22px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy strong { font-size: 12px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card .home-tool-copy > span:last-child { font-size: 9px; }
+  body[data-view="home"] .home-tool-grid-all > .home-tool-card.is-simulator { padding-inline: 9px !important; }
+}

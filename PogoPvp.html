@@ -14378,7 +14378,14 @@
       background-blend-mode: multiply;
     }
   </style>
+  <link rel="stylesheet" href="src/meta-desktop-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
+  <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
+  <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
+  <script defer src="src/ui/meta-desktop-presentation.js?v=20260929-v2"></script>
+  <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
   <div class="pokemon-arena-bg" aria-hidden="true"></div>
@@ -14452,15 +14459,6 @@
               <span class="home-tool-action">Open Compendium <span aria-hidden="true">→</span></span>
               <span class="home-tool-watermark" aria-hidden="true"></span>
             </button>
-          </div>
-        </section>
-
-        <section class="home-quick-start" aria-labelledby="homeQuickStartTitle">
-          <div class="home-quick-start-title"><span>Quick Start</span><h3 id="homeQuickStartTitle">Where should I go?</h3></div>
-          <div class="home-quick-start-list">
-            <button type="button" data-home-target="scenario-review"><span>Need to review something that happened in a match?</span><strong>Scenario Review <span aria-hidden="true">→</span></strong></button>
-            <button type="button" data-home-target="compendium"><span>Need to check how a mechanic works?</span><strong>Compendium <span aria-hidden="true">→</span></strong></button>
-            <button type="button" data-home-target="simulator"><span>Need to verify a matchup?</span><strong>Battle <span aria-hidden="true">→</span></strong></button>
           </div>
         </section>
 
@@ -15197,7 +15195,7 @@
           <div class="team-builder-head-actions"><label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label><button id="teamBuilderCopyLink" class="secondary team-builder-share" type="button">Copy Team Link</button><span id="teamBuilderShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span></div>
         </header>
         <div id="teamBuilderShareError" class="team-builder-share-error" role="alert" hidden><span>This shared team could not be loaded. The link may be invalid or incompatible.</span><button id="teamBuilderShareErrorDismiss" class="secondary" type="button">Use my current team</button></div>
-        <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderCount">0 of 6 selected</span></div>
+        <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderSlotProgress" class="team-slot-progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="teamBuilderCount">0 of 6 selected</span></div>
         <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
         <section class="team-meta-setup" aria-labelledby="teamMetaTitle">
@@ -18254,6 +18252,82 @@
       return `<article class="team-slot" data-team-slot="${slot}" style="--team-type:${primaryColor}"><div class="team-card"><div class="team-card-sprite-wrap"><img class="team-card-sprite" data-team-sprite="${slot}" alt="">${member.shadow ? '<span class="team-card-shadow">Shadow</span>' : ""}</div><div class="team-card-copy"><div class="team-card-heading"><h3>${escapeHtml(pokemon.name)}</h3><span class="team-card-slot-number">#${slot + 1}</span></div><div class="team-card-types">${types}</div><div class="team-card-moves">${teamBuilderMoveLine(member.fastMoveId, "Move unavailable", eliteMoves)}${member.chargedMoveIds.map(moveId => teamBuilderMoveLine(moveId, "Move unavailable", eliteMoves)).join("")}</div><div class="team-card-build">${escapeHtml(teamBuilderBuildLabel(member.build))}</div><div class="team-card-actions"><button type="button" data-team-edit="${slot}" aria-label="Edit moves and build for ${escapeHtml(pokemon.name)}">Edit build</button><button class="secondary" type="button" data-team-replace="${slot}">Replace</button><button class="secondary team-remove" type="button" data-team-remove="${slot}" aria-label="Remove ${escapeHtml(pokemon.name)} from slot ${slot + 1}" title="Remove">×</button></div></div></div></article>`;
     }
 
+    function updateTeamBuilderRosterPresentation() {
+      const mobile = matchMedia("(max-width: 900px)").matches;
+      document.querySelectorAll("#teamBuilderSlotProgress i").forEach((bar, index) => {
+        bar.classList.toggle("is-filled", index < teamBuilderState.team.filter(Boolean).length);
+      });
+      document.querySelectorAll("#teamBuilderRoster .team-slot:not(.is-empty)").forEach(slot => {
+        const edit = slot.querySelector("[data-team-edit]");
+        if (edit) edit.textContent = mobile ? "Edit" : "Edit build";
+        const build = slot.querySelector(".team-card-build");
+        if (build) {
+          const full = build.dataset.fullLabel || build.textContent;
+          build.dataset.fullLabel = full;
+          const compact = mobile && full.startsWith("Default build") ? full.replace("Default build · ", "") : full;
+          build.textContent = compact;
+          build.title = compact === full ? "" : full;
+        }
+        const name = slot.querySelector(".team-card-heading h3");
+        if (!name) return;
+        name.style.removeProperty("--team-name-size");
+        if (!mobile) return;
+        const heading = name.parentElement;
+        const headingStyle = getComputedStyle(heading);
+        const available = heading.clientWidth - parseFloat(headingStyle.paddingLeft) - parseFloat(headingStyle.paddingRight);
+        if (available <= 0) return;
+        const style = getComputedStyle(name);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) return;
+        context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const longest = Math.max(...name.textContent.trim().split(/\s+/).map(word => context.measureText(word).width));
+        if (longest > available) {
+          const size = parseFloat(style.fontSize);
+          name.style.setProperty("--team-name-size", `${Math.max(10, size * (available - 1) / longest).toFixed(2)}px`);
+        }
+      });
+    }
+
+    function initTeamBuilderCollapsibles() {
+      if (initTeamBuilderCollapsibles.ready) return;
+      const sections = [
+        ["teamBuilderThreatCoverage", "Threats Coverage", ".team-coverage-head"],
+        ["teamBuilderCoverage", "Meta Coverage", ".team-coverage-head"],
+        ["teamBuilderInsights", "Team insights", ".team-insights-head"],
+        ["teamBuilderReplacement", "Replacement tool", ".team-replacement-head"],
+        ["teamBuilderComparison", "Team comparison", ".team-comparison-head"]
+      ];
+      sections.forEach(([id, label, selector]) => {
+        const section = $(id);
+        const head = section?.querySelector(selector);
+        if (!head) return;
+        section.classList.add("team-presentation-collapsible");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "team-collapse-toggle";
+        button.setAttribute("aria-controls", id);
+        button.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>';
+        const key = `teamBuilderCollapsed:${id}`;
+        try { section.classList.toggle("is-collapsed", sessionStorage.getItem(key) === "1"); } catch (_) {}
+        const sync = () => {
+          const expanded = !section.classList.contains("is-collapsed");
+          button.setAttribute("aria-expanded", String(expanded));
+          button.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} ${label}`);
+          button.title = button.getAttribute("aria-label");
+        };
+        button.addEventListener("click", () => {
+          section.classList.toggle("is-collapsed");
+          try { sessionStorage.setItem(key, section.classList.contains("is-collapsed") ? "1" : "0"); } catch (_) {}
+          sync();
+        });
+        head.appendChild(button);
+        sync();
+      });
+      window.addEventListener("resize", updateTeamBuilderRosterPresentation, { passive: true });
+      initTeamBuilderCollapsibles.ready = true;
+    }
+
     function renderTeamBuilder() {
       if (!window.PvPeakTeamBuilder || !teamBuilderState) return;
       const league = $("teamBuilderLeague");
@@ -18263,6 +18337,7 @@
       }
       const selected = teamBuilderState.team.filter(Boolean).length;
       $("teamBuilderCount").textContent = `${selected} of ${window.PvPeakTeamBuilder.TEAM_SIZE} selected`;
+      initTeamBuilderCollapsibles();
       $("teamBuilderCopyLink").disabled = selected !== window.PvPeakTeamBuilder.TEAM_SIZE || !window.PvPeakTeamBuilderShare;
       const roster = $("teamBuilderRoster");
       roster.innerHTML = teamBuilderState.team.map(renderTeamBuilderSlot).join("");
@@ -18280,6 +18355,7 @@
         const image = roster.querySelector(`[data-team-sprite="${slot}"]`);
         if (pokemon && image) setPokemonImage(image, pokemon);
       });
+      updateTeamBuilderRosterPresentation();
       renderTeamBuilderMeta();
       renderTeamBuilderFinalSlotFinder();
     }
@@ -18549,13 +18625,23 @@
       else if (teamBuilderAnalysisActive) status.textContent = `Running canonical battle simulations${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
       else if (total && cached === total) status.textContent = `All ${total} deterministic matchups are ready from cache${selectedCount < window.PvPeakTeamBuilder.TEAM_SIZE ? ` for ${selectedCount}/6 team members` : ""}.`;
       else status.textContent = `${cached} cached · ${Math.max(0, total - cached)} matchups to prepare.`;
+      const metaStatus = $("teamBuilderMetaStatus");
+      if (metaStatus && teamBuilderMetaDefinition) {
+        const ready = total > 0 && cached === total;
+        metaStatus.textContent = ready
+          ? "Competitive field ready. Deterministic matchup coverage is prepared."
+          : cached > 0 ? `${cached} of ${total} matchups prepared.` : `${teamBuilderMetaDefinition.description} Matchups are not calculated yet.`;
+        metaStatus.classList.toggle("team-analysis-ready", ready);
+      }
       $("teamBuilderAnalysisCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderAnalysisProgress");
       bar.style.setProperty("--analysis-progress", `${progress}%`);
       bar.setAttribute("aria-valuemax", String(total));
       bar.setAttribute("aria-valuenow", String(done));
-      $("teamBuilderAnalyze").disabled = !hasTeam || !total || teamBuilderAnalysisActive || cached === total;
-      $("teamBuilderAnalyze").textContent = cached ? "Prepare remaining" : "Prepare matchups";
+      const analyzeButton = $("teamBuilderAnalyze");
+      analyzeButton.disabled = !hasTeam || !total || teamBuilderAnalysisActive || cached === total;
+      analyzeButton.hidden = total > 0 && cached === total;
+      analyzeButton.textContent = cached ? "Prepare remaining" : "Prepare matchups";
       $("teamBuilderAnalysisCancel").hidden = !teamBuilderAnalysisActive || teamBuilderAnalysisContext !== "coverage";
     }
 
@@ -37042,7 +37128,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260916-v51").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260929-v59").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

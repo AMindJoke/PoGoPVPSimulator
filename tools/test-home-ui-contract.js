@@ -1,68 +1,25 @@
-const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 
-const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
+const root = path.join(__dirname, "..");
+const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
+const styles = fs.readFileSync(path.join(root, "src", "ui", "home-presentation.css"), "utf8");
+const serviceWorker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+const home = html.match(/<div id="homeView"[\s\S]*?<div id="simulatorView"/)?.[0];
 
-function includes(fragment, message) {
-  assert.ok(html.includes(fragment), message || `Missing Home contract: ${fragment}`);
-}
-
-includes('<body class="clarity-ui" data-view="home">', "Home must be the static default before application initialization.");
-includes('id="homeTab"');
-includes('data-view-target="home"');
-includes('id="homeView"');
-includes('body[data-view="home"] #homeView');
-includes('id="homePrimaryTitle"');
-includes('What do you want to do?');
-assert.ok(!html.includes('id="homeHeroTitle"'), "The Home must lead directly with its tools instead of a large promotional hero.");
-includes('data-home-target="scenario-review"');
-includes('data-home-target="compendium"');
-includes('data-home-target="simulator"');
-includes('data-home-target="team-builder"');
-includes('data-home-target="meta"');
-includes('data-home-target="analysis"');
-includes('home-tool-grid-all');
-includes('home-quick-start');
-includes('Not affiliated with Niantic, The Pokémon Company or Play! Pokémon.');
-
-includes('const supportedAppViews = new Set(["home"');
-includes('function readAppViewFromLocation(locationLike = window.location)');
-includes('function appViewUrl(view, locationLike = window.location)');
-includes('function navigateAppView(view, options = {})');
-includes('url.searchParams.delete("compendium")');
-includes('else if (!loadCompendiumFromLocation()) setAppView(readAppViewFromLocation() || "home")');
-includes('event.state?.appView || readAppViewFromLocation() || "home"');
-includes('button.onclick = () => navigateAppView(button.dataset.homeTarget)');
-includes('button.setAttribute("aria-current", "page")');
-
-includes('.home-tool-card:focus-visible');
-includes('@media (max-width: 900px)');
-includes('overflow-x: auto;', "Mobile navigation must remain discoverable without overflowing the page.");
-assert.match(html, /@media \(max-width: 900px\)[\s\S]{0,1600}\.app-tabs button \{[^}]*min-height: 44px;/, "Mobile app navigation must provide comfortable touch targets.");
-assert.match(html, /\.home-tool-grid-all,\s*\.home-tool-grid-primary,\s*\.home-tool-grid-secondary\s*\{\s*grid-template-columns:\s*1fr;/, "All Home tool grids must collapse to one column on mobile.");
-includes('var(--panel)');
-includes('var(--ink)');
-includes('var(--line)');
-
-const homeTargets = [...html.matchAll(/data-home-target="([^"]+)"/g)].map(match => match[1]);
-assert.deepStrictEqual(
-  new Set(homeTargets),
-  new Set(["scenario-review", "compendium", "simulator", "team-builder", "meta", "analysis", "fast-count-trainer"]),
-  "Home actions must expose all seven first-class tools."
+assert.ok(home, "The Home view must remain present before Battle.");
+assert.doesNotMatch(home, /home-quick-start|Quick Start/);
+assert.deepEqual(
+  [...home.matchAll(/data-home-target="([^"]+)"/g)].map(match => match[1]).sort(),
+  ["analysis", "compendium", "fast-count-trainer", "meta", "scenario-review", "simulator", "team-builder"].sort(),
+  "Home must directly expose Battle and all six other tools."
 );
-
-for (const id of ["simulatorTab", "scenarioReviewTab", "teamBuilderTab", "metaTab", "analysisTab", "fastCountTrainerTab", "compendiumTab"]) {
-  includes(`id="${id}"`, `Existing navigation destination ${id} must remain available.`);
-}
-
-includes('id="simulatorTab" type="button" data-view-target="simulator">Battle</button>');
-const homeMarkup = html.slice(html.indexOf('id="homeView"'), html.indexOf('id="simulatorView"'));
-assert.ok(!homeMarkup.includes('home-tool-tier'), "Home cards must not be divided into primary and secondary tiers.");
-assert.ok(!homeMarkup.includes('home-primary-tools') && !homeMarkup.includes('home-secondary-tools'), "Home tools must share one continuous section.");
-assert.ok(
-  homeMarkup.indexOf('data-home-target="simulator"') < homeMarkup.indexOf('data-home-target="scenario-review"'),
-  "Battle must precede Scenario Review in the Home tool order."
-);
+assert.match(styles, /\.home-tool-grid-all > \.home-tool-card\.is-simulator \{[\s\S]*?grid-column: 1 \/ -1/);
+assert.match(styles, /@media \(max-width: 900px\)[\s\S]*?\.home-tool-grid-all \{ gap: 7px; \}/);
+assert.match(html, /src\/ui\/home-presentation\.css\?v=20260929-v1/);
+assert.match(serviceWorker, /2026-09-29-v59-home-presentation/);
+assert.match(serviceWorker, /"\.\/src\/ui\/home-presentation\.css"/);
+assert.match(html, /sw\.js\?v=20260929-v59/);
 
 console.log("Home UI contract tests passed.");

@@ -4,6 +4,7 @@ const path = require("node:path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 const matrixStyles = fs.readFileSync(path.join(__dirname, "..", "src", "team-builder", "team-builder-matrix.css"), "utf8");
+const presentationStyles = fs.readFileSync(path.join(__dirname, "..", "src", "team-builder", "team-builder-presentation.css"), "utf8");
 
 assert.match(html, /src="src\/team-builder\/team-builder-state\.js"/);
 assert.match(html, /src="src\/team-builder\/team-builder-meta\.js"/);
@@ -12,6 +13,12 @@ assert.match(html, /src="src\/team-builder\/team-builder-share\.js"/);
 assert.match(html, /id="teamBuilderTab"[^>]+data-view-target="team-builder"/);
 assert.match(html, /id="teamBuilderView" class="app-view team-builder-view"/);
 assert.match(html, /id="teamBuilderRoster" class="team-roster-grid"/);
+assert.match(html, /id="teamBuilderSlotProgress" class="team-slot-progress" aria-hidden="true"/);
+assert.match(html, /function initTeamBuilderCollapsibles\(\)[\s\S]{0,900}teamBuilderThreatCoverage[\s\S]{0,900}teamBuilderComparison/);
+assert.match(html, /initTeamBuilderCollapsibles\(\);[\s\S]{0,900}teamBuilderState\.team\.map\(renderTeamBuilderSlot\)/);
+assert.match(presentationStyles, /is-collapsed :is\(\.team-coverage-status-legend,[^}]*display: none !important/, "A collapsed coverage panel must hide its legend as well as its results.");
+assert.match(html, /Competitive field ready\. Deterministic matchup coverage is prepared\./, "The meta setup status must reflect completed coverage.");
+assert.match(html, /analyzeButton\.hidden = total > 0 && cached === total/, "Completed coverage must not show an inert preparation command.");
 assert.match(html, /id="teamBuilderPickerModal"[^>]+role="dialog"[^>]+aria-modal="true"/);
 assert.match(html, /id="teamBuilderEditorModal"[^>]+role="dialog"[^>]+aria-modal="true"/, "Build editing must use a focused accessible modal.");
 assert.match(html, /id="teamBuilderFastMove"/);
@@ -103,7 +110,7 @@ assert.match(html, /function teamBuilderAnswerGroupLabel\(answerCount\)[\s\S]{0,
 assert.match(html, /answerCount !== previousAnswerCount[\s\S]{0,260}class="team-answer-divider"[\s\S]{0,450}previousAnswerCount = answerCount/, "Threat rows must insert exactly one subtle divider whenever the answer count changes.");
 assert.match(html, /const answerText = summary \? `\$\{summary\.answerCount\}\/\$\{summary\.teamSize\}`[\s\S]{0,1800}team-coverage-answer-count[^\n]+\$\{answerText\}/, "Each threat row must expose answer count against the current populated team size as primary information.");
 assert.match(html, /const selectedCount = teamBuilderState\?\.team\?\.filter\(Boolean\)\.length \|\| 0;/, "Coverage progress must derive the real populated team size.");
-assert.match(html, /\$\("teamBuilderAnalyze"\)\.disabled = !hasTeam \|\| !total \|\| teamBuilderAnalysisActive \|\| cached === total;/, "Coverage preparation must remain available for incomplete teams with at least one member.");
+assert.match(html, /analyzeButton\.disabled = !hasTeam \|\| !total \|\| teamBuilderAnalysisActive \|\| cached === total;/, "Coverage preparation must remain available for incomplete teams with at least one member.");
 assert.match(html, /function startTeamBuilderAnalysis\(\)[\s\S]{0,300}!teamBuilderState\.team\.filter\(Boolean\)\.length \|\| !coveragePlan\.length/, "Canonical coverage analysis must only reject an empty team, not a 4\/6 or 5\/6 team.");
 assert.match(matrixStyles, /\.team-matchup-cell \{[^}]+min-height: 44px[^}]+border-radius: 8px/, "Matrix cells must share one compact accessible geometry.");
 assert.match(html, /function renderTeamBuilderCoverageDesktop[\s\S]{0,4200}team-coverage-table/, "Desktop coverage must render a six-column semantic table.");
@@ -166,7 +173,9 @@ assert.match(html, /team-builder-league select[^}]*font-size: 16px;/, "Mobile Te
 assert.match(html, /Species Clause: that Pokemon species is already on your team/);
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,900}team-roster-grid[\s\S]{0,100}repeat\(2/ , "Common mobile widths must use two comfortable columns.");
 assert.match(html, /@media \(max-width: 760px\)[\s\S]{0,1800}team-editor-moves[\s\S]{0,80}1fr/, "The mobile build editor must stack move controls instead of compressing them.");
-assert.match(html, /@media \(max-width: 430px\)[\s\S]{0,180}team-roster-grid[\s\S]{0,80}1fr/, "Very narrow mobile widths must use one column.");
+assert.match(presentationStyles, /@media \(max-width: 360px\)[\s\S]{0,1800}team-card-heading h3[^}]*overflow-wrap: anywhere/, "Long Pokemon names must remain visible on narrow phones.");
+assert.match(presentationStyles, /@media \(max-width: 900px\)[\s\S]{0,1400}team-roster-grid[^}]*repeat\(2, minmax\(0, 1fr\)\)/, "Mobile Team Builder must retain two roster columns.");
+assert.match(presentationStyles, /#teamBuilderView \{ min-width: 0; grid-template-columns: minmax\(0, 1fr\); \}/, "The Team Builder grid must not widen the entire page on narrow phones.");
 assert.match(html, /#teamBuilderEditorModal \.team-editor-section \{[^}]*max-width: none/, "Global section sizing must not compress the build editor.");
 assert.doesNotMatch(html, /team-builder-placeholder/);
 assert.match(html, /const matrixDesktopWidth = 210 \+ teamEntries\.length \* 130;[\s\S]{0,180}const matrixMobileWidth = 76 \+ teamEntries\.length \* 43;/, "Partial teams must keep compact matchup columns while reserving less mobile width for opponent labels.");
@@ -180,5 +189,6 @@ assert.match(matrixStyles, /team-coverage-form-badge \{[\s\S]{0,180}max-width: 1
 assert.match(matrixStyles, /width: min\(100%, var\(--matrix-mobile-width, 100%\)\);[\s\S]{0,100}min-width: min\(280px, var\(--matrix-mobile-width, 100%\)\);/, "Complete mobile teams must fit common phone widths while very narrow screens retain a safe scroll floor.");
 assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
 assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v7/);
+assert.match(html, /src\/team-builder\/team-builder-presentation\.css\?v=20260929-v1/);
 
 console.log("Team Builder UI contract tests passed.");

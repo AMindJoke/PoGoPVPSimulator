@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
+const presentation = fs.readFileSync(path.join(__dirname, "..", "src", "compendium", "compendium-presentation.css"), "utf8");
 
 function includes(fragment, message) {
   assert.ok(html.includes(fragment), message || `Missing UI contract: ${fragment}`);
@@ -11,6 +12,10 @@ function includes(fragment, message) {
 includes('id="compendiumTab"', "Compendium must be a first-class navigation destination");
 includes('data-view-target="compendium"');
 includes('id="compendiumView"');
+includes('src/compendium/compendium-presentation.css?v=20260929-v1');
+assert.match(presentation, /@media \(min-width: 901px\)[\s\S]*?\.compendium-workspace \{ grid-template-columns: 188px minmax\(0, 1fr\)/);
+assert.match(presentation, /@media \(max-width: 900px\)[\s\S]*?\.compendium-category \{ min-height: 44px/);
+assert.match(presentation, /@media \(max-width: 900px\)[\s\S]*?#compendiumSearch \{ font-size: 16px/);
 includes('body[data-view="compendium"] #compendiumView { display: grid; }');
 includes('background: color-mix(in srgb, #102737 94%, #163c53); color: #fff;', "The Compendium sidebar must remain dark in every theme instead of deriving its surface from --ink");
 includes('"team-builder", "fast-count-trainer", "compendium"');

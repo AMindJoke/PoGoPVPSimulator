@@ -1,0 +1,111 @@
+body[data-view="analysis"] .analysis-snapshot > header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 0;
+  padding: 0 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
+
+body[data-view="analysis"] .analysis-snapshot > header h3 {
+  color: var(--ink);
+}
+
+body[data-view="scenario-review"] .scenario-status-toolbar {
+  display: grid;
+}
+
+body[data-view="scenario-review"] .scenario-setup-helper[hidden] {
+  display: none !important;
+}
+
+body[data-view="scenario-review"] .manual-decision-panel {
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+body[data-view="scenario-review"] .manual-decision-banner { gap: 9px; }
+
+body[data-view="scenario-review"] .manual-decision-primary {
+  padding: 6px 8px;
+  background: transparent;
+  border-radius: 0;
+}
+
+body[data-view="scenario-review"] .manual-editor-actions .actions > button:not(.secondary) {
+  min-height: 42px;
+}
+
+body[data-view="scenario-review"] .manual-scenario-panel,
+body[data-view="scenario-review"] .manual-overlay-controls { opacity: 1; }
+
+body[data-view="scenario-review"] .manual-technical-issues {
+  background: color-mix(in srgb, var(--soft) 72%, var(--panel));
+}
+
+body[data-view="scenario-review"] .scenario-review-entry {
+  display: grid;
+  gap: 4px;
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+body[data-view="scenario-review"] .scenario-review-entry-kicker {
+  color: var(--accent-dark);
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+body[data-view="scenario-review"] .scenario-review-entry strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+body[data-view="scenario-review"] .scenario-review-entry p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  body[data-view="scenario-review"] .scenario-status-toolbar { padding: 9px 11px; }
+  body[data-view="scenario-review"] .scenario-review-entry { padding: 11px 12px; }
+
+  body[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] {
+    min-height: 244px;
+  }
+
+  body[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-mobile-controls-shell {
+    display: block;
+    max-height: 208px;
+    overflow: auto;
+  }
+
+  body[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-decision-panel {
+    display: block;
+  }
+
+  body[data-view="scenario-review"] #manualMobileBottomSheetShell[data-state="collapsed"] .manual-decision-primary {
+    order: -1;
+  }
+
+  body[data-view="scenario-review"] .manual-editor-actions { gap: 7px; }
+  body[data-view="scenario-review"] .manual-editor-actions .actions > button { min-height: 48px; }
+
+  body[data-view="scenario-review"] .manual-scenario-panel,
+  body[data-view="scenario-review"] .manual-overlay-controls { display: none; }
+}

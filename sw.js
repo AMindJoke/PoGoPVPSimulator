@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-16-v51-meta-ranking-details";
+const CACHE_VERSION = "2026-09-29-v59-home-presentation";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -47,6 +47,14 @@ const CORE_ASSETS = [
   "./src/team-builder/team-builder-meta.js",
   "./src/team-builder/team-builder-analysis.js",
   "./src/team-builder/team-builder-matrix.css",
+  "./src/team-builder/team-builder-presentation.css",
+  "./src/meta-mobile.css",
+  "./src/meta-desktop-presentation.css",
+  "./src/ui/meta-desktop-presentation.js",
+  "./src/ui/analysis-scenario-presentation.css",
+  "./src/ui/analysis-scenario-presentation.js",
+  "./src/ui/home-presentation.css",
+  "./src/compendium/compendium-presentation.css",
   "./assets/team-builder-status-icons/win-hard.svg",
   "./assets/team-builder-status-icons/win-soft.svg",
   "./assets/team-builder-status-icons/loss-hard.svg",
