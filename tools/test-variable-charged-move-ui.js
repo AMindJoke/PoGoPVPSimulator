@@ -16,5 +16,13 @@ assert.match(html, /energyCollectionMarkup\(combatant\.charged, combatant\.energ
 assert.match(html, /function ensureTeamBuilderChargedMoveSelects\(pokemon\)/);
 assert.match(html, /teamBuilderEditorDraft\.chargedMoveIds = chargedSelects\.map/);
 assert.doesNotMatch(html, /charged:\s*\[moveMap\.get\(\$\(`\$\{prefix\}Charged1`\)/);
+assert.match(html, /body\[data-view="simulator"\] \.trainer-card \.moves-stack label > span \{[\s\S]*?position: absolute; width: 1px; height: 1px;/,
+  "Redundant mobile move labels should remain available to assistive technology.");
+assert.match(html, /body\[data-view="simulator"\] \.trainer-card \.moves-stack label select\.move-select \{[\s\S]*?width: 100%;[\s\S]*?min-height: 38px;/,
+  "Mobile move selectors should use the full card width and a readable touch target.");
+assert.match(html, /body\[data-view="simulator"\] \.trainer-card \.moves-stack > \.setup-kicker \{ display: none; \}/,
+  "The redundant Moves heading should not consume space in mobile battle cards.");
+assert.match(html, /body\[data-view="simulator"\] \.trainer-card \.shield-count-toggle button \{[\s\S]*?min-height: 38px;/,
+  "Mobile shield choices should remain easy to tap.");
 
 console.log("Variable Charged Move UI contract tests passed.");

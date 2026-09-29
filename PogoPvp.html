@@ -2793,7 +2793,8 @@
       grid-template-columns: repeat(2, 296px);
       width: min(100%, var(--battle-layout-width));
       align-items: start;
-      justify-content: space-between;
+      justify-content: center;
+      column-gap: 16px;
       justify-self: center;
     }
     section {
@@ -6388,8 +6389,14 @@
     .fast-threshold-move .compendium-move-type-icon { width: 20px; height: 20px; flex: 0 0 auto; }
     .fast-threshold-move .compendium-move-type-icon svg { width: 12px; height: 12px; }
     .fast-threshold-values { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 10px; width: min(100%, 140px); min-width: 0; justify-self: center; font-variant-numeric: tabular-nums; }
+    .fast-threshold-values::before { display: none; }
     .fast-threshold-damage { color: var(--accent-strong); font-size: 16px; font-weight: 850; text-align: center; }
     .fast-threshold-stat { min-width: 0; padding-left: 10px; border-left: 1px solid var(--line); color: var(--ink); font-size: 15px; font-weight: 800; white-space: nowrap; }
+    .fast-threshold-damage,
+    .fast-threshold-stat { display: inline-flex; align-items: baseline; gap: 3px; white-space: nowrap; }
+    .fast-threshold-damage small,
+    .fast-threshold-stat small { color: var(--muted); font-size: 9px; font-weight: 750; }
+    .fast-threshold-context { grid-column: 1 / -1; color: var(--muted); font-size: 10px; font-weight: 700; text-align: center; }
     .fast-threshold-unreachable { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-weight: 650; text-align: center; }
     .fast-threshold-panel[hidden] { display: none; }
     .battle-cta-row {
@@ -12155,6 +12162,61 @@
         font-size: 11px;
       }
     }
+
+    @media (max-width: 600px) {
+      .fast-threshold-columns { display: none; }
+      .fast-threshold-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas: "pokemon pokemon" "move move" "breakpoint bulkpoint";
+        gap: 7px 10px;
+        padding: 10px 4px;
+      }
+      .fast-threshold-pokemon {
+        grid-area: pokemon;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 6px;
+        min-width: 0;
+        text-align: left;
+      }
+      .fast-threshold-pokemon img { width: 40px; height: 40px; }
+      .fast-threshold-pokemon strong {
+        font-size: 13px; line-height: 1.2; overflow-wrap: normal; word-break: normal;
+      }
+      .fast-threshold-move {
+        grid-area: move;
+        align-items: center;
+        justify-content: flex-start;
+        min-width: 0;
+        font-size: 13px;
+        line-height: 1.2;
+        text-align: left;
+      }
+      .fast-threshold-move span { overflow-wrap: normal; word-break: normal; }
+      .fast-threshold-values {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 3px 6px;
+        width: 100%;
+        min-height: 47px;
+        padding-top: 5px;
+        border-top: 1px solid var(--line);
+        justify-self: stretch;
+      }
+      .fast-threshold-values:nth-child(3) { grid-area: breakpoint; }
+      .fast-threshold-values:nth-child(4) { grid-area: bulkpoint; }
+      .fast-threshold-values::before {
+        content: attr(data-threshold-kind);
+        display: block;
+        grid-column: 1 / -1;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .fast-threshold-damage { font-size: 18px; }
+      .fast-threshold-stat { padding-left: 7px; font-size: 15px; }
+      .fast-threshold-context { text-align: left; }
+      .fast-threshold-unreachable { font-size: 13px; text-align: left; }
+    }
     @media (max-width: 430px) {
       header { position: relative; }
       .app-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -14188,17 +14250,26 @@
       }
       body[data-view="simulator"] .trainer-card .shield-count-toggle { width: 100%; max-width: none; }
       body[data-view="simulator"] .trainer-card .shield-count-toggle button {
-        min-width: 0; min-height: 32px; padding: 2px; gap: 2px;
+        min-width: 0; min-height: 38px; padding: 2px; gap: 2px;
       }
       body[data-view="simulator"] .trainer-card .shield-count-toggle svg {
-        width: 17px; height: 17px; flex-basis: 17px;
+        width: 19px; height: 19px; flex-basis: 19px;
       }
+      body[data-view="simulator"] .trainer-card .moves-stack > .setup-kicker { display: none; }
       body[data-view="simulator"] .trainer-card .moves-stack { gap: 3px; margin-top: 5px; }
       body[data-view="simulator"] .trainer-card .move-group,
       body[data-view="simulator"] .trainer-card .charged-move-selects { gap: 3px; }
       body[data-view="simulator"] .trainer-card .move-group + .move-group { margin-top: 3px; }
+      body[data-view="simulator"] .trainer-card .moves-stack label {
+        display: block; width: 100%; max-width: none; min-width: 0;
+      }
+      body[data-view="simulator"] .trainer-card .moves-stack label > span {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+      }
       body[data-view="simulator"] .trainer-card .moves-stack label select.move-select {
-        min-height: 34px; padding-right: 30px; font-size: 11px;
+        display: block; width: 100%; min-width: 0; max-width: 100%;
+        min-height: 38px; padding-right: 30px; box-sizing: border-box; font-size: 12px;
       }
       body[data-view="simulator"] .trainer-card .moves-stack .hp { height: 30px; margin-top: 5px; }
       body[data-view="simulator"] .trainer-card .energy-panel {
@@ -23184,6 +23255,16 @@
       );
     }
 
+    function minimumDisplayedFastStat(rawThreshold, reachableStat, reachesDamage) {
+      const first = Math.max(0, Math.floor(rawThreshold * 100) - 1);
+      const last = Math.ceil(reachableStat * 100);
+      for (let hundredths = first; hundredths <= last; hundredths++) {
+        const stat = hundredths / 100;
+        if (reachesDamage(stat)) return stat;
+      }
+      return null;
+    }
+
     function fastBreakpointRows(attacker, defender) {
       const move = attacker?.fast;
       if (!attacker || !defender || !move?.power) return { currentDamage: null, rows: [] };
@@ -23197,10 +23278,14 @@
       });
       const modifier = damageModifier(attacker, defender, move);
       const multiplier = statStageMultiplier(attacker.attackStage || 0) * (attacker.shadowAtkMult || 1);
-      const rows = [...grouped.values()].sort((a, b) => a.damage - b.damage).slice(0, 3).map(row => ({
-        ...row,
-        threshold: (row.damage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * multiplier)
-      }));
+      const rows = [...grouped.values()].sort((a, b) => a.damage - b.damage).slice(0, 3).map(row => {
+        const rawThreshold = (row.damage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * multiplier);
+        return {
+          ...row,
+          threshold: minimumDisplayedFastStat(rawThreshold, row.spread.attack,
+            attack => fastMoveDamageForStats(attacker, defender, move, attack) >= row.damage)
+        };
+      }).filter(row => row.threshold !== null);
       return { currentDamage, rows };
     }
 
@@ -23218,23 +23303,29 @@
       const modifier = damageModifier(attacker, defender, move);
       const multiplier = statStageMultiplier(defender.defenseStage || 0) * (defender.shadowDefMult || 1);
       const numerator = move.power * effectiveAttack(attacker) * damageBonus * .5 * modifier / multiplier;
-      const rows = [...grouped.values()].sort((a, b) => b.damage - a.damage).slice(0, 3).map(row => ({
-        ...row,
-        threshold: numerator / row.damage
-      }));
+      const rows = [...grouped.values()].sort((a, b) => b.damage - a.damage).slice(0, 3).map(row => {
+        const rawThreshold = numerator / row.damage;
+        return {
+          ...row,
+          threshold: minimumDisplayedFastStat(rawThreshold, row.spread.defense,
+            defense => fastMoveDamageForStats(attacker, defender, move, attacker.attack, defense) <= row.damage)
+        };
+      }).filter(row => row.threshold !== null);
       return { currentDamage, rows };
     }
 
-    function renderFastThresholdValues(kind, rows) {
+    function renderFastThresholdValues(kind, rows, incomingMove = null) {
       const isBreakpoint = kind === "breakpoint";
       const next = rows[0];
+      const context = !isBreakpoint && incomingMove ? ` against ${incomingMove.name}` : "";
+      const contextMarkup = context ? `<small class="fast-threshold-context">vs ${escapeHtml(incomingMove.name)}</small>` : "";
       if (!next) {
-        const noThreshold = `No reachable ${isBreakpoint ? "breakpoint" : "bulkpoint"}`;
-        return `<div class="fast-threshold-values" role="cell" aria-label="${noThreshold}" title="${noThreshold}"><span class="fast-threshold-unreachable">—</span></div>`;
+        const noThreshold = `No reachable ${isBreakpoint ? "breakpoint" : "bulkpoint"}${context}`;
+        return `<div class="fast-threshold-values" data-threshold-kind="${isBreakpoint ? "Breakpoint" : "Bulkpoint"}" role="cell" aria-label="${escapeHtml(noThreshold)}" title="${escapeHtml(noThreshold)}"><span class="fast-threshold-unreachable">—</span>${contextMarkup}</div>`;
       }
       const thresholdLabel = isBreakpoint ? "minimum attack" : "minimum defense";
-      return `<div class="fast-threshold-values" role="cell" aria-label="${isBreakpoint ? "Breakpoint" : "Bulkpoint"}: ${next.damage} damage, ${thresholdLabel} ${next.threshold.toFixed(2)}">
-        <strong class="fast-threshold-damage">${next.damage}</strong><span class="fast-threshold-stat">${next.threshold.toFixed(2)}</span>
+      return `<div class="fast-threshold-values" data-threshold-kind="${isBreakpoint ? "Breakpoint" : "Bulkpoint"}" role="cell" aria-label="${isBreakpoint ? "Breakpoint" : "Bulkpoint"}${escapeHtml(context)}: ${next.damage} damage, ${thresholdLabel} ${next.threshold.toFixed(2)}">
+        <strong class="fast-threshold-damage">${next.damage}<small>dmg</small></strong><span class="fast-threshold-stat">${next.threshold.toFixed(2)}<small>${isBreakpoint ? "ATK" : "DEF"}</small></span>${contextMarkup}
       </div>`;
     }
 
@@ -23249,7 +23340,7 @@
         </div>
         <div class="fast-threshold-move" role="cell">${compendiumMoveTypeIcon(own.fast)}<span>${escapeHtml(own.fast?.name || "Fast Move")}</span></div>
         ${renderFastThresholdValues("breakpoint", breakpoint.rows)}
-        ${renderFastThresholdValues("bulkpoint", bulkpoint.rows)}
+        ${renderFastThresholdValues("bulkpoint", bulkpoint.rows, opponent.fast)}
       </div>`;
     }
 
@@ -37128,7 +37219,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260929-v60").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v61").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
