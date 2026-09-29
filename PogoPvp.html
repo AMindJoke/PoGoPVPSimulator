@@ -6351,6 +6351,47 @@
       box-shadow: var(--panel-shadow);
       max-width: none;
     }
+    .fast-threshold-panel {
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      grid-column: 1 / -1;
+      justify-self: stretch;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--panel-shadow);
+    }
+    .fast-threshold-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .fast-threshold-head h2 { margin: 0; font-size: 16px; }
+    .fast-threshold-cap { flex: 0 0 auto; color: var(--muted); font-size: 11px; font-weight: 750; white-space: nowrap; }
+    .fast-threshold-columns,
+    .fast-threshold-row { display: grid; grid-template-columns: minmax(100px, .8fr) minmax(110px, .65fr) minmax(130px, .9fr) minmax(130px, .9fr); align-items: center; gap: 12px; }
+    .fast-threshold-columns { padding: 0 10px 7px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .fast-threshold-columns > span { color: var(--ink); font-size: 13px; }
+    .fast-threshold-columns > span:first-child { visibility: hidden; }
+    .fast-threshold-columns > span:nth-child(n+3) { text-align: center; }
+    .fast-threshold-row { min-width: 0; padding: 10px; border-top: 1px solid var(--line); }
+    .fast-threshold-row:nth-child(even) { background: color-mix(in srgb, var(--soft) 72%, var(--panel)); }
+    .fast-threshold-pokemon { display: flex; align-items: center; gap: 7px; min-width: 0; }
+    .fast-threshold-pokemon img { width: 42px; height: 42px; flex: 0 0 auto; object-fit: contain; }
+    .fast-threshold-pokemon strong { display: block; overflow-wrap: anywhere; font-size: 14px; }
+    .fast-threshold-pokemon small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .fast-threshold-move { display: flex; align-items: center; gap: 6px; min-width: 0; color: var(--text); font-size: 13px; font-weight: 750; }
+    .fast-threshold-move .compendium-move-type-icon { width: 20px; height: 20px; flex: 0 0 auto; }
+    .fast-threshold-move .compendium-move-type-icon svg { width: 12px; height: 12px; }
+    .fast-threshold-values { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 10px; width: min(100%, 140px); min-width: 0; justify-self: center; font-variant-numeric: tabular-nums; }
+    .fast-threshold-damage { color: var(--accent-strong); font-size: 16px; font-weight: 850; text-align: center; }
+    .fast-threshold-stat { min-width: 0; padding-left: 10px; border-left: 1px solid var(--line); color: var(--ink); font-size: 15px; font-weight: 800; white-space: nowrap; }
+    .fast-threshold-unreachable { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-weight: 650; text-align: center; }
+    .fast-threshold-panel[hidden] { display: none; }
     .battle-cta-row {
       width: min(100%, var(--battle-layout-width));
       justify-self: center;
@@ -9763,17 +9804,18 @@
       border-width: 2px;
       box-shadow: 0 10px 24px rgba(23, 33, 47, .08);
     }
+    body.clarity-ui .fast-threshold-panel { order: 4; }
     body.clarity-ui .matrix-panel {
-      order: 2;
+      order: 3;
     }
     body.clarity-ui .manual-panel {
       order: 3;
     }
     body.clarity-ui .key-numbers {
-      order: 4;
+      order: 5;
     }
     body.clarity-ui .log-panel {
-      order: 5;
+      order: 6;
     }
     body.clarity-ui .timeline-head {
       min-height: 44px;
@@ -11847,6 +11889,25 @@
         grid-template-columns: 1fr;
         gap: 8px;
       }
+      .fast-threshold-panel { padding: 10px; }
+      .fast-threshold-head h2 { font-size: 15px; }
+      .fast-threshold-columns,
+      .fast-threshold-row { grid-template-columns: minmax(50px, .48fr) minmax(58px, .52fr) minmax(86px, 1.02fr) minmax(86px, 1.02fr); gap: 5px; }
+      .fast-threshold-columns { padding: 0 3px 5px; font-size: 11px; }
+      .fast-threshold-columns > span { font-size: 11px; }
+      .fast-threshold-row { padding: 8px 3px; }
+      .fast-threshold-pokemon { flex-direction: column; justify-content: center; gap: 1px; text-align: center; }
+      .fast-threshold-pokemon img { width: 34px; height: 34px; }
+      .fast-threshold-pokemon strong { font-size: 10px; line-height: 1.1; }
+      .fast-threshold-pokemon small { display: none; }
+      .fast-threshold-move { align-items: flex-start; gap: 4px; font-size: 11px; }
+      .fast-threshold-move span { overflow-wrap: anywhere; }
+      .fast-threshold-move .compendium-move-type-icon { width: 16px; height: 16px; }
+      .fast-threshold-move .compendium-move-type-icon svg { width: 10px; height: 10px; }
+      .fast-threshold-values { grid-template-columns: 26px minmax(0, 1fr); gap: 5px; }
+      .fast-threshold-damage { font-size: 14px; }
+      .fast-threshold-stat { padding-left: 5px; font-size: 12px; }
+      .fast-threshold-unreachable { font-size: 10px; }
       .battle-cta-row {
         width: 100%;
         margin-top: -2px;
@@ -15012,6 +15073,14 @@
         <div id="matchupInspector" class="inspector-panel" aria-live="polite"></div>
       </section>
 
+      <section id="fastThresholdPanel" class="fast-threshold-panel" aria-labelledby="fastThresholdTitle" hidden>
+        <div class="fast-threshold-head">
+          <h2 id="fastThresholdTitle">Breakpoints &amp; Bulkpoints</h2>
+          <span class="fast-threshold-cap">Great League · CP 1500</span>
+        </div>
+        <div id="fastThresholdContent" class="fast-threshold-content" role="table" aria-label="Fast Move damage thresholds" aria-live="polite"></div>
+      </section>
+
       <section class="key-numbers" id="keyNumbers">
         <div class="key-card">Fast damage<strong id="keyFastDamage">-</strong></div>
         <div class="key-card wide">Charged damage<strong id="keyChargedDamage">-</strong></div>
@@ -15746,6 +15815,8 @@
     let matchupInspectorOpen = false;
     let matchupInspectorScrollPending = false;
     const rankCache = new Map();
+    const fastThresholdSpreadCache = new Map();
+    let fastThresholdRenderCacheKey = "";
     const formCatalogCache = new Map();
     const chargeWindowTurns = 7;
     const chargeGapTurns = 2;
@@ -22980,6 +23051,146 @@
         return { label: "No Bulk", title: `${move.name}: next bulkpoint at ${neededDefense.toFixed(1)} DEF, above the Great League maximum (${maxDefense.toFixed(1)})` };
       }
       return { label: `Bulk +${delta.toFixed(1)}`, title: `${move.name}: ${damage} -> ${damage - 1} damage at ${neededDefense.toFixed(1)} DEF` };
+    }
+
+    function fastThresholdSpreadRows(pokemon) {
+      if (fastThresholdSpreadCache.has(pokemon.id)) {
+        const cached = fastThresholdSpreadCache.get(pokemon.id);
+        fastThresholdSpreadCache.delete(pokemon.id);
+        fastThresholdSpreadCache.set(pokemon.id, cached);
+        return cached;
+      }
+      const ranks = rankingsForPokemon(pokemon);
+      const spreads = [];
+      for (let ivAtk = 0; ivAtk <= 15; ivAtk++) {
+        for (let ivDef = 0; ivDef <= 15; ivDef++) {
+          for (let ivHp = 0; ivHp <= 15; ivHp++) {
+            let best = null;
+            for (const [level, cpm] of cpMultipliers) {
+              const stats = pokemonStatsAtLevel(pokemon, ivAtk, ivDef, ivHp, level, cpm);
+              if (stats.cp <= 1500) best = stats;
+              else break;
+            }
+            if (!best) continue;
+            spreads.push({
+              attack: best.attack,
+              defense: best.defense,
+              level: best.level,
+              cp: best.cp,
+              ivAtk,
+              ivDef,
+              ivHp,
+              rank: ranks.byIv.get(`${ivAtk}/${ivDef}/${ivHp}`)?.rank || 4096
+            });
+          }
+        }
+      }
+      fastThresholdSpreadCache.set(pokemon.id, spreads);
+      if (fastThresholdSpreadCache.size > 12) fastThresholdSpreadCache.delete(fastThresholdSpreadCache.keys().next().value);
+      return spreads;
+    }
+
+    function fastMoveDamageForStats(attacker, defender, move, attack = attacker.attack, defense = defender.defense) {
+      return estimate(
+        attack === attacker.attack ? attacker : { ...attacker, attack },
+        defense === defender.defense ? defender : { ...defender, defense },
+        move
+      );
+    }
+
+    function fastBreakpointRows(attacker, defender) {
+      const move = attacker?.fast;
+      if (!attacker || !defender || !move?.power) return { currentDamage: null, rows: [] };
+      const currentDamage = estimate(attacker, defender, move);
+      const grouped = new Map();
+      fastThresholdSpreadRows(attacker.p).forEach(spread => {
+        const damage = fastMoveDamageForStats(attacker, defender, move, spread.attack);
+        if (damage <= currentDamage) return;
+        const current = grouped.get(damage);
+        if (!current || spread.rank < current.spread.rank) grouped.set(damage, { damage, spread });
+      });
+      const modifier = damageModifier(attacker, defender, move);
+      const multiplier = statStageMultiplier(attacker.attackStage || 0) * (attacker.shadowAtkMult || 1);
+      const rows = [...grouped.values()].sort((a, b) => a.damage - b.damage).slice(0, 3).map(row => ({
+        ...row,
+        threshold: (row.damage - 1) * effectiveDefense(defender) / (move.power * damageBonus * .5 * modifier * multiplier)
+      }));
+      return { currentDamage, rows };
+    }
+
+    function fastBulkpointRows(defender, attacker) {
+      const move = attacker?.fast;
+      if (!attacker || !defender || !move?.power) return { currentDamage: null, rows: [] };
+      const currentDamage = estimate(attacker, defender, move);
+      const grouped = new Map();
+      fastThresholdSpreadRows(defender.p).forEach(spread => {
+        const damage = fastMoveDamageForStats(attacker, defender, move, attacker.attack, spread.defense);
+        if (damage >= currentDamage) return;
+        const current = grouped.get(damage);
+        if (!current || spread.rank < current.spread.rank) grouped.set(damage, { damage, spread });
+      });
+      const modifier = damageModifier(attacker, defender, move);
+      const multiplier = statStageMultiplier(defender.defenseStage || 0) * (defender.shadowDefMult || 1);
+      const numerator = move.power * effectiveAttack(attacker) * damageBonus * .5 * modifier / multiplier;
+      const rows = [...grouped.values()].sort((a, b) => b.damage - a.damage).slice(0, 3).map(row => ({
+        ...row,
+        threshold: numerator / row.damage
+      }));
+      return { currentDamage, rows };
+    }
+
+    function renderFastThresholdValues(kind, rows) {
+      const isBreakpoint = kind === "breakpoint";
+      const next = rows[0];
+      if (!next) {
+        const noThreshold = `No reachable ${isBreakpoint ? "breakpoint" : "bulkpoint"}`;
+        return `<div class="fast-threshold-values" role="cell" aria-label="${noThreshold}" title="${noThreshold}"><span class="fast-threshold-unreachable">—</span></div>`;
+      }
+      const thresholdLabel = isBreakpoint ? "minimum attack" : "minimum defense";
+      return `<div class="fast-threshold-values" role="cell" aria-label="${isBreakpoint ? "Breakpoint" : "Bulkpoint"}: ${next.damage} damage, ${thresholdLabel} ${next.threshold.toFixed(2)}">
+        <strong class="fast-threshold-damage">${next.damage}</strong><span class="fast-threshold-stat">${next.threshold.toFixed(2)}</span>
+      </div>`;
+    }
+
+    function renderFastThresholdRow(prefix, own, opponent) {
+      const side = prefix === "p1" ? "A" : "B";
+      const breakpoint = fastBreakpointRows(own, opponent);
+      const bulkpoint = fastBulkpointRows(own, opponent);
+      return `<div class="fast-threshold-row" role="row" aria-label="${escapeHtml(own.p.name)} versus ${escapeHtml(opponent.p.name)}">
+        <div class="fast-threshold-pokemon" role="cell">
+          <img data-threshold-sprite="${side}" alt="">
+          <span><strong>${escapeHtml(own.p.name)}</strong><small>vs ${escapeHtml(opponent.p.name)}</small></span>
+        </div>
+        <div class="fast-threshold-move" role="cell">${compendiumMoveTypeIcon(own.fast)}<span>${escapeHtml(own.fast?.name || "Fast Move")}</span></div>
+        ${renderFastThresholdValues("breakpoint", breakpoint.rows)}
+        ${renderFastThresholdValues("bulkpoint", bulkpoint.rows)}
+      </div>`;
+    }
+
+    function renderFastThresholdPanel() {
+      const panel = $("fastThresholdPanel");
+      const content = $("fastThresholdContent");
+      if (!panel || !content) return;
+      if (!setupReadyForBattle() || document.body.classList.contains("manual-mode-active")) {
+        panel.hidden = true;
+        return;
+      }
+      panel.hidden = false;
+      const signature = ["p1", "p2"].map(prefix => [
+        $(`${prefix}Pokemon`).value,
+        $(`${prefix}Fast`).value,
+        $(`${prefix}IvAtk`).value,
+        $(`${prefix}IvDef`).value,
+        $(`${prefix}IvHp`).value
+      ].join("/")).join("|");
+      if (signature === fastThresholdRenderCacheKey && panel.dataset.setupSignature === signature) return;
+      fastThresholdRenderCacheKey = signature;
+      const a = create("p1", "A");
+      const b = create("p2", "B");
+      content.innerHTML = `<div class="fast-threshold-columns" role="row"><span aria-hidden="true"></span><span role="columnheader">Move</span><span role="columnheader">Breakpoint</span><span role="columnheader">Bulkpoint</span></div>${renderFastThresholdRow("p1", a, b)}${renderFastThresholdRow("p2", b, a)}`;
+      setPokemonImage(content.querySelector('[data-threshold-sprite="A"]'), a.p);
+      setPokemonImage(content.querySelector('[data-threshold-sprite="B"]'), b.p);
+      panel.dataset.setupSignature = signature;
     }
 
     function maxReachableStat(p, statName) {
@@ -32107,6 +32318,7 @@
       renderManualModeControls();
       if (!scenarioWorkspace) renderKeyNumbers();
       renderTimeline();
+      renderFastThresholdPanel();
       keepLatestManualTimelineEventVisible();
       if (scenarioState || scenarioWorkspace) {
         clearScenarioResultPanels();
@@ -33557,7 +33769,7 @@
           state: event.state || null
         }))
       });
-      if (!review.items.length && !review.winConditions.length && !(debugBattleTracing && review.developerWinConditions.length)) {
+      if (!review.metrics.length && !(debugBattleTracing && review.developerWinConditions.length)) {
         box.hidden = true;
         box.innerHTML = "";
         return;
@@ -33575,24 +33787,12 @@
             : "";
         return `<${tag} class="battle-review-metric"${attributes}><span>${escapeHtml(metric.label)}</span><div class="battle-review-metric-value">${metric.side ? `<img class="battle-review-metric-sprite" data-review-metric-side="${metric.side}" alt="${escapeHtml(metric.pokemonName)}">` : ""}<strong>${escapeHtml(metric.display)}</strong></div>${metric.note ? `<small>${escapeHtml(metric.note)}</small>` : ""}</${tag}>`;
       }).join("");
-      const keyMoments = review.items.map(item => `<button type="button" class="battle-review-item" data-review-type="${escapeHtml(item.type)}" data-review-event="${Number(item.eventIndex)}" title="Show turn ${Number(item.turn)} on the timeline">
-          <span class="battle-review-label">${escapeHtml(item.label)}</span>
-          <span class="battle-review-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.explanation)}</small></span>
-          <span class="battle-review-turn">T${Number(item.turn)}</span>
-        </button>`).join("");
-      const swingPoint = review.swingPoint
-        ? `<div class="battle-review-section"><span class="battle-review-section-title">Swing Point</span><div class="battle-review-swing"><strong>${escapeHtml(review.swingPoint.title)}</strong><small>${escapeHtml(review.swingPoint.text)}${Number.isFinite(review.swingPoint.turn) ? ` &middot; T${Number(review.swingPoint.turn)}` : ""}</small></div></div>`
-        : "";
       const developerConditions = debugBattleTracing && review.developerWinConditions.length
         ? `<details class="battle-review-debug"><summary>Win Condition Engine</summary><pre>${escapeHtml(JSON.stringify(review.winConditionSummary, null, 2))}</pre></details>`
         : "";
       box.innerHTML = `<div class="battle-review-head"><h3>Battle Review</h3><span>${escapeHtml(review.outcome)}</span></div>
         <div class="battle-review-metrics">${metrics}</div>
-        ${keyMoments ? `<div class="battle-review-section"><span class="battle-review-section-title">Key Moments</span><div class="battle-review-list">${keyMoments}</div></div>` : ""}
-        ${swingPoint}${developerConditions}`;
-      box.querySelectorAll("[data-review-event]").forEach(button => {
-        button.addEventListener("click", () => focusBattleReviewEvent(Number(button.dataset.reviewEvent)));
-      });
+        ${developerConditions}`;
       box.querySelectorAll("[data-review-metric-side]").forEach(image => {
         const combatant = image.dataset.reviewMetricSide === "A" ? left : right;
         if (combatant) setPokemonImage(image, combatant.p);
@@ -33759,31 +33959,6 @@
           Number(action.dataset.startingHp)
         ));
       });
-    }
-
-    function focusBattleReviewEvent(index) {
-      const event = timeline[index];
-      const scroll = $("timelineScroll");
-      if (!event || !scroll) return;
-      selectedTimelineIndex = index;
-      previewTimelineState(index);
-      highlightTimelineIndex(index);
-      const turnPx = Number.parseFloat($("timelineRuler").style.getPropertyValue("--turn-px")) || 18;
-      const chargeSlots = timelineChargeSlots();
-      const eventX = timelineReplayEventX(event, index, chargeSlots, turnPx);
-      const targetLeft = Math.max(0, Math.min(scroll.scrollWidth - scroll.clientWidth, eventX - scroll.clientWidth / 2));
-      scroll.scrollTo({ left: targetLeft, behavior: "smooth" });
-      const line = $("timelineHoverLine");
-      const label = $("timelineHoverLabel");
-      if (line && label) {
-        const visualTurn = eventX / Math.max(1, turnPx);
-        const labelX = Math.max(targetLeft + 34, Math.min(targetLeft + scroll.clientWidth - 34, eventX));
-        line.style.transform = `translate3d(${eventX}px, 0, 0)`;
-        label.style.transform = `translate3d(${labelX}px, 0, 0) translateX(-50%)`;
-        label.textContent = `T${visualTurn.toFixed(1)} / ${(visualTurn * .5).toFixed(1)}s`;
-        scroll.classList.add("hovering");
-      }
-      smoothScrollToElement($("battleTimeline"), "center");
     }
 
     function renderMatrixPreview() {
