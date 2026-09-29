@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const crypto = require("node:crypto");
 const Season = require("../src/season/season-context.js");
 
 const root = path.resolve(__dirname, "..");
@@ -13,9 +14,11 @@ browser.globalThis = browser;
 vm.createContext(browser);
 for (const relative of [
   "battle-data.js",
+  "cramorant-data.js",
   "default-movesets.js",
   "data/great-league-rankings.js",
   "data/great-league-ranking-details.js",
+  "data/seasons/twilight-trails/default-movesets.js",
   "data/seasons/next-season.js",
   "data/seasons/season-catalog.js"
 ]) {
@@ -52,7 +55,13 @@ assert.equal(
   ranking.metadata.cells
 );
 assert.ok(ranking.metadata.cells > 0);
-assert.equal(ranking.metadata.mergedFromChunks, 4);
+assert.equal(ranking.metadata.fullCandidateCount, 1540);
+assert.equal(ranking.metadata.offset, 0);
+assert.equal(ranking.metadata.limit, null);
+assert.equal(opponentCount, 43);
+const metaSeed = JSON.parse(fs.readFileSync(path.join(root, "data/great-league-meta.json"), "utf8"));
+assert.equal(metaSeed.pokemon.length, opponentCount);
+for (const id of ["clodsire", "corviknight", "thievul"]) assert.ok(metaSeed.pokemon.includes(id));
 assert.equal(new Set(ranking.entries.map(entry => entry.id)).size, ranking.entries.length);
 for (const entry of ranking.entries) {
   assert.equal(entry.matchups, opponentCount * shieldScenarioCount);
@@ -64,6 +73,9 @@ assert.equal(context.activeSeasonData.rankingDetails.sourceRankingGeneratedAt, c
 assert.equal(context.activeSeasonData.rankingDetails.sourceMovesetHash, ranking.metadata.movesetHash);
 assert.equal(context.activeSeasonData.rankingDetails.sourceGameMasterHash, ranking.metadata.gameMasterHash);
 assert.equal(context.activeSeasonData.rankingDetails.sourceMatrixVersion, ranking.metadata.matrixVersion);
+const hash = value => crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex");
+assert.equal(ranking.metadata.gameMasterHash, hash(context.activeSeasonData.gameMaster), "Ranking Game Master must match the current season.");
+assert.equal(ranking.metadata.movesetHash, hash(browser.TWILIGHT_TRAILS_DEFAULT_MOVESETS), "Ranking movesets must match the current season.");
 assert.equal(context.activeSeasonData.rankingDetails.top50Size, 50);
 const topRanks = new Map(ranking.entries.slice(0, 50).map(entry => [entry.id, entry.rank]));
 for (const entry of ranking.entries) {

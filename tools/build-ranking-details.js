@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const crypto = require("crypto");
 const { buildRankingRatings, selectRelevantMatchups } = require("../src/analysis/ranking-details");
 const { inflateCacheResult, MATCHUP_SCORE_VERSION } = require("../src/analysis/matchup-inspector");
 const G = require("./build-great-league-meta-database");
@@ -11,22 +12,33 @@ const root = path.resolve(__dirname, "..");
 const seasonArg = process.argv.find(arg => arg.startsWith("--season="));
 const seasonId = (seasonArg ? seasonArg.split("=").slice(1).join("=") : "").replace(/[^a-z0-9_.-]+/gi, "_");
 const outputRoot = path.join(root, ...(seasonId ? ["data", "seasons", seasonId] : ["data"]));
-const rankingPath = path.join(outputRoot, "great-league-rankings.json");
-const analysisPath = path.join(outputRoot, "analysis", "great-league-analysis.json");
+const optionPath = name => {
+  const arg = process.argv.find(value => value.startsWith(`${name}=`));
+  return arg ? path.resolve(root, arg.slice(name.length + 1)) : null;
+};
+const rankingPath = optionPath("--ranking-input") || path.join(outputRoot, "great-league-rankings.json");
+const analysisPath = optionPath("--analysis-input") || path.join(outputRoot, "analysis", "great-league-analysis.json");
 const cacheDir = path.join(outputRoot, "matchup-cache", "great-league", "rank1");
 const cacheRootArg = process.argv.find(arg => arg.startsWith("--cache-root="));
 const configuredCacheDir = cacheRootArg
   ? path.resolve(root, cacheRootArg.slice("--cache-root=".length))
   : cacheDir;
 const fallbackCacheDir = seasonId ? path.join(root, "data", "matchup-cache", "great-league", "rank1") : null;
-const outputJson = path.join(outputRoot, "great-league-ranking-details.json");
-const outputJs = path.join(outputRoot, "great-league-ranking-details.js");
+const outputJson = optionPath("--details-output") || path.join(outputRoot, "great-league-ranking-details.json");
+const outputJs = outputJson.replace(/\.json$/i, ".js");
 const pokemonArg = process.argv.find(arg => arg.startsWith("--pokemon="));
 const selectiveIds = new Set((pokemonArg ? pokemonArg.split("=").slice(1).join("=") : "")
   .split(",")
   .map(value => value.trim())
   .filter(Boolean));
 const syncCurrent = process.argv.includes("--sync-current");
+if (optionPath("--details-output")) {
+  const relative = path.relative(path.join(root, "reports"), outputJson);
+  if (relative.startsWith("..") || path.isAbsolute(relative) || !outputJson.endsWith(".json")) {
+    throw new Error("Experimental details output must be a JSON file inside reports.");
+  }
+  if (syncCurrent) throw new Error("--sync-current cannot be combined with --details-output.");
+}
 if (syncCurrent) {
   if (!seasonId) throw new Error("--sync-current requires --season.");
   if (selectiveIds.size) throw new Error("--sync-current requires a complete details generation.");
@@ -47,6 +59,11 @@ const topIds = new Set(entries.filter(entry => Number(entry.rank) <= 50).map(ent
 const entryById = new Map(entries.map(entry => [entry.id, entry]));
 const analysisById = new Map((analysis.entries || []).map(entry => [entry.pokemon?.a?.id, entry]));
 const sourceData = G.generationData();
+const sourceGameMasterHash = crypto.createHash("sha256").update(JSON.stringify(sourceData.gameMaster)).digest("hex");
+if (ranking.metadata?.gameMasterHash !== sourceGameMasterHash ||
+    ranking.metadata?.movesetHash !== G.movesetHash(sourceData.standardMovesets)) {
+  throw new Error("Ranking Game Master or moveset hash differs from current generation data; regenerate the ranking first.");
+}
 const moveMap = new Map(sourceData.gameMaster.moves.map(move => [move.moveId, G.normalizeMove(move)]));
 const pokemonMap = new Map(sourceData.gameMaster.pokemon
   .filter(pokemon => pokemon && pokemon.speciesId && pokemon.baseStats)
@@ -124,6 +141,7 @@ const output = {
   entries: details
 };
 const json = `${JSON.stringify(output, null, 2)}\n`;
+fs.mkdirSync(path.dirname(outputJson), { recursive: true });
 fs.writeFileSync(outputJson, json);
 const globalName = seasonId ? "TWILIGHT_TRAILS_RANKING_DETAILS" : "GREAT_LEAGUE_RANKING_DETAILS";
 fs.writeFileSync(outputJs, `window.${globalName} = ${JSON.stringify(output, null, 2)};\n`);
