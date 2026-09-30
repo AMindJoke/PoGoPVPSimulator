@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
-const { createRunner, timelineModel } = require("../src/analysis/meta-quick-matchup");
+const { createRunner, timelineModel, compactTimelineModel } = require("../src/analysis/meta-quick-matchup");
 const workers = [];
 const createWorker = () => {
   const worker = { sent: [], terminated: false,
@@ -52,6 +52,23 @@ assert.equal(timeline.turns, 7);
 assert.equal(timeline.seconds, 3.5);
 assert.equal(timeline.rows.length, 2);
 assert.equal(timelineModel([]).turns, 1);
+const compact = compactTimelineModel([
+  { trainer: "A", kind: "fast", start: 0, duration: 2 },
+  { trainer: "A", kind: "charge", moveId: "a", start: 5 },
+  { trainer: "B", kind: "shield", moveId: "a", start: 5 },
+  { trainer: "B", kind: "charge", moveId: "b", start: 5 },
+  { trainer: "A", kind: "form-protect", moveId: "b", start: 5 },
+  { trainer: "B", kind: "fast", start: 6, duration: 2 },
+  { trainer: "A", kind: "technical-lag", start: 6 }
+]);
+assert.equal(compact.rows[0].visualTurn, 1, "Fast tokens sit at the impact turn, as in Battle.");
+assert.equal(compact.rows[1].visualTurn, compact.rows[2].visualTurn, "A shield aligns with its opposing charge.");
+assert.equal(compact.rows[3].visualTurn, compact.rows[4].visualTurn, "Form protection also aligns with its opposing charge.");
+assert.ok(compact.rows[3].visualTurn > compact.rows[1].visualTurn, "Same-turn charges retain their actual order in separate visual slots.");
+assert.ok(compact.rows[5].visualTurn > compact.rows[3].visualTurn);
+assert.equal(compact.rows.length, 6, "Technical events must not appear as fake fast attacks.");
+assert.equal(compact.turns, 8, "Visual pauses do not add simulation turns.");
+assert.equal(compact.ticks.at(-1).turn, compact.turns);
 
 // Run the same canonical worker used by the preview, with its actual trace output.
 const G = require("./build-great-league-meta-database");

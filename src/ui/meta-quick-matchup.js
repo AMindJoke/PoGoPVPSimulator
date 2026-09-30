@@ -49,21 +49,30 @@
   }
 
   function timelineHtml(result) {
-    const timeline = model.timelineModel(result.timelineTrace);
-    const names = { A: selection.config.left.p.name, B: selection.config.right.p.name };
-    const lanes = ["A", "B"].map(side => `<div class="meta-quick-lane"><strong>${escapeHtml(names[side])}</strong><div class="meta-quick-track">${timeline.rows.filter(event => event.trainer === side).map(event => {
-      const rawKind = String(event.kind || "fast").toLowerCase();
-      const kind = rawKind === "charge" ? "charged" : rawKind;
-      const symbol = kind === "charged" ? "●" : kind === "shield" ? "◇" : kind === "ko" ? "×" : "";
-      const label = `${event.moveName || kind} · turn ${event.start} · ${Math.round(event.damage || 0)} damage`;
-      return `<span class="meta-quick-event ${kind === "charged" ? "charged" : kind === "shield" ? "shield" : kind === "ko" ? "ko" : "fast"}" style="left:${event.start / timeline.turns * 100}%;width:${Math.max(.8, event.duration / timeline.turns * 100)}%" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">${symbol}</span>`;
-    }).join("")}</div></div>`).join("");
+    const timeline = model.compactTimelineModel(result.timelineTrace, chargeWindowTurns, chargePauseTurns);
+    const combatants = { A: selection.config.left, B: selection.config.right };
+    const percent = turn => turn / timeline.visualTurns * 100;
+    const lanes = ["A", "B"].map(side => {
+      const combatant = combatants[side];
+      const events = timeline.rows.filter(event => event.trainer === side).map(event => {
+        const move = [combatant.fast, ...combatant.charged].find(move => move?.id === event.moveId) || moveMap.get(event.moveId);
+        const color = typeColors[move?.type] || "#66788c";
+        const shield = event.kind === "shield" || event.kind === "form-protect";
+        const label = `${shield ? event.kind === "form-protect" ? "Disguise" : "Shield" : event.moveName || "Move"} · Turn ${event.start}`;
+        const icon = shield ? event.kind === "form-protect" ? disguiseSvg() : shieldSvg() : "";
+        const trail = event.kind === "charge" ? `<span class="meta-quick-charge-trail" style="left:${percent(event.visualStart)}%;width:${percent(event.visualTurn - event.visualStart)}%;--event-color:${color}" aria-hidden="true"></span>` : "";
+        return `${trail}<span class="meta-quick-event ${shield ? "shield" : event.kind}" role="img" style="left:${percent(event.visualTurn)}%;--event-color:${color};--event-icon:url('${metaTypeIconDataUri(move?.type || "normal", color)}')" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">${icon}</span>`;
+      }).join("");
+      const hp = Math.round(Number(result.details?.[side === "A" ? "aHp" : "bHp"] || 0) * combatant.maxHp);
+      return `<div class="meta-quick-lane" aria-label="${escapeHtml(combatant.p.name)} actions"><div class="meta-quick-track">${events}${hp === 0 ? `<span class="meta-quick-ko" role="img" aria-label="${escapeHtml(combatant.p.name)} KO" title="KO" style="left:${percent(timeline.visualTurns - 1)}%">×</span>` : ""}</div></div>`;
+    }).join("");
+    const labels = ["A", "B"].map(side => `<div class="meta-quick-lane-label" title="${escapeHtml(combatants[side].p.name)}"><img src="${escapeHtml(imageUrl(combatants[side].p))}" alt="${escapeHtml(combatants[side].p.name)}"></div>`).join("");
     const detail = result.details || {};
     const hpA = Math.round(Number(detail.aHp ?? detail.hpRatioA ?? 0) * selection.config.left.maxHp);
     const hpB = Math.round(Number(detail.bHp ?? detail.hpRatioB ?? 0) * selection.config.right.maxHp);
-    return `<section class="meta-quick-timeline" aria-label="Matchup timeline"><div class="meta-quick-section-head"><h3>Timeline</h3><span>${timeline.turns} turns · ${timeline.seconds}s</span></div>
-      ${lanes}<div class="meta-quick-axis"><span>0s</span><span>${timeline.seconds / 2}s</span><span>${timeline.seconds}s</span></div>
-      <p class="meta-quick-legend"><i class="fast"></i>Fast <i class="charged"></i>Charged <i class="shield"></i>Shield</p>
+    return `<section class="meta-quick-timeline" aria-label="Matchup timeline"><div class="meta-quick-section-head"><h3>Timeline</h3><span>${timeline.turns} turns</span></div>
+      <div class="meta-quick-timeline-grid"><div class="meta-quick-lane-labels"><span>Turn</span>${labels}</div><div class="meta-quick-timeline-scroll" tabindex="0" aria-label="Battle timeline; scroll horizontally for longer matchups"><div class="meta-quick-timeline-content" style="--quick-timeline-width:${timeline.minWidth}px"><div class="meta-quick-ruler">${timeline.ticks.map(tick => `<span style="left:${percent(tick.visualTurn)}%">${tick.turn}</span>`).join("")}</div>${lanes}</div></div></div>
+      <p class="meta-quick-legend"><span><i class="fast"></i>Fast</span><span><i class="charge"></i>Charged</span><span><i class="shield">${shieldSvg()}</i>Shield</span><span><b>×</b>KO</span></p>
       <p class="meta-quick-hp">Remaining HP <strong>${hpA} / ${selection.config.left.maxHp}</strong><span>vs</span><strong>${hpB} / ${selection.config.right.maxHp}</strong></p></section>`;
   }
 

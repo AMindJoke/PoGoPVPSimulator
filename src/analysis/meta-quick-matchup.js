@@ -84,5 +84,32 @@
     }
     return { start, cancel, prioritize };
   }
-  return { scenarios, timelineModel, createRunner };
+  // Charged attacks get the same visual pause as Battle. It is display space,
+  // not extra simulation turns; opposing shields share their attack's slot.
+  function compactTimelineModel(events = [], windowTurns = 7, pauseTurns = 9) {
+    const timeline = timelineModel(events);
+    const charges = timeline.rows.map((event, index) => ({ event, index }))
+      .filter(({ event }) => event.kind === "charge" || event.kind === "charged");
+    const before = (turn, index = Infinity) => charges.filter(item => item.event.start < turn || (item.event.start === turn && item.index < index)).length;
+    const rows = timeline.rows.map((event, index) => {
+      const kind = event.kind === "charged" ? "charge" : event.kind;
+      if (!["fast", "charge", "shield", "form-protect"].includes(kind)) return null;
+      const paired = ["shield", "form-protect"].includes(kind)
+        ? [...charges].reverse().find(item => item.index < index && item.event.start === event.start && item.event.trainer !== event.trainer && item.event.moveId === event.moveId)
+        : null;
+      const attack = kind === "charge" ? { event, index } : paired;
+      if (attack) {
+        const start = attack.event.start + before(attack.event.start, attack.index) * pauseTurns;
+        return { ...event, kind, visualStart: start, visualTurn: start + windowTurns };
+      }
+      const impact = kind === "fast" ? Math.max(event.start, event.start + event.duration - 1) : event.start;
+      return { ...event, kind, visualTurn: impact + before(impact) * pauseTurns };
+    }).filter(Boolean);
+    const step = timeline.turns > 50 ? 10 : 5;
+    const tickTurns = [...new Set([0, ...Array.from({ length: Math.floor(timeline.turns / step) }, (_, i) => (i + 1) * step).filter(turn => timeline.turns - turn >= step / 2), timeline.turns])];
+    return { ...timeline, rows, visualTurns: timeline.turns + charges.length * pauseTurns + 2,
+      minWidth: Math.max(240, timeline.turns * 4 + charges.length * 28 + 24),
+      ticks: tickTurns.map(turn => ({ turn, visualTurn: turn + (turn === 0 ? 0 : before(turn)) * pauseTurns })) };
+  }
+  return { scenarios, timelineModel, compactTimelineModel, createRunner };
 });
