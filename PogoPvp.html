@@ -535,12 +535,10 @@
     .compendium-workspace { display: grid; grid-template-columns: 210px minmax(0, 1fr); align-items: start; gap: 12px; min-width: 0; }
     .compendium-sidebar { position: sticky; top: 10px; z-index: 4; display: grid; gap: 10px; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, #102737 94%, #163c53); color: #fff; box-shadow: 0 7px 20px var(--shadow); }
     .compendium-content { display: grid; gap: 12px; min-width: 0; }
-    .compendium-hero { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 9px; padding: 3px; color: #fff; }
+    .compendium-hero { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 9px; padding: 3px; color: #fff; }
     .compendium-eyebrow { margin: 0 0 5px; color: var(--accent-dark); font-size: 10px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
-    .compendium-hero .compendium-eyebrow { margin: 0; color: color-mix(in srgb, #fff 65%, var(--accent)); font-size: 7px; }
-    .compendium-hero h2 { margin: 1px 0 0; color: #fff; font-size: 14px; letter-spacing: -.02em; }
+    .compendium-hero h2 { margin: 0; color: #fff; font-size: 14px; letter-spacing: -.02em; }
     .compendium-hero p:last-child { display: none; }
-    .compendium-hero-mark { grid-column: 1; grid-row: 1; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.16); border-radius: 9px; background: rgba(255,255,255,.08); color: #fff; font-size: 12px; font-weight: 900; }
     .compendium-nav-toggle { display: none; min-height: 38px; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); color: #fff; box-shadow: none; }
     .compendium-search-panel { position: relative; z-index: 3; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
     .compendium-search-wrap { position: relative; }
@@ -13407,7 +13405,7 @@
       }
       .compendium-scroll-hint {
         display: flex;
-        grid-column: 3;
+        grid-column: 2;
         grid-row: 1;
         align-items: center;
         justify-content: flex-end;
@@ -13425,7 +13423,7 @@
         line-height: 1;
       }
       .compendium-hero {
-        grid-template-columns: 34px minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) auto;
       }
 
       .team-slot.is-empty,
@@ -15327,8 +15325,7 @@
       <div class="compendium-workspace">
         <aside id="compendiumSidebar" class="compendium-sidebar">
           <header class="compendium-hero">
-            <div><p class="compendium-eyebrow">Judge tools</p><h2 id="compendiumTitle">Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and canonical battle data.</p></div>
-            <div class="compendium-hero-mark" aria-hidden="true">JC</div>
+            <div><h2 id="compendiumTitle">Compendium</h2><p>A structured reference workspace for competitive mechanics, tournament rulings, terminology, and canonical battle data.</p></div>
             <span class="compendium-scroll-hint" aria-hidden="true">Swipe for more sections <span>&rarr;</span></span>
           </header>
           <button id="compendiumNavToggle" class="compendium-nav-toggle" type="button" aria-expanded="false" aria-controls="compendiumCategories">Sections</button>
