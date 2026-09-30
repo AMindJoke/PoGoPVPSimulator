@@ -18,8 +18,9 @@ assert.deepEqual(
 assert.match(styles, /\.home-tool-grid-all > \.home-tool-card\.is-simulator \{[\s\S]*?grid-column: 1 \/ -1/);
 assert.match(styles, /@media \(max-width: 900px\)[\s\S]*?\.home-tool-grid-all \{ gap: 7px; \}/);
 assert.match(html, /src\/ui\/home-presentation\.css\?v=20260929-v1/);
-assert.match(serviceWorker, /2026-09-29-v59-home-presentation/);
+const cacheVersion = serviceWorker.match(/const CACHE_VERSION = "(\d{4})-(\d{2})-(\d{2})-(v\d+)-[^"]+"/);
+assert.ok(cacheVersion, "The service worker must have a dated cache version.");
 assert.match(serviceWorker, /"\.\/src\/ui\/home-presentation\.css"/);
-assert.match(html, /sw\.js\?v=20260929-v59/);
+assert.ok(html.includes(`sw.js?v=${cacheVersion[1]}${cacheVersion[2]}${cacheVersion[3]}-${cacheVersion[4]}`), "The registered worker version must match the active cache version.");
 
 console.log("Home UI contract tests passed.");

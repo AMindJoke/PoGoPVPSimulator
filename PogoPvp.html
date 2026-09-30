@@ -14453,6 +14453,7 @@
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260929-v2"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
@@ -16081,6 +16082,7 @@
         .filter(p => p && p.speciesId && p.speciesName && p.baseStats)
         .map(p => ({
           id: p.speciesId,
+          aliasId: p.aliasId || null,
           name: p.speciesName,
           originalFormId: p.originalFormId || p.speciesId,
           dex: p.dex || 0,
@@ -20238,10 +20240,18 @@
 
     function analysisRankingEntries() {
       ensureMetaRankingData();
-      const entries = Array.isArray(metaRankingData?.entries) ? metaRankingData.entries : [];
-      return entries
-        .filter(entry => entry.profile === metaRankingPreferredProfile && findPokemon(entry.id))
-        .sort((a, b) => Number(a.rank || 9999) - Number(b.rank || 9999));
+      ensureMetaRoleRankingData();
+      return overallRankingEntries();
+    }
+
+    function overallRankingEntries() {
+      return window.PvPeakRankingDetails.buildOverallRankingEntries(
+        metaRankingData?.entries || [],
+        metaRoleRankingAvailable() ? metaRoleRankingData.entries : [],
+        activeMetaRankingSource()?.metadata || {},
+        findPokemon,
+        metaRankingPreferredProfile
+      );
     }
 
     function analysisRole(entry) {
@@ -20265,12 +20275,7 @@
     function metaTopRankMap(limit = 50) {
       ensureMetaRankingData();
       ensureMetaRoleRankingData();
-      const source = activeMetaRankingSource();
-      const allEntries = Array.isArray(source?.entries) ? source.entries : [];
-      const preferred = allEntries.filter(entry => entry.profile === metaRankingPreferredProfile);
-      const ranked = (preferred.length ? preferred : allEntries)
-        .filter(entry => entry && entry.id && Number.isFinite(Number(entry.rank)))
-        .sort((a, b) => Number(a.rank) - Number(b.rank));
+      const ranked = overallRankingEntries();
       const maxRank = Number.isFinite(Number(limit)) ? Number(limit) : Infinity;
       return new Map(ranked
         .filter(entry => Number(entry.rank) > 0 && Number(entry.rank) <= maxRank)
@@ -20289,10 +20294,13 @@
 
     function analysisModel(entry) {
       const pokemon = findPokemon(entry.id);
-      const recommended = metaRankingMoves(entry, pokemon);
+      const recommended = metaMovesForPokemon(pokemon);
+      const scoreStale = window.PvPeakRankingDetails.movesetScoreStale(entry.moveset, {
+        fast: recommended.fast?.id, charged: recommended.charged.map(move => move.id)
+      });
       const detailEntry = metaRankingDetailsCurrent() ? metaRankingDetails.entries?.[entry.id] || null : null;
-      const currentWins = currentMetaMatchupRows(detailEntry?.wins, entry.id);
-      const currentLosses = currentMetaMatchupRows(detailEntry?.losses, entry.id);
+      const currentWins = scoreStale ? [] : currentMetaMatchupRows(detailEntry?.wins, entry.id);
+      const currentLosses = scoreStale ? [] : currentMetaMatchupRows(detailEntry?.losses, entry.id);
       const recommendedIds = new Set([recommended.fast, ...recommended.charged].filter(Boolean).map(move => move.id));
       const moveModel = (move, kind) => ({
         id: move.id,
@@ -20512,7 +20520,8 @@
         fallbackImage: fallbackImageUrl(pokemon),
         shadow: isShadow(pokemon),
         rank: entry.rank || "-",
-        rating: Math.round(Number(entry.competitiveScore ?? entry.overallScore ?? 500)),
+        rating: entry.displayScore,
+        movesetScoreStale: scoreStale,
         role: analysisRole(entry),
         winRate: Number(entry.winRate || 0),
         wins: Number(entry.wins || 0),
@@ -20625,7 +20634,7 @@
         root.innerHTML = `<section class="analysis-card analysis-wide-card"><header class="analysis-card-head"><div><span>Unavailable</span><h3>Analysis data unavailable</h3></div></header><div class="analysis-card-body"><p>The Great League ranking dataset could not be loaded.</p></div></section>`;
         return;
       }
-      const currentId = requestedId || select.value || entries[0].id;
+      const currentId = window.PvPeakRankingDetails.canonicalPokemonId(requestedId || select.value || entries[0].id, findPokemon);
       const entry = entries.find(item => item.id === currentId) || entries[0];
       if (select.options.length !== entries.length) {
         select.innerHTML = entries.map(item => `<option value="${escapeHtml(item.id)}">#${escapeHtml(item.rank)} ${escapeHtml(item.name)}</option>`).join("");
@@ -20746,6 +20755,7 @@
           metaRoleRankingLoading = false;
           metaRoleRankingLoadPromise = null;
           renderMetaRankings();
+          if (document.body.dataset.view === "analysis") renderPokemonAnalysis();
         }
       }, 8000);
       metaRoleRankingLoading = true;
@@ -20773,6 +20783,7 @@
           metaRoleRankingLoading = false;
           metaRoleRankingLoadPromise = null;
           renderMetaRankings();
+          if (document.body.dataset.view === "analysis") renderPokemonAnalysis();
         });
     }
 
@@ -21176,8 +21187,7 @@
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
       if (!metaOfflineRowsCache) {
-        const preferredEntries = metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile);
-        const entries = preferredEntries.length ? preferredEntries : metaRankingData.entries;
+        const entries = overallRankingEntries();
         const roleEntries = new Map((metaRoleRankingData?.entries || [])
           .filter(entry => entry.profile === metaRankingPreferredProfile)
           .map(entry => [entry.id, entry]));
@@ -21223,9 +21233,7 @@
                 || String(a.name).localeCompare(String(b.name)))
           .map((entry, index) => ({
             ...entry,
-            rank: metaRankingRole === "overall"
-              ? (roleDataActive ? (entry.rankingData?.rank || index + 1) : entry.rank)
-              : index + 1
+            rank: index + 1
           }));
       }
       return metaOfflineRowsCache.filter(entry =>
@@ -21240,12 +21248,10 @@
       if (!p) return null;
       const moves = metaMovesForPokemon(p);
       if (!moves.fast || !moves.charged.length) return null;
-      const activeMovesetKey = [moves.fast.id, ...moves.charged.map(move => move.id)].join("|");
-      const publishedMovesetKey = [entry.moveset?.fast, ...(entry.moveset?.charged || [])].filter(Boolean).join("|");
-      const movesetScoreStale = Boolean(publishedMovesetKey && activeMovesetKey !== publishedMovesetKey);
-      const displayScore = candidatePriorActive
-        ? (entry.metaViabilityScore ?? entry.overallScore ?? entry.competitiveScore ?? entry.weightedScore ?? entry.averageScore)
-        : (entry.competitiveScore ?? entry.overallScore ?? entry.weightedScore ?? entry.averageScore);
+      const movesetScoreStale = window.PvPeakRankingDetails.movesetScoreStale(entry.moveset, {
+        fast: moves.fast.id, charged: moves.charged.map(move => move.id)
+      });
+      const displayScore = entry.displayScore ?? window.PvPeakRankingDetails.overallScore(entry, activeMetaRankingSource()?.metadata);
       return {
         p,
         id: entry.id,
@@ -21359,7 +21365,7 @@
           <strong>${entry.score}</strong>
           ${scoreBreakdown ? `<small>${escapeHtml(scoreBreakdown)}</small>` : ""}
         </span>
-      </div><div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entry.p.id)}"></div></div></div>`;
+      </div>${entry.movesetScoreStale ? `<div class="ranking-moveset-warning">Score: previous moveset</div>` : ""}<div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entry.p.id)}"></div></div></div>`;
     }
 
     function toggleMetaRankingRow(row) {
@@ -21560,7 +21566,9 @@
         : metaRoleRankingAvailable()
           ? " Showing the role-aware Overall score; Consistency contributes to Overall but remains hidden from the selector."
           : "";
-      const modelText = model
+      const modelText = metaRankingRole !== "overall"
+        ? " Individual role scores do not include the Overall candidate prior."
+        : model
         ? model.mode === "role"
           ? model.candidatePrior
             ? ` Scores blend the role score (${Math.round((1 - Number(model.candidatePrior.weight || 0)) * 100)}%) with the candidate prior (${Math.round(Number(model.candidatePrior.weight || 0) * 100)}%). The available role views are Lead, Closer, Switch, Charger, and Attacker.`
@@ -37216,7 +37224,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v61").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v62").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

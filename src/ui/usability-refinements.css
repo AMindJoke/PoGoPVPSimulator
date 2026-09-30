@@ -1,0 +1,59 @@
+.ranking-moveset-warning {
+  display: block;
+  margin-top: 6px;
+  padding: 4px 7px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  color: #704600;
+  background: #fff1ce;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+body[data-theme="dark"] .ranking-moveset-warning,
+body[data-theme="neo"] .ranking-moveset-warning {
+  color: #ffe0a1;
+  background: #42351c;
+}
+
+.meta-entry > .ranking-moveset-warning {
+  margin: 0;
+  padding: 6px 10px;
+  border-width: 1px 0 0;
+  border-radius: 0;
+}
+
+@media (max-width: 900px) {
+  #matchupInspectorToggle,
+  #matrixReset,
+  #manualModeToggle,
+  body .manual-segmented button {
+    min-height: 44px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  body .timeline-zoom-control { grid-template-columns: 44px 48px 44px; }
+  #timelineZoomOut, #timelineZoomIn { min-width: 44px; min-height: 44px; font-size: 20px; }
+  body .timeline-zoom-control output { font-size: 12px; }
+
+  body .pokemon-suggestion {
+    grid-template-columns: 36px minmax(0, 1fr);
+    min-height: 52px;
+    padding: 8px;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  body .pokemon-suggestion img { width: 36px; height: 36px; }
+  body .pokemon-suggestion small { font-size: 11px; line-height: 1.3; }
+
+  body[data-view="meta"] .meta-panel-head { grid-template-columns: minmax(0, 1fr) 110px 44px; }
+  body[data-view="meta"] .meta-actions #metaRefresh { width: 44px; min-width: 44px; min-height: 44px; }
+  body[data-view="meta"] .meta-actions #metaRankingRole,
+  body[data-view="meta"] .meta-actions #metaSearch,
+  body[data-view="meta"] .meta-actions #metaCompareToggle,
+  body[data-view="meta"] .meta-lab-filter-toggle { min-height: 44px; }
+}

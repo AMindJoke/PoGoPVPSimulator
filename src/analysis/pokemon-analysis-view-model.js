@@ -31,7 +31,8 @@
         types: list(input.types),
         league: "Great League",
         rank: input.rank ?? "-",
-        rating: Number.isFinite(Number(input.rating)) ? Math.round(Number(input.rating)) : null,
+        rating: input.rating != null && Number.isFinite(Number(input.rating)) ? Math.round(Number(input.rating)) : null,
+        movesetScoreStale: !!input.movesetScoreStale,
         role: input.role || "Competitive pick"
       },
       summary: {

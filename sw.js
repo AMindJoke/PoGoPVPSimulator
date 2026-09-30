@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-30-v61-battle-thresholds";
+const CACHE_VERSION = "2026-09-30-v62-ranking-usability";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -54,6 +54,7 @@ const CORE_ASSETS = [
   "./src/ui/analysis-scenario-presentation.css",
   "./src/ui/analysis-scenario-presentation.js",
   "./src/ui/home-presentation.css",
+  "./src/ui/usability-refinements.css",
   "./src/compendium/compendium-presentation.css",
   "./assets/team-builder-status-icons/win-hard.svg",
   "./assets/team-builder-status-icons/win-soft.svg",

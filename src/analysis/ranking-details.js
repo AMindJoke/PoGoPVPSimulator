@@ -5,11 +5,57 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.PvPeakRankingDetails = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function createRankingDetailsApi() {
+  function overallScore(entry = {}, metadata = {}) {
+    const priorActive = Number(metadata.candidatePriorWeight ?? metadata.rankingModel?.candidatePrior?.weight ?? 0) > 0;
+    const values = priorActive
+      ? [entry.metaViabilityScore, entry.overallScore, entry.competitiveScore, entry.weightedScore, entry.averageScore]
+      : [entry.competitiveScore, entry.overallScore, entry.weightedScore, entry.averageScore];
+    const value = values.find(value => value != null && Number.isFinite(Number(value)));
+    return value == null ? null : Math.round(Number(value));
+  }
+
+  function canonicalPokemonId(id, resolvePokemon) {
+    const seen = new Set();
+    let current = id;
+    while (current && !seen.has(current)) {
+      seen.add(current);
+      const alias = resolvePokemon(current)?.aliasId;
+      if (!alias || !resolvePokemon(alias)) break;
+      current = alias;
+    }
+    return current;
+  }
+
+  function buildOverallRankingEntries(baseEntries, roleEntries, metadata, resolvePokemon, profile) {
+    const preferred = baseEntries.filter(entry => entry.profile === profile);
+    const roles = new Map(roleEntries.filter(entry => entry.profile === profile).map(entry => [entry.id, entry]));
+    const canonical = new Map();
+    for (const base of preferred.length ? preferred : baseEntries) {
+      if (!base?.id || !resolvePokemon(base.id)) continue;
+      const id = canonicalPokemonId(base.id, resolvePokemon);
+      const entry = { ...base, ...(roles.get(base.id) || {}) };
+      const previous = canonical.get(id);
+      // Prefer the actual species record over its cosmetic aliases, regardless of input order.
+      if (!previous || base.id === id) canonical.set(id, entry);
+    }
+    return [...canonical.values()]
+      .map(entry => ({ ...entry, displayScore: overallScore(entry, metadata) }))
+      .sort((a, b) => (b.displayScore ?? -1) - (a.displayScore ?? -1)
+        || Number(a.rank || 9999) - Number(b.rank || 9999) || a.id.localeCompare(b.id))
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  function movesetScoreStale(published, active) {
+    if (!published?.fast) return false;
+    return published.fast !== active?.fast
+      || [...(published.charged || [])].sort().join("|") !== [...(active?.charged || [])].sort().join("|");
+  }
+
   function buildRankingRatings(entry = {}, analysis = {}) {
     const categories = entry.categoryScores || {};
     const complexity = analysis.complexity || {};
     return {
-      overall: ratingFromScore(entry.competitiveScore || entry.overallScore || entry.weightedScore || 0, 1000),
+      overall: ratingFromScore(entry.displayScore ?? overallScore(entry) ?? 0, 1000),
       consistency: ratingFromScore(complexity.consistency ?? consistencyFromDeviation(entry.scoreStdDev), 100),
       shieldDependence: ratingFromScore(complexity.shieldDependency ?? shieldSpread(entry.shieldStates), 100),
       technicalDifficulty: ratingFromScore(complexity.score ?? 0, 100),
@@ -64,5 +110,5 @@
     return Math.min(100, Math.max(...values) - Math.min(...values));
   }
 
-  return { buildRankingRatings, selectRelevantMatchups, orientMatchupScore, ratingFromScore };
+  return { overallScore, canonicalPokemonId, buildOverallRankingEntries, movesetScoreStale, buildRankingRatings, selectRelevantMatchups, orientMatchupScore, ratingFromScore };
 });

@@ -47,7 +47,7 @@ for (const [id, target] of Object.entries(expected)) {
 const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
 assert.match(html, /const source = standard\?\.metaOverride \? standard : rankingEntry\?\.moveset;/);
 assert.match(html, /function metaAlternativeMovesets\(entry, detail\)/);
-assert.match(html, /const movesetScoreStale = Boolean\(publishedMovesetKey && activeMovesetKey !== publishedMovesetKey\);/);
+assert.match(html, /const movesetScoreStale = window\.PvPeakRankingDetails\.movesetScoreStale\(entry\.moveset,/);
 assert.match(html, /Live battles and Team Builder simulations use the updated moveset shown above\./);
 
 console.log("Meta moveset override tests passed.");

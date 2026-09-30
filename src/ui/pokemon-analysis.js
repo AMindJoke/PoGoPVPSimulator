@@ -42,9 +42,10 @@
         <strong class="analysis-hero-role">${escapeHtml(identity.role)}</strong>
         <p>${escapeHtml(model.summary.statement)}</p>
         ${loadout ? `<div class="analysis-hero-loadout" aria-label="Recommended moveset">${loadout}</div>` : ""}
+        ${identity.movesetScoreStale ? `<p class="ranking-moveset-warning">Score reflects the previous moveset. Updated moves are shown above; key matchups are hidden until recalculated.</p>` : ""}
       </div>
       <aside class="analysis-rating-panel">
-        <span class="analysis-eyebrow">PvPeak Rating</span>
+        <span class="analysis-eyebrow">Overall Meta score</span>
         <div class="analysis-rating-value"><strong>${escapeHtml(rating)}</strong><span>/ 1000</span></div>
         <div class="analysis-rating-track"><i style="width:${Math.max(0, Math.min(100, Number(rating) / 10 || 0))}%"></i></div>
         <dl><div><dt>Overall rank</dt><dd>#${escapeHtml(identity.rank)}</dd></div><div><dt>League</dt><dd>${escapeHtml(identity.league)}</dd></div></dl>
