@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-30-v62-ranking-usability";
+const CACHE_VERSION = "2026-09-30-v63-background-rankings";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -18,12 +18,7 @@ const CORE_ASSETS = [
   "./battle-data.js",
   "./cramorant-data.js",
   "./default-movesets.js",
-  "./data/great-league-rankings.js",
-  "./data/great-league-ranking-details.js",
   "./data/seasons/season-generated-loader.js",
-  "./data/seasons/twilight-trails/great-league-rankings.js",
-  "./data/seasons/twilight-trails/great-league-ranking-details.js",
-  "./data/seasons/twilight-trails/default-movesets.js",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js",
   "./src/season/season-context.js",
@@ -98,6 +93,14 @@ const CORE_ASSETS = [
   "./src/battle/battle-intelligence.js"
 ];
 
+// Warm only the current data after the shell. Reuse browser HTTP cache for
+// downloads already started by the page, while preserving first-visit offline use.
+const RANKING_ASSETS = [
+  "./data/great-league-rankings.js?v=20260916-v45-score-v5-meta2",
+  "./data/great-league-ranking-details.js?v=20260916-v45-score-v5-meta2",
+  "./data/great-league-role-rankings.json"
+];
+
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
@@ -106,6 +109,13 @@ self.addEventListener("install", event => {
       const response = await fetch(request);
       if (response.ok) await cache.put(request, response);
     }));
+    for (const asset of RANKING_ASSETS) {
+      try {
+        const request = new Request(new URL(asset, self.location.href), { cache: "force-cache" });
+        const response = await fetch(request);
+        if (response.ok) await cache.put(request, response);
+      } catch (_) { /* A failed warmup must not prevent the shell from installing. */ }
+    }
     await self.skipWaiting();
   })());
 });

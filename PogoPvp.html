@@ -20,7 +20,7 @@
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20260916-v45-score-v5-meta2"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20260930-background-v1"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -15538,7 +15538,7 @@
       storage: window.localStorage,
       location: window.location
     }) || null;
-    const activeSeasonData = seasonContext?.activeSeasonData || {
+    let activeSeasonData = seasonContext?.activeSeasonData || {
       id: "legacy-current",
       label: "Current Season",
       status: "current",
@@ -15555,7 +15555,7 @@
     const ivOptimization = window.PvPeakIvOptimization;
     const ivImpactPresenter = window.PvPeakIvImpact || {};
     const rankingDetailsPresenter = window.PvPeakRankingDetails || {};
-    const metaRankingDetails = activeSeasonData.rankingDetails || { entries: {} };
+    let metaRankingDetails = activeSeasonData.rankingDetails || { entries: {} };
     const battleReliability = window.PvPeakBattleReliability || {};
     const battleIntelligence = window.PvPeakBattleIntelligence || null;
     const battleEngineVersion = battleReliability.BATTLE_ENGINE_VERSION || "battle-planner-v5";
@@ -16586,9 +16586,7 @@
 
       refreshPokemonLists();
       resetBattleStateFromSetup();
-      ensureMetaRoleRankingData();
       updateMetaRankingRoleContext();
-      renderMetaRankings();
       updateBattleAvailability();
       const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
       if (!directTeamBuilderBattle) {
@@ -20631,6 +20629,10 @@
       if (!root || !select || !renderer) return;
       const entries = analysisRankingEntries();
       if (!entries.length) {
+        if (metaRankingLoading) {
+          root.innerHTML = `<section class="analysis-card analysis-wide-card"><div class="analysis-card-body" role="status">Loading analysis data...</div></section>`;
+          return;
+        }
         root.innerHTML = `<section class="analysis-card analysis-wide-card"><header class="analysis-card-head"><div><span>Unavailable</span><h3>Analysis data unavailable</h3></div></header><div class="analysis-card-body"><p>The Great League ranking dataset could not be loaded.</p></div></section>`;
         return;
       }
@@ -20699,6 +20701,24 @@
         metaOfflineRowsCache = null;
       }
       if (metaRankingData || metaRankingLoading || metaRankingLoadPromise) return;
+      if (window.PvPeakSeasonGeneratedLoader) {
+        if (metaRankingLoadError) return;
+        metaRankingLoading = true;
+        metaRankingLoadPromise = window.PvPeakSeasonGeneratedLoader.load().then(data => {
+          activeSeasonData = Object.freeze({ ...activeSeasonData, ...data });
+          window.BATTLE_ACTIVE_SEASON_DATA = activeSeasonData;
+          metaRankingData = data.rankings;
+          metaRankingDetails = data.rankingDetails;
+          metaOfflineRowsCache = null;
+        }).catch(error => {
+          metaRankingLoadError = error?.message || String(error);
+        }).finally(() => {
+          metaRankingLoading = false;
+          metaRankingLoadPromise = null;
+          refreshVisibleRankingView();
+        });
+        return;
+      }
       if (typeof fetch !== "function") {
         metaRankingLoadError = "Offline ranking JSON cannot be loaded in this browser context.";
         return;
@@ -20742,7 +20762,7 @@
     }
 
     function ensureMetaRoleRankingData() {
-      if (metaRoleRankingData || metaRoleRankingLoading || metaRoleRankingLoadPromise) return;
+      if (metaRoleRankingData || metaRoleRankingLoading || metaRoleRankingLoadPromise || metaRoleRankingLoadError) return;
       if (typeof fetch !== "function") {
         metaRoleRankingLoadError = "Role ranking JSON cannot be loaded in this browser context.";
         return;
@@ -20754,14 +20774,13 @@
           metaRoleRankingLoadError = "Role ranking JSON timed out.";
           metaRoleRankingLoading = false;
           metaRoleRankingLoadPromise = null;
-          renderMetaRankings();
-          if (document.body.dataset.view === "analysis") renderPokemonAnalysis();
+          refreshVisibleRankingView();
         }
       }, 8000);
       metaRoleRankingLoading = true;
       metaRoleRankingLoadError = "";
       metaRoleRankingLoadPromise = fetch(metaRoleRankingDataUrl, {
-        cache: "no-store",
+        cache: "default",
         signal: controller ? controller.signal : undefined
       })
         .then(response => {
@@ -20782,8 +20801,7 @@
           clearTimeout(timeout);
           metaRoleRankingLoading = false;
           metaRoleRankingLoadPromise = null;
-          renderMetaRankings();
-          if (document.body.dataset.view === "analysis") renderPokemonAnalysis();
+          refreshVisibleRankingView();
         });
     }
 
@@ -20800,6 +20818,11 @@
     }
 
     function reloadMetaRankingData() {
+      if (metaRankingLoading || metaRoleRankingLoading) return;
+      if (!metaRankingData && window.PvPeakSeasonGeneratedLoader) {
+        // Clear the loader's failed attempt before starting the visible retry.
+        window.PvPeakSeasonGeneratedLoader.load({ retry: true }).catch(() => {});
+      }
       metaRankingData = activeSeasonData.rankings || null;
       metaRoleRankingData = null;
       metaRoleRankingLoadError = "";
@@ -20812,6 +20835,25 @@
       resetMetaProgressiveRender();
       ensureMetaRoleRankingData();
       renderMetaRankings();
+    }
+
+    function refreshVisibleRankingView() {
+      const view = document.body.dataset.view;
+      if (view === "meta") renderMetaRankings();
+      else if (view === "analysis") renderPokemonAnalysis();
+      else if (view === "team-builder") renderTeamBuilder();
+    }
+
+    function warmRankingDataAfterPaint() {
+      const warm = () => {
+        ensureMetaRankingData();
+        ensureMetaRoleRankingData();
+      };
+      // Two frames give the initial view a paint before downloads and parsing.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (typeof requestIdleCallback === "function") requestIdleCallback(warm, { timeout: 1200 });
+        else setTimeout(warm, 0);
+      }));
     }
 
     function resetMetaProgressiveRender() {
@@ -37224,7 +37266,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v62").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v63").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
@@ -37273,6 +37315,7 @@
     })();
 
     init();
+    warmRankingDataAfterPaint();
   </script>
 </body>
 </html>
