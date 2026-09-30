@@ -33,7 +33,7 @@
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/iv-impact.js"></script>
-  <script src="src/analysis/ranking-details.js"></script>
+  <script src="src/analysis/ranking-details.js?v=20260930-v66"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/battle/charged-move-collection.js"></script>
@@ -14455,7 +14455,7 @@
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
-  <script defer src="src/ui/meta-desktop-presentation.js?v=20260929-v2"></script>
+  <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -20246,7 +20246,7 @@
     function overallRankingEntries() {
       return window.PvPeakRankingDetails.buildOverallRankingEntries(
         metaRankingData?.entries || [],
-        metaRoleRankingAvailable() ? metaRoleRankingData.entries : [],
+        metaRoleRankingSource()?.entries || [],
         activeMetaRankingSource()?.metadata || {},
         findPokemon,
         metaRankingPreferredProfile
@@ -20763,6 +20763,7 @@
     }
 
     function ensureMetaRoleRankingData(options = {}) {
+      if (metaRoleRankingSource() === metaRankingData && metaRankingData) return;
       if (metaRoleRankingData || metaRoleRankingLoading || metaRoleRankingLoadPromise || metaRoleRankingLoadError) return;
       if (typeof fetch !== "function") {
         metaRoleRankingLoadError = "Role ranking JSON cannot be loaded in this browser context.";
@@ -21036,13 +21037,7 @@
     }
 
     function metaRankingDetailsCurrent() {
-      const source = activeMetaRankingSource();
-      const metadata = source?.metadata;
-      return Boolean(metadata && metaRankingDetails?.sourceRankingGeneratedAt === metadata.generatedAt
-        && metaRankingDetails.sourceMovesetHash === metadata.movesetHash
-        && metaRankingDetails.sourceGameMasterHash === metadata.gameMasterHash
-        && metaRankingDetails.sourceMatrixVersion === metadata.matrixVersion
-        && metaRankingDetails.top50Size === 50);
+      return rankingDetailsPresenter.rankingDetailsCurrent(metaRankingDetails, activeMetaRankingSource());
     }
 
     function metaRankingRoleDefinition(role = metaRankingRole) {
@@ -21091,14 +21086,18 @@
       node.innerHTML = `<strong>${escapeHtml(definition.label)}</strong> · ${escapeHtml(definition.context)}`;
     }
 
+    function metaRoleRankingSource() {
+      return rankingDetailsPresenter.selectRoleRankingSource(
+        metaRankingData, metaRoleRankingData, activeSeasonData?.id, metaRankingPreferredProfile
+      );
+    }
+
     function metaRoleRankingAvailable() {
-      if (!metaRoleRankingData || !Array.isArray(metaRoleRankingData.entries)) return false;
-      const sourceSeason = metaRoleRankingData.metadata?.seasonId;
-      return !activeSeasonData?.id || !sourceSeason || sourceSeason === activeSeasonData.id;
+      return Boolean(metaRoleRankingSource());
     }
 
     function activeMetaRankingSource() {
-      return metaRoleRankingAvailable() ? metaRoleRankingData : metaRankingData;
+      return metaRoleRankingSource() || metaRankingData;
     }
 
     function metaLoadMoreHtml(visible, total) {
@@ -21131,6 +21130,8 @@
     function renderMetaRankings() {
       const box = $("metaRanking");
       if (!box || !allPokemon.length) return;
+      const expandedIds = new Set([...box.querySelectorAll("[data-meta-expand][aria-expanded='true']")]
+        .map(row => row.dataset.metaExpand));
       renderMetaActiveFilters();
       ensureMetaRankingData();
       ensureMetaRoleRankingData();
@@ -21161,7 +21162,7 @@
         box.innerHTML = `<div class="matrix-loading">Loading offline Great League ranking...</div>`;
         return;
       }
-      if (metaRankingRole !== "overall" && metaRoleRankingLoading) {
+      if (metaRankingRole !== "overall" && metaRoleRankingLoading && !metaRoleRankingAvailable()) {
         box.innerHTML = `<div class="matrix-loading">Loading ${escapeHtml(metaRankingRoleLabel(metaRankingRole))} ranking...</div>`;
         return;
       }
@@ -21197,6 +21198,9 @@
         };
       });
       bindMetaMatchupButtons(box);
+      box.querySelectorAll("[data-meta-expand]").forEach(row => {
+        if (expandedIds.has(row.dataset.metaExpand)) toggleMetaRankingRow(row);
+      });
       renderMetaCompareTray();
       setupMetaProgressiveLoading(box, rows.length);
     }
@@ -21225,13 +21229,13 @@
 
     function metaOfflineRankingRows(query, typeFilter = "", moveQuery = "") {
       const roleDataActive = metaRoleRankingAvailable();
-      const sourceData = roleDataActive ? metaRoleRankingData : metaRankingData;
+      const sourceData = activeMetaRankingSource();
       const metadata = sourceData && sourceData.metadata ? sourceData.metadata : {};
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
       if (!metaOfflineRowsCache) {
         const entries = overallRankingEntries();
-        const roleEntries = new Map((metaRoleRankingData?.entries || [])
+        const roleEntries = new Map((metaRoleRankingSource()?.entries || [])
           .filter(entry => entry.profile === metaRankingPreferredProfile)
           .map(entry => [entry.id, entry]));
         const candidatePriorActive = roleDataActive
@@ -21446,10 +21450,17 @@
     }
 
     function metaRankingDetailsHtml(entry) {
-      const expectedCoverage = 50 - Number(Number(entry.rankingData?.rank) <= 50);
-      if (!metaRankingDetailsCurrent() || metaRankingDetails.entries?.[entry.p.id]?.top50Coverage !== expectedCoverage) {
-        return `<div class="meta-detail-content"><p class="hint">Key matchups are being updated for this ranking.</p></div>`;
-      }
+      const detailState = rankingDetailsPresenter.rankingDetailsState(
+        metaRankingDetails, activeMetaRankingSource(), entry.p.id, metaRankingPreferredProfile,
+        { loading: metaRankingLoading, error: metaRankingLoadError }
+      );
+      const detailMessages = {
+        loading: "Loading key matchups…",
+        error: "Key matchups could not be loaded. Use Refresh to retry.",
+        stale: "Key matchups are unavailable for this ranking version.",
+        missing: "Key matchups are not available for this Pokemon yet.",
+        incomplete: "Key matchup coverage is incomplete for this Pokemon."
+      };
       const detail = metaRankingDetails.entries?.[entry.p.id] || {};
       const currentWins = currentMetaMatchupRows(detail.wins, entry.p.id);
       const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
@@ -21464,7 +21475,9 @@
       const roleNote = metaRankingRole === "overall"
         ? ""
         : `<p class="meta-role-detail-note">The selected role has its own score and W/L/T summary above. Key matchup cards remain Overall until role-specific matchup details are generated.</p>`;
-      const matchupsHtml = entry.movesetScoreStale
+      const matchupsHtml = detailState !== "ready"
+        ? `<p class="hint" role="status" data-meta-detail-state="${detailState}">${detailMessages[detailState]}</p>`
+        : entry.movesetScoreStale
         ? `<p class="hint">The ranking score and key matchups still reflect the previous moveset. Live battles and Team Builder simulations use the updated moveset shown above.</p>`
         : `<div class="meta-matchups">${metaMatchupGroup(matchupLabel, "wins", currentWins, entry)}${metaMatchupGroup(lossLabel, "losses", currentLosses, entry)}</div>`;
       return `<div class="meta-detail-content">${roleSummary}${roleNote}${matchupsHtml}${alternateHtml}</div>`;
@@ -37267,7 +37280,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v65").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v66").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

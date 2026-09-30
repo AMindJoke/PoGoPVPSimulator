@@ -136,13 +136,8 @@
     grid.append(typeSection, makeOverviewSection("Fast Moves", moves, "move", entries.length));
     const children = [head, grid];
 
-    const rankingData = window.GREAT_LEAGUE_RANKINGS;
-    const details = window.GREAT_LEAGUE_RANKING_DETAILS;
-    const metadata = rankingData?.metadata;
-    const currentDetails = details?.sourceRankingGeneratedAt === metadata?.generatedAt
-      && details?.sourceMovesetHash === metadata?.movesetHash
-      && details?.sourceGameMasterHash === metadata?.gameMasterHash
-      && details?.sourceMatrixVersion === metadata?.matrixVersion;
+    const details = window.BATTLE_ACTIVE_SEASON_DATA?.rankingDetails || window.GREAT_LEAGUE_RANKING_DETAILS;
+    const currentDetails = metaRankingDetailsCurrent();
     if (role === "overall" && !filtered && entries.length === 50 && currentDetails) {
       const threats = document.createElement("div");
       threats.className = "meta-lab-overview-threats";

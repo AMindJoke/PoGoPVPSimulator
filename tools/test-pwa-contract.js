@@ -63,7 +63,7 @@ const coreBlock = serviceWorker.match(/const CORE_ASSETS = \[([\s\S]*?)\];/);
 assert.ok(coreBlock, "The service worker must declare its offline shell.");
 for (const [, asset] of coreBlock[1].matchAll(/"\.\/(.*?)"/g)) {
   if (!asset) continue;
-  assert.ok(fs.existsSync(path.join(root, asset)), `Missing cached shell asset: ${asset}`);
+  assert.ok(fs.existsSync(path.join(root, asset.split("?")[0])), `Missing cached shell asset: ${asset}`);
 }
 
 console.log("PWA contract tests passed.");

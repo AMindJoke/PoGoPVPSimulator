@@ -51,6 +51,42 @@
       || [...(published.charged || [])].sort().join("|") !== [...(active?.charged || [])].sort().join("|");
   }
 
+  function selectRoleRankingSource(base, roles, seasonId, profile = "rank1") {
+    const candidates = [base, roles].filter(source => {
+      if (!Array.isArray(source?.entries)) return false;
+      if (seasonId && source.metadata?.seasonId && source.metadata.seasonId !== seasonId) return false;
+      const entries = source.entries.filter(entry => entry.profile === profile);
+      return entries.length > 0 && entries.every(entry =>
+        ["lead", "closer", "switch", "charger", "attacker"].every(role => entry.categoryScores?.[role]));
+    });
+    // The main dataset also contains role scores. A later response from the
+    // separate role file must not replace a newer generation already loaded.
+    return candidates.sort((a, b) =>
+      (Date.parse(b.metadata?.generatedAt) || 0) - (Date.parse(a.metadata?.generatedAt) || 0))[0] || null;
+  }
+
+  function rankingDetailsCurrent(details, ranking) {
+    const metadata = ranking?.metadata;
+    return Boolean(metadata && details?.top50Size === 50 &&
+      ["RankingGeneratedAt", "MovesetHash", "GameMasterHash", "MatrixVersion"].every(key => {
+        const sourceKey = key === "RankingGeneratedAt" ? "generatedAt" : key[0].toLowerCase() + key.slice(1);
+        return metadata[sourceKey] && details[`source${key}`] === metadata[sourceKey];
+      }));
+  }
+
+  function rankingDetailsState(details, ranking, id, profile = "rank1", options = {}) {
+    if (options.loading) return "loading";
+    if (options.error) return "error";
+    if (!rankingDetailsCurrent(details, ranking)) return "stale";
+    const detail = details.entries?.[id];
+    if (!detail) return "missing";
+    // Coverage belongs to the source Overall ranking, never a sorted role tab.
+    const source = ranking.entries?.find(entry => entry.id === id && entry.profile === profile);
+    if (!source) return "missing";
+    const expected = 50 - Number(Number(source.rank) > 0 && Number(source.rank) <= 50);
+    return detail.top50Coverage === expected ? "ready" : "incomplete";
+  }
+
   function buildRankingRatings(entry = {}, analysis = {}) {
     const categories = entry.categoryScores || {};
     const complexity = analysis.complexity || {};
@@ -110,5 +146,5 @@
     return Math.min(100, Math.max(...values) - Math.min(...values));
   }
 
-  return { overallScore, canonicalPokemonId, buildOverallRankingEntries, movesetScoreStale, buildRankingRatings, selectRelevantMatchups, orientMatchupScore, ratingFromScore };
+  return { overallScore, canonicalPokemonId, buildOverallRankingEntries, movesetScoreStale, selectRoleRankingSource, rankingDetailsCurrent, rankingDetailsState, buildRankingRatings, selectRelevantMatchups, orientMatchupScore, ratingFromScore };
 });
