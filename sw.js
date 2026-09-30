@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-09-30-v63-background-rankings";
+const CACHE_VERSION = "2026-09-30-v64-versioned-cache";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -96,10 +96,25 @@ const CORE_ASSETS = [
 // Warm only the current data after the shell. Reuse browser HTTP cache for
 // downloads already started by the page, while preserving first-visit offline use.
 const RANKING_ASSETS = [
-  "./data/great-league-rankings.js?v=20260916-v45-score-v5-meta2",
-  "./data/great-league-ranking-details.js?v=20260916-v45-score-v5-meta2",
-  "./data/great-league-role-rankings.json"
+  "./data/great-league-rankings.js?v=20260930-v64-rankings",
+  "./data/great-league-ranking-details.js?v=20260930-v64-rankings",
+  "./data/great-league-role-rankings.json?v=20260930-role-v1"
 ];
+
+async function cacheVersionedCoreAssets(cache) {
+  const shell = await cache.match(new URL("./PogoPvp.html", self.location.href));
+  if (!shell) return;
+  const html = await shell.text();
+  const corePaths = new Set(CORE_ASSETS.map(asset => new URL(asset, self.location.href).pathname));
+  // Alias only the exact versions advertised by this release's cached HTML.
+  for (const match of html.matchAll(/(?:src|href)="([^"]+\?v=[^"]+)"/g)) {
+    const url = new URL(match[1], self.location.href);
+    if (url.origin !== self.location.origin || !corePaths.has(url.pathname)) continue;
+    const canonical = new URL(url.pathname, self.location.href);
+    const response = await cache.match(canonical);
+    if (response) await cache.put(new Request(url), response);
+  }
+}
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
@@ -109,6 +124,7 @@ self.addEventListener("install", event => {
       const response = await fetch(request);
       if (response.ok) await cache.put(request, response);
     }));
+    await cacheVersionedCoreAssets(cache);
     for (const asset of RANKING_ASSETS) {
       try {
         const request = new Request(new URL(asset, self.location.href), { cache: "force-cache" });
@@ -137,7 +153,8 @@ async function networkFirst(request) {
     if (response && response.ok) await cache.put(request, response.clone());
     return response;
   } catch (error) {
-    const cached = await cache.match(request, { ignoreSearch: true });
+    // A different explicit version must never receive an older cached dataset.
+    const cached = await cache.match(request, { ignoreSearch: !new URL(request.url).searchParams.has("v") });
     if (cached) return cached;
     if (request.mode === "navigate") {
       const shell = await cache.match("./PogoPvp.html");
@@ -147,10 +164,23 @@ async function networkFirst(request) {
   }
 }
 
+async function versionedAssetFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response?.ok) await cache.put(request, response.clone());
+  return response;
+}
+
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  event.respondWith(networkFirst(request));
+  const versionedAsset = request.mode !== "navigate"
+    && url.searchParams.get("v")
+    && /\.(?:js|css|json|png|svg|webp|woff2?)$/i.test(url.pathname);
+  const forceNetwork = request.cache === "reload" || request.cache === "no-store" || request.cache === "no-cache";
+  event.respondWith(versionedAsset && !forceNetwork ? versionedAssetFirst(request) : networkFirst(request));
 });
