@@ -301,7 +301,7 @@ function extractLiveWorkerSource() {
   const html = fs.readFileSync(path.join(ROOT, "PogoPvp.html"), "utf8");
   const match = html.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/);
   if (!match) throw new Error("Could not find simulator script in PogoPvp.html.");
-  const simulatorScript = match[1].replace(/\binit\(\);\s*$/, "");
+  const simulatorScript = match[1].replace(/\binit\(\);\s*(?:warmRankingDataAfterPaint\(\);\s*)?$/, "");
   const context = {
     console,
     window: {

@@ -34,6 +34,7 @@
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20260930-v66"></script>
+  <script src="src/analysis/meta-quick-matchup.js?v=20260930-v67-v2"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/battle/charged-move-collection.js"></script>
@@ -14455,7 +14456,9 @@
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
+  <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20260930-v67-v3">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20260930-v67-v3"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -21444,7 +21447,8 @@
       container.querySelectorAll("[data-meta-matchup]").forEach(button => {
         button.onclick = event => {
           event.stopPropagation();
-          loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
+          if (window.PvPeakMetaQuickMatchup) window.PvPeakMetaQuickMatchup.open(button.dataset.metaSource, button.dataset.metaMatchup, button);
+          else loadMetaMatchup(button.dataset.metaSource, button.dataset.metaMatchup);
         };
       });
     }
@@ -21535,7 +21539,7 @@
         return `<span class="type-badge" style="background:${color};color:${contrastText(color)}">${title(type)}</span>`;
       }).join("");
       const outcome = score > 500 ? `${sourceEntry.p.name} wins` : score < 500 ? `${sourceEntry.p.name} loses` : "draw";
-      const aria = `Open ${sourceEntry.p.name} versus ${opponent.name}, one shield each. ${outcome} with score ${score}.`;
+      const aria = `Preview ${sourceEntry.p.name} versus ${opponent.name}. Ranked one-shield matchup: ${outcome} with score ${score}.`;
       return `<button type="button" class="meta-matchup-card ${opponent.types.length > 1 ? "dual-type" : "single-type"}" data-meta-source="${escapeHtml(sourceEntry.p.id)}" data-meta-matchup="${escapeHtml(opponentId)}" style="--key-type-a:${primaryColor};--key-type-b:${secondaryColor}" aria-label="${escapeHtml(aria)}">
         <img src="${escapeHtml(imageUrl(opponent))}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(opponent))}'">
         <span class="meta-matchup-name">${escapeHtml(opponent.name)}</span>
@@ -21838,26 +21842,39 @@
       persistShieldMatrixCells([[key, result]]);
     }
 
-    function loadMetaMatchup(sourceId, opponentId) {
+    function loadMetaMatchup(sourceId, opponentId, options = {}) {
       if (!findPokemon(sourceId) || !findPokemon(opponentId)) return;
       setAppView("simulator");
       setPokemonSelection("p1", sourceId);
       setPokemonSelection("p2", opponentId);
       applyIvOptimizationProfile("p1", "balanced");
       applyIvOptimizationProfile("p2", "balanced");
-      applyMetaRankingMoves("p1", sourceId);
-      applyMetaRankingMoves("p2", opponentId);
-      $("p1Shields").value = "1";
-      $("p2Shields").value = "1";
+      if (options.config) {
+        [["p1", options.config.left], ["p2", options.config.right]].forEach(([prefix, combatant]) => {
+          $(`${prefix}IvAtk`).value = combatant.ivAtk;
+          $(`${prefix}IvDef`).value = combatant.ivDef;
+          $(`${prefix}IvHp`).value = combatant.ivHp;
+          $(`${prefix}StartEnergy`).value = "0";
+          clearStartingFastAdvantage(prefix);
+          setIvProfileState(prefix, "custom");
+          setBaiting(prefix, combatant.baiting);
+          setShieldMode(prefix, combatant.shieldMode);
+        });
+      }
+      applyMetaRankingMoves("p1", sourceId, options.config?.left);
+      applyMetaRankingMoves("p2", opponentId, options.config?.right);
+      $("p1Shields").value = String(options.aShields ?? 1);
+      $("p2Shields").value = String(options.bShields ?? 1);
       renderShields("p1");
       renderShields("p2");
+      if (options.config) resetBattleStateFromSetup();
       runBattleToEnd();
     }
 
-    function applyMetaRankingMoves(prefix, pokemonId) {
+    function applyMetaRankingMoves(prefix, pokemonId, combatant = null) {
       const pokemon = findPokemon(pokemonId);
       if (!pokemon) return;
-      const moves = metaRankingMoves(metaRankingDatasetEntry(pokemonId), pokemon);
+      const moves = combatant ? { fast: combatant.fast, charged: combatant.charged.filter(Boolean) } : metaRankingMoves(metaRankingDatasetEntry(pokemonId), pokemon);
       if (moves.fast) $(`${prefix}Fast`).value = moves.fast.id;
       ensureChargedMoveSelects(prefix, pokemon).forEach((select, index) => { select.value = moves.charged[index]?.id || ""; });
       colorMoveSelect(`${prefix}Fast`);
@@ -37280,7 +37297,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v66").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v67").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
