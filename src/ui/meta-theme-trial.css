@@ -1,0 +1,188 @@
+/* Reversible Meta-only light theme. Remove this stylesheet link to restore
+   the previous presentation. Layout, move typography and type icons stay intact. */
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) {
+  --meta-trial-surface: #f7f3eb;
+  --meta-trial-soft: #eeebe3;
+  --meta-trial-border: #d5d4cb;
+  --meta-trial-ink: #17212f;
+  --meta-trial-muted: #56636b;
+  --meta-trial-accent: #156f8f;
+  --meta-trial-accent-soft: #e2edef;
+  --meta-trial-win: #24735c;
+  --meta-trial-loss: #99455f;
+}
+
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-panel-head {
+  background: var(--meta-trial-surface);
+  border: 1px solid var(--meta-trial-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(23, 33, 47, .04);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-panel-head h2 {
+  color: var(--meta-trial-ink);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-title-kicker {
+  color: var(--meta-trial-accent);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-head strong {
+  color: var(--meta-trial-ink);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-actions :is(input, select, button),
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-filter-toggle {
+  border-color: var(--meta-trial-border);
+  background: #fbf9f4;
+  color: var(--meta-trial-ink);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-actions #metaRefresh {
+  border-color: var(--meta-trial-border);
+  background: var(--meta-trial-accent-soft);
+  color: var(--meta-trial-accent);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-actions #metaCompareToggle[aria-pressed="true"] {
+  border-color: var(--meta-trial-accent);
+  background: var(--meta-trial-accent);
+  color: #fff;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry {
+  border-color: var(--meta-trial-border);
+  border-left-color: var(--meta-type-a);
+  border-radius: 8px;
+  background: var(--meta-trial-surface);
+  box-shadow: 0 2px 5px rgba(23, 33, 47, .05);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry:hover {
+  box-shadow: 0 2px 6px rgba(23, 33, 47, .09);
+}
+/* The original row renderer sets a solid background with !important. */
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-row {
+  background-color: var(--meta-trial-surface) !important;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-row:hover,
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry.expanded .meta-row {
+  background-color: var(--meta-trial-accent-soft) !important;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-ranking > .meta-entry.expanded {
+  border-color: var(--meta-trial-border);
+  border-left-color: var(--meta-type-a);
+  box-shadow: 0 0 0 2px rgba(21, 111, 143, .12);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-mon strong,
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-move-pill {
+  color: var(--meta-trial-ink);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-rank {
+  color: var(--meta-trial-muted);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-row::after {
+  background: var(--meta-trial-accent-soft);
+  color: var(--meta-trial-accent);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-mon img {
+  filter: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-move-pill.fast {
+  border-bottom-color: var(--meta-trial-border);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-score strong {
+  border-color: #a6c5cd;
+  background: var(--meta-trial-accent-soft);
+  color: var(--meta-trial-accent);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-lab-overview, .meta-lab-detail-rail),
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-entry, .meta-entry.single-type) .meta-row-details {
+  border-color: var(--meta-trial-border);
+  border-radius: 8px;
+  background: var(--meta-trial-surface);
+  color: var(--meta-trial-ink);
+  box-shadow: 0 2px 5px rgba(23, 33, 47, .05);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview {
+  border-left-color: var(--meta-trial-accent);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-lab-overview-head, .meta-lab-overview-threats) {
+  border-color: var(--meta-trial-border);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-lab-overview-section h3, .meta-lab-overview-row, .meta-lab-detail-identity strong),
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-group > strong {
+  color: var(--meta-trial-ink);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-lab-overview-head span, .meta-lab-overview-count, .meta-matchup-empty) {
+  color: var(--meta-trial-muted);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) button.meta-lab-overview-row:is(:hover, :focus-visible) {
+  background: var(--meta-trial-accent-soft);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) button.meta-lab-overview-row:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--meta-trial-accent);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-track {
+  background: var(--meta-trial-soft);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-track > span {
+  background: var(--overview-color, var(--meta-trial-accent));
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-threats .meta-lab-overview-count {
+  color: var(--meta-trial-win);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-threats .meta-lab-overview-section:last-child .meta-lab-overview-count {
+  color: var(--meta-trial-loss);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-lab-overview-threats button.meta-lab-overview-row::after {
+  color: var(--meta-trial-accent);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-group.wins > strong {
+  border-bottom-color: var(--meta-trial-win);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-group.losses > strong {
+  border-bottom-color: var(--meta-trial-loss);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-group.wins > strong::before {
+  color: var(--meta-trial-win);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-group.losses > strong::before {
+  color: var(--meta-trial-loss);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry :is(.meta-matchup-card, .meta-matchup-card:first-child, .meta-matchup-card:last-child, .meta-matchup-card:only-child) {
+  border-color: var(--meta-trial-border);
+  border-left-color: var(--key-type-a);
+  background: #fbf9f4;
+  color: var(--meta-trial-ink);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-matchup-card:hover {
+  border-color: #a6c5cd;
+  border-left-color: var(--key-type-a);
+  background: var(--meta-trial-accent-soft);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-matchup-card:focus-visible {
+  outline-color: var(--meta-trial-accent);
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-matchup-name {
+  color: var(--meta-trial-ink);
+  text-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-matchup-more, .meta-lab-detail-nav button) {
+  border-color: var(--meta-trial-border);
+  background: var(--meta-trial-accent-soft);
+  color: var(--meta-trial-accent);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) :is(.meta-filter-chip, .meta-clear-filters) {
+  background: var(--meta-trial-accent-soft);
+  border-color: var(--meta-trial-border);
+  color: var(--meta-trial-accent);
+  box-shadow: none;
+}
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-filter-chip button {
+  background: transparent;
+  color: var(--meta-trial-accent);
+}

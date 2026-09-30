@@ -14454,6 +14454,7 @@
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
+  <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260929-v2"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
@@ -37266,7 +37267,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v64").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20260930-v65").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
