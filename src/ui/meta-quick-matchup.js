@@ -41,10 +41,19 @@
     if (restoreFocus) (trigger?.isConnected ? trigger : document.getElementById("metaSearch"))?.focus({ preventScroll: true });
   }
 
-  function combatantHtml(combatant) {
-    const moves = [combatant.fast, ...combatant.charged].filter(Boolean);
-    return `<div class="meta-quick-pokemon"><img src="${escapeHtml(imageUrl(combatant.p))}" alt=""><strong>${escapeHtml(combatant.p.name)}</strong>
-      <div class="meta-quick-moves">${moves.map((move, index) => metaMovePill(move, index === 0 ? "fast" : "charged")).join("")}</div></div>`;
+  function combatantHtml(combatant, result, side) {
+    const moves = [combatant.fast, ...combatant.charged];
+    const hpRatio = result ? Math.max(0, Math.min(1, Number(result.details?.[`${side}Hp`]) || 0)) : null;
+    const hp = hpRatio === null ? null : Math.round(hpRatio * combatant.maxHp);
+    const energy = result ? Math.max(0, Math.min(100, Number(result.details?.[`${side}Energy`]) || 0)) : null;
+    const hpLabel = `${combatant.p.name}: ${hp === null ? "calculating final HP" : `${hp} / ${combatant.maxHp} final HP`}`;
+    // Reuse Battle's orbs without its interactive attributes: this is a static summary.
+    const orbs = combatant.charged.map((move, index) => energyMoveOrb(move, energy || 0, "quick", index)
+      .replace(/ data-prefix="quick" data-move-index="\d+"/, ` role="img" aria-label="${escapeHtml(`${move.name}: ${energy === null ? "calculating energy" : `${energy} energy / ${move.energyCost} required`}`)}"`));
+    return `<div class="meta-quick-pokemon"><div class="meta-quick-identity"><img src="${escapeHtml(imageUrl(combatant.p))}" alt=""><strong>${escapeHtml(combatant.p.name)}</strong></div>
+      <div class="meta-quick-moves">${[0,1,2].map(index => moves[index] ? metaMovePill(moves[index], index === 0 ? "fast" : "charged") : '<span aria-hidden="true"></span>').join("")}</div>
+      <div class="meta-quick-hp${hp === null ? " pending" : ""}" role="meter" aria-label="${escapeHtml(hpLabel)}" aria-valuemin="0" aria-valuemax="${combatant.maxHp}" ${hp === null ? "" : `aria-valuenow="${hp}"`} title="${escapeHtml(hpLabel)}"><span style="width:${(hpRatio || 0) * 100}%;background:${hpRatio > .45 ? "var(--good)" : hpRatio > .2 ? "var(--warn)" : "var(--danger)"}"></span></div>
+      <div class="meta-quick-energy">${orbs[0] || ""}<strong title="Final energy"><span class="sr-only">Final energy: </span>${energy === null ? "…" : energy}</strong>${orbs.slice(1).join("")}</div></div>`;
   }
 
   function timelineHtml(result) {
@@ -80,7 +89,7 @@
     const outcome = result ? result.score > 500 ? `${selection.config.left.p.name} wins` : result.score < 500 ? `${selection.config.right.p.name} wins` : "Draw" : "Calculating matchup…";
     panel.setAttribute("aria-busy", String(state.status === "loading"));
     panel.innerHTML = `<header class="meta-quick-head"><h2>Quick Matchup</h2><button type="button" data-quick-action="close" aria-label="${wide.matches ? "Back to Top 50 snapshot" : "Close quick matchup"}" title="${wide.matches ? "Back to Top 50 snapshot" : "Close"}">×</button></header>
-      <div class="meta-quick-pair">${combatantHtml(selection.config.left)}<span class="meta-quick-vs">VS</span>${combatantHtml(selection.config.right)}</div>
+      <div class="meta-quick-pair">${combatantHtml(selection.config.left, result, "a")}<span class="meta-quick-vs">VS</span>${combatantHtml(selection.config.right, result, "b")}</div>
       <div class="sr-only" role="status">${escapeHtml(outcome)} · ${aShields}–${bShields} shields${result ? ` · Score ${Math.round(result.score)}` : ""}</div>
       ${state.status === "error" ? `<p class="meta-quick-error" role="alert">The preview could not be completed. <button data-quick-action="retry" type="button">Retry</button></p>` : ""}
       ${result ? timelineHtml(result) : `<div class="meta-quick-loading">${state.status === "error" ? "Select an available shield scenario or retry." : "Preparing the timeline…"}</div>`}

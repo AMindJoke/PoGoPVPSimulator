@@ -85,6 +85,10 @@ assert.equal(preview.score, normal.score, "Exporting a compact timeline must not
 assert.ok(preview.timelineTrace.length > 0);
 assert.ok(timelineModel(preview.timelineTrace).rows.some(event => event.trainer === "A"));
 assert.ok(timelineModel(preview.timelineTrace).rows.some(event => event.trainer === "B"));
+const finalEnergy = [...preview.title.matchAll(/(\d+) energy/g)].map(match => Number(match[1]));
+assert.deepEqual([preview.details.aEnergy, preview.details.bEnergy], finalEnergy,
+  "Quick HP/energy indicators must use the final resources from the canonical simulation.");
+assert.deepEqual([preview.details.aEnergy, preview.details.bEnergy], [normal.details.aEnergy, normal.details.bEnergy]);
 
 // Exercise the actual Battle launch bridge with deliberately different shields.
 const fs = require("node:fs"), vm = require("node:vm");
