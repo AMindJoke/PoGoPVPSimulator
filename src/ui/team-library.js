@@ -3,7 +3,8 @@
   root.PvPeakTeamLibraryUI = { create(options) {
     const $ = id => document.getElementById(id), api = root.PvPeakTeamLibrary;
     const dialog = $("teamLibraryDialog"), list = $("teamLibraryList"), status = $("teamLibraryStatus");
-    let store, library, removed = null;
+    let store, library, removed = null, mode = "own", trigger = null;
+    const currentSnapshot = () => mode === "opponent-save" ? options.opponentSnapshot() : options.snapshot();
     const escape = options.escapeHtml;
     function focusTeam(id) {
       const row = [...list.querySelectorAll("[data-saved-team]")].find(element => element.dataset.savedTeam === id);
@@ -20,7 +21,14 @@
       teams.forEach(team => {
         const row = [...list.querySelectorAll("[data-saved-team]")].find(element => element.dataset.savedTeam === team.id);
         team.state.team.forEach((member, index) => { if (member) options.setSprite(row.querySelector(`[data-library-sprite="${index}"]`), member); });
-        row.querySelector("[data-library-load]").onclick = () => safely(() => { options.load(api.snapshot(team)); dialog.close(); options.feedback(`Loaded ${team.name}.`); });
+        row.querySelector("[data-library-load]").textContent = mode !== "own" ? "Use as opponent" : "Load";
+        row.querySelector("[data-library-load]").setAttribute("aria-label", `${mode !== "own" ? "Use as opponent" : "Load"} ${team.name}`);
+        row.querySelector("[data-library-load]").onclick = () => safely(() => { if (mode !== "own") options.loadOpponent(api.snapshot(team), team.name); else { options.load(api.snapshot(team)); options.feedback(`Loaded ${team.name}.`); } dialog.close(); });
+        if (options.loadOpponent && mode === "own") {
+          const use = document.createElement("button"); use.type = "button"; use.className = "secondary"; use.textContent = "Use as opponent";
+          use.onclick = () => safely(() => { options.loadOpponent(api.snapshot(team), team.name); dialog.close(); });
+          row.querySelector(".saved-team-tools").prepend(use);
+        }
         row.querySelector("form").onsubmit = event => { event.preventDefault(); safely(() => { library = store.rename(team.id, row.querySelector("input").value); render(); focusTeam(team.id); message("Team renamed."); }); };
         row.querySelector("[data-library-duplicate]").onclick = () => safely(() => { library = store.add(`${team.name.slice(0, 57)} copy`, team); render(); focusTeam(library.teams[0].id); message("Team duplicated."); });
         row.querySelector("[data-library-export]").onclick = () => download({ schemaVersion: 1, teams: [team] }, team.name);
@@ -35,7 +43,11 @@
       link.hidden = true; document.body.append(link); link.click(); link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
-    $("teamBuilderLibrary").onclick = () => {
+    function open(nextMode = "own", source = $("teamBuilderLibrary")) {
+      mode = nextMode; trigger = source;
+      $("teamLibrarySaveForm").hidden = mode === "opponent";
+      $("teamLibrarySaveLabel").textContent = mode === "opponent-save" ? "Save opponent team" : "Save current team";
+      $("teamLibraryTitle").textContent = mode === "opponent" ? "Choose opponent team" : "Saved teams";
       dialog.showModal(); message("");
       library = null; list.innerHTML = "";
       $("teamLibrarySave").disabled = true;
@@ -43,14 +55,15 @@
       $("teamLibraryExport").disabled = true;
       safely(() => {
         store ||= api.createStore(window.localStorage); library = store.read(); render();
-        $("teamLibrarySave").disabled = !options.snapshot().state.team.some(Boolean);
+        $("teamLibrarySave").disabled = !currentSnapshot().state.team.some(Boolean);
         $("teamLibraryImport").disabled = false;
       });
-    };
+    }
+    $("teamBuilderLibrary").onclick = () => open();
     $("teamLibraryClose").onclick = () => dialog.close();
-    dialog.addEventListener("close", () => $("teamBuilderLibrary").focus({ preventScroll: true }));
+    dialog.addEventListener("close", () => trigger?.focus({ preventScroll: true }));
     $("teamLibrarySaveForm").onsubmit = event => {
-      event.preventDefault(); safely(() => { const value = options.snapshot(); options.validate(value); library = store.add($("teamLibraryName").value, value); render(); message(`Saved ${library.teams[0].name}.`); $("teamLibraryName").value = ""; });
+      event.preventDefault(); safely(() => { const value = currentSnapshot(); options.validate(value); library = store.add($("teamLibraryName").value, value); render(); message(`Saved ${library.teams[0].name}.`); $("teamLibraryName").value = ""; });
     };
     $("teamLibrarySearch").oninput = () => { if (library) render(); };
     $("teamLibraryUndo").onclick = () => safely(() => { library = store.merge({ schemaVersion: 1, teams: [removed] }); removed = null; $("teamLibraryUndo").hidden = true; render(); focusTeam(library.teams.at(-1)?.id); message("Team restored."); });
@@ -65,5 +78,6 @@
         library = store.merge(imported); render(); message("Import complete. Existing teams were kept.");
       } catch (error) { message(error.message, true); }
     };
+    return { open };
   } };
 })(globalThis);

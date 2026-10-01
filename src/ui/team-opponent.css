@@ -1,0 +1,48 @@
+.team-opponent-panel { margin:18px 0; padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); }
+.team-opponent-panel > summary { min-height:44px; cursor:pointer; font-size:16px; font-weight:800; color:var(--ink); }
+.team-opponent-panel > summary small { margin-left:12px; font-size:11px; font-weight:500; color:var(--muted); }
+.team-opponent-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:10px 0 14px; }
+.team-opponent-toolbar button,.team-opponent-controls button { min-height:44px; font-size:12px; }
+.team-opponent-toolbar span { margin-left:auto; color:var(--muted); font-size:12px; }
+.team-opponent-controls { display:flex; align-items:end; flex-wrap:wrap; gap:12px; margin:16px 0 10px; }
+.team-opponent-controls label { display:flex; flex-direction:column; gap:5px; font-size:12px; }
+.team-opponent-controls select { min-height:40px; }
+#teamOpponentStatus { margin:10px 0; font-size:12px; color:var(--muted); }
+.team-opponent-table-wrap { overflow:auto; }
+.team-opponent-table { width:100%; border-collapse:separate; border-spacing:4px; table-layout:fixed; }
+.team-opponent-table th:first-child { width:170px; }
+.team-opponent-table th { padding:6px; font-size:12px; font-weight:700; vertical-align:middle; }
+.team-opponent-table th img { display:block; width:36px; height:36px; object-fit:contain; margin:0 auto 4px; }
+.team-opponent-table tbody th { text-align:left; }
+.team-opponent-table tbody th img { float:left; margin:0 8px 0 0; }
+.team-opponent-table th span { overflow-wrap:anywhere; }
+.team-opponent-table th small { display:block; margin-top:4px; font-size:10px; font-weight:500; color:var(--muted); }
+.team-opponent-table small.is-threat { color:var(--danger); font-weight:700; }
+.opponent-matchup { display:grid; place-items:center; width:100%; min-height:48px; padding:5px; color:var(--ink); background:var(--soft); border:1px solid var(--line); border-radius:8px; }
+.opponent-matchup:hover:not(:disabled) { border-color:var(--accent); color:var(--ink); background:var(--soft); transform:none; }
+.opponent-matchup .team-matchup-cell { min-width:34px; }
+.opponent-empty-cell { color:var(--muted); font-size:15px; }
+#teamOpponentMobile { display:none; }
+.team-opponent-panel [hidden] { display:none !important; }
+.team-opponent-note { font-size:12px; color:var(--muted); line-height:1.5; }
+@media(max-width:900px) {
+  .team-opponent-panel { padding:10px; }
+  .team-opponent-panel > summary small { display:block; margin:4px 0 0; }
+  .team-opponent-toolbar { gap:6px; }
+  .team-opponent-toolbar span { flex-basis:100%; margin:0; }
+  .team-opponent-table-wrap { display:none; }
+  #teamOpponentMobile { display:block; }
+  .opponent-mobile-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:14px 0 10px; }
+  .opponent-mobile-head > div { min-width:0; text-align:center; }
+  .opponent-mobile-head img { display:block; width:42px; height:42px; object-fit:contain; margin:auto; }
+  .opponent-mobile-head strong { display:block; font-size:14px; }
+  .opponent-mobile-head small { display:block; margin-top:5px; color:var(--muted); font-size:11px; }
+  .opponent-mobile-head button { min-width:44px; min-height:44px; }
+  .opponent-mobile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .opponent-matchup.is-mobile { gap:5px; min-height:116px; }
+  .opponent-matchup.is-mobile img { width:32px; height:32px; object-fit:contain; }
+  .opponent-matchup.is-mobile strong { font-size:12px; text-align:center; overflow-wrap:anywhere; }
+  .opponent-matchup.is-mobile small { font-size:11px; color:var(--muted); }
+  #teamOpponentMobile > p { font-size:12px; }
+  .team-opponent-controls { gap:8px; }
+}

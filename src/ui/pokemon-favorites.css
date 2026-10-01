@@ -1,0 +1,9 @@
+.pokemon-suggestion-row { display:flex; align-items:stretch; gap:4px; }
+.pokemon-suggestion-row .pokemon-suggestion { flex:1; min-width:0; }
+.pokemon-favorite { flex:0 0 44px; width:44px; min-height:44px; padding:4px; font-size:22px; color:var(--muted); border:0; background:transparent; }
+.pokemon-favorite[aria-pressed="true"] { color:#a56d00; }
+.pokemon-favorites-filter { min-height:44px; padding:6px 10px; white-space:nowrap; font-size:12px; }
+.pokemon-favorites-filter[aria-pressed="true"] { background:var(--accent); color:white; }
+.pokemon-picker-control { display:flex; gap:6px; }
+.pokemon-picker-control > input { min-width:0; flex:1; }
+.team-picker-filters { display:flex; justify-content:flex-end; margin:8px 0; }

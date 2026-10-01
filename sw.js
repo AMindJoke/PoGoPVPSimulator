@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-01-v74-team-library-battle-share";
+const CACHE_VERSION = "2026-10-01-v76-opponent-favorites-practice";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -43,7 +43,7 @@ const CORE_ASSETS = [
   "./src/ui/pokemon-analysis.js",
   "./src/team-builder/team-builder-state.js",
   "./src/team-builder/team-builder-library.js?v=20261001-v74-v2",
-  "./src/ui/team-library.js?v=20261001-v74-v2",
+  "./src/ui/team-library.js?v=20261001-v76",
   "./src/ui/team-library.css?v=20261001-v74-v3",
   "./src/team-builder/team-builder-meta.js",
   "./src/team-builder/team-builder-analysis.js",
@@ -91,8 +91,14 @@ const CORE_ASSETS = [
   "./src/battle/manual-scenario-library.js",
   "./src/battle/energy-trainer.js",
   "./src/training/fast-count-engine.js",
-  "./src/training/fast-count-trainer.js",
-  "./src/training/fast-count-trainer.css",
+  "./src/training/fast-count-trainer.js?v=20261001-v76-v2",
+  "./src/training/fast-count-practice.js?v=20261001-v76",
+  "./src/team-builder/team-builder-opponent.js?v=20261001-v76",
+  "./src/ui/team-opponent.js?v=20261001-v76",
+  "./src/ui/team-opponent.css?v=20261001-v76",
+  "./src/ui/pokemon-favorites.js?v=20261001-v76",
+  "./src/ui/pokemon-favorites.css?v=20261001-v76",
+  "./src/training/fast-count-trainer.css?v=20261001-v76",
   "./src/battle/manual-snapshots.js",
   "./src/battle/matchup-planner.js",
   "./src/battle/matchup-planner-adapter.js",

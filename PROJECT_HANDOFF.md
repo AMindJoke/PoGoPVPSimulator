@@ -120,4 +120,13 @@ Prima di modificare, controllare sempre `git status --short`. Non usare reset di
 
 ## Primo messaggio consigliato per riprendere
 
+### Funzioni aggiunte il 1 ottobre 2026
+
+- Team Builder: sezione `Opponent team` con roster separato, mosse/IV modificabili, caricamento dalla libreria e scudi indipendenti. Confronto fino a 36 matchup individuali, full HP e zero energia; ogni cella apre Battle con entrambi i build. Su mobile roster e risultati mantengono 3 righe da 2 card, con un avversario per pagina. Non è una simulazione di un incontro completo 3v3.
+- Il draft avversario usa `pvpeak-opponent-team-v1`. Svuotare il roster offre `Undo clear`; la libreria può salvare e caricare anche squadre avversarie.
+- Preferiti Pokémon condivisi nei selettori Battle/Team Builder: stelle e filtro Favorites, salvati in `pvpeak-pokemon-favorites-v1` sul dispositivo.
+- Fast Count: `Practice mistakes` registra i nuovi errori in `pvpeak-fast-count-mistakes-v1`, ricrea mosse ed energia iniziale, esclude esercizi diventati incompatibili con i dati correnti e termina il ripasso quando recuperati. Le vecchie statistiche aggregate restano; non contenevano gli esercizi precedentemente sbagliati.
+- Moduli: `src/team-builder/team-builder-opponent.js`, `src/ui/team-opponent.js/css`, `src/ui/pokemon-favorites.js/css`, `src/training/fast-count-practice.js`. Il motore di Battle resta invariato.
+- Test aggiunti: `tools/test-team-opponent.js`, `tools/test-pokemon-favorites.js`, `tools/test-fast-count-practice.js`; estesa la parità Team Builder → Battle a 5 scenari scudi con build personalizzati su entrambi i lati.
+
 > Ho letto `PROJECT_HANDOFF.md`: riparto da `main`, con Principle Registry al 100% e fallback ibrido allo 0%. Il Manual Mode mobile è nella fase di rifinitura, non di riscrittura. Dimmi se vuoi continuare con un dettaglio UI o tornare al confronto generale dei matchup.

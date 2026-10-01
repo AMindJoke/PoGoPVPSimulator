@@ -1,8 +1,8 @@
 (function (root, factory) {
-  const api = factory(root?.PvPeakFastCountEngine);
-  if (typeof module === "object" && module.exports) module.exports = factory(require("./fast-count-engine"));
+  const api = factory(root?.PvPeakFastCountEngine, root?.PvPeakFastCountPractice);
+  if (typeof module === "object" && module.exports) module.exports = factory(require("./fast-count-engine"), require("./fast-count-practice"));
   if (root) root.PvPeakFastCountTrainer = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (engine) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (engine, practice) {
   "use strict";
 
   const STORAGE_KEY = "go-judge-hub-fast-count-trainer-v1";
@@ -13,6 +13,7 @@
     Object.freeze({ id: "memory", label: "Memory", short: "Memory", icon: "●", description: "Hide the bank" }),
     Object.freeze({ id: "mixed", label: "Mixed Moves", short: "Mixed", icon: "↝", description: "Practice random sequences" }),
     Object.freeze({ id: "meta", label: "Meta Trainer", short: "Meta", icon: "▥", description: "Train with real meta Pokémon" }),
+    Object.freeze({ id: "mistakes", label: "Practice mistakes", short: "Mistakes", icon: "↻", description: "Revisit the exercises you missed" }),
     Object.freeze({ id: "shortcut", label: "Build the Shortcut", short: "Build", icon: "✦", description: "Find Base, Threshold and Gain" })
   ]);
   const DIFFICULTIES = Object.freeze([
@@ -132,6 +133,8 @@
     const imageUrl = typeof options.imageUrl === "function" ? options.imageUrl : () => "";
     const fallbackImageUrl = typeof options.fallbackImageUrl === "function" ? options.fallbackImageUrl : () => "";
     const stats = readStats(storage);
+    const mistakes = practice.createStore(storage);
+    let reviewCandidates = [], reviewPrevious = null;
     const firstBuild = catalog.builds[0];
     const state = {
       mode: "guided",
@@ -183,6 +186,20 @@
       state.answered = false;
       state.correct = false;
       state.showMemoryBank = false;
+      if (state.mode === "mistakes") {
+        const live = mistakes.candidates(catalog);
+        const target = practice.pick(live.length ? live : reviewCandidates, random, reviewPrevious);
+        if (!target) { state.exercise = null; return; }
+        reviewPrevious = practice.key(target);
+        const build = catalog.byId.get(target.pokemonId);
+        const chargedMove = build.chargedMoves.find(move => move.id === target.chargedMoveId);
+        state.activeBuild = build; state.bank = target.startingEnergy; state.previousMove = null;
+        state.exercise = target.kind === "shortcut"
+          ? Object.freeze({ kind: "shortcut", build, chargedMove, shortcut: engine.deriveShortcut({ fastEnergy: target.fastEnergy, chargedCost: target.chargedCost }) })
+          : engine.createExercise({ fastEnergy: target.fastEnergy, chargedCost: target.chargedCost, currentEnergy: target.startingEnergy, fastMove: build.fastMove, chargedMove });
+        state.choices = target.kind === "shortcut" ? [] : engine.generateAnswerChoices({ correct: state.exercise.answer, random });
+        return;
+      }
       if (state.mode === "meta") {
         if (!state.activeBuild || state.sessionCompleted % 2 === 0) {
           const next = weightedPick(catalog.builds, random, state.activeBuild?.id);
@@ -224,6 +241,7 @@
     }
 
     function resetSession() {
+      reviewCandidates = mistakes.candidates(catalog); reviewPrevious = null;
       state.bank = 0;
       state.previousMove = null;
       state.sessionDone = false;
@@ -251,6 +269,8 @@
       state.sessionBestStreak = Math.max(state.sessionBestStreak, state.streak);
       state.stats.bestStreak = Math.max(state.stats.bestStreak, state.streak);
       const exercise = state.exercise;
+      const saved = mistakes.record(practice.describe(state.activeBuild, exercise), correct);
+      state.practiceStorageFailed = !saved;
       state.history.unshift({
         name: exercise.build?.name || state.activeBuild?.name || "Exercise",
         move: exercise.chargedMove?.name || "Shortcut",
@@ -288,7 +308,7 @@
 
     function nextExercise() {
       if (!state.answered) return;
-      if (state.sessionCompleted >= SESSION_LENGTH) {
+      if (state.sessionCompleted >= SESSION_LENGTH || (state.mode === "mistakes" && !mistakes.candidates(catalog).length)) {
         state.sessionDone = true;
         render("summary");
         return;
@@ -299,6 +319,7 @@
 
     function setMode(mode) {
       if (!MODES.some(entry => entry.id === mode)) return;
+      if (mode === "mistakes" && !mistakes.candidates(catalog).length) return;
       state.mode = mode;
       state.pokemonPickerOpen = false;
       state.modeSheetOpen = false;
@@ -307,7 +328,7 @@
     }
 
     function setPokemon(id) {
-      if (!catalog.byId.has(id)) return;
+      if (state.mode === "mistakes" || !catalog.byId.has(id)) return;
       state.selectedId = id;
       state.activeBuild = catalog.byId.get(id);
       state.pokemonPickerOpen = false;
@@ -381,7 +402,7 @@
     }
 
     function modeBar() {
-      return `<div class="fast-count-mode-bar" role="tablist" aria-label="Training mode">${MODES.map(mode => `<button class="ui-button ui-button--ghost ui-button--md" type="button" role="tab" data-fast-count-mode="${mode.id}" aria-selected="${state.mode === mode.id}" title="${escapeHtml(mode.description)}"><span>${escapeHtml(mode.short)}</span></button>`).join("")}</div>`;
+      return `<div class="fast-count-mode-bar" role="tablist" aria-label="Training mode">${MODES.map(mode => `<button class="ui-button ui-button--ghost ui-button--md" type="button" role="tab" data-fast-count-mode="${mode.id}"${mode.id === "mistakes" && !mistakes.candidates(catalog).length ? " disabled" : ""} aria-selected="${state.mode === mode.id}" title="${escapeHtml(mode.description)}"><span>${escapeHtml(mode.short)}</span></button>`).join("")}</div>`;
     }
 
     function modeSheet() {
@@ -389,19 +410,20 @@
       return `<div class="fast-count-sheet-layer" data-fast-count-close-mode>
         <section class="fast-count-sheet fast-count-mode-sheet" role="dialog" aria-modal="true" aria-labelledby="fastCountModeTitle" data-fast-count-sheet tabindex="-1">
           <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountModeTitle">Practice mode</h2><button class="ui-button ui-button--ghost ui-button--md" type="button" aria-label="Close mode selector" data-fast-count-close-mode>×</button></header>
-          <div class="fast-count-mode-list">${MODES.map(mode => `<button type="button" data-fast-count-mode="${mode.id}" aria-pressed="${state.mode === mode.id}" class="ui-button ui-button--secondary ui-button--lg ${state.mode === mode.id ? "is-selected" : ""}"><span class="fast-count-mode-icon" aria-hidden="true">${mode.icon}</span><span><strong>${escapeHtml(mode.label)}</strong><small>${escapeHtml(mode.description)}</small></span><i aria-hidden="true"></i></button>`).join("")}</div>
+          <div class="fast-count-mode-list">${MODES.map(mode => `<button type="button" data-fast-count-mode="${mode.id}"${mode.id === "mistakes" && !mistakes.candidates(catalog).length ? " disabled" : ""} aria-pressed="${state.mode === mode.id}" class="ui-button ui-button--secondary ui-button--lg ${state.mode === mode.id ? "is-selected" : ""}"><span class="fast-count-mode-icon" aria-hidden="true">${mode.icon}</span><span><strong>${escapeHtml(mode.label)}</strong><small>${mode.id === "mistakes" ? `${mistakes.candidates(catalog).length} exercises to revisit` : escapeHtml(mode.description)}</small></span><i aria-hidden="true"></i></button>`).join("")}</div>
           <div class="fast-count-method-key" aria-label="Fast Count method"><h3>How it works</h3><p><strong>Base</strong><span>count from zero</span></p><p><strong>Threshold</strong><span>bank needed to save one Fast</span></p><p><strong>Gain</strong><span>carry added after a normal cycle</span></p></div>
         </section>
       </div>`;
     }
 
     function sessionHeader() {
-      const progress = state.mode === "learn" ? 0 : Math.min(100, (state.sessionCompleted / SESSION_LENGTH) * 100);
+      const total = state.sessionDone ? state.sessionCompleted : SESSION_LENGTH;
+      const progress = state.mode === "learn" ? 0 : Math.min(100, (state.sessionCompleted / Math.max(1,total)) * 100);
       const activeMode = MODES.find(mode => mode.id === state.mode) || MODES[1];
       return `<div class="fast-count-head">
         <div class="fast-count-title"><span class="fast-count-eyebrow">Training tools</span><h1>Fast Count</h1></div>
         <button class="ui-button ui-button--secondary ui-button--md fast-count-mode-trigger" type="button" data-fast-count-open-mode aria-haspopup="dialog" aria-expanded="${state.modeSheetOpen}"><span class="fast-count-mode-trigger-icon" aria-hidden="true">${activeMode.icon}</span><span class="fast-count-mode-trigger-copy"><small>Mode:</small> ${escapeHtml(activeMode.label)}</span><i aria-hidden="true">⌄</i></button>
-        <div class="fast-count-session-status"${state.mode === "learn" ? " hidden" : ""}><span><strong>${Math.min(SESSION_LENGTH, state.sessionCompleted + (state.answered ? 0 : 1))}</strong> / ${SESSION_LENGTH}</span><div role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.sessionCompleted}"><i style="width:${progress}%"></i></div><span class="fast-count-streak" aria-label="Current streak">🔥 ${state.streak}</span></div>
+        <div class="fast-count-session-status"${state.mode === "learn" ? " hidden" : ""}><span><strong>${Math.min(total, state.sessionCompleted + (state.answered ? 0 : 1))}</strong> / ${total}</span><div role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${state.sessionCompleted}"><i style="width:${progress}%"></i></div><span class="fast-count-streak" aria-label="Current streak">🔥 ${state.streak}</span></div>
       </div>${modeBar()}`;
     }
 
@@ -448,7 +470,9 @@
     function countChallenge(exercise) {
       if (!exercise) return `<section class="fast-count-challenge"><p>Trainer data is unavailable.</p></section>`;
       const visibility = guidanceVisibility();
-      const previous = exercise.previousMove
+      const previous = state.mode === "mistakes"
+        ? `<div class="fast-count-throw is-previous"><span>Starting energy</span><strong>${exercise.energyBefore}</strong></div>`
+        : exercise.previousMove
         ? `<div class="fast-count-throw is-previous" style="--move-color:${TYPE_COLORS[exercise.previousMove.type] || TYPE_COLORS.normal}"><span>Just thrown</span><strong>${escapeHtml(exercise.previousMove.name)}</strong></div>`
         : `<div class="fast-count-throw is-previous"><span>Just thrown</span><strong>Start of sequence</strong></div>`;
       if (state.answered) return `<section class="fast-count-challenge is-feedback ${state.correct ? "is-correct" : "is-incorrect"}" aria-label="Answer feedback">${feedbackPanel(exercise)}<button class="ui-button ui-button--primary ui-button--lg fast-count-next" type="button" data-fast-count-next>${state.sessionCompleted >= SESSION_LENGTH ? "View session" : "Next"}<span aria-hidden="true">→</span></button></section>`;
@@ -507,7 +531,7 @@
       return `<div class="fast-count-sheet-layer" data-fast-count-close-details>
         <section class="fast-count-sheet fast-count-details-sheet" role="dialog" aria-modal="true" aria-labelledby="fastCountDetailsTitle" data-fast-count-sheet tabindex="-1">
           <header><span class="fast-count-sheet-handle" aria-hidden="true"></span><h2 id="fastCountDetailsTitle">Details & settings</h2><button class="ui-button ui-button--ghost ui-button--md" type="button" aria-label="Close details" data-fast-count-close-details>×</button></header>
-          <div class="fast-count-details-controls">${difficultyControl()}${railToggle}${state.mode === "meta" ? `<button class="ui-button ui-button--secondary ui-button--md fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : pokemonPicker()}</div>
+          <div class="fast-count-details-controls">${difficultyControl()}${railToggle}${state.mode === "mistakes" ? `<p>Revisiting your missed exercises with their original starting energy.</p>` : state.mode === "meta" ? `<button class="ui-button ui-button--secondary ui-button--md fast-count-change" type="button" data-fast-count-new-meta>New meta Pokémon</button>` : pokemonPicker()}</div>
           ${historyPanel()}
         </section>
       </div>`;
@@ -515,7 +539,7 @@
 
     function summaryPanel() {
       const accuracy = state.sessionCompleted ? Math.round((state.sessionCorrect / state.sessionCompleted) * 100) : 0;
-      return `<section class="fast-count-summary" tabindex="-1" data-fast-count-summary><span>Session complete</span><h2>${state.sessionCorrect} / ${state.sessionCompleted} correct</h2><div><strong>${accuracy}%<small>accuracy</small></strong><strong>${state.sessionBestStreak}<small>best streak</small></strong></div><div class="fast-count-summary-actions"><button class="ui-button ui-button--primary ui-button--md" type="button" data-fast-count-again>Practice again</button><button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-mode>Change mode</button><button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-pokemon>${state.mode === "meta" ? "New meta Pokémon" : "New Pokémon"}</button></div></section>`;
+      return `<section class="fast-count-summary" tabindex="-1" data-fast-count-summary><span>Session complete</span><h2>${state.sessionCorrect} / ${state.sessionCompleted} correct</h2><div><strong>${accuracy}%<small>accuracy</small></strong><strong>${state.sessionBestStreak}<small>best streak</small></strong></div><div class="fast-count-summary-actions"><button class="ui-button ui-button--primary ui-button--md" type="button" data-fast-count-again${state.mode === "mistakes" && !mistakes.candidates(catalog).length ? " disabled" : ""}>Practice again</button>${mistakes.candidates(catalog).length ? `<button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-review>Practice mistakes · ${mistakes.candidates(catalog).length}</button>` : state.mode === "mistakes" ? `<p>All caught up!</p>` : ""}<button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-mode>Change mode</button>${state.mode === "mistakes" ? "" : `<button class="ui-button ui-button--secondary ui-button--md" type="button" data-fast-count-summary-pokemon>${state.mode === "meta" ? "New meta Pokémon" : "New Pokémon"}</button>`}</div></section>`;
     }
 
     function difficultyControl() {
@@ -532,7 +556,7 @@
         : state.sessionDone
           ? summaryPanel()
           : state.exercise?.kind === "shortcut" ? shortcutChallenge(state.exercise) : countChallenge(state.exercise);
-      container.innerHTML = `<div class="fast-count-shell">${sessionHeader()}<div class="fast-count-workspace"><main class="fast-count-main">${pokemonContext(build)}${main}${state.mode !== "learn" && !state.sessionDone && !state.answered ? energyRail(build, railBank, state.mode === "memory" && state.showMemoryBank) : ""}<button class="ui-button ui-button--ghost ui-button--md fast-count-details-trigger" type="button" data-fast-count-open-details aria-haspopup="dialog" aria-expanded="${state.detailsOpen}">ⓘ Details & settings <span aria-hidden="true">›</span></button></main>${historyPanel()}</div>${modeSheet()}${detailsPanel(build)}</div>`;
+      container.innerHTML = `<div class="fast-count-shell">${sessionHeader()}<div class="fast-count-workspace"><main class="fast-count-main">${pokemonContext(build)}${main}${state.practiceStorageFailed ? `<p role="status">Your mistake could not be saved in this browser.</p>` : ""}${state.mode !== "learn" && !state.sessionDone && !state.answered ? energyRail(build, railBank, state.mode === "memory" && state.showMemoryBank) : ""}<button class="ui-button ui-button--ghost ui-button--md fast-count-details-trigger" type="button" data-fast-count-open-details aria-haspopup="dialog" aria-expanded="${state.detailsOpen}">ⓘ Details & settings <span aria-hidden="true">›</span></button></main>${historyPanel()}</div>${modeSheet()}${detailsPanel(build)}</div>`;
       bind();
       if (focusTarget === "next") container.querySelector("[data-fast-count-next]")?.focus({ preventScroll: true });
       if (focusTarget === "challenge") container.querySelector("[data-fast-count-answer]")?.focus({ preventScroll: true });
@@ -572,6 +596,7 @@
     }
 
     function bind() {
+      container.querySelector("[data-fast-count-review]")?.addEventListener("click", () => setMode("mistakes"));
       container.querySelectorAll("[data-fast-count-mode]").forEach(button => button.addEventListener("click", () => setMode(button.dataset.fastCountMode)));
       container.querySelectorAll("[data-fast-count-answer]").forEach(button => button.addEventListener("click", () => answerCount(button.dataset.fastCountAnswer)));
       container.querySelector("[data-fast-count-next]")?.addEventListener("click", nextExercise);

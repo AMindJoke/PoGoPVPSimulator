@@ -66,8 +66,8 @@ for (const primitive of ["ui-button--primary", "ui-button--secondary", "ui-butto
   assert.match(specimen, new RegExp(primitive), `specimen is missing ${primitive}`);
 }
 assert.match(specimen, /src\/training\/fast-count-trainer\.css/);
-assert.match(html, /fast-count-trainer\.css\?v=20260915-readability-v1/);
-assert.match(html, /fast-count-trainer\.js\?v=20260915-readability-v1/);
+assert.match(html, /fast-count-trainer\.css\?v=20261001-v76/);
+assert.match(html, /fast-count-trainer\.js\?v=20261001-v76-v2/);
 assert.doesNotMatch(html, /FastCount-UI-Foundation\.html/, "The specimen must remain direct-URL only.");
 assert.doesNotMatch(serviceWorker, /FastCount-UI-Foundation\.html/, "The specimen must not enter the production offline shell.");
 for (const source of [...specimen.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]).filter(Boolean)) new Function(source);

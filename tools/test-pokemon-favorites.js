@@ -1,0 +1,11 @@
+const assert=require("node:assert/strict"), Favorites=require("../src/ui/pokemon-favorites");
+let saved="[]", fail=false; const storage={getItem:()=>saved,setItem:(key,value)=>{if(fail)throw Error("quota");saved=value;}};
+const first=Favorites.createStore(storage); first.toggle("mimikyu"); first.toggle("clodsire");
+const restored=Favorites.createStore(storage); assert.deepEqual(restored.list(),["mimikyu","clodsire"]);
+assert.deepEqual(restored.order([{id:"talonflame"},{id:"clodsire"},{id:"mimikyu"}]).map(p=>p.id),["clodsire","mimikyu","talonflame"]);
+fail=true; assert.throws(()=>restored.toggle("mimikyu")); assert.equal(restored.has("mimikyu"),true); fail=false;
+restored.toggle("mimikyu"); assert.equal(restored.has("mimikyu"),false);
+assert.throws(()=>restored.toggle("<script>"));
+assert.deepEqual(Favorites.createStore({getItem:()=>'{bad'}).list(),[]);
+assert.deepEqual(Favorites.createStore({getItem:()=>JSON.stringify(["mimikyu","mimikyu",null,{},"<bad>"])}).list(),["mimikyu"]);
+console.log("Shared Pokémon favorites persistence, ordering and storage failure tests passed.");

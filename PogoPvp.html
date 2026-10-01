@@ -14,7 +14,7 @@
   <link rel="icon" href="assets/go-pvp-favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
-  <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20260915-readability-v1">
+  <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20261001-v76">
   <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
   <script src="cramorant-data.js"></script>
@@ -44,7 +44,10 @@
   <script src="src/team-builder/team-builder-analysis.js"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
-  <script src="src/ui/team-library.js?v=20261001-v74-v2"></script>
+  <script src="src/ui/team-library.js?v=20261001-v76"></script>
+  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v76"></script>
+  <script src="src/ui/team-opponent.js?v=20261001-v76"></script>
+  <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
   <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v74"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
@@ -71,7 +74,8 @@
   <script src="src/battle/manual-scenario-library.js"></script>
   <script src="src/battle/energy-trainer.js"></script>
   <script src="src/training/fast-count-engine.js"></script>
-  <script src="src/training/fast-count-trainer.js?v=20260915-readability-v1"></script>
+  <script src="src/training/fast-count-practice.js?v=20261001-v76"></script>
+  <script src="src/training/fast-count-trainer.js?v=20261001-v76-v2"></script>
   <script src="src/battle/manual-snapshots.js"></script>
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
@@ -14454,6 +14458,8 @@
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
+  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v76">
+  <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
@@ -14561,6 +14567,7 @@
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
               <input id="p1Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
+              <button id="p1Favorites" class="secondary pokemon-favorites-filter" type="button" aria-pressed="false" aria-label="Show favorite Pokémon for Pokémon A" title="Favorites">★</button>
             </div>
             <div id="p1PokemonSuggestions" class="pokemon-suggestions"></div>
             <select id="p1Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
@@ -14671,6 +14678,7 @@
             <span>Pokemon</span>
             <div class="pokemon-picker-control">
               <input id="p2Search" class="pokemon-picker-input search-input" placeholder="Search Pokemon" autocomplete="off">
+              <button id="p2Favorites" class="secondary pokemon-favorites-filter" type="button" aria-pressed="false" aria-label="Show favorite Pokémon for Pokémon B" title="Favorites">★</button>
             </div>
             <div id="p2PokemonSuggestions" class="pokemon-suggestions"></div>
             <select id="p2Pokemon" class="pokemon-select pokemon-select-hidden" aria-hidden="true" tabindex="-1"></select>
@@ -15278,6 +15286,14 @@
         <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderSlotProgress" class="team-slot-progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="teamBuilderCount">0 of 6 selected</span></div>
         <div id="teamBuilderRoster" class="team-roster-grid" aria-label="Six Pokemon team slots"></div>
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
+        <details id="teamOpponentPanel" class="team-opponent-panel">
+          <summary>Opponent team <small>Compare your answers against a specific roster</small></summary>
+          <div class="team-opponent-toolbar"><button id="teamOpponentLoad" class="secondary" type="button">Load saved team</button><button id="teamOpponentSave" class="secondary" type="button">Save opponent team</button><button id="teamOpponentClear" class="secondary" type="button">Clear</button><button id="teamOpponentUndo" class="secondary" type="button" hidden>Undo clear</button><span id="teamOpponentCount">0 of 6 selected</span></div>
+          <div id="teamOpponentRoster" class="team-roster-grid" aria-label="Six opponent team slots"></div>
+          <div class="team-opponent-controls"><label>Your shields<select id="teamOpponentShieldsA"><option>0</option><option selected>1</option><option>2</option></select></label><label>Opponent shields<select id="teamOpponentShieldsB"><option>0</option><option selected>1</option><option>2</option></select></label><button id="teamOpponentAnalyze" type="button">Analyze matchups</button><button id="teamOpponentCancel" class="secondary" type="button" hidden>Cancel</button></div>
+          <div id="teamOpponentStatus" role="status" aria-live="polite"></div>
+          <div id="teamOpponentResults" hidden><p class="team-opponent-note">Individual matchups · full HP · zero energy. Select a result to open Battle.</p><div class="team-opponent-table-wrap"><table id="teamOpponentTable" class="team-opponent-table" aria-label="Your team versus opponent team"></table></div><div id="teamOpponentMobile"></div></div>
+        </details>
         <section class="team-meta-setup" aria-labelledby="teamMetaTitle">
           <header class="team-meta-head"><div><h3 id="teamMetaTitle">Analysis setup</h3><p>Choose the competitive field and shield scenario, then prepare deterministic matchup results.</p></div><span class="team-meta-phase">Engine ready</span></header>
           <div class="team-meta-controls">
@@ -15378,7 +15394,7 @@
   <dialog id="teamLibraryDialog" class="team-library-dialog" aria-labelledby="teamLibraryTitle">
     <div class="team-library-head"><h2 id="teamLibraryTitle">Saved teams</h2><button id="teamLibraryClose" type="button" class="secondary" aria-label="Close saved teams">Close</button></div>
     <p>Saved on this device. Export a backup to move your teams to another device.</p>
-    <form id="teamLibrarySaveForm" class="team-library-save"><label>Save current team<input id="teamLibraryName" placeholder="Team name" maxlength="64" required></label><button id="teamLibrarySave" type="submit">Save</button></form>
+    <form id="teamLibrarySaveForm" class="team-library-save"><label><span id="teamLibrarySaveLabel">Save current team</span><input id="teamLibraryName" placeholder="Team name" maxlength="64" required></label><button id="teamLibrarySave" type="submit">Save</button></form>
     <label class="sr-only" for="teamLibrarySearch">Find saved team</label><input id="teamLibrarySearch" type="search" placeholder="Find a team or Pokémon">
     <div id="teamLibraryStatus" class="team-library-status" role="status" aria-live="polite"></div>
     <button id="teamLibraryUndo" class="secondary" type="button" hidden>Undo delete</button>
@@ -15388,6 +15404,7 @@
   <div class="modal team-picker-modal" id="teamBuilderPickerModal" role="dialog" aria-modal="true" aria-labelledby="teamBuilderPickerTitle" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-head"><div><h2 id="teamBuilderPickerTitle">Add Pokemon</h2><p class="team-picker-copy">Choose a league-ready Pokemon. Species already on the team cannot be selected twice.</p></div><button id="teamBuilderPickerClose" class="modal-close" type="button" aria-label="Close Pokemon picker">x</button></div>
+      <div class="team-picker-filters"><button id="teamBuilderFavorites" class="secondary pokemon-favorites-filter" type="button" aria-pressed="false">★ Favorites</button></div>
       <input id="teamBuilderPickerSearch" class="team-picker-search" type="search" autocomplete="off" placeholder="Search Pokemon, form, or Shadow" aria-label="Search Pokemon">
       <div id="teamBuilderPickerResults" class="team-picker-results" role="listbox" aria-label="Pokemon results"></div>
     </div>
@@ -15837,6 +15854,15 @@
     const TEAM_BUILDER_COMPARISON_STORAGE_KEY = "pvpeak-team-builder-comparison-v1";
     const TEAM_BUILDER_THREAT_POOL_SIZE = 120;
     let teamBuilderState = window.PvPeakTeamBuilder?.createState?.() || null;
+    let teamBuilderOpponentState = window.PvPeakTeamBuilder?.createState?.() || null;
+    let teamBuilderOpponentPlan = [];
+    let teamBuilderOpponentShields = { A: 1, B: 1 };
+    let teamBuilderOpponentUndo = null;
+    let teamBuilderEditTarget = "own";
+    let teamOpponentUIController = null;
+    let teamLibraryUIController = null;
+    const pokemonFavorites = window.PvPeakPokemonFavorites?.createStore?.(window.localStorage) || null;
+    const pokemonFavoriteFilters = { p1: false, p2: false, team: false };
     let teamBuilderPickerSlot = null;
     let teamBuilderPickerReturnFocus = null;
     let teamBuilderEditorSlot = null;
@@ -16244,14 +16270,19 @@
       };
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
       $("teamBuilderCopyLink").onclick = copyTeamBuilderShareLink;
-      window.PvPeakTeamLibraryUI.create({
+      teamLibraryUIController = window.PvPeakTeamLibraryUI.create({
         escapeHtml,
         snapshot: teamBuilderSharePayload,
         validate: validateSharedTeamForRuntime,
         load: loadSavedTeam,
+        loadOpponent: loadOpponentTeam,
+        opponentSnapshot: () => ({ schemaVersion: 1, state: teamBuilderOpponentState }),
         feedback: teamBuilderFeedback,
         setSprite: (image, member) => { const pokemon = findPokemon(member.pokemonId); if (pokemon) setPokemonImage(image, pokemon); }
       });
+      initTeamOpponent();
+      $("teamBuilderFavorites").onclick = () => { pokemonFavoriteFilters.team = !pokemonFavoriteFilters.team; $("teamBuilderFavorites").setAttribute("aria-pressed", String(pokemonFavoriteFilters.team)); renderTeamBuilderPickerResults(); };
+      ["p1", "p2"].forEach(prefix => { $(prefix + "Favorites").onclick = () => { pokemonFavoriteFilters[prefix] = !pokemonFavoriteFilters[prefix]; $(prefix + "Favorites").setAttribute("aria-pressed", String(pokemonFavoriteFilters[prefix])); openPokemonSuggestions(prefix, true); }; });
       $("copyBattleLink").onclick = copyBattleShareLink;
       $("battleShareErrorDismiss").onclick = () => { $("battleShareError").hidden = true; navigateAppView("simulator", { replace: true }); };
       $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
@@ -16339,6 +16370,7 @@
       });
       ["teamBuilderIvAtk", "teamBuilderIvDef", "teamBuilderIvHp"].forEach(id => { $(id).oninput = updateTeamBuilderBuildPreview; });
       restoreTeamBuilderState();
+      restoreTeamOpponent();
       $("analysisPokemon").onchange = () => renderPokemonAnalysis($("analysisPokemon").value);
       $("analysisBackToMeta").onclick = () => setAppView("meta");
       setupMetaMobileToolbar();
@@ -18368,7 +18400,7 @@
       document.querySelectorAll("#teamBuilderSlotProgress i").forEach((bar, index) => {
         bar.classList.toggle("is-filled", index < teamBuilderState.team.filter(Boolean).length);
       });
-      document.querySelectorAll("#teamBuilderRoster .team-slot:not(.is-empty)").forEach(slot => {
+      document.querySelectorAll("#teamBuilderRoster .team-slot:not(.is-empty), #teamOpponentRoster .team-slot:not(.is-empty)").forEach(slot => {
         const edit = slot.querySelector("[data-team-edit]");
         if (edit) edit.textContent = mobile ? "Edit" : "Edit build";
         const build = slot.querySelector(".team-card-build");
@@ -18469,6 +18501,8 @@
       updateTeamBuilderRosterPresentation();
       renderTeamBuilderMeta();
       renderTeamBuilderFinalSlotFinder();
+      refreshTeamOpponentPlan();
+      teamOpponentUIController?.render();
     }
 
     function teamBuilderFeedback(message = "") {
@@ -18727,11 +18761,12 @@
       const coveragePlan = teamBuilderCombinedCoveragePlan();
       const total = coveragePlan.length;
       const cached = coveragePlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache?.has(job.key)), 0);
-      const done = teamBuilderAnalysisActive ? Math.min(total, teamBuilderAnalysisDone) : cached;
+      const done = teamBuilderAnalysisActive && teamBuilderAnalysisContext === "coverage" ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
       const status = $("teamBuilderAnalysisStatus");
       if (!hasTeam) status.textContent = "Add at least one Pokémon to prepare coverage.";
       else if (!teamBuilderMetaDefinition) status.textContent = "Waiting for the selected meta definition.";
+      else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "opponent") status.textContent = "Opponent team analysis is running above.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "replacement") status.textContent = "Replacement analysis is running below.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "final-slot") status.textContent = "Final Slot Finder is evaluating candidates below.";
       else if (teamBuilderAnalysisActive && teamBuilderAnalysisContext === "comparison") status.textContent = "Team comparison is running below.";
@@ -18834,7 +18869,7 @@
       if (!opponent) return null;
       return {
         left: createTeamBuilderCombatant(job.member, "A"),
-        right: createMetaCombatant(opponent, "B"),
+        right: job.opponentMember ? createTeamBuilderCombatant(job.opponentMember, "B") : createMetaCombatant(opponent, "B"),
         startEnergyA: 0,
         startEnergyB: 0
       };
@@ -18926,7 +18961,9 @@
       const completedContext = teamBuilderAnalysisContext;
       teamBuilderAnalysisActive = false;
       teamBuilderAnalysisCache.persist();
-      if (completedContext === "replacement") {
+      renderTeamBuilderAnalysisProgress();
+      if (completedContext === "opponent") { teamOpponentUIController?.renderResults();
+      } else if (completedContext === "replacement") {
         renderTeamBuilderReplacementProgress();
         renderTeamBuilderReplacementRanking();
       } else if (completedContext === "final-slot") {
@@ -18954,8 +18991,10 @@
       teamBuilderAnalysisPending.clear();
       teamBuilderAnalysisCache?.persist?.();
       teamBuilderFinalSlotPendingStart = false;
+      teamOpponentUIController?.renderResults();
       if (renderProgress) {
-        if (cancelledFinalSlotPending) renderTeamBuilderFinalSlotProgress();
+        if (cancelledContext === "opponent") renderTeamBuilderAnalysisProgress();
+        else if (cancelledFinalSlotPending) renderTeamBuilderFinalSlotProgress();
         else if (cancelledContext === "replacement") renderTeamBuilderReplacementProgress();
         else if (cancelledContext === "final-slot") renderTeamBuilderFinalSlotProgress();
         else if (cancelledContext === "comparison") renderTeamBuilderComparisonProgress();
@@ -18967,7 +19006,8 @@
     }
 
     function renderTeamBuilderActiveAnalysisProgress() {
-      if (teamBuilderAnalysisContext === "replacement") renderTeamBuilderReplacementProgress();
+      if (teamBuilderAnalysisContext === "opponent") teamOpponentUIController?.renderResults();
+      else if (teamBuilderAnalysisContext === "replacement") renderTeamBuilderReplacementProgress();
       else if (teamBuilderAnalysisContext === "final-slot") renderTeamBuilderFinalSlotProgress();
       else if (teamBuilderAnalysisContext === "comparison") renderTeamBuilderComparisonProgress();
       else renderTeamBuilderAnalysisProgress();
@@ -20064,10 +20104,69 @@
       teamBuilderMatchupReturnFocus = null;
     }
 
-    function openTeamBuilderPicker(slot, trigger = null) {
+    function teamBuilderEditableState() { return teamBuilderEditTarget === "opponent" ? teamBuilderOpponentState : teamBuilderState; }
+    function commitTeamBuilderEditableState(next) {
+      if (teamBuilderEditTarget === "opponent") { teamBuilderOpponentState = next; persistTeamOpponent(); }
+      else { teamBuilderState = next; persistTeamBuilderState(); }
+    }
+    function restoreTeamOpponent() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(window.PvPeakTeamOpponent.STORAGE_KEY) || "null");
+        if (saved?.state) { validateSharedTeamForRuntime({ schemaVersion: 1, state: saved.state }); teamBuilderOpponentState = window.PvPeakTeamBuilder.normalizeState(saved.state); }
+        ["A", "B"].forEach(side => { if ([0,1,2].includes(saved?.shields?.[side])) teamBuilderOpponentShields[side] = saved.shields[side]; });
+      } catch (_) {}
+    }
+    function persistTeamOpponent() {
+      try { localStorage.setItem(window.PvPeakTeamOpponent.STORAGE_KEY, JSON.stringify({ state: teamBuilderOpponentState, shields: teamBuilderOpponentShields })); }
+      catch (_) { teamBuilderFeedback("Opponent team could not be saved in this browser."); }
+    }
+    function refreshTeamOpponentPlan() {
+      if (!activeSeasonData || !teamBuilderState) return;
+      const opponentSignatures = {};
+      teamBuilderOpponentState.team.forEach((member, index) => { if (member) opponentSignatures[index] = matrixCombatantSignature(createTeamBuilderCombatant(member, "B")); });
+      teamBuilderOpponentPlan = window.PvPeakTeamOpponent.createPlan({ team: teamBuilderState.team, opponentTeam: teamBuilderOpponentState.team, opponentSignatures, shields: `${teamBuilderOpponentShields.A}-${teamBuilderOpponentShields.B}`, seasonIdentity: activeSeasonData.identity, engineVersion: matchupResultVersion });
+    }
+    function loadOpponentTeam(payload, name = "team") {
+      validateSharedTeamForRuntime(payload); cancelTeamBuilderAnalysis(false);
+      teamBuilderOpponentState = window.PvPeakTeamBuilder.normalizeState(payload.state);
+      persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.open(); teamBuilderFeedback(`Loaded ${name} as opponent team.`);
+    }
+    function startTeamOpponentAnalysis() {
+      cancelTeamBuilderAnalysis(false); refreshTeamOpponentPlan();
+      if (!teamBuilderOpponentPlan.length) return;
+      teamBuilderAnalysisContext = "opponent";
+      teamBuilderAnalysisQueue = teamBuilderOpponentPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
+      teamBuilderAnalysisCacheHits = teamBuilderOpponentPlan.length - teamBuilderAnalysisQueue.length;
+      teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits; teamBuilderAnalysisFailed = 0;
+      teamBuilderAnalysisActive = teamBuilderAnalysisQueue.length > 0;
+      renderTeamBuilderAnalysisProgress(); teamOpponentUIController.renderResults();
+      if (teamBuilderAnalysisActive) processTeamBuilderAnalysisQueue(teamBuilderAnalysisRunToken);
+    }
+    function initTeamOpponent() {
+      const setSprite = (image, member) => { const pokemon = findPokemon(member.pokemonId); if (pokemon && image) setPokemonImage(image, pokemon); };
+      teamOpponentUIController = window.PvPeakTeamOpponentUI.create({
+        escapeHtml, own: () => teamBuilderState, opponent: () => ({ ...teamBuilderOpponentState, shields: teamBuilderOpponentShields }), plan: () => teamBuilderOpponentPlan,
+        cache: teamBuilderAnalysisCache, isActive: () => teamBuilderAnalysisActive && teamBuilderAnalysisContext === "opponent",
+        failed: () => teamBuilderAnalysisContext === "opponent" ? teamBuilderAnalysisFailed : 0,
+        renderSlot: renderTeamBuilderSlot, setSprite, rosterPresentation: updateTeamBuilderRosterPresentation,
+        resultLabel: result => teamBuilderResultCategory(teamBuilderResultVisual(result)),
+        resultMarkup: result => { const visual = teamBuilderResultVisual(result); return `<span class="team-matchup-cell result-${visual.state}${visual.state === "neutral" ? "" : " has-status-icon"}"><strong>${teamBuilderResultMarkHtml(visual)}</strong></span>`; },
+        pick: (slot, button) => openTeamBuilderPicker(slot, button, "opponent"), edit: (slot, button) => openTeamBuilderEditor(slot, button, "opponent"),
+        remove: slot => { cancelTeamBuilderAnalysis(false); teamBuilderOpponentState = window.PvPeakTeamBuilder.removeMember(teamBuilderOpponentState, slot); persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.render(); },
+        battle: (slot, opponentSlot) => { const job = teamBuilderOpponentPlan.find(job => job.slot === slot && job.opponentSlot === opponentSlot); if (!job || !teamBuilderAnalysisCache.has(job.key)) return; const url = window.PvPeakTeamBuilderBattleLink.createUrl(window.location.href, teamBuilderBattleLaunchPayload(job)); window.open(url, "_blank", "noopener,noreferrer"); },
+        analyze: startTeamOpponentAnalysis, cancel: () => cancelTeamBuilderAnalysis(true),
+        load: () => teamLibraryUIController.open("opponent", $("teamOpponentLoad")), save: () => teamLibraryUIController.open("opponent-save", $("teamOpponentSave")),
+        clear: () => { cancelTeamBuilderAnalysis(false); teamBuilderOpponentUndo = teamBuilderOpponentState; teamBuilderOpponentState = window.PvPeakTeamBuilder.createState(); $("teamOpponentUndo").hidden = false; persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.render(); },
+        shields: (side, value) => { cancelTeamBuilderAnalysis(false); teamBuilderOpponentShields[side] = Number(value); persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.renderResults(); renderTeamBuilderAnalysisProgress(); }
+      });
+      $("teamOpponentUndo").onclick = () => { if (!teamBuilderOpponentUndo) return; cancelTeamBuilderAnalysis(false); teamBuilderOpponentState = teamBuilderOpponentUndo; teamBuilderOpponentUndo = null; $("teamOpponentUndo").hidden = true; persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.render(); };
+    }
+
+    function openTeamBuilderPicker(slot, trigger = null, target = "own") {
+      teamBuilderEditTarget = target;
       teamBuilderPickerSlot = slot;
       teamBuilderPickerReturnFocus = trigger || document.activeElement;
-      $("teamBuilderPickerTitle").textContent = teamBuilderState.team[slot] ? `Replace slot ${slot + 1}` : `Add Pokemon · Slot ${slot + 1}`;
+      $("teamBuilderPickerTitle").textContent = teamBuilderEditableState().team[slot] ? `Replace slot ${slot + 1}` : `Add Pokemon · Slot ${slot + 1}`;
       $("teamBuilderPickerSearch").value = "";
       renderTeamBuilderPickerResults();
       $("teamBuilderPickerModal").classList.add("open");
@@ -20105,8 +20204,9 @@
       return findPokemon(targetId);
     }
 
-    function openTeamBuilderEditor(slot, trigger = null) {
-      const member = teamBuilderState?.team?.[slot];
+    function openTeamBuilderEditor(slot, trigger = null, target = "own") {
+      teamBuilderEditTarget = target;
+      const member = teamBuilderEditableState()?.team?.[slot];
       if (!member) return;
       teamBuilderEditorSlot = slot;
       teamBuilderEditorDraft = JSON.parse(JSON.stringify(member));
@@ -20208,7 +20308,7 @@
       const current = teamBuilderEditorDraft && findPokemon(teamBuilderEditorDraft.pokemonId);
       const target = teamBuilderShadowCounterpart(current);
       if (!current || !target) return;
-      const duplicate = window.PvPeakTeamBuilder.duplicateSlot(teamBuilderState, { pokemonId: target.id, dex: target.dex }, teamBuilderEditorSlot);
+      const duplicate = window.PvPeakTeamBuilder.duplicateSlot(teamBuilderEditableState(), { pokemonId: target.id, dex: target.dex }, teamBuilderEditorSlot);
       if (duplicate >= 0) {
         $("teamBuilderEditorFeedback").textContent = "Species Clause: this form is already on your team.";
         return;
@@ -20271,8 +20371,7 @@
       }
       try {
         cancelTeamBuilderAnalysis(false);
-        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderEditorSlot, { ...draft, chargedMoveIds: charged });
-        persistTeamBuilderState();
+        commitTeamBuilderEditableState(window.PvPeakTeamBuilder.setMember(teamBuilderEditableState(), teamBuilderEditorSlot, { ...draft, chargedMoveIds: charged }));
         closeTeamBuilderEditor();
         teamBuilderFeedback("Build saved.");
         renderTeamBuilder();
@@ -20291,11 +20390,15 @@
           .sort((a, b) => a.score - b.score || a.pokemon.name.localeCompare(b.pokemon.name))
           .map(item => item.pokemon);
       }
-      const duplicate = pokemon => window.PvPeakTeamBuilder.duplicateSlot(teamBuilderState, { pokemonId: pokemon.id, dex: pokemon.dex }, teamBuilderPickerSlot) >= 0;
+      if (!query) list = pokemonFavorites.order(list);
+      if (pokemonFavoriteFilters.team) list = list.filter(pokemon => pokemonFavorites.has(pokemon.id));
+      const duplicate = pokemon => window.PvPeakTeamBuilder.duplicateSlot(teamBuilderEditableState(), { pokemonId: pokemon.id, dex: pokemon.dex }, teamBuilderPickerSlot) >= 0;
       renderPokemonSuggestionList($("teamBuilderPickerResults"), list.slice(0, 80), {
         isDisabled: duplicate,
         disabledText: () => "Already on team · Species Clause",
-        onSelect: addTeamBuilderMember
+        onSelect: addTeamBuilderMember,
+        refresh: renderTeamBuilderPickerResults,
+        emptyText: pokemonFavoriteFilters.team ? "No matching favorites. Use the stars in All Pokémon to save favorites." : "No Pokemon found"
       });
     }
 
@@ -20304,8 +20407,7 @@
       if (!member) return teamBuilderFeedback("A valid competitive moveset could not be prepared for this Pokemon.");
       try {
         cancelTeamBuilderAnalysis(false);
-        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderPickerSlot, member);
-        persistTeamBuilderState();
+        commitTeamBuilderEditableState(window.PvPeakTeamBuilder.setMember(teamBuilderEditableState(), teamBuilderPickerSlot, member));
         teamBuilderFeedback();
         closeTeamBuilderPicker();
         renderTeamBuilder();
@@ -22031,6 +22133,8 @@
           .sort((a, b) => a.score - b.score || a.p.name.localeCompare(b.p.name) || a.p.id.localeCompare(b.p.id))
           .map(item => item.p);
       }
+      if (!q) list = pokemonFavorites.order(list);
+      if (pokemonFavoriteFilters[prefix]) list = list.filter(pokemon => pokemonFavorites.has(pokemon.id));
       renderPokemonSuggestions(prefix, list.slice(0, 28));
       picker.classList.add("open");
     }
@@ -22072,25 +22176,31 @@
 
     function renderPokemonSuggestions(prefix, list) {
       const box = $(`${prefix}PokemonSuggestions`);
-      renderPokemonSuggestionList(box, list, { onSelect: pokemon => selectPokemon(prefix, pokemon.id, true) });
+      renderPokemonSuggestionList(box, list, { onSelect: pokemon => selectPokemon(prefix, pokemon.id, true), refresh: () => renderPokemonSuggestions(prefix, pokemonFavoriteFilters[prefix] ? list.filter(pokemon => pokemonFavorites.has(pokemon.id)) : list), emptyText: pokemonFavoriteFilters[prefix] ? "No matching favorites. Use the stars to save favorites." : "No Pokemon found" });
     }
 
     function renderPokemonSuggestionList(box, list, options = {}) {
       if (!box) return;
       if (!list.length) {
-        box.innerHTML = `<div class="pokemon-suggestion-empty">No Pokemon found</div>`;
+        box.innerHTML = `<div class="pokemon-suggestion-empty">${escapeHtml(options.emptyText || "No Pokemon found")}</div>`;
         return;
       }
       box.innerHTML = list.map(pokemon => {
         const disabled = !!options.isDisabled?.(pokemon);
         const detail = disabled && options.disabledText ? options.disabledText(pokemon) : pokemonPickerMeta(pokemon);
-        return `<button class="pokemon-suggestion" type="button" role="option" data-pokemon-id="${escapeHtml(pokemon.id)}"${disabled ? ` disabled aria-disabled="true" aria-label="${escapeHtml(displayName(pokemon))}, ${detail}"` : ""}><img alt=""><span>${escapeHtml(displayName(pokemon))}<small>${escapeHtml(detail)}</small></span></button>`;
+        return `<div class="pokemon-suggestion-row"><button class="pokemon-suggestion" type="button" role="option" data-pokemon-id="${escapeHtml(pokemon.id)}"${disabled ? ` disabled aria-disabled="true" aria-label="${escapeHtml(displayName(pokemon))}, ${detail}"` : ""}><img alt=""><span>${escapeHtml(displayName(pokemon))}<small>${escapeHtml(detail)}</small></span></button><button class="pokemon-favorite" type="button" data-pokemon-favorite="${escapeHtml(pokemon.id)}" aria-pressed="${pokemonFavorites.has(pokemon.id)}" aria-label="${pokemonFavorites.has(pokemon.id) ? "Remove" : "Add"} ${escapeHtml(displayName(pokemon))} ${pokemonFavorites.has(pokemon.id) ? "from" : "to"} favorites">${pokemonFavorites.has(pokemon.id) ? "★" : "☆"}</button></div>`;
       }).join("");
       box.querySelectorAll(".pokemon-suggestion").forEach((button, index) => {
         const pokemon = list[index];
         setPokemonImage(button.querySelector("img"), pokemon);
         if (!button.disabled) button.onclick = () => options.onSelect?.(pokemon);
       });
+      box.querySelectorAll("[data-pokemon-favorite]").forEach(button => { button.onclick = () => {
+        const id = button.dataset.pokemonFavorite;
+        try { pokemonFavorites.toggle(id); } catch (error) { box.insertAdjacentHTML("afterbegin", `<div role="alert" class="pokemon-suggestion-empty">${escapeHtml(error.message)}</div>`); return; }
+        if (options.refresh) options.refresh(); else renderPokemonSuggestionList(box, list, options);
+        [...box.querySelectorAll("[data-pokemon-favorite]")].find(element => element.dataset.pokemonFavorite === id)?.focus({ preventScroll: true });
+      }; });
     }
 
     function pokemonPickerMeta(p) {
@@ -37383,7 +37493,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261001-v74").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v76").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
