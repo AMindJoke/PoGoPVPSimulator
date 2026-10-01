@@ -45,9 +45,9 @@
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v78"></script>
-  <script src="src/ui/team-opponent.js?v=20261001-v78"></script>
-  <script src="src/team-builder/team-matchup-share.js?v=20261001-v78"></script>
+  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v80"></script>
+  <script src="src/ui/team-opponent.js?v=20261001-v80"></script>
+  <script src="src/team-builder/team-matchup-share.js?v=20261001-v80"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
   <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v74"></script>
   <script src="src/compendium/compendium-model.js"></script>
@@ -14459,7 +14459,7 @@
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
-  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v78">
+  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v80">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -15293,7 +15293,7 @@
           <div id="teamOpponentRoster" class="team-roster-grid" aria-label="Six opponent team slots"></div>
           <div class="team-opponent-controls"><label>Your shields<select id="teamOpponentShieldsA"><option>0</option><option selected>1</option><option>2</option></select></label><label>Opponent shields<select id="teamOpponentShieldsB"><option>0</option><option selected>1</option><option>2</option></select></label><button id="teamOpponentAnalyze" type="button">Analyze matchups</button><button id="teamOpponentCancel" class="secondary" type="button" hidden>Cancel</button></div>
           <details class="team-opponent-energy"><summary id="teamOpponentEnergySummary">Starting energy · 0 / 0</summary><p>Applied to every individual matchup in this comparison.</p><div class="team-opponent-energy-fields"><label>Your starting energy<input id="teamOpponentEnergyA" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"></label><label>Opponent starting energy<input id="teamOpponentEnergyB" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"></label></div><p id="teamOpponentEnergyError" role="alert" hidden></p></details>
-          <section class="team-trio" aria-labelledby="teamTrioTitle"><header class="team-trio-head"><h3 id="teamTrioTitle">Your trio</h3><span id="teamTrioCount">0/3 selected</span></header><div id="teamTrioPicker" class="team-trio-picker" role="group" aria-label="Choose three Pokémon"></div><div id="teamTrioSummary" role="status" aria-live="polite"></div><details id="teamTrioSuggestions"><summary>Suggested trios</summary><div id="teamTrioSuggestionsList"></div></details></section>
+          <section class="team-trio" aria-labelledby="teamTrioTitle"><header class="team-trio-head"><h3 id="teamTrioTitle">Your trio</h3><span id="teamTrioCount">0/3 selected</span></header><div id="teamTrioPicker" class="team-trio-picker" role="group" aria-label="Choose three Pokémon"></div><div id="teamTrioSummary" role="status" aria-live="polite"></div><details id="teamTrioSuggestions"><summary>Suggested trios</summary><div id="teamTrioSuggestionsList"></div></details><details id="teamTrioFarm" hidden><summary id="teamTrioFarmHeading">Farm after a loss</summary><div class="team-farm-controls"><button id="teamTrioFarmAnalyze" type="button" class="secondary">Check farm routes</button><button id="teamTrioFarmCancel" type="button" class="secondary" hidden>Cancel</button><span id="teamTrioFarmStatus" role="status" aria-live="polite"></span></div><p class="team-farm-assumptions">Fresh teammate: full HP, 0 energy. Remaining resources carry over; opponent stays in.</p><button id="teamTrioFarmFilter" type="button" class="secondary" hidden>Show all routes</button><div id="teamTrioFarmResults"></div></details></section>
           <div id="teamOpponentStatus" role="status" aria-live="polite"></div>
           <div id="teamOpponentResults" hidden><p id="teamOpponentConditions" class="team-opponent-note">Individual matchups · full HP · zero energy. Select a result to open Battle.</p><div class="team-opponent-table-wrap"><table id="teamOpponentTable" class="team-opponent-table" aria-label="Your team versus opponent team"></table></div><div id="teamOpponentMobile"></div></div>
         </details>
@@ -15862,6 +15862,9 @@
     let teamBuilderOpponentShields = { A: 1, B: 1 };
     let teamBuilderOpponentEnergy = { A: 0, B: 0 };
     let teamBuilderTrioIds = [];
+    let teamTrioFarmState = { signature: "", phase: "idle", results: [], done: 0, total: 0 };
+    let teamTrioFarmWorker = null, teamTrioFarmTimeout = null;
+    const teamTrioFarmCache = new Map();
     let teamBuilderOpponentUndo = null;
     let teamBuilderEditTarget = "own";
     let teamOpponentUIController = null;
@@ -16981,7 +16984,9 @@
         applyAdvantagePressureFloor,
         matchupAdvantageContext,
         matrixWinnerSide,
-        winnerHpRatio
+        winnerHpRatio,
+        prepareTeamFarmEntry,
+        simulateTeamFarmFollowUps
       ].map(fn => fn.toString()).join("\n\n");
 
       return `
@@ -17187,6 +17192,7 @@
           };
           if (chargedDecisionDiagnosticsEnabled) result.chargedDecisionDiagnostics = lastChargedDecisionDiagnostics;
           result.battleInsights = completedBattleInsights;
+          if (options.captureTerminal) result.terminal = { left: cloneCombatant(left), right: cloneCombatant(right), turns: { ...battleTurns }, knockoutTurn: Math.max(0, ...timeline.filter(event => Number(event.hpAfter) === 0 && Number(event.hpBefore) > 0).map(event => Number(event.resolutionTurn ?? event.start ?? 0))) };
           if (battleDecisionTraceEnabled) {
             result.decisionTrace = completeBattleDecisionTrace();
           }
@@ -17230,7 +17236,7 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch, farmCompanions } = event.data || {};
           const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
           const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
           const perfRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun(source === "meta" ? "meta-cell" : "matrix-cell", { key, signature, source }) : null;
@@ -17259,7 +17265,7 @@
             const resolvedConfig = config || matrixConfigCache.get(signature);
             if (!resolvedConfig) throw new Error("Missing matrix configuration for signature");
             currentMatrixConfig = resolvedConfig;
-            const result = simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
+            const result = farmCompanions ? simulateTeamFarmFollowUps(resolvedConfig, aShields, bShields, farmCompanions) : simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
               debugTimeline,
@@ -18873,6 +18879,70 @@
       }
     }
 
+    // Serialized into the isolated analysis worker; ordinary Battle never calls these.
+    function prepareTeamFarmEntry(companion, terminal) {
+      const fresh = JSON.parse(JSON.stringify(companion));
+      const survivor = JSON.parse(JSON.stringify(terminal.right));
+      fresh.hp = fresh.maxHp; fresh.energy = 0; fresh.shields = terminal.left.shields;
+      fresh.attackStage = 0; fresh.defenseStage = 0;
+      const entryTurn = terminal.knockoutTurn + 1;
+      const turns = { A: 0, B: Math.max(0, Number(terminal.turns.B || 0) - entryTurn) };
+      for (const side of [fresh, survivor]) {
+        side.lastFastStart = null; side.timingPlanMoveId = null; side.timingPlanFastMovesRemaining = 0;
+        side.timingContinuationCount = 0; side.linePolicy = null;
+      }
+      return { left: fresh, right: survivor, turns, entryTurn };
+    }
+
+    function simulateTeamFarmFollowUps(config, aShields, bShields, companions) {
+      const baseline = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing: false, captureTerminal: true, source: "team-builder-farm" });
+      const terminal = baseline.terminal;
+      if (!terminal || terminal.left.hp > 0 || terminal.right.hp <= 0) return { score: baseline.score, eligible: false, routes: [] };
+      const routes = [];
+      for (const companion of companions) {
+        const entry = prepareTeamFarmEntry(companion.combatant, terminal);
+        const readyIn = entry.turns.B;
+        left = entry.left; right = entry.right; battleTurns = entry.turns;
+        // Pending attacks targeted the fainted Pokémon, never the incoming teammate.
+        manualPendingFastEvents = []; log = []; timeline = []; battleInsights = [];
+        initialTimelineState = battleSnapshot();
+        currentMatrixConfig = { left, right, startEnergyA: 0, startEnergyB: right.energy };
+        PvPeakBattleIntelligence?.clearCache?.(); liveMatchupPlannerTable.clear();
+        const previousPlan = forcedMatchupPlan;
+        let chargeWindowOpened = false, steps = 0;
+        try {
+          while (!battleEnded() && steps < 1000) {
+            const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
+            const actors = orderedBattleActors(currentTurn);
+            const actorA = actors.find(([actor]) => actor.trainer === "A");
+            const actorB = actors.find(([actor]) => actor.trainer === "B");
+            if (actorB && legalBattleActions(right, currentTurn).some(action => action.type === "charged" || action.type === "charged_move")) chargeWindowOpened = true;
+            const fast = actorA && legalBattleActions(left, currentTurn).find(action => action.type === "fast" || action.type === "fast_move");
+            if (actorA && !fast) throw new Error("The farm route has no legal Fast Attack.");
+            // Existing explicit action fixtures constrain only A; B keeps the canonical planner.
+            forcedMatchupPlan = { steps: fast ? [{ side: "A", turn: currentTurn, type: "fast_move" }] : [] };
+            if (!automaticBattleStep()) break;
+            steps++;
+          }
+          const charges = timeline.filter(event => event.kind === "charge" && event.trainer === "B");
+          const fasts = timeline.filter(event => event.kind === "fast" && event.trainer === "A" && Number(event.damage || 0) > 0 && event.fastImpactStatus !== "denied" && event.fastImpactStatus !== "pending");
+          const completed = right.hp <= 0 && left.hp > 0;
+          const ended = battleEnded();
+          const status = !ended ? "incomplete" : !completed ? "failed" : charges.length ? "charged" : chargeWindowOpened ? "risk" : "safe";
+          routes.push({ slot: companion.slot, pokemonId: companion.combatant.p.id, status, fastCount: fasts.length,
+            energyGained: left.energy, energyAfter: left.energy, hpAfter: left.hp, maxHp: left.maxHp,
+            hpPercent: Math.round(100 * left.hp / left.maxHp), chargedReceived: charges.length,
+            shieldsUsed: terminal.left.shields - left.shields, shieldsAfter: left.shields, chargeWindowOpened,
+            fastMoveName: companion.combatant.fast.name,
+            entry: { opponentHp: terminal.right.hp, opponentMaxHp: terminal.right.maxHp, opponentEnergy: terminal.right.energy,
+              opponentShields: terminal.right.shields, teamShields: terminal.left.shields,
+              attackStage: terminal.right.attackStage || 0, defenseStage: terminal.right.defenseStage || 0, readyIn }
+          });
+        } finally { forcedMatchupPlan = previousPlan; }
+      }
+      return { score: baseline.score, eligible: true, routes };
+    }
+
     function createTeamBuilderBattleConfig(job) {
       const opponent = findPokemon(job.opponentId);
       if (!opponent) return null;
@@ -20185,11 +20255,76 @@
       renderTeamBuilderAnalysisProgress(); teamOpponentUIController.renderResults();
       if (teamBuilderAnalysisActive) processTeamBuilderAnalysisQueue(teamBuilderAnalysisRunToken);
     }
+    function stopTeamTrioFarmAnalysis() {
+      clearTimeout(teamTrioFarmTimeout); teamTrioFarmTimeout = null;
+      teamTrioFarmWorker?.terminate(); teamTrioFarmWorker = null;
+    }
+
+    function currentTeamTrioFarmState() {
+      const slots = teamBuilderState.team.map((member, slot) => member && teamBuilderTrioIds.includes(member.pokemonId) ? slot : null).filter(slot => slot != null);
+      const jobs = teamBuilderOpponentPlan.filter(job => slots.includes(job.slot));
+      const signature = JSON.stringify([slots, jobs.map(job => job.key)]);
+      if (signature !== teamTrioFarmState.signature) {
+        stopTeamTrioFarmAnalysis();
+        teamTrioFarmState = teamTrioFarmCache.get(signature) || { signature, phase: "idle", results: [], done: 0, total: 0 };
+      }
+      return teamTrioFarmState;
+    }
+
+    function startTeamTrioFarmAnalysis() {
+      const state = currentTeamTrioFarmState();
+      if (teamBuilderTrioIds.length !== 3 || state.phase === "running") return;
+      const slots = teamBuilderState.team.map((member, slot) => member && teamBuilderTrioIds.includes(member.pokemonId) ? slot : null).filter(slot => slot != null);
+      const jobs = teamBuilderOpponentPlan.filter(job => slots.includes(job.slot));
+      if (!jobs.length || jobs.some(job => !teamBuilderAnalysisCache.has(job.key))) return;
+      const queue = jobs.filter(job => teamBuilderAnalysisCache.get(job.key).winner === "meta");
+      stopTeamTrioFarmAnalysis();
+      teamTrioFarmState = { signature: state.signature, phase: "running", results: [], done: 0, total: queue.length };
+      const active = teamTrioFarmState;
+      function finishFarm(error = "") {
+        if (teamTrioFarmState !== active) return;
+        stopTeamTrioFarmAnalysis();
+        active.phase = error ? "error" : "complete"; active.error = error;
+        if (!error) {
+          teamTrioFarmCache.set(active.signature, active);
+          while (teamTrioFarmCache.size > 12) teamTrioFarmCache.delete(teamTrioFarmCache.keys().next().value);
+        }
+        teamOpponentUIController.renderResults();
+      }
+      if (!queue.length) { finishFarm(); return; }
+      try {
+        const blob = new Blob([buildMatrixComputeWorkerSource()], { type: "application/javascript" });
+        const workerUrl = URL.createObjectURL(blob);
+        try { teamTrioFarmWorker = new Worker(workerUrl); } finally { URL.revokeObjectURL(workerUrl); }
+      } catch (_) { finishFarm("Farm analysis could not start in this browser. Please retry."); return; }
+      let currentJob = null;
+      function nextFarm() {
+        if (teamTrioFarmState !== active) return;
+        currentJob = queue.shift();
+        if (!currentJob) { finishFarm(); return; }
+        const [aShields, bShields] = currentJob.shields.split("-").map(Number);
+        const farmCompanions = jobs.filter(job => job.opponentSlot === currentJob.opponentSlot && job.slot !== currentJob.slot).map(job => ({ slot: job.slot, combatant: createTeamBuilderCombatant(job.member, "A") }));
+        teamTrioFarmTimeout = setTimeout(() => finishFarm("Farm analysis took too long. Please retry."), 20000);
+        teamTrioFarmWorker.postMessage({ source: "team-builder-farm", id: active.done + 1, key: currentJob.key, signature: currentJob.key, config: createTeamBuilderBattleConfig(currentJob), aShields, bShields, farmCompanions });
+      }
+      teamTrioFarmWorker.onmessage = event => {
+        if (teamTrioFarmState !== active || event.data.key !== currentJob?.key) return;
+        clearTimeout(teamTrioFarmTimeout);
+        if (event.data.type !== "matrixCellResult") { finishFarm("A farm route could not be calculated. Please retry."); return; }
+        active.results.push({ ownSlot: currentJob.slot, opponentSlot: currentJob.opponentSlot, ...event.data.result });
+        active.done++; teamOpponentUIController.renderResults(); nextFarm();
+      };
+      teamTrioFarmWorker.onerror = () => finishFarm("Farm analysis could not finish. Please retry.");
+      teamOpponentUIController.renderResults(); nextFarm();
+    }
+
     function initTeamOpponent() {
       const setSprite = (image, member) => { const pokemon = findPokemon(member.pokemonId); if (pokemon && image) setPokemonImage(image, pokemon); };
       teamOpponentUIController = window.PvPeakTeamOpponentUI.create({
         escapeHtml, own: () => teamBuilderState, opponent: () => ({ ...teamBuilderOpponentState, shields: teamBuilderOpponentShields, energy: teamBuilderOpponentEnergy }), plan: () => teamBuilderOpponentPlan,
         trioIds: () => teamBuilderTrioIds,
+        farm: currentTeamTrioFarmState, analyzeFarm: startTeamTrioFarmAnalysis,
+        cancelFarm: () => { stopTeamTrioFarmAnalysis(); teamTrioFarmState.phase = "idle"; teamTrioFarmState.results = []; teamOpponentUIController.renderResults(); },
         toggleTrio: slot => { const id=teamBuilderState.team[slot]?.pokemonId; if(!id)return; teamBuilderTrioIds=teamBuilderTrioIds.includes(id) ? teamBuilderTrioIds.filter(value=>value!==id) : teamBuilderTrioIds.length<3 ? [...teamBuilderTrioIds,id] : teamBuilderTrioIds; persistTeamOpponent(); },
         useTrio: slots => { teamBuilderTrioIds=slots.map(slot=>teamBuilderState.team[slot]?.pokemonId).filter(Boolean).slice(0,3); persistTeamOpponent(); },
         share: copyTeamMatchupLink,
@@ -37541,7 +37676,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261001-v78").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v80").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

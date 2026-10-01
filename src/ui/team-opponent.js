@@ -4,6 +4,7 @@
     const $ = id => document.getElementById(id), escape = options.escapeHtml;
     const section = $("teamOpponentPanel");
     let mobileSlot = 0, trioPickerMarkup = "", trioSuggestionsMarkup = "";
+    let farmSignature = "", farmMarkup = "", showAllFarm = false;
     function selectedSlots() { return options.own().team.map((member,index) => member && options.trioIds().includes(member.pokemonId) ? index : null).filter(index=>index!=null); }
     function sprite(member, attr) { return member ? `<img ${attr} alt="${escape(member.name)}">` : ""; }
     function cell(member, ownSlot, opponentSlot, result, includeName = false) {
@@ -72,7 +73,43 @@
       const suggestionsMarkup=candidates.length ? `<p>Ranked by winning coverage, weakest matchup and backup answers. Ratings range from 0 to 1000.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><strong>${candidate.slots.map(slot=>escape(own.team[slot].name)).join(' · ')}</strong><span>${candidate.covered}/${candidate.total} covered · weakest ${candidate.weakest} · ${candidate.backups} with backups</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';
       if(suggestionsMarkup!==trioSuggestionsMarkup) { trioSuggestionsMarkup=suggestionsMarkup; list.innerHTML=suggestionsMarkup; }
       details.querySelector('summary').textContent = candidates.length ? 'Suggested trios' : 'Suggested trios · pending';
+      renderFarm(summary);
     }
+    function renderFarm(summary) {
+      const state=options.farm(), own=options.own(), opponent=options.opponent();
+      const panel=$("teamTrioFarm"); panel.hidden=selectedSlots().length!==3;
+      if(state.signature!==farmSignature) { farmSignature=state.signature; showAllFarm=false; }
+      const running=state.phase==="running", complete=state.phase==="complete";
+      $("teamTrioFarmAnalyze").disabled=!summary.ready || running;
+      $("teamTrioFarmAnalyze").hidden=complete;
+      $("teamTrioFarmCancel").hidden=!running;
+      $("teamTrioFarmStatus").textContent=running ? `Checking ${state.done}/${state.total} losing matchups…` : state.phase==="error" ? state.error : !summary.ready ? "Prepare this trio's matchups first." : !complete ? "Check which teammates can farm the surviving opponent." : "";
+      const routes=state.results.flatMap(result=>result.routes.map(route=>({...route,ownSlot:result.ownSlot,opponentSlot:result.opponentSlot,score:result.score})));
+      const safe=routes.filter(route=>route.status==="safe");
+      $("teamTrioFarmHeading").textContent=complete ? `Farm after a loss · ${safe.length} safe ${safe.length===1 ? "route" : "routes"}` : "Farm after a loss";
+      const rank={safe:0,risk:1,charged:2,failed:3,incomplete:4};
+      routes.sort((a,b)=>rank[a.status]-rank[b.status] || a.opponentSlot-b.opponentSlot || a.ownSlot-b.ownSlot || a.slot-b.slot);
+      const successful=routes.filter(route=>route.status==="risk" || route.status==="charged");
+      const preferred=(safe.length ? routes.filter(route=>route.status==="safe") : successful.length ? successful : routes.slice(0,3)).slice(0,6);
+      const visible=showAllFarm ? routes : preferred;
+      const filter=$("teamTrioFarmFilter"); filter.hidden=!complete || routes.length<=preferred.length;
+      filter.textContent=showAllFarm ? "Show summary" : `Show all ${routes.length} routes`;
+      filter.setAttribute("aria-pressed",String(showAllFarm));
+      const label=route=>route.status==="safe" ? "Safe farm" : route.status==="risk" ? "Charged risk" : route.status==="charged" ? `${route.chargedReceived} charged` : route.status==="failed" ? "Farm fails" : "Not resolved";
+      const detail=route=>route.status==="safe" ? "KO before the opponent can launch a Charged Attack." : route.status==="risk" ? "The opponent can launch a Charged Attack before the KO, even though it did not in this simulated line." : route.status==="charged" ? `Farm completed with ${route.chargedReceived} opposing Charged Attack${route.chargedReceived===1 ? "" : "s"} and ${route.shieldsUsed} shield${route.shieldsUsed===1 ? "" : "s"} used.` : "The teammate did not survive a complete farm in this simulated line.";
+      const markup=!complete ? "" : !routes.length ? '<p>No losing matchups to follow up in this scenario.</p>' : `<p>${safe.length ? "Safe farms shown first." : "No farm finishes before an opposing Charged Attack becomes possible."} Open a route for the starting conditions.</p>${visible.map(route=>{
+        const lost=own.team[route.ownSlot], farmer=own.team[route.slot], enemy=opponent.team[route.opponentSlot];
+        if(!lost || !farmer || !enemy)return "";
+        const metrics=route.status==="failed" || route.status==="incomplete" ? "No surviving farmer" : `${route.fastCount} ${escape(route.fastMoveName)} · +${route.energyGained} energy · ${route.hpPercent}% HP`;
+        const stages=route.entry.attackStage || route.entry.defenseStage ? ` · ATK ${route.entry.attackStage>0 ? "+" : ""}${route.entry.attackStage} / DEF ${route.entry.defenseStage>0 ? "+" : ""}${route.entry.defenseStage}` : "";
+        return `<details class="team-farm-route is-${route.status}"><summary><span class="team-farm-enemy">vs ${escape(enemy.name)}</span><strong>${escape(lost.name)} → ${escape(farmer.name)}</strong><b class="team-farm-badge">${label(route)}</b><small>${route.score<=250 ? "Hard" : "Soft"} loss → ${metrics}</small></summary><div class="team-farm-route-body"><p>${detail(route)}</p><p>Opponent at entry: ${route.entry.opponentHp}/${route.entry.opponentMaxHp} HP · ${route.entry.opponentEnergy} energy${stages}. Shields: ${route.entry.teamShields} yours / ${route.entry.opponentShields} opponent.</p><button type="button" class="secondary" data-farm-first="${route.ownSlot}" data-farm-opponent="${route.opponentSlot}">Open first matchup in Battle</button></div></details>`;
+      }).join("")}`;
+      if(markup!==farmMarkup) { farmMarkup=markup; $("teamTrioFarmResults").innerHTML=markup; }
+    }
+    $("teamTrioFarmAnalyze").onclick=options.analyzeFarm;
+    $("teamTrioFarmCancel").onclick=options.cancelFarm;
+    $("teamTrioFarmFilter").onclick=()=>{showAllFarm=!showAllFarm; renderResults();};
+    $("teamTrioFarmResults").onclick=event=>{const button=event.target.closest('[data-farm-first]');if(button)options.battle(Number(button.dataset.farmFirst),Number(button.dataset.farmOpponent));};
     $("teamTrioPicker").onclick=event=>{
       const button=event.target.closest('[data-trio-slot]'); if(!button || button.disabled)return;
       options.toggleTrio(Number(button.dataset.trioSlot)); renderResults();
