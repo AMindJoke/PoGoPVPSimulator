@@ -45,11 +45,13 @@
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v88"></script>
-  <script src="src/ui/team-opponent.js?v=20261001-v88"></script>
-  <script src="src/team-builder/team-matchup-share.js?v=20261001-v88"></script>
+  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v92"></script>
+  <script src="src/ui/team-opponent.js?v=20261001-v92"></script>
+  <script src="src/team-builder/team-matchup-share.js?v=20261001-v92"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v74"></script>
+  <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v92"></script>
+  <script src="src/team-builder/team-farm-battle-link.js?v=20261001-v92"></script>
+  <script src="src/team-builder/team-farm-presentation.js?v=20261001-v92"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14459,7 +14461,7 @@
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
-  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v88">
+  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v92">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -14786,6 +14788,7 @@
       </section>
     </div>
 
+    <div id="farmBattleNotice" class="team-builder-share-error" hidden><strong id="farmBattleNoticeTitle"></strong><button id="farmBattleStandard" class="secondary" type="button">Use standard setup</button></div>
     <div id="battleShareError" class="team-builder-share-error" role="alert" hidden><span>This Battle link is invalid or unavailable for the selected season.</span><button id="battleShareErrorDismiss" class="secondary" type="button">Use Battle setup</button></div>
     <div class="battle-cta-row">
       <button id="battleCta" class="battle-cta" type="button">
@@ -15867,6 +15870,8 @@
     const teamTrioFarmCache = new Map();
     let teamTrioFarmNextState = { key: "", phase: "idle" }, teamTrioFarmNextWorker = null, teamTrioFarmNextTimeout = null;
     const teamTrioFarmNextCache = new Map();
+    let farmBattleContext = null, farmBattleLoadWorker = null, farmBattleLoadTimeout = null;
+    let forcedMatchupPlan = null;
     let teamBuilderOpponentUndo = null;
     let teamBuilderEditTarget = "own";
     let teamOpponentUIController = null;
@@ -16294,6 +16299,7 @@
       $("teamBuilderFavorites").onclick = () => { pokemonFavoriteFilters.team = !pokemonFavoriteFilters.team; $("teamBuilderFavorites").setAttribute("aria-pressed", String(pokemonFavoriteFilters.team)); renderTeamBuilderPickerResults(); };
       ["p1", "p2"].forEach(prefix => { $(prefix + "Favorites").onclick = () => { pokemonFavoriteFilters[prefix] = !pokemonFavoriteFilters[prefix]; $(prefix + "Favorites").setAttribute("aria-pressed", String(pokemonFavoriteFilters[prefix])); openPokemonSuggestions(prefix, true); }; });
       $("copyBattleLink").onclick = copyBattleShareLink;
+      $("farmBattleStandard").onclick = () => { clearFarmBattleContext(); resetBattleStateFromSetup(); };
       $("battleShareErrorDismiss").onclick = () => { $("battleShareError").hidden = true; navigateAppView("simulator", { replace: true }); };
       $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
       $("teamBuilderMeta").onchange = event => setTeamBuilderMeta(event.target.value);
@@ -16660,7 +16666,7 @@
       resetBattleStateFromSetup();
       updateMetaRankingRoleContext();
       updateBattleAvailability();
-      const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
+      const directTeamBuilderBattle = loadTeamFarmBattleFromLocation() || loadTeamBuilderBattleFromLocation();
       if (!directTeamBuilderBattle) {
         const hasSharedScenario = Boolean(window.PvPeakManualScenarioShare?.scenarioTokenFromLocation?.(window.location));
         const hasSharedMatchup = Boolean(window.PvPeakTeamMatchupShare?.tokenFromLocation?.(window.location));
@@ -16990,7 +16996,8 @@
         prepareTeamFarmEntry,
         simulateTeamFarmFollowUps,
         prepareTeamFarmContinuation,
-        simulateTeamFarmContinuation
+        simulateTeamFarmContinuation,
+        prepareTeamFarmBattleFromConfig
       ].map(fn => fn.toString()).join("\n\n");
 
       return `
@@ -17149,7 +17156,7 @@
             : null;
           chargedContinuationMode = options.continuationMode === "flip-analysis" ? "flip-analysis" : "presentation";
           if (options.pcsvEnabled !== undefined) projectedChargedSequenceValueEnabled = options.pcsvEnabled !== false;
-          forcedMatchupPlan = options.diagnosticPlan || null;
+          forcedMatchupPlan = options.diagnosticPlan || (config.farmFastOnly ? { defaultAction: "fast", defaultSide: "A" } : null);
           PvPeakBattleIntelligence?.clearCache?.();
           liveMatchupPlannerTable.clear();
           left = cloneCombatant(config.left);
@@ -17172,7 +17179,7 @@
           battleInsights = [];
           if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
           initialTimelineState = battleSnapshot();
-          battleTurns = options.initialTurns ? { A: Math.max(0, Number(options.initialTurns.A || 0)), B: Math.max(0, Number(options.initialTurns.B || 0)) } : { A: 0, B: 0 };
+          battleTurns = { A: Math.max(0, Number((options.initialTurns || config.turns)?.A || 0)), B: Math.max(0, Number((options.initialTurns || config.turns)?.B || 0)) };
           chargedDecisionDiagnosticsEnabled = !!options.debugChargedDecisions;
           lastChargedDecisionDiagnostics = [];
           runAutomaticBattleToEnd(1000);
@@ -17240,7 +17247,7 @@
         }
 
         self.onmessage = event => {
-          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch, farmCompanions, farmContinuation } = event.data || {};
+          const { id, source, key, signature, aShields, bShields, includeSwing, debugChargedDecisions, debugTimeline, trace, counterfactuals, datasetVersion, config, preFastAdvantage, policy, continuationMode, pcsvEnabled, diagnosticPlan, matchupPlannerV2, plannerPolicy, perfSentEpoch, farmCompanions, farmContinuation, farmBattle } = event.data || {};
           const previousMatchupPlannerV2 = globalThis.MATCHUP_PLANNER_V2;
           const previousMatchupPlannerPolicy = matchupPlannerPolicyOverride;
           const perfRunId = PvPeakPerfDebug.enabled ? PvPeakPerfDebug.beginRun(source === "meta" ? "meta-cell" : "matrix-cell", { key, signature, source }) : null;
@@ -17269,7 +17276,7 @@
             const resolvedConfig = config || matrixConfigCache.get(signature);
             if (!resolvedConfig) throw new Error("Missing matrix configuration for signature");
             currentMatrixConfig = resolvedConfig;
-            const result = farmContinuation ? simulateTeamFarmContinuation(resolvedConfig, farmContinuation) : farmCompanions ? simulateTeamFarmFollowUps(resolvedConfig, aShields, bShields, farmCompanions) : simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
+            const result = farmBattle ? prepareTeamFarmBattleFromConfig(resolvedConfig, aShields, bShields, farmBattle.companion, farmBattle.nextOpponent) : farmContinuation ? simulateTeamFarmContinuation(resolvedConfig, farmContinuation) : farmCompanions ? simulateTeamFarmFollowUps(resolvedConfig, aShields, bShields, farmCompanions) : simulateShieldMatrixCellFromConfig(resolvedConfig, aShields, bShields, {
               includeSwing,
               debugChargedDecisions,
               debugTimeline,
@@ -18213,6 +18220,7 @@
       url.searchParams.delete("compendium");
       url.searchParams.delete("item");
       url.searchParams.delete("tbBattle");
+      url.searchParams.delete("tbFarm");
       if (next === "home") url.searchParams.delete("view");
       else url.searchParams.set("view", next);
       url.hash = "";
@@ -18971,6 +18979,18 @@
       const freshConfig = { left: config.left, right: entry.right, startEnergyA: 0, startEnergyB: 0 };
       const fresh = simulateShieldMatrixCellFromConfig(freshConfig, aShields, bShields, { includeSwing: false, captureTerminal: true, source: "team-builder-farm-next-fresh" });
       return { score: carried.score, carried: { score: carried.score, details: carried.details, hpAfter: carried.terminal.left.hp, energyAfter: carried.terminal.left.energy, shieldsAfter: carried.terminal.left.shields }, fresh: { score: fresh.score, details: fresh.details, shieldsAfter: fresh.terminal.left.shields }, entry: { hp: entry.left.hp, maxHp: entry.left.maxHp, energy: entry.left.energy, shields: aShields, opponentShields: bShields, attackStage: entry.left.attackStage || 0, defenseStage: entry.left.defenseStage || 0, readyIn: entry.turns.A } };
+    }
+
+    function prepareTeamFarmBattleFromConfig(config, aShields, bShields, companion, nextOpponent) {
+      if (nextOpponent) {
+        const result = simulateTeamFarmFollowUps(config, aShields, bShields, [companion]);
+        const carry = result.routes[0]?.continuation;
+        if (!carry) throw new Error("This farmer cannot reach the next matchup.");
+        return { entry: prepareTeamFarmContinuation(nextOpponent, carry), fastOnly: false };
+      }
+      const baseline = simulateShieldMatrixCellFromConfig(config, aShields, bShields, { includeSwing: false, captureTerminal: true, source: "team-builder-farm-battle" });
+      if (baseline.terminal.left.hp > 0 || baseline.terminal.right.hp <= 0) throw new Error("This first matchup has no surviving opponent to farm.");
+      return { entry: prepareTeamFarmEntry(companion.combatant, baseline.terminal), fastOnly: true };
     }
 
     function createTeamBuilderBattleConfig(job) {
@@ -20180,11 +20200,113 @@
       try {
         const api = window.PvPeakTeamBuilderBattleLink;
         const payload = { version: api.VERSION, seasonId: activeSeasonData.id, left: battleShareSide("p1"), right: battleShareSide("p2") };
-        const url = api.createUrl(window.location.href, payload);
+        const url = farmBattleContext ? window.PvPeakTeamFarmBattleLink.createUrl(window.location.href, { ...farmBattleContext.recipe, start: farmBattleContext.start || null }) : api.createUrl(window.location.href, payload);
         await writeManualScenarioLinkToClipboard(url);
         $("battleLinkFeedback").textContent = "Battle link copied.";
       } catch (_) { $("battleLinkFeedback").textContent = "Could not copy the link. Please try again."; }
       finally { button.disabled = !setupReadyForBattle(); button.removeAttribute("aria-busy"); }
+    }
+
+    function clearFarmBattleContext() {
+      const hadFarm = !!farmBattleContext || !!farmBattleLoadWorker;
+      farmBattleLoadWorker?.terminate(); farmBattleLoadWorker = null;
+      clearTimeout(farmBattleLoadTimeout); farmBattleLoadTimeout = null;
+      farmBattleContext = null; forcedMatchupPlan = null;
+      if ($("farmBattleNotice")) $("farmBattleNotice").hidden = true;
+      if (hadFarm) {
+        const url = new URL(window.location.href); url.searchParams.delete("tbFarm");
+        window.history.replaceState(null, "", url);
+      }
+    }
+
+    function renderFarmBattleNotice() {
+      const notice = $("farmBattleNotice");
+      if (!notice) return;
+      if (!farmBattleContext) { if (!farmBattleLoadWorker) notice.hidden = true; return; }
+      notice.hidden = false;
+      $("farmBattleNoticeTitle").textContent = farmBattleContext.fastOnly ? "Farm · Fast only" : "After farm · Next matchup";
+    }
+
+    function applyFarmBattleEntry() {
+      if (!farmBattleContext) return;
+      left = JSON.parse(JSON.stringify(farmBattleContext.entry.left));
+      right = JSON.parse(JSON.stringify(farmBattleContext.entry.right));
+      left.shields = Number($("p1Shields").value); right.shields = Number($("p2Shields").value);
+      left.energy = clampEnergy($("p1StartEnergy").value); right.energy = clampEnergy($("p2StartEnergy").value);
+      forcedMatchupPlan = farmBattleContext.fastOnly ? { defaultAction: "fast", defaultSide: "A" } : null;
+    }
+
+    function farmLinkCombatant(side, trainer) {
+      const member = { pokemonId: side.pokemonId, fastMoveId: side.fastMoveId, chargedMoveIds: side.chargedMoveIds,
+        build: { ivAtk: side.ivAtk, ivDef: side.ivDef, ivHp: side.ivHp } };
+      const result = createTeamBuilderCombatant(member, trainer);
+      result.energy = side.startEnergy; result.shields = side.shields;
+      result.baiting = side.baiting; result.shieldMode = side.shieldMode;
+      return result;
+    }
+
+    function openTeamFarmBattle(routeKey, targetSlot = null) {
+      const state = currentTeamTrioFarmState();
+      if (state.phase !== "complete") return;
+      const [ownSlot, opponentSlot, farmerSlot] = routeKey.split("-").map(Number);
+      const route = state.results.find(result => result.ownSlot === ownSlot && result.opponentSlot === opponentSlot)?.routes.find(route => route.slot === farmerSlot);
+      const firstJob = teamBuilderOpponentPlan.find(job => job.slot === ownSlot && job.opponentSlot === opponentSlot);
+      const farmerJob = teamBuilderOpponentPlan.find(job => job.slot === farmerSlot && job.opponentSlot === opponentSlot);
+      const targetJob = targetSlot == null ? null : teamBuilderOpponentPlan.find(job => job.slot === farmerSlot && job.opponentSlot === targetSlot);
+      if (!route || !firstJob || !farmerJob || (targetSlot != null && (!route.continuation || !targetJob || targetSlot === opponentSlot))) return;
+      const recipe = { version: 1, engineVersion: battleEngineVersion, first: teamBuilderBattleLaunchPayload(firstJob),
+        farmer: teamBuilderBattleLaunchPayload(farmerJob).left, nextOpponent: targetJob ? teamBuilderBattleLaunchPayload(targetJob).right : null };
+      window.open(window.PvPeakTeamFarmBattleLink.createUrl(window.location.href, recipe), "_blank", "noopener,noreferrer");
+    }
+
+    function loadTeamFarmBattleFromLocation() {
+      if (!new URLSearchParams(window.location.search).has("tbFarm")) return false;
+      const recipe = window.PvPeakTeamFarmBattleLink.readLocation(window.location);
+      setAppView("simulator");
+      if (!recipe || recipe.engineVersion !== battleEngineVersion || recipe.first.seasonId !== activeSeasonData.id
+        || ![recipe.first.left, recipe.first.right, recipe.farmer, recipe.nextOpponent].filter(Boolean).every(validTeamBuilderBattleSide)) {
+        $("battleShareError").hidden = false; return true;
+      }
+      $("battleShareError").hidden = true;
+      $("farmBattleNotice").hidden = false; $("farmBattleNoticeTitle").textContent = "Preparing farm matchup…";
+      let worker;
+      const fail = () => {
+        if (worker && farmBattleLoadWorker !== worker) return;
+        clearFarmBattleContext(); $("battleShareError").hidden = false;
+      };
+      try {
+        const config = { left: farmLinkCombatant(recipe.first.left, "A"), right: farmLinkCombatant(recipe.first.right, "B"), startEnergyA: recipe.first.left.startEnergy, startEnergyB: recipe.first.right.startEnergy };
+        const companion = { slot: 0, combatant: farmLinkCombatant(recipe.farmer, "A") };
+        const nextOpponent = recipe.nextOpponent ? farmLinkCombatant(recipe.nextOpponent, "B") : null;
+        const workerUrl = URL.createObjectURL(new Blob([buildMatrixComputeWorkerSource()], { type: "application/javascript" }));
+        try { worker = farmBattleLoadWorker = new Worker(workerUrl); } finally { URL.revokeObjectURL(workerUrl); }
+        worker.onmessage = event => {
+          if (farmBattleLoadWorker !== worker) return;
+          if (event.data.type !== "matrixCellResult" || !event.data.result?.entry) { fail(); return; }
+          const { entry, fastOnly } = event.data.result;
+          if (recipe.start) {
+            for (const [key, side] of [["A", entry.left], ["B", entry.right]]) {
+              if (recipe.start[key].hp > side.maxHp) { fail(); return; }
+              Object.assign(side, recipe.start[key]);
+            }
+          }
+          worker.terminate(); farmBattleLoadWorker = null; clearTimeout(farmBattleLoadTimeout); farmBattleLoadTimeout = null;
+          applyTeamBuilderBattleSide("p1", recipe.farmer);
+          applyTeamBuilderBattleSide("p2", recipe.nextOpponent || recipe.first.right);
+          resetBattleStateFromSetup();
+          for (const [prefix, side] of [["p1", entry.left], ["p2", entry.right]]) {
+            setStartEnergy(prefix, side.energy); $(`${prefix}Shields`).value = String(side.shields); renderShields(prefix);
+          }
+          farmBattleContext = { recipe, entry, fastOnly };
+          startBattle({ skipRender: true });
+          runBattleToEnd({ runtimeContext: "matrix", scrollTarget: "timeline" });
+        };
+        worker.onerror = fail;
+        farmBattleLoadTimeout = setTimeout(fail, 20000);
+        worker.postMessage({ id: 1, key: "farm-battle-entry", signature: "farm-battle-entry", source: "team-builder-farm-battle", config,
+          aShields: recipe.first.left.shields, bShields: recipe.first.right.shields, farmBattle: { companion, nextOpponent } });
+      } catch (_) { fail(); }
+      return true;
     }
 
     function loadTeamBuilderBattleFromLocation() {
@@ -20403,6 +20525,7 @@
         trioIds: () => teamBuilderTrioIds,
         farm: currentTeamTrioFarmState, analyzeFarm: startTeamTrioFarmAnalysis,
         farmNext: teamTrioFarmNextResult, analyzeFarmNext: startTeamTrioFarmNext, cancelFarmNext: stopTeamTrioFarmNext,
+        farmBattle: openTeamFarmBattle, movePill: metaMovePill,
         cancelFarm: () => { stopTeamTrioFarmAnalysis(); stopTeamTrioFarmNext(); teamTrioFarmState.phase = "idle"; teamTrioFarmState.results = []; teamOpponentUIController.renderResults(); },
         toggleTrio: slot => { const id=teamBuilderState.team[slot]?.pokemonId; if(!id)return; teamBuilderTrioIds=teamBuilderTrioIds.includes(id) ? teamBuilderTrioIds.filter(value=>value!==id) : teamBuilderTrioIds.length<3 ? [...teamBuilderTrioIds,id] : teamBuilderTrioIds; persistTeamOpponent(); },
         useTrio: slots => { teamBuilderTrioIds=slots.map(slot=>teamBuilderState.team[slot]?.pokemonId).filter(Boolean).slice(0,3); persistTeamOpponent(); },
@@ -22827,6 +22950,7 @@
     function resetBattleStateFromSetup() {
       clearManualEnergyTrainerNextCycle();
       hideTimelineHover();
+      clearFarmBattleContext();
       technicalIssueInjection = null;
       manualPendingFastEvents = [];
       if (technicalReviewState?.mode || technicalReviewState?.draft || technicalReviewState?.pendingDre) {
@@ -23309,6 +23433,7 @@
 
     function createMatrixBattleConfig() {
       if (!setupReadyForBattle()) return null;
+      if (farmBattleContext) return { ...JSON.parse(JSON.stringify(farmBattleContext.entry)), startEnergyA: clampEnergy($("p1StartEnergy").value), startEnergyB: clampEnergy($("p2StartEnergy").value), farmFastOnly: farmBattleContext.fastOnly };
       const cacheKey = matrixInputIdentity();
       if (matrixBattleConfigCache?.key === cacheKey) {
         if (perfDebugEnabled) perfDebug.recordCache("matrix-config", true, { size: 1 }, activeUiPerfRunId());
@@ -23328,7 +23453,7 @@
     }
 
     function matrixInputIdentity() {
-      return ["p1", "p2"].map(prefix => {
+      return (farmBattleContext ? `farm:${JSON.stringify(farmBattleContext.recipe)}|` : "") + ["p1", "p2"].map(prefix => {
         const chargedIds = chargedMoveSelects(prefix).filter(select => !select.disabled).map(select => select.value);
         return [
         $(`${prefix}Pokemon`)?.value,
@@ -30940,7 +31065,7 @@
           return legal;
         }
       }
-      if (forcedMatchupPlan.defaultAction === "fast") {
+      if (forcedMatchupPlan.defaultAction === "fast" && (!forcedMatchupPlan.defaultSide || forcedMatchupPlan.defaultSide === attacker.trainer)) {
         return legalActions.find(action => action.type === "fast" || action.type === "fast_move") || null;
       }
       return null;
@@ -32578,6 +32703,7 @@
       const combatantSpan = activeBattlePerfRunId ? perfDebug.startSpan("combatants.create", activeBattlePerfRunId) : null;
       left = create("p1", "A");
       right = create("p2", "B");
+      applyFarmBattleEntry();
       if (combatantSpan) perfDebug.endSpan(combatantSpan);
       if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
         const reduced = options.startingHpReduction.side === "A" ? left : right;
@@ -32600,8 +32726,9 @@
       lastTacticalPatternSummary = null;
       lastWinConditionSummary = null;
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
+      battleTurns = farmBattleContext ? { ...farmBattleContext.entry.turns } : { A: 0, B: 0 };
+      if (farmBattleContext) farmBattleContext.start = { A: { hp: left.hp, energy: left.energy, shields: left.shields }, B: { hp: right.hp, energy: right.energy, shields: right.shields } };
       initialTimelineState = battleSnapshot();
-      battleTurns = { A: 0, B: 0 };
       add(`Battle started: ${left.p.name} vs ${right.p.name}`, "info");
       lastBattleInitialSimulatorState = cloneTechnicalValue(snapshotFullSimulatorState());
       if (!options.skipRender) render();
@@ -33021,6 +33148,7 @@
     }
 
     function render() {
+      renderFarmBattleNotice();
       const perfRunId = activeUiPerfRunId();
       const renderSpan = perfRunId ? perfDebug.startSpan("render", perfRunId) : null;
       const scenarioWorkspace = document.body.dataset.view === "scenario-review";
@@ -35408,7 +35536,7 @@
       }
       if (perfRunId) perfDebug.recordCache("matrix-signature", false, { size: matrixSignatureCache ? 1 : 0 }, perfRunId);
       const signatureSpan = perfRunId ? perfDebug.startSpan("serialization.signature", perfRunId) : null;
-      const value = ["p1", "p2"].map((prefix, index) => {
+      const value = (farmBattleContext ? `farm:${JSON.stringify(farmBattleContext.recipe)}|` : "") + ["p1", "p2"].map((prefix, index) => {
         const pokemon = findPokemon($(`${prefix}Pokemon`).value);
         if (!pokemon) return `${index}:missing`;
         const stats = selectedStats(prefix, pokemon);
@@ -35624,6 +35752,7 @@
       }
       left = create("p1", "A");
       right = create("p2", "B");
+      applyFarmBattleEntry();
       if (options.startingHpReduction?.side && Number(options.startingHpReduction.amount) > 0) {
         const reduced = options.startingHpReduction.side === "A" ? left : right;
         reduced.hp = Math.max(1, reduced.maxHp - Math.round(Number(options.startingHpReduction.amount)));
@@ -35634,7 +35763,7 @@
       battleInsights = [];
       if (options.preFastAdvantage) applyInitialFastAdvantage(options.preFastAdvantage.side, options.preFastAdvantage.fastMoves, options.preFastAdvantage);
       initialTimelineState = battleSnapshot();
-      battleTurns = { A: 0, B: 0 };
+      battleTurns = farmBattleContext ? { ...farmBattleContext.entry.turns } : { A: 0, B: 0 };
       runAutomaticBattleToEnd(1000);
       const completedBattleInsights = JSON.parse(JSON.stringify(battleInsights));
       let result = scoreShieldMatrixResult(left, right, { aShields, bShields, includeSwing: options.includeSwing !== false, calibrated: true });
@@ -36210,6 +36339,7 @@
       });
       return {
         controls,
+        farmBattle: cloneTechnicalValue(farmBattleContext),
         startingFastAdvantages: {
           p1: startingFastAdvantages.p1 ? { ...startingFastAdvantages.p1 } : null,
           p2: startingFastAdvantages.p2 ? { ...startingFastAdvantages.p2 } : null
@@ -36238,6 +36368,9 @@
 
     function restoreFullSimulatorState(state) {
       if (!state) return;
+      farmBattleContext = cloneTechnicalValue(state.farmBattle || null);
+      forcedMatchupPlan = farmBattleContext?.fastOnly ? { defaultAction: "fast", defaultSide: "A" } : null;
+      renderFarmBattleNotice();
       restorePokemonSetupFromState("p1", state.controls);
       restorePokemonSetupFromState("p2", state.controls);
       restoreSimpleControls(state.controls);
@@ -37755,7 +37888,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261001-v88").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v92").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

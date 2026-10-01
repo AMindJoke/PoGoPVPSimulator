@@ -64,10 +64,37 @@
 #teamTrioFarmStatus { font-size:12px; color:var(--muted); }
 .team-trio .team-farm-help { margin-top:10px; }
 .team-trio .team-farm-help summary { color:var(--muted); font-size:11px; }
-.team-trio .team-farm-route { padding:0; margin:0; border:1px solid var(--line); border-radius:8px; background:var(--panel); overflow:hidden; }
-.team-farm-route > summary { display:grid; gap:8px; padding:12px; list-style:none; }
-.team-farm-route > summary::-webkit-details-marker { display:none; }
-.team-farm-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.team-trio .team-farm-group { padding:0; margin:0; border:1px solid var(--line); border-radius:8px; background:var(--panel); overflow:hidden; min-width:0; width:100%; max-width:none; }
+.team-farm-group-head { display:grid; gap:6px; padding:10px; border-bottom:1px solid var(--line); }
+.team-farm-opponent { display:flex; align-items:center; justify-content:center; gap:8px; }
+.team-farm-opponent > img { width:40px; height:40px; object-fit:contain; }
+.team-farm-opponent > div { display:grid; gap:4px; min-width:0; }
+.team-farm-opponent b { font-size:12px; }
+.team-farm-opponent div > span:not(.team-farm-hp) { font-size:11px; color:var(--muted); }
+.team-farm-choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:8px; align-items:stretch; }
+.team-farm-choice { display:grid; align-content:start; gap:8px; padding:8px; min-width:0; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); text-align:left; font:inherit; cursor:pointer; box-shadow:none; }
+.team-farm-choice:hover,.team-farm-choice.is-selected { border-color:var(--accent); background:var(--soft); }
+.team-farm-choice:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.team-farm-choice > .team-farm-badge { font-size:12px; line-height:16px; min-height:32px; }
+.team-farm-choice-action { font-size:11px; color:var(--accent); text-align:center; }
+.team-farm-choice .team-farm-person { grid-template-rows:40px 34px; }
+.team-farm-choice .team-farm-stats { grid-template-columns:minmax(0,1fr); gap:8px; }
+.team-farm-choice .team-farm-stats > div { grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:4px; }
+.team-farm-choice .team-farm-stats > div > span:first-child { min-height:20px; }
+.team-farm-choice .team-farm-stats .team-farm-hp { grid-column:1/-1; max-width:none; }
+.team-farm-choice .team-farm-card-foot { min-height:30px; font-size:11px; }
+.team-farm-moves { display:grid; gap:6px; border-top:1px solid var(--line); padding-top:8px; }
+.team-farm-moves > span { color:var(--muted); font-size:11px; }
+.team-farm-ready-move { display:grid; gap:2px; min-width:0; }
+.team-farm-ready-move > b { font-size:11px; color:var(--muted); }
+.team-farm-ready-move.is-ready > b { color:var(--good); }
+.team-farm-moves .meta-move-pill { display:flex; align-items:flex-start; gap:4px; width:100%; max-width:100%; min-width:0; height:auto; min-height:24px; padding:2px 0; border:0; border-radius:0; background:transparent; box-shadow:none; color:var(--ink); font-size:11px; font-weight:600; line-height:14px; }
+.team-farm-moves .meta-move-pill::before { content:''; flex:0 0 14px; width:14px; height:14px; border-radius:3px; background:var(--move-type) var(--move-icon) center/11px 11px no-repeat; }
+.team-farm-moves .meta-move-pill span { white-space:normal; overflow-wrap:anywhere; }
+.team-farm-detail-title { display:flex; align-items:center; gap:6px; margin-top:10px; font-size:12px; }
+.team-farm-detail-title img { width:28px; height:28px; object-fit:contain; }
+.team-farm-detail-title > span { color:var(--muted); font-size:11px; }
+.team-farm-battle { width:100%; margin:4px 0; }
 .team-farm-loss-context { display:flex; align-items:center; gap:5px; min-width:0; color:var(--muted); font-size:11px; }
 .team-farm-loss-context img { width:24px; height:24px; object-fit:contain; opacity:.6; filter:grayscale(.5); }
 .team-farm-loss-context b { color:var(--danger); font-size:11px; }
@@ -118,7 +145,7 @@
 .team-farm-next-controls:empty { display:none; }
 .team-farm-next-controls button { flex:1; }
 .team-farm-next-pair { display:grid; grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr); align-items:start; gap:8px; margin-top:6px; }
-.team-farm-next-farmer,.team-farm-route .team-farm-next-enemy { display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:40px 44px 20px; gap:4px; justify-items:center; text-align:center; min-width:0; }
+.team-farm-next-farmer,.team-farm-group .team-farm-next-enemy { display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:40px 44px 20px; gap:4px; justify-items:center; text-align:center; min-width:0; }
 .team-farm-next-farmer img,.team-farm-next-enemy img { width:40px; height:40px; object-fit:contain; }
 .team-farm-next-farmer b { align-self:center; font-size:12px; line-height:17px; overflow-wrap:anywhere; }
 .team-farm-next-farmer > span,.team-farm-next-enemy > span:not(.team-farm-sr) { display:flex; align-items:center; gap:3px; color:var(--muted); font-size:11px; }
@@ -140,14 +167,15 @@
 .team-farm-result-card .team-farm-stats .team-farm-hp { grid-column:1/-1; max-width:none; }
 .team-farm-next-status { display:block; font-size:12px; color:var(--muted); }
 .team-farm-route-actions { display:grid; gap:6px; margin-top:10px; }
-.team-farm-route .team-farm-conditions { margin:6px 0 0; padding:0; border:0; }
+.team-farm-group .team-farm-conditions { margin:6px 0 0; padding:0; border:0; }
 .team-farm-conditions summary { display:flex; align-items:center; min-height:44px; color:var(--muted); font-size:11px; font-weight:500; }
 .team-farm-conditions summary::before { content:'ⓘ'; margin-right:5px; }
 .team-farm-conditions summary::after { content:'⌄'; margin-left:auto; }
 .team-farm-conditions[open] summary::after { transform:rotate(180deg); }
 .team-farm-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 @media(max-width:600px) {
-  .team-farm-route > summary { padding:10px; gap:7px; }
+  .team-farm-choices { gap:6px; padding:6px; }
+  .team-farm-choice { padding:7px; gap:6px; }
   .team-farm-pair { gap:5px; }
   .team-farm-stats { gap:6px; }
   .team-farm-lane { grid-template-columns:24px minmax(0,1fr) 28px; gap:5px; }

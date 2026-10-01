@@ -29,7 +29,8 @@ for(const [loser,enemy,farmer] of [
   ["abomasnow","talonflame","clodsire"],["abomasnow","talonflame","altaria"],
   ["melmetal","clodsire","abomasnow"],["altaria","abomasnow","talonflame"],
   ["clodsire","abomasnow","mimikyu"],["mimikyu","clodsire","altaria"],
-  ["altaria","clodsire","abomasnow"]
+  ["altaria","clodsire","abomasnow"],
+  ["abomasnow","aegislash_shield","clodsire"],["abomasnow","morpeko_full_belly","clodsire"]
 ]) for(const shields of [0,1,2]) {
   const base=config(loser,enemy), companion={slot:2,combatant:config(farmer,enemy).left};
   base.startEnergyB=13;base.right.energy=13;
@@ -49,6 +50,13 @@ for(const [loser,enemy,farmer] of [
     assert.equal(route.timeline.filter(event=>event.side==="B" && event.kind==="charge").length,route.chargedReceived);
     assert.equal(route.timeline.filter(event=>event.side==="B" && event.kind==="charge" && event.shielded).length,route.shieldsUsed);
     assert.equal(route.shieldsUsed,route.entry.teamShields-route.shieldsAfter);
+    const opened=adapter.simulate({id:20,key:"farm-entry",source:"team-builder-farm-battle",config:base,aShields:shields,bShields:shields,farmBattle:{companion}});
+    const replayConfig={...opened.entry,startEnergyA:opened.entry.left.energy,startEnergyB:opened.entry.right.energy,farmFastOnly:opened.fastOnly};
+    const replay=adapter.simulate({id:21,key:"farm-replay",source:"team-builder-farm-battle",config:replayConfig,aShields:opened.entry.left.shields,bShields:opened.entry.right.shields,includeSwing:false,debugTimeline:true});
+    assert.equal(Math.round(replay.details.aHp*route.maxHp),route.hpAfter,"Opening the actual farm in Battle must preserve final HP.");
+    assert.equal(replay.details.aEnergy,route.energyAfter,"Farm replay must preserve final energy.");
+    assert.equal(replay.timelineTrace.filter(event=>event.trainer==='A' && event.kind==='charge').length,0,"The replay keeps the farmer Fast-only while the enemy uses the canonical planner.");
+    assert.equal(replay.timelineTrace.filter(event=>event.trainer==='B' && event.kind==='charge').length,route.chargedReceived);
     assert.ok(route.timeline.every(event=>Number.isFinite(event.start) && Number.isFinite(event.end) && event.end>=event.start));
     if(route.status==="safe") {assert.equal(route.chargeWindowOpened,false);assert.equal(route.chargedReceived,0);assert.ok(route.hpAfter>0);}
     if(route.status==="charged")assert.ok(route.chargedReceived>0);
@@ -61,6 +69,10 @@ for(const [loser,enemy,farmer] of [
       assert.equal(next.entry.opponentShields,route.continuation.opponentShields);
       assert.equal(next.entry.attackStage,route.continuation.combatant.attackStage || 0);assert.equal(next.entry.defenseStage,route.continuation.combatant.defenseStage || 0);
       assert.equal(JSON.stringify(route.continuation),carryBefore);
+      const nextOpened=adapter.simulate({id:22,key:"next-entry",source:"team-builder-farm-battle",config:base,aShields:shields,bShields:shields,farmBattle:{companion,nextOpponent:nextConfig.right}});
+      const nextReplay=adapter.simulate({id:23,key:"next-replay",source:"team-builder-farm-battle",config:{...nextOpened.entry,startEnergyA:nextOpened.entry.left.energy,startEnergyB:nextOpened.entry.right.energy},aShields:nextOpened.entry.left.shields,bShields:nextOpened.entry.right.shields,includeSwing:false});
+      assert.equal(nextReplay.score,next.carried.score,"Opening the next matchup must reproduce the carried result.");
+      assert.deepEqual(nextReplay.details,next.carried.details);
       const plain=adapter.simulate({id:5,key:"fresh",config:nextConfig,aShields:route.shieldsAfter,bShields:route.continuation.opponentShields,includeSwing:false});
       assert.deepEqual(next.fresh.details,plain.details,"Fresh comparison must use the same remaining shields with full HP and zero energy.");
       for(const line of [next.carried,next.fresh]) {

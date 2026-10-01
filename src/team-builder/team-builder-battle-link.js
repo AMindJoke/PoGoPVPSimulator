@@ -83,6 +83,7 @@
     url.searchParams.set("view", "simulator");
     url.searchParams.delete("compendium");
     url.searchParams.delete("item");
+    url.searchParams.delete("tbFarm");
     if (payload.seasonId) url.searchParams.set("season", payload.seasonId);
     url.hash = "";
     return url.toString();
