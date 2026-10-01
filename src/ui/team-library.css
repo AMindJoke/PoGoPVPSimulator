@@ -1,0 +1,51 @@
+.team-builder-library-actions { display:flex; gap:8px; }
+#teamBuilderLibrary { min-height:40px; white-space:nowrap; }
+.team-library-dialog { box-sizing:border-box; width:min(520px,calc(100% - 24px)); max-height:calc(100dvh - 32px); margin:auto; padding:20px; border:1px solid var(--line); border-radius:14px; color:var(--ink); background:var(--panel); box-shadow:0 20px 70px #0004; }
+.team-library-dialog::backdrop { background:#0a243a88; }
+.team-library-dialog [hidden] { display:none !important; }
+.team-library-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.team-library-head h2 { margin:0; font-size:20px; }
+.team-library-head button { min-height:40px; }
+.team-library-dialog p { color:var(--muted); font-size:12px; line-height:1.5; }
+.team-library-save { display:flex; align-items:end; gap:8px; margin:18px 0; }
+.team-library-save label { display:flex; flex-direction:column; align-items:stretch; flex:1; min-width:0; font-size:12px; font-weight:700; }
+.team-library-dialog input { box-sizing:border-box; width:100%; max-width:none; min-height:42px; padding:8px 10px; border:1px solid var(--line); border-radius:7px; color:var(--ink); background:var(--soft); font:inherit; font-size:13px; }
+.team-library-save input { margin-top:6px; }
+.team-library-dialog button { font-size:12px; min-height:42px; }
+.team-library-status { margin:8px 0; font-size:12px; color:var(--accent); overflow-wrap:anywhere; }
+.team-library-status.is-error { color:var(--danger); }
+.team-library-status:empty { display:none; }
+.saved-team { margin:10px 0; padding:12px; border:1px solid var(--line); border-radius:9px; background:var(--soft); }
+.saved-team-main { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.saved-team-copy { min-width:0; }
+.saved-team-copy strong { font-size:14px; overflow-wrap:anywhere; }
+.saved-team-copy small { display:block; font-size:11px; color:var(--muted); }
+.saved-team-sprites { display:flex; gap:3px; margin:5px 0; }
+.saved-team-sprites img,.saved-team-empty { width:32px; height:32px; object-fit:contain; }
+.saved-team-empty { display:grid; place-items:center; color:var(--muted); }
+.saved-team summary { display:inline-flex; align-items:center; min-height:40px; font-size:12px; cursor:pointer; color:var(--accent); }
+.saved-team summary::after { content:"⌄"; margin-left:6px; }
+.saved-team details[open] summary::after { content:"⌃"; }
+.saved-team-rename { display:flex; gap:8px; }
+.saved-team-rename label { flex:1; min-width:0; }
+.saved-team-tools,.team-library-footer { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.saved-team-delete { color:var(--danger); margin-left:auto; }
+.team-library-footer { padding-top:12px; border-top:1px solid var(--line); }
+#copyBattleLink { font-size:12px; min-height:44px; }
+body:not([data-view="simulator"]) :is(#copyBattleLink,#battleLinkFeedback,#battleShareError) { display:none; }
+#battleLinkFeedback { color:var(--accent); font-size:12px; }
+#battleLinkFeedback:empty { display:none; }
+#battleShareError { margin:0; font-size:12px; }
+.battle-cta-row { flex-wrap:wrap; }
+#battleLinkFeedback { flex-basis:100%; text-align:center; }
+@media(max-width:900px) {
+  body[data-view="team-builder"] .team-builder-head-actions { grid-template-columns:minmax(0,1fr) auto; align-items:center; }
+  .team-builder-library-actions { flex-wrap:wrap; justify-content:end; }
+  body[data-view="team-builder"] .team-builder-share { min-height:40px; padding:8px; font-size:11px; }
+  #teamBuilderLibrary { padding:8px; font-size:12px; }
+  body[data-view="team-builder"] .team-builder-league select { padding-left:8px; font-size:12px; }
+  .team-library-dialog { padding:16px; }
+  .team-library-dialog button { min-height:44px; }
+  .saved-team { padding:10px; }
+  .saved-team-sprites img,.saved-team-empty { width:28px; height:28px; }
+}

@@ -42,8 +42,10 @@
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/team-builder/team-builder-analysis.js"></script>
-  <script src="src/team-builder/team-builder-share.js"></script>
-  <script src="src/team-builder/team-builder-battle-link.js"></script>
+  <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
+  <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
+  <script src="src/ui/team-library.js?v=20261001-v74-v2"></script>
+  <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v74"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14451,6 +14453,7 @@
   <link rel="stylesheet" href="src/meta-desktop-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
@@ -14774,6 +14777,7 @@
       </section>
     </div>
 
+    <div id="battleShareError" class="team-builder-share-error" role="alert" hidden><span>This Battle link is invalid or unavailable for the selected season.</span><button id="battleShareErrorDismiss" class="secondary" type="button">Use Battle setup</button></div>
     <div class="battle-cta-row">
       <button id="battleCta" class="battle-cta" type="button">
         <span class="battle-btn__icon" aria-hidden="true">
@@ -14784,6 +14788,8 @@
         <span class="battle-btn__label">Battle</span>
       </button>
       <button id="reset" class="secondary battle-reset" type="button">Reset</button>
+      <button id="copyBattleLink" class="secondary" type="button" disabled>Copy Battle Link</button>
+      <span id="battleLinkFeedback" role="status" aria-live="polite"></span>
     </div>
 
     <div class="analysis-grid">
@@ -15266,7 +15272,7 @@
       <section class="team-builder-shell" aria-labelledby="teamBuilderTitle">
         <header class="team-builder-head">
           <div class="team-builder-head-copy"><span>Competitive roster</span><h2 id="teamBuilderTitle">Build your Show 6 team</h2><p>Build a team of six and prepare it for matchup analysis.</p></div>
-          <div class="team-builder-head-actions"><label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label><button id="teamBuilderCopyLink" class="secondary team-builder-share" type="button">Copy Team Link</button><span id="teamBuilderShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span></div>
+          <div class="team-builder-head-actions"><label class="team-builder-league"><span>League</span><select id="teamBuilderLeague" aria-label="Team Builder league"></select></label><div class="team-builder-library-actions"><button id="teamBuilderLibrary" class="secondary" type="button" aria-haspopup="dialog">Saved teams</button><button id="teamBuilderCopyLink" class="secondary team-builder-share" type="button">Copy Team Link</button></div><span id="teamBuilderShareFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span></div>
         </header>
         <div id="teamBuilderShareError" class="team-builder-share-error" role="alert" hidden><span>This shared team could not be loaded. The link may be invalid or incompatible.</span><button id="teamBuilderShareErrorDismiss" class="secondary" type="button">Use my current team</button></div>
         <div class="team-builder-summary"><strong>Your team</strong><span id="teamBuilderSlotProgress" class="team-slot-progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="teamBuilderCount">0 of 6 selected</span></div>
@@ -15369,6 +15375,16 @@
 
   <div class="charge-info-tooltip" id="chargeInfoTooltip" aria-hidden="true"></div>
 
+  <dialog id="teamLibraryDialog" class="team-library-dialog" aria-labelledby="teamLibraryTitle">
+    <div class="team-library-head"><h2 id="teamLibraryTitle">Saved teams</h2><button id="teamLibraryClose" type="button" class="secondary" aria-label="Close saved teams">Close</button></div>
+    <p>Saved on this device. Export a backup to move your teams to another device.</p>
+    <form id="teamLibrarySaveForm" class="team-library-save"><label>Save current team<input id="teamLibraryName" placeholder="Team name" maxlength="64" required></label><button id="teamLibrarySave" type="submit">Save</button></form>
+    <label class="sr-only" for="teamLibrarySearch">Find saved team</label><input id="teamLibrarySearch" type="search" placeholder="Find a team or Pokémon">
+    <div id="teamLibraryStatus" class="team-library-status" role="status" aria-live="polite"></div>
+    <button id="teamLibraryUndo" class="secondary" type="button" hidden>Undo delete</button>
+    <div id="teamLibraryList"></div>
+    <div class="team-library-footer"><button id="teamLibraryImport" class="secondary" type="button">Import</button><button id="teamLibraryExport" class="secondary" type="button" disabled>Export all</button><input id="teamLibraryFile" type="file" accept=".json,application/json" hidden></div>
+  </dialog>
   <div class="modal team-picker-modal" id="teamBuilderPickerModal" role="dialog" aria-modal="true" aria-labelledby="teamBuilderPickerTitle" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-head"><div><h2 id="teamBuilderPickerTitle">Add Pokemon</h2><p class="team-picker-copy">Choose a league-ready Pokemon. Species already on the team cannot be selected twice.</p></div><button id="teamBuilderPickerClose" class="modal-close" type="button" aria-label="Close Pokemon picker">x</button></div>
@@ -16228,6 +16244,16 @@
       };
       $("teamBuilderLeague").onchange = event => setTeamBuilderLeague(event.target.value);
       $("teamBuilderCopyLink").onclick = copyTeamBuilderShareLink;
+      window.PvPeakTeamLibraryUI.create({
+        escapeHtml,
+        snapshot: teamBuilderSharePayload,
+        validate: validateSharedTeamForRuntime,
+        load: loadSavedTeam,
+        feedback: teamBuilderFeedback,
+        setSprite: (image, member) => { const pokemon = findPokemon(member.pokemonId); if (pokemon) setPokemonImage(image, pokemon); }
+      });
+      $("copyBattleLink").onclick = copyBattleShareLink;
+      $("battleShareErrorDismiss").onclick = () => { $("battleShareError").hidden = true; navigateAppView("simulator", { replace: true }); };
       $("teamBuilderShareErrorDismiss").onclick = dismissTeamBuilderShareError;
       $("teamBuilderMeta").onchange = event => setTeamBuilderMeta(event.target.value);
       $("teamBuilderAnalyze").onclick = startTeamBuilderAnalysis;
@@ -18216,6 +18242,16 @@
       updateMetaBackToTop();
     }
 
+    function loadSavedTeam(payload) {
+      validateSharedTeamForRuntime(payload);
+      cancelTeamBuilderAnalysis(false);
+      teamBuilderState = window.PvPeakTeamBuilder.normalizeState(payload.state);
+      teamBuilderComparisonBaseline = payload.comparisonBaseline ? JSON.parse(JSON.stringify(payload.comparisonBaseline)) : null;
+      persistTeamBuilderState();
+      persistTeamBuilderComparisonBaseline();
+      renderTeamBuilder();
+    }
+
     function restoreTeamBuilderState() {
       if (!window.PvPeakTeamBuilder) return false;
       try {
@@ -18326,6 +18362,9 @@
 
     function updateTeamBuilderRosterPresentation() {
       const mobile = matchMedia("(max-width: 900px)").matches;
+      const share = $("teamBuilderCopyLink");
+      if (!share.dataset.feedback && !share.hasAttribute("aria-busy")) share.textContent = mobile ? "Copy link" : "Copy Team Link";
+      share.setAttribute("aria-label", "Copy Team Link");
       document.querySelectorAll("#teamBuilderSlotProgress i").forEach((bar, index) => {
         bar.classList.toggle("is-filled", index < teamBuilderState.team.filter(Boolean).length);
       });
@@ -18460,7 +18499,9 @@
       button.disabled = true;
       button.textContent = "Creating link...";
       try {
-        const url = shareApi.buildTeamUrl(teamBuilderSharePayload(), window.location);
+        const location = new URL(window.location.href);
+        location.searchParams.set("season", activeSeasonData.id);
+        const url = shareApi.buildTeamUrl(teamBuilderSharePayload(), location);
         await writeManualScenarioLinkToClipboard(url);
         showTeamBuilderShareFeedback("success", "Team link copied");
         return true;
@@ -18483,7 +18524,7 @@
       status.textContent = message;
       teamBuilderShareFeedbackTimer = window.setTimeout(() => {
         delete button.dataset.feedback;
-        button.textContent = "Copy Team Link";
+        button.textContent = matchMedia("(max-width: 900px)").matches ? "Copy link" : "Copy Team Link";
         status.textContent = "";
         teamBuilderShareFeedbackTimer = null;
       }, type === "success" ? 1800 : 2600);
@@ -19917,6 +19958,7 @@
       const [leftShields, rightShields] = String(job.shields || "1-1").split("-").map(Number);
       return api.normalizePayload({
         version: api.VERSION,
+        seasonId: activeSeasonData.id,
         left: teamBuilderBattleLaunchSide(config.left, leftShields),
         right: teamBuilderBattleLaunchSide(config.right, rightShields)
       });
@@ -19938,6 +19980,7 @@
       return !!pokemon
         && pokemon.fast.includes(side.fastMoveId)
         && charged.length > 0
+        && charged.length <= selectedChargedMoveLimit(pokemon)
         && charged.every(moveId => pokemon.charged.includes(moveId))
         && ivs.every(value => Number.isInteger(value) && value >= 0 && value <= 15)
         && Number.isInteger(side.shields) && side.shields >= 0 && side.shields <= 2
@@ -19961,12 +20004,51 @@
       $(`${prefix}Shields`).value = String(side.shields);
       renderShields(prefix);
       setStartEnergy(prefix, side.startEnergy);
+      startingFastAdvantages[prefix] = startingFastAdvantageMetadata(moveMap.get(side.fastMoveId), side.startingFastCount || 0);
       syncSelection(prefix);
     }
 
+    function battleShareSide(prefix) {
+      return {
+        pokemonId: $(`${prefix}Pokemon`).value,
+        fastMoveId: $(`${prefix}Fast`).value,
+        chargedMoveIds: selectedChargedMoves(prefix).map(move => move.id),
+        ivAtk: Number($(`${prefix}IvAtk`).value),
+        ivDef: Number($(`${prefix}IvDef`).value),
+        ivHp: Number($(`${prefix}IvHp`).value),
+        shields: Number($(`${prefix}Shields`).value),
+        baiting: $(`${prefix}Baiting`).value,
+        shieldMode: $(`${prefix}ShieldMode`).value,
+        startEnergy: clampEnergy($(`${prefix}StartEnergy`).value),
+        startingFastCount: validStartingFastAdvantage(prefix)?.count || 0
+      };
+    }
+
+    async function copyBattleShareLink() {
+      if (!setupReadyForBattle()) return;
+      const button = $("copyBattleLink");
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      try {
+        const api = window.PvPeakTeamBuilderBattleLink;
+        const payload = { version: api.VERSION, seasonId: activeSeasonData.id, left: battleShareSide("p1"), right: battleShareSide("p2") };
+        const url = api.createUrl(window.location.href, payload);
+        await writeManualScenarioLinkToClipboard(url);
+        $("battleLinkFeedback").textContent = "Battle link copied.";
+      } catch (_) { $("battleLinkFeedback").textContent = "Could not copy the link. Please try again."; }
+      finally { button.disabled = !setupReadyForBattle(); button.removeAttribute("aria-busy"); }
+    }
+
     function loadTeamBuilderBattleFromLocation() {
+      if (!new URLSearchParams(window.location.search).has("tbBattle")) return false;
       const payload = window.PvPeakTeamBuilderBattleLink?.readLocation?.(window.location);
-      if (!payload || !validTeamBuilderBattleSide(payload.left) || !validTeamBuilderBattleSide(payload.right)) return false;
+      if (!payload || !validTeamBuilderBattleSide(payload.left) || !validTeamBuilderBattleSide(payload.right)
+        || (payload.seasonId && payload.seasonId !== activeSeasonData.id)) {
+        setAppView("simulator");
+        $("battleShareError").hidden = false;
+        return true;
+      }
+      $("battleShareError").hidden = true;
       setAppView("simulator");
       applyTeamBuilderBattleSide("p1", payload.left);
       applyTeamBuilderBattleSide("p2", payload.right);
@@ -32178,6 +32260,8 @@
 
     function updateBattleAvailability() {
       const ready = setupReadyForBattle();
+      $("copyBattleLink").disabled = !ready;
+      $("battleLinkFeedback").textContent = "";
       $("battleCta").disabled = !ready;
       $("battleCta").title = ready ? "Start battle" : "Choose both Pokemon first";
       document.body.classList.toggle("battle-setup-ready", ready);
@@ -37299,7 +37383,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261001-v73").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v74").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

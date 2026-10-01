@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-01-v73-meta-quick-proportions";
+const CACHE_VERSION = "2026-10-01-v74-team-library-battle-share";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -42,6 +42,9 @@ const CORE_ASSETS = [
   "./src/analysis/pokemon-analysis-view-model.js",
   "./src/ui/pokemon-analysis.js",
   "./src/team-builder/team-builder-state.js",
+  "./src/team-builder/team-builder-library.js?v=20261001-v74-v2",
+  "./src/ui/team-library.js?v=20261001-v74-v2",
+  "./src/ui/team-library.css?v=20261001-v74-v3",
   "./src/team-builder/team-builder-meta.js",
   "./src/team-builder/team-builder-analysis.js",
   "./src/team-builder/team-builder-matrix.css",
@@ -59,8 +62,8 @@ const CORE_ASSETS = [
   "./assets/team-builder-status-icons/win-soft.svg",
   "./assets/team-builder-status-icons/loss-hard.svg",
   "./assets/team-builder-status-icons/loss-soft.svg",
-  "./src/team-builder/team-builder-share.js",
-  "./src/team-builder/team-builder-battle-link.js",
+  "./src/team-builder/team-builder-share.js?v=20261001-v74",
+  "./src/team-builder/team-builder-battle-link.js?v=20261001-v74",
   "./src/compendium/compendium-model.js",
   "./src/compendium/move-reference.js",
   "./src/compendium/quick-reference.js",

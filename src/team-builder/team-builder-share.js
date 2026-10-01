@@ -89,7 +89,10 @@
 
   function buildTeamUrl(payload, locationLike) {
     const token = encodeTeam(payload);
-    return `${String(locationLike?.origin || "")}${String(locationLike?.pathname || "/")}${String(locationLike?.search || "")}#${HASH_KEY}=${token}`;
+    const query = new URLSearchParams(locationLike?.search || "");
+    ["tbBattle", "compendium", "item"].forEach(key => query.delete(key));
+    query.set("view", "team-builder");
+    return `${String(locationLike?.origin || "")}${String(locationLike?.pathname || "/")}?${query}#${HASH_KEY}=${token}`;
   }
 
   function locationWithoutTeam(locationLike) {
