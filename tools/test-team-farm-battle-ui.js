@@ -9,7 +9,7 @@ class Worker {constructor(){workers.push(this);}postMessage(message){this.messag
 class LocalURL extends URL {static createObjectURL(){return 'blob:test';}static revokeObjectURL(){}}
 const field=id=>fields[id] ||= {value:'0',hidden:true,disabled:false,textContent:'',setAttribute(){},removeAttribute(){}};
 const context={Worker,Blob:class{},URL:LocalURL,URLSearchParams,JSON,Number,
-  farmBattleContext:null,farmBattleLoadWorker:null,farmBattleLoadTimeout:null,forcedMatchupPlan:null,
+  farmBattleContext:null,farmBattleLoadWorker:null,farmBattleLoadTimeout:null,forcedMatchupPlan:null,battleReactionDelay:0,
   battleEngineVersion:'battle-v1',activeSeasonData:{id:'twilight-trails'},$:field,
   setTimeout:fn=>fn,clearTimeout(){},setAppView(){},buildMatrixComputeWorkerSource:()=>'',
   validTeamBuilderBattleSide:()=>true,

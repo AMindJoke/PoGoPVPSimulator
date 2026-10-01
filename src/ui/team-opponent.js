@@ -74,6 +74,7 @@
       const suggestionsMarkup=candidates.length ? `<p>Ranked by winning coverage, weakest matchup and backup answers. Ratings range from 0 to 1000.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><strong>${candidate.slots.map(slot=>escape(own.team[slot].name)).join(' · ')}</strong><span>${candidate.covered}/${candidate.total} covered · weakest ${candidate.weakest} · ${candidate.backups} with backups</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';
       if(suggestionsMarkup!==trioSuggestionsMarkup) { trioSuggestionsMarkup=suggestionsMarkup; list.innerHTML=suggestionsMarkup; }
       details.querySelector('summary').textContent = candidates.length ? 'Suggested trios' : 'Suggested trios · pending';
+      options.roles?.();
       renderFarm(summary);
     }
     function farmIcon(kind) {

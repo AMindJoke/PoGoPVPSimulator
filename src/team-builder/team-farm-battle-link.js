@@ -9,7 +9,7 @@
     if (!payload || payload.version !== 1 || !/^[a-zA-Z0-9._:-]{1,120}$/.test(payload.engineVersion || '')) throw new Error('FARM_LINK_INVALID');
     const first = BattleLink.normalizePayload(payload.first);
     const side = value => BattleLink.normalizePayload({version:1,left:value,right:first.right}).left;
-    if (first.left.startingFastCount || first.right.startingFastCount) throw new Error('FARM_LINK_INVALID');
+    if (first.left.startingFastCount || first.right.startingFastCount || first.reactionDelayTurns) throw new Error('FARM_LINK_INVALID');
     const start=payload.start ? Object.fromEntries(['A','B'].map(key=>{
       const value=payload.start[key];
       if(!value || !Number.isInteger(value.hp) || value.hp<1 || value.hp>4096 || !Number.isInteger(value.energy) || value.energy<0 || value.energy>100 || !Number.isInteger(value.shields) || value.shields<0 || value.shields>2)throw new Error('FARM_LINK_INVALID');

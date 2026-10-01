@@ -58,6 +58,10 @@
       if (!/^[a-z0-9-]{1,80}$/.test(payload.seasonId)) throw new Error("BATTLE_SEASON_INVALID");
       result.seasonId = payload.seasonId;
     }
+    if (payload.reactionDelayTurns != null) {
+      if (!Number.isInteger(payload.reactionDelayTurns) || payload.reactionDelayTurns < 0 || payload.reactionDelayTurns > 4) throw new Error("BATTLE_REACTION_DELAY_INVALID");
+      if (payload.reactionDelayTurns) result.reactionDelayTurns = payload.reactionDelayTurns;
+    }
     return Object.freeze(result);
   }
 
