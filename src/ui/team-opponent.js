@@ -5,6 +5,7 @@
     const section = $("teamOpponentPanel");
     let mobileSlot = 0, trioPickerMarkup = "", trioSuggestionsMarkup = "";
     let farmSignature = "", farmMarkup = "", showAllFarm = false;
+    const farmTargets = new Map();
     function selectedSlots() { return options.own().team.map((member,index) => member && options.trioIds().includes(member.pokemonId) ? index : null).filter(index=>index!=null); }
     function sprite(member, attr) { return member ? `<img ${attr} alt="${escape(member.name)}">` : ""; }
     function cell(member, ownSlot, opponentSlot, result, includeName = false) {
@@ -78,7 +79,7 @@
     function renderFarm(summary) {
       const state=options.farm(), own=options.own(), opponent=options.opponent();
       const panel=$("teamTrioFarm"); panel.hidden=selectedSlots().length!==3;
-      if(state.signature!==farmSignature) { farmSignature=state.signature; showAllFarm=false; }
+      if(state.signature!==farmSignature) { farmSignature=state.signature; showAllFarm=false; farmTargets.clear(); }
       const running=state.phase==="running", complete=state.phase==="complete";
       $("teamTrioFarmAnalyze").disabled=!summary.ready || running;
       $("teamTrioFarmAnalyze").hidden=complete;
@@ -96,20 +97,54 @@
       filter.textContent=showAllFarm ? "Show summary" : `Show all ${routes.length} routes`;
       filter.setAttribute("aria-pressed",String(showAllFarm));
       const label=route=>route.status==="safe" ? "Safe farm" : route.status==="risk" ? "Charged risk" : route.status==="charged" ? `${route.chargedReceived} charged` : route.status==="failed" ? "Farm fails" : "Not resolved";
-      const detail=route=>route.status==="safe" ? "KO before the opponent can launch a Charged Attack." : route.status==="risk" ? "The opponent can launch a Charged Attack before the KO, even though it did not in this simulated line." : route.status==="charged" ? `Farm completed with ${route.chargedReceived} opposing Charged Attack${route.chargedReceived===1 ? "" : "s"} and ${route.shieldsUsed} shield${route.shieldsUsed===1 ? "" : "s"} used.` : "The teammate did not survive a complete farm in this simulated line.";
+      const detail=route=>route.status==="safe" ? "KO before the opponent can launch a Charged Attack." : route.status==="risk" ? "The opponent can launch a Charged Attack before the KO, even though it did not in this simulated line." : route.status==="charged" ? `Farm completed with ${route.chargedReceived} opposing Charged Attack${route.chargedReceived===1 ? "" : "s"} and ${route.shieldsUsed} shield${route.shieldsUsed===1 ? "" : "s"} used.` : route.status==="incomplete" ? "This farm did not resolve within the simulation limit." : "The teammate did not survive a complete farm in this simulated line.";
       const markup=!complete ? "" : !routes.length ? '<p>No losing matchups to follow up in this scenario.</p>' : `<p>${safe.length ? "Safe farms shown first." : "No farm finishes before an opposing Charged Attack becomes possible."} Open a route for the starting conditions.</p>${visible.map(route=>{
         const lost=own.team[route.ownSlot], farmer=own.team[route.slot], enemy=opponent.team[route.opponentSlot];
         if(!lost || !farmer || !enemy)return "";
-        const metrics=route.status==="failed" || route.status==="incomplete" ? "No surviving farmer" : `${route.fastCount} ${escape(route.fastMoveName)} · +${route.energyGained} energy · ${route.hpPercent}% HP`;
+        const metrics=(route.status==="failed" || route.status==="incomplete" ? "No surviving farmer" : `${route.fastCount} ${escape(route.fastMoveName)} · +${route.energyGained} energy · ${route.hpPercent}% HP`)+` · ${route.shieldsUsed} ${route.shieldsUsed===1 ? "shield" : "shields"} used`;
         const stages=route.entry.attackStage || route.entry.defenseStage ? ` · ATK ${route.entry.attackStage>0 ? "+" : ""}${route.entry.attackStage} / DEF ${route.entry.defenseStage>0 ? "+" : ""}${route.entry.defenseStage}` : "";
-        return `<details class="team-farm-route is-${route.status}"><summary><span class="team-farm-enemy">vs ${escape(enemy.name)}</span><strong>${escape(lost.name)} → ${escape(farmer.name)}</strong><b class="team-farm-badge">${label(route)}</b><small>${route.score<=250 ? "Hard" : "Soft"} loss → ${metrics}</small></summary><div class="team-farm-route-body"><p>${detail(route)}</p><p>Opponent at entry: ${route.entry.opponentHp}/${route.entry.opponentMaxHp} HP · ${route.entry.opponentEnergy} energy${stages}. Shields: ${route.entry.teamShields} yours / ${route.entry.opponentShields} opponent.</p><button type="button" class="secondary" data-farm-first="${route.ownSlot}" data-farm-opponent="${route.opponentSlot}">Open first matchup in Battle</button></div></details>`;
+        const routeKey=`${route.ownSlot}-${route.opponentSlot}-${route.slot}`;
+        return `<details class="team-farm-route is-${route.status}" data-farm-detail="${routeKey}"><summary><span class="team-farm-enemy">vs ${escape(enemy.name)}</span><strong>${escape(lost.name)} → ${escape(farmer.name)}</strong><b class="team-farm-badge">${label(route)}</b><small>${route.score<=250 ? "Hard" : "Soft"} loss → ${metrics}</small></summary><div class="team-farm-route-body"><p>${detail(route)}</p>${farmTimeline(route,farmer,enemy)}<p>Opponent: ${route.entry.opponentHp}/${route.entry.opponentMaxHp} → ${route.opponentHpAfter} HP · ${route.entry.opponentEnergy} → ${route.opponentEnergyAfter} energy${stages}. Shields at entry: ${route.entry.teamShields} yours / ${route.entry.opponentShields} opponent.</p>${farmNext(route,routeKey,opponent)}<button type="button" class="secondary" data-farm-first="${route.ownSlot}" data-farm-opponent="${route.opponentSlot}">Open first matchup in Battle</button></div></details>`;
       }).join("")}`;
-      if(markup!==farmMarkup) { farmMarkup=markup; $("teamTrioFarmResults").innerHTML=markup; }
+      if(markup!==farmMarkup) {
+        const open=new Set(Array.from($("teamTrioFarmResults").querySelectorAll('details[open][data-farm-detail]')).map(el=>el.dataset.farmDetail));
+        farmMarkup=markup; $("teamTrioFarmResults").innerHTML=markup;
+        $("teamTrioFarmResults").querySelectorAll('details[data-farm-detail]').forEach(el=>{el.open=open.has(el.dataset.farmDetail);});
+      }
+    }
+    function farmTimeline(route,farmer,enemy) {
+      const events=route.timeline || [], end=Math.max(1,...events.map(event=>event.end));
+      const lanes=[["A",farmer.name],["B",enemy.name]].map(([side,name])=>`<div class="team-farm-lane${side==="B" ? " is-opponent" : ""}"><span>${escape(name)}</span><div class="team-farm-track">${events.filter(event=>event.side===side).map(event=>{
+        const start=Math.max(0,Math.min(98,100*Math.min(event.start,end)/end)), width=Math.max(.8,100*Math.max(1,event.duration || event.end-event.start)/end);
+        const description=`${event.moveName}${event.shielded ? " · shielded" : ""} · turn ${event.end}`;
+        return `<span class="team-farm-event is-${event.kind}${event.shielded ? " is-shielded" : ""}" style="left:${Math.min(98,start)}%;width:${Math.min(100-start,width)}%" title="${escape(description)}" aria-label="${escape(description)}">${event.kind==="charge" ? event.shielded ? "S" : "◆" : ""}</span>`;
+      }).join("")}</div></div>`).join("");
+      return `<div class="team-farm-timeline" role="group" aria-label="Farm timeline"><div class="team-farm-timeline-head"><b>Farm timeline</b><span>0 → ${end} turns · ${route.continuation ? "KO" : route.status==="failed" ? "Fainted" : "Stopped"}</span></div>${lanes}<p class="team-farm-legend">Bars: Fast · ◆ Charged${events.some(event=>event.kind==="charge") ? ` (${[...new Set(events.filter(event=>event.kind==="charge").map(event=>escape(event.moveName)))].join(" / ")})` : ""} · S Shielded</p><div class="team-farm-resources"><span>Your HP <b>100% → ${route.hpPercent}%</b></span><span>Energy <b>0 → ${route.energyAfter}</b></span><span>Shields <b>${route.entry.teamShields} → ${route.shieldsAfter}</b></span></div></div>`;
+    }
+    function farmNext(route,routeKey,opponent) {
+      if(!route.continuation)return "";
+      const targets=opponent.team.map((member,slot)=>({member,slot})).filter(value=>value.member && value.slot!==route.opponentSlot);
+      if(!targets.length)return '<p>Add another opposing Pokémon to check the next matchup.</p>';
+      const target=farmTargets.get(routeKey) ?? targets[0].slot; farmTargets.set(routeKey,target);
+      const next=options.farmNext(routeKey,target), result=next.result;
+      const outcome=value=>value.details.outcome==="A" ? "Win" : value.details.outcome==="B" ? "Loss" : value.details.outcome==="draw" ? "Draw" : "Unresolved";
+      const stages=result && (result.entry.attackStage || result.entry.defenseStage) ? ` · ATK ${result.entry.attackStage>0 ? "+" : ""}${result.entry.attackStage} / DEF ${result.entry.defenseStage>0 ? "+" : ""}${result.entry.defenseStage}` : "";
+      const output=next.phase==="running" ? '<p role="status">Checking next matchup…</p>' : next.phase==="error" ? `<p role="alert">${escape(next.error)}</p>` : next.phase==="complete" ? `<div class="team-farm-next-result" role="status"><div><span>After farm</span><strong>${outcome(result.carried)}</strong><small>${Math.round(result.carried.details.aHp*100)}% HP · ${result.carried.energyAfter} energy · ${result.carried.shieldsAfter} shields left</small></div><div><span>Fresh start</span><strong>${outcome(result.fresh)}</strong><small>${Math.round(result.fresh.details.aHp*100)}% HP · ${result.fresh.details.aEnergy} energy<br>Full HP · 0 energy · same shields</small></div></div><p>Starting with ${result.entry.hp}/${result.entry.maxHp} HP · ${result.entry.energy} energy · ${result.entry.shields} shields${stages}.</p>` : "";
+      return `<details class="team-farm-next" data-farm-detail="next-${routeKey}"><summary>Use the energy · Next matchup</summary><p>Next opponent: full HP, 0 energy and their remaining team shields. Both can use Charged Attacks.</p><div class="team-farm-next-controls"><label>Next opponent<select data-farm-next-target="${routeKey}">${targets.map(({member,slot})=>`<option value="${slot}"${slot===target ? " selected" : ""}>${escape(member.name)}</option>`).join("")}</select></label><button type="button" class="secondary" data-farm-next-route="${routeKey}"${next.phase==="running" ? " disabled" : ""}>${next.phase==="complete" ? "Checked" : "Check matchup"}</button>${next.phase==="running" ? '<button type="button" class="secondary" data-farm-next-cancel>Cancel</button>' : ""}</div>${output}</details>`;
     }
     $("teamTrioFarmAnalyze").onclick=options.analyzeFarm;
     $("teamTrioFarmCancel").onclick=options.cancelFarm;
     $("teamTrioFarmFilter").onclick=()=>{showAllFarm=!showAllFarm; renderResults();};
-    $("teamTrioFarmResults").onclick=event=>{const button=event.target.closest('[data-farm-first]');if(button)options.battle(Number(button.dataset.farmFirst),Number(button.dataset.farmOpponent));};
+    $("teamTrioFarmResults").onclick=event=>{
+      const first=event.target.closest('[data-farm-first]'); if(first)options.battle(Number(first.dataset.farmFirst),Number(first.dataset.farmOpponent));
+      const next=event.target.closest('[data-farm-next-route]'); if(next)options.analyzeFarmNext(next.dataset.farmNextRoute,farmTargets.get(next.dataset.farmNextRoute));
+      if(event.target.closest('[data-farm-next-cancel]')) { options.cancelFarmNext(); renderResults(); }
+    };
+    $("teamTrioFarmResults").onchange=event=>{
+      const select=event.target.closest('[data-farm-next-target]'); if(!select)return;
+      farmTargets.set(select.dataset.farmNextTarget,Number(select.value)); options.cancelFarmNext(); renderResults();
+      $("teamTrioFarmResults").querySelector(`[data-farm-next-target="${select.dataset.farmNextTarget}"]`)?.focus({preventScroll:true});
+    };
     $("teamTrioPicker").onclick=event=>{
       const button=event.target.closest('[data-trio-slot]'); if(!button || button.disabled)return;
       options.toggleTrio(Number(button.dataset.trioSlot)); renderResults();
