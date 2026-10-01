@@ -17,7 +17,50 @@ row=Opponent.rows(plan,cache)[0]; assert.equal(row.ready,true); assert.equal(row
 assert.equal(Opponent.createPlan({...input,team:Array(6).fill(null)}).length,0);
 const html=fs.readFileSync("PogoPvp.html","utf8");
 const start=html.indexOf("    function createTeamBuilderBattleConfig("),end=html.indexOf("    function createTeamBuilderCombatant(");
-const calls=[], context={findPokemon:id=>({id}),createTeamBuilderCombatant:(value,side)=>{calls.push([value,side]);return value;},createMetaCombatant:()=>{throw Error("Opponent builds must not use default meta moves");}};
+const calls=[], context={findPokemon:id=>({id}),createTeamBuilderCombatant:(value,side)=>{calls.push([value,side]);return {...value};},createMetaCombatant:()=>{throw Error("Opponent builds must not use default meta moves");}};
 vm.createContext(context); vm.runInContext(html.slice(start,end),context);
 context.createTeamBuilderBattleConfig(plan[0]); assert.equal(calls[1][0],opposing[0]); assert.equal(calls[1][1],"B");
 console.log("Opponent team planning, cache invalidation, partial results and canonical config passed.");
+
+const zero=Opponent.createPlan({...input,startEnergyA:0,startEnergyB:0});
+assert.equal(zero[0].key,plan[0].key,"Zero energy must retain existing cache entries.");
+for(const settings of [{startEnergyA:20},{startEnergyB:20},{startEnergyA:20,startEnergyB:8}]) {
+  const jobs=Opponent.createPlan({...input,...settings});
+  assert.notEqual(jobs[0].key,plan[0].key);
+  const config=context.createTeamBuilderBattleConfig(jobs[0]);
+  assert.equal(config.left.energy,settings.startEnergyA || 0);
+  assert.equal(config.right.energy,settings.startEnergyB || 0);
+  assert.equal(config.startEnergyA,config.left.energy); assert.equal(config.startEnergyB,config.right.energy);
+}
+for(const invalid of [-1,101,1.5,"oops"])assert.throws(()=>Opponent.createPlan({...input,startEnergyB:invalid}));
+assert.equal(own[0].energy,undefined,"Creating an energy scenario must not mutate stored builds.");
+
+const result=(score,winner)=>({score,winner:winner || (score>500 ? "team" : score===500 ? "draw" : "opponent")});
+const rows=[
+  {slot:0,member:member("enemy-one",1),ready:true,cells:[800,400,300,600,300,400].map(score=>result(score))},
+  {slot:1,member:member("enemy-two",2),ready:true,cells:[300,700,500,350,620,300].map(score=>result(score))},
+  {slot:2,member:member("enemy-three",3),ready:true,cells:[300,400,690,300,400,610].map(score=>result(score))}
+];
+const summary=Opponent.analyzeTrio(rows,[2,0,1]);
+assert.equal(summary.covered,3);assert.equal(summary.backups,0);assert.equal(summary.weakest,690);
+assert.deepEqual(summary.slots,[0,1,2]);
+assert.equal(Opponent.analyzeTrio(rows,[0,1]).ready,false);
+assert.equal(Opponent.analyzeTrio(rows,[0,0,1]).ready,false);
+assert.equal(Opponent.analyzeTrio(rows,[0,1,6]).ready,false);
+const partial=rows.map(row=>({...row,ready:false,cells:row.cells.map((cell,slot)=>slot===5 ? null : cell)}));
+assert.equal(Opponent.analyzeTrio(partial,[0,1,2]).ready,true,"A selected trio can be evaluated once its own cells are complete.");
+assert.equal(Opponent.analyzeTrio(partial,[0,1,5]).ready,false);
+assert.deepEqual(Opponent.suggestTrios(partial,[0,1,2,3,4,5]),[],"Suggestions must wait for every candidate's results.");
+const candidates=Opponent.suggestTrios(rows,[5,4,3,2,1,0]);
+assert.equal(candidates.length,20); assert.deepEqual(candidates[0].slots,[0,1,2]);
+assert.equal(Opponent.suggestTrios(rows,[0,1]).length,0);
+assert.equal(Opponent.suggestTrios(rows,[0,1,2,2]).length,1);
+assert.deepEqual(Opponent.suggestTrios([...rows].reverse(),[0,1,2,3,4,5]),candidates.map(candidate=>({...candidate,matchups:[...candidate.matchups].reverse(),gaps:[...candidate.gaps].reverse()})));
+const drawRows=[{...rows[0],cells:[result(700,"draw"),result(500),result(400),result(600),result(600),result(400)]}];
+const draws=Opponent.analyzeTrio(drawRows,[0,1,2]);
+assert.equal(draws.covered,0,"Canonical draws never count as winning answers even with a high rating.");
+assert.equal(draws.gaps.length,1); assert.deepEqual(draws.gaps[0].draws,[0,1]);
+const ties=[{...rows[0],cells:[600,600,600,600,600,600].map(score=>result(score))}];
+assert.deepEqual(Opponent.suggestTrios(ties,[0,1,2,3])[0].slots,[0,1,2]);
+assert.equal(Opponent.analyzeTrio(ties,[0,1,2]).backups,1);
+console.log("Trio coverage, draws, partial results, deterministic recommendations and energy cache isolation passed.");

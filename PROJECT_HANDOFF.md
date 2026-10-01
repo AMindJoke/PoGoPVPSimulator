@@ -129,4 +129,13 @@ Prima di modificare, controllare sempre `git status --short`. Non usare reset di
 - Moduli: `src/team-builder/team-builder-opponent.js`, `src/ui/team-opponent.js/css`, `src/ui/pokemon-favorites.js/css`, `src/training/fast-count-practice.js`. Il motore di Battle resta invariato.
 - Test aggiunti: `tools/test-team-opponent.js`, `tools/test-pokemon-favorites.js`, `tools/test-fast-count-practice.js`; estesa la parità Team Builder → Battle a 5 scenari scudi con build personalizzati su entrambi i lati.
 
+### Preparazione del trio e confronto condiviso, 1 ottobre 2026
+
+- `Opponent team` ora comprende `Your trio`: selezione manuale di 3 Pokémon, copertura e risposte di riserva contro il roster avversario, nomi senza una risposta vincente e pareggi distinti. La matrice conserva tutti i matchup e evidenzia le colonne selezionate. Mobile: 3 righe da 2.
+- `Suggested trios` è chiuso inizialmente. Confronta fino a 20 combinazioni complete, ordinate per copertura vincente, risultato più debole, risposte di riserva e rating medio. Mostra le tre migliori. È analisi di matchup individuali, non una simulazione di incontro 3v3 o una scelta automatica dei ruoli.
+- `Starting energy` consente 0–100 energia per ciascun lato, applicata a tutti i matchup del confronto. Le chiavi cache includono i valori non nulli; energia zero conserva le vecchie chiavi. Battle riceve gli stessi valori iniziali; motore e planner invariati.
+- `Copy matchup link` conserva entrambe le squadre, mosse/IV, scudi indipendenti, energia, trio e stagione. Modulo `src/team-builder/team-matchup-share.js`, hash `teamMatchup`. Sono condivisibili anche i draft. Entrambe le squadre sono validate prima di applicarle; link errati mantengono il draft corrente.
+- Trio ed energia persistono nello stesso `pvpeak-opponent-team-v1`, con zero energia e trio vuoto come default per i vecchi salvataggi. Sostituire/rimuovere un membro elimina dal trio solo il Pokémon non più presente.
+- Test: `tools/test-team-matchup-share.js`; estesi `test-team-opponent.js` e `test-navigation-matchup-parity.js` (20 scenari avversario → Battle con mosse/IV personalizzati, 5 combinazioni di scudi e 4 combinazioni energetiche).
+
 > Ho letto `PROJECT_HANDOFF.md`: riparto da `main`, con Principle Registry al 100% e fallback ibrido allo 0%. Il Manual Mode mobile è nella fase di rifinitura, non di riscrittura. Dimmi se vuoi continuare con un dettaglio UI o tornare al confronto generale dei matchup.

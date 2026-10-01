@@ -88,18 +88,19 @@ Object.assign(context, {
 });
 vm.runInContext(section("createTeamBuilderBattleConfig", "simulateTeamBuilderMatchupCell"),context);
 const customMember=(id,ivs)=>({pokemonId:id,fastMoveId:pokemon.get(id).fast[0],chargedMoveIds:pokemon.get(id).charged.slice(-2),build:{ivAtk:ivs[0],ivDef:ivs[1],ivHp:ivs[2]}});
-for (const [a,b] of [[0,0],[1,1],[2,2],[0,2],[2,0]]) {
-  const job={member:customMember("clodsire",[4,12,13]),opponentMember:customMember("abomasnow",[7,14,11]),opponentId:"abomasnow",shields:`${a}-${b}`};
+for (const [startEnergyA,startEnergyB] of [[0,0],[20,8],[0,60],[100,100]]) for (const [a,b] of [[0,0],[1,1],[2,2],[0,2],[2,0]]) {
+  const job={member:customMember("clodsire",[4,12,13]),opponentMember:customMember("abomasnow",[7,14,11]),opponentId:"abomasnow",shields:`${a}-${b}`,startEnergyA,startEnergyB};
   const config=context.createTeamBuilderBattleConfig(job);
   const payload=context.teamBuilderBattleLaunchPayload(job);
   assert.deepEqual([...payload.right.chargedMoveIds],[...job.opponentMember.chargedMoveIds]);
   assert.equal(payload.right.ivAtk,7); assert.equal(payload.right.shields,b);
+  assert.equal(payload.left.startEnergy,startEnergyA); assert.equal(payload.right.startEnergy,startEnergyB);
   for (const [prefix,side] of [["p1",payload.left],["p2",payload.right]]) context.applyTeamBuilderBattleSide(prefix,side);
-  const restored={left:reboundSide(config.left,"p1"),right:reboundSide(config.right,"p2"),startEnergyA:0,startEnergyB:0};
+  const restored={left:reboundSide(config.left,"p1"),right:reboundSide(config.right,"p2"),startEnergyA:Number(fields.p1StartEnergy.value),startEnergyB:Number(fields.p2StartEnergy.value)};
   const expected=simulate(config,a,b,"team-builder",true),actual=simulate(restored,a,b,"battle",true);
   assert.equal(actual.score,expected.score); assert.deepEqual(actual.details,expected.details); assert.deepEqual(actual.timelineTrace,expected.timelineTrace);
 }
-console.log("Opponent-team/Battle parity passed: 5 shield scenarios with custom moves and IVs on both sides.");
+console.log("Opponent-team/Battle parity passed: 20 scenarios with custom builds, shields and starting energy on both sides.");
 context.URLSearchParams = URLSearchParams;
 vm.runInContext(section("loadTeamBuilderBattleFromLocation", "closeTeamBuilderMatchup"), context);
 context.window.location = new URL("https://example.test/PogoPvp.html?tbBattle=broken");

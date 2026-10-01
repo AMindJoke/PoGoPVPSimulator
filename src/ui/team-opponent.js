@@ -3,13 +3,14 @@
   root.PvPeakTeamOpponentUI = { create(options) {
     const $ = id => document.getElementById(id), escape = options.escapeHtml;
     const section = $("teamOpponentPanel");
-    let mobileSlot = 0;
+    let mobileSlot = 0, trioPickerMarkup = "", trioSuggestionsMarkup = "";
+    function selectedSlots() { return options.own().team.map((member,index) => member && options.trioIds().includes(member.pokemonId) ? index : null).filter(index=>index!=null); }
     function sprite(member, attr) { return member ? `<img ${attr} alt="${escape(member.name)}">` : ""; }
     function cell(member, ownSlot, opponentSlot, result, includeName = false) {
       if (!member) return '<span class="opponent-empty-cell" aria-label="Empty team slot">—</span>';
       const label = result ? options.resultLabel(result) : "Not calculated";
       const name = `${member.name} versus ${options.opponent().team[opponentSlot].name}: ${label}${result ? `. Rating ${result.score}. Open Battle` : ""}`;
-      return `<button type="button" class="opponent-matchup${includeName ? " is-mobile" : ""}" data-opponent-battle="${ownSlot}" data-opponent-slot="${opponentSlot}" aria-label="${escape(name)}" title="${escape(name)}"${result ? "" : " disabled"}>${includeName ? `${sprite(member, `data-own-result-sprite="${ownSlot}"`)}<strong>${escape(member.name)}</strong>` : ""}${result ? options.resultMarkup(result) : '<span class="opponent-empty-cell">—</span>'}${includeName ? `<small>${escape(label)}</small>` : ""}</button>`;
+      return `<button type="button" class="opponent-matchup${includeName ? " is-mobile" : ""}${selectedSlots().includes(ownSlot) ? " is-in-trio" : ""}" data-opponent-battle="${ownSlot}" data-opponent-slot="${opponentSlot}" aria-label="${escape(name)}" title="${escape(name)}"${result ? "" : " disabled"}>${includeName ? `${sprite(member, `data-own-result-sprite="${ownSlot}"`)}<strong>${escape(member.name)}</strong>` : ""}${result ? options.resultMarkup(result) : '<span class="opponent-empty-cell">—</span>'}${includeName ? `<small>${escape(label)}</small>` : ""}</button>`;
     }
     function rowLabel(row) {
       if (!row.ready) return "Pending";
@@ -23,6 +24,7 @@
       $("teamOpponentCount").textContent = `${opponent.team.filter(Boolean).length} of 6 selected`;
       $("teamOpponentSave").disabled = !opponent.team.some(Boolean);
       $("teamOpponentClear").disabled = !opponent.team.some(Boolean);
+      $("teamOpponentShare").disabled = !own.team.some(Boolean) || !opponent.team.some(Boolean);
       options.rosterPresentation();
       renderResults();
     }
@@ -36,9 +38,14 @@
       $("teamOpponentCancel").hidden = !active;
       $("teamOpponentStatus").textContent = !plan.length ? "Add Pokémon to both teams to compare matchups." : active ? `Preparing ${prepared} / ${plan.length} matchups…` : `${prepared} / ${plan.length} matchups ready${options.failed() ? ` · ${options.failed()} failed. Retry the remaining matchups.` : ""}`;
       ["A", "B"].forEach(side => { $("teamOpponentShields" + side).value = opponent.shields?.[side] ?? "1"; });
+      ["A", "B"].forEach(side => { const input=$("teamOpponentEnergy"+side); if(document.activeElement!==input)input.value=opponent.energy?.[side] ?? 0; });
+      const a=opponent.energy?.A || 0, b=opponent.energy?.B || 0;
+      $("teamOpponentEnergySummary").textContent = a || b ? `Starting energy · ${a} / ${b}` : "Starting energy · 0 / 0";
+      $("teamOpponentConditions").textContent = `Individual matchups · full HP · energy ${a} / ${b}. Select a result to open Battle.`;
+      renderTrio(rows);
       $("teamOpponentResults").hidden = !rows.length;
       const table = $("teamOpponentTable");
-      table.innerHTML = `<thead><tr><th scope="col">Opponent / Your team</th>${own.team.map((member, index) => `<th scope="col">${sprite(member, `data-own-sprite="${index}"`)}<span>${escape(member?.name || `Slot ${index + 1}`)}</span></th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr><th scope="row">${sprite(row.member, `data-opponent-sprite="${row.slot}"`)}<span>${escape(row.member.name)}</span><small class="${row.ready && !row.wins ? "is-threat" : ""}">${rowLabel(row)}</small>${row.best != null ? `<small>Best: ${escape(own.team[row.best].name)}</small>` : ""}</th>${own.team.map((member, index) => `<td>${cell(member, index, row.slot, row.cells[index])}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      table.innerHTML = `<thead><tr><th scope="col">Opponent / Your team</th>${own.team.map((member, index) => `<th scope="col"${selectedSlots().includes(index) ? ' class="opponent-trio-column"' : ""}>${sprite(member, `data-own-sprite="${index}"`)}<span>${escape(member?.name || `Slot ${index + 1}`)}${selectedSlots().includes(index) ? ' <b aria-label="In your trio">✓</b>' : ""}</span></th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr><th scope="row">${sprite(row.member, `data-opponent-sprite="${row.slot}"`)}<span>${escape(row.member.name)}</span><small class="${row.ready && !row.wins ? "is-threat" : ""}">${rowLabel(row)}</small>${row.best != null ? `<small>Best: ${escape(own.team[row.best].name)}</small>` : ""}</th>${own.team.map((member, index) => `<td>${cell(member, index, row.slot, row.cells[index])}</td>`).join("")}</tr>`).join("")}</tbody>`;
       own.team.forEach((member, index) => { if (member) options.setSprite(table.querySelector(`[data-own-sprite="${index}"]`), member); });
       rows.forEach(row => options.setSprite(table.querySelector(`[data-opponent-sprite="${row.slot}"]`), row.member));
       mobileSlot = Math.max(0, Math.min(rows.length - 1, mobileSlot));
@@ -48,6 +55,34 @@
       if (current) options.setSprite(mobile.querySelector("[data-mobile-opponent-sprite]"), current.member);
       own.team.forEach((member, index) => { const img = mobile.querySelector(`[data-own-result-sprite="${index}"]`); if (img && member) options.setSprite(img, member); });
     }
+    function renderTrio(rows) {
+      const own=options.own(), slots=selectedSlots(), api=root.PvPeakTeamOpponent;
+      $("teamTrioCount").textContent=`${slots.length}/3 selected`;
+      const picker=$("teamTrioPicker");
+      const pickerMarkup=own.team.map((member,index)=>`<button type="button" class="secondary team-trio-member" data-trio-slot="${index}" aria-pressed="${slots.includes(index)}" aria-label="${escape(member?.name || `Slot ${index+1}`)}${member ? ' · Toggle in your trio' : ' · Empty slot'}"${!member || (slots.length===3 && !slots.includes(index)) ? " disabled" : ""}>${sprite(member,`data-trio-sprite="${index}"`)}<span>${escape(member?.name || `Slot ${index+1}`)}</span>${slots.includes(index) ? '<b aria-hidden="true">✓</b>' : ""}</button>`).join("");
+      if(pickerMarkup!==trioPickerMarkup) {
+        trioPickerMarkup=pickerMarkup; picker.innerHTML=pickerMarkup;
+        own.team.forEach((member,index)=>{if(member)options.setSprite(picker.querySelector(`[data-trio-sprite="${index}"]`),member);});
+      }
+      const summary=api.analyzeTrio(rows,slots), output=$("teamTrioSummary");
+      const summaryMarkup=slots.length!==3 ? '<p>Choose three Pokémon to check their coverage.</p>' : !summary.ready ? '<p>Prepare the remaining matchups to evaluate this trio.</p>' : `<div class="team-trio-metrics"><span><strong>${summary.covered}/${summary.total}</strong> opponents covered</span><span><strong>${summary.backups}/${summary.total}</strong> with backup answers</span></div>${summary.gaps.length ? `<p class="team-trio-gaps"><strong>No winning answer:</strong> ${summary.gaps.map(row=>`${escape(row.member.name)}${row.draws.length ? " (draw available)" : ""}`).join(" · ")}</p>` : '<p>At least one winning answer to every opposing Pokémon.</p>'}`;
+      if(output.innerHTML!==summaryMarkup)output.innerHTML=summaryMarkup;
+      const candidates=api.suggestTrios(rows,own.team.map((member,index)=>member ? index : null).filter(index=>index!=null)).slice(0,3);
+      const details=$("teamTrioSuggestions"), list=$("teamTrioSuggestionsList");
+      const suggestionsMarkup=candidates.length ? `<p>Ranked by winning coverage, weakest matchup and backup answers. Ratings range from 0 to 1000.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><strong>${candidate.slots.map(slot=>escape(own.team[slot].name)).join(' · ')}</strong><span>${candidate.covered}/${candidate.total} covered · weakest ${candidate.weakest} · ${candidate.backups} with backups</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';
+      if(suggestionsMarkup!==trioSuggestionsMarkup) { trioSuggestionsMarkup=suggestionsMarkup; list.innerHTML=suggestionsMarkup; }
+      details.querySelector('summary').textContent = candidates.length ? 'Suggested trios' : 'Suggested trios · pending';
+    }
+    $("teamTrioPicker").onclick=event=>{
+      const button=event.target.closest('[data-trio-slot]'); if(!button || button.disabled)return;
+      options.toggleTrio(Number(button.dataset.trioSlot)); renderResults();
+      $("teamTrioPicker").querySelector(`[data-trio-slot="${button.dataset.trioSlot}"]`)?.focus({preventScroll:true});
+    };
+    $("teamTrioSuggestionsList").onclick=event=>{
+      const button=event.target.closest('[data-trio-suggestion]'); if(!button)return;
+      const slots=button.dataset.trioSuggestion.split(',').map(Number);
+      options.useTrio(slots); renderResults(); $("teamTrioPicker").querySelector(`[data-trio-slot="${slots[0]}"]`)?.focus({preventScroll:true});
+    };
     $("teamOpponentRoster").onclick = event => {
       const button = event.target.closest("button"); if (!button) return;
       if (button.dataset.teamAdd != null || button.dataset.teamReplace != null) options.pick(Number(button.dataset.teamAdd ?? button.dataset.teamReplace), button);
@@ -64,7 +99,9 @@
     $("teamOpponentLoad").onclick = options.load;
     $("teamOpponentSave").onclick = options.save;
     $("teamOpponentClear").onclick = options.clear;
+    $("teamOpponentShare").onclick = options.share;
     ["A", "B"].forEach(side => { $("teamOpponentShields" + side).onchange = event => options.shields(side, event.target.value); });
+    ["A", "B"].forEach(side => { $("teamOpponentEnergy" + side).onchange=event=>options.energy(side,event.target.value); });
     return { render, renderResults, open() { section.open = true; render(); } };
   } };
 })(globalThis);

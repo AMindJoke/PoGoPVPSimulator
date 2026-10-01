@@ -45,8 +45,9 @@
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v76"></script>
-  <script src="src/ui/team-opponent.js?v=20261001-v76"></script>
+  <script src="src/team-builder/team-builder-opponent.js?v=20261001-v78"></script>
+  <script src="src/ui/team-opponent.js?v=20261001-v78"></script>
+  <script src="src/team-builder/team-matchup-share.js?v=20261001-v78"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
   <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v74"></script>
   <script src="src/compendium/compendium-model.js"></script>
@@ -14458,7 +14459,7 @@
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
-  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v76">
+  <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261001-v78">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -15288,11 +15289,13 @@
         <div id="teamBuilderFeedback" class="team-builder-feedback" role="status" aria-live="polite"></div>
         <details id="teamOpponentPanel" class="team-opponent-panel">
           <summary>Opponent team <small>Compare your answers against a specific roster</small></summary>
-          <div class="team-opponent-toolbar"><button id="teamOpponentLoad" class="secondary" type="button">Load saved team</button><button id="teamOpponentSave" class="secondary" type="button">Save opponent team</button><button id="teamOpponentClear" class="secondary" type="button">Clear</button><button id="teamOpponentUndo" class="secondary" type="button" hidden>Undo clear</button><span id="teamOpponentCount">0 of 6 selected</span></div>
+          <div class="team-opponent-toolbar"><button id="teamOpponentLoad" class="secondary" type="button">Load saved team</button><button id="teamOpponentSave" class="secondary" type="button">Save opponent team</button><button id="teamOpponentShare" class="secondary" type="button">Copy matchup link</button><button id="teamOpponentClear" class="secondary" type="button">Clear</button><button id="teamOpponentUndo" class="secondary" type="button" hidden>Undo clear</button><span id="teamOpponentCount">0 of 6 selected</span><span id="teamOpponentShareStatus" role="status" aria-live="polite"></span></div>
           <div id="teamOpponentRoster" class="team-roster-grid" aria-label="Six opponent team slots"></div>
           <div class="team-opponent-controls"><label>Your shields<select id="teamOpponentShieldsA"><option>0</option><option selected>1</option><option>2</option></select></label><label>Opponent shields<select id="teamOpponentShieldsB"><option>0</option><option selected>1</option><option>2</option></select></label><button id="teamOpponentAnalyze" type="button">Analyze matchups</button><button id="teamOpponentCancel" class="secondary" type="button" hidden>Cancel</button></div>
+          <details class="team-opponent-energy"><summary id="teamOpponentEnergySummary">Starting energy · 0 / 0</summary><p>Applied to every individual matchup in this comparison.</p><div class="team-opponent-energy-fields"><label>Your starting energy<input id="teamOpponentEnergyA" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"></label><label>Opponent starting energy<input id="teamOpponentEnergyB" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"></label></div><p id="teamOpponentEnergyError" role="alert" hidden></p></details>
+          <section class="team-trio" aria-labelledby="teamTrioTitle"><header class="team-trio-head"><h3 id="teamTrioTitle">Your trio</h3><span id="teamTrioCount">0/3 selected</span></header><div id="teamTrioPicker" class="team-trio-picker" role="group" aria-label="Choose three Pokémon"></div><div id="teamTrioSummary" role="status" aria-live="polite"></div><details id="teamTrioSuggestions"><summary>Suggested trios</summary><div id="teamTrioSuggestionsList"></div></details></section>
           <div id="teamOpponentStatus" role="status" aria-live="polite"></div>
-          <div id="teamOpponentResults" hidden><p class="team-opponent-note">Individual matchups · full HP · zero energy. Select a result to open Battle.</p><div class="team-opponent-table-wrap"><table id="teamOpponentTable" class="team-opponent-table" aria-label="Your team versus opponent team"></table></div><div id="teamOpponentMobile"></div></div>
+          <div id="teamOpponentResults" hidden><p id="teamOpponentConditions" class="team-opponent-note">Individual matchups · full HP · zero energy. Select a result to open Battle.</p><div class="team-opponent-table-wrap"><table id="teamOpponentTable" class="team-opponent-table" aria-label="Your team versus opponent team"></table></div><div id="teamOpponentMobile"></div></div>
         </details>
         <section class="team-meta-setup" aria-labelledby="teamMetaTitle">
           <header class="team-meta-head"><div><h3 id="teamMetaTitle">Analysis setup</h3><p>Choose the competitive field and shield scenario, then prepare deterministic matchup results.</p></div><span class="team-meta-phase">Engine ready</span></header>
@@ -15857,6 +15860,8 @@
     let teamBuilderOpponentState = window.PvPeakTeamBuilder?.createState?.() || null;
     let teamBuilderOpponentPlan = [];
     let teamBuilderOpponentShields = { A: 1, B: 1 };
+    let teamBuilderOpponentEnergy = { A: 0, B: 0 };
+    let teamBuilderTrioIds = [];
     let teamBuilderOpponentUndo = null;
     let teamBuilderEditTarget = "own";
     let teamOpponentUIController = null;
@@ -16653,8 +16658,10 @@
       const directTeamBuilderBattle = loadTeamBuilderBattleFromLocation();
       if (!directTeamBuilderBattle) {
         const hasSharedScenario = Boolean(window.PvPeakManualScenarioShare?.scenarioTokenFromLocation?.(window.location));
+        const hasSharedMatchup = Boolean(window.PvPeakTeamMatchupShare?.tokenFromLocation?.(window.location));
         const hasSharedTeam = Boolean(window.PvPeakTeamBuilderShare?.teamTokenFromLocation?.(window.location));
         if (hasSharedScenario) void loadSharedScenarioFromLocation();
+        else if (hasSharedMatchup) void loadSharedMatchupFromLocation();
         else if (hasSharedTeam) void loadSharedTeamFromLocation();
         else if (!loadCompendiumFromLocation()) setAppView(readAppViewFromLocation() || "home");
       }
@@ -18501,6 +18508,8 @@
       updateTeamBuilderRosterPresentation();
       renderTeamBuilderMeta();
       renderTeamBuilderFinalSlotFinder();
+      const validTrio = teamBuilderTrioIds.filter(id => teamBuilderState.team.some(member => member?.pokemonId === id));
+      if (validTrio.length !== teamBuilderTrioIds.length) { teamBuilderTrioIds = validTrio; persistTeamOpponent(); }
       refreshTeamOpponentPlan();
       teamOpponentUIController?.render();
     }
@@ -18867,12 +18876,11 @@
     function createTeamBuilderBattleConfig(job) {
       const opponent = findPokemon(job.opponentId);
       if (!opponent) return null;
-      return {
-        left: createTeamBuilderCombatant(job.member, "A"),
-        right: job.opponentMember ? createTeamBuilderCombatant(job.opponentMember, "B") : createMetaCombatant(opponent, "B"),
-        startEnergyA: 0,
-        startEnergyB: 0
-      };
+      const left = createTeamBuilderCombatant(job.member, "A");
+      const right = job.opponentMember ? createTeamBuilderCombatant(job.opponentMember, "B") : createMetaCombatant(opponent, "B");
+      const startEnergyA = job.startEnergyA || 0, startEnergyB = job.startEnergyB || 0;
+      left.energy = startEnergyA; right.energy = startEnergyB;
+      return { left, right, startEnergyA, startEnergyB };
     }
 
     function createTeamBuilderCombatant(member, trainer) {
@@ -20104,6 +20112,39 @@
       teamBuilderMatchupReturnFocus = null;
     }
 
+    async function copyTeamMatchupLink() {
+      const button=$("teamOpponentShare"), status=$("teamOpponentShareStatus");
+      button.disabled=true;
+      try {
+        const payload={ schemaVersion:1, own:teamBuilderState, opponent:teamBuilderOpponentState, shields:teamBuilderOpponentShields, energy:teamBuilderOpponentEnergy, trioIds:teamBuilderTrioIds, seasonId:activeSeasonData.id };
+        const url=window.PvPeakTeamMatchupShare.createUrl(window.location.href,payload);
+        await writeManualScenarioLinkToClipboard(url); status.textContent="Matchup link copied.";
+      } catch(_) { status.textContent="Could not copy the matchup link."; }
+      finally { button.disabled=!teamBuilderState.team.some(Boolean) || !teamBuilderOpponentState.team.some(Boolean); }
+    }
+    function loadSharedMatchupFromLocation() {
+      const api=window.PvPeakTeamMatchupShare, token=api?.tokenFromLocation(window.location);
+      if(!token)return false;
+      try {
+        const payload=api.decode(token);
+        validateSharedTeamForRuntime({schemaVersion:1,state:payload.own});
+        validateSharedTeamForRuntime({schemaVersion:1,state:payload.opponent});
+        if(payload.seasonId!==activeSeasonData.id)throw new Error("Shared comparison season mismatch.");
+        cancelTeamBuilderAnalysis(false);
+        teamBuilderState=window.PvPeakTeamBuilder.normalizeState(payload.own);
+        teamBuilderOpponentState=window.PvPeakTeamBuilder.normalizeState(payload.opponent);
+        teamBuilderOpponentShields={...payload.shields}; teamBuilderOpponentEnergy={...payload.energy}; teamBuilderTrioIds=[...payload.trioIds];
+        teamBuilderComparisonBaseline=null; persistTeamBuilderState(); persistTeamBuilderComparisonBaseline(); persistTeamOpponent();
+        $("teamBuilderShareError").hidden=true; setAppView("team-builder"); refreshTeamOpponentPlan(); teamOpponentUIController.open();
+        teamBuilderFeedback("Shared comparison opened. Prepare matchups to calculate its results."); return true;
+      } catch(error) {
+        setAppView("team-builder"); const panel=$("teamBuilderShareError");
+        panel.querySelector("span").textContent="This shared comparison could not be loaded. The link may be invalid or incompatible.";
+        panel.dataset.reason=String(error.message); panel.hidden=false;
+        requestAnimationFrame(()=>$("teamBuilderShareErrorDismiss").focus({preventScroll:true})); return true;
+      }
+    }
+
     function teamBuilderEditableState() { return teamBuilderEditTarget === "opponent" ? teamBuilderOpponentState : teamBuilderState; }
     function commitTeamBuilderEditableState(next) {
       if (teamBuilderEditTarget === "opponent") { teamBuilderOpponentState = next; persistTeamOpponent(); }
@@ -20114,17 +20155,19 @@
         const saved = JSON.parse(localStorage.getItem(window.PvPeakTeamOpponent.STORAGE_KEY) || "null");
         if (saved?.state) { validateSharedTeamForRuntime({ schemaVersion: 1, state: saved.state }); teamBuilderOpponentState = window.PvPeakTeamBuilder.normalizeState(saved.state); }
         ["A", "B"].forEach(side => { if ([0,1,2].includes(saved?.shields?.[side])) teamBuilderOpponentShields[side] = saved.shields[side]; });
+        ["A", "B"].forEach(side => { const value=saved?.energy?.[side]; if(Number.isInteger(value) && value>=0 && value<=100)teamBuilderOpponentEnergy[side]=value; });
+        if(Array.isArray(saved?.trioIds))teamBuilderTrioIds=[...new Set(saved.trioIds)].filter(id=>teamBuilderState.team.some(member=>member?.pokemonId===id)).slice(0,3);
       } catch (_) {}
     }
     function persistTeamOpponent() {
-      try { localStorage.setItem(window.PvPeakTeamOpponent.STORAGE_KEY, JSON.stringify({ state: teamBuilderOpponentState, shields: teamBuilderOpponentShields })); }
+      try { localStorage.setItem(window.PvPeakTeamOpponent.STORAGE_KEY, JSON.stringify({ state: teamBuilderOpponentState, shields: teamBuilderOpponentShields, energy: teamBuilderOpponentEnergy, trioIds: teamBuilderTrioIds })); }
       catch (_) { teamBuilderFeedback("Opponent team could not be saved in this browser."); }
     }
     function refreshTeamOpponentPlan() {
       if (!activeSeasonData || !teamBuilderState) return;
       const opponentSignatures = {};
       teamBuilderOpponentState.team.forEach((member, index) => { if (member) opponentSignatures[index] = matrixCombatantSignature(createTeamBuilderCombatant(member, "B")); });
-      teamBuilderOpponentPlan = window.PvPeakTeamOpponent.createPlan({ team: teamBuilderState.team, opponentTeam: teamBuilderOpponentState.team, opponentSignatures, shields: `${teamBuilderOpponentShields.A}-${teamBuilderOpponentShields.B}`, seasonIdentity: activeSeasonData.identity, engineVersion: matchupResultVersion });
+      teamBuilderOpponentPlan = window.PvPeakTeamOpponent.createPlan({ team: teamBuilderState.team, opponentTeam: teamBuilderOpponentState.team, opponentSignatures, startEnergyA: teamBuilderOpponentEnergy.A, startEnergyB: teamBuilderOpponentEnergy.B, shields: `${teamBuilderOpponentShields.A}-${teamBuilderOpponentShields.B}`, seasonIdentity: activeSeasonData.identity, engineVersion: matchupResultVersion });
     }
     function loadOpponentTeam(payload, name = "team") {
       validateSharedTeamForRuntime(payload); cancelTeamBuilderAnalysis(false);
@@ -20145,7 +20188,12 @@
     function initTeamOpponent() {
       const setSprite = (image, member) => { const pokemon = findPokemon(member.pokemonId); if (pokemon && image) setPokemonImage(image, pokemon); };
       teamOpponentUIController = window.PvPeakTeamOpponentUI.create({
-        escapeHtml, own: () => teamBuilderState, opponent: () => ({ ...teamBuilderOpponentState, shields: teamBuilderOpponentShields }), plan: () => teamBuilderOpponentPlan,
+        escapeHtml, own: () => teamBuilderState, opponent: () => ({ ...teamBuilderOpponentState, shields: teamBuilderOpponentShields, energy: teamBuilderOpponentEnergy }), plan: () => teamBuilderOpponentPlan,
+        trioIds: () => teamBuilderTrioIds,
+        toggleTrio: slot => { const id=teamBuilderState.team[slot]?.pokemonId; if(!id)return; teamBuilderTrioIds=teamBuilderTrioIds.includes(id) ? teamBuilderTrioIds.filter(value=>value!==id) : teamBuilderTrioIds.length<3 ? [...teamBuilderTrioIds,id] : teamBuilderTrioIds; persistTeamOpponent(); },
+        useTrio: slots => { teamBuilderTrioIds=slots.map(slot=>teamBuilderState.team[slot]?.pokemonId).filter(Boolean).slice(0,3); persistTeamOpponent(); },
+        share: copyTeamMatchupLink,
+        energy: (side, value) => { try { const next=window.PvPeakTeamOpponent.energy(value); cancelTeamBuilderAnalysis(false); teamBuilderOpponentEnergy[side]=next; $("teamOpponentEnergyError").hidden=true; persistTeamOpponent(); refreshTeamOpponentPlan(); teamOpponentUIController.renderResults(); renderTeamBuilderAnalysisProgress(); } catch(error) { $("teamOpponentEnergyError").textContent=error.message; $("teamOpponentEnergyError").hidden=false; } },
         cache: teamBuilderAnalysisCache, isActive: () => teamBuilderAnalysisActive && teamBuilderAnalysisContext === "opponent",
         failed: () => teamBuilderAnalysisContext === "opponent" ? teamBuilderAnalysisFailed : 0,
         renderSlot: renderTeamBuilderSlot, setSprite, rosterPresentation: updateTeamBuilderRosterPresentation,
@@ -37493,7 +37541,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261001-v76").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v78").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
