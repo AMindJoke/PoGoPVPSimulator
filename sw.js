@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-01-v84-farm-continuation";
+const CACHE_VERSION = "2026-10-01-v87-visual-farm";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -93,10 +93,10 @@ const CORE_ASSETS = [
   "./src/training/fast-count-engine.js",
   "./src/training/fast-count-trainer.js?v=20261001-v76-v2",
   "./src/training/fast-count-practice.js?v=20261001-v76",
-  "./src/team-builder/team-builder-opponent.js?v=20261001-v84",
-  "./src/team-builder/team-matchup-share.js?v=20261001-v84",
-  "./src/ui/team-opponent.js?v=20261001-v84",
-  "./src/ui/team-opponent.css?v=20261001-v84",
+  "./src/team-builder/team-builder-opponent.js?v=20261001-v87",
+  "./src/team-builder/team-matchup-share.js?v=20261001-v87",
+  "./src/ui/team-opponent.js?v=20261001-v87",
+  "./src/ui/team-opponent.css?v=20261001-v87",
   "./src/ui/pokemon-favorites.js?v=20261001-v76",
   "./src/ui/pokemon-favorites.css?v=20261001-v76",
   "./src/training/fast-count-trainer.css?v=20261001-v76",
