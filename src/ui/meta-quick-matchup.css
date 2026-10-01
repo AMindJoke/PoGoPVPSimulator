@@ -104,6 +104,23 @@ body:has(.meta-quick-dialog[open]) { overflow: hidden; }
   .meta-quick-timeline { padding-top: 6px; }
   .meta-quick-panel footer { padding-bottom: 8px; }
 }
+@media (min-width: 1100px) and (max-height: 780px) {
+  .meta-quick-pair { grid-template-rows: auto auto auto auto 10px 30px; row-gap: 1px; padding-top: 6px; }
+  .meta-quick-energy { grid-template-columns: 30px minmax(0,1fr) 30px; }
+  .meta-quick-energy .energy-orb { width: 30px; height: 30px; }
+  .meta-quick-timeline { padding-top: 6px; }
+  .meta-quick-lane-label, .meta-quick-lane { height: 34px; }
+  .meta-quick-track { height: 33px; }
+  .meta-quick-event { top: 12px; }
+  .meta-quick-event.charge { top: 4px; }
+  .meta-quick-charge-trail { top: 13px; }
+  .meta-quick-event.shield { top: 2px; }
+  .meta-quick-ko { top: 6px; }
+  .meta-quick-ruler > span::after { height: 68px; }
+  .meta-quick-matrix { padding-top: 2px; padding-bottom: 2px; }
+  .meta-quick-matrix button { min-height: 32px; }
+  .meta-quick-panel footer { padding-bottom: 8px; }
+}
 @media (min-width: 1100px) {
   body[data-view="meta"] .meta-ranking { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
   body[data-view="meta"] .meta-ranking:has(.meta-entry.expanded) > .meta-lab-overview { display: grid; visibility: visible; pointer-events: auto; }

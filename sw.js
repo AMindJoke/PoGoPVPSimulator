@@ -38,7 +38,7 @@ const CORE_ASSETS = [
   "./src/analysis/ranking-details.js?v=20260930-v66",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v70",
   "./src/ui/meta-quick-matchup.js?v=20261001-v70",
-  "./src/ui/meta-quick-matchup.css?v=20261001-v70-v2",
+  "./src/ui/meta-quick-matchup.css?v=20261001-v70-v3",
   "./src/analysis/pokemon-analysis-view-model.js",
   "./src/ui/pokemon-analysis.js",
   "./src/team-builder/team-builder-state.js",
