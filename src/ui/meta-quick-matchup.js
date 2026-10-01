@@ -44,7 +44,6 @@
   function combatantHtml(combatant) {
     const moves = [combatant.fast, ...combatant.charged].filter(Boolean);
     return `<div class="meta-quick-pokemon"><img src="${escapeHtml(imageUrl(combatant.p))}" alt=""><strong>${escapeHtml(combatant.p.name)}</strong>
-      <small>${combatant.cp} CP · ${combatant.ivAtk}/${combatant.ivDef}/${combatant.ivHp}</small>
       <div class="meta-quick-moves">${moves.map((move, index) => metaMovePill(move, index === 0 ? "fast" : "charged")).join("")}</div></div>`;
   }
 
@@ -67,13 +66,9 @@
       return `<div class="meta-quick-lane" aria-label="${escapeHtml(combatant.p.name)} actions"><div class="meta-quick-track">${events}${hp === 0 ? `<span class="meta-quick-ko" role="img" aria-label="${escapeHtml(combatant.p.name)} KO" title="KO" style="left:${percent(timeline.visualTurns - 1)}%">×</span>` : ""}</div></div>`;
     }).join("");
     const labels = ["A", "B"].map(side => `<div class="meta-quick-lane-label" title="${escapeHtml(combatants[side].p.name)}"><img src="${escapeHtml(imageUrl(combatants[side].p))}" alt="${escapeHtml(combatants[side].p.name)}"></div>`).join("");
-    const detail = result.details || {};
-    const hpA = Math.round(Number(detail.aHp ?? detail.hpRatioA ?? 0) * selection.config.left.maxHp);
-    const hpB = Math.round(Number(detail.bHp ?? detail.hpRatioB ?? 0) * selection.config.right.maxHp);
-    return `<section class="meta-quick-timeline" aria-label="Matchup timeline"><div class="meta-quick-section-head"><h3>Timeline</h3><span>${timeline.turns} turns</span></div>
+    return `<section class="meta-quick-timeline" aria-label="Matchup timeline">
       <div class="meta-quick-timeline-grid"><div class="meta-quick-lane-labels"><span>Turn</span>${labels}</div><div class="meta-quick-timeline-scroll" tabindex="0" aria-label="Battle timeline; scroll horizontally for longer matchups"><div class="meta-quick-timeline-content" style="--quick-timeline-width:${timeline.minWidth}px"><div class="meta-quick-ruler">${timeline.ticks.map(tick => `<span style="left:${percent(tick.visualTurn)}%">${tick.turn}</span>`).join("")}</div>${lanes}</div></div></div>
-      <p class="meta-quick-legend"><span><i class="fast"></i>Fast</span><span><i class="charge"></i>Charged</span><span><i class="shield">${shieldSvg()}</i>Shield</span><span><b>×</b>KO</span></p>
-      <p class="meta-quick-hp">Remaining HP <strong>${hpA} / ${selection.config.left.maxHp}</strong><span>vs</span><strong>${hpB} / ${selection.config.right.maxHp}</strong></p></section>`;
+      </section>`;
   }
 
   function render() {
@@ -84,19 +79,18 @@
     const [aShields, bShields] = selectedShields.split("-");
     const outcome = result ? result.score > 500 ? `${selection.config.left.p.name} wins` : result.score < 500 ? `${selection.config.right.p.name} wins` : "Draw" : "Calculating matchup…";
     panel.setAttribute("aria-busy", String(state.status === "loading"));
-    panel.innerHTML = `<header class="meta-quick-head"><div><small>LIVE PREVIEW</small><h2>Quick Matchup</h2></div><button type="button" data-quick-action="close" aria-label="${wide.matches ? "Back to Top 50 snapshot" : "Close quick matchup"}">${wide.matches ? "← Top 50" : "×"}</button></header>
+    panel.innerHTML = `<header class="meta-quick-head"><h2>Quick Matchup</h2><button type="button" data-quick-action="close" aria-label="${wide.matches ? "Back to Top 50 snapshot" : "Close quick matchup"}" title="${wide.matches ? "Back to Top 50 snapshot" : "Close"}">×</button></header>
       <div class="meta-quick-pair">${combatantHtml(selection.config.left)}<span class="meta-quick-vs">VS</span>${combatantHtml(selection.config.right)}</div>
-      <div class="meta-quick-result" role="status"><div><strong>${escapeHtml(outcome)}</strong><small>${aShields}–${bShields} shields · Full HP · 0 energy</small></div>${result ? `<b class="${result.score > 500 ? "win" : result.score < 500 ? "loss" : "draw"}">${Math.round(result.score)}</b>` : ""}</div>
+      <div class="sr-only" role="status">${escapeHtml(outcome)} · ${aShields}–${bShields} shields${result ? ` · Score ${Math.round(result.score)}` : ""}</div>
       ${state.status === "error" ? `<p class="meta-quick-error" role="alert">The preview could not be completed. <button data-quick-action="retry" type="button">Retry</button></p>` : ""}
       ${result ? timelineHtml(result) : `<div class="meta-quick-loading">${state.status === "error" ? "Select an available shield scenario or retry." : "Preparing the timeline…"}</div>`}
-      <section class="meta-quick-matrix" aria-label="Shield matchup matrix"><div class="meta-quick-section-head"><h3>Shield matrix</h3><span>${Object.keys(state.cells).length}/9 ready</span></div>
-      <p>${escapeHtml(selection.config.left.p.name)} rows · ${escapeHtml(selection.config.right.p.name)} columns</p>
-      <table><caption class="sr-only">Scores from ${escapeHtml(selection.config.left.p.name)}'s perspective</caption><thead><tr><th scope="col">Shields</th>${[0,1,2].map(shields => `<th scope="col">${shields}</th>`).join("")}</tr></thead><tbody>${[0,1,2].map(a => `<tr><th scope="row">${a}</th>${[0,1,2].map(b => {
+      <section class="meta-quick-matrix" aria-label="Shield matchup matrix">
+      <table><caption class="sr-only">Scores from ${escapeHtml(selection.config.left.p.name)}'s perspective. ${escapeHtml(selection.config.left.p.name)} rows; ${escapeHtml(selection.config.right.p.name)} columns.</caption><thead><tr><th scope="col" title="Shields"><span class="meta-quick-matrix-shield" aria-hidden="true">${shieldSvg()}</span><span class="sr-only">Shields</span></th>${[0,1,2].map(shields => `<th scope="col">${shields}</th>`).join("")}</tr></thead><tbody>${[0,1,2].map(a => `<tr><th scope="row">${a}</th>${[0,1,2].map(b => {
         const key = `${a}-${b}`, cell = state.cells[key];
         const score = cell ? Math.round(cell.score) : "…";
         return `<td><button type="button" class="${cell ? cell.score > 500 ? "win" : cell.score < 500 ? "loss" : "draw" : "pending"}" data-quick-shields="${key}" aria-pressed="${key === selectedShields}" aria-label="${a} shields versus ${b} shields, ${cell ? `score ${score}` : "calculating"}">${cell ? cell.score > 500 ? "▲ " : cell.score < 500 ? "▼ " : "= " : ""}${score}</button></td>`;
       }).join("")}</tr>`).join("")}</tbody></table></section>
-      <footer><button type="button" class="meta-quick-battle" data-quick-action="battle">Open in Battle ↗</button><span>Uses the moves and IVs shown above.</span></footer>`;
+      <footer><button type="button" class="meta-quick-battle" data-quick-action="battle">Open in Battle ↗</button></footer>`;
     attach();
     if (focusedCell) panel.querySelector(`[data-quick-shields="${focusedCell}"]`)?.focus({ preventScroll: true });
     else if (focusedAction) panel.querySelector(`[data-quick-action="${focusedAction}"]`)?.focus({ preventScroll: true });

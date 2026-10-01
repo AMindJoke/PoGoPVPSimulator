@@ -34,7 +34,7 @@
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20260930-v66"></script>
-  <script src="src/analysis/meta-quick-matchup.js?v=20260930-v68-v2"></script>
+  <script src="src/analysis/meta-quick-matchup.js?v=20261001-v69"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
   <script src="src/battle/charged-move-collection.js"></script>
@@ -14456,9 +14456,9 @@
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
-  <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20260930-v68-v2">
+  <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261001-v69">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20260930-v68-v2"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261001-v69"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -37297,7 +37297,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20260930-v68").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261001-v69").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
