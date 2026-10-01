@@ -161,4 +161,12 @@ Prima di modificare, controllare sempre `git status --short`. Non usare reset di
 - Spiegazioni, condizioni di partenza e buff/debuff sono nei dettagli `Farm conditions`, `Matchup conditions` e `How it works`, chiusi inizialmente. Il riepilogo non contiene più paragrafi esplicativi; il pulsante inerte `Checked` è rimosso. Selettore target, calcolo, cache, annullamento e apertura Battle mantengono il comportamento precedente.
 - Modifica di presentazione: motore, planner e calcoli invariati. Passati controllo sintassi JS e contratti UI Team Builder/presentazione/PWA. Verificati in browser desktop e mobile 360 px: sprite, assenza overflow, confronto Win/Loss, cambio target, cache e apertura persistente dei dettagli. Cache applicativa v87.
 
+
+### Gerarchia e allineamenti del farm, 1 ottobre 2026
+
+- La scena principale mostra farmer contro avversario sopravvissuto, con sprite e nomi allineati e HP iniziali (`Start`) su entrambi i lati. Il Pokémon KO resta un contesto secondario. Verdetto più evidente; farm con caricate evidenzia gli scudi effettivamente consumati, senza presentarli come un requisito garantito.
+- Riepilogo con HP rimasti, energia e scudi usati; confronto successivo `After farm`/`Fresh start` con tre righe identiche HP/energia/scudi rimasti. Sprite, nomi, VS e risorse iniziali del nuovo matchup rispettano le stesse altezze.
+- Il confronto fresco acquisisce anche lo stato finale degli scudi, tramite l'osservazione terminale già esistente. Nessuna modifica al planner o alla classifica dei trii. Dettagli delle condizioni chiusi inizialmente; nessuna nuova funzione di tap sugli eventi Charged.
+- Passate suite farm (21 setup, 13 continuazioni), parità navigazione, continuation isolation, contratti UI Team Builder/presentazione/PWA/Manual Mode e controllo sintassi. Verificati desktop e mobile 360 px: nessun overflow/errori console, farm con consumo scudi, next matchup Win/Loss e cambio target. Cache v88.
+
 > Ho letto `PROJECT_HANDOFF.md`: riparto da `main`, con Principle Registry al 100% e fallback ibrido allo 0%. Il Manual Mode mobile è nella fase di rifinitura, non di riscrittura. Dimmi se vuoi continuare con un dettaglio UI o tornare al confronto generale dei matchup.

@@ -63,6 +63,10 @@ for(const [loser,enemy,farmer] of [
       assert.equal(JSON.stringify(route.continuation),carryBefore);
       const plain=adapter.simulate({id:5,key:"fresh",config:nextConfig,aShields:route.shieldsAfter,bShields:route.continuation.opponentShields,includeSwing:false});
       assert.deepEqual(next.fresh.details,plain.details,"Fresh comparison must use the same remaining shields with full HP and zero energy.");
+      for(const line of [next.carried,next.fresh]) {
+        assert.ok(Number.isInteger(line.shieldsAfter) && line.shieldsAfter>=0 && line.shieldsAfter<=route.shieldsAfter,"Final shields must be available and cannot exceed the remaining team shields.");
+        if(route.shieldsAfter===0)assert.equal(line.shieldsAfter,0);
+      }
       const repeatNext=adapter.simulate({id:6,key:"repeat-next",config:nextConfig,farmContinuation:route.continuation});
       assert.deepEqual(next,repeatNext,"The carried continuation must be deterministic and isolated from its fresh comparison.");
     } else assert.ok(route.status==="failed" || route.status==="incomplete");
