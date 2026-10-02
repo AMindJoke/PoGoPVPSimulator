@@ -74,8 +74,11 @@
       if(output.innerHTML!==completeSummary)output.innerHTML=completeSummary;
       const candidates=api.suggestTrios(rows,own.team.map((member,index)=>member ? index : null).filter(index=>index!=null)).slice(0,3);
       const details=$("teamTrioSuggestions"), list=$("teamTrioSuggestionsList");
-      const suggestionsMarkup=candidates.length ? `<p>Ranked by winning coverage, weakest matchup and backup answers. Ratings range from 0 to 1000.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><strong>${candidate.slots.map(slot=>escape(own.team[slot].name)).join(' · ')}</strong><span>${candidate.covered}/${candidate.total} covered · weakest ${candidate.weakest} · ${candidate.backups} with backups</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';
-      if(suggestionsMarkup!==trioSuggestionsMarkup) { trioSuggestionsMarkup=suggestionsMarkup; list.innerHTML=suggestionsMarkup; }
+      const suggestionsMarkup=candidates.length ? `<p>Coverage only · current comparison · roles not assigned.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><span class="team-coverage-lineup">${candidate.slots.map(slot=>`<span>${sprite(own.team[slot],`data-coverage-sprite="${slot}"`)}<strong>${escape(own.team[slot].name)}</strong></span>`).join('')}</span><span>${candidate.covered}/${candidate.total} opponents answered · ${candidate.backups}/${candidate.total} with two or more answers</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';
+      if(suggestionsMarkup!==trioSuggestionsMarkup) {
+        trioSuggestionsMarkup=suggestionsMarkup; list.innerHTML=suggestionsMarkup;
+        list.querySelectorAll('[data-coverage-sprite]').forEach(img=>options.setSprite(img,own.team[Number(img.dataset.coverageSprite)]));
+      }
       details.querySelector('summary').textContent = candidates.length ? 'Suggested trios' : 'Suggested trios · pending';
       options.roles?.();
       renderFarm(summary);

@@ -1,7 +1,8 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const Roles=require('../src/team-builder/team-builder-roles'),Link=require('../src/team-builder/team-builder-battle-link');
-const plan=[];for(let slot=0;slot<4;slot++)for(let opponentSlot=0;opponentSlot<4;opponentSlot++)plan.push({slot,opponentSlot,key:`build-${slot}-${opponentSlot}`,member:{pokemonId:`own-${slot}`}});
+const OpponentContext=require('../src/team-builder/team-opponent-context');
+const plan=[];for(let slot=0;slot<4;slot++)for(let opponentSlot=0;opponentSlot<4;opponentSlot++)plan.push({slot,opponentSlot,key:`build-${slot}-${opponentSlot}`,member:{pokemonId:`own-${slot}`},opponentMember:{pokemonId:`enemy-${opponentSlot}`}});
 const jobs=Roles.createJobs(plan,2),results=new Map();assert.equal(jobs.length,112);assert.equal(Roles.createJobs(plan,0).length,64,'Zero reaction must reuse identical equal-shield scenarios.');
 for(const job of jobs) {
   const {slot,opponentSlot,scenario}=job;
@@ -46,13 +47,18 @@ for(const invalid of [-1,5,'2',1.5])assert.throws(()=>Link.normalizePayload({...
 console.log('Role coverage, role assignment, diverse alternatives, draws, shield spend, dependency and reaction links passed.');
 
 const queued=[],timers=new Set();let currentPlan=plan,rendered=0;
-const context={PvPeakTeamRoles:Roles,setTimeout:fn=>{timers.add(fn);return fn;},clearTimeout:fn=>timers.delete(fn)};vm.createContext(context);vm.runInContext(fs.readFileSync('src/team-builder/team-role-analysis.js','utf8'),context);
-const coordinator=context.PvPeakTeamRoleAnalysis.create({plan:()=>currentPlan,config:()=>({left:{energy:20},right:{energy:8}}),combatant:member=>member,render:()=>rendered++,worker:()=>{const worker={postMessage(message){this.message=message;},terminate(){this.terminated=true;}};queued.push(worker);return worker;}});
+const context={PvPeakTeamRoles:Roles,PvPeakTeamOpponentContext:OpponentContext,setTimeout:fn=>{timers.add(fn);return fn;},clearTimeout:fn=>timers.delete(fn)};vm.createContext(context);vm.runInContext(fs.readFileSync('src/team-builder/team-role-analysis.js','utf8'),context);
+const coordinator=context.PvPeakTeamRoleAnalysis.create({plan:()=>currentPlan,config:job=>({left:{energy:20,pokemonId:job.member.pokemonId,trainer:'A'},right:{energy:8,pokemonId:job.opponentMember.pokemonId,trainer:'B'}}),combatant:member=>member,render:()=>rendered++,worker:()=>{const worker={postMessage(message){this.message=message;},terminate(){this.terminated=true;}};queued.push(worker);return worker;}});
 coordinator.start();const first=queued[0];assert.equal(first.message.config.startEnergyA,0);assert.equal(first.message.config.startEnergyB,0,'Role scenarios must not inherit the comparison energy bonus.');
 coordinator.cancel();first.onmessage({data:{key:first.message.key,type:'matrixCellResult',result:{details:{outcome:'A'}}}});assert.equal(coordinator.state().phase,'idle');assert.equal(coordinator.state().done,0);assert.equal(first.terminated,true);
 coordinator.start();const second=queued.at(-1);currentPlan=plan.map(job=>({...job,key:job.key+'-changed'}));coordinator.state();second.onmessage({data:{key:second.message.key,type:'matrixCellResult',result:{details:{outcome:'A'}}}});assert.equal(coordinator.state().phase,'idle');assert.equal(second.terminated,true);
 coordinator.start();const active=queued.at(-1);
-while(coordinator.state().phase==='running')active.onmessage({data:{key:active.message.key,type:'matrixCellResult',result:{score:750,details:{outcome:'A'},aUsed:0,bUsed:0,routes:[]}}});
+let reversedJobs=0;
+while(coordinator.state().phase==='running'){
+  if(active.message.key.startsWith('opponent:')){reversedJobs++;assert.ok(active.message.config.left.pokemonId.startsWith('enemy-'));assert.ok(active.message.config.right.pokemonId.startsWith('own-'));assert.equal(active.message.config.left.trainer,'A');assert.equal(active.message.config.turns.B,active.message.key.endsWith(':2') ? 2 : 0);}
+  active.onmessage({data:{key:active.message.key,type:'matrixCellResult',result:{score:750,details:{outcome:'A'},aUsed:0,bUsed:0,routes:[]}}});
+}
+assert.equal(reversedJobs,jobs.length);assert.equal(coordinator.state().opponentResults.size,jobs.length);assert.equal(coordinator.state().analysis.opponentContext.poolCount,4);
 assert.equal(coordinator.state().phase,'complete');assert.equal(coordinator.state().analysis.candidates.length,24);assert.equal(timers.size,0);assert.equal(active.terminated,true);
 const before=queued.length;coordinator.start();assert.equal(queued.length,before,'A completed unchanged analysis must not be recalculated.');
 const completedPlan=currentPlan;

@@ -4,7 +4,21 @@
   if (root) root.PvPeakTeamRoles = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const VERSION = 'roles-v2';
+  const VERSION = 'roles-v3';
+  const tie=(a,b)=>a.slots.join('').localeCompare(b.slots.join(''));
+  const common=(a,b)=>b.covered-a.covered || b.weakest-a.weakest;
+  const balanced=(a,b)=>common(a,b) || b.balanced-a.balanced || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || a.unrecovered-b.unrecovered || a.dependency-b.dependency || a.shared.length-b.shared.length || b.backups-a.backups || b.leadWins-a.leadWins || tie(a,b);
+  const switchOrder=(a,b)=>b.covered-a.covered || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || b.switchWins-a.switchWins || b.balanced-a.balanced || a.unrecovered-b.unrecovered || b.leadWins-a.leadWins || b.weakest-a.weakest || a.dependency-b.dependency || a.shared.length-b.shared.length || tie(a,b);
+  const closerOrder=(a,b)=>b.covered-a.covered || b.closerWins-a.closerWins || b.closerFresh-a.closerFresh || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || b.balanced-a.balanced || a.unrecovered-b.unrecovered || b.leadWins-a.leadWins || b.weakest-a.weakest || tie(a,b);
+  function selectSuggestions(candidates, contextual=false) {
+    const suggestions=[],seen=new Set();
+    for(const [style,compare,metric] of [['Balanced',balanced,'roleFloor'],['Switch resilience',switchOrder,'switchFloor'],['Shield closer',closerOrder,'closerFloor']]) {
+      const order=(a,b)=>contextual ? b.context.coverageFloor-a.context.coverageFloor || b.context[metric]-a.context[metric] || compare(a,b) : compare(a,b);
+      const choice=[...candidates].sort(order).find(c=>!seen.has(c.slots.join(',')));
+      if(choice){seen.add(choice.slots.join(','));suggestions.push({...choice,style});}
+    }
+    return suggestions;
+  }
   function scenarios(delay = 2) {
     if (!Number.isInteger(delay) || delay < 0 || delay > 4) throw new Error('ROLE_DELAY_INVALID');
     return [
@@ -81,17 +95,8 @@
         switchWins:Math.min(s.switch0.wins,s.switch1.wins,s.switch2.wins),switchEven:s.switchStable.length,
         closerWins:c.closer.wins,closerFresh:c.even0.wins,balanced:Math.min(l.even1.wins,s.switch1.wins,c.closer.wins)});
     }
-    const tie=(a,b)=>a.slots.join('').localeCompare(b.slots.join(''));
-    const common=(a,b)=>b.covered-a.covered || b.weakest-a.weakest;
-    const balanced=(a,b)=>common(a,b) || b.balanced-a.balanced || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || a.unrecovered-b.unrecovered || a.dependency-b.dependency || a.shared.length-b.shared.length || b.backups-a.backups || b.leadWins-a.leadWins || tie(a,b);
-    const switchOrder=(a,b)=>b.covered-a.covered || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || b.switchWins-a.switchWins || b.balanced-a.balanced || a.unrecovered-b.unrecovered || b.leadWins-a.leadWins || b.weakest-a.weakest || a.dependency-b.dependency || a.shared.length-b.shared.length || tie(a,b);
-    const closerOrder=(a,b)=>b.covered-a.covered || b.closerWins-a.closerWins || b.closerFresh-a.closerFresh || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || b.balanced-a.balanced || a.unrecovered-b.unrecovered || b.leadWins-a.leadWins || b.weakest-a.weakest || tie(a,b);
     candidates.sort(balanced);
-    const suggestions=[],seen=new Set();
-    for(const [style,compare] of [['Balanced',balanced],['Switch resilience',switchOrder],['Shield closer',closerOrder]]) {
-      const choice=[...candidates].sort(compare).find(c=>!seen.has(c.slots.join(',')));
-      if(choice){seen.add(choice.slots.join(','));suggestions.push({...choice,style});}
-    }
+    const suggestions=selectSuggestions(candidates);
     const leaders={
       lead:[...profiles].sort((a,b)=>Math.min(b.even1.wins,b.even2.wins)-Math.min(a.even1.wins,a.even2.wins) || b.even1.weakest-a.even1.weakest || a.slot-b.slot),
       switch:[...profiles].sort((a,b)=>b.switchStable.length-a.switchStable.length || Math.max(a.switch0.losses+a.switch0.unresolved,a.switch1.losses+a.switch1.unresolved,a.switch2.losses+a.switch2.unresolved)-Math.max(b.switch0.losses+b.switch0.unresolved,b.switch1.losses+b.switch1.unresolved,b.switch2.losses+b.switch2.unresolved) || b.switch1.wins-a.switch1.wins || a.slot-b.slot),
@@ -99,5 +104,5 @@
     };
     return {ready:true,profiles,candidates,suggestions,leaders,opponents,delay};
   }
-  return Object.freeze({VERSION,scenarios,cellKey,createJobs,outcome,summary,analyze});
+  return Object.freeze({VERSION,scenarios,cellKey,createJobs,outcome,summary,analyze,selectSuggestions});
 });
