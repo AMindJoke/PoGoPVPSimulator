@@ -8,7 +8,7 @@ const presentationStyles = fs.readFileSync(path.join(__dirname, "..", "src", "te
 
 assert.match(html, /src="src\/team-builder\/team-builder-state\.js"/);
 assert.match(html, /src="src\/team-builder\/team-builder-meta\.js"/);
-assert.match(html, /src="src\/team-builder\/team-builder-analysis\.js"/);
+assert.match(html, /src="src\/team-builder\/team-builder-analysis\.js\?v=20261002-v107"/);
 assert.match(html, /src="src\/team-builder\/team-builder-share\.js(?:\?v=[^"]+)?"/);
 assert.match(html, /id="teamBuilderTab"[^>]+data-view-target="team-builder"/);
 assert.match(html, /id="teamBuilderView" class="app-view team-builder-view"/);

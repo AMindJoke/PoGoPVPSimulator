@@ -4,7 +4,7 @@
   if (root) root.PvPeakTeamRoles = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const VERSION = 'roles-v4';
+  const VERSION = 'roles-v5';
   const tie=(a,b)=>a.slots.join('').localeCompare(b.slots.join(''));
   const common=(a,b)=>b.covered-a.covered || b.weakest-a.weakest;
   const balanced=(a,b)=>common(a,b) || b.balanced-a.balanced || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || a.unrecovered-b.unrecovered || a.dependency-b.dependency || a.shared.length-b.shared.length || b.backups-a.backups || b.leadWins-a.leadWins || tie(a,b);
@@ -13,7 +13,7 @@
   function selectSuggestions(candidates, contextual=false) {
     const suggestions=[],seen=new Set();
     for(const [style,compare,metric] of [['Balanced',balanced,'roleFloor'],['Switch resilience',switchOrder,'switchFloor'],['Shield closer',closerOrder,'closerFloor']]) {
-      const order=(a,b)=>contextual ? b.context.coverageFloor-a.context.coverageFloor || b.context[metric]-a.context[metric] || compare(a,b) : compare(a,b);
+      const order=(a,b)=>contextual ? b.context.coverageFloor-a.context.coverageFloor || (a.context.reply?.hardCeiling ?? 0)-(b.context.reply?.hardCeiling ?? 0) || b.context[metric]-a.context[metric] || (a.context.reply?.weakest ?? 0)-(b.context.reply?.weakest ?? 0) || compare(a,b) : compare(a,b);
       const choice=[...candidates].sort(order).find(c=>!seen.has(c.slots.join(',')));
       if(choice){seen.add(choice.slots.join(','));suggestions.push({...choice,style});}
     }

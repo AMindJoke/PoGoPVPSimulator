@@ -4,6 +4,19 @@ const member = (id,dex) => ({ pokemonId:id, name:id, dex, fastMoveId:"FAST", cha
 const own = Team.createState({team:[member("mimikyu",778),member("clodsire",980)]}).team;
 const opposing = Team.createState({team:[member("talonflame",663),member("abomasnow",460)]}).team;
 const input = {team:own,opponentTeam:opposing,seasonIdentity:"season-a",engineVersion:"engine-a",shields:"1-2"};
+// The explicit Recheck action must rerun its own jobs without discarding other
+// roster/Meta results. A partially prepared plan still resumes from its cache.
+const htmlSource=fs.readFileSync('PogoPvp.html','utf8');
+const recheckSource=htmlSource.slice(htmlSource.indexOf('    function startTeamOpponentAnalysis()'),htmlSource.indexOf('    function stopTeamTrioFarmAnalysis()'));
+const recheckCache=Analysis.createCache(),checkJobs=[{key:'check-a'},{key:'check-b'}];
+checkJobs.forEach(job=>recheckCache.set(job.key,{score:500}));recheckCache.set('unrelated',{score:750});
+let dispatched=0;
+const recheckRuntime={teamBuilderOpponentPlan:checkJobs,teamBuilderAnalysisCache:recheckCache,teamBuilderAnalysisRunToken:1,cancelTeamBuilderAnalysis(){},refreshTeamOpponentPlan(){},renderTeamBuilderAnalysisProgress(){},teamOpponentUIController:{renderResults(){}},processTeamBuilderAnalysisQueue(){dispatched++;}};
+vm.createContext(recheckRuntime);vm.runInContext(recheckSource+';startTeamOpponentAnalysis();',recheckRuntime);
+assert.equal(recheckRuntime.teamBuilderAnalysisQueue.length,2);assert.equal(dispatched,1);
+assert.equal(recheckCache.has('unrelated'),true);
+recheckCache.set('check-a',{score:700});vm.runInContext('startTeamOpponentAnalysis();',recheckRuntime);
+assert.equal(recheckRuntime.teamBuilderAnalysisQueue.length,1);assert.equal(recheckRuntime.teamBuilderAnalysisCacheHits,1,'Partial plans resume cached work.');
 const plan = Opponent.createPlan(input); assert.equal(plan.length,4);
 const changed = JSON.parse(JSON.stringify(opposing)); changed[0].build.ivAtk=7;
 assert.notEqual(Opponent.createPlan({...input,opponentTeam:changed})[0].key,plan[0].key);

@@ -101,6 +101,7 @@
     return Object.freeze({
       get(key) { return entries.get(key) || null; },
       has(key) { return entries.has(key); },
+      delete(key) { return entries.delete(key); },
       set(key, value) {
         if (entries.has(key)) entries.delete(key);
         entries.set(key, value);

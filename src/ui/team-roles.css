@@ -4,16 +4,22 @@
 #teamRolesStatus { flex-basis:100%; font-size:12px; color:var(--muted); }
 .team-role-trios { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; margin-top:12px; }
 .team-role-trio { width:100%; max-width:none; min-width:0; margin:0; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--panel); box-shadow:none; }
-.team-role-trio > header { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0; margin-bottom:12px; border:0; background:transparent; box-shadow:none; color:var(--ink); font-size:12px; }
-.team-role-trio > header span { color:var(--muted); font-size:11px; }
+.team-role-trio > header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:5px; padding:0; margin-bottom:12px; border:0; background:transparent; box-shadow:none; color:var(--ink); font-size:13px; }
+.team-role-trio > header span { color:var(--muted); font-size:12px; }
 .team-role-lineup { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
-.team-role-lineup > div { display:grid; grid-template-rows:16px 44px minmax(34px,auto) 22px 36px; align-items:center; justify-items:center; gap:4px; min-width:0; text-align:center; }
+.team-role-lineup > div { display:grid; grid-template-rows:18px 44px minmax(36px,auto) 24px 32px 24px; align-items:center; justify-items:center; gap:3px; min-width:0; text-align:center; }
 .team-role-lineup img { width:44px; height:44px; object-fit:contain; }
 .team-role-lineup b { font-size:12px; overflow-wrap:anywhere; line-height:16px; }
 .team-role-lineup strong { font-size:18px; color:var(--accent); }
-.team-role-lineup small { font-size:11px; color:var(--muted); line-height:15px; }
+.team-role-lineup small { font-size:12px; color:var(--muted); line-height:16px; }
+.team-role-condition { display:inline-flex; align-items:center; gap:3px; font-size:12px; color:var(--muted); white-space:nowrap; }
+.team-role-condition svg { width:11px; height:13px; fill:none; stroke:currentColor; stroke-width:1.5; }
+.team-role-decision { display:grid; grid-template-columns:60px minmax(0,1fr); gap:4px 7px; margin-top:12px; padding:10px 0; border-top:1px solid var(--line); font-size:12px; line-height:17px; }
+.team-role-decision > b { color:var(--accent); }
+.team-role-decision small { grid-column:1/-1; color:var(--muted); font-size:12px; }
+.team-role-scope { font-size:12px; color:var(--muted); }
 .team-role-lineup > div > small:first-child { color:var(--ink); font-weight:700; }
-.team-role-reason,.team-role-warning { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0; border-top:1px solid var(--line); font-size:11px; }
+.team-role-reason,.team-role-warning { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 0; border-top:1px solid var(--line); font-size:12px; line-height:17px; }
 .team-role-reason { margin-top:12px; }
 .team-role-reason span,.team-role-warning span { display:flex; flex-wrap:wrap; align-items:center; justify-content:end; gap:3px; }
 .team-role-reason img,.team-role-warning img { width:28px; height:28px; object-fit:contain; }
@@ -22,7 +28,9 @@
 .team-role-trio.is-selected { border-color:var(--accent); }
 .team-role-trio > button[aria-pressed=true] { color:var(--accent); border-color:var(--accent); }
 .team-role-trio details { margin-top:6px; }
-.team-role-trio summary { color:var(--accent); }
+.team-role-trio summary { color:var(--accent); font-size:12px; line-height:18px; padding:8px 0; min-height:36px; box-sizing:border-box; }
+.team-role-trio details details { border-top:1px solid var(--line); }
+.team-role-trio details p { font-size:12px; line-height:18px; color:var(--muted); }
 .team-role-matchups { overflow-x:auto; }
 .team-role-matchup-row { display:grid; grid-template-columns:80px repeat(6,minmax(44px,1fr)); align-items:center; gap:3px; margin-top:5px; }
 .team-role-matchup-row > b { font-size:11px; overflow-wrap:anywhere; }
@@ -56,9 +64,9 @@
 .team-role-scenario-group span,.team-role-scenario-group small { color:var(--muted); font-size:10px; line-height:14px; }
 .team-role-scenario-group strong { font-size:11px; line-height:16px; }
 .team-role-reliability { margin-top:10px; padding:9px 0; border-top:1px solid var(--line); }
-.team-role-reliability > div:first-child { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px; font-size:11px; }
-.team-role-reliability strong { color:var(--accent); font-size:11px; }
-.team-role-reliability > small { display:block; margin-top:5px; font-size:10px; line-height:14px; color:var(--muted); }
+.team-role-reliability > div:first-child { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px; font-size:12px; }
+.team-role-reliability strong { color:var(--accent); font-size:12px; }
+.team-role-reliability > small { display:block; margin-top:5px; font-size:12px; line-height:17px; color:var(--muted); }
 .team-role-checks { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:4px; margin-top:7px; }
 .team-role-checks > span { display:grid; justify-items:center; padding:3px 0; border:1px solid var(--line); border-radius:5px; }
 .team-role-checks img { width:28px; height:28px; object-fit:contain; }
@@ -67,7 +75,7 @@
 .team-role-checks .is-conditional { color:var(--warn); }
 .team-role-route { display:grid; grid-template-columns:1fr 12px 1.5fr 12px 1fr; align-items:center; gap:3px; padding:8px 0; border-top:1px solid var(--line); }
 .team-role-route > div { display:grid; justify-items:center; gap:4px; }
-.team-role-route small { font-size:10px; color:var(--muted); text-align:center; }
+.team-role-route small { font-size:12px; line-height:17px; color:var(--muted); text-align:center; }
 .team-role-route img,.team-role-answer-pairs img,.team-role-reply img,.team-role-case-list img,.team-role-counter img { width:28px; height:28px; object-fit:contain; }
 .team-role-route > div > span { display:flex; gap:2px; align-items:center; font-size:10px; }
 .team-role-route > span { color:var(--muted); }
@@ -84,7 +92,8 @@
 .team-role-option-lineup small { font-size:10px; color:var(--muted); }
 .team-role-option-lineup b { font-size:11px; line-height:15px; text-align:center; overflow-wrap:anywhere; }
 .team-role-case-list small { flex-basis:100%; color:var(--muted); font-size:10px; line-height:15px; }
-.team-role-context { display:grid; gap:8px; padding:10px 0; border-top:1px solid var(--line); margin-top:10px; font-size:11px; }
+.team-role-context { display:grid; gap:8px; padding:10px 0; margin-top:10px; font-size:12px; line-height:18px; }
+.team-role-context > small { font-size:12px; color:var(--muted); }
 .team-role-case-list { display:grid; gap:5px; }
 .team-role-case-list > div { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:3px; padding:4px; border:1px solid var(--line); border-radius:5px; }
 .team-role-case-list > div > span:nth-child(2),.team-role-reply { display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
@@ -93,5 +102,6 @@
 .team-role-counter > div { display:flex; align-items:center; gap:4px; }
 .team-role-counter small { color:var(--muted); font-size:11px; line-height:15px; }
 @media(max-width:600px) { .team-role-options > div { grid-template-columns:minmax(0,1fr); } }
-@media(min-width:1100px) { .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(min-width:1100px) { .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } .team-role-decision { min-height:59px; } .team-role-lead-risk { min-height:45px; } .team-role-lead-risk:empty { border-color:transparent; } }
+@media(max-width:1099px) { .team-role-lead-risk:empty { display:none; } }
 @media(max-width:600px) { .team-role-trio { padding:10px; } .team-role-trio > header { flex-wrap:wrap; } .team-role-matchup-row { grid-template-columns:repeat(3,minmax(44px,1fr)); } .team-role-matchup-row > b { grid-column:1/-1; margin:6px 0 2px; } }

@@ -18,7 +18,7 @@
     const replies=new Map();
     const candidates=own.candidates.map(candidate=>{
       const key=trioKey(candidate.slots),switchProfile=own.profiles.find(p=>p.slot===candidate.switch);
-      const cases=options.map((option,index)=>{
+      const allCases=pool.map((option,index)=>{
         const coverage=option.slots.filter(enemy=>candidate.slots.some(slot=>Roles.outcome(cell(results,slot,enemy))==='A')).length;
         const lead=wins(results,candidate.lead,option.slots,base),safe=option.slots.filter(enemy=>switchProfile.switchStable.includes(enemy)).length,closer=wins(results,candidate.closer,option.slots,close);
         return {index,slots:option.slots,coverage,lead,switch:safe,closer,roleFloor:Math.min(lead,safe,closer)};
@@ -31,10 +31,14 @@
             return {slot,opponentSlot:best,score:best==null ? null : cell(opponentResults,best,slot).score};
           });
           const covered=answers.filter(answer=>answer.opponentSlot!=null).length;
+          const hardCovered=answers.filter(answer=>answer.score>=751).length;
           const weakest=Math.min(...candidate.slots.map(slot=>Math.max(...option.slots.map(enemy=>cell(opponentResults,enemy,slot).score))));
-          return {slots:option.slots,covered,weakest,answers,rosterCovered:option.covered};
+          return {slots:option.slots,covered,hardCovered,weakest,answers,rosterCovered:option.covered};
         });
-        evaluated.sort((a,b)=>b.covered-a.covered || b.weakest-a.weakest || b.rosterCovered-a.rosterCovered || trioKey(a.slots).localeCompare(trioKey(b.slots)));
+        evaluated.sort((a,b)=>b.covered-a.covered || b.hardCovered-a.hardCovered || b.weakest-a.weakest || b.rosterCovered-a.rosterCovered || trioKey(a.slots).localeCompare(trioKey(b.slots)));
+        // Keep the maximum strong-counter exposure even when it occurs in a
+        // different trio from the one answering the most of our members.
+        evaluated[0].hardCeiling=Math.max(...evaluated.map(reply=>reply.hardCovered));
         replies.set(key,evaluated[0]);
       }
       const counters=candidate.slots.flatMap(slot=>own.opponents.filter(enemy=>Roles.outcome(cell(results,slot,enemy))==='B' && cell(results,slot,enemy).score<=250).map(enemy=>({
@@ -43,7 +47,7 @@
         strongRosterAnswers:own.profiles.filter(p=>Roles.outcome(cell(results,p.slot,enemy))==='A' && cell(results,p.slot,enemy).score>=751).map(p=>p.slot),
         inOptions:options.filter(option=>option.slots.includes(enemy)).length
       })));
-      return {...candidate,context:{cases,coverageFloor:Math.min(...cases.map(c=>c.coverage)),roleFloor:Math.min(...cases.map(c=>c.roleFloor)),switchFloor:Math.min(...cases.map(c=>c.switch)),closerFloor:Math.min(...cases.map(c=>c.closer)),reply:replies.get(key),counters}};
+      return {...candidate,context:{cases:allCases.slice(0,options.length),allCases,poolCount:pool.length,fullyAnswered:allCases.filter(c=>c.coverage===c.slots.length).length,coverageFloor:Math.min(...allCases.map(c=>c.coverage)),roleFloor:Math.min(...allCases.map(c=>c.roleFloor)),switchFloor:Math.min(...allCases.map(c=>c.switch)),closerFloor:Math.min(...allCases.map(c=>c.closer)),reply:replies.get(key),counters}};
     });
     return {...own,candidates,suggestions:Roles.selectSuggestions(candidates,true),opponentContext:{options,poolCount:pool.length,profiles:opponent.profiles}};
   }

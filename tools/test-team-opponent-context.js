@@ -24,7 +24,8 @@ assert.equal(new Set(context.opponentContext.options.map(o=>[...o.slots].sort().
 assert.equal(context.candidates.length,24);assert.equal(new Set(context.suggestions.map(c=>c.slots.join(','))).size,3);
 for(const candidate of context.candidates){
   assert.equal(candidate.context.cases.length,3);
-  assert.equal(candidate.context.coverageFloor,Math.min(...candidate.context.cases.map(c=>c.coverage)));
+  assert.equal(candidate.context.allCases.length,4);
+  assert.equal(candidate.context.coverageFloor,Math.min(...candidate.context.allCases.map(c=>c.coverage)));
   for(const c of candidate.context.cases){
     const expected=c.slots.filter(enemy=>candidate.slots.some(slot=>Roles.outcome(results.get(Roles.cellKey(slot,enemy,{a:1,b:1,delay:0})))==='A')).length;
     assert.equal(c.coverage,expected);
@@ -44,4 +45,42 @@ assert.deepEqual(Context.analyze(own,Roles.analyze([...reverse].reverse(),oppone
 const better={...context.candidates[0],slots:[0,1,2],context:{coverageFloor:3,roleFloor:3,switchFloor:3,closerFloor:3}};
 const worse={...context.candidates[0],slots:[0,2,1],covered:100,weakest:1000,context:{coverageFloor:1,roleFloor:1,switchFloor:1,closerFloor:1}};
 assert.deepEqual(Roles.selectSuggestions([worse,better],true)[0].slots,better.slots);
+// Six-v-six: a threat omitted from the three examples must still change both
+// role floors and the recommendation. No new simulations are necessary.
+const largePlan=[];
+for(let slot=0;slot<6;slot++)for(let opponentSlot=0;opponentSlot<6;opponentSlot++)largePlan.push({slot,opponentSlot,key:`large-${slot}-${opponentSlot}`,member:{pokemonId:`own-${slot}`},opponentMember:{pokemonId:`enemy-${opponentSlot}`}});
+const forward=new Map(),backward=new Map();
+for(const job of Roles.createJobs(largePlan,2)){
+  const lost=job.slot===1 && job.opponentSlot===5;
+  forward.set(job.key,{score:lost ? 100:700,details:{outcome:lost ? 'B':'A'},aUsed:0,bUsed:0});
+}
+const largeReverse=Context.reversePlan(largePlan);
+for(const job of Roles.createJobs(largeReverse,2)){
+  const won=job.slot===5 && job.opponentSlot===1;
+  backward.set(job.key,{score:won ? 900:300,details:{outcome:won ? 'A':'B'},aUsed:0,bUsed:0});
+}
+const largeOwn=Roles.analyze(largePlan,forward,2),largeOpponent=Roles.analyze(largeReverse,backward,2);
+largeOpponent.candidates.sort((a,b)=>Number(a.slots.includes(5))-Number(b.slots.includes(5)));
+const fragile=largeOwn.candidates.find(c=>c.slots.join(',')==='0,1,2'),solid=largeOwn.candidates.find(c=>c.slots.join(',')==='0,3,4');
+const audited=Context.analyze({...largeOwn,candidates:[fragile,solid]},largeOpponent,forward,backward);
+assert.equal(audited.opponentContext.poolCount,20);
+assert.ok(audited.opponentContext.options.every(option=>!option.slots.includes(5)));
+const risk=audited.candidates[0].context;
+assert.equal(risk.allCases.length,20);
+assert.equal(new Set(risk.allCases.map(c=>[...c.slots].sort().join(','))).size,20);
+assert.equal(Math.min(...risk.cases.map(c=>c.switch)),3);
+assert.equal(risk.switchFloor,2,'A counter outside the displayed examples must lower switch resilience.');
+assert.equal(risk.reply.hardCeiling,1);
+assert.equal(risk.reply.answers.find(a=>a.slot===1).opponentSlot,5,'The hidden hard counter must stay in the strongest reply.');
+assert.deepEqual(audited.suggestions[0].slots,solid.slots,'Exposure to an omitted strong counter must affect the actual suggestion.');
+assert.equal(audited.candidates[1].context.fullyAnswered,20);
+// Coverage takes precedence; then strong replies; then the selected role.
+const strongReply={...better,context:{...better.context,reply:{hardCeiling:2,weakest:900}}};
+const mildReply={...better,slots:[0,2,1],context:{...better.context,roleFloor:2,reply:{hardCeiling:1,weakest:700}}};
+assert.deepEqual(Roles.selectSuggestions([strongReply,mildReply],true)[0].slots,mildReply.slots);
+assert.deepEqual(Roles.selectSuggestions([{...strongReply,context:{...strongReply.context,coverageFloor:3}},{...mildReply,context:{...mildReply.context,coverageFloor:2}}],true)[0].slots,strongReply.slots);
+const drawn=new Map(backward);
+for(const job of Roles.createJobs(largeReverse,2).filter(job=>job.slot===5 && job.opponentSlot===1))drawn.set(job.key,{score:900,details:{outcome:'draw'},aUsed:0,bUsed:0});
+assert.equal(Context.analyze({...largeOwn,candidates:[fragile]},largeOpponent,forward,drawn).candidates[0].context.reply.hardCeiling,0,'A high-rating draw cannot be counted as an opposing winning answer.');
+assert.deepEqual(Context.analyze({...largeOwn,candidates:[fragile,solid]},largeOpponent,forward,backward).suggestions,audited.suggestions,'The all-combination audit must be deterministic.');
 console.log('Opponent roster options, distinct combinations, contextual ranking, strongest replies, hard-counter trade-offs and determinism passed.');
