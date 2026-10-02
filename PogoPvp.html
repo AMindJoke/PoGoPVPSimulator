@@ -32,6 +32,8 @@
   <script src="src/analysis/win-condition-view-model.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
+  <script src="src/analysis/battle-alternatives.js?v=20261002-v113"></script>
+  <script src="src/ui/battle-alternatives.js?v=20261002-v113"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261002-v109"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
@@ -14474,6 +14476,7 @@
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261001-v73-v2">
+  <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261002-v113">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
   <script defer src="src/ui/meta-quick-matchup.js?v=20261001-v73"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
@@ -14843,6 +14846,7 @@
         <div id="manualTimelineStage" class="manual-timeline-stage">
           <div class="timeline-head">
             <h2>Timeline</h2>
+            <span id="battleAlternativesMount" class="battle-alternatives-mount" hidden></span>
             <div class="timeline-tools">
               <span class="timeline-legend">
                 <span><i class="legend-fast"></i>Fast</span>
@@ -14859,6 +14863,7 @@
               </span>
             </div>
           </div>
+          <div id="battleAlternativeTimeline" aria-label="Alternative timeline preview" hidden></div>
           <div id="manualTimelineGrid" class="timeline-grid">
             <div class="timeline-label" id="p1TimelineLabel">A</div>
             <div class="timeline-label" id="p2TimelineLabel">B</div>
@@ -14874,6 +14879,7 @@
             <span class="manual-timeline-edge manual-timeline-edge-right" aria-hidden="true"></span>
             <span id="manualTimelineSwipeHint" class="manual-timeline-swipe-hint" aria-hidden="true">Swipe timeline →</span>
           </div>
+          <section id="battleAlternativesDetail" class="battle-alternatives-detail" aria-label="Matchup alternatives" aria-live="polite" hidden></section>
           <div id="manualTimelineSelectionCard" class="manual-timeline-selection-card" aria-live="polite" hidden></div>
           <section id="manualComparisonPanel" class="manual-comparison-panel" aria-labelledby="manualComparisonForkTitle" hidden></section>
           <div id="manualTechnicalIssuesMount" class="manual-technical-issues-mount" hidden></div>
@@ -15779,6 +15785,7 @@
       catch (_) { return null; }
     })();
     let suppressRender = false;
+    let battleAlternativesRunner = null, battleAlternativesUi = null, battleAlternativesInputKey = "";
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
     let chargedContinuationOpening = null;
@@ -32777,6 +32784,7 @@
 
     function startBattle(options = {}) {
       if (!setupReadyForBattle()) return;
+      resetBattleAlternatives();
       (typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence)?.clearCache?.();
       liveMatchupPlannerTable.clear();
       const stateSpan = activeBattlePerfRunId ? perfDebug.startSpan("battle.state", activeBattlePerfRunId) : null;
@@ -32816,6 +32824,7 @@
     }
 
     function hideBattleResultsForSetupChange() {
+      resetBattleAlternatives();
       document.body.classList.remove("battle-results-visible");
       cancelShieldMatrixCalculation();
       const matrix = $("shieldMatrix");
@@ -37118,10 +37127,57 @@
       $("timelineMoveTooltip")?.classList.remove("show");
     }
 
+    function resetBattleAlternatives() {
+      battleAlternativesRunner?.cancel();
+      battleAlternativesUi?.reset();
+      battleAlternativesInputKey = "";
+    }
+
+    function renderBattleAlternatives() {
+      const api = window.PvPeakBattleAlternatives;
+      const initial = lastBattleInitialSimulatorState?.battle;
+      if (!api || document.body.dataset.view !== "simulator" || !document.body.classList.contains("battle-results-visible")
+        || manualModeState?.enabled || scenarioState || farmBattleContext || !battleEnded() || !timeline.length
+        || !initial?.left || !initial?.right || initial.timeline?.length) {
+        if (battleAlternativesInputKey) resetBattleAlternatives();
+        return;
+      }
+      const input = {
+        engineVersion: battleEngineVersion, season: activeSeasonData.identity,
+        config: {left: cloneTechnicalValue(initial.left), right: cloneTechnicalValue(initial.right),
+          startEnergyA: initial.left.energy, startEnergyB: initial.right.energy, turns: {...initial.battleTurns}},
+        aShields: initial.left.shields, bShields: initial.right.shields,
+        expected: {outcome: left.hp <= 0 && right.hp <= 0 ? "draw" : right.hp <= 0 ? "A" : "B",
+          A: traceCombatantState(left), B: traceCombatantState(right), timeline: api.timelineIdentity(timeline)}
+      };
+      const key = JSON.stringify(input);
+      if (key === battleAlternativesInputKey) return;
+      battleAlternativesInputKey = key;
+      if (!battleAlternativesUi) battleAlternativesUi = window.PvPeakBattleAlternativesUI.create({
+        api, mount: $("battleAlternativesMount"), detail: $("battleAlternativesDetail"), preview: $("battleAlternativeTimeline"), grid: $("manualTimelineGrid"),
+        imageUrl, move: id => moveMap.get(id), movePill: metaMovePill, shieldSvg,
+        typeColor: type => typeColors[type] || "#66788c",
+        typeIcon: type => `<svg viewBox="0 0 64 64" fill="#fff" aria-hidden="true">${typeIconShape(type || "normal")}</svg>`,
+        timelineModel: events => window.PvPeakMetaQuickMatchupModel.compactTimelineModel(events, chargeWindowTurns, chargePauseTurns),
+        pauseReplay: stopTimelineReplay,
+        retry: () => {battleAlternativesInputKey = ""; renderBattleAlternatives();}
+      });
+      battleAlternativesUi.reset();
+      battleAlternativesRunner ||= api.createRunner(() => {
+        const source = api.instrumentWorkerSource(matrixComputeWorkerSourceCache || (matrixComputeWorkerSourceCache = buildMatrixComputeWorkerSource()));
+        const url = URL.createObjectURL(new Blob([source], {type:"text/javascript"}));
+        try {return new Worker(url);} finally {URL.revokeObjectURL(url);}
+      });
+      battleAlternativesRunner.start(input, state => {
+        if (battleAlternativesInputKey === key) battleAlternativesUi.update(state,input);
+      });
+    }
+
     function renderTimeline() {
       const perfRunId = activeUiPerfRunId();
       const timelineSpan = perfRunId ? perfDebug.startSpan("timeline.generation", perfRunId) : null;
       renderTimelineZoomControl();
+      renderBattleAlternatives();
       if (!left || !right) {
         $("battleTimeline")?.classList.remove("has-replacement-transition");
         $("battleTimeline")?.style.removeProperty("--timeline-replacement-side-zone-width");
@@ -37970,7 +38026,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261002-v109").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261002-v113").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
