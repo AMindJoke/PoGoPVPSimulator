@@ -4,7 +4,7 @@
   if (root) root.PvPeakTeamRoles = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const VERSION = 'roles-v3';
+  const VERSION = 'roles-v4';
   const tie=(a,b)=>a.slots.join('').localeCompare(b.slots.join(''));
   const common=(a,b)=>b.covered-a.covered || b.weakest-a.weakest;
   const balanced=(a,b)=>common(a,b) || b.balanced-a.balanced || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || a.unrecovered-b.unrecovered || a.dependency-b.dependency || a.shared.length-b.shared.length || b.backups-a.backups || b.leadWins-a.leadWins || tie(a,b);
@@ -24,10 +24,19 @@
     return [
       {id:'even0',a:0,b:0,delay:0}, {id:'even1',a:1,b:1,delay:0}, {id:'even2',a:2,b:2,delay:0},
       {id:'closer',a:1,b:0,delay:0},
-      ...[0,1,2].map(n=>({id:`switch${n}`,a:n,b:n,delay}))
+      ...[0,1,2].map(n=>({id:`switch${n}`,a:n,b:n,delay})),
+      {id:'stay1',a:1,b:1,delay:0,bankFoeFast:true}
     ];
   }
-  const cellKey = (slot, opponentSlot, scenario) => `${slot}:${opponentSlot}:${scenario.a}-${scenario.b}:${scenario.delay}`;
+  const cellKey = (slot, opponentSlot, scenario) => `${slot}:${opponentSlot}:${scenario.a}-${scenario.b}:${scenario.delay}${scenario.bankFoeFast ? ':foe-fast-energy' : ''}`;
+  function applyScenario(config,scenario) {
+    const gain=scenario.bankFoeFast ? Number(config.right.fast?.energyGain) : 0;
+    if(!Number.isInteger(gain) || gain<0)throw new Error('ROLE_FAST_ENERGY_INVALID');
+    config.left.energy=config.startEnergyA=0;
+    config.right.energy=config.startEnergyB=Math.min(100,gain);
+    config.turns={A:0,B:scenario.delay};
+    return config;
+  }
   function createJobs(plan, delay = 2) {
     const unique = new Map();
     plan.forEach(job=>scenarios(delay).forEach(scenario=>{
@@ -83,7 +92,7 @@
         if(base.filter(x=>outcome(x.cell)==='B').length>=2)shared.push(opponentSlot);
         if(outcome(base[0].cell)==='B') {
           leadLosses.push(opponentSlot);
-          if(outcome(get(safeSwitch,'switch1').find(c=>c.opponentSlot===opponentSlot))==='A')recovery.push(opponentSlot);
+          if(outcome(get(safeSwitch,'stay1').find(c=>c.opponentSlot===opponentSlot))==='A')recovery.push(opponentSlot);
         }
       }
       const dependency=Math.max(0,...selected.map(slot=>sole.filter(x=>x.slot===slot).length));
@@ -104,5 +113,5 @@
     };
     return {ready:true,profiles,candidates,suggestions,leaders,opponents,delay};
   }
-  return Object.freeze({VERSION,scenarios,cellKey,createJobs,outcome,summary,analyze,selectSuggestions});
+  return Object.freeze({VERSION,scenarios,cellKey,applyScenario,createJobs,outcome,summary,analyze,selectSuggestions});
 });

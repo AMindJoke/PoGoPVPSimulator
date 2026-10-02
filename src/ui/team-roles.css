@@ -71,6 +71,7 @@
 .team-role-route img,.team-role-answer-pairs img,.team-role-reply img,.team-role-case-list img,.team-role-counter img { width:28px; height:28px; object-fit:contain; }
 .team-role-route > div > span { display:flex; gap:2px; align-items:center; font-size:10px; }
 .team-role-route > span { color:var(--muted); }
+.team-role-route > .team-role-route-condition { grid-column:1/-1; margin-top:4px; }
 .team-role-answer-pairs { display:flex; flex-wrap:wrap; gap:4px; justify-content:end; }
 .team-role-answer-pairs > span { display:flex; align-items:center; gap:2px; padding:2px; border:1px solid var(--line); border-radius:5px; font-size:11px; }
 .team-role-options > div { display:grid; gap:7px; grid-template-columns:repeat(3,minmax(0,1fr)); }

@@ -42,8 +42,8 @@
         current=queue.shift(); if(!current){finish();return;}
         if(current.farm && root.PvPeakTeamRoles.outcome(run.results.get(root.PvPeakTeamRoles.cellKey(current.slot,current.opponentSlot,{a:1,b:1,delay:0})))!=='B'){run.done++;next();return;}
         let config;
-        try {config=options.config(current.job);config.left.energy=config.right.energy=0;config.startEnergyA=config.startEnergyB=0;} catch(_){finish('A role build is unavailable. Please retry.');return;}
-        const scenario=current.scenario || {a:1,b:1,delay:0};config.turns={A:0,B:scenario.delay};
+        const scenario=current.scenario || {a:1,b:1,delay:0};
+        try {config=root.PvPeakTeamRoles.applyScenario(options.config(current.job),scenario);} catch(_){finish('A role build is unavailable. Please retry.');return;}
         const message={id:run.done+1,key:current.key,signature:current.key,source:'team-builder-roles',config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
         if(current.farm)message.farmCompanions=plan.filter(job=>job.opponentSlot===current.opponentSlot && job.slot!==current.slot).map(job=>({slot:job.slot,combatant:options.combatant(job.member,'A')}));
         timer=setTimeout(()=>finish('Role analysis took too long. Please retry.'),20000);
