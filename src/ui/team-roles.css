@@ -7,7 +7,7 @@
 .team-role-trio > header { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0; margin-bottom:12px; border:0; background:transparent; box-shadow:none; color:var(--ink); font-size:12px; }
 .team-role-trio > header span { color:var(--muted); font-size:11px; }
 .team-role-lineup { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
-.team-role-lineup > div { display:grid; grid-template-rows:16px 44px minmax(34px,auto) 22px 30px; align-items:center; justify-items:center; gap:4px; min-width:0; text-align:center; }
+.team-role-lineup > div { display:grid; grid-template-rows:16px 44px minmax(34px,auto) 22px 36px; align-items:center; justify-items:center; gap:4px; min-width:0; text-align:center; }
 .team-role-lineup img { width:44px; height:44px; object-fit:contain; }
 .team-role-lineup b { font-size:12px; overflow-wrap:anywhere; line-height:16px; }
 .team-role-lineup strong { font-size:18px; color:var(--accent); }
@@ -23,8 +23,10 @@
 .team-role-trio > button[aria-pressed=true] { color:var(--accent); border-color:var(--accent); }
 .team-role-trio details { margin-top:6px; }
 .team-role-trio summary { color:var(--accent); }
-.team-role-matchup-row { display:grid; grid-template-columns:80px repeat(6,minmax(0,1fr)); align-items:center; gap:3px; margin-top:5px; }
+.team-role-matchups { overflow-x:auto; }
+.team-role-matchup-row { display:grid; grid-template-columns:80px repeat(6,minmax(44px,1fr)); align-items:center; gap:3px; margin-top:5px; }
 .team-role-matchup-row > b { font-size:11px; overflow-wrap:anywhere; }
+.team-role-matchup-row > b > small { display:block; font-size:10px; line-height:15px; font-weight:400; color:var(--muted); }
 .team-role-matchup { display:grid; justify-items:center; align-content:center; min-width:0; min-height:48px; padding:2px; background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:5px; cursor:pointer; box-shadow:none; }
 .team-role-matchup img { width:24px; height:24px; object-fit:contain; }
 .team-role-matchup span { font-size:13px; font-weight:800; }
@@ -37,6 +39,7 @@
 .team-role-profile { display:grid; grid-template-columns:36px minmax(0,1fr); gap:6px; align-items:center; border-bottom:1px solid var(--line); padding:10px 0; }
 .team-role-profile > img { width:36px; height:36px; object-fit:contain; }
 .team-role-profile > b { font-size:12px; }
+.team-role-profile > b > small { display:block; font-weight:400; margin-top:4px; }
 .team-role-profile > div { grid-column:1/-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
 .team-role-profile span { display:grid; gap:5px; padding:8px; background:var(--panel); border:1px solid var(--line); border-radius:5px; }
 .team-role-profile small { font-size:10px; color:var(--muted); line-height:14px; }
@@ -46,5 +49,11 @@
 .team-role-farm > b { flex-basis:100%; }
 .team-role-farm img { width:28px; height:28px; object-fit:contain; }
 .team-role-farm strong { color:var(--accent); }
+.team-role-scenarios { display:grid; gap:10px; margin-top:12px; }
+.team-role-scenario-group { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; font-size:11px; }
+.team-role-scenario-group > b { grid-column:1/-1; }
+.team-role-scenario-group > div { display:grid; align-content:start; gap:5px; padding:7px 5px; border:1px solid var(--line); border-radius:5px; }
+.team-role-scenario-group span,.team-role-scenario-group small { color:var(--muted); font-size:10px; line-height:14px; }
+.team-role-scenario-group strong { font-size:11px; line-height:16px; }
 @media(min-width:1100px) { .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } }
-@media(max-width:600px) { .team-role-trio { padding:10px; } .team-role-trio > header { flex-wrap:wrap; } .team-role-matchup-row { grid-template-columns:repeat(6,minmax(0,1fr)); } .team-role-matchup-row > b { grid-column:1/-1; margin:6px 0 2px; } }
+@media(max-width:600px) { .team-role-trio { padding:10px; } .team-role-trio > header { flex-wrap:wrap; } .team-role-matchup-row { grid-template-columns:repeat(3,minmax(44px,1fr)); } .team-role-matchup-row > b { grid-column:1/-1; margin:6px 0 2px; } }

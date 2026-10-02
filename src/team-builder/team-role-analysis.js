@@ -2,7 +2,7 @@
   'use strict';
   root.PvPeakTeamRoleAnalysis={create(options) {
     const cache=new Map(); let active={signature:'',phase:'idle',done:0,total:0,results:new Map(),farms:[]},worker=null,timer=null,delay=2;
-    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,delay,options.plan().map(job=>job.key)]);}
+    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
     function stop() {clearTimeout(timer);timer=null;worker?.terminate();worker=null;}
     function state() {
       const key=signature();

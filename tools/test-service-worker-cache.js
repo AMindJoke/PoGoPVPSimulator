@@ -6,6 +6,8 @@ const vm = require("node:vm");
 const source = fs.readFileSync(path.join(__dirname, "..", "sw.js"), "utf8");
 const app = fs.readFileSync(path.join(__dirname, "..", "PogoPvp.html"), "utf8");
 const loader = fs.readFileSync(path.join(__dirname, "..", "data/seasons/season-generated-loader.js"), "utf8");
+const metaDefinition = fs.readFileSync(path.join(__dirname, "..", "data/great-league-meta.json"), "utf8");
+const TeamMeta = require('../src/team-builder/team-builder-meta');
 const origin = "https://test.example";
 const handlers = {};
 const stores = new Map();
@@ -36,7 +38,8 @@ const context = {
   fetch: async request => {
     calls.push(key(request));
     if (offline) throw new Error("Offline");
-    return new Response(new URL(key(request)).pathname === "/PogoPvp.html" ? app : key(request));
+    const pathname=new URL(key(request)).pathname;
+    return new Response(pathname === "/PogoPvp.html" ? app : pathname === '/data/great-league-meta.json' ? metaDefinition : key(request));
   },
   self: {
     location: { origin, href: `${origin}/sw.js` },
@@ -81,6 +84,9 @@ async function request(url, options = {}) {
   await request("/data/great-league-rankings.js?v=next-release");
   assert.equal(calls.length, 3, "A new version must be downloaded.");
   offline = true;
+  const offlineMeta=TeamMeta.createRegistry({fetcher:url=>request('/'+url)});
+  const field=await offlineMeta.load(TeamMeta.DEFAULT_PROVIDER_ID);
+  assert.ok(field.pokemonIds.length>0,'The Team Builder field must load offline after installation, even before its first visit.');
   await request(`/${css}`);
   await request(`/data/great-league-rankings.js?v=${rankVersion}`);
   await request("/PogoPvp.html?view=analysis", { mode: "navigate" });

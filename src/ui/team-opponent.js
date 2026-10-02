@@ -68,7 +68,10 @@
       }
       const summary=api.analyzeTrio(rows,slots), output=$("teamTrioSummary");
       const summaryMarkup=slots.length!==3 ? '<p>Choose three Pokémon to check their coverage.</p>' : !summary.ready ? '<p>Prepare the remaining matchups to evaluate this trio.</p>' : `<div class="team-trio-metrics"><span><strong>${summary.covered}/${summary.total}</strong> opponents covered</span><span><strong>${summary.backups}/${summary.total}</strong> with backup answers</span></div>${summary.gaps.length ? `<p class="team-trio-gaps"><strong>No winning answer:</strong> ${summary.gaps.map(row=>`${escape(row.member.name)}${row.draws.length ? " (draw available)" : ""}`).join(" · ")}</p>` : '<p>At least one winning answer to every opposing Pokémon.</p>'}`;
-      if(output.innerHTML!==summaryMarkup)output.innerHTML=summaryMarkup;
+      const comparison=options.opponent();
+      const conditions=slots.length===3 && summary.ready ? `<p class="team-trio-conditions">Comparison · shields ${comparison.shields?.A ?? 1}–${comparison.shields?.B ?? 1} · energy ${comparison.energy?.A || 0}/${comparison.energy?.B || 0}</p>` : '';
+      const completeSummary=conditions+summaryMarkup;
+      if(output.innerHTML!==completeSummary)output.innerHTML=completeSummary;
       const candidates=api.suggestTrios(rows,own.team.map((member,index)=>member ? index : null).filter(index=>index!=null)).slice(0,3);
       const details=$("teamTrioSuggestions"), list=$("teamTrioSuggestionsList");
       const suggestionsMarkup=candidates.length ? `<p>Ranked by winning coverage, weakest matchup and backup answers. Ratings range from 0 to 1000.</p>${candidates.map(candidate=>`<button type="button" class="secondary team-trio-suggestion" data-trio-suggestion="${candidate.slots.join(',')}"><strong>${candidate.slots.map(slot=>escape(own.team[slot].name)).join(' · ')}</strong><span>${candidate.covered}/${candidate.total} covered · weakest ${candidate.weakest} · ${candidate.backups} with backups</span><b>Use trio</b></button>`).join('')}` : '<p>Add at least three Pokémon to your team and prepare all matchups to see suggested trios.</p>';

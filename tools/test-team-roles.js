@@ -18,6 +18,25 @@ assert.equal(analysis.profiles[0].switch1.evenSpend,0,'Winning by spending more 
 assert.equal(analysis.profiles[3].closer.wins,4);assert.equal(analysis.profiles[3].even0.wins,0,'Shield-advantage success must stay separate from 0–0 performance.');
 assert.equal(analysis.suggestions[0].sole.length,4);assert.equal(analysis.suggestions[0].dependency,4,'Single-answer dependence must remain visible despite full coverage.');
 assert.deepEqual(Roles.analyze([...plan].reverse(),results,2).suggestions,analysis.suggestions,'Input order cannot change recommendations.');
+const splitRisks=new Map(results);
+for(const job of jobs.filter(job=>job.slot===0 && job.scenario.id.startsWith('switch'))) {
+  const extra=(job.scenario.id==='switch1' && job.opponentSlot===0) || (job.scenario.id==='switch2' && job.opponentSlot===1);
+  splitRisks.set(job.key,{score:750,details:{outcome:job.opponentSlot===2 ? 'draw' : 'A'},aUsed:extra ? 1 : 0,bUsed:0});
+}
+const stable=Roles.analyze(plan,splitRisks,2).profiles[0];
+assert.equal(stable.switch1.evenUnbeaten,3);assert.equal(stable.switch2.evenUnbeaten,3);
+assert.deepEqual(stable.switchStable,[2,3],'Reliability must intersect the SAME opponents across all shields, including draws without extra shield spend.');
+assert.deepEqual(stable.switchRisks,[0,1]);
+for(const job of jobs.filter(job=>job.slot===1 && job.scenario.id.startsWith('switch'))) {
+  splitRisks.set(job.key,{score:job.opponentSlot===0 ? 200 : 750,details:{outcome:job.opponentSlot===0 ? 'B' : 'A'},aUsed:0,bUsed:0});
+}
+const stabilityOrder=Roles.analyze(plan,splitRisks,2).leaders.switch.map(p=>p.slot);
+assert.ok(stabilityOrder.indexOf(1)<stabilityOrder.indexOf(0),'More consistently unbeaten opponents without extra shields must outrank wins purchased with more shields.');
+const mixedRecovery=new Map(results);
+for(const enemy of [0,1])mixedRecovery.set(Roles.cellKey(1,enemy,{a:1,b:1,delay:0}),{score:200,details:{outcome:'B'},aUsed:1,bUsed:1});
+mixedRecovery.set(Roles.cellKey(2,1,{a:1,b:1,delay:2}),{score:200,details:{outcome:'B'},aUsed:1,bUsed:1});
+const mixed=Roles.analyze(plan,mixedRecovery,2).candidates.find(c=>c.lead===1 && c.switch===2 && c.closer===3);
+assert.deepEqual(mixed.recovery,[0]);assert.deepEqual(mixed.uncoveredLead,[1],'Covered lead losses must not hide an uncovered one.');
 const partial=new Map(results);partial.delete(jobs[0].key);assert.equal(Roles.analyze(plan,partial,2).ready,false);
 for(const invalid of [-1,5,1.5])assert.throws(()=>Roles.scenarios(invalid));
 const side={pokemonId:'abomasnow',fastMoveId:'POWDER_SNOW',chargedMoveIds:['WEATHER_BALL_ICE'],ivAtk:0,ivDef:15,ivHp:15,shields:1,startEnergy:0};
@@ -36,6 +55,10 @@ coordinator.start();const active=queued.at(-1);
 while(coordinator.state().phase==='running')active.onmessage({data:{key:active.message.key,type:'matrixCellResult',result:{score:750,details:{outcome:'A'},aUsed:0,bUsed:0,routes:[]}}});
 assert.equal(coordinator.state().phase,'complete');assert.equal(coordinator.state().analysis.candidates.length,24);assert.equal(timers.size,0);assert.equal(active.terminated,true);
 const before=queued.length;coordinator.start();assert.equal(queued.length,before,'A completed unchanged analysis must not be recalculated.');
+const completedPlan=currentPlan;
+currentPlan=completedPlan.map(job=>({...job,slot:job.slot+1,opponentSlot:job.opponentSlot+1}));
+assert.equal(coordinator.state().phase,'idle','Identical builds in different slots cannot reuse a result assigned to old slots.');
+currentPlan=completedPlan;assert.equal(coordinator.state().phase,'complete','Restoring the original slot layout should reuse its complete analysis.');
 coordinator.setDelay(1);assert.equal(coordinator.state().phase,'idle');coordinator.start();const changed=queued.at(-1);changed.onmessage({data:{key:changed.message.key,type:'matrixCellError'}});assert.equal(coordinator.state().phase,'error');coordinator.start();assert.equal(coordinator.state().phase,'running');coordinator.cancel();
 console.log('Role worker cancellation, stale responses, condition cache, bounded queue, errors and retry passed.');
 
