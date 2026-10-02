@@ -13,7 +13,7 @@
 .team-role-lineup strong { font-size:18px; color:var(--accent); }
 .team-role-lineup small { font-size:12px; color:var(--muted); line-height:16px; }
 .team-role-condition { display:inline-flex; align-items:center; gap:3px; font-size:12px; color:var(--muted); white-space:nowrap; }
-.team-role-condition svg { width:11px; height:13px; fill:none; stroke:currentColor; stroke-width:1.5; }
+.team-role-condition svg { width:18px; height:18px; flex:0 0 18px; color:#b245c5; }
 .team-role-decision { display:grid; grid-template-columns:60px minmax(0,1fr); gap:4px 7px; margin-top:12px; padding:10px 0; border-top:1px solid var(--line); font-size:12px; line-height:17px; }
 .team-role-decision > b { color:var(--accent); }
 .team-role-decision small { grid-column:1/-1; color:var(--muted); font-size:12px; }

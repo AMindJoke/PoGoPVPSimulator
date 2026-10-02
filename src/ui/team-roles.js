@@ -5,7 +5,7 @@
     let selectedRole='switch',markup='';
     const image=(slot,side='own')=>`<img data-role-sprite="${slot}" data-role-side="${side}" alt="" aria-hidden="true">`;
     const counts=value=>`${value.wins}W · ${value.draws}D · ${value.losses}L${value.unresolved ? ` · ${value.unresolved}?` : ''}`;
-    const shields=(a,b,extra='')=>`<span class="team-role-condition"><svg viewBox="0 0 16 18" aria-hidden="true"><path d="M8 1 14 3v5c0 4-3 7-6 9-3-2-6-5-6-9V3Z"/></svg><span>${a}–${b}${extra}</span></span>`;
+    const shields=(a,b,extra='')=>`<span class="team-role-condition">${options.shieldSvg()}<span>${a}–${b}${extra}</span></span>`;
     function route(candidate,name,enemyName){
       const enemies=candidate.recovery;
       if(!enemies.length)return '';

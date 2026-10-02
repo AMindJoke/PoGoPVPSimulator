@@ -55,7 +55,7 @@
   <script src="src/team-builder/team-builder-roles.js?v=20261002-v107"></script>
   <script src="src/team-builder/team-opponent-context.js?v=20261002-v107"></script>
   <script src="src/team-builder/team-role-analysis.js?v=20261002-v104"></script>
-  <script src="src/ui/team-roles.js?v=20261002-v107"></script>
+  <script src="src/ui/team-roles.js?v=20261002-v108"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14466,7 +14466,7 @@
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
   <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261002-v103">
-  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261002-v107">
+  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261002-v108">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -20553,7 +20553,7 @@
           try { return new Worker(url); } finally { URL.revokeObjectURL(url); }
         }
       });
-      teamRolesUI = window.PvPeakTeamRolesUI.create({ escapeHtml, analysis: teamRolesAnalysis,
+      teamRolesUI = window.PvPeakTeamRolesUI.create({ escapeHtml, shieldSvg, analysis: teamRolesAnalysis,
         own: () => teamBuilderState, opponent: () => teamBuilderOpponentState, trioIds: () => teamBuilderTrioIds, setSprite, useTrio: useRoleTrio,
         renderOpponent: () => teamOpponentUIController.renderResults(),
         battle: (slot, opponentSlot, scenarioId) => {
@@ -37944,7 +37944,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261002-v107").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261002-v108").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
