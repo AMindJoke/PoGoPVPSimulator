@@ -482,10 +482,33 @@ const smartCounterfactual = Intelligence.selectShieldAction({
   policy: "smart",
   state: { shields: 1, chargedTaken: 1, hp: 80, maxHp: 100 },
   threat: { damage: 20, energyCost: 35 },
-  counterfactual: { outcomeWithShield: "loss", outcomeWithoutShield: "win" }
+  counterfactual: { complete: true, outcomeWithShield: "loss", outcomeWithoutShield: "win" }
 });
 assert.equal(smartCounterfactual.shield, false);
 assert(smartCounterfactual.reasonCodes.includes("SHIELD_PRESERVES_WIN_CONDITION"));
+
+// Live calls include parityThreat: it must not bypass a complete continuation.
+const parityShieldInput = {
+  policy: "smart", state: { shields: 1, chargedTaken: 0, hp: 80, maxHp: 100 },
+  threat: { damage: 20, energyCost: 35, entersFarmRange: true },
+  parityThreat: { attacker: { energy: 40, fastMove: { turns: 2, energyGain: 7 } },
+    defender: { hp: 80, maxHp: 100, shields: 1 }, move: { energyCost: 35 }, fastDamage: 2, attackerChargedMoves: [] }
+};
+for (const [yes, no, shield] of [["win", "loss", true], ["loss", "win", false], ["draw", "loss", true], ["loss", "draw", false]]) {
+  const decision = Intelligence.selectShieldAction({ ...parityShieldInput,
+    counterfactual: { complete: true, outcomeWithShield: yes, outcomeWithoutShield: no } });
+  assert.equal(decision.shield, shield);
+  assert.equal(decision.reasonCodes[0], "SHIELD_PRESERVES_WIN_CONDITION");
+  assert.equal(decision.finalAuthority, "PRINCIPLE_ENGINE");
+}
+for (const counterfactual of [
+  { complete: false, outcomeWithShield: "loss", outcomeWithoutShield: "win" },
+  { complete: true, outcomeWithShield: "loss", outcomeWithoutShield: "unknown" }
+]) assert.equal(Intelligence.selectShieldAction({ ...parityShieldInput, counterfactual }).shield, true,
+  "An incomplete or invalid forecast cannot override the ordinary shield policy.");
+assert.equal(Intelligence.selectShieldAction({ ...parityShieldInput, policy: "always",
+  counterfactual: { complete: true, outcomeWithShield: "loss", outcomeWithoutShield: "win" } }).shield, true,
+  "Explicit shield settings retain priority over automatic optimization.");
 
 const smartFarmRangeParity = Intelligence.selectShieldAction({
   policy: "smart",

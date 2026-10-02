@@ -66,7 +66,9 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   const shieldMaxHp = config.left.maxHp;
   const result = simulate(config, 0, 0, "aegislash-charged-stance");
   assert.equal(result.decisionTrace.finalState.A.pokemonId, "aegislash_blade");
-  assert.equal(result.decisionTrace.decisions[0].chosenCandidate.immediateDamage, 52);
+  // The current Shadow Ball power is 90. Replaying this fixture at its old
+  // power 100 reproduces 52 damage; the current-data preview must be 47.
+  assert.equal(result.decisionTrace.decisions[0].chosenCandidate.immediateDamage, 47);
   assert.equal(result.decisionTrace.finalState.A.maxHp, shieldMaxHp);
 }
 

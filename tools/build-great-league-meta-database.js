@@ -430,8 +430,11 @@ function isEligibleGreatLeaguePokemon(p) {
 function pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm) {
   const attack = (p.atk + ivAtk) * cpm;
   const defense = (p.def + ivDef) * cpm;
-  const hp = Math.floor((p.hp + ivHp) * cpm);
-  const cp = Math.max(10, Math.floor(attack * Math.sqrt(defense) * Math.sqrt(hp) / 10));
+  const hp = Math.max(10, Math.floor((p.hp + ivHp) * cpm));
+  // CP uses unrounded Stamina; flooring battle HP first can admit an illegal
+  // extra half-level and disagree with Battle's identical IV spread.
+  const cp = Math.max(10, Math.floor((p.atk + ivAtk) * Math.sqrt(p.def + ivDef)
+    * Math.sqrt(p.hp + ivHp) * cpm * cpm / 10));
   return {
     level,
     cp,
@@ -471,7 +474,7 @@ function statsForIvSpread(p, ivAtk, ivDef, ivHp) {
 
 function rank1Stats(p) {
   const cached = persistentRank1Stats[p.id];
-  if (cached && cached.cp <= CP_CAP && cached.ivAtk !== undefined && cached.ivDef !== undefined && cached.ivHp !== undefined) {
+  if (cached && cached.statsFormulaVersion === 2 && cached.cp <= CP_CAP && cached.ivAtk !== undefined && cached.ivDef !== undefined && cached.ivHp !== undefined) {
     return cached;
   }
   let best = null;
@@ -493,7 +496,7 @@ function rank1Stats(p) {
       }
     }
   }
-  const result = { ...best, rank };
+  const result = { ...best, rank, statsFormulaVersion: 2 };
   persistentRank1Stats[p.id] = result;
   persistentRank1StatsDirty = true;
   return result;

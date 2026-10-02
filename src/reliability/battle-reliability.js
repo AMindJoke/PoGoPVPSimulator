@@ -7,7 +7,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createBattleReliabilityApi() {
   // Bump whenever matchup outcomes, score calibration, or action timing semantics change so
   // persisted matrix cells cannot mask the current planner behavior.
-  const BATTLE_ENGINE_VERSION = "battle-planner-v45";
+  const BATTLE_ENGINE_VERSION = "battle-planner-v46";
   const TRACE_SCHEMA_VERSION = 2;
   const REGRESSION_SCHEMA_VERSION = 1;
 

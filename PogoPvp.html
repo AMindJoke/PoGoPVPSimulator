@@ -25,7 +25,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20260916-planner-v45"></script>
+  <script src="src/reliability/battle-reliability.js?v=20261002-planner-v46"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -33,7 +33,7 @@
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/iv-impact.js"></script>
-  <script src="src/analysis/ranking-details.js?v=20260930-v66"></script>
+  <script src="src/analysis/ranking-details.js?v=20261002-v109"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js"></script>
   <script src="src/ui/pokemon-analysis.js"></script>
@@ -87,7 +87,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20260916-planner-v45"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261002-planner-v46"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -22074,12 +22074,13 @@
     function metaRankingDetailsHtml(entry) {
       const detailState = rankingDetailsPresenter.rankingDetailsState(
         metaRankingDetails, activeMetaRankingSource(), entry.p.id, metaRankingPreferredProfile,
-        { loading: metaRankingLoading, error: metaRankingLoadError }
+        { loading: metaRankingLoading, error: metaRankingLoadError, engineVersion: battleEngineVersion }
       );
       const detailMessages = {
         loading: "Loading key matchups…",
         error: "Key matchups could not be loaded. Use Refresh to retry.",
         stale: "Key matchups are unavailable for this ranking version.",
+        "engine-stale": "Previous snapshot. Open a matchup to run the updated simulator.",
         missing: "Key matchups are not available for this Pokemon yet.",
         incomplete: "Key matchup coverage is incomplete for this Pokemon."
       };
@@ -22092,16 +22093,20 @@
       const roleSummary = roleSnapshot
         ? `<section class="meta-role-summary" aria-label="${escapeHtml(metaRankingRoleLabel(metaRankingRole))} role summary"><span><strong>${escapeHtml(metaRankingRoleLabel(metaRankingRole))}</strong><small>${escapeHtml(metaRankingRoleDefinition(metaRankingRole)?.short || "Selected role")}</small></span><span><strong>${Number(roleSnapshot.competitiveScore ?? roleSnapshot.score ?? 0)}</strong><small>role score</small></span><span><strong>${roleSnapshot.wins ?? 0}-${roleSnapshot.losses ?? 0}-${roleSnapshot.ties ?? 0}</strong><small>${roleSnapshot.matchups ?? 0} modeled matchups</small></span></section>`
         : "";
-      const matchupLabel = metaRankingRole === "overall" ? "Key Wins · Top 50" : "Overall Key Wins · Top 50";
-      const lossLabel = metaRankingRole === "overall" ? "Key Losses · Top 50" : "Overall Key Losses · Top 50";
+      const snapshotSuffix = detailState === "engine-stale" ? " snapshot" : "";
+      const matchupLabel = (metaRankingRole === "overall" ? "Key Wins · Top 50" : "Overall Key Wins · Top 50") + snapshotSuffix;
+      const lossLabel = (metaRankingRole === "overall" ? "Key Losses · Top 50" : "Overall Key Losses · Top 50") + snapshotSuffix;
       const roleNote = metaRankingRole === "overall"
         ? ""
         : `<p class="meta-role-detail-note">The selected role has its own score and W/L/T summary above. Key matchup cards remain Overall until role-specific matchup details are generated.</p>`;
-      const matchupsHtml = detailState !== "ready"
+      const snapshotNote = detailState === "engine-stale"
+        ? `<p class="hint" role="status" data-meta-detail-state="engine-stale">${detailMessages[detailState]}</p>`
+        : "";
+      const matchupsHtml = !["ready", "engine-stale"].includes(detailState)
         ? `<p class="hint" role="status" data-meta-detail-state="${detailState}">${detailMessages[detailState]}</p>`
         : entry.movesetScoreStale
         ? `<p class="hint">The ranking score and key matchups still reflect the previous moveset. Live battles and Team Builder simulations use the updated moveset shown above.</p>`
-        : `<div class="meta-matchups">${metaMatchupGroup(matchupLabel, "wins", currentWins, entry)}${metaMatchupGroup(lossLabel, "losses", currentLosses, entry)}</div>`;
+        : `${snapshotNote}<div class="meta-matchups">${metaMatchupGroup(matchupLabel, "wins", currentWins, entry)}${metaMatchupGroup(lossLabel, "losses", currentLosses, entry)}</div>`;
       return `<div class="meta-detail-content">${roleSummary}${roleNote}${matchupsHtml}${alternateHtml}</div>`;
     }
 
@@ -24425,7 +24430,9 @@
       const deferForTrainerRules = (typeof manualModeState !== "undefined" && manualModeState?.enabled)
         || activeAutoTurnContext?.deferFastImpacts === true
         || deferAutomaticLethal;
-      if (deferForTrainerRules && (typeof technicalIssueInjection === "undefined" || !technicalIssueInjection) && chargedContinuationDepth === 0) {
+      // Branch evaluation uses the same pending-impact mechanics as the live
+      // round. Search depth may suppress observations, never change Fast timing.
+      if (deferForTrainerRules && (typeof technicalIssueInjection === "undefined" || !technicalIssueInjection)) {
         const event = registerManualFast(attacker, defender, options);
         if (!event) return false;
         if (typeof captureManualEventSnapshots === "function") captureManualEventSnapshots(event, manualRuntimeBefore);
@@ -28543,6 +28550,13 @@
       let shieldDecision = options.shielded !== undefined
         ? { shield: !!options.shielded && defender.shields > 0, reason: "", reasonCode: null, sourceRuleIds: [] }
         : shieldDecisionForMove(defender, move, unshieldedDamage, attacker);
+      const shieldOpenings = defender.shieldContinuationOverrides || [];
+      const shieldOpeningIndex = shieldOpenings.findIndex(opening => opening.attackerSide === attacker.trainer
+        && opening.moveId === move.id && opening.turn === Number(activeAutoTurnContext?.currentTurn ?? battleTurns[attacker.trainer] ?? 0));
+      if (chargedContinuationDepth > 0 && shieldOpeningIndex >= 0) {
+        const [shieldOpening] = shieldOpenings.splice(shieldOpeningIndex, 1);
+        shieldDecision = { shield: shieldOpening.shielded && defender.shields > 0, reason: "Shield continuation opening", reasonCode: null };
+      }
       let shieldCounterfactual = null;
       if (
         options.shielded === undefined &&
@@ -28586,6 +28600,10 @@
         if (shieldCounterfactual) shieldCounterfactual.shielded = !!shieldDecision.shield;
       }
       const shielded = shieldDecision.shield;
+      if (chargedContinuationDepth === 0 && activeAutoTurnContext?.shieldContinuationSnapshot) {
+        (activeAutoTurnContext.resolvedShieldChoices ||= []).push({ attackerSide: attacker.trainer, defenderSide: defender.trainer,
+          moveId: move.id, turn: activeAutoTurnContext.currentTurn, shielded: !!shielded });
+      }
       if (options.shielded === undefined && defender.shields > 0) {
         const shieldCandidates = [
           {
@@ -29438,6 +29456,12 @@
     }
 
     function simulateShieldDecisionContinuation(attacker, defender, move, shielded) {
+      // Restart the exact automatic round, including both choices made before
+      // either action resolved. A mid-Charged replay can otherwise change CMP,
+      // award an extra Fast, or activate a form change a second time.
+      const opening = activeAutoTurnContext?.shieldContinuationSnapshot;
+      if (!opening) return null;
+      const shieldPrefix = [...(activeAutoTurnContext.resolvedShieldChoices || [])];
       const saved = {
         left,
         right,
@@ -29452,42 +29476,25 @@
       };
       const attackerSide = attacker.trainer;
       const defenderSide = defender.trainer;
-      const originalContext = activeAutoTurnContext;
       let evaluation = null;
       chargedContinuationDepth++;
       try {
-        left = JSON.parse(JSON.stringify(saved.left));
-        right = JSON.parse(JSON.stringify(saved.right));
+        left = JSON.parse(JSON.stringify(opening.left));
+        right = JSON.parse(JSON.stringify(opening.right));
         log = [];
-        timeline = JSON.parse(JSON.stringify(saved.timeline || []));
+        timeline = JSON.parse(JSON.stringify(opening.timeline || []));
         initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
-        battleTurns = { ...saved.battleTurns };
-        manualPendingFastEvents = JSON.parse(JSON.stringify(saved.manualPendingFastEvents || []));
+        battleTurns = { ...opening.battleTurns };
+        manualPendingFastEvents = JSON.parse(JSON.stringify(opening.manualPendingFastEvents || []));
         suppressRender = true;
         activeAutoTurnContext = null;
         chargedContinuationOpening = null;
 
-        const branchAttacker = attackerSide === "A" ? left : right;
-        const branchDefender = defenderSide === "A" ? left : right;
-        const moveIndex = branchAttacker.charged.findIndex(candidate => candidate && (candidate.id === move.id || candidate.name === move.name));
-        if (moveIndex < 0) return null;
-        const currentTurn = Number(originalContext?.currentTurn ?? battleTurns[attackerSide] ?? 0);
-        const timelineStart = timeline.length;
-        useCharge(branchAttacker, branchDefender, moveIndex, {
-          shielded,
-          deferCooldownReset: true
-        });
-
-        if (!battleEnded() && originalContext) {
-          for (const side of originalContext.actorOrder || []) {
-            if (side === attackerSide || originalContext.acted?.has(side)) continue;
-            const nextAttacker = side === "A" ? left : right;
-            const nextDefender = side === "A" ? right : left;
-            if (nextAttacker.hp <= 0 || nextDefender.hp <= 0) break;
-            autoAction(nextAttacker, nextDefender);
-          }
+        for (const choice of [...shieldPrefix, { attackerSide, defenderSide, moveId: move.id, turn: opening.currentTurn, shielded: !!shielded }]) {
+          const combatant = choice.defenderSide === "A" ? left : right;
+          (combatant.shieldContinuationOverrides ||= []).push({ ...choice });
         }
-        resetCooldownsAfterChargedTurn(currentTurn, timelineStart);
+        left.shieldExpectedOpeningActions = opening.actions;
         const steps = runAutomaticBattleToEnd(1000);
         const finalDefender = defenderSide === "A" ? left : right;
         const finalAttacker = attackerSide === "A" ? left : right;
@@ -29499,6 +29506,7 @@
           remainingEnergy: Number(finalDefender.energy || 0),
           remainingShields: Number(finalDefender.shields || 0),
           moveAccess: traceAffordableChargedMoves(finalDefender, finalAttacker).length,
+          complete: !left.shieldContinuationOverrides?.length && !right.shieldContinuationOverrides?.length && battleEnded(),
           steps
         };
       } finally {
@@ -29520,7 +29528,7 @@
     function buildShieldCounterfactual(attacker, defender, move, chosenShielded) {
       const withShield = simulateShieldDecisionContinuation(attacker, defender, move, true);
       const withoutShield = simulateShieldDecisionContinuation(attacker, defender, move, false);
-      if (!withShield || !withoutShield) return null;
+      if (!withShield?.complete || !withoutShield?.complete) return null;
       return {
         turn: Number(battleTurns[attacker.trainer] || 0),
         side: defender.trainer,
@@ -29530,6 +29538,7 @@
         moveId: move.id || null,
         moveName: move.name || move.id || "Unknown move",
         shielded: !!chosenShielded,
+        complete: true,
         outcomeWithShield: withShield.outcome,
         outcomeWithoutShield: withoutShield.outcome,
         hpGain: Number((withShield.remainingHpRatio - withoutShield.remainingHpRatio).toFixed(4)),
@@ -31068,6 +31077,7 @@
           hpAfter: targetSide === "A" ? left.hp : right.hp
         });
         event.resolveTurn = impactTurns[index];
+        event.resolutionTurn = impactTurns[index];
         event.damageAtRegistration = Number(pendingEvents[index].damageAtRegistration ?? pendingEvents[index].damage ?? 0);
         event.simultaneousFastPhase = true;
         recordedEvents.push(event);
@@ -31151,6 +31161,22 @@
           defender,
           plan: prepareAutomaticBattleAction(attacker, defender)
         }));
+        if (chargedContinuationDepth > 0 && left.shieldExpectedOpeningActions) {
+          const expected = left.shieldExpectedOpeningActions;
+          delete left.shieldExpectedOpeningActions;
+          // Keep normal plan callbacks (timing state, form handling), and reject
+          // a branch if replanning from the same snapshot changes either choice.
+          const normalize = action => [action?.type === "charged" ? "charged_move" : action?.type === "fast" ? "fast_move" : action?.type, action?.moveId || action?.move?.id || null];
+          if (preparedActors.some(item => JSON.stringify(normalize(item.plan?.action)) !== JSON.stringify(normalize(expected[item.attacker.trainer])))) return false;
+        }
+        if (chargedContinuationDepth === 0
+          && preparedActors.some(item => ["charged", "charged_move"].includes(item.plan?.action?.type))
+          && (battleDecisionCounterfactualsEnabled || [left, right].some(side => side.shieldMode === "smart" && side.shields > 0))) {
+          context.shieldContinuationSnapshot = JSON.parse(JSON.stringify({
+            left, right, timeline, battleTurns, manualPendingFastEvents, currentTurn,
+            actions: Object.fromEntries(preparedActors.filter(item => item.plan?.action).map(item => [item.attacker.trainer, item.plan.action]))
+          }));
+        }
         const strictDreStandard = globalThis.BATTLE_DRE_STANDARD === true
           || String(globalThis.BATTLE_DRE_STANDARD || "").toLowerCase() === "true";
         context.deferFastImpacts = strictDreStandard
@@ -37944,7 +37970,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261002-v108").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261002-v109").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

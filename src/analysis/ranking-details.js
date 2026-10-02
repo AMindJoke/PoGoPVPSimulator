@@ -78,6 +78,7 @@
     if (options.loading) return "loading";
     if (options.error) return "error";
     if (!rankingDetailsCurrent(details, ranking)) return "stale";
+    if (options.engineVersion && ranking.metadata.matrixVersion !== options.engineVersion) return "engine-stale";
     const detail = details.entries?.[id];
     if (!detail) return "missing";
     // Coverage belongs to the source Overall ranking, never a sorted role tab.

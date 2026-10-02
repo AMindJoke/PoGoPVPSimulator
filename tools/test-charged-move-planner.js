@@ -160,8 +160,8 @@ const optimizedChargedOpening = optimizedMelmetalCorsola.timelineTrace
   .map(event => `${event.trainer}:${event.start}:${event.moveId}`);
 assert.strictEqual(
   optimizedChargedOpening.join("|"),
-  "B:15:NIGHT_SHADE|A:18:DOUBLE_IRON_BASH|A:21:DOUBLE_IRON_BASH",
-  "DRE smart-vs-smart planning must preserve the safe opponent-Charged-first cycle before repeating the cheaper Charged move."
+  "A:8:DOUBLE_IRON_BASH|A:17:DOUBLE_IRON_BASH|B:21:NIGHT_SHADE",
+  "DRE smart-vs-smart planning must retain Fast alignment when an opposing Charged reply is nonlethal."
 );
 
 console.log("Charged Principle Engine parity tests passed.");

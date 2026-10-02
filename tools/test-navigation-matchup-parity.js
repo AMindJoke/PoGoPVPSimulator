@@ -7,7 +7,7 @@ const gm = G.readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
 const movesets = G.readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS");
 const moves = new Map(gm.moves.map(move => [move.moveId, G.normalizeMove(move)]));
 const pokemon = new Map(gm.pokemon.filter(p => p?.speciesId && p.baseStats).map(p => G.normalizePokemon(p, moves)).map(p => [p.id, p]));
-const adapter = G.createWorkerAdapter(G.extractLiveWorkerSource());
+const adapter = G.createWorkerAdapter(G.extractLiveWorkerSource(), { dreStandard: true, strict: true });
 const fields = {}, selections = {}, charged = {};
 const field = id => fields[id] ||= { value: "" };
 let runs = 0;

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-02-v108-role-shields";
+const CACHE_VERSION = "2026-10-02-v109-battle-quality";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -36,7 +36,7 @@ const CORE_ASSETS = [
   "./src/analysis/matchup-story.js",
   "./src/analysis/battle-review.js",
   "./src/analysis/iv-impact.js",
-  "./src/analysis/ranking-details.js?v=20260930-v66",
+  "./src/analysis/ranking-details.js?v=20261002-v109",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
   "./src/ui/meta-quick-matchup.js?v=20261001-v73",
   "./src/ui/meta-quick-matchup.css?v=20261001-v73-v2",

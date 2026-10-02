@@ -40,6 +40,9 @@ assert.equal(rankingDetailsState({ ...details, entries: { first: { top50Coverage
 assert.equal(rankingDetailsState(details, oldRoles, "first"), "stale");
 assert.equal(rankingDetailsState(details, base, "first", "rank1", { loading: true }), "loading");
 assert.equal(rankingDetailsState(details, base, "first", "rank1", { error: "Network failure" }), "error");
+assert.equal(rankingDetailsState(details, base, "first", "rank1", { engineVersion: "v46" }), "engine-stale",
+  "Matching ranking/details fingerprints must not present an old engine's wins as current.");
+assert.equal(rankingDetailsState(details, base, "first", "rank1", { engineVersion: "v45" }), "ready");
 
 // Execute the actual UI presenter: selected role rank is not source Overall rank,
 // and an unavailable matchup must not suppress the role summary or alternatives.
@@ -49,6 +52,7 @@ const context = {
   rankingDetailsPresenter: { rankingDetailsState }, metaRankingDetails: details,
   activeMetaRankingSource: () => base, metaRankingPreferredProfile: "rank1",
   metaRankingLoading: false, metaRankingLoadError: "", metaRankingRole: "lead",
+  battleEngineVersion: "v45",
   currentMetaMatchupRows: rows => rows, metaAlternativeMovesets: () => [],
   metaRankingRoleLabel: () => "Lead", metaRankingRoleDefinition: () => ({ short: "1-1 shields" }),
   escapeHtml: value => value, metaMatchupGroup: label => `<section>${label}</section>`
@@ -57,6 +61,12 @@ vm.createContext(context);
 vm.runInContext(render, context);
 const entry = { p: { id: "first" }, rankingData: { rank: 70 }, roleSnapshot: { score: 80 } };
 assert.match(context.metaRankingDetailsHtml(entry), /Overall Key Wins/);
+context.battleEngineVersion = "v46";
+const historical = context.metaRankingDetailsHtml(entry);
+assert.match(historical, /data-meta-detail-state="engine-stale"/);
+assert.match(historical, /Overall Key Wins · Top 50 snapshot/);
+assert.match(historical, /Open a matchup/);
+context.battleEngineVersion = "v45";
 context.metaRankingDetails = { ...details, sourceMovesetHash: "outdated" };
 const unavailable = context.metaRankingDetailsHtml(entry);
 assert.match(unavailable, /data-meta-detail-state="stale"/);

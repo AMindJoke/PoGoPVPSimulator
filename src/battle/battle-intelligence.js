@@ -1655,12 +1655,12 @@ function createPvPeakBattleIntelligenceApi() {
     const canCloseWithFastThenCharged = !!fastThenChargedClosure;
     const canCloseBeforeOpponentThreat = canCloseWithFast || canCloseWithFastThenCharged;
     let optimize = timingWindowOpen && context.chargedTimingOptimization !== false && !!fast;
-    // Once the actor already has a legal Charged Move, do not overfarm into
-    // an opponent who can also register one during the same wait window. A
-    // shielded Charged is still strategically meaningful here: throwing now
-    // can force the opponent's shield and preserve the correct cycle.
+    // Reaching an opposing Charged Move is not by itself a reason to throw
+    // on bad timing. Retain the Fast alignment option; the survival, pending
+    // damage, energy-cap and lethal-pressure gates below determine its safety.
+    // A nonlethal reply can otherwise make us give away a whole opposing Fast
+    // by throwing at the start of its cycle.
     const actorChargedReady = numeric(actor.energy) >= numeric(moves[0]?.energyCost);
-    if (optimize && actorChargedReady && opponentChargeWindow) optimize = false;
     const actorFaints = numeric(actor.hp) <= oppFastDamage;
     if (actorFaints) {
       optimize = false;
@@ -4357,6 +4357,22 @@ function createPvPeakBattleIntelligenceApi() {
       ));
     }
 
+    // Use the completed, canonical comparison before broad damage heuristics.
+    // This used to sit after the parityThreat return, making the comparison
+    // computed by live Smart battles unreachable for every ordinary matchup.
+    if (policy === "smart" && counterfactual?.complete === true
+      && ["win", "draw", "loss"].includes(counterfactual.outcomeWithShield)
+      && ["win", "draw", "loss"].includes(counterfactual.outcomeWithoutShield)) {
+      const withShield = outcomeRank(counterfactual.outcomeWithShield);
+      const withoutShield = outcomeRank(counterfactual.outcomeWithoutShield);
+      if (withShield !== withoutShield) {
+        const shield = withShield > withoutShield;
+        return done(shieldResult(shield, "SHIELD_PRESERVES_WIN_CONDITION",
+          shield ? "Smart shield preserves a winning continuation." : "Smart shield preserves a winning continuation by saving the shield.",
+          .9, { counterfactual }));
+      }
+    }
+
     if (damage >= hp) return done(shieldResult(true, "SHIELD_PREVENTS_KO", "Smart shield blocks a KO.", .98));
     if (threat.entersFarmRange) return done(shieldResult(true, "SHIELD_AVOIDS_FARM_RANGE", "Smart shield avoids farm range.", .9));
     if (threat.losesChargedThreat) {
@@ -4365,23 +4381,6 @@ function createPvPeakBattleIntelligenceApi() {
 
     if (policy === "smart" && input.parityThreat) {
       return done(canonicalWouldShieldDecision(input));
-    }
-
-    if (counterfactual) {
-      const withShield = outcomeRank(counterfactual.outcomeWithShield);
-      const withoutShield = outcomeRank(counterfactual.outcomeWithoutShield);
-      if (withShield !== withoutShield) {
-        const shield = withShield > withoutShield;
-        return done(shieldResult(
-          shield,
-          "SHIELD_PRESERVES_WIN_CONDITION",
-          shield
-            ? "Smart shield preserves a winning continuation."
-            : "Smart shield preserves a winning continuation by saving the shield.",
-          .98,
-          { counterfactual }
-        ));
-      }
     }
 
     if (threat.preBuffDefenseWindow && shields >= 2 && damage / maxHp >= .12) {
