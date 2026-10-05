@@ -2,6 +2,8 @@
 
 ### Riepiloghi compatti di trii e farm, 5 ottobre 2026
 
+- Matrici Lead/Switch/Closer senza scroll orizzontale: condizioni sopra la griglia, tutti e sei i matchup su due righe da tre nelle card strette e su una riga da sei quando il contenitore è largo almeno 320 px. Verificate le tre viste a viewport 320/360/390/1440 px e la griglia ampia a 900 px, con pulsanti di almeno 44 px e nessun overflow. Asset/cache v122; passate suite UI Team Builder/Manual Mode, PWA e service worker. Calcoli e ranking invariati.
+
 - Replies: griglia basata sulla larghezza del contenitore (minimo 124 px per card), invece di tre colonne desktop forzate. Coppia sprite/VS in tre corsie con immagini da 32 px contenute e testo a capo. Verificati i due reply reali Melmetal/Talonflame e Melmetal/Melmetal nella pagina utente: desktop, 320/360/390 px, nessun overflow; asset/cache v121. Passate suite UI Team Builder/Manual Mode, PWA e service worker. Il preview locale 8772 è stato riavviato dalla cartella E:/Projects/PoGoPVPSimulator: quando è spento, la PWA può mostrare una vecchia copia offline anche dopo il refresh.
 
 - Ripristinata la visibilità diretta dell'allineamento avversario: voce Toughest opposing trio in ogni card, con tre sprite già ordinati nella summary e counter accoppiati al lead/switch/closer nell'apertura. Rimossa la duplicazione nella vista Plan. Ordine, persistenza dopo Use trio e layout 320/390/1280 px verificati; asset/cache v120. Nessun cambiamento ai criteri di scelta dell'avversario.
