@@ -1,0 +1,1053 @@
+{
+  "engine": "battle-planner-v46",
+  "generatedAt": "2026-10-05T09:56:32.335Z",
+  "scope": "Legal single-choice replies with fixed-prefix replay, including shields, charged alternatives and one/two extra Fast moves. Not an optimal-play proof.",
+  "cases": [
+    {
+      "id": "golden--defense-buff-sableye-empoleon-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 9,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 9,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--defense-buff-shadow-sableye-empoleon-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 7,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 9,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--attack-debuff-seaking-hawlucha-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 7,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 7,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--self-debuff-raikou-pachirisu-1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--straight-bastiodon-altaria-0s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 5,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 5,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--shield-dependent-dedenne-shadow-sableye-2s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 2,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 14,
+      "bounded": true,
+      "evidence": {
+        "turn": 10,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "FOUL_PLAY"
+        },
+        "target": {
+          "index": 0,
+          "type": "charged_move",
+          "moveId": "DRAIN_PUNCH"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "not-tested",
+        "shieldsLeft": {
+          "A": 1,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--cheap-vs-nuke-shadow-quagsire-corsola-0s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 6,
+      "rejected": 3,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 9,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--energy-kingdra-carbink-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 3,
+      "rejected": 0,
+      "replyChecks": 1,
+      "unverifiedReplies": 0,
+      "total": 7,
+      "bounded": true,
+      "evidence": {
+        "turn": 20,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "ROCK_SLIDE"
+        },
+        "target": {
+          "index": 7,
+          "type": "fast_move",
+          "fastCount": 1,
+          "followMoveId": "ROCK_SLIDE"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "checked",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--energy-kingdra-carbink-1s-extra-dragon-breath",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--energy-kingdra-carbink-2s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--energy-kingdra-carbink-2s-two-dragon-breath",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--closing-lickilicky-altaria-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 15,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 15,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--straight-body-slam-lickilicky-abomasnow-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 16,
+      "rejected": 4,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 20,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--cmp-raikou-pachirisu-1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--fast-pressure-altaria-bastiodon-1-0",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--bait-malamar-pangoro-1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--bait-abomasnow-malamar-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 9,
+      "rejected": 0,
+      "replyChecks": 1,
+      "unverifiedReplies": 0,
+      "total": 30,
+      "bounded": true,
+      "evidence": {
+        "turn": 12,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "FOUL_PLAY"
+        },
+        "target": {
+          "index": 4,
+          "type": "charged_move",
+          "moveId": "SUPER_POWER"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "checked",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--overfarm-swampert-skarmory-0s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--extra-fast-flip-dewgong-azumarill-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 19,
+      "rejected": 1,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 20,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--straight-shadow-sableye-empoleon-0s",
+      "outcome": "draw",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 4,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 4,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--defense-buff-shadow-sableye-empoleon-2s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 12,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 14,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--closing-quagsire-corsola-0s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--energy-pachirisu-raikou-1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 12,
+      "rejected": 0,
+      "replyChecks": 1,
+      "unverifiedReplies": 0,
+      "total": 13,
+      "bounded": true,
+      "evidence": {
+        "turn": 28,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "AURA_SPHERE"
+        },
+        "target": {
+          "index": 10,
+          "type": "fast_move",
+          "fastCount": 1,
+          "followMoveId": "AURA_SPHERE"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "checked",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--shield-dependent-dedenne-shadow-sableye-always-2s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 2,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 14,
+      "bounded": true,
+      "evidence": {
+        "turn": 10,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "FOUL_PLAY"
+        },
+        "target": {
+          "index": 0,
+          "type": "charged_move",
+          "moveId": "DRAIN_PUNCH"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "not-tested",
+        "shieldsLeft": {
+          "A": 1,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--pcsv-lanturn-lickilicky-1s-stored-energy",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 28,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 28,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--pcsv-lanturn-furret-2s-stored-energy",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 28,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 30,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--pcsv-miltank-dunsparce-2s-stored-energy",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 28,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 28,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--safe-sacrifice-bastiodon-altaria-0s-control",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "golden--charged-timing-shadow-quagsire-corsola-2s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 15,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 23,
+      "bounded": true,
+      "evidence": {
+        "turn": 34,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "NIGHT_SHADE"
+        },
+        "target": {
+          "index": 14,
+          "type": "fast_move",
+          "moveId": "ASTONISH"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "not-tested",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "golden--mixed-iv-tinkaton-corsola-0s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 6,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 6,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--empoleon--vigoroth--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--empoleon--sableye_shadow--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--empoleon--florges--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 6,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 6,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--empoleon--stunfisk--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--empoleon--corviknight--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 12,
+      "rejected": 0,
+      "replyChecks": 1,
+      "unverifiedReplies": 0,
+      "total": 19,
+      "bounded": true,
+      "evidence": {
+        "turn": 16,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "AIR_CUTTER"
+        },
+        "target": {
+          "index": 8,
+          "type": "charged_move",
+          "moveId": "PAYBACK"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "checked",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--empoleon--araquanid--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 13,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 13,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--florges--vigoroth--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 15,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 15,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--florges--sableye_shadow--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 8,
+      "rejected": 1,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 9,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--florges--florges--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 1,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 16,
+      "bounded": true,
+      "evidence": {
+        "turn": 12,
+        "kind": "shield",
+        "moveId": "CHILLING_WATER",
+        "chosen": {
+          "type": "shield"
+        },
+        "target": {
+          "index": 4,
+          "type": "no_shield"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "not-tested",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--florges--stunfisk--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 15,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 15,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--florges--corviknight--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--florges--araquanid--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--vigoroth--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "sensitive",
+      "checked": 7,
+      "rejected": 0,
+      "replyChecks": 1,
+      "unverifiedReplies": 0,
+      "total": 18,
+      "bounded": true,
+      "evidence": {
+        "turn": 12,
+        "kind": "action",
+        "moveId": null,
+        "chosen": {
+          "type": "charged_move",
+          "moveId": "BRICK_BREAK"
+        },
+        "target": {
+          "index": 4,
+          "type": "charged_move",
+          "moveId": "ROCK_SLIDE"
+        },
+        "outcome": "B",
+        "dependency": null,
+        "replyCheck": "checked",
+        "shieldsLeft": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--sableye_shadow--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--florges--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 10,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 10,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--stunfisk--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 9,
+      "rejected": 4,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 13,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--corviknight--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 7,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 7,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--ninetales_shadow--araquanid--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--vigoroth--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 12,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 14,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--sableye_shadow--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--florges--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--stunfisk--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--corviknight--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--sableye_shadow--araquanid--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--vigoroth--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--sableye_shadow--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--florges--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 13,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 15,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--stunfisk--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 11,
+      "rejected": 1,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 12,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--corviknight--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--vigoroth--araquanid--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 11,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 11,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--vigoroth--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 12,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 12,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--sableye_shadow--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 9,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 9,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--florges--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--stunfisk--1s",
+      "outcome": "B",
+      "version": "battle-sensitivity-v1",
+      "status": "not-applicable",
+      "checked": 0,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 0,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--corviknight--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 10,
+      "rejected": 0,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 10,
+      "bounded": false,
+      "evidence": null
+    },
+    {
+      "id": "reported-rosters--altaria--araquanid--1s",
+      "outcome": "A",
+      "version": "battle-sensitivity-v1",
+      "status": "checked",
+      "checked": 11,
+      "rejected": 2,
+      "replyChecks": 0,
+      "unverifiedReplies": 0,
+      "total": 13,
+      "bounded": false,
+      "evidence": null
+    }
+  ],
+  "failures": [],
+  "totals": {
+    "cases": 66,
+    "checked": 425,
+    "replyChecks": 5,
+    "sensitive": 9,
+    "failures": 0
+  }
+}

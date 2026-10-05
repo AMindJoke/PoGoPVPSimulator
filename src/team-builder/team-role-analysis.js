@@ -2,7 +2,7 @@
   'use strict';
   root.PvPeakTeamRoleAnalysis={create(options) {
     const cache=new Map(); let active={signature:'',phase:'idle',done:0,total:0,results:new Map(),farms:[]},worker=null,timer=null,delay=2;
-    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
+    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
     function stop() {clearTimeout(timer);timer=null;worker?.terminate();worker=null;}
     function state() {
       const key=signature();
@@ -14,7 +14,7 @@
     function start() {
       const plan=options.plan(),previous=state();
       if(previous.phase==='running' || !plan.length || new Set(plan.map(job=>job.slot)).size<3)return;
-      if(previous.phase==='complete'){options.render();return;}
+      if(previous.phase==='complete' && !previous.replyIncomplete){options.render();return;}
       stop();
       const jobs=root.PvPeakTeamRoles.createJobs(plan,delay);
       const reversePlan=root.PvPeakTeamOpponentContext.reversePlan(plan);
@@ -33,6 +33,7 @@
             if(!opponent.ready){finish('Opponent analysis is incomplete. Please retry.');return;}
             run.analysis=root.PvPeakTeamOpponentContext.analyze(run.analysis,opponent,run.results,run.opponentResults);
           }
+          run.replyIncomplete=!!root.PvPeakBattleSensitivity && !run.analysis.sensitivityReady;
           cache.set(run.signature,run);while(cache.size>6)cache.delete(cache.keys().next().value);
         }
         options.render();
@@ -45,6 +46,7 @@
         const scenario=current.scenario || {a:1,b:1,delay:0};
         try {config=root.PvPeakTeamRoles.applyScenario(options.config(current.job),scenario);} catch(_){finish('A role build is unavailable. Please retry.');return;}
         const message={id:run.done+1,key:current.key,signature:current.key,source:'team-builder-roles',config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
+        if(!current.farm && ['even1','switch1','closer','stay1'].includes(scenario.id))message.checkSensitivity=true;
         if(current.farm)message.farmCompanions=plan.filter(job=>job.opponentSlot===current.opponentSlot && job.slot!==current.slot).map(job=>({slot:job.slot,combatant:options.combatant(job.member,'A')}));
         timer=setTimeout(()=>finish('Role analysis took too long. Please retry.'),20000);
         try {worker.postMessage(message);} catch(error){console.error('Role worker dispatch failed:',error);finish('Role analysis could not start. Please retry.');}

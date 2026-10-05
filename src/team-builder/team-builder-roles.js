@@ -4,7 +4,18 @@
   if (root) root.PvPeakTeamRoles = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const VERSION = 'roles-v5';
+  const VERSION = 'roles-v6';
+  const detectedFlip=cell=>cell?.sensitivity?.version==='battle-sensitivity-v1' && cell.sensitivity.status==='sensitive' && ['B','draw'].includes(cell.sensitivity.evidence?.outcome);
+  const sensitive=cell=>outcome(cell)==='A' && detectedFlip(cell);
+  const checked=cell=>cell?.sensitivity?.version==='battle-sensitivity-v1' && ['checked','sensitive'].includes(cell.sensitivity.status);
+  const losesHold=cell=>['A','draw'].includes(outcome(cell)) && detectedFlip(cell) && (cell.sensitivity.evidence.outcome==='B' || cell.sensitivity.evidence.shieldsLeft?.A<cell.sensitivity.evidence.shieldsLeft?.B);
+  const replyCoverage=(a,b)=>a.sensitivity && b.sensitivity ? a.sensitivity.coverageRisks.length-b.sensitivity.coverageRisks.length : 0;
+  function testedRoleOrder(a,b,style){
+    if(!a.sensitivity || !b.sensitivity)return 0;
+    const metric=style==='Switch resilience' ? 'switchHolds' : style==='Shield closer' ? 'closerWins' : 'roleFloor';
+    const contextual=style==='Switch resilience' ? 'testedSwitchFloor' : style==='Shield closer' ? 'testedCloserFloor' : 'testedRoleFloor';
+    return (b.context?.[contextual] ?? b.sensitivity[metric])-(a.context?.[contextual] ?? a.sensitivity[metric]) || a.sensitivity.recoveryRisks-b.sensitivity.recoveryRisks;
+  }
   const tie=(a,b)=>a.slots.join('').localeCompare(b.slots.join(''));
   const common=(a,b)=>b.covered-a.covered || b.weakest-a.weakest;
   const balanced=(a,b)=>common(a,b) || b.balanced-a.balanced || b.switchEven-a.switchEven || a.switchLosses-b.switchLosses || a.unrecovered-b.unrecovered || a.dependency-b.dependency || a.shared.length-b.shared.length || b.backups-a.backups || b.leadWins-a.leadWins || tie(a,b);
@@ -13,7 +24,7 @@
   function selectSuggestions(candidates, contextual=false) {
     const suggestions=[],seen=new Set();
     for(const [style,compare,metric] of [['Balanced',balanced,'roleFloor'],['Switch resilience',switchOrder,'switchFloor'],['Shield closer',closerOrder,'closerFloor']]) {
-      const order=(a,b)=>contextual ? b.context.coverageFloor-a.context.coverageFloor || (a.context.reply?.hardCeiling ?? 0)-(b.context.reply?.hardCeiling ?? 0) || b.context[metric]-a.context[metric] || (a.context.reply?.weakest ?? 0)-(b.context.reply?.weakest ?? 0) || compare(a,b) : compare(a,b);
+      const order=(a,b)=>contextual ? b.context.coverageFloor-a.context.coverageFloor || replyCoverage(a,b) || (a.context.reply?.hardCeiling ?? 0)-(b.context.reply?.hardCeiling ?? 0) || testedRoleOrder(a,b,style) || b.context[metric]-a.context[metric] || (a.context.reply?.weakest ?? 0)-(b.context.reply?.weakest ?? 0) || compare(a,b) : b.covered-a.covered || replyCoverage(a,b) || testedRoleOrder(a,b,style) || compare(a,b);
       const choice=[...candidates].sort(order).find(c=>!seen.has(c.slots.join(',')));
       if(choice){seen.add(choice.slots.join(','));suggestions.push({...choice,style});}
     }
@@ -63,6 +74,9 @@
     const slots=[...new Set(plan.map(job=>job.slot))].sort((a,b)=>a-b);
     const opponents=[...new Set(plan.map(job=>job.opponentSlot))].sort((a,b)=>a-b);
     const scene=scenarios(delay), data=new Map();
+    // Partial/failed checks never silently promote untested candidates.
+    const sensitivityReady=jobs.filter(job=>['even1','switch1','closer','stay1'].includes(job.scenario.id))
+      .every(job=>{const cell=results.get(job.key),winner=outcome(cell);return !(winner==='A' || winner==='draw' && (job.scenario.id==='switch1' || delay===0 && job.scenario.id==='even1')) || checked(cell);});
     const profiles=slots.map(slot=>{
       const values=Object.fromEntries(scene.map(scenario=>{
         const cells=opponents.map(opponentSlot=>({...results.get(cellKey(slot,opponentSlot,scenario)),opponentSlot}));
@@ -74,7 +88,8 @@
         const cell=data.get(`${slot}:${id}`).find(c=>c.opponentSlot===opponentSlot);
         return ['A','draw'].includes(outcome(cell)) && cell.aUsed<=cell.bUsed;
       }));
-      return {slot,...values,flips,switchStable,switchRisks:opponents.filter(slot=>!switchStable.includes(slot))};
+      const testedSwitchStable=sensitivityReady ? switchStable.filter(enemy=>!losesHold(data.get(`${slot}:switch1`).find(cell=>cell.opponentSlot===enemy))) : null;
+      return {slot,...values,flips,switchStable,testedSwitchStable,switchRisks:opponents.filter(slot=>!switchStable.includes(slot))};
     });
     const profile=slot=>profiles.find(p=>p.slot===slot), get=(slot,id)=>data.get(`${slot}:${id}`);
     const candidates=[];
@@ -99,19 +114,38 @@
       const farmOptions=farms.filter(f=>f.ownSlot===lead && selected.includes(f.slot) && f.status==='safe' && f.shieldsUsed===0 && f.hpAfter>0)
         .sort((a,b)=>b.energyAfter-a.energyAfter || b.hpPercent-a.hpPercent || a.opponentSlot-b.opponentSlot);
       const l=profile(lead),s=profile(safeSwitch),c=profile(closer);
+      let sensitivity=null;
+      if(sensitivityReady){
+        const coverageRisks=opponents.filter(enemy=>{
+          const wins=selected.map(slot=>get(slot,'even1').find(cell=>cell.opponentSlot===enemy)).filter(cell=>outcome(cell)==='A');
+          return wins.length>0 && wins.every(sensitive);
+        });
+        const sceneRisks=(slot,id)=>get(slot,id).filter(sensitive).length;
+        const leadRisks=sceneRisks(lead,'even1'),switchRisks=sceneRisks(safeSwitch,'switch1'),closerRisks=sceneRisks(closer,'closer');
+        const leadWins=l.even1.wins-leadRisks,closerWins=c.closer.wins-closerRisks;
+        const switchHolds=s.testedSwitchStable.length;
+        const used=new Map();
+        const add=(slot,id,enemies=opponents,includeHolds=false)=>{
+          const scenario=scene.find(s=>s.id===id);
+          get(slot,id).filter(cell=>enemies.includes(cell.opponentSlot) && (sensitive(cell) || includeHolds && losesHold(cell))).forEach(cell=>used.set(cellKey(slot,cell.opponentSlot,scenario),{slot,opponentSlot:cell.opponentSlot,scenario:id,baselineOutcome:outcome(cell),evidence:cell.sensitivity.evidence}));
+        };
+        selected.forEach(slot=>add(slot,'even1'));add(safeSwitch,'switch1',opponents,true);add(closer,'closer');add(safeSwitch,'stay1',recovery);
+        sensitivity={coverageRisks,leadRisks,switchRisks,closerRisks,leadWins,closerWins,switchHolds,roleFloor:Math.min(leadWins,switchHolds,closerWins),roleRisks:leadRisks+switchRisks+closerRisks,
+          recoveryRisks:recovery.filter(enemy=>sensitive(get(safeSwitch,'stay1').find(cell=>cell.opponentSlot===enemy))).length,risks:[...used.values()]};
+      }
       candidates.push({lead,switch:safeSwitch,closer,slots:selected,total:opponents.length,covered,weakest,backups,gaps,sole,shared,dependency,recovery,leadLosses,uncoveredLead:leadLosses.filter(slot=>!recovery.includes(slot)),unrecovered:leadLosses.length-recovery.length,farm: farmOptions[0] || null,
-        leadWins:Math.min(l.even1.wins,l.even2.wins),switchLosses:Math.max(s.switch0.losses+s.switch0.unresolved,s.switch1.losses+s.switch1.unresolved,s.switch2.losses+s.switch2.unresolved),
+        sensitivity,leadWins:Math.min(l.even1.wins,l.even2.wins),switchLosses:Math.max(s.switch0.losses+s.switch0.unresolved,s.switch1.losses+s.switch1.unresolved,s.switch2.losses+s.switch2.unresolved),
         switchWins:Math.min(s.switch0.wins,s.switch1.wins,s.switch2.wins),switchEven:s.switchStable.length,
         closerWins:c.closer.wins,closerFresh:c.even0.wins,balanced:Math.min(l.even1.wins,s.switch1.wins,c.closer.wins)});
     }
-    candidates.sort(balanced);
+    candidates.sort((a,b)=>b.covered-a.covered || replyCoverage(a,b) || testedRoleOrder(a,b,'Balanced') || balanced(a,b));
     const suggestions=selectSuggestions(candidates);
     const leaders={
       lead:[...profiles].sort((a,b)=>Math.min(b.even1.wins,b.even2.wins)-Math.min(a.even1.wins,a.even2.wins) || b.even1.weakest-a.even1.weakest || a.slot-b.slot),
-      switch:[...profiles].sort((a,b)=>b.switchStable.length-a.switchStable.length || Math.max(a.switch0.losses+a.switch0.unresolved,a.switch1.losses+a.switch1.unresolved,a.switch2.losses+a.switch2.unresolved)-Math.max(b.switch0.losses+b.switch0.unresolved,b.switch1.losses+b.switch1.unresolved,b.switch2.losses+b.switch2.unresolved) || b.switch1.wins-a.switch1.wins || a.slot-b.slot),
+      switch:[...profiles].sort((a,b)=>(b.testedSwitchStable || b.switchStable).length-(a.testedSwitchStable || a.switchStable).length || Math.max(a.switch0.losses+a.switch0.unresolved,a.switch1.losses+a.switch1.unresolved,a.switch2.losses+a.switch2.unresolved)-Math.max(b.switch0.losses+b.switch0.unresolved,b.switch1.losses+b.switch1.unresolved,b.switch2.losses+b.switch2.unresolved) || b.switch1.wins-a.switch1.wins || a.slot-b.slot),
       closer:[...profiles].sort((a,b)=>b.closer.wins-a.closer.wins || b.even0.wins-a.even0.wins || b.closer.weakest-a.closer.weakest || a.slot-b.slot)
     };
-    return {ready:true,profiles,candidates,suggestions,leaders,opponents,delay};
+    return {ready:true,sensitivityReady,profiles,candidates,suggestions,leaders,opponents,delay};
   }
-  return Object.freeze({VERSION,scenarios,cellKey,applyScenario,createJobs,outcome,summary,analyze,selectSuggestions});
+  return Object.freeze({VERSION,scenarios,cellKey,applyScenario,createJobs,outcome,summary,analyze,selectSuggestions,sensitive,losesHold});
 });

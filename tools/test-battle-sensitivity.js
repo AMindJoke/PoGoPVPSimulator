@@ -1,0 +1,80 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),vm=require('node:vm');
+const same=(a,b,message)=>assert.deepEqual(JSON.parse(JSON.stringify(a)),JSON.parse(JSON.stringify(b)),message);
+const G=require('./build-great-league-meta-database'),R=require('./run-battle-regressions'),Audit=require('./audit-planner-alternatives');
+const A=require('../src/analysis/battle-alternatives'),S=require('../src/analysis/battle-sensitivity');
+const Roles=require('../src/team-builder/team-builder-roles'),Context=require('../src/team-builder/team-opponent-context');
+const runtime=R.createRuntime(),source=G.extractLiveWorkerSource();
+const ordinary=G.createWorkerAdapter(source,{dreStandard:true,strict:true});
+const checkedWorker=G.createWorkerAdapter(S.workerSource(source),{dreStandard:true,strict:true});
+const fixtures=Audit.buildCases(runtime).filter(c=>/dedenne.*sableye|defense-buff-sableye|kingdra.*carbink/.test(c.id));
+let checked=0,flips=0;
+for(const item of fixtures){
+  const payload={id:++checked,key:item.id,config:item.config,aShields:item.shields,bShields:item.bShields??item.shields,preFastAdvantage:item.preFastAdvantage,includeSwing:false,roleAnalysis:true};
+  const plain=ordinary.simulate({...payload,trace:true,debugTimeline:true});
+  const result=checkedWorker.simulate({...payload,checkSensitivity:true});
+  assert.equal(result.score,plain.score);same(result.details,plain.details);
+  assert.equal(result.aUsed,plain.aUsed);assert.equal(result.bUsed,plain.bUsed);
+  assert.equal(result.sensitivity.version,S.VERSION);assert.notEqual(result.sensitivity.status,'incomplete');
+  assert(result.sensitivity.checked<=S.MAX_CANDIDATES);
+  assert.equal(result.alternativeProbe,undefined);assert.equal(result.decisionTrace,undefined);assert.equal(result.timelineTrace,undefined,'Full branch ledgers must not inflate each roster cell.');
+  if(result.sensitivity.status==='sensitive'){assert(['B','draw'].includes(result.sensitivity.evidence.outcome));flips++;}
+  const after=checkedWorker.simulate({...payload,trace:true,debugTimeline:true});
+  same(after.details,plain.details);same(after.decisionTrace.finalState,plain.decisionTrace.finalState);
+  same(A.timelineIdentity(after.timelineTrace),A.timelineIdentity(plain.timelineTrace),'Sensitivity checks cannot contaminate ordinary simulations.');
+}
+assert(flips>0);
+// Delayed-counter and banked-energy checks must preserve the exact opening.
+for(const scenario of Roles.scenarios(2).filter(s=>['switch1','closer','stay1'].includes(s.id))){
+  const config=G.createBattleConfig(runtime.pokemonMap.get('florges'),runtime.pokemonMap.get('florges'),G.DEFAULT_PROFILE,runtime.moveMap,runtime.standardMovesets,runtime.pokemonMap);
+  config.left.shieldMode=config.right.shieldMode='smart';Roles.applyScenario(config,scenario);
+  const payload={id:++checked,key:scenario.id,config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
+  const plain=ordinary.simulate(payload),result=checkedWorker.simulate({...payload,checkSensitivity:true});
+  same(result.details,plain.details);assert.equal(result.aUsed,plain.aUsed);assert.equal(result.bUsed,plain.bUsed);
+}
+const plan=[];for(let slot=0;slot<4;slot++)for(let opponentSlot=0;opponentSlot<4;opponentSlot++)plan.push({slot,opponentSlot,key:`${slot}:${opponentSlot}`,member:{pokemonId:`own-${slot}`},opponentMember:{pokemonId:`enemy-${opponentSlot}`}});
+const results=new Map();
+for(const job of Roles.createJobs(plan,2))results.set(job.key,{score:700,details:{outcome:'A'},aUsed:1,bUsed:1,sensitivity:{version:S.VERSION,status:'checked',checked:6,evidence:null}});
+const original=Roles.analyze(plan,results,2);assert.equal(original.sensitivityReady,true);
+const fragile=new Map(results),evidence={turn:10,kind:'action',chosen:{type:'charged_move',moveId:'FOUL_PLAY'},target:{type:'charged_move',moveId:'DRAIN_PUNCH'},outcome:'B',dependency:null};
+for(const job of Roles.createJobs(plan,2).filter(j=>j.slot===0))fragile.set(job.key,{...fragile.get(job.key),sensitivity:{version:S.VERSION,status:'sensitive',evidence}});
+const changed=Roles.analyze(plan,fragile,2),safe=changed.candidates.find(c=>c.slots.join(',')==='1,2,3'),risk=changed.candidates.find(c=>c.slots.join(',')==='0,1,2');
+assert.equal(risk.covered,safe.covered);assert(risk.sensitivity.roleRisks>safe.sensitivity.roleRisks);
+assert.deepEqual(Roles.selectSuggestions([risk,safe])[0].slots,safe.slots,'Equal coverage must prefer fewer verified fragile role wins.');
+const highWins={...safe,sensitivity:{...safe.sensitivity,closerWins:5,closerRisks:1}},lowWins={...safe,slots:[3,2,1],sensitivity:{...safe.sensitivity,closerWins:4,closerRisks:0}};
+const bestBalanced={...safe,slots:[10,11,12],sensitivity:{...safe.sensitivity,roleFloor:10,switchHolds:0,closerWins:0}};
+const bestSwitch={...safe,slots:[13,14,15],sensitivity:{...safe.sensitivity,roleFloor:0,switchHolds:10,closerWins:0}};
+assert.deepEqual(Roles.selectSuggestions([lowWins,highWins,bestBalanced,bestSwitch])[2].slots,highWins.slots,'Six wins with one flip must retain five successes, rather than losing to four wins solely because they have no flips.');
+const drawCell={details:{outcome:'A'},sensitivity:{version:S.VERSION,status:'sensitive',evidence:{outcome:'draw',shieldsLeft:{A:0,B:0}}}};
+assert.equal(Roles.losesHold(drawCell),false,'A draw at equal shield spend still holds a switch.');
+assert.equal(Roles.losesHold({...drawCell,sensitivity:{...drawCell.sensitivity,evidence:{outcome:'draw',shieldsLeft:{A:0,B:1}}}}),true);
+assert.equal(Roles.losesHold({...drawCell,sensitivity:{...drawCell.sensitivity,evidence:{outcome:'B',shieldsLeft:{A:0,B:0}}}}),true);
+const lostDraw={...drawCell,details:{outcome:'draw'},sensitivity:{...drawCell.sensitivity,evidence:{outcome:'B',shieldsLeft:{A:0,B:0}}}};
+assert.equal(Roles.losesHold(lostDraw),true,'A draw that becomes a loss cannot remain a switch hold.');
+assert.equal(Roles.sensitive(lostDraw),false,'A fragile draw cannot be subtracted from the number of wins.');
+assert.equal(results.get(Roles.cellKey(0,0,{a:1,b:1,delay:0})).details.outcome,'A','A detected reply must not rewrite canonical wins.');
+const context=c=>({...c,context:{coverageFloor:3,roleFloor:3,switchFloor:3,closerFloor:3,reply:{hardCeiling:0,weakest:0}}});
+assert.deepEqual(Roles.selectSuggestions([context(risk),context(safe)],true)[0].slots,safe.slots);
+assert.deepEqual(Roles.selectSuggestions([{...context(risk),context:{...context(risk).context,coverageFloor:3}},{...context(safe),context:{...context(safe).context,coverageFloor:2}}],true)[0].slots,risk.slots,'Winning coverage must stay the first criterion.');
+const partial=new Map(fragile);partial.set(Roles.cellKey(1,0,{a:1,b:1,delay:0}),{...partial.get(Roles.cellKey(1,0,{a:1,b:1,delay:0})),sensitivity:{version:S.VERSION,status:'incomplete'}});
+const incomplete=Roles.analyze(plan,partial,2);assert.equal(incomplete.sensitivityReady,false);assert(incomplete.candidates.every(c=>c.sensitivity===null));
+const wrongVersion=new Map(fragile);wrongVersion.set(Roles.cellKey(1,0,{a:1,b:1,delay:0}),{...wrongVersion.get(Roles.cellKey(1,0,{a:1,b:1,delay:0})),sensitivity:{version:'old',status:'checked'}});assert.equal(Roles.analyze(plan,wrongVersion,2).sensitivityReady,false);
+const incompleteBase={alternativeProbe:{completed:false}};assert.equal(S.check(incompleteBase,()=>{throw Error('Must not run');}).status,'incomplete');
+const drawNode={index:0,kind:'action',side:'B',turn:10,chosen:{type:'charged_move',moveId:'ONE'},legal:[{type:'charged_move',moveId:'ONE'},{type:'charged_move',moveId:'TWO'}]};
+const drawProbe={alternativeProbe:{completed:true,finalState:{A:{hp:0,shields:0},B:{hp:0,shields:0}},nodes:[drawNode],applied:[],follow:null,timeline:[]}};
+const fromDraw=S.check(drawProbe,targets=>({alternativeProbe:{...drawProbe.alternativeProbe,finalState:{A:{hp:0,shields:0},B:{hp:10,shields:0}},applied:[{index:targets[0].index,side:'B',executed:true}]}}));
+assert.equal(fromDraw.status,'sensitive');assert.equal(fromDraw.evidence.outcome,'B');
+const proofMissing=new Map(fragile),drawKey=Roles.cellKey(2,0,{a:1,b:1,delay:2});
+proofMissing.set(drawKey,{...proofMissing.get(drawKey),details:{outcome:'draw'},sensitivity:{version:S.VERSION,status:'not-applicable'}});
+assert.equal(Roles.analyze(plan,proofMissing,2).sensitivityReady,false,'An untested switch draw must not silently hold in reply-aware ranking.');
+// A transient reply failure keeps the baseline and offers a real retry.
+const roleContext={PvPeakTeamRoles:Roles,PvPeakTeamOpponentContext:Context,PvPeakBattleSensitivity:S,setTimeout:()=>1,clearTimeout(){}};
+vm.createContext(roleContext);vm.runInContext(fs.readFileSync('src/team-builder/team-role-analysis.js','utf8'),roleContext);
+const roleWorkers=[];
+const controller=roleContext.PvPeakTeamRoleAnalysis.create({plan:()=>plan,config:()=>({left:{},right:{fast:{energyGain:9}}}),combatant:m=>m,render(){},worker:()=>{const w={postMessage(message){this.message=message;},terminate(){}};roleWorkers.push(w);return w;}});
+controller.start();const firstWorker=roleWorkers[0];
+while(controller.state().phase==='running')firstWorker.onmessage({data:{key:firstWorker.message.key,type:'matrixCellResult',result:{score:700,details:{outcome:'A'},aUsed:1,bUsed:1,sensitivity:{version:S.VERSION,status:firstWorker.message.checkSensitivity ? 'incomplete':'not-applicable'}}}});
+assert.equal(controller.state().phase,'complete');assert.equal(controller.state().replyIncomplete,true);assert.equal(controller.state().analysis.sensitivityReady,false);
+controller.start();assert.equal(roleWorkers.length,2,'Retry must recalculate rather than return the incomplete cache entry.');controller.cancel();
+console.log(`Sensitivity passed: ${checked} canonical worker/role checks, ${flips} real detected flips, bounded search, isolation, ranking and incomplete-data gates.`);

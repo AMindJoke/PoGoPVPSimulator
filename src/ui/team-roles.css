@@ -1,4 +1,12 @@
 .team-role-controls { display:flex; flex-wrap:wrap; align-items:end; gap:8px; margin:10px 0; }
+.team-role-tested-replies{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.team-role-tested-reply{display:flex;flex-direction:column;gap:4px;padding:8px;border:1px solid var(--line);border-radius:6px;min-width:0;font-size:12px}
+.team-role-tested-reply>div{display:flex;align-items:center;justify-content:center;gap:8px}
+.team-role-tested-reply img{width:32px;height:32px;object-fit:contain}
+.team-role-tested-reply small{color:var(--muted);font-size:11px}
+.team-role-tested-reply b{overflow-wrap:anywhere}
+.team-role-sensitivity.has-flips{color:var(--danger)}
+@media(max-width:600px){.team-role-tested-replies{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .team-role-controls label { display:grid; gap:4px; font-size:11px; color:var(--muted); }
 .team-role-controls select,.team-role-controls button { min-height:44px; font-size:12px; }
 #teamRolesStatus { flex-basis:100%; font-size:12px; color:var(--muted); }

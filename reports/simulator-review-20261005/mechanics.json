@@ -1,0 +1,11 @@
+{
+  "engineVersion": "battle-planner-v46",
+  "timing": "production-2026",
+  "cases": 468,
+  "decisions": 4281,
+  "actions": 13766,
+  "failures": [],
+  "durationMs": 32065,
+  "scope": "Trace integrity, legal energy, resource bounds, terminal outcome consistency, determinism. Does not certify optimal strategy.",
+  "opponentBuilds": "The reported opponent species use default moves and IVs; the user's link did not include the opponent roster."
+}
