@@ -1,8 +1,8 @@
 (function (root) {
   'use strict';
   root.PvPeakTeamRoleAnalysis={create(options) {
-    const cache=new Map(); let active={signature:'',phase:'idle',done:0,total:0,results:new Map(),farms:[]},worker=null,timer=null,delay=2;
-    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
+    const cache=new Map(),cells=new Map(); let active={signature:'',phase:'idle',done:0,total:0,results:new Map(),farms:[]},worker=null,timer=null,delay=2;
+    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,options.cacheIdentity?.(),delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
     function stop() {clearTimeout(timer);timer=null;worker?.terminate();worker=null;}
     function state() {
       const key=signature();
@@ -21,8 +21,13 @@
       const reverseJobs=new Set(reversePlan.map(job=>job.slot)).size>=3 ? root.PvPeakTeamRoles.createJobs(reversePlan,delay).map(job=>({...job,key:`opponent:${job.key}`,resultKey:job.key,reverse:true})) : [];
       const farmJobs=plan.map(job=>({key:`farm:${job.slot}:${job.opponentSlot}`,slot:job.slot,opponentSlot:job.opponentSlot,job,farm:true}));
       const queue=[...jobs,...reverseJobs,...farmJobs];
-      const run=active={signature:previous.signature,phase:'running',done:0,total:queue.length,results:new Map(),opponentResults:new Map(),farms:[]};
+      const run=active={signature:previous.signature,phase:'running',done:0,reused:0,total:queue.length,results:new Map(),opponentResults:new Map(),farms:[]};
       let current;
+      function accept(result) {
+        if(current.farm)run.farms.push(...(result.routes || []).filter(route=>route.status==='safe').map(route=>({ownSlot:current.slot,opponentSlot:current.opponentSlot,slot:route.slot,status:route.status,energyAfter:route.energyAfter,hpAfter:route.hpAfter,hpPercent:route.hpPercent,shieldsUsed:route.shieldsUsed})));
+        else (current.reverse ? run.opponentResults : run.results).set(current.resultKey || current.key,result);
+        run.done++;
+      }
       function finish(error='') {
         if(active!==run)return;stop();run.phase=error ? 'error' : 'complete';run.error=error;
         if(!error){
@@ -40,16 +45,27 @@
       }
       function next() {
         if(active!==run || signature()!==run.signature){state();return;}
-        current=queue.shift(); if(!current){finish();return;}
-        if(current.farm && root.PvPeakTeamRoles.outcome(run.results.get(root.PvPeakTeamRoles.cellKey(current.slot,current.opponentSlot,{a:1,b:1,delay:0})))!=='B'){run.done++;next();return;}
-        let config;
-        const scenario=current.scenario || {a:1,b:1,delay:0};
-        try {config=root.PvPeakTeamRoles.applyScenario(options.config(current.job),scenario);} catch(_){finish('A role build is unavailable. Please retry.');return;}
-        const message={id:run.done+1,key:current.key,signature:current.key,source:'team-builder-roles',config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
-        if(!current.farm && ['even1','switch1','closer','stay1'].includes(scenario.id))message.checkSensitivity=true;
-        if(current.farm)message.farmCompanions=plan.filter(job=>job.opponentSlot===current.opponentSlot && job.slot!==current.slot).map(job=>({slot:job.slot,combatant:options.combatant(job.member,'A')}));
-        timer=setTimeout(()=>finish('Role analysis took too long. Please retry.'),20000);
-        try {worker.postMessage(message);} catch(error){console.error('Role worker dispatch failed:',error);finish('Role analysis could not start. Please retry.');}
+        while(queue.length){
+          current=queue.shift();
+          if(current.farm && root.PvPeakTeamRoles.outcome(run.results.get(root.PvPeakTeamRoles.cellKey(current.slot,current.opponentSlot,{a:1,b:1,delay:0})))!=='B'){run.done++;continue;}
+          let config;
+          const scenario=current.scenario || {a:1,b:1,delay:0};
+          try {config=root.PvPeakTeamRoles.applyScenario(options.config(current.job),scenario);} catch(_){finish('A role build is unavailable. Please retry.');return;}
+          const message={id:run.done+1,key:current.key,signature:current.key,source:'team-builder-roles',config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
+          if(!current.farm && ['even1','switch1','closer','stay1'].includes(scenario.id))message.checkSensitivity=true;
+          if(current.farm)message.farmCompanions=plan.filter(job=>job.opponentSlot===current.opponentSlot && job.slot!==current.slot).map(job=>({slot:job.slot,combatant:options.combatant(job.member,'A')}));
+          // Full prepared inputs keep IVs, moves, energy, forms and farm teammates
+          // distinct. Runtime identity isolates seasons and engine changes.
+          current.cacheKey=JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,options.cacheIdentity?.() ?? current.job.key,config,scenario.a,scenario.b,!!message.checkSensitivity,message.farmCompanions || null]);
+          if(cells.has(current.cacheKey)){
+            const result=cells.get(current.cacheKey);cells.delete(current.cacheKey);cells.set(current.cacheKey,result);
+            accept(result);run.reused++;continue;
+          }
+          timer=setTimeout(()=>finish('Role analysis took too long. Please retry.'),20000);
+          try {worker.postMessage(message);} catch(error){console.error('Role worker dispatch failed:',error);finish('Role analysis could not start. Please retry.');}
+          return;
+        }
+        finish();
       }
       try {worker=options.worker();} catch(error){console.error('Role worker creation failed:',error);finish('Role analysis could not start. Please retry.');return;}
       worker.onmessage=event=>{
@@ -58,10 +74,12 @@
         clearTimeout(timer);timer=null;
         if(event.data.type!=='matrixCellResult' || !event.data.result){finish('A role matchup could not be calculated. Please retry.');return;}
         const result=event.data.result;
-        if(current.farm)run.farms.push(...(result.routes || []).filter(route=>route.status==='safe').map(route=>({ownSlot:current.slot,opponentSlot:current.opponentSlot,slot:route.slot,status:route.status,energyAfter:route.energyAfter,hpAfter:route.hpAfter,hpPercent:route.hpPercent,shieldsUsed:route.shieldsUsed})));
-        else if(!Number.isFinite(result.score) || !result.details?.outcome){finish('A role matchup is incomplete. Please retry.');return;}
-        else (current.reverse ? run.opponentResults : run.results).set(current.resultKey || current.key,result);
-        run.done++;if(run.done%6===0 || run.done===run.total)options.render();next();
+        if(!current.farm && (!Number.isFinite(result.score) || !result.details?.outcome)){finish('A role matchup is incomplete. Please retry.');return;}
+        const needsReplies=!current.farm && ['even1','switch1','closer','stay1'].includes(current.scenario.id) && !!root.PvPeakBattleSensitivity;
+        if(!needsReplies || result.sensitivity?.version===root.PvPeakBattleSensitivity.VERSION && ['checked','sensitive','not-applicable'].includes(result.sensitivity.status)){
+          cells.set(current.cacheKey,result);while(cells.size>1536)cells.delete(cells.keys().next().value);
+        }
+        accept(result);if(run.done%6===0 || run.done===run.total)options.render();next();
       };
       worker.onerror=()=>finish('Role analysis could not finish. Please retry.');
       options.render();next();

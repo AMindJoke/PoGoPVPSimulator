@@ -172,7 +172,7 @@
       };
       const dispatch=(task)=>{
         if(generation!==token)return;
-        if(Date.now()-started>(options.totalTimeoutMs || 25000)) {state.bounded=true;finish();return;}
+        if(Date.now()-started>(options.totalTimeoutMs || 25000)) {state.bounded=true;finish(input.testedReply ? 'The tested reply timed out. Please retry.' : '');return;}
         pending=task;const id=++sequence;
         timer=setTimeout(()=>finish("Alternative search timed out. Retry."),options.jobTimeoutMs || 15000);
         try {worker.postMessage({id,key:`alternatives:${id}`,signature:"battle-alternatives",source:"battle-alternatives",
@@ -192,6 +192,7 @@
         const message=event.data;
         if(message.type!=="matrixCellResult" || !message.result){
           if(pending?.kind!=="baseline" && String(message.message).includes("Illegal alternative choice")){
+            if(input.testedReply){finish('This tested reply is no longer legal. It was not shown.');return;}
             state.rejected++;state.checked++;emit();next();return;
           }
           finish("Alternative search could not finish. Retry.");return;
@@ -199,14 +200,23 @@
         const result=message.result;
         if(pending.kind==="baseline"){
           if(!baselineMatches(result,input.expected)){finish("The replay does not match this battle. Alternatives were not shown.");return;}
-          baseline=result;state.baseline=result;queue=candidates(result);state.total=queue.length;emit();next();return;
+          baseline=result;state.baseline=result;queue=candidates(result);
+          if(input.testedReply){
+            const requested=input.testedReply;
+            queue=queue.filter(c=>c.node.side==='B' && c.node.kind===requested.kind && c.node.turn===requested.turn
+              && ['index','type','moveId','followMoveId','fastCount'].every(field=>c.target[field]===requested.target[field]));
+            if(outcome(result)!==requested.baselineOutcome || queue.length!==1){finish('This tested reply no longer matches the battle. It was not shown.');return;}
+          }
+          state.total=queue.length;emit();next();return;
         }
         if(pending.kind==="reply"){
           confirmReply(pending.item,pending.reply,result);
+          if(input.testedReply && pending.item.replyCheck==='incomplete'){finish('The shield response could not be verified. Please retry.');return;}
           state.findings.push(pending.item);emit();next();return;
         }
         state.checked++;
         const item=finding(baseline,result,pending.candidate);
+        if(input.testedReply && (!item || item.outcome!==input.testedReply.outcome)){finish('This reply no longer reproduces the reported result. It was not shown.');return;}
         if(item && !state.findings.some(known=>known.node.side===item.node.side && known.node.turn===item.node.turn && known.node.kind===item.node.kind && known.outcome===item.outcome)){
           const reply=replyCandidate(item);
           if(reply){dispatch({kind:"reply",item,reply,targets:[item.target,reply.target]});return;}

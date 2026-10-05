@@ -32,9 +32,9 @@
   <script src="src/analysis/win-condition-view-model.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
-  <script src="src/analysis/battle-alternatives.js?v=20261002-v113"></script>
-  <script src="src/analysis/battle-sensitivity.js?v=20261005-v116"></script>
-  <script src="src/ui/battle-alternatives.js?v=20261005-v116"></script>
+  <script src="src/analysis/battle-alternatives.js?v=20261005-v117"></script>
+  <script src="src/analysis/battle-sensitivity.js?v=20261005-v117"></script>
+  <script src="src/ui/battle-alternatives.js?v=20261005-v117"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261002-v109"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
@@ -52,13 +52,13 @@
   <script src="src/ui/team-opponent.js?v=20261002-v107"></script>
   <script src="src/team-builder/team-matchup-share.js?v=20261001-v92"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-battle-link.js?v=20261001-v94"></script>
+  <script src="src/team-builder/team-builder-battle-link.js?v=20261005-v117"></script>
   <script src="src/team-builder/team-farm-battle-link.js?v=20261001-v94"></script>
   <script src="src/team-builder/team-farm-presentation.js?v=20261001-v92"></script>
-  <script src="src/team-builder/team-builder-roles.js?v=20261005-v116"></script>
-  <script src="src/team-builder/team-opponent-context.js?v=20261005-v116"></script>
-  <script src="src/team-builder/team-role-analysis.js?v=20261005-v116"></script>
-  <script src="src/ui/team-roles.js?v=20261005-v116"></script>
+  <script src="src/team-builder/team-builder-roles.js?v=20261005-v117"></script>
+  <script src="src/team-builder/team-opponent-context.js?v=20261005-v117"></script>
+  <script src="src/team-builder/team-role-analysis.js?v=20261005-v117"></script>
+  <script src="src/ui/team-roles.js?v=20261005-v117"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14466,10 +14466,10 @@
   </style>
   <link rel="stylesheet" href="src/meta-desktop-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/meta-mobile.css?v=20260929-v2">
-  <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20261005-v117">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
   <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261002-v103">
-  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261005-v116">
+  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261005-v117">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -14477,7 +14477,7 @@
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20260930-v2">
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261001-v73-v2">
-  <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v116">
+  <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v117">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
   <script defer src="src/ui/meta-quick-matchup.js?v=20261001-v73"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
@@ -15429,6 +15429,7 @@
 
   <div class="modal team-editor-modal" id="teamBuilderEditorModal" role="dialog" aria-modal="true" aria-labelledby="teamBuilderEditorTitle" aria-hidden="true">
     <div class="modal-card">
+      <div class="team-editor-scroll">
       <div class="modal-head"><div><h2 id="teamBuilderEditorTitle">Edit competitive build</h2><p class="team-picker-copy">Moves and IV profile are saved with this team slot.</p></div><button id="teamBuilderEditorClose" class="modal-close" type="button" aria-label="Close build editor">x</button></div>
       <div class="team-editor-identity">
         <img id="teamBuilderEditorSprite" alt="">
@@ -15458,6 +15459,7 @@
         <div id="teamBuilderBuildSummary" class="team-build-summary" aria-live="polite"></div>
       </section>
       <div id="teamBuilderEditorFeedback" class="team-editor-feedback" role="status" aria-live="polite"></div>
+      </div>
       <div class="team-editor-actions"><button id="teamBuilderEditorCancel" class="secondary" type="button">Cancel</button><button id="teamBuilderEditorSave" type="button">Save build</button></div>
     </div>
   </div>
@@ -15785,7 +15787,7 @@
       catch (_) { return null; }
     })();
     let suppressRender = false;
-    let battleAlternativesRunner = null, battleAlternativesUi = null, battleAlternativesInputKey = "";
+    let battleAlternativesRunner = null, battleAlternativesUi = null, battleAlternativesInputKey = "", teamRoleReplyRequest = null;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
     let chargedContinuationOpening = null;
@@ -20351,6 +20353,8 @@
       battleReactionDelay = payload.reactionDelayTurns || 0;
       if (battleReactionDelay) startBattle({ skipRender: true });
       runBattleToEnd({ runtimeContext: "matrix", scrollTarget: "timeline" });
+      teamRoleReplyRequest = payload.testedReply || null;
+      if (teamRoleReplyRequest) { battleAlternativesInputKey = ""; renderBattleAlternatives(); }
       return true;
     }
 
@@ -20554,6 +20558,7 @@
       const useRoleTrio = slots => { teamBuilderTrioIds = slots.map(slot => teamBuilderState.team[slot]?.pokemonId).filter(Boolean).slice(0, 3); persistTeamOpponent(); };
       teamRolesAnalysis = window.PvPeakTeamRoleAnalysis.create({
         plan: () => teamBuilderOpponentPlan, config: createTeamBuilderBattleConfig, combatant: createTeamBuilderCombatant,
+        cacheIdentity: () => [activeSeasonData.identity, matchupResultVersion],
         render: () => teamRolesUI?.render(),
         worker: () => {
           const source = window.PvPeakBattleSensitivity.workerSource(buildMatrixComputeWorkerSource());
@@ -20564,7 +20569,7 @@
       teamRolesUI = window.PvPeakTeamRolesUI.create({ escapeHtml, shieldSvg, moveName: id => moveMap.get(id)?.name || id, analysis: teamRolesAnalysis,
         own: () => teamBuilderState, opponent: () => teamBuilderOpponentState, trioIds: () => teamBuilderTrioIds, setSprite, useTrio: useRoleTrio,
         renderOpponent: () => teamOpponentUIController.renderResults(),
-        battle: (slot, opponentSlot, scenarioId) => {
+        battle: (slot, opponentSlot, scenarioId, evidence = null) => {
           const state = teamRolesAnalysis.state();
           if (state.phase !== "complete") return;
           const scenario = window.PvPeakTeamRoles.scenarios(teamRolesAnalysis.delay()).find(value => value.id === scenarioId);
@@ -20572,7 +20577,9 @@
           if (!job || !scenario) return;
           const roleConfig = window.PvPeakTeamRoles.applyScenario(createTeamBuilderBattleConfig(job), scenario);
           const payload = teamBuilderBattleLaunchPayload({ ...job, startEnergyA: roleConfig.startEnergyA, startEnergyB: roleConfig.startEnergyB, shields: `${scenario.a}-${scenario.b}` });
-          const url = window.PvPeakTeamBuilderBattleLink.createUrl(window.location.href, { ...payload, reactionDelayTurns: scenario.delay });
+          const cell = state.results.get(window.PvPeakTeamRoles.cellKey(slot, opponentSlot, scenario));
+          const testedReply = evidence ? { version: window.PvPeakBattleSensitivity.VERSION, baselineOutcome: cell.details.outcome, ...evidence } : null;
+          const url = window.PvPeakTeamBuilderBattleLink.createUrl(window.location.href, { ...payload, reactionDelayTurns: scenario.delay, ...(testedReply ? { testedReply } : {}) });
           window.open(url, "_blank", "noopener,noreferrer");
         }
       });
@@ -37132,6 +37139,7 @@
       battleAlternativesRunner?.cancel();
       battleAlternativesUi?.reset();
       battleAlternativesInputKey = "";
+      teamRoleReplyRequest = null;
     }
 
     function renderBattleAlternatives() {
@@ -37148,6 +37156,7 @@
         config: {left: cloneTechnicalValue(initial.left), right: cloneTechnicalValue(initial.right),
           startEnergyA: initial.left.energy, startEnergyB: initial.right.energy, turns: {...initial.battleTurns}},
         aShields: initial.left.shields, bShields: initial.right.shields,
+        ...(teamRoleReplyRequest ? { testedReply: teamRoleReplyRequest } : {}),
         expected: {outcome: left.hp <= 0 && right.hp <= 0 ? "draw" : right.hp <= 0 ? "A" : "B",
           A: traceCombatantState(left), B: traceCombatantState(right), timeline: api.timelineIdentity(timeline)}
       };
@@ -38029,7 +38038,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261005-v116").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261005-v117").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

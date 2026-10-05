@@ -39,7 +39,7 @@
   }
   function create(options) {
     const {mount,detail,preview,grid} = options;
-    let state=null,input=null,open=false,selected=0,view="standard";
+    let state=null,input=null,open=false,selected=0,view="standard",requestedShown=false;
     function sprite(side,alt="") {
       const combatant=side === "A" ? input.config.left : input.config.right;
       return `<img data-alternative-side="${side}" src="${escape(options.imageUrl(combatant.p))}" alt="${escape(alt)}"${!alt ? ' aria-hidden="true"' : ""}>`;
@@ -56,7 +56,7 @@
       grid.querySelectorAll(".battle-alternative-decisive").forEach(element=>element.classList.remove("battle-alternative-decisive"));
       grid.querySelectorAll(".battle-alternative-standard-marker").forEach(element=>element.remove());
     }
-    function reset() {clearHighlights();state=null;input=null;open=false;selected=0;view="standard";mount.hidden=true;detail.hidden=true;preview.hidden=true;grid.hidden=false;}
+    function reset() {clearHighlights();state=null;input=null;open=false;selected=0;view="standard";requestedShown=false;mount.hidden=true;detail.hidden=true;preview.hidden=true;grid.hidden=false;}
     function refreshHighlights(reveal=false) {
       clearHighlights();
       const item=state?.findings[selected];
@@ -156,7 +156,9 @@
       render(true);
     }
     mount.addEventListener("click",act);detail.addEventListener("click",event=>{if(event.target.tagName!=="SELECT")act(event);});detail.addEventListener("change",act);
-    return {reset,render,refreshHighlights,update(next,config){state=next;input=config;render();}};
+    return {reset,render,refreshHighlights,update(next,config){state=next;input=config;
+      if(input.testedReply && !requestedShown && state.findings.length){requestedShown=true;open=true;view="alternative";options.pauseReplay?.();}
+      render();}};
   }
   return {create,badgeLabel,resultLabel,previewEvents,pokemonLabel,outcomeLabel,decisionEventIndex};
 });

@@ -189,6 +189,6 @@ assert.match(matrixStyles, /team-coverage-form-badge \{[\s\S]{0,180}max-width: 1
 assert.match(matrixStyles, /width: min\(100%, var\(--matrix-mobile-width, 100%\)\);[\s\S]{0,100}min-width: min\(280px, var\(--matrix-mobile-width, 100%\)\);/, "Complete mobile teams must fit common phone widths while very narrow screens retain a safe scroll floor.");
 assert.match(matrixStyles, /team-matchup-cell::after \{ display: none; \}/, "Hidden desktop tooltips must not create false horizontal overflow on mobile.");
 assert.match(html, /src\/team-builder\/team-builder-matrix\.css\?v=20260916-v7/);
-assert.match(html, /src\/team-builder\/team-builder-presentation\.css\?v=20260929-v1/);
+assert.match(html, /src\/team-builder\/team-builder-presentation\.css\?v=20261005-v117/);
 
 console.log("Team Builder UI contract tests passed.");

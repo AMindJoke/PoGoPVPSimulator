@@ -62,6 +62,21 @@
       if (!Number.isInteger(payload.reactionDelayTurns) || payload.reactionDelayTurns < 0 || payload.reactionDelayTurns > 4) throw new Error("BATTLE_REACTION_DELAY_INVALID");
       if (payload.reactionDelayTurns) result.reactionDelayTurns = payload.reactionDelayTurns;
     }
+    if (payload.testedReply != null) {
+      const reply=payload.testedReply,target=reply.target;
+      if(reply.version!=='battle-sensitivity-v1' || !['A','draw'].includes(reply.baselineOutcome)
+        || !['B','draw'].includes(reply.outcome) || !['action','shield'].includes(reply.kind)
+        || !Number.isInteger(reply.turn) || reply.turn<0 || reply.turn>10000
+        || !Number.isInteger(target?.index) || target.index<0 || target.index>10000
+        || !['shield','no_shield','charged_move','fast_move','wait'].includes(target.type)) throw new Error('BATTLE_REPLY_INVALID');
+      const action={index:target.index,type:target.type};
+      for(const key of ['moveId','followMoveId'])if(target[key]!=null){
+        if(!/^[A-Z0-9_]{1,100}$/.test(target[key]))throw new Error('BATTLE_REPLY_INVALID');
+        action[key]=target[key];
+      }
+      if(target.fastCount!=null){if(![1,2].includes(target.fastCount))throw new Error('BATTLE_REPLY_INVALID');action.fastCount=target.fastCount;}
+      result.testedReply=Object.freeze({version:reply.version,baselineOutcome:reply.baselineOutcome,outcome:reply.outcome,kind:reply.kind,turn:reply.turn,target:Object.freeze(action)});
+    }
     return Object.freeze(result);
   }
 

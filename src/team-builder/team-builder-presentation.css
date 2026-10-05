@@ -116,3 +116,14 @@ body[data-view="team-builder"] #teamBuilderAnalyze[hidden] { display: none !impo
 @media (prefers-reduced-motion: reduce) {
   body[data-view="team-builder"] .team-collapse-toggle svg { transition: none; }
 }
+/* Team dialogs sit above the fixed tool navigation. Only editor fields scroll. */
+.team-editor-modal,.team-picker-modal,.team-matchup-modal { z-index:60; }
+.team-editor-modal { padding:12px; }
+.team-editor-modal .modal-card { display:flex; flex-direction:column; box-sizing:border-box; max-height:min(780px,calc(100dvh - 24px)); overflow:hidden; }
+.team-editor-scroll { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 2px 8px; scroll-padding-block:8px; }
+.team-editor-actions { flex-shrink:0; background:var(--panel); }
+@media(max-width:600px) {
+  .team-editor-modal { padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom)); }
+  .team-editor-modal .modal-card { width:100%; max-height:calc(100dvh - max(8px,env(safe-area-inset-top)) - max(8px,env(safe-area-inset-bottom))); padding:12px; }
+  .team-editor-actions button { min-height:44px; }
+}
