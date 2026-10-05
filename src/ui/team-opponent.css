@@ -77,11 +77,15 @@
 .team-farm-opponent b { font-size:12px; }
 .team-farm-opponent div > span:not(.team-farm-hp) { font-size:11px; color:var(--muted); }
 .team-farm-choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:8px; align-items:stretch; }
-.team-farm-choice { display:grid; align-content:start; gap:8px; padding:8px; min-width:0; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); text-align:left; font:inherit; cursor:pointer; box-shadow:none; }
+.team-farm-choice { display:flex; flex-direction:column; gap:8px; padding:8px; min-width:0; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); text-align:left; font:inherit; cursor:pointer; box-shadow:none; }
 .team-farm-choice:hover,.team-farm-choice.is-selected { border-color:var(--accent); background:var(--soft); }
 .team-farm-choice:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .team-farm-choice > .team-farm-badge { font-size:12px; line-height:16px; min-height:32px; }
-.team-farm-choice-action { font-size:11px; color:var(--accent); text-align:center; }
+.team-farm-choice-action { margin-top:auto; font-size:11px; color:var(--accent); text-align:center; }
+.team-farm-cost { display:flex; align-items:center; justify-content:center; gap:4px; color:var(--muted); font-size:11px; }
+.team-farm-detail-resources { display:grid; gap:10px; margin-top:10px; }
+.team-farm-detail-resources .team-farm-moves { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.team-farm-detail-resources .team-farm-moves > span { grid-column:1/-1; }
 .team-farm-choice .team-farm-person { grid-template-rows:40px 34px; }
 .team-farm-choice .team-farm-stats { grid-template-columns:minmax(0,1fr); gap:8px; }
 .team-farm-choice .team-farm-stats > div { grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:4px; }

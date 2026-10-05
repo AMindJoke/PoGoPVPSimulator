@@ -1,5 +1,13 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Riepiloghi compatti di trii e farm, 5 ottobre 2026
+
+- Suggested trios: lineup con ruoli cliccabili, vantaggio principale e rischio apribile. Lo switch mostra il conteggio dei hold a tutti gli scudi pari, distinto dalle vittorie 1–1. Un'unica apertura contiene viste Lead, Switch, Closer, Plan, Replies e Conditions; vista e apertura persistono durante i render. Affidabilità, recupero del lead e allineamento avversario restano consultabili. Le alternative fragili conservano avvisi e apertura della scelta esatta in Battle.
+- Farm: due candidati affiancati con sicurezza, HP, energia e costo scudi quando non nullo. Conteggio Fast, caricate pronte, risorse complete, timeline e Battle sono nell'apertura del candidato. Energia non utilizzabile mostrata come trattino per i KO. Calcoli, ranking e planner invariati.
+- Condizioni e metodo di ranking consolidati in How suggestions work; rimosse frasi e righe duplicate. Asset e cache applicativa v119.
+- Verifica browser con dati pubblicati e roster di riferimento: 320/360/390 px e desktop 1280 px, senza overflow o errori JavaScript. Ruoli/rischi, selezione, persistenza, link Battle (scudi, reazione e alternativa), farmer e matchup successivo verificati. A 360 px: prima card trio 897→495 px; primo gruppo farm 520→332 px, con gli stessi risultati. Sprite remoti non disponibili nel browser di verifica; controllati gli spazi e il percorso di assegnazione/fallback, non il caricamento remoto.
+- Passate suite opponent context, build flow/cache/replay, farm, UI Team Builder/Manual Mode, PWA e service worker.
+
 Questo documento serve a riprendere il progetto su un altro PC senza rileggere la conversazione precedente.
 
 ## Stato del repository
