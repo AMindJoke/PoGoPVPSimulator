@@ -132,3 +132,17 @@
 @media(max-width:600px) { .team-role-trio { padding:10px; } .team-role-trio > header { flex-wrap:wrap; } .team-role-matchup-row { grid-template-columns:repeat(3,minmax(44px,1fr)); } .team-role-matchup-row > b { grid-column:1/-1; margin:6px 0 2px; } }
 
 .team-role-flip-mark { color:var(--danger); font-size:11px; }
+.team-role-counter-lineup > summary { display:flex; align-items:center; justify-content:space-between; gap:6px; min-height:44px; color:var(--ink); }
+.team-role-counter-lineup > summary::before { content:'▸'; color:var(--accent); }
+.team-role-counter-lineup[open] > summary::before { content:'▾'; }
+.team-role-counter-lineup > summary > b { margin-right:auto; font-size:12px; }
+.team-role-counter-lineup > summary > span { display:flex; flex-shrink:0; gap:2px; }
+.team-role-counter-lineup > summary img { width:24px; height:24px; object-fit:contain; }
+.team-role-counter-pairs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; padding:6px 0; }
+.team-role-counter-pairs > div { display:grid; justify-items:center; gap:6px; min-width:0; }
+.team-role-counter-pairs small { font-size:11px; color:var(--muted); }
+.team-role-counter-pairs > div > span { display:flex; align-items:center; gap:3px; }
+.team-role-counter-pairs img { width:28px; height:28px; object-fit:contain; }
+.team-role-counter-pairs b { font-size:13px; }
+.team-role-counter-pairs .team-role-alignment-A { color:var(--danger); }
+.team-role-counter-lineup > small { display:block; margin:5px 0; font-size:11px; line-height:16px; color:var(--muted); }

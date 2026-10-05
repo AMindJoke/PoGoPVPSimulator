@@ -2,6 +2,8 @@
 
 ### Riepiloghi compatti di trii e farm, 5 ottobre 2026
 
+- Ripristinata la visibilità diretta dell'allineamento avversario: voce Toughest opposing trio in ogni card, con tre sprite già ordinati nella summary e counter accoppiati al lead/switch/closer nell'apertura. Rimossa la duplicazione nella vista Plan. Ordine, persistenza dopo Use trio e layout 320/390/1280 px verificati; asset/cache v120. Nessun cambiamento ai criteri di scelta dell'avversario.
+
 - Suggested trios: lineup con ruoli cliccabili, vantaggio principale e rischio apribile. Lo switch mostra il conteggio dei hold a tutti gli scudi pari, distinto dalle vittorie 1–1. Un'unica apertura contiene viste Lead, Switch, Closer, Plan, Replies e Conditions; vista e apertura persistono durante i render. Affidabilità, recupero del lead e allineamento avversario restano consultabili. Le alternative fragili conservano avvisi e apertura della scelta esatta in Battle.
 - Farm: due candidati affiancati con sicurezza, HP, energia e costo scudi quando non nullo. Conteggio Fast, caricate pronte, risorse complete, timeline e Battle sono nell'apertura del candidato. Energia non utilizzabile mostrata come trattino per i KO. Calcoli, ranking e planner invariati.
 - Condizioni e metodo di ranking consolidati in How suggestions work; rimosse frasi e righe duplicate. Asset e cache applicativa v119.
