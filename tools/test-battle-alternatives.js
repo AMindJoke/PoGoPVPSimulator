@@ -47,8 +47,34 @@ for(const item of sample){
 }
 assert(checked>100 && findings>0 && shieldChecks>0,"Exercise real outcome flips and alternative shield replies.");
 assert.equal(UI.badgeLabel({phase:"checking",findings:[]}),"Checking alternatives…");
-assert.equal(UI.badgeLabel({phase:"ready",findings:[{outcome:"B"}]}),"Alternative → Loss");
-assert.equal(UI.badgeLabel({phase:"ready",findings:[]}),"Alternatives checked");
+assert.equal(UI.badgeLabel({phase:"ready",findings:[{outcome:"B"}]}),"Alternative available");
+assert.equal(UI.badgeLabel({phase:"ready",findings:[]}),"No flips found");
+const labelInput={config:{left:{p:{name:"Dedenne"}},right:{p:{name:"Sableye (Shadow)"}}}};
+const labels=[{node:{side:"B"},outcome:"B"},{node:{side:"A"},outcome:"draw"}];
+assert.equal(UI.badgeLabel({findings:labels},labelInput),"Sableye (Shadow) can win");
+assert.equal(UI.badgeLabel({findings:labels},labelInput,1),"Dedenne can draw");
+assert.equal(UI.outcomeLabel("A",labelInput),"Dedenne wins");
+assert.equal(UI.outcomeLabel("draw",labelInput),"Draw");
+const mirrorInput={config:{left:{p:{name:"Florges"}},right:{p:{name:"Florges"}}}};
+assert.equal(UI.outcomeLabel("B",mirrorInput),"Florges (B) wins");
+assert.equal(UI.badgeLabel({findings:labels},mirrorInput),"Florges (B) can win");
+const decisionEvents=[
+  {trainer:"A",kind:"charge",start:10,move:{id:"FOUL_PLAY"}},
+  {trainer:"B",kind:"charge",start:10,move:{id:"FOUL_PLAY"}},
+  {trainer:"B",kind:"charge",start:10,move:{id:"DRAIN_PUNCH"}},
+  {trainer:"A",kind:"shield",start:10,move:{id:"FOUL_PLAY"}},
+  {trainer:"B",kind:"fast",start:10,move:{id:"SHADOW_CLAW"},fastImpactStatus:"pending"},
+  {trainer:"B",kind:"fast",start:10,move:{id:"SHADOW_CLAW"},fastImpactStatus:"resolved"}
+];
+const choice={node:{side:"B",kind:"action",turn:10,chosen:{type:"charged_move",moveId:"FOUL_PLAY"}},target:{type:"charged_move",moveId:"DRAIN_PUNCH"}};
+assert.equal(UI.decisionEventIndex(decisionEvents,choice),1,"Mark the correct actor's standard move, even with simultaneous attacks.");
+assert.equal(UI.decisionEventIndex(decisionEvents,choice,true),2,"Mark the changed move, not another same-turn attack.");
+assert.equal(UI.decisionEventIndex(decisionEvents,{...choice,target:{type:"fast_move",followMoveId:"FOUL_PLAY",fastCount:2}},true),5);
+const shieldChoice={node:{side:"A",kind:"shield",turn:10,moveId:"FOUL_PLAY",chosen:{type:"shield"}},target:{type:"no_shield"}};
+assert.equal(UI.decisionEventIndex(decisionEvents,shieldChoice),3);
+assert.equal(UI.decisionEventIndex(decisionEvents,shieldChoice,true),1,"Taking the hit must point to the incoming attack, not a nonexistent shield.");
+assert.equal(UI.decisionEventIndex(decisionEvents,{...choice,node:{...choice.node,turn:11}}),-1);
+assert.equal(UI.previewEvents(decisionEvents).at(-1).sourceIndex,5,"Filtering must preserve the real event index.");
 assert.deepEqual(UI.previewEvents([{kind:"fast",fastImpactStatus:"denied"},{kind:"fast",fastImpactStatus:"pending"},
   {kind:"charge",hiddenFromTimeline:true},{kind:"charge",move:{id:"FOUL_PLAY",name:"Foul Play"}}]).map(event=>event.moveId),["FOUL_PLAY"],
   "Compact preview must not present unresolved or denied Fast damage as a hit.");
