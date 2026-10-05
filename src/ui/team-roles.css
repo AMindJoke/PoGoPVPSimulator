@@ -100,6 +100,8 @@
 .team-role-route > .team-role-route-condition { grid-column:1/-1; margin-top:4px; }
 .team-role-answer-pairs { display:flex; flex-wrap:wrap; gap:4px; justify-content:end; }
 .team-role-answer-pairs > span { display:flex; align-items:center; gap:2px; padding:2px; border:1px solid var(--line); border-radius:5px; font-size:11px; }
+.team-role-alignment-B { color:var(--muted); font-weight:800; }
+.team-role-alignment-draw { color:var(--warn); font-weight:800; }
 .team-role-options > div { display:grid; gap:7px; grid-template-columns:repeat(3,minmax(0,1fr)); }
 .team-role-options article { min-width:0; margin:0; padding:8px; border:1px solid var(--line); border-radius:6px; background:var(--panel); box-shadow:none; }
 .team-role-options article > b,.team-role-options article > span { display:block; font-size:11px; }

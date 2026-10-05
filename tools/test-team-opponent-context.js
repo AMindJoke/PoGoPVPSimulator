@@ -31,6 +31,11 @@ for(const candidate of context.candidates){
     assert.equal(c.coverage,expected);
   }
   const reply=candidate.context.reply;
+  assert.deepEqual(reply.answers.map(answer=>answer.slot),candidate.slots,'Answers must follow each suggested trio order, not the first cached order.');
+  assert.deepEqual(reply.alignment.answers.map(answer=>answer.slot),candidate.slots);
+  assert.deepEqual(reply.slots,reply.alignment.answers.map(answer=>answer.opponentSlot),'The lineup and each pairing must have exactly the same order.');
+  assert.equal(reply.alignment.covered,reply.alignment.answers.filter(answer=>answer.outcome==='A').length);
+  assert.equal(new Set(reply.slots).size,3,'Repeated individual answers must not create duplicate members in the opponent trio.');
   assert.equal(reply.covered,reply.answers.filter(a=>a.opponentSlot!=null).length);
   for(const a of reply.answers.filter(a=>a.opponentSlot!=null))assert.equal(Roles.outcome(opponentResults.get(Roles.cellKey(a.opponentSlot,a.slot,{a:1,b:1,delay:0}))),'A');
   if(candidate.slots.includes(0)){
@@ -84,3 +89,32 @@ for(const job of Roles.createJobs(largeReverse,2).filter(job=>job.slot===5 && jo
 assert.equal(Context.analyze({...largeOwn,candidates:[fragile]},largeOpponent,forward,drawn).candidates[0].context.reply.hardCeiling,0,'A high-rating draw cannot be counted as an opposing winning answer.');
 assert.deepEqual(Context.analyze({...largeOwn,candidates:[fragile,solid]},largeOpponent,forward,backward).suggestions,audited.suggestions,'The all-combination audit must be deterministic.');
 console.log('Opponent roster options, distinct combinations, contextual ranking, strongest replies, hard-counter trade-offs and determinism passed.');
+
+// Florges / Vigoroth / Sableye: the matching counters are Melmetal /
+// Sableye / Florges, even when another role order populated the roster cache.
+const lineupPlan=plan.filter(job=>job.slot<3 && job.opponentSlot<3),lineupReverse=Context.reversePlan(lineupPlan);
+const lineupForward=new Map(),lineupBackward=new Map(),counterFor=[2,0,1];
+for(const job of Roles.createJobs(lineupPlan,2)){
+  const loss=counterFor[job.slot]===job.opponentSlot;
+  lineupForward.set(job.key,{score:loss ? 150 : 750,details:{outcome:loss ? 'B' : 'A'},aUsed:0,bUsed:0});
+}
+for(const job of Roles.createJobs(lineupReverse,2)){
+  const win=counterFor[job.opponentSlot]===job.slot;
+  lineupBackward.set(job.key,{score:win ? 850 : 250,details:{outcome:win ? 'A' : 'B'},aUsed:0,bUsed:0});
+}
+const lineupOwn=Roles.analyze(lineupPlan,lineupForward,2),lineupFoe=Roles.analyze(lineupReverse,lineupBackward,2);
+const reordered=Context.analyze({...lineupOwn,candidates:[[1,2,0],[0,1,2]].map(slots=>lineupOwn.candidates.find(c=>c.slots.join(',')===slots.join(',')))},lineupFoe,lineupForward,lineupBackward);
+assert.deepEqual(reordered.candidates[0].context.reply.slots,[0,1,2]);
+assert.deepEqual(reordered.candidates[1].context.reply.slots,[2,0,1]);
+assert.deepEqual(reordered.candidates[1].context.reply.answers.map(a=>[a.opponentSlot,a.slot]),[[2,0],[0,1],[1,2]]);
+assert.equal(reordered.candidates[1].context.reply.covered,3);
+assert.notEqual(reordered.candidates[0].context.reply,reordered.candidates[1].context.reply,'Presentation must not mutate or share the first role order.');
+assert.deepEqual(reordered.candidates[1].context.reply.alignment.answers.map(a=>[a.opponentSlot,a.slot]),[[2,0],[0,1],[1,2]]);
+const repeatedAnswers=new Map(lineupBackward);
+for(const job of Roles.createJobs(lineupReverse,2))repeatedAnswers.set(job.key,{score:job.slot===0 ? 850 : 250,details:{outcome:job.slot===0 ? 'A' : 'B'},aUsed:0,bUsed:0});
+const repeated=Context.analyze({...lineupOwn,candidates:[lineupOwn.candidates.find(c=>c.slots.join(',')==='0,1,2')]},Roles.analyze(lineupReverse,repeatedAnswers,2),lineupForward,repeatedAnswers).candidates[0].context.reply;
+assert.equal(repeated.covered,3,'The existing individual-answer ranking is preserved.');
+assert.equal(repeated.alignment.covered,1,'One counter cannot occupy three positions in an alignment.');
+assert.equal(new Set(repeated.alignment.slots).size,3);
+assert.deepEqual(repeated.alignment.answers.map(a=>a.outcome),['A','B','B'],'Losing pairings must remain explicit, not invented wins.');
+console.log('Lead/switch/closer counter alignment passed, including reuse of the same opposing roster.');

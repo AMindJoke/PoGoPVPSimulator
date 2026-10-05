@@ -6,6 +6,18 @@
   'use strict';
   function reversePlan(plan){return plan.map(job=>({...job,key:`opponent-roles:${job.key}`,slot:job.opponentSlot,opponentSlot:job.slot,member:job.opponentMember,opponentMember:job.member,opponentId:job.member.pokemonId}));}
   const trioKey=slots=>[...slots].sort((a,b)=>a-b).join(',');
+  function alignReply(reply,slots,read){
+    const orders=reply.slots.flatMap(first=>reply.slots.filter(slot=>slot!==first).map(second=>[first,second,reply.slots.find(slot=>slot!==first && slot!==second)]));
+    const options=orders.map(order=>{
+      const answers=slots.map((slot,i)=>{const result=read(order[i],slot);return {slot,opponentSlot:order[i],score:result.score,outcome:Roles.outcome(result)};});
+      return {slots:order,answers,covered:answers.filter(answer=>answer.outcome==='A').length,
+        hardCovered:answers.filter(answer=>answer.outcome==='A' && answer.score>=751).length,
+        weakest:Math.min(...answers.map(answer=>answer.score)),total:answers.reduce((sum,answer)=>sum+answer.score,0)};
+    });
+    options.sort((a,b)=>b.covered-a.covered || b.hardCovered-a.hardCovered || b.weakest-a.weakest || b.total-a.total || a.slots.join(',').localeCompare(b.slots.join(',')));
+    const alignment=options[0];
+    return {...reply,slots:alignment.slots,answers:slots.map(slot=>reply.answers.find(answer=>answer.slot===slot)),alignment};
+  }
   function analyze(own,opponent,results,opponentResults){
     if(!own.ready || !opponent.ready || !opponent.candidates.length)return own;
     // Three distinct roster options, ordered by the same full-roster criteria.
@@ -50,7 +62,10 @@
         strongRosterAnswers:own.profiles.filter(p=>Roles.outcome(cell(results,p.slot,enemy))==='A' && cell(results,p.slot,enemy).score>=751).map(p=>p.slot),
         inOptions:options.filter(option=>option.slots.includes(enemy)).length
       })));
-      return {...candidate,context:{cases:allCases.slice(0,options.length),allCases,poolCount:pool.length,fullyAnswered:allCases.filter(c=>c.coverage===c.slots.length).length,coverageFloor:Math.min(...allCases.map(c=>c.coverage)),roleFloor:Math.min(...allCases.map(c=>c.roleFloor)),switchFloor:Math.min(...allCases.map(c=>c.switch)),closerFloor:Math.min(...allCases.map(c=>c.closer)),testedRoleFloor:Math.min(...allCases.map(c=>c.testedRoleFloor)),testedSwitchFloor:Math.min(...allCases.map(c=>c.testedSwitch)),testedCloserFloor:Math.min(...allCases.map(c=>c.testedCloser)),reply:replies.get(key),counters}};
+      // The strongest roster is shared across orders of our trio, but its
+      // presentation follows THIS candidate's lead/switch/closer order.
+      const reply=alignReply(replies.get(key),candidate.slots,(enemy,slot)=>cell(opponentResults,enemy,slot));
+      return {...candidate,context:{cases:allCases.slice(0,options.length),allCases,poolCount:pool.length,fullyAnswered:allCases.filter(c=>c.coverage===c.slots.length).length,coverageFloor:Math.min(...allCases.map(c=>c.coverage)),roleFloor:Math.min(...allCases.map(c=>c.roleFloor)),switchFloor:Math.min(...allCases.map(c=>c.switch)),closerFloor:Math.min(...allCases.map(c=>c.closer)),testedRoleFloor:Math.min(...allCases.map(c=>c.testedRoleFloor)),testedSwitchFloor:Math.min(...allCases.map(c=>c.testedSwitch)),testedCloserFloor:Math.min(...allCases.map(c=>c.testedCloser)),reply,counters}};
     });
     return {...own,candidates,suggestions:Roles.selectSuggestions(candidates,true),opponentContext:{options,poolCount:pool.length,profiles:opponent.profiles}};
   }
