@@ -1,4 +1,5 @@
-.battle-alternatives-mount{flex:1;min-width:0;display:flex;align-items:center;margin-left:8px}
+.timeline-head:has(.battle-alternatives-mount:not([hidden]))>h2{display:none}
+.battle-alternatives-mount{flex:1;min-width:0;display:flex;align-items:center;margin-left:0}
 .battle-alternatives-mount[hidden],#battleAlternativesDetail[hidden],#battleAlternativeTimeline[hidden],#manualTimelineGrid[hidden]{display:none!important}
 #manualTimelineStage:has(#battleAlternativeTimeline:not([hidden])) :is(#manualTimelineZoomHeaderMount,#manualTimelineZoomMobileMount){display:none}
 .battle-alternatives-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 10px;min-height:34px;font-size:12px;font-weight:700;background:var(--soft);border:1px solid var(--line);color:var(--muted);border-radius:6px;white-space:normal;text-align:center}
@@ -52,6 +53,6 @@
 .battle-alternative-event.shield,.battle-alternative-event.form-protect{width:28px;height:28px;color:#b245c5}
 .battle-alternative-event.shield svg,.battle-alternative-event.form-protect svg{width:26px;height:26px}
 .battle-alternative-charge-trail{position:absolute;top:50%;height:5px;transform:translateY(-50%);background:radial-gradient(circle,var(--alternative-type) 2px,transparent 2.5px) left center/9px 5px repeat-x}
-@media(max-width:900px){.timeline-head:has(.battle-alternatives-mount:not([hidden])){flex-wrap:wrap}.battle-alternatives-mount{order:3;flex-basis:100%;margin-left:0}.battle-alternatives-toggle{min-height:40px}.battle-alternative-choice{padding:8px}.battle-alternative-choices{gap:5px;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr)}.battle-alternative-detail-head select{font-size:16px}.battle-alternative-view-controls button{flex:1;min-height:44px}.battle-alternative-detail-head strong{font-size:12px}.battle-alternative-method{font-size:12px}.battle-alternative-method summary{min-height:36px}}
+@media(max-width:900px){.timeline-head:has(.battle-alternatives-mount:not([hidden])){flex-wrap:wrap}.battle-alternatives-mount{order:0;flex:0 1 auto}.timeline-head:has(.battle-alternatives-mount:not([hidden])) .timeline-tools{margin-left:auto}.battle-alternatives-toggle{min-height:40px;padding-inline:8px;gap:5px}.battle-alternative-choice{padding:8px}.battle-alternative-choices{gap:5px;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr)}.battle-alternative-detail-head select{font-size:16px}.battle-alternative-view-controls button{flex:1;min-height:44px}.battle-alternative-detail-head strong{font-size:12px}.battle-alternative-method{font-size:12px}.battle-alternative-method summary{min-height:36px}}
 @media(pointer:coarse){.battle-alternatives-toggle{min-height:44px}}
 body.manual-mode-active .battle-alternatives-mount,body.manual-mode-active #battleAlternativesDetail,body.manual-mode-active #battleAlternativeTimeline{display:none!important}
