@@ -18,6 +18,18 @@ Required files:
 
 Optional/local files such as `.exe`, `.zip`, and old test files are not needed for the web version.
 
+## Battle reference checks
+
+Before changing battle mechanics or publishing a simulator update, run:
+
+```powershell
+node tools/check-battle-reference-cases.js
+```
+
+The command fails if any check fails and writes `reports/battle-reference-checks/latest.json`, including full output for diagnosis. It covers controlled live-worker mirrors, unequal Attack CMP, Fast attacks from one to five turns, energy limits, shields/debuffs, pending impacts, switches after Charged Attacks, special forms, diagnostic isolation, and navigation parity. A separate group checks selected strategic decisions against legal alternatives.
+
+These checks establish named mechanics and selected cases. They do not establish globally optimal play, cover every matchup, or model real device/network latency. Controlled action sequences deliberately separate mechanics from the planner's strategic choices.
+
 ## Data
 
 The simulator uses a gamemaster stored in `battle-data.js`.

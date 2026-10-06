@@ -17,6 +17,8 @@
 .team-role-trio > header span { color:var(--muted); font-size:12px; }
 .team-role-lineup { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
 .team-role-lineup > .team-role-pick { display:grid; grid-template-rows:18px 44px minmax(36px,auto) 24px 32px 24px 18px; align-items:center; justify-items:center; gap:3px; min-width:0; padding:4px 2px; border:1px solid transparent; border-radius:6px; background:transparent; color:var(--ink); font:inherit; text-align:center; box-shadow:none; cursor:pointer; }
+.team-role-lineup > .team-role-pick { grid-template-columns:minmax(0,1fr); }
+.team-role-pick > small { max-width:100%; overflow-wrap:anywhere; }
 .team-role-pick:hover { border-color:var(--line); background:var(--soft); transform:none; }
 .team-role-pick:focus-visible,.team-role-detail-tabs button:focus-visible,.team-role-risk-preview:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .team-role-pick-action { color:var(--accent); font-size:11px; }
@@ -58,13 +60,15 @@
 .team-role-matchup-row { display:grid; grid-template-columns:repeat(3,minmax(44px,1fr)); align-items:center; gap:3px; margin-top:5px; }
 .team-role-matchup-row > b { grid-column:1/-1; margin:6px 0 2px; font-size:11px; overflow-wrap:anywhere; }
 .team-role-matchup-row > b > small { display:block; font-size:10px; line-height:15px; font-weight:400; color:var(--muted); }
-@container (min-width:320px) { .team-role-matchup-row { grid-template-columns:repeat(6,minmax(44px,1fr)); } }
+@container (min-width:480px) { .team-role-matchup-row { grid-template-columns:repeat(6,minmax(44px,1fr)); } }
 .team-role-matchup { display:grid; justify-items:center; align-content:center; min-width:0; min-height:48px; padding:2px; background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:5px; cursor:pointer; box-shadow:none; }
 .team-role-matchup img { width:24px; height:24px; object-fit:contain; }
+.team-role-matchup .team-role-matchup-name { width:100%; font-size:11px; line-height:14px; min-height:28px; display:grid; align-content:center; overflow-wrap:anywhere; color:var(--ink); font-weight:400; }
 .team-role-matchup span { font-size:13px; font-weight:800; }
 .team-role-matchup.is-A span { color:var(--good); }
 .team-role-matchup.is-B span { color:var(--danger); }
 .team-role-matchup:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.team-role-matchup:hover,.team-role-matchup:focus-visible { background:color-mix(in srgb,var(--accent) 10%,var(--soft)); color:var(--ink); box-shadow:none; transform:none; }
 .team-role-tabs { display:flex; gap:6px; margin:10px 0; }
 .team-role-tabs button { min-height:44px; font-size:12px; flex:1; }
 .team-role-tabs [aria-pressed=true] { border-color:var(--accent); color:var(--accent); }
@@ -130,6 +134,12 @@
 @media(max-width:600px) { .team-role-options > div { grid-template-columns:minmax(0,1fr); } }
 @media(min-width:1100px) { .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } .team-role-decision { min-height:59px; } }
 @media(max-width:600px) { .team-role-trio { padding:10px; } .team-role-trio > header { flex-wrap:wrap; } }
+@media(max-width:340px) {
+  .team-role-lineup > .team-role-pick { grid-template-rows:18px 44px minmax(36px,auto) 24px 48px 32px 18px; }
+  .team-role-pick .team-role-condition { max-width:100%; white-space:normal; font-size:11px; line-height:14px; }
+  .team-role-pick .team-role-condition > span { min-width:0; }
+  .team-role-pick .team-role-condition svg { width:16px; height:16px; flex-basis:16px; }
+}
 
 .team-role-flip-mark { color:var(--danger); font-size:11px; }
 .team-role-counter-lineup > summary { display:flex; align-items:center; justify-content:space-between; gap:6px; min-height:44px; color:var(--ink); }
@@ -139,9 +149,13 @@
 .team-role-counter-lineup > summary > span { display:flex; flex-shrink:0; gap:2px; }
 .team-role-counter-lineup > summary img { width:24px; height:24px; object-fit:contain; }
 .team-role-counter-pairs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; padding:6px 0; }
-.team-role-counter-pairs > div { display:grid; justify-items:center; gap:6px; min-width:0; }
+.team-role-counter-pairs > button { display:grid; justify-items:center; gap:4px; min-width:0; min-height:44px; padding:6px 2px; border:1px solid var(--line); border-radius:5px; background:var(--soft); color:var(--ink); font:inherit; box-shadow:none; cursor:pointer; }
+.team-role-counter-pairs > button:hover,.team-role-counter-pairs > button:focus-visible { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,var(--soft)); color:var(--ink); box-shadow:none; transform:none; }
+.team-role-counter-pairs > button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .team-role-counter-pairs small { font-size:11px; color:var(--muted); }
-.team-role-counter-pairs > div > span { display:flex; align-items:center; gap:3px; }
+.team-role-counter-pairs > button > span { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; justify-items:center; gap:2px; width:100%; }
+.team-role-counter-pairs .team-role-counter-name { color:var(--ink); line-height:14px; min-height:28px; overflow-wrap:anywhere; text-align:center; }
+.team-role-counter-pairs .team-role-pick-action { color:var(--accent); }
 .team-role-counter-pairs img { width:28px; height:28px; object-fit:contain; }
 .team-role-counter-pairs b { font-size:13px; }
 .team-role-counter-pairs .team-role-alignment-A { color:var(--danger); }

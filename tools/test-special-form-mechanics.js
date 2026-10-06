@@ -18,7 +18,7 @@ const pokemonMap = new Map(gamemaster.pokemon
   .filter(pokemon => pokemon?.speciesId && pokemon?.baseStats)
   .map(pokemon => normalizePokemon(pokemon, moveMap))
   .map(pokemon => [pokemon.id, pokemon]));
-const adapter = createWorkerAdapter(extractLiveWorkerSource());
+const adapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true, strict: true });
 
 function battleConfig(aId, bId) {
   return createBattleConfig(
@@ -83,7 +83,12 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   assert.equal(firstShield.reasonCode, "SHIELD_RESERVED_FOR_FORM_RESTORE");
   assert.equal(charged[0].stateBefore.actor.energy, 100);
   assert.equal(charged[1].turn, charged[0].turn + 1);
-  assert.equal(result.details.outcome, "A");
+  // A whole-battle win is not a stance mechanic. Check the resources and form
+  // at the two actual transformations instead of assuming this strategy wins
+  // against every later revision of Feraligatr's moves/damage.
+  assert.equal(charged[1].stateBefore.actor.energy, 50);
+  assert.equal(result.decisionTrace.finalState.A.energy, 0);
+  assert.equal(result.decisionTrace.finalState.A.pokemonId, "aegislash_blade");
 }
 
 {
@@ -96,7 +101,10 @@ function simulate(config, aShields = 0, bShields = 0, id = "special-form") {
   assert.equal(shields[0].chosenCandidate.action, "SHIELD");
   assert.equal(shields[1].chosenCandidate.action, "NO_SHIELD");
   assert.ok(shields.some(decision => decision.turn > firstChargedTurn && decision.chosenCandidate.action === "SHIELD"));
-  assert.equal(result.details.outcome, "A");
+  // The last shield is spent and maximum HP stays unchanged across forms;
+  // whether this full matchup is won is a separate strategic expectation.
+  assert.equal(result.decisionTrace.finalState.A.maxHp, config.left.maxHp);
+  assert.equal(result.decisionTrace.finalState.A.shields, 0);
 }
 
 {

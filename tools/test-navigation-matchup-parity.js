@@ -101,6 +101,36 @@ for (const [startEnergyA,startEnergyB] of [[0,0],[20,8],[0,60],[100,100]]) for (
   assert.equal(actual.score,expected.score); assert.deepEqual(actual.details,expected.details); assert.deepEqual(actual.timelineTrace,expected.timelineTrace);
 }
 console.log("Opponent-team/Battle parity passed: 20 scenarios with custom builds, shields and starting energy on both sides.");
+// Counter alignment results come from the reverse analysis. Opening the
+// forward configuration can change equal-Attack tie handling and the outcome.
+context.window.PvPeakTeamRoles = require("../src/team-builder/team-builder-roles");
+context.window.PvPeakTeamOpponentContext = require("../src/team-builder/team-opponent-context");
+context.teamRolesAnalysis = { state: () => ({ phase: "complete", results: new Map(), opponentResults: new Map() }), delay: () => 2 };
+let roleUrl;
+context.window.open = url => { roleUrl = url; };
+context.window.location = new URL("https://example.test/PogoPvp.html?view=team-builder");
+vm.runInContext(section("openTeamRoleMatchup", "initTeamOpponent"), context);
+for (const [ownId, enemyId] of [["florges", "florges"], ["vigoroth", "sableye_shadow"], ["mimikyu", "melmetal"]]) {
+  const job = { slot: 2, opponentSlot: 4, member: customMember(ownId, [4, 12, 13]), opponentMember: customMember(enemyId, [7, 14, 11]), opponentId: enemyId, startEnergyA: 0, startEnergyB: 0 };
+  context.teamBuilderOpponentPlan = [job];
+  for (const opposing of [false, true]) {
+    context.openTeamRoleMatchup(2, 4, "even1", null, opposing);
+    const payload = Link.readLocation(new URL(roleUrl));
+    const exactJob = opposing ? context.window.PvPeakTeamOpponentContext.reversePlan([job])[0] : job;
+    const config = context.createTeamBuilderBattleConfig(exactJob);
+    assert.equal(payload.left.pokemonId, opposing ? enemyId : ownId);
+    assert.equal(payload.right.pokemonId, opposing ? ownId : enemyId);
+    assert.equal(payload.left.ivAtk, opposing ? 7 : 4);
+    assert.equal(payload.reactionDelayTurns || 0, 0, "The counter alignment is a fresh 1–1 matchup, not a delayed switch");
+    for (const [prefix, side] of [["p1", payload.left], ["p2", payload.right]]) context.applyTeamBuilderBattleSide(prefix, side);
+    const restored = { left: reboundSide(config.left, "p1"), right: reboundSide(config.right, "p2"), startEnergyA: 0, startEnergyB: 0 };
+    const expected = simulate(config, 1, 1, "roles", true), actual = simulate(restored, 1, 1, "battle", true);
+    assert.equal(actual.score, expected.score);
+    assert.deepEqual(actual.details, expected.details);
+    assert.deepEqual(actual.timelineTrace, expected.timelineTrace);
+  }
+}
+console.log("Role/counter Battle parity passed: 6 launches, including a mirror and reversed orientation.");
 context.URLSearchParams = URLSearchParams;
 vm.runInContext(section("loadTeamBuilderBattleFromLocation", "closeTeamBuilderMatchup"), context);
 context.window.location = new URL("https://example.test/PogoPvp.html?tbBattle=broken");
