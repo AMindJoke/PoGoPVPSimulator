@@ -117,4 +117,14 @@ assert.equal(repeated.covered,3,'The existing individual-answer ranking is prese
 assert.equal(repeated.alignment.covered,1,'One counter cannot occupy three positions in an alignment.');
 assert.equal(new Set(repeated.alignment.slots).size,3);
 assert.deepEqual(repeated.alignment.answers.map(a=>a.outcome),['A','B','B'],'Losing pairings must remain explicit, not invented wins.');
+assert.equal(repeated.alignment.allEvenCovered,1);
+const fragileAnswers=new Map(repeatedAnswers);
+for(let slot=0;slot<3;slot++){
+  const key=Roles.cellKey(0,slot,{a:1,b:1,delay:0});
+  fragileAnswers.set(key,{...fragileAnswers.get(key),sensitivity:{version:'battle-sensitivity-v1',status:'sensitive',evidence:{outcome:'B'}}});
+}
+const fragileAlignment=Context.analyze({...lineupOwn,candidates:[lineupOwn.candidates.find(c=>c.slots.join(',')==='0,1,2')]},Roles.analyze(lineupReverse,fragileAnswers,2),lineupForward,fragileAnswers).candidates[0].context.reply.alignment;
+assert.equal(fragileAlignment.covered,1,'The canonical 1–1 result stays visible');
+assert.equal(fragileAlignment.allEvenCovered,0,'A detected losing reply disqualifies an all-even-shield counter');
+assert.equal(fragileAlignment.evenWins,2,'The fragile 1–1 win is discounted once, keeping its 0–0 and 2–2 wins');
 console.log('Lead/switch/closer counter alignment passed, including reuse of the same opposing roster.');

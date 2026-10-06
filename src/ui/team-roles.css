@@ -156,6 +156,7 @@
 .team-role-counter-pairs > button > span { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; justify-items:center; gap:2px; width:100%; }
 .team-role-counter-pairs .team-role-counter-name { color:var(--ink); line-height:14px; min-height:28px; overflow-wrap:anywhere; text-align:center; }
 .team-role-counter-pairs .team-role-pick-action { color:var(--accent); }
+.team-role-counter-pairs .team-role-counter-shields { width:100%; min-height:28px; line-height:14px; text-align:center; overflow-wrap:anywhere; }
 .team-role-counter-pairs img { width:28px; height:28px; object-fit:contain; }
 .team-role-counter-pairs b { font-size:13px; }
 .team-role-counter-pairs .team-role-alignment-A { color:var(--danger); }

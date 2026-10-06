@@ -10,7 +10,7 @@ const groups = [
   ["Switches, post-Charged zero-turn window and persistence", ["test-manual-switching", "test-post-charged-switch-timing", "test-manual-battle-timing"]],
   ["Simultaneous KO and special forms", ["test-matrix-simultaneous-draw", "test-special-form-mechanics"]],
   ["Diagnostic isolation", ["test-continuation-isolation"]],
-  ["Same matchup across Team Builder, Quick and Battle", ["test-team-role-readability", "test-navigation-matchup-parity"]],
+  ["Same matchup across Team Builder, Quick and Battle", ["test-counter-alignment-shields", "test-team-role-readability", "test-navigation-matchup-parity"]],
   ["Selected strategic decisions and legal alternatives", ["test-automatic-battle-quality"]]
 ];
 

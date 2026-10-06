@@ -45,4 +45,12 @@ click({ roleBattle: "2", roleOpponent: "1", roleScenario: "even1", rolePerspecti
 assert.deepEqual(calls.pop(), [2, 1, "even1", null, true], "Opposing counters must launch the exact opponent-side simulation");
 click({ roleBattle: "2", roleOpponent: "1", roleScenario: "switch1" });
 assert.deepEqual(calls.pop(), [2, 1, "switch1", null, false], "Own role matrices keep their own perspective and scenario");
+const conditional=analysis.suggestions[0].context.reply.alignment.answers[0];
+conditional.evenShields=[{shields:0,outcome:'A',fragile:false},{shields:1,outcome:'B',fragile:false},{shields:2,outcome:'A',fragile:false}];
+ui.render();
+assert(element("teamRolesResults").innerHTML.includes('Wins · 0–0, 2–2'),"A conditional counter must show exactly which equal shields it wins");
+conditional.evenShields[0].fragile=true;
+ui.render();
+assert(element("teamRolesResults").innerHTML.includes('Wins · 0–0 !, 2–2'),"Detected flips cannot be presented as unconditional counter wins");
+assert(element("teamRolesResults").innerHTML.includes('! Tested reply can change this result'));
 console.log("Team role readability: named results, result legend, ordered clickable counters and perspective routing passed.");

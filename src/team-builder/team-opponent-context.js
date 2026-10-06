@@ -9,12 +9,24 @@
   function alignReply(reply,slots,read){
     const orders=reply.slots.flatMap(first=>reply.slots.filter(slot=>slot!==first).map(second=>[first,second,reply.slots.find(slot=>slot!==first && slot!==second)]));
     const options=orders.map(order=>{
-      const answers=slots.map((slot,i)=>{const result=read(order[i],slot);return {slot,opponentSlot:order[i],score:result.score,outcome:Roles.outcome(result)};});
+      const answers=slots.map((slot,i)=>{
+        const evenShields=[0,1,2].map(n=>{
+          const result=read(order[i],slot,{a:n,b:n,delay:0});
+          return {shields:n,outcome:Roles.outcome(result),fragile:Roles.sensitive(result)};
+        });
+        const result=read(order[i],slot,{a:1,b:1,delay:0});
+        return {slot,opponentSlot:order[i],score:result.score,outcome:Roles.outcome(result),evenShields};
+      });
       return {slots:order,answers,covered:answers.filter(answer=>answer.outcome==='A').length,
+        allEvenCovered:answers.filter(answer=>answer.evenShields.every(cell=>cell.outcome==='A' && !cell.fragile)).length,
+        evenWins:answers.reduce((sum,answer)=>sum+answer.evenShields.filter(cell=>cell.outcome==='A' && !cell.fragile).length,0),
         hardCovered:answers.filter(answer=>answer.outcome==='A' && answer.score>=751).length,
         weakest:Math.min(...answers.map(answer=>answer.score)),total:answers.reduce((sum,answer)=>sum+answer.score,0)};
     });
-    options.sort((a,b)=>b.covered-a.covered || b.hardCovered-a.hardCovered || b.weakest-a.weakest || b.total-a.total || a.slots.join(',').localeCompare(b.slots.join(',')));
+    // Preserve 1–1 coverage first, then prefer answers that also work at
+    // the other even shields. A milder losing rating alone is not enough
+    // to displace a useful conditional counter. Detected flips are discounted.
+    options.sort((a,b)=>b.covered-a.covered || b.allEvenCovered-a.allEvenCovered || b.evenWins-a.evenWins || b.hardCovered-a.hardCovered || b.weakest-a.weakest || b.total-a.total || a.slots.join(',').localeCompare(b.slots.join(',')));
     const alignment=options[0];
     return {...reply,slots:alignment.slots,answers:slots.map(slot=>reply.answers.find(answer=>answer.slot===slot)),alignment};
   }
@@ -64,7 +76,7 @@
       })));
       // The strongest roster is shared across orders of our trio, but its
       // presentation follows THIS candidate's lead/switch/closer order.
-      const reply=alignReply(replies.get(key),candidate.slots,(enemy,slot)=>cell(opponentResults,enemy,slot));
+      const reply=alignReply(replies.get(key),candidate.slots,(enemy,slot,scene)=>cell(opponentResults,enemy,slot,scene));
       return {...candidate,context:{cases:allCases.slice(0,options.length),allCases,poolCount:pool.length,fullyAnswered:allCases.filter(c=>c.coverage===c.slots.length).length,coverageFloor:Math.min(...allCases.map(c=>c.coverage)),roleFloor:Math.min(...allCases.map(c=>c.roleFloor)),switchFloor:Math.min(...allCases.map(c=>c.switch)),closerFloor:Math.min(...allCases.map(c=>c.closer)),testedRoleFloor:Math.min(...allCases.map(c=>c.testedRoleFloor)),testedSwitchFloor:Math.min(...allCases.map(c=>c.testedSwitch)),testedCloserFloor:Math.min(...allCases.map(c=>c.testedCloser)),reply,counters}};
     });
     return {...own,candidates,suggestions:Roles.selectSuggestions(candidates,true),opponentContext:{options,poolCount:pool.length,profiles:opponent.profiles}};
