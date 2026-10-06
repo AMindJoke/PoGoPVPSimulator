@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### CMP compatto nel Team Builder, 6 ottobre 2026
+
+- Sigla ⇄ CMP inline da circa 30×14 px al posto del badge 44×28: fondo e bordo rimossi, colore ambra leggibile e area di tap estesa tramite pseudo-elemento. Risultato e sigla restano sulla stessa riga. Badge Battle e diagnostica invariati. Cache applicativa e CSS v132.
+- Verificati desktop 1280 e mobile 390, griglia senza overflow, tap sul CMP apre i dettagli corretti del Melmetal/Mimikyu a T25; suite leggibilità ruoli, PWA e cache passate. Planner migration 100% → 100%, hybrid fallback 0% → 0%.
+
 ### CMP decisivo in Battle e Suggested Trios, 6 ottobre 2026
 
 - Badge ambra ⇄ CMP nelle griglie ruoli e counter Toughest opposing trio, e sopra la timeline Battle con marker sulla caricata decisiva. Tap apre turno, Attack effettivo e cambio esito; mirror distinguono A/B. Nessun badge per il solo confronto Attack o un CMP che non cambia risultato.

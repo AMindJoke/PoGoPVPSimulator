@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-06-v131-cmp-dependency";
+const CACHE_VERSION = "2026-10-06-v132-compact-cmp";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -39,7 +39,7 @@ const CORE_ASSETS = [
   "./src/analysis/battle-sensitivity.js?v=20261005-v117",
   "./src/analysis/cmp-dependency.js?v=20261006-v131",
   "./src/ui/cmp-dependency.js?v=20261006-v131",
-  "./src/ui/cmp-dependency.css?v=20261006-v131",
+  "./src/ui/cmp-dependency.css?v=20261006-v132",
   "./src/ui/battle-alternatives.js?v=20261005-v117",
   "./src/ui/battle-alternatives.css?v=20261005-v117",
   "./src/analysis/iv-impact.js",
