@@ -1,5 +1,9 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Selettore trio aperto di default, 6 ottobre 2026
+
+- Nella vista Which three? i sei Pokémon del selettore sono immediatamente visibili, senza premere Choose/Change trio. Matchups e Farm mantengono la vista compatta. Verificato ingresso con sei pulsanti e picker aperto; asset/cache v146. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Trio selezionato visibile all’ingresso, 6 ottobre 2026
 
 - Tolto il conteggio isolato 3/3 dal titolo. Riepilogo Your trio sempre visibile subito sotto l’introduzione, prima delle condizioni avversarie: sprite e nomi, Change trio (Choose trio se incompleto). Il selettore originale dei sei Pokémon si apre nello stesso punto; Matchups/Farm e scelta dei suggerimenti conservano i dati originali. Asset/cache v145.

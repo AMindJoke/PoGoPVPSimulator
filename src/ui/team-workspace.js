@@ -65,7 +65,7 @@
       nav.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.workspaceView===view)));
       const shownSlots=view==='matchups'&&active>=0?candidates[active].slots:assigned.split(',').map(id=>own.team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
       current.innerHTML=`<div><small>${view==='matchups'&&preview&&preview!==assigned?'Preview trio':'Your trio'}</small><span>${shownSlots.map(slot=>`<span class="team-workspace-member">${sprite(own.team[slot],slot)}<b>${escape(own.team[slot].name)}</b></span>`).join('')||'<span class="team-workspace-no-trio">Choose three Pokémon from your team</span>'}</span></div><button type="button" data-workspace-change>${shownSlots.length===3?'Change trio':'Choose trio'}</button>`;
-      manual.hidden=view!=='trios';
+      manual.hidden=view!=='trios';manual.open=view==='trios';
       if(view==='matchups')panels.matchups.insertBefore(results,baseline);else $('teamTrioSuggestions').querySelector('.team-role-controls').after(results);
       results.querySelectorAll('.team-role-trio').forEach((card,index)=>{card.hidden=view==='farm'||view==='matchups'&&index!==active;});
       results.querySelectorAll('.team-role-trio').forEach((card,index)=>{
