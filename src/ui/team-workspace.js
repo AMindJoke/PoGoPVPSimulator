@@ -4,7 +4,7 @@
     const $=id=>document.getElementById(id),escape=options.escapeHtml;
     const workspace=$('teamOpponentPanel').querySelector('.team-trio');
     workspace.id='teamAnalysisWorkspace';workspace.dataset.workspaceView='trios';
-    let view='trios',preview=null,baselineSlot=null,ownTouched=false,setupTouched=false,mode='meta',modeTouched=false;
+    let view='trios',preview=null,baselineSlot=null,ownTouched=false,mode='meta',modeTouched=false;
     const selectionKey='pogo-pvp-team-workspace-lineup-v1';let savedSelection=null;
     const switchViews=new Map();
     try{savedSelection=JSON.parse(localStorage.getItem(selectionKey));}catch(_){}
@@ -12,14 +12,48 @@
     const node=(tag,id,markup)=>{const el=document.createElement(tag);if(id)el.id=id;if(markup)el.innerHTML=markup;return el;};
     const nav=node('nav','teamWorkspaceNav',['trios','matchups','farm'].map((id,i)=>`<button type="button" data-workspace-view="${id}" aria-controls="teamWorkspace${id}" aria-pressed="${i===0}">${['Which three?','Matchups','Farm'][i]}</button>`).join(''));nav.setAttribute('aria-label','Team analysis');
     $('teamTrioTitle').textContent='Prepare your trio';
-    const setup=node('details','teamWorkspaceSetup','<summary>Opponent & comparison conditions</summary>');
+    const setup=node('div','teamWorkspaceSetup','<h4>1. Opponent team</h4>');
     const opponent=$('teamOpponentPanel');
     [opponent.querySelector('.team-opponent-toolbar'),$('teamOpponentRoster'),opponent.querySelector('.team-opponent-controls'),opponent.querySelector('.team-opponent-energy'),$('teamOpponentStatus')].forEach(el=>setup.append(el));
     workspace.querySelector('header').after(setup);setup.after(nav);
     const current=node('div','teamWorkspaceCurrent');setup.before(current);
     const panels={};['trios','matchups','farm'].forEach(id=>{panels[id]=node('section','teamWorkspace'+id);panels[id].className='team-workspace-panel';panels[id].setAttribute('aria-label',id==='trios'?'Suggested trios':id==='matchups'?'Trio matchups':'Farm after a loss');workspace.append(panels[id]);});
-    const manual=node('details','teamWorkspaceManual','<summary>Choose your own trio</summary>');manual.append($('teamTrioPicker'),$('teamTrioSummary'));
+    const manual=node('details','teamWorkspaceManual','<summary>Choose your own trio · optional</summary>');manual.append($('teamTrioPicker'));
+    panels.matchups.append($('teamTrioSummary'));
     panels.trios.append($('teamTrioSuggestions'));current.after(manual);$('teamTrioSuggestions').open=true;
+    const conditions=node('div','teamWorkspaceConditions','<h4>2. Conditions</h4>');
+    setup.querySelector('.team-opponent-controls').before(conditions);
+    conditions.append(setup.querySelector('.team-opponent-controls'),setup.querySelector('.team-opponent-energy'),$('teamRolesDelay').closest('label'));
+    $('teamOpponentShieldsA').setAttribute('aria-label','Your shields');$('teamOpponentShieldsB').setAttribute('aria-label','Opponent shields');
+    conditions.append(node('p',null,'Shields & energy apply to comparison matchups and farm. Role checks use their own shield scenarios, full HP and zero energy.'));
+    setup.append(manual);
+    const actions=node('div','teamWorkspaceActions','<span role="status" aria-live="polite"></span><button type="button" data-analyze>Analyze</button><button type="button" class="secondary" data-cancel hidden>Cancel</button>');setup.append(actions);
+    const recap=node('div','teamWorkspaceRecap');setup.before(recap);
+    let editing=true,accepted='',pending=null,advancing=false,flowError='';
+    const inputKey=()=>JSON.stringify([fingerprint(),options.opponent().shields,options.opponent().energy,options.delay()]);
+    const comparisonReady=()=>{const rows=options.rows(),slots=options.own().team.map((member,slot)=>member?slot:null).filter(slot=>slot!==null);return !!rows.length&&rows.every(row=>slots.every(slot=>!!row.cells[slot]));};
+    function advance(){
+      if(!pending||advancing)return;advancing=true;
+      queueMicrotask(()=>{advancing=false;if(!pending)return;
+        if(pending.key!==inputKey()){options.cancelRoles();pending=null;sync();return;}
+        if(pending.phase==='comparison'){
+          if(options.comparisonActive())return;
+          if(!comparisonReady()||options.comparisonFailed()){flowError='Some matchups could not be prepared. Analyze again to retry.';pending=null;sync();return;}
+          pending.phase='roles';options.startRoles();
+        }
+        const state=options.rolesState();
+        if(state.phase==='complete'){accepted=pending.key;pending=null;editing=false;view='trios';sync();nav.scrollIntoView({block:'nearest'});}
+        else if(state.phase==='error'||state.phase==='idle'){pending=null;sync();}
+      });
+    }
+    actions.onclick=e=>{
+      if(e.target.closest('[data-cancel]')){pending=null;options.cancelComparison();options.cancelRoles();sync();}
+      if(e.target.closest('[data-analyze]')){
+        if(pending)return;flowError='';pending={key:inputKey(),phase:'comparison'};
+        if(!comparisonReady()||options.comparisonFailed())options.startComparison();sync();advance();
+      }
+    };
+    recap.onclick=()=>{editing=true;sync();setup.scrollIntoView({block:'start'});};
     const baseline=node('div','teamWorkspaceBaseline');panels.matchups.append(baseline);
     const roster=node('details','teamWorkspaceRoster','<summary>Full roster matchup matrix</summary>');roster.append($('teamOpponentResults'));panels.matchups.append(roster);
     const farmEmpty=node('p','teamWorkspaceFarmEmpty');panels.farm.append(farmEmpty,$('teamTrioFarm'));$('teamTrioFarm').open=true;
@@ -33,7 +67,7 @@
     const modeTabs=node('div','teamWorkspaceModeTabs',['team','meta'].map((id,i)=>`<button type="button" id="teamMode-${id}" role="tab" data-analysis-mode="${id}" aria-controls="${i===0?'teamOpponentPanel':'teamWorkspaceMetaTools'}" aria-selected="false"><b>${i===0?'Against a team':'Against the Meta'}</b><span>${i===0?'Choose a trio & plan your matchups':'Check coverage & improve your six'}</span></button>`).join(''));modeTabs.setAttribute('role','tablist');modeTabs.setAttribute('aria-label','Choose your analysis');
     modes.append(modeTabs,opponent,metaTools);
     [opponent,metaTools].forEach((panel,i)=>{panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',`teamMode-${i===0?'team':'meta'}`);panel.open=true;});
-    const teamIntro=node('div',null,'<h3>Prepare your trio</h3><p>Add the opposing team, then explore trios, matchups and farm routes.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
+    const teamIntro=node('div',null,'<h3>Prepare your trio</h3><p>Set up the opposing team and conditions, then analyze.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
     workspace.querySelector('header').hidden=true;
     const metaIntro=node('div',null,'<h3>Test your team against the Meta</h3><p>Choose the field and shields, then prepare matchups to see your coverage.</p>');metaIntro.className='team-workspace-intro';metaTools.querySelector('summary').after(metaIntro);
     $('teamMetaTitle').textContent='Conditions';
@@ -43,7 +77,7 @@
     const results=$('teamRolesResults');
     const selectedSlots=()=>options.trioIds().map(id=>options.own().team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
     const sprite=(member,slot)=>`<img data-workspace-sprite="${slot}" alt="${escape(member.name)}">`;
-    function show(next,focus=false){view=next;workspace.dataset.workspaceView=next;sync();if(focus){nav.querySelector(`[data-workspace-view="${next}"]`).focus({preventScroll:true});nav.scrollIntoView({block:'nearest'});}}
+    function show(next,focus=false){view=next;workspace.dataset.workspaceView=next;sync();if(next==='farm'&&selectedSlots().length===3&&comparisonReady()&&options.farmState().phase==='idle')options.startFarm();if(focus){nav.querySelector(`[data-workspace-view="${next}"]`).focus({preventScroll:true});nav.scrollIntoView({block:'nearest'});}}
     function showMatchups(index,role='lead',selected=false){preview=options.rolesState().analysis?.suggestions[index]?.slots.map(slot=>options.own().team[slot]?.pokemonId).join(',')||null;if(selected&&preview){savedSelection={ids:preview,source:fingerprint()};try{localStorage.setItem(selectionKey,JSON.stringify(savedSelection));}catch(_){}}show('matchups');options.rolesUI().show(index,role);nav.scrollIntoView({block:'nearest'});}
     function baselineMarkup(slots){
       const rows=options.rows(),own=options.own(),enemy=options.opponent();
@@ -53,6 +87,7 @@
       return `<div class="team-workspace-baseline-head"><b>Your trio · comparison matchups</b><small>Roles not assigned · use a suggested trio for role checks</small></div><div class="team-workspace-members">${slots.map(slot=>`<button type="button" data-workspace-slot="${slot}" aria-pressed="${slot===baselineSlot}">${sprite(own.team[slot],slot)}<b>${escape(own.team[slot].name)}</b></button>`).join('')}</div><div class="team-workspace-comparison"><b>${escape(member.name)}</b><small>Shields ${enemy.shields?.A??1}–${enemy.shields?.B??1} · energy ${enemy.energy?.A||0}/${enemy.energy?.B||0}</small></div><div class="team-role-matchup-row">${rows.map(row=>{const result=row.cells[baselineSlot];return `<button type="button" class="team-role-matchup" data-workspace-battle="${baselineSlot}" data-workspace-opponent="${row.slot}"${result?'':' disabled'} aria-label="${escape(`${member.name} versus ${row.member.name}: ${result?options.resultLabel(result):'Not calculated'}. Open Battle.`)}"><img data-workspace-enemy="${row.slot}" alt=""><small class="team-role-matchup-name">${escape(row.member.name)}</small>${result?options.resultMarkup(result):'<span>?</span>'}</button>`;}).join('')}</div>${rows.some(row=>!row.cells[baselineSlot])?'<p>Prepare comparison matchups in Opponent & comparison conditions.</p>':''}`;
     }
     function sync(){
+      workspace.dataset.workspaceView=view;
       const own=options.own(),enemy=options.opponent(),slots=selectedSlots();
       const state=options.rolesState(),candidates=state.analysis?.ready&&state.phase==='complete'?state.analysis.suggestions:[];
       const actual=options.trioIds().join(',');
@@ -102,15 +137,29 @@
       comparison.textContent=`Comparison · shields ${enemy.shields?.A??1}–${enemy.shields?.B??1} · energy ${enemy.energy?.A||0}/${enemy.energy?.B||0}`;comparison.hidden=slots.length!==3;
       current.querySelectorAll('[data-workspace-sprite]').forEach(img=>options.setSprite(img,own.team[Number(img.dataset.workspaceSprite)]));
       baseline.querySelectorAll('[data-workspace-sprite]').forEach(img=>options.setSprite(img,own.team[Number(img.dataset.workspaceSprite)]));
-      if(!ownTouched)ownSetup.open=true;if(!setupTouched)setup.open=!enemy.team.some(Boolean);
+      if(!ownTouched)ownSetup.open=true;
       if(!own.team.some(Boolean))ownSetup.open=true;if(!enemy.team.some(Boolean))setup.open=true;
       if(!modeTouched)mode=enemy.team.some(Boolean)?'team':'meta';
       modes.dataset.analysisMode=mode;opponent.open=true;metaTools.open=true;opponent.hidden=mode!=='team';metaTools.hidden=mode!=='meta';
       modeTabs.querySelectorAll('[data-analysis-mode]').forEach(button=>{const selected=button.dataset.analysisMode===mode;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
+      const dirty=!!accepted&&accepted!==inputKey(),ready=!!accepted&&!dirty;
+      if(dirty)editing=true;
+      setup.hidden=!editing;recap.hidden=editing;
+      manual.hidden=!editing;manual.open=true;
+      current.hidden=editing||view==='trios';nav.hidden=editing||!ready;
+      Object.entries(panels).forEach(([id,panel])=>panel.hidden=editing||!ready||view!==id);
+      const enough=own.team.filter(Boolean).length>=3&&enemy.team.some(Boolean);
+      actions.querySelector('[data-analyze]').disabled=!enough||!!pending;
+      actions.querySelector('[data-analyze]').textContent=pending?'Analyzing…':dirty?'Update analysis':'Analyze';
+      actions.querySelector('[data-cancel]').hidden=!pending;
+      actions.querySelector('[role=status]').textContent=pending?(pending.phase==='comparison'?$('teamOpponentStatus').textContent:$('teamRolesStatus').textContent):flowError|| (dirty?'Setup changed · update the analysis.':state.phase==='error'?state.error:!enough?'Add at least three Pokémon to your team and an opponent.':ready?'Your analysis is ready.':'Choose a trio yourself or let the suggestions guide you.');
+      recap.innerHTML=`<div class="team-workspace-recap-roster">${enemy.team.map((member,slot)=>member?`<img data-recap-sprite="${slot}" alt="${escape(member.name)}" title="${escape(member.name)}">`:'').join('')}</div><span>Shields ${enemy.shields.A}–${enemy.shields.B} · energy ${enemy.energy.A}/${enemy.energy.B} · reaction ${options.delay()}t</span><button type="button" class="secondary">Edit setup</button>`;
+      recap.querySelectorAll('[data-recap-sprite]').forEach(img=>options.setSprite(img,enemy.team[Number(img.dataset.recapSprite)]));
+      advance();
     }
     nav.onclick=e=>{const button=e.target.closest('[data-workspace-view]');if(button)show(button.dataset.workspaceView);};
-    ownSetup.addEventListener('click',()=>ownTouched=true);setup.addEventListener('click',()=>setupTouched=true);
-    current.onclick=e=>{if(e.target.closest('[data-workspace-change]')){preview=null;show('trios',true);manual.open=true;manual.scrollIntoView({block:'nearest'});}};
+    ownSetup.addEventListener('click',()=>ownTouched=true);
+    current.onclick=e=>{if(e.target.closest('[data-workspace-change]')){preview=null;editing=true;sync();manual.open=true;manual.scrollIntoView({block:'nearest'});}};
     baseline.onclick=e=>{const pick=e.target.closest('[data-workspace-slot]');if(pick){baselineSlot=Number(pick.dataset.workspaceSlot);sync();baseline.querySelector(`[data-workspace-slot="${baselineSlot}"]`).focus({preventScroll:true});}const battle=e.target.closest('[data-workspace-battle]');if(battle)options.battle(Number(battle.dataset.workspaceBattle),Number(battle.dataset.workspaceOpponent));};
     function inspect(data){
       const state=options.rolesState(),scenario=root.PvPeakTeamRoles.scenarios(options.delay()).find(s=>s.id===data.scenario);

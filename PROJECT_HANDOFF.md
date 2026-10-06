@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Team Builder: setup unico prima dei risultati, 6 ottobre 2026
+
+- Against a team raggruppa roster avversario, scudi/energia di confronto, reazione switch e selettore manuale opzionale aperto in un solo setup. Analyze coordina prima il confronto e poi i ruoli, riusando risultati validi; dopo il completamento mostra riepilogo compatto con Edit setup e Which three?/Matchups/Farm. La scelta dei suggerimenti resta nei risultati; Change trio riapre il selettore nel setup.
+- Modifiche a roster/mosse/IV/condizioni rendono i risultati non consultabili finché si aggiorna l’analisi. Cancel, errori e confronti incompleti non pubblicano risultati parziali; Farm parte entrando nella vista con trio e confronti pronti. Scudi/energia selezionati restano distinti dagli scenari specifici dei ruoli. Nessuna modifica al motore o ai criteri di ranking; asset/cache v150.
+- Test coordinatore, leggibilità/UI, build flow, contesto avversario, parità Battle, link farm e PWA/cache passati. Verificati setup→analisi→riepilogo, modifica reazione/scudi, cache, Matchups e Farm a 320/390/1280 px, senza overflow o errori JS. Corretto anche il ripristino dello stile compatto dopo rianalisi da Farm. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Tolto il riepilogo duplicato nella scelta del trio, 6 ottobre 2026
 
 - Which three? mostra direttamente il selettore aperto dei sei Pokémon, senza il blocco duplicato Your trio/Choose trio. Il riepilogo resta nelle viste Matchups e Farm. Asset/cache v147. Planner migration 100% → 100%; hybrid fallback 0% → 0%.

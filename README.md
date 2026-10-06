@@ -36,9 +36,13 @@ Battle and Suggested Trio role matchups show a compact CMP badge only when a pri
 
 Your roster starts expanded. Choose **Against a team** or **Against the Meta** in the connected tabs below it; only the selected analysis is displayed, with its controls and results preserved when switching.
 
-Against an opposing roster, **Which three?** presents compact role suggestions. Select **Use trio**, then **Matchups** to inspect Lead/Switch/Closer results; tapping a cell opens the real result and its Battle link. Switch distinguishes a new counter with reaction delay from an opponent staying with one Fast move of energy. CMP and tested alternatives remain available when they affect the outcome.
+Against an opposing roster, one setup groups the opponent builds, comparison shields/energy, switch reaction and optional manual trio. **Analyze** prepares comparison matchups and role checks in sequence, then replaces setup with an **Edit setup** recap and the results. Changed rosters or conditions hide previous results until **Update analysis**. Comparison shields/energy apply to baseline matchups and farm; role checks retain their explicit scenario conditions.
 
-**Farm** lets you choose a losing Pokémon and its opponent, then inspect the two teammates' real farm routes. Advanced plans, replies, conditions, ordered opposing counters and the full roster matrix remain expandable. Manual trio choices show comparison matchups without assigning suggested roles. These are individual simulations under explicit conditions, not a full 3v3 game or a prediction of opposing picks.
+**Which three?** presents compact role suggestions. Select **Use trio**, then **Matchups** to inspect Lead/Switch/Closer results; tapping a cell opens the real result and its Battle link. Switch distinguishes a new counter with reaction delay from an opponent staying with one Fast move of energy. CMP and tested alternatives remain available when they affect the outcome.
+
+**Farm** prepares routes when first opened for a ready trio, then lets you choose a losing Pokémon and its opponent, then inspect the two teammates' real farm routes. Advanced plans, replies, conditions, ordered opposing counters and the full roster matrix remain expandable. Manual trio choices show comparison matchups without assigning suggested roles. These are individual simulations under explicit conditions, not a full 3v3 game or a prediction of opposing picks.
+
+The setup coordinator is checked with `node tools/test-team-setup-flow.js` (sequential completion, warm reuse, changed-input cancellation and failed/incomplete results).
 
 ## Data
 

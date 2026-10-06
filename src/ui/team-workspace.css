@@ -122,3 +122,25 @@ body[data-theme=neo] .team-workspace-dialog .team-workspace-battle,body[data-the
 #teamAnalysisWorkspace .team-farm-choice .team-farm-choice-action { grid-column:2;text-align:left; }
 #teamAnalysisWorkspace .team-farm-choice .team-farm-cost { grid-column:2;justify-content:start; }
 @media(min-width:900px) { #teamAnalysisWorkspace[data-workspace-view=trios] .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } #teamAnalysisWorkspace .team-farm-choices { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* One setup, followed by the results workspace. Original handlers remain mounted. */
+#teamWorkspaceSetup { margin:0; padding:0; border:0; background:transparent; }
+#teamWorkspaceSetup h4 { font-size:16px; margin:20px 0 12px; }
+#teamWorkspaceSetup > h4:first-child { margin-top:0; }
+#teamWorkspaceConditions { padding-top:12px; margin-top:16px; border-top:1px solid var(--line); }
+#teamWorkspaceConditions > label { display:flex; flex-direction:column; gap:5px; width:max-content; margin:12px 0; }
+#teamWorkspaceConditions p { color:var(--muted); max-width:65ch; }
+#teamWorkspaceActions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+#teamWorkspaceActions > span { flex:1; min-width:160px; color:var(--muted); font-size:14px; }
+#teamWorkspaceActions button { min-height:44px; padding:10px 24px; }
+#teamWorkspaceActions [data-analyze] { background:var(--accent); color:var(--on-accent,#fff); }
+#teamWorkspaceRecap { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:12px 0; border-bottom:1px solid var(--line); }
+#teamWorkspaceRecap > span { flex:1; font-size:14px; color:var(--muted); }
+#teamWorkspaceRecap button { min-height:44px; }
+.team-workspace-recap-roster { display:flex; gap:2px; }
+.team-workspace-recap-roster img { width:32px; height:32px; object-fit:contain; }
+#teamWorkspaceSetup #teamOpponentAnalyze,#teamWorkspaceSetup #teamOpponentCancel,#teamWorkspaceSetup #teamOpponentStatus,#teamAnalysisWorkspace .team-role-controls { display:none!important; }
+#teamWorkspaceSetup #teamWorkspaceManual { margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
+#teamWorkspaceSetup #teamWorkspaceManual > summary { min-height:44px; color:var(--ink); font-weight:600; }
+#teamWorkspacematchups #teamTrioSummary { margin-bottom:12px; }
+@media(max-width:600px) { #teamWorkspaceActions [data-analyze] { flex:1; } #teamWorkspaceActions > span { flex-basis:100%; } #teamWorkspaceRecap > span { flex-basis:calc(100% - 120px); } }
