@@ -70,7 +70,7 @@
   <script src="src/scenario/manual-battle-state.js"></script>
   <script src="src/scenario/technical-review-model.js"></script>
   <script src="src/battle/turn-resolution-engine.js"></script>
-  <script src="src/battle/manual-battle-timing.js?v=20260903-pvp-2026-rules"></script>
+  <script src="src/battle/manual-battle-timing.js?v=20261006-v125"></script>
   <script src="src/battle/manual-switching.js?v=20260903-pvp-2026-rules"></script>
   <script src="src/battle/manual-mode.js"></script>
   <script src="src/battle/manual-action.js?v=20260821-switching"></script>
@@ -15707,10 +15707,13 @@
       return manualBattleTiming;
     }
 
-    function closeManualPostChargedSwitchWindow() {
+    function closeManualPostChargedSwitchWindow(side = null) {
       const api = window.PvPeakManualBattleTiming;
       if (!api || !manualModeState?.enabled || chargedContinuationDepth > 0) return manualBattleTiming;
-      manualBattleTiming = api.closePostChargedSwitchWindow(syncManualBattleTiming());
+      const timing = syncManualBattleTiming();
+      manualBattleTiming = side === "A" || side === "B"
+        ? api.consumePostChargedSwitch(timing, side)
+        : api.closePostChargedSwitchWindow(timing);
       return manualBattleTiming;
     }
 
@@ -24443,7 +24446,7 @@
       const manualRuntimeBefore = typeof captureManualRuntimeSnapshot === "function"
         ? captureManualRuntimeSnapshot()
         : null;
-      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
+      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow(attacker.trainer);
       if (typeof applyTechnicalIssueIfNeeded === "function" && applyTechnicalIssueIfNeeded("one-turn-lag", attacker, defender, attacker.fast)) return true;
       const turnApi = typeof PvPeakTurnEngine !== "undefined" ? PvPeakTurnEngine : window.PvPeakTurnEngine;
       const automaticFastImpact = activeAutoTurnContext && turnApi
@@ -25893,7 +25896,7 @@
       if (reason === window.PvPeakManualSwitching?.REASON?.FAINTED_ACTIVE) return "Use Bring next Pokémon";
       if (reason === window.PvPeakManualSwitching?.REASON?.BATTLE_ENDED) return "Battle complete";
       if (reason === window.PvPeakManualSwitching?.REASON?.NO_BENCH) return "No living bench Pokémon";
-      if (legality?.legal && legality.postCharged) return "Free switch after your Charged Attack";
+      if (legality?.legal && legality.postCharged) return "Switch after Charged Attack · 0 turns";
       return legality?.legal ? "Choose a bench Pokémon · 1 turn" : "Unavailable now";
     }
 
@@ -28518,7 +28521,7 @@
 
     function useTimingWait(attacker, defender, timingWindow, options = {}) {
       if (!ready() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
-      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow();
+      if (typeof closeManualPostChargedSwitchWindow === "function") closeManualPostChargedSwitchWindow(attacker.trainer);
       const waitTurns = Math.max(1, Number(timingWindow?.waitTurns || 1));
       const currentTurn = Number(battleTurns[attacker.trainer] || 0);
       const targetTurn = currentTurn + waitTurns;
@@ -38053,7 +38056,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261006-v124").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261006-v125").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

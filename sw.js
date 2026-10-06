@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-06-v124-meta-refresh";
+const CACHE_VERSION = "2026-10-06-v125-post-charged-switch";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -82,7 +82,7 @@ const CORE_ASSETS = [
   "./src/battle/charged-move-collection.js",
   "./src/battle/pokemon-form.js",
   "./src/battle/turn-resolution-engine.js",
-  "./src/battle/manual-battle-timing.js",
+  "./src/battle/manual-battle-timing.js?v=20261006-v125",
   "./src/battle/manual-switching.js",
   "./src/battle/manual-mode.js",
   "./src/battle/manual-action.js",

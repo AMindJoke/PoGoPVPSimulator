@@ -36,8 +36,9 @@
       : storedEligibleSides.length === 1
         ? storedEligibleSides[0]
         : null;
+    const decisionTurn = Math.max(0, number(sourceWindow?.decisionTurn, canonicalTurn));
     return {
-      version: 4,
+      version: 5,
       canonicalTurn,
       chargedSequenceMs,
       elapsedBattleMs,
@@ -45,8 +46,9 @@
         A: Math.max(0, number(input.nextSwitchAvailableAtMs?.A)),
         B: Math.max(0, number(input.nextSwitchAvailableAtMs?.B))
       },
-      postChargedSwitchWindow: sourceWindow && eligibleSides.length ? {
+      postChargedSwitchWindow: sourceWindow && eligibleSides.length && canonicalTurn <= decisionTurn ? {
         turn: Math.max(0, number(sourceWindow.turn, canonicalTurn)),
+        decisionTurn,
         sourceEventId: sourceWindow.sourceEventId || null,
         chargedAttackActor,
         eligibleSides
@@ -57,6 +59,9 @@
   function advanceToTurn(state, turn) {
     const next = createState(state);
     next.canonicalTurn = Math.max(next.canonicalTurn, number(turn));
+    if (next.postChargedSwitchWindow && next.canonicalTurn > next.postChargedSwitchWindow.decisionTurn) {
+      next.postChargedSwitchWindow = null;
+    }
     next.elapsedBattleMs = next.canonicalTurn * TURN_DURATION_MS + next.chargedSequenceMs;
     return next;
   }
@@ -94,6 +99,8 @@
         : null;
     next.postChargedSwitchWindow = chargedAttackActor ? {
       turn: Math.max(0, number(input.turn, next.canonicalTurn)),
+      // The charge's trigger turn precedes the shared decision at sequence end.
+      decisionTurn: next.canonicalTurn,
       sourceEventId: input.sourceEventId || null,
       chargedAttackActor,
       eligibleSides: [...SIDES]

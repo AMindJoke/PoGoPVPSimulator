@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Switch a zero turni dopo caricata subita, 6 ottobre 2026
+
+- La regola di base post-caricata era già simmetrica, ma useFast/useTimingWait chiudevano la finestra per entrambi: la registrazione della veloce di A poteva far costare un turno allo switch di B nello stesso momento. Ora consumano solo l'opportunità del giocatore che agisce. Una nuova caricata chiude la finestra precedente e ne apre una nuova per entrambi, come prima. Test riproduce il vecchio errore nel vero adapter della pagina prima della correzione.
+- Timing manuale v5 salva decisionTurn della fine sequenza, distinto dal turno trigger della caricata; la finestra scade quando il turno canonico avanza. Import, Undo/Redo conservano finestra e lati già consumati. Il testo è Switch after Charged Attack · 0 turns, per chi lancia e chi subisce. Restano cooldown di 45 secondi, blocco durante una veloce/in sequenza caricata e Bring Next separato per i KO. Asset/cache v125.
+- Browser: Vigoroth lancia Body Slam T0, registra Scratch T1, Altaria subisce la caricata e switcha ad Azumarill T1 senza avanzare il turno/tempo (10,5 s). Alla successiva azione di B il turno avanza e gli switch tornano ordinari; Undo ripristina il costo zero. Verificato anche layout stretto senza overflow, nessun errore JS. Prova separata chiusa; tab dell'utente preservata.
+- Passati timing post-caricata (A/B, con/senza scudo, scadenza, import e adapter), switching, timing manuale, turn engine, runtime/charged/branch/snapshots/import/share/UI manuale, isolamento continuazioni (16 casi), parità navigazione, PWA/cache e 134 replay dei punteggi Meta. Risultati automatici v46 invariati: le simulazioni 1v1 non eseguono switch di squadra. Migrazione planner 100%, fallback 0%.
+
 ### Meta rigenerato con il motore attuale, 6 ottobre 2026
 
 - Ranking completo ricalcolato con battle-planner-v46/resource-score-v5: 1.540 candidati, 43 avversari, quattro scenari scudi, 397.320 simulazioni senza errori. Criteri precedenti mantenuti, incluse ponderazioni e prior 70%/30%; input riproducibili in data/ranking-inputs/twilight-trails. Top 50 conserva 48/50 Pokémon; entrano Zweilous e Morpeko, escono Dondozo e Charjabug. Altri 33.858 matchup 1–1 calcolati per completare i dettagli di tutti i candidati contro il nuovo Top 50, oltre ai 43.092 già presenti nel cache della stessa generazione.

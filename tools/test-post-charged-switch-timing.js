@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 const Timing = require("../src/battle/manual-battle-timing.js");
 const Switching = require("../src/battle/manual-switching.js");
 
@@ -104,5 +105,48 @@ assert.equal(Timing.postChargedSwitchEligible(replacedWindow, "B"), true);
 // Legacy post-Charged windows migrate to the current two-sided rule.
 const legacy = Timing.createState({ version: 2, postChargedSwitchWindow: { turn: 20, sourceEventId: "legacy", eligibleSides: ["A", "B"] } });
 assert.deepEqual(legacy.postChargedSwitchWindow.eligibleSides, ["A", "B"]);
+
+// Exercise the actual page adapter: registering the thrower's next Fast must
+// not consume the receiver's simultaneous zero-turn switch opportunity.
+const closeAdapter = html.slice(html.indexOf("    function closeManualPostChargedSwitchWindow("),
+  html.indexOf("    function openManualPostChargedSwitchWindow("));
+for (const actor of ["A", "B"]) for (const shielded of [false, true]) {
+  const receiver = actor === "A" ? "B" : "A";
+  const context = {
+    window: { PvPeakManualBattleTiming: Timing }, manualModeState: { enabled: true },
+    chargedContinuationDepth: 0, manualBattleTiming: windowFor(actor, "charge-boundary", { shielded })
+  };
+  context.syncManualBattleTiming = () => context.manualBattleTiming;
+  vm.createContext(context);
+  vm.runInContext(closeAdapter, context);
+  context.closeManualPostChargedSwitchWindow(actor);
+  assert.equal(Timing.postChargedSwitchEligible(context.manualBattleTiming, actor), false);
+  assert.equal(Timing.postChargedSwitchEligible(context.manualBattleTiming, receiver), true,
+    `${actor} Fast must preserve ${receiver}'s switch at the same boundary`);
+  const state = receiver === "A" ? stateA : stateB;
+  const active = receiver === "A" ? activeA : activeB;
+  const incomingId = receiver === "A" ? "azumarill" : "froslass";
+  const result = Switching.switchActive({ side: receiver, active, incomingId, switchState: state,
+    timing: context.manualBattleTiming });
+  assert.equal(result.turnCost, 0);
+  assert.equal(result.timing.elapsedBattleMs, context.manualBattleTiming.elapsedBattleMs);
+}
+
+// A window cannot survive actual battle-time progression, or be resurrected
+// by a serialized state. Charged trigger time and the next decision differ.
+const sequenceEnd = Timing.advanceToTurn(Timing.createState(), 21);
+const boundaryWindow = Timing.openPostChargedSwitchWindow(sequenceEnd,
+  { turn: 20, sourceEventId: "charge-trigger-20", chargedAttackActor: "A" });
+assert.equal(Timing.postChargedSwitchEligible(boundaryWindow, "B"), true);
+assert.equal(Timing.postChargedSwitchEligible(Timing.advanceToTurn(boundaryWindow, 21), "B"), true);
+const later = Timing.advanceToTurn(boundaryWindow, 22);
+assert.equal(Timing.postChargedSwitchEligible(later, "B"), false);
+assert.equal(Timing.createState(JSON.parse(JSON.stringify(later))).postChargedSwitchWindow, null);
+assert.equal(Switching.legality({ side: "B", active: activeB, switchState: stateB,
+  timing: later, actionReady: true }).turnCost, 1);
+for (const functionName of ["useFast", "useTimingWait"]) {
+  const start = html.indexOf(`    function ${functionName}(`);
+  assert.match(html.slice(start, start + 900), /closeManualPostChargedSwitchWindow\(attacker\.trainer\)/);
+}
 
 console.log("Post-Charged switch timing regression matrix passed.");
