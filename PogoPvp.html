@@ -51,7 +51,7 @@
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
   <script src="src/team-builder/team-builder-opponent.js?v=20261001-v92"></script>
-  <script src="src/ui/team-opponent.js?v=20261006-v146"></script>
+  <script src="src/ui/team-opponent.js?v=20261006-v147"></script>
   <script src="src/team-builder/team-matchup-share.js?v=20261001-v92"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
   <script src="src/team-builder/team-builder-battle-link.js?v=20261005-v117"></script>
@@ -60,8 +60,8 @@
   <script src="src/team-builder/team-builder-roles.js?v=20261005-v117"></script>
   <script src="src/team-builder/team-opponent-context.js?v=20261006-v131"></script>
   <script src="src/team-builder/team-role-analysis.js?v=20261006-v131"></script>
-  <script src="src/ui/team-roles.js?v=20261006-v146"></script>
-  <script src="src/ui/team-workspace.js?v=20261006-v146"></script>
+  <script src="src/ui/team-roles.js?v=20261006-v147"></script>
+  <script src="src/ui/team-workspace.js?v=20261006-v147"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14482,7 +14482,7 @@
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v117">
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
-  <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261006-v146">
+  <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261006-v147">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
   <script defer src="src/ui/meta-quick-matchup.js?v=20261006-v124"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
@@ -38081,7 +38081,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261006-v146").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261006-v147").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
