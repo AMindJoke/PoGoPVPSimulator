@@ -1,5 +1,9 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Contrasto della scheda attiva, 6 ottobre 2026
+
+- Tab inattivo con fondo grigio (18% slate su panel) e testo meno marcato; tab attivo conserva fondo del contenuto, testo accent e linea di selezione. Verificato visivamente nel browser; logica e dimensioni invariati. Asset/cache v144. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Finitura schede Team Builder, 6 ottobre 2026
 
 - Schede integrate in un unico contenitore: nessun gap, bordo esterno neutro e linea di selezione sotto il tab attivo; focus tastiera visibile. Rimossi sottotitoli dei tab, titolo Conditions e riquadri annidati del setup Meta. Titolo Prepare your trio unico, conteggio selezione accanto al titolo. Calcoli, controlli e dati conservati; asset/cache v143.
