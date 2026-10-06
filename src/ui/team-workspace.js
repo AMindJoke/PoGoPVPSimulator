@@ -16,10 +16,10 @@
     const opponent=$('teamOpponentPanel');
     [opponent.querySelector('.team-opponent-toolbar'),$('teamOpponentRoster'),opponent.querySelector('.team-opponent-controls'),opponent.querySelector('.team-opponent-energy'),$('teamOpponentStatus')].forEach(el=>setup.append(el));
     workspace.querySelector('header').after(setup);setup.after(nav);
-    const current=node('div','teamWorkspaceCurrent');nav.after(current);
+    const current=node('div','teamWorkspaceCurrent');setup.before(current);
     const panels={};['trios','matchups','farm'].forEach(id=>{panels[id]=node('section','teamWorkspace'+id);panels[id].className='team-workspace-panel';panels[id].setAttribute('aria-label',id==='trios'?'Suggested trios':id==='matchups'?'Trio matchups':'Farm after a loss');workspace.append(panels[id]);});
     const manual=node('details','teamWorkspaceManual','<summary>Choose your own trio</summary>');manual.append($('teamTrioPicker'),$('teamTrioSummary'));
-    panels.trios.append($('teamTrioSuggestions'),manual);$('teamTrioSuggestions').open=true;
+    panels.trios.append($('teamTrioSuggestions'));current.after(manual);$('teamTrioSuggestions').open=true;
     const baseline=node('div','teamWorkspaceBaseline');panels.matchups.append(baseline);
     const roster=node('details','teamWorkspaceRoster','<summary>Full roster matchup matrix</summary>');roster.append($('teamOpponentResults'));panels.matchups.append(roster);
     const farmEmpty=node('p','teamWorkspaceFarmEmpty');panels.farm.append(farmEmpty,$('teamTrioFarm'));$('teamTrioFarm').open=true;
@@ -34,7 +34,7 @@
     modes.append(modeTabs,opponent,metaTools);
     [opponent,metaTools].forEach((panel,i)=>{panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',`teamMode-${i===0?'team':'meta'}`);panel.open=true;});
     const teamIntro=node('div',null,'<h3>Prepare your trio</h3><p>Add the opposing team, then explore trios, matchups and farm routes.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
-    teamIntro.querySelector('h3').after($('teamTrioCount'));teamIntro.classList.add('has-trio-count');workspace.querySelector('header').hidden=true;
+    workspace.querySelector('header').hidden=true;
     const metaIntro=node('div',null,'<h3>Test your team against the Meta</h3><p>Choose the field and shields, then prepare matchups to see your coverage.</p>');metaIntro.className='team-workspace-intro';metaTools.querySelector('summary').after(metaIntro);
     $('teamMetaTitle').textContent='Conditions';
     function selectMode(next,focus=false){mode=next;modeTouched=true;sync();if(focus)modeTabs.querySelector(`[data-analysis-mode="${mode}"]`).focus({preventScroll:true});}
@@ -64,7 +64,8 @@
       panels.trios.hidden=view!=='trios';panels.matchups.hidden=view!=='matchups';panels.farm.hidden=view!=='farm';
       nav.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.workspaceView===view)));
       const shownSlots=view==='matchups'&&active>=0?candidates[active].slots:assigned.split(',').map(id=>own.team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
-      current.hidden=view==='trios';current.innerHTML=`<div><small>${view==='matchups'&&preview&&preview!==assigned?'Preview trio':'Your trio'}</small><span>${shownSlots.map(slot=>sprite(own.team[slot],slot)).join('')}</span></div><button type="button" data-workspace-change>Change trio</button>`;
+      current.innerHTML=`<div><small>${view==='matchups'&&preview&&preview!==assigned?'Preview trio':'Your trio'}</small><span>${shownSlots.map(slot=>`<span class="team-workspace-member">${sprite(own.team[slot],slot)}<b>${escape(own.team[slot].name)}</b></span>`).join('')||'<span class="team-workspace-no-trio">Choose three Pokémon from your team</span>'}</span></div><button type="button" data-workspace-change>${shownSlots.length===3?'Change trio':'Choose trio'}</button>`;
+      manual.hidden=view!=='trios';
       if(view==='matchups')panels.matchups.insertBefore(results,baseline);else $('teamTrioSuggestions').querySelector('.team-role-controls').after(results);
       results.querySelectorAll('.team-role-trio').forEach((card,index)=>{card.hidden=view==='farm'||view==='matchups'&&index!==active;});
       results.querySelectorAll('.team-role-trio').forEach((card,index)=>{

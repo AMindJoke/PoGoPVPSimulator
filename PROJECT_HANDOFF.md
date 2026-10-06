@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Trio selezionato visibile all’ingresso, 6 ottobre 2026
+
+- Tolto il conteggio isolato 3/3 dal titolo. Riepilogo Your trio sempre visibile subito sotto l’introduzione, prima delle condizioni avversarie: sprite e nomi, Change trio (Choose trio se incompleto). Il selettore originale dei sei Pokémon si apre nello stesso punto; Matchups/Farm e scelta dei suggerimenti conservano i dati originali. Asset/cache v145.
+- Verificata apertura del picker con tre selezioni evidenziate, mobile 390/320 senza overflow. Test UI/ruoli/PWA/cache passati. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Contrasto della scheda attiva, 6 ottobre 2026
 
 - Tab inattivo con fondo grigio (18% slate su panel) e testo meno marcato; tab attivo conserva fondo del contenuto, testo accent e linea di selezione. Verificato visivamente nel browser; logica e dimensioni invariati. Asset/cache v144. Planner migration 100% → 100%; hybrid fallback 0% → 0%.

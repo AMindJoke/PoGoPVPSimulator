@@ -41,8 +41,14 @@
 #teamWorkspaceNav button { min-width:0;min-height:44px;padding:8px 3px;font-size:13px;background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none;text-transform:none;letter-spacing:normal; }
 #teamWorkspaceNav button[aria-pressed=true] { border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel)); }
 #teamWorkspaceCurrent { display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0; }
-#teamWorkspaceCurrent > div { display:flex;align-items:center;flex-wrap:wrap;gap:5px; }
-#teamWorkspaceCurrent span { display:flex; }
+#teamWorkspaceCurrent { padding:12px 0;border-bottom:1px solid var(--line); }
+#teamWorkspaceCurrent > div { display:grid;gap:6px;min-width:0; }
+#teamWorkspaceCurrent > div > span { display:flex;flex-wrap:wrap;gap:6px 12px; }
+#teamWorkspaceCurrent .team-workspace-member { display:flex;align-items:center;gap:4px;font-size:13px; }
+#teamWorkspaceCurrent .team-workspace-member b { font-weight:600; }
+#teamWorkspaceCurrent .team-workspace-no-trio { font-size:14px;color:var(--muted); }
+#teamWorkspaceManual { margin-bottom:12px; }
+#teamWorkspaceManual:not([open]) { display:none; }
 #teamWorkspaceCurrent img { width:32px;height:32px;object-fit:contain; }
 #teamWorkspaceCurrent small { color:var(--muted);font-size:12px; }
 #teamWorkspaceCurrent button { min-height:44px;padding:6px;font-size:12px; }
