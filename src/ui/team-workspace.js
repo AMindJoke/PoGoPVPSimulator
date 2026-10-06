@@ -33,7 +33,8 @@
     const modeTabs=node('div','teamWorkspaceModeTabs',['team','meta'].map((id,i)=>`<button type="button" id="teamMode-${id}" role="tab" data-analysis-mode="${id}" aria-controls="${i===0?'teamOpponentPanel':'teamWorkspaceMetaTools'}" aria-selected="false"><b>${i===0?'Against a team':'Against the Meta'}</b><span>${i===0?'Choose a trio & plan your matchups':'Check coverage & improve your six'}</span></button>`).join(''));modeTabs.setAttribute('role','tablist');modeTabs.setAttribute('aria-label','Choose your analysis');
     modes.append(modeTabs,opponent,metaTools);
     [opponent,metaTools].forEach((panel,i)=>{panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',`teamMode-${i===0?'team':'meta'}`);panel.open=true;});
-    const teamIntro=node('div',null,'<h3>Prepare for an opponent</h3><p>Add their Pokémon, then find trios, inspect matchups or plan a farm.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
+    const teamIntro=node('div',null,'<h3>Prepare your trio</h3><p>Add the opposing team, then explore trios, matchups and farm routes.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
+    teamIntro.querySelector('h3').after($('teamTrioCount'));teamIntro.classList.add('has-trio-count');workspace.querySelector('header').hidden=true;
     const metaIntro=node('div',null,'<h3>Test your team against the Meta</h3><p>Choose the field and shields, then prepare matchups to see your coverage.</p>');metaIntro.className='team-workspace-intro';metaTools.querySelector('summary').after(metaIntro);
     $('teamMetaTitle').textContent='Conditions';
     function selectMode(next,focus=false){mode=next;modeTouched=true;sync();if(focus)modeTabs.querySelector(`[data-analysis-mode="${mode}"]`).focus({preventScroll:true});}

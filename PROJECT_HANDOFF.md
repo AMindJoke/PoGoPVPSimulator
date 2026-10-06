@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Finitura schede Team Builder, 6 ottobre 2026
+
+- Schede integrate in un unico contenitore: nessun gap, bordo esterno neutro e linea di selezione sotto il tab attivo; focus tastiera visibile. Rimossi sottotitoli dei tab, titolo Conditions e riquadri annidati del setup Meta. Titolo Prepare your trio unico, conteggio selezione accanto al titolo. Calcoli, controlli e dati conservati; asset/cache v143.
+- Verificati desktop 1280 e mobile 390/320, cambio da tastiera, pannello unico e assenza overflow/errori JS; test UI, PWA e cache passati. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Team Builder: due schede di analisi collegate, 6 ottobre 2026
 
 - Your team parte aperto anche con roster completo. Against a team e Against the Meta sono due tab affiancati, collegati visivamente al pannello selezionato; un solo pannello visibile. Il primo contiene Which three?/Matchups/Farm; il secondo condizioni, copertura e tool Meta originali. Nessun controllo o risultato duplicato, nessun cambio al motore. Se esiste un avversario si apre la modalità team, altrimenti Meta; dopo un cambio manuale i render mantengono la scelta.
