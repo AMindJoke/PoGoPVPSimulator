@@ -1,0 +1,6164 @@
+{
+  "entries": [
+    {
+      "id": "corsola_galarian",
+      "overallScore": 885.0
+    },
+    {
+      "id": "mandibuzz",
+      "overallScore": 725.0
+    },
+    {
+      "id": "mimikyu",
+      "overallScore": 900.0
+    },
+    {
+      "id": "cramorant",
+      "overallScore": 875.0
+    },
+    {
+      "id": "sableye",
+      "overallScore": 795.0
+    },
+    {
+      "id": "vigoroth",
+      "overallScore": 845.0
+    },
+    {
+      "id": "sableye_shadow",
+      "overallScore": 800.0
+    },
+    {
+      "id": "melmetal",
+      "overallScore": 860.0
+    },
+    {
+      "id": "corviknight",
+      "overallScore": 880.0
+    },
+    {
+      "id": "altaria",
+      "overallScore": 865.0
+    },
+    {
+      "id": "stunfisk",
+      "overallScore": 760.0
+    },
+    {
+      "id": "tinkaton",
+      "overallScore": 895.0
+    },
+    {
+      "id": "mightyena",
+      "overallScore": 806.0
+    },
+    {
+      "id": "spiritomb",
+      "overallScore": 806.0
+    },
+    {
+      "id": "umbreon",
+      "overallScore": 796.0
+    },
+    {
+      "id": "mightyena_shadow",
+      "overallScore": 795.0
+    },
+    {
+      "id": "rillaboom",
+      "overallScore": 775.0
+    },
+    {
+      "id": "carbink",
+      "overallScore": 785.0
+    },
+    {
+      "id": "steelix",
+      "overallScore": 791.0
+    },
+    {
+      "id": "morgrem",
+      "overallScore": 789.0
+    },
+    {
+      "id": "malamar",
+      "overallScore": 815.0
+    },
+    {
+      "id": "jellicent",
+      "overallScore": 745.0
+    },
+    {
+      "id": "dunsparce",
+      "overallScore": 700.0
+    },
+    {
+      "id": "kingdra_shadow",
+      "overallScore": 720.0
+    },
+    {
+      "id": "thievul",
+      "overallScore": 784.0
+    },
+    {
+      "id": "dondozo",
+      "overallScore": 755.0
+    },
+    {
+      "id": "guzzlord",
+      "overallScore": 781.0
+    },
+    {
+      "id": "quagsire_shadow",
+      "overallScore": 870.0
+    },
+    {
+      "id": "ninetales_shadow",
+      "overallScore": 890.0
+    },
+    {
+      "id": "empoleon",
+      "overallScore": 840.0
+    },
+    {
+      "id": "electrode_hisuian",
+      "overallScore": 805.0
+    },
+    {
+      "id": "steelix_shadow",
+      "overallScore": 770.0
+    },
+    {
+      "id": "snorlax_shadow",
+      "overallScore": 850.0
+    },
+    {
+      "id": "charjabug",
+      "overallScore": 705.0
+    },
+    {
+      "id": "malamar_shadow",
+      "overallScore": 810.0
+    },
+    {
+      "id": "snorlax",
+      "overallScore": 855.0
+    },
+    {
+      "id": "furret",
+      "overallScore": 763.0
+    },
+    {
+      "id": "araquanid",
+      "overallScore": 740.0
+    },
+    {
+      "id": "feraligatr",
+      "overallScore": 820.0
+    },
+    {
+      "id": "seismitoad",
+      "overallScore": 765.0
+    },
+    {
+      "id": "jumpluff",
+      "overallScore": 790.0
+    },
+    {
+      "id": "hakamo_o",
+      "overallScore": 759.0
+    },
+    {
+      "id": "turtonator",
+      "overallScore": 759.0
+    },
+    {
+      "id": "goodra",
+      "overallScore": 755.0
+    },
+    {
+      "id": "marowak_alolan",
+      "overallScore": 830.0
+    },
+    {
+      "id": "fearow",
+      "overallScore": 730.0
+    },
+    {
+      "id": "bombirdier",
+      "overallScore": 753.0
+    },
+    {
+      "id": "ampharos",
+      "overallScore": 750.0
+    },
+    {
+      "id": "empoleon_shadow",
+      "overallScore": 835.0
+    },
+    {
+      "id": "pachirisu",
+      "overallScore": 747.0
+    },
+    {
+      "id": "moltres_galarian",
+      "overallScore": 743.0
+    },
+    {
+      "id": "kingdra",
+      "overallScore": 739.0
+    },
+    {
+      "id": "regidrago",
+      "overallScore": 739.0
+    },
+    {
+      "id": "marowak_alolan_shadow",
+      "overallScore": 825.0
+    },
+    {
+      "id": "forretress",
+      "overallScore": 738.0
+    },
+    {
+      "id": "muk_alolan_shadow",
+      "overallScore": 738.0
+    },
+    {
+      "id": "muk_alolan",
+      "overallScore": 737.0
+    },
+    {
+      "id": "spidops",
+      "overallScore": 736.0
+    },
+    {
+      "id": "dusclops",
+      "overallScore": 734.0
+    },
+    {
+      "id": "urshifu_single_strike",
+      "overallScore": 733.0
+    },
+    {
+      "id": "vigoroth_shadow",
+      "overallScore": 732.0
+    },
+    {
+      "id": "marowak",
+      "overallScore": 732.0
+    },
+    {
+      "id": "dusclops_shadow",
+      "overallScore": 731.0
+    },
+    {
+      "id": "ampharos_shadow",
+      "overallScore": 727.0
+    },
+    {
+      "id": "pidgeot_shadow",
+      "overallScore": 727.0
+    },
+    {
+      "id": "claydol",
+      "overallScore": 726.0
+    },
+    {
+      "id": "oinkologne_female",
+      "overallScore": 724.0
+    },
+    {
+      "id": "zweilous",
+      "overallScore": 724.0
+    },
+    {
+      "id": "palossand",
+      "overallScore": 722.0
+    },
+    {
+      "id": "dragonair_shadow",
+      "overallScore": 720.0
+    },
+    {
+      "id": "nidoqueen",
+      "overallScore": 719.0
+    },
+    {
+      "id": "pidgeot",
+      "overallScore": 719.0
+    },
+    {
+      "id": "giratina_altered_shadow",
+      "overallScore": 717.0
+    },
+    {
+      "id": "mantine",
+      "overallScore": 715.0
+    },
+    {
+      "id": "bellibolt",
+      "overallScore": 715.0
+    },
+    {
+      "id": "kangaskhan",
+      "overallScore": 714.0
+    },
+    {
+      "id": "shelgon",
+      "overallScore": 712.0
+    },
+    {
+      "id": "milotic",
+      "overallScore": 711.0
+    },
+    {
+      "id": "milotic_shadow",
+      "overallScore": 710.0
+    },
+    {
+      "id": "corviknight_shadow",
+      "overallScore": 710.0
+    },
+    {
+      "id": "cradily",
+      "overallScore": 709.0
+    },
+    {
+      "id": "cradily_b",
+      "overallScore": 709.0
+    },
+    {
+      "id": "charjabug_shadow",
+      "overallScore": 709.0
+    },
+    {
+      "id": "shelgon_shadow",
+      "overallScore": 709.0
+    },
+    {
+      "id": "kommo_o",
+      "overallScore": 707.0
+    },
+    {
+      "id": "ludicolo",
+      "overallScore": 706.0
+    },
+    {
+      "id": "lumineon",
+      "overallScore": 706.0
+    },
+    {
+      "id": "doublade",
+      "overallScore": 706.0
+    },
+    {
+      "id": "medicham",
+      "overallScore": 780.0
+    },
+    {
+      "id": "marowak_shadow",
+      "overallScore": 701.0
+    },
+    {
+      "id": "drifblim_shadow",
+      "overallScore": 701.0
+    },
+    {
+      "id": "forretress_shadow",
+      "overallScore": 700.0
+    },
+    {
+      "id": "claydol_shadow",
+      "overallScore": 700.0
+    },
+    {
+      "id": "electrode",
+      "overallScore": 699.0
+    },
+    {
+      "id": "nidoqueen_shadow",
+      "overallScore": 699.0
+    },
+    {
+      "id": "quagsire",
+      "overallScore": 699.0
+    },
+    {
+      "id": "skeledirge",
+      "overallScore": 699.0
+    },
+    {
+      "id": "kecleon",
+      "overallScore": 698.0
+    },
+    {
+      "id": "gliscor",
+      "overallScore": 698.0
+    },
+    {
+      "id": "wormadam_trash",
+      "overallScore": 698.0
+    },
+    {
+      "id": "wartortle",
+      "overallScore": 697.0
+    },
+    {
+      "id": "diggersby",
+      "overallScore": 697.0
+    },
+    {
+      "id": "ninetales",
+      "overallScore": 696.0
+    },
+    {
+      "id": "gurdurr",
+      "overallScore": 696.0
+    },
+    {
+      "id": "wigglytuff",
+      "overallScore": 696.0
+    },
+    {
+      "id": "araquanid_shadow",
+      "overallScore": 696.0
+    },
+    {
+      "id": "sliggoo",
+      "overallScore": 695.0
+    },
+    {
+      "id": "altaria_shadow",
+      "overallScore": 695.0
+    },
+    {
+      "id": "drifblim",
+      "overallScore": 695.0
+    },
+    {
+      "id": "spinda",
+      "overallScore": 694.0
+    },
+    {
+      "id": "gliscor_shadow",
+      "overallScore": 691.0
+    },
+    {
+      "id": "gastrodon",
+      "overallScore": 691.0
+    },
+    {
+      "id": "servine",
+      "overallScore": 690.0
+    },
+    {
+      "id": "hydreigon",
+      "overallScore": 690.0
+    },
+    {
+      "id": "oranguru",
+      "overallScore": 690.0
+    },
+    {
+      "id": "morpeko_full_belly",
+      "overallScore": 687.0
+    },
+    {
+      "id": "zweilous_shadow",
+      "overallScore": 687.0
+    },
+    {
+      "id": "articuno",
+      "overallScore": 687.0
+    },
+    {
+      "id": "togedemaru",
+      "overallScore": 686.0
+    },
+    {
+      "id": "houndoom_shadow",
+      "overallScore": 686.0
+    },
+    {
+      "id": "bastiodon",
+      "overallScore": 710.0
+    },
+    {
+      "id": "lokix",
+      "overallScore": 684.0
+    },
+    {
+      "id": "gligar_shadow",
+      "overallScore": 684.0
+    },
+    {
+      "id": "sealeo",
+      "overallScore": 684.0
+    },
+    {
+      "id": "sealeo_shadow",
+      "overallScore": 684.0
+    },
+    {
+      "id": "castform",
+      "overallScore": 682.0
+    },
+    {
+      "id": "hydreigon_shadow",
+      "overallScore": 682.0
+    },
+    {
+      "id": "gligar",
+      "overallScore": 682.0
+    },
+    {
+      "id": "annihilape",
+      "overallScore": 682.0
+    },
+    {
+      "id": "swanna_shadow",
+      "overallScore": 682.0
+    },
+    {
+      "id": "lickilicky",
+      "overallScore": 681.0
+    },
+    {
+      "id": "throh",
+      "overallScore": 681.0
+    },
+    {
+      "id": "clodsire",
+      "overallScore": 681.0
+    },
+    {
+      "id": "weezing_galarian_shadow",
+      "overallScore": 681.0
+    },
+    {
+      "id": "cradily_shadow",
+      "overallScore": 680.0
+    },
+    {
+      "id": "blastoise",
+      "overallScore": 680.0
+    },
+    {
+      "id": "gourgeist_large",
+      "overallScore": 678.0
+    },
+    {
+      "id": "gourgeist_super",
+      "overallScore": 678.0
+    },
+    {
+      "id": "rapidash",
+      "overallScore": 677.0
+    },
+    {
+      "id": "rapidash_shadow",
+      "overallScore": 676.0
+    },
+    {
+      "id": "electrode_shadow",
+      "overallScore": 675.0
+    },
+    {
+      "id": "gourgeist_average",
+      "overallScore": 675.0
+    },
+    {
+      "id": "slowbro",
+      "overallScore": 675.0
+    },
+    {
+      "id": "throh_shadow",
+      "overallScore": 674.0
+    },
+    {
+      "id": "weezing_galarian",
+      "overallScore": 674.0
+    },
+    {
+      "id": "runerigus",
+      "overallScore": 674.0
+    },
+    {
+      "id": "linoone",
+      "overallScore": 673.0
+    },
+    {
+      "id": "typhlosion",
+      "overallScore": 673.0
+    },
+    {
+      "id": "diggersby_shadow",
+      "overallScore": 673.0
+    },
+    {
+      "id": "hippowdon_shadow",
+      "overallScore": 672.0
+    },
+    {
+      "id": "houndstone",
+      "overallScore": 672.0
+    },
+    {
+      "id": "dewott",
+      "overallScore": 672.0
+    },
+    {
+      "id": "timburr",
+      "overallScore": 671.0
+    },
+    {
+      "id": "gurdurr_shadow",
+      "overallScore": 671.0
+    },
+    {
+      "id": "scrafty",
+      "overallScore": 671.0
+    },
+    {
+      "id": "typhlosion_shadow",
+      "overallScore": 671.0
+    },
+    {
+      "id": "feraligatr_shadow",
+      "overallScore": 670.0
+    },
+    {
+      "id": "flygon",
+      "overallScore": 670.0
+    },
+    {
+      "id": "flygon_shadow",
+      "overallScore": 669.0
+    },
+    {
+      "id": "seaking",
+      "overallScore": 669.0
+    },
+    {
+      "id": "togekiss",
+      "overallScore": 669.0
+    },
+    {
+      "id": "azumarill",
+      "overallScore": 669.0
+    },
+    {
+      "id": "hippowdon",
+      "overallScore": 668.0
+    },
+    {
+      "id": "samurott",
+      "overallScore": 668.0
+    },
+    {
+      "id": "latias",
+      "overallScore": 668.0
+    },
+    {
+      "id": "talonflame_shadow",
+      "overallScore": 668.0
+    },
+    {
+      "id": "klefki",
+      "overallScore": 667.0
+    },
+    {
+      "id": "magnezone",
+      "overallScore": 667.0
+    },
+    {
+      "id": "greninja",
+      "overallScore": 667.0
+    },
+    {
+      "id": "suicune",
+      "overallScore": 666.0
+    },
+    {
+      "id": "samurott_hisuian",
+      "overallScore": 666.0
+    },
+    {
+      "id": "houndoom",
+      "overallScore": 666.0
+    },
+    {
+      "id": "dewott_shadow",
+      "overallScore": 666.0
+    },
+    {
+      "id": "cofagrigus",
+      "overallScore": 665.0
+    },
+    {
+      "id": "cofagrigus_shadow",
+      "overallScore": 665.0
+    },
+    {
+      "id": "nidorina",
+      "overallScore": 665.0
+    },
+    {
+      "id": "maushold",
+      "overallScore": 662.0
+    },
+    {
+      "id": "stunfisk_galarian",
+      "overallScore": 662.0
+    },
+    {
+      "id": "bronzong",
+      "overallScore": 662.0
+    },
+    {
+      "id": "audino",
+      "overallScore": 661.0
+    },
+    {
+      "id": "lopunny",
+      "overallScore": 661.0
+    },
+    {
+      "id": "toedscruel",
+      "overallScore": 660.0
+    },
+    {
+      "id": "swanna",
+      "overallScore": 660.0
+    },
+    {
+      "id": "florges",
+      "overallScore": 750.0
+    },
+    {
+      "id": "gogoat",
+      "overallScore": 659.0
+    },
+    {
+      "id": "politoed",
+      "overallScore": 659.0
+    },
+    {
+      "id": "oinkologne",
+      "overallScore": 659.0
+    },
+    {
+      "id": "samurott_shadow",
+      "overallScore": 658.0
+    },
+    {
+      "id": "litleo",
+      "overallScore": 658.0
+    },
+    {
+      "id": "golisopod",
+      "overallScore": 657.0
+    },
+    {
+      "id": "persian_shadow",
+      "overallScore": 656.0
+    },
+    {
+      "id": "murkrow_shadow",
+      "overallScore": 656.0
+    },
+    {
+      "id": "poliwrath",
+      "overallScore": 655.0
+    },
+    {
+      "id": "dusknoir",
+      "overallScore": 654.0
+    },
+    {
+      "id": "metang",
+      "overallScore": 654.0
+    },
+    {
+      "id": "magnezone_shadow",
+      "overallScore": 653.0
+    },
+    {
+      "id": "slowbro_shadow",
+      "overallScore": 653.0
+    },
+    {
+      "id": "garchomp",
+      "overallScore": 652.0
+    },
+    {
+      "id": "incineroar",
+      "overallScore": 652.0
+    },
+    {
+      "id": "toucannon",
+      "overallScore": 652.0
+    },
+    {
+      "id": "dusknoir_shadow",
+      "overallScore": 650.0
+    },
+    {
+      "id": "hypno",
+      "overallScore": 649.0
+    },
+    {
+      "id": "dragonite",
+      "overallScore": 649.0
+    },
+    {
+      "id": "raikou",
+      "overallScore": 649.0
+    },
+    {
+      "id": "shiinotic",
+      "overallScore": 647.0
+    },
+    {
+      "id": "ursaluna_shadow",
+      "overallScore": 647.0
+    },
+    {
+      "id": "bastiodon_shadow",
+      "overallScore": 647.0
+    },
+    {
+      "id": "lurantis",
+      "overallScore": 646.0
+    },
+    {
+      "id": "lickitung",
+      "overallScore": 646.0
+    },
+    {
+      "id": "garchomp_shadow",
+      "overallScore": 646.0
+    },
+    {
+      "id": "furfrou",
+      "overallScore": 646.0
+    },
+    {
+      "id": "amoonguss_shadow",
+      "overallScore": 646.0
+    },
+    {
+      "id": "walrein_shadow",
+      "overallScore": 646.0
+    },
+    {
+      "id": "persian",
+      "overallScore": 645.0
+    },
+    {
+      "id": "drampa",
+      "overallScore": 645.0
+    },
+    {
+      "id": "palkia_shadow",
+      "overallScore": 645.0
+    },
+    {
+      "id": "lapras",
+      "overallScore": 645.0
+    },
+    {
+      "id": "wormadam_sandy",
+      "overallScore": 644.0
+    },
+    {
+      "id": "walrein",
+      "overallScore": 644.0
+    },
+    {
+      "id": "ursaluna",
+      "overallScore": 643.0
+    },
+    {
+      "id": "gyarados",
+      "overallScore": 643.0
+    },
+    {
+      "id": "raikou_shadow",
+      "overallScore": 643.0
+    },
+    {
+      "id": "galvantula",
+      "overallScore": 642.0
+    },
+    {
+      "id": "pumpkaboo_super",
+      "overallScore": 642.0
+    },
+    {
+      "id": "drapion",
+      "overallScore": 642.0
+    },
+    {
+      "id": "drapion_shadow",
+      "overallScore": 642.0
+    },
+    {
+      "id": "latias_shadow",
+      "overallScore": 641.0
+    },
+    {
+      "id": "coalossal",
+      "overallScore": 641.0
+    },
+    {
+      "id": "politoed_shadow",
+      "overallScore": 640.0
+    },
+    {
+      "id": "wartortle_shadow",
+      "overallScore": 640.0
+    },
+    {
+      "id": "annihilape_shadow",
+      "overallScore": 640.0
+    },
+    {
+      "id": "magcargo",
+      "overallScore": 640.0
+    },
+    {
+      "id": "sandygast",
+      "overallScore": 639.0
+    },
+    {
+      "id": "darkrai_shadow",
+      "overallScore": 639.0
+    },
+    {
+      "id": "blastoise_shadow",
+      "overallScore": 639.0
+    },
+    {
+      "id": "shiinotic_shadow",
+      "overallScore": 638.0
+    },
+    {
+      "id": "primarina",
+      "overallScore": 638.0
+    },
+    {
+      "id": "crocalor",
+      "overallScore": 638.0
+    },
+    {
+      "id": "ninetales_alolan_shadow",
+      "overallScore": 638.0
+    },
+    {
+      "id": "murkrow",
+      "overallScore": 637.0
+    },
+    {
+      "id": "crobat_shadow",
+      "overallScore": 637.0
+    },
+    {
+      "id": "ninetales_alolan",
+      "overallScore": 637.0
+    },
+    {
+      "id": "wailmer",
+      "overallScore": 636.0
+    },
+    {
+      "id": "castform_sunny",
+      "overallScore": 636.0
+    },
+    {
+      "id": "metang_shadow",
+      "overallScore": 636.0
+    },
+    {
+      "id": "dragonair",
+      "overallScore": 635.0
+    },
+    {
+      "id": "castform_rainy",
+      "overallScore": 635.0
+    },
+    {
+      "id": "greninja_shadow",
+      "overallScore": 635.0
+    },
+    {
+      "id": "toucannon_shadow",
+      "overallScore": 635.0
+    },
+    {
+      "id": "dragonite_shadow",
+      "overallScore": 634.0
+    },
+    {
+      "id": "hippopotas",
+      "overallScore": 633.0
+    },
+    {
+      "id": "suicune_shadow",
+      "overallScore": 633.0
+    },
+    {
+      "id": "jumpluff_shadow",
+      "overallScore": 633.0
+    },
+    {
+      "id": "amoonguss",
+      "overallScore": 633.0
+    },
+    {
+      "id": "hypno_shadow",
+      "overallScore": 633.0
+    },
+    {
+      "id": "trumbeak",
+      "overallScore": 632.0
+    },
+    {
+      "id": "gyarados_shadow",
+      "overallScore": 632.0
+    },
+    {
+      "id": "camerupt",
+      "overallScore": 632.0
+    },
+    {
+      "id": "hariyama",
+      "overallScore": 632.0
+    },
+    {
+      "id": "trumbeak_shadow",
+      "overallScore": 632.0
+    },
+    {
+      "id": "fletchinder_shadow",
+      "overallScore": 630.0
+    },
+    {
+      "id": "hawlucha",
+      "overallScore": 630.0
+    },
+    {
+      "id": "armarouge",
+      "overallScore": 630.0
+    },
+    {
+      "id": "deoxys_defense",
+      "overallScore": 735.0
+    },
+    {
+      "id": "grimmsnarl",
+      "overallScore": 629.0
+    },
+    {
+      "id": "galvantula_shadow",
+      "overallScore": 629.0
+    },
+    {
+      "id": "sandaconda",
+      "overallScore": 629.0
+    },
+    {
+      "id": "emolga",
+      "overallScore": 629.0
+    },
+    {
+      "id": "virizion",
+      "overallScore": 629.0
+    },
+    {
+      "id": "dewgong",
+      "overallScore": 629.0
+    },
+    {
+      "id": "solrock",
+      "overallScore": 629.0
+    },
+    {
+      "id": "timburr_shadow",
+      "overallScore": 628.0
+    },
+    {
+      "id": "tropius",
+      "overallScore": 628.0
+    },
+    {
+      "id": "camerupt_shadow",
+      "overallScore": 628.0
+    },
+    {
+      "id": "cetitan",
+      "overallScore": 628.0
+    },
+    {
+      "id": "cacturne_shadow",
+      "overallScore": 627.0
+    },
+    {
+      "id": "gourgeist_small",
+      "overallScore": 627.0
+    },
+    {
+      "id": "machamp",
+      "overallScore": 625.0
+    },
+    {
+      "id": "pelipper",
+      "overallScore": 625.0
+    },
+    {
+      "id": "alomomola",
+      "overallScore": 625.0
+    },
+    {
+      "id": "sandslash_alolan",
+      "overallScore": 625.0
+    },
+    {
+      "id": "bellossom",
+      "overallScore": 624.0
+    },
+    {
+      "id": "hariyama_shadow",
+      "overallScore": 624.0
+    },
+    {
+      "id": "crobat",
+      "overallScore": 624.0
+    },
+    {
+      "id": "persian_alolan",
+      "overallScore": 623.0
+    },
+    {
+      "id": "bellossom_shadow",
+      "overallScore": 623.0
+    },
+    {
+      "id": "kingambit",
+      "overallScore": 622.0
+    },
+    {
+      "id": "relicanth",
+      "overallScore": 622.0
+    },
+    {
+      "id": "sandslash_alolan_shadow",
+      "overallScore": 622.0
+    },
+    {
+      "id": "darkrai",
+      "overallScore": 621.0
+    },
+    {
+      "id": "miltank",
+      "overallScore": 621.0
+    },
+    {
+      "id": "qwilfish_hisuian",
+      "overallScore": 621.0
+    },
+    {
+      "id": "pumpkaboo_large",
+      "overallScore": 621.0
+    },
+    {
+      "id": "salazzle",
+      "overallScore": 621.0
+    },
+    {
+      "id": "misdreavus_shadow",
+      "overallScore": 621.0
+    },
+    {
+      "id": "crustle",
+      "overallScore": 621.0
+    },
+    {
+      "id": "jirachi",
+      "overallScore": 621.0
+    },
+    {
+      "id": "heliolisk",
+      "overallScore": 620.0
+    },
+    {
+      "id": "aipom_shadow",
+      "overallScore": 620.0
+    },
+    {
+      "id": "dedenne",
+      "overallScore": 620.0
+    },
+    {
+      "id": "golett_shadow",
+      "overallScore": 620.0
+    },
+    {
+      "id": "servine_shadow",
+      "overallScore": 619.0
+    },
+    {
+      "id": "skuntank_shadow",
+      "overallScore": 619.0
+    },
+    {
+      "id": "poipole",
+      "overallScore": 619.0
+    },
+    {
+      "id": "farfetchd",
+      "overallScore": 619.0
+    },
+    {
+      "id": "toxapex",
+      "overallScore": 619.0
+    },
+    {
+      "id": "munchlax",
+      "overallScore": 618.0
+    },
+    {
+      "id": "togetic",
+      "overallScore": 618.0
+    },
+    {
+      "id": "machoke_shadow",
+      "overallScore": 618.0
+    },
+    {
+      "id": "luxray",
+      "overallScore": 617.0
+    },
+    {
+      "id": "druddigon",
+      "overallScore": 617.0
+    },
+    {
+      "id": "poliwrath_shadow",
+      "overallScore": 617.0
+    },
+    {
+      "id": "cresselia",
+      "overallScore": 616.0
+    },
+    {
+      "id": "swampert_shadow",
+      "overallScore": 615.0
+    },
+    {
+      "id": "quaquaval",
+      "overallScore": 615.0
+    },
+    {
+      "id": "swalot",
+      "overallScore": 615.0
+    },
+    {
+      "id": "greedent",
+      "overallScore": 614.0
+    },
+    {
+      "id": "fletchinder",
+      "overallScore": 614.0
+    },
+    {
+      "id": "serperior",
+      "overallScore": 613.0
+    },
+    {
+      "id": "golem_alolan",
+      "overallScore": 613.0
+    },
+    {
+      "id": "dewgong_shadow",
+      "overallScore": 613.0
+    },
+    {
+      "id": "centiskorch",
+      "overallScore": 613.0
+    },
+    {
+      "id": "tentacruel",
+      "overallScore": 613.0
+    },
+    {
+      "id": "cacturne",
+      "overallScore": 612.0
+    },
+    {
+      "id": "lapras_shadow",
+      "overallScore": 612.0
+    },
+    {
+      "id": "victreebel",
+      "overallScore": 611.0
+    },
+    {
+      "id": "pyroar",
+      "overallScore": 611.0
+    },
+    {
+      "id": "abomasnow",
+      "overallScore": 611.0
+    },
+    {
+      "id": "articuno_shadow",
+      "overallScore": 611.0
+    },
+    {
+      "id": "abomasnow_shadow",
+      "overallScore": 611.0
+    },
+    {
+      "id": "trevenant",
+      "overallScore": 610.0
+    },
+    {
+      "id": "naclstack",
+      "overallScore": 610.0
+    },
+    {
+      "id": "golisopodsh",
+      "overallScore": 610.0
+    },
+    {
+      "id": "stoutland",
+      "overallScore": 610.0
+    },
+    {
+      "id": "conkeldurr",
+      "overallScore": 610.0
+    },
+    {
+      "id": "dragalge",
+      "overallScore": 609.0
+    },
+    {
+      "id": "victreebel_shadow",
+      "overallScore": 608.0
+    },
+    {
+      "id": "golem_alolan_shadow",
+      "overallScore": 608.0
+    },
+    {
+      "id": "golurk_shadow",
+      "overallScore": 608.0
+    },
+    {
+      "id": "whimsicott",
+      "overallScore": 607.0
+    },
+    {
+      "id": "uxie",
+      "overallScore": 607.0
+    },
+    {
+      "id": "dudunsparce",
+      "overallScore": 606.0
+    },
+    {
+      "id": "teddiursa_shadow",
+      "overallScore": 606.0
+    },
+    {
+      "id": "torterra",
+      "overallScore": 605.0
+    },
+    {
+      "id": "croconaw",
+      "overallScore": 605.0
+    },
+    {
+      "id": "noctowl_shadow",
+      "overallScore": 605.0
+    },
+    {
+      "id": "zeraora",
+      "overallScore": 605.0
+    },
+    {
+      "id": "magneton",
+      "overallScore": 605.0
+    },
+    {
+      "id": "tapu_fini",
+      "overallScore": 605.0
+    },
+    {
+      "id": "talonflame",
+      "overallScore": 605.0
+    },
+    {
+      "id": "trevenant_shadow",
+      "overallScore": 604.0
+    },
+    {
+      "id": "mawile",
+      "overallScore": 604.0
+    },
+    {
+      "id": "regieleki",
+      "overallScore": 603.0
+    },
+    {
+      "id": "skuntank",
+      "overallScore": 603.0
+    },
+    {
+      "id": "muk",
+      "overallScore": 603.0
+    },
+    {
+      "id": "lunatone",
+      "overallScore": 603.0
+    },
+    {
+      "id": "crustle_shadow",
+      "overallScore": 603.0
+    },
+    {
+      "id": "registeel",
+      "overallScore": 603.0
+    },
+    {
+      "id": "arctibax",
+      "overallScore": 602.0
+    },
+    {
+      "id": "sandslash",
+      "overallScore": 601.0
+    },
+    {
+      "id": "slowbro_galarian",
+      "overallScore": 601.0
+    },
+    {
+      "id": "prinplup",
+      "overallScore": 600.0
+    },
+    {
+      "id": "hippopotas_shadow",
+      "overallScore": 600.0
+    },
+    {
+      "id": "dipplin",
+      "overallScore": 600.0
+    },
+    {
+      "id": "sandshrew_alolan",
+      "overallScore": 600.0
+    },
+    {
+      "id": "sandslash_shadow",
+      "overallScore": 599.0
+    },
+    {
+      "id": "obstagoon_shadow",
+      "overallScore": 599.0
+    },
+    {
+      "id": "cresselia_shadow",
+      "overallScore": 599.0
+    },
+    {
+      "id": "lanturn",
+      "overallScore": 598.0
+    },
+    {
+      "id": "marshtomp_shadow",
+      "overallScore": 598.0
+    },
+    {
+      "id": "donphan",
+      "overallScore": 598.0
+    },
+    {
+      "id": "noctowl",
+      "overallScore": 598.0
+    },
+    {
+      "id": "muk_shadow",
+      "overallScore": 598.0
+    },
+    {
+      "id": "swampert",
+      "overallScore": 598.0
+    },
+    {
+      "id": "aipom",
+      "overallScore": 597.0
+    },
+    {
+      "id": "diancie",
+      "overallScore": 597.0
+    },
+    {
+      "id": "conkeldurr_shadow",
+      "overallScore": 597.0
+    },
+    {
+      "id": "vespiquen",
+      "overallScore": 597.0
+    },
+    {
+      "id": "machamp_shadow",
+      "overallScore": 597.0
+    },
+    {
+      "id": "heliolisk_shadow",
+      "overallScore": 595.0
+    },
+    {
+      "id": "golett",
+      "overallScore": 595.0
+    },
+    {
+      "id": "latios",
+      "overallScore": 595.0
+    },
+    {
+      "id": "slurpuff",
+      "overallScore": 595.0
+    },
+    {
+      "id": "escavalier",
+      "overallScore": 595.0
+    },
+    {
+      "id": "decidueye",
+      "overallScore": 594.0
+    },
+    {
+      "id": "castform_snowy",
+      "overallScore": 594.0
+    },
+    {
+      "id": "overqwil",
+      "overallScore": 593.0
+    },
+    {
+      "id": "donphan_shadow",
+      "overallScore": 593.0
+    },
+    {
+      "id": "dubwool",
+      "overallScore": 592.0
+    },
+    {
+      "id": "bewear_shadow",
+      "overallScore": 592.0
+    },
+    {
+      "id": "magnemite_shadow",
+      "overallScore": 592.0
+    },
+    {
+      "id": "whiscash",
+      "overallScore": 592.0
+    },
+    {
+      "id": "hydrapple",
+      "overallScore": 591.0
+    },
+    {
+      "id": "rhyperior_shadow",
+      "overallScore": 591.0
+    },
+    {
+      "id": "teddiursa",
+      "overallScore": 591.0
+    },
+    {
+      "id": "zygarde",
+      "overallScore": 591.0
+    },
+    {
+      "id": "tentacruel_shadow",
+      "overallScore": 591.0
+    },
+    {
+      "id": "darumaka_shadow",
+      "overallScore": 590.0
+    },
+    {
+      "id": "meganium",
+      "overallScore": 589.0
+    },
+    {
+      "id": "genesect",
+      "overallScore": 589.0
+    },
+    {
+      "id": "hitmontop",
+      "overallScore": 589.0
+    },
+    {
+      "id": "obstagoon",
+      "overallScore": 589.0
+    },
+    {
+      "id": "toxtricity",
+      "overallScore": 589.0
+    },
+    {
+      "id": "meowscarada",
+      "overallScore": 588.0
+    },
+    {
+      "id": "mawile_shadow",
+      "overallScore": 588.0
+    },
+    {
+      "id": "ursaring_shadow",
+      "overallScore": 587.0
+    },
+    {
+      "id": "grimer_alolan_shadow",
+      "overallScore": 587.0
+    },
+    {
+      "id": "wailmer_shadow",
+      "overallScore": 587.0
+    },
+    {
+      "id": "aurorus_shadow",
+      "overallScore": 587.0
+    },
+    {
+      "id": "hitmontop_shadow",
+      "overallScore": 586.0
+    },
+    {
+      "id": "prinplup_shadow",
+      "overallScore": 585.0
+    },
+    {
+      "id": "pumpkaboo_average",
+      "overallScore": 585.0
+    },
+    {
+      "id": "rotom",
+      "overallScore": 585.0
+    },
+    {
+      "id": "nidorina_shadow",
+      "overallScore": 585.0
+    },
+    {
+      "id": "qwilfish",
+      "overallScore": 585.0
+    },
+    {
+      "id": "tyranitar",
+      "overallScore": 585.0
+    },
+    {
+      "id": "pawmot",
+      "overallScore": 584.0
+    },
+    {
+      "id": "wormadam_plant",
+      "overallScore": 584.0
+    },
+    {
+      "id": "vaporeon",
+      "overallScore": 584.0
+    },
+    {
+      "id": "latios_shadow",
+      "overallScore": 584.0
+    },
+    {
+      "id": "qwilfish_shadow",
+      "overallScore": 584.0
+    },
+    {
+      "id": "sandshrew_alolan_shadow",
+      "overallScore": 584.0
+    },
+    {
+      "id": "torterra_shadow",
+      "overallScore": 583.0
+    },
+    {
+      "id": "zygarde_complete",
+      "overallScore": 583.0
+    },
+    {
+      "id": "aerodactyl_shadow",
+      "overallScore": 583.0
+    },
+    {
+      "id": "cetoddle",
+      "overallScore": 583.0
+    },
+    {
+      "id": "volcanion",
+      "overallScore": 582.0
+    },
+    {
+      "id": "starmie",
+      "overallScore": 582.0
+    },
+    {
+      "id": "skarmory_shadow",
+      "overallScore": 582.0
+    },
+    {
+      "id": "escavalier_shadow",
+      "overallScore": 582.0
+    },
+    {
+      "id": "sawsbuck",
+      "overallScore": 581.0
+    },
+    {
+      "id": "starmie_shadow",
+      "overallScore": 581.0
+    },
+    {
+      "id": "grimer_alolan",
+      "overallScore": 580.0
+    },
+    {
+      "id": "frillish",
+      "overallScore": 580.0
+    },
+    {
+      "id": "magnemite",
+      "overallScore": 580.0
+    },
+    {
+      "id": "sceptile",
+      "overallScore": 579.0
+    },
+    {
+      "id": "dialga_shadow",
+      "overallScore": 579.0
+    },
+    {
+      "id": "ho_oh_shadow",
+      "overallScore": 579.0
+    },
+    {
+      "id": "bewear",
+      "overallScore": 578.0
+    },
+    {
+      "id": "drilbur",
+      "overallScore": 578.0
+    },
+    {
+      "id": "vikavolt",
+      "overallScore": 578.0
+    },
+    {
+      "id": "farfetchd_galarian",
+      "overallScore": 578.0
+    },
+    {
+      "id": "dodrio",
+      "overallScore": 578.0
+    },
+    {
+      "id": "golurk",
+      "overallScore": 578.0
+    },
+    {
+      "id": "golbat",
+      "overallScore": 577.0
+    },
+    {
+      "id": "crawdaunt_shadow",
+      "overallScore": 577.0
+    },
+    {
+      "id": "amaura_shadow",
+      "overallScore": 577.0
+    },
+    {
+      "id": "dartrix",
+      "overallScore": 577.0
+    },
+    {
+      "id": "serperior_shadow",
+      "overallScore": 576.0
+    },
+    {
+      "id": "appletun",
+      "overallScore": 576.0
+    },
+    {
+      "id": "kubfu",
+      "overallScore": 576.0
+    },
+    {
+      "id": "darumaka",
+      "overallScore": 576.0
+    },
+    {
+      "id": "quaxwell",
+      "overallScore": 576.0
+    },
+    {
+      "id": "aerodactyl",
+      "overallScore": 576.0
+    },
+    {
+      "id": "barbaracle",
+      "overallScore": 576.0
+    },
+    {
+      "id": "ledian",
+      "overallScore": 576.0
+    },
+    {
+      "id": "garganacl",
+      "overallScore": 575.0
+    },
+    {
+      "id": "mudsdale",
+      "overallScore": 575.0
+    },
+    {
+      "id": "scizor",
+      "overallScore": 575.0
+    },
+    {
+      "id": "ho_oh",
+      "overallScore": 575.0
+    },
+    {
+      "id": "sylveon",
+      "overallScore": 575.0
+    },
+    {
+      "id": "salamence_shadow",
+      "overallScore": 575.0
+    },
+    {
+      "id": "electivire_shadow",
+      "overallScore": 574.0
+    },
+    {
+      "id": "carkol",
+      "overallScore": 574.0
+    },
+    {
+      "id": "keldeo_resolute",
+      "overallScore": 574.0
+    },
+    {
+      "id": "lucario",
+      "overallScore": 574.0
+    },
+    {
+      "id": "croconaw_shadow",
+      "overallScore": 573.0
+    },
+    {
+      "id": "graveler_alolan",
+      "overallScore": 573.0
+    },
+    {
+      "id": "charizard",
+      "overallScore": 573.0
+    },
+    {
+      "id": "tyranitar_shadow",
+      "overallScore": 573.0
+    },
+    {
+      "id": "grafaiai",
+      "overallScore": 572.0
+    },
+    {
+      "id": "vullaby",
+      "overallScore": 572.0
+    },
+    {
+      "id": "vikavolt_shadow",
+      "overallScore": 572.0
+    },
+    {
+      "id": "dolliv",
+      "overallScore": 571.0
+    },
+    {
+      "id": "krookodile",
+      "overallScore": 571.0
+    },
+    {
+      "id": "reshiram_shadow",
+      "overallScore": 571.0
+    },
+    {
+      "id": "whiscash_shadow",
+      "overallScore": 571.0
+    },
+    {
+      "id": "flapple",
+      "overallScore": 570.0
+    },
+    {
+      "id": "heracross",
+      "overallScore": 570.0
+    },
+    {
+      "id": "primeape",
+      "overallScore": 570.0
+    },
+    {
+      "id": "marshadow",
+      "overallScore": 570.0
+    },
+    {
+      "id": "froslass",
+      "overallScore": 570.0
+    },
+    {
+      "id": "corvisquire",
+      "overallScore": 570.0
+    },
+    {
+      "id": "herdier",
+      "overallScore": 569.0
+    },
+    {
+      "id": "giratina_origin",
+      "overallScore": 569.0
+    },
+    {
+      "id": "rufflet",
+      "overallScore": 569.0
+    },
+    {
+      "id": "scizor_shadow",
+      "overallScore": 569.0
+    },
+    {
+      "id": "torkoal",
+      "overallScore": 569.0
+    },
+    {
+      "id": "charizard_shadow",
+      "overallScore": 569.0
+    },
+    {
+      "id": "fraxure",
+      "overallScore": 568.0
+    },
+    {
+      "id": "durant",
+      "overallScore": 568.0
+    },
+    {
+      "id": "floatzel",
+      "overallScore": 567.0
+    },
+    {
+      "id": "stufful_shadow",
+      "overallScore": 567.0
+    },
+    {
+      "id": "drifloon",
+      "overallScore": 567.0
+    },
+    {
+      "id": "tinkatuff",
+      "overallScore": 567.0
+    },
+    {
+      "id": "sandshrew",
+      "overallScore": 566.0
+    },
+    {
+      "id": "pancham",
+      "overallScore": 566.0
+    },
+    {
+      "id": "ceruledge",
+      "overallScore": 566.0
+    },
+    {
+      "id": "bayleef",
+      "overallScore": 565.0
+    },
+    {
+      "id": "exploud_shadow",
+      "overallScore": 565.0
+    },
+    {
+      "id": "chesnaught",
+      "overallScore": 565.0
+    },
+    {
+      "id": "huntail",
+      "overallScore": 564.0
+    },
+    {
+      "id": "lileep",
+      "overallScore": 564.0
+    },
+    {
+      "id": "wyrdeer",
+      "overallScore": 564.0
+    },
+    {
+      "id": "aurorus",
+      "overallScore": 564.0
+    },
+    {
+      "id": "ferrothorn",
+      "overallScore": 563.0
+    },
+    {
+      "id": "shiftry",
+      "overallScore": 563.0
+    },
+    {
+      "id": "yveltal",
+      "overallScore": 563.0
+    },
+    {
+      "id": "grimer_shadow",
+      "overallScore": 563.0
+    },
+    {
+      "id": "sceptile_shadow",
+      "overallScore": 563.0
+    },
+    {
+      "id": "swoobat",
+      "overallScore": 563.0
+    },
+    {
+      "id": "gumshoos",
+      "overallScore": 562.0
+    },
+    {
+      "id": "pumpkaboo_small",
+      "overallScore": 562.0
+    },
+    {
+      "id": "honchkrow",
+      "overallScore": 562.0
+    },
+    {
+      "id": "graveler_alolan_shadow",
+      "overallScore": 562.0
+    },
+    {
+      "id": "arbok_shadow",
+      "overallScore": 561.0
+    },
+    {
+      "id": "bonsly",
+      "overallScore": 561.0
+    },
+    {
+      "id": "amaura",
+      "overallScore": 561.0
+    },
+    {
+      "id": "crawdaunt",
+      "overallScore": 560.0
+    },
+    {
+      "id": "rhyperior",
+      "overallScore": 560.0
+    },
+    {
+      "id": "bayleef_shadow",
+      "overallScore": 559.0
+    },
+    {
+      "id": "zangoose",
+      "overallScore": 559.0
+    },
+    {
+      "id": "raichu",
+      "overallScore": 559.0
+    },
+    {
+      "id": "quilladin",
+      "overallScore": 559.0
+    },
+    {
+      "id": "corvisquire_shadow",
+      "overallScore": 559.0
+    },
+    {
+      "id": "chesnaught_shadow",
+      "overallScore": 559.0
+    },
+    {
+      "id": "slowking",
+      "overallScore": 559.0
+    },
+    {
+      "id": "salamence",
+      "overallScore": 559.0
+    },
+    {
+      "id": "ursaring",
+      "overallScore": 558.0
+    },
+    {
+      "id": "entei_shadow",
+      "overallScore": 558.0
+    },
+    {
+      "id": "primeape_shadow",
+      "overallScore": 558.0
+    },
+    {
+      "id": "machoke",
+      "overallScore": 558.0
+    },
+    {
+      "id": "flamigo",
+      "overallScore": 558.0
+    },
+    {
+      "id": "baxcalibur",
+      "overallScore": 558.0
+    },
+    {
+      "id": "xatu_shadow",
+      "overallScore": 558.0
+    },
+    {
+      "id": "heatran_shadow",
+      "overallScore": 558.0
+    },
+    {
+      "id": "arbok",
+      "overallScore": 557.0
+    },
+    {
+      "id": "quilladin_shadow",
+      "overallScore": 557.0
+    },
+    {
+      "id": "chatot",
+      "overallScore": 557.0
+    },
+    {
+      "id": "orthworm",
+      "overallScore": 557.0
+    },
+    {
+      "id": "eelektross",
+      "overallScore": 556.0
+    },
+    {
+      "id": "sinistcha",
+      "overallScore": 556.0
+    },
+    {
+      "id": "electivire",
+      "overallScore": 556.0
+    },
+    {
+      "id": "mew",
+      "overallScore": 556.0
+    },
+    {
+      "id": "slowking_shadow",
+      "overallScore": 556.0
+    },
+    {
+      "id": "golbat_shadow",
+      "overallScore": 556.0
+    },
+    {
+      "id": "stufful",
+      "overallScore": 556.0
+    },
+    {
+      "id": "marshtomp",
+      "overallScore": 555.0
+    },
+    {
+      "id": "beedrill",
+      "overallScore": 555.0
+    },
+    {
+      "id": "fraxure_shadow",
+      "overallScore": 554.0
+    },
+    {
+      "id": "kyogre",
+      "overallScore": 554.0
+    },
+    {
+      "id": "wobbuffet",
+      "overallScore": 554.0
+    },
+    {
+      "id": "squawkabilly",
+      "overallScore": 554.0
+    },
+    {
+      "id": "skarmory",
+      "overallScore": 554.0
+    },
+    {
+      "id": "dachsbun",
+      "overallScore": 554.0
+    },
+    {
+      "id": "wailord",
+      "overallScore": 553.0
+    },
+    {
+      "id": "electabuzz_shadow",
+      "overallScore": 552.0
+    },
+    {
+      "id": "bibarel",
+      "overallScore": 552.0
+    },
+    {
+      "id": "froslass_shadow",
+      "overallScore": 552.0
+    },
+    {
+      "id": "orbeetle",
+      "overallScore": 552.0
+    },
+    {
+      "id": "scraggy",
+      "overallScore": 551.0
+    },
+    {
+      "id": "kabutops_shadow",
+      "overallScore": 551.0
+    },
+    {
+      "id": "exploud",
+      "overallScore": 551.0
+    },
+    {
+      "id": "rhyhorn_shadow",
+      "overallScore": 551.0
+    },
+    {
+      "id": "grimer",
+      "overallScore": 551.0
+    },
+    {
+      "id": "chimecho",
+      "overallScore": 551.0
+    },
+    {
+      "id": "lairon",
+      "overallScore": 551.0
+    },
+    {
+      "id": "nidoking",
+      "overallScore": 551.0
+    },
+    {
+      "id": "beedrill_shadow",
+      "overallScore": 551.0
+    },
+    {
+      "id": "victini",
+      "overallScore": 551.0
+    },
+    {
+      "id": "grotle",
+      "overallScore": 550.0
+    },
+    {
+      "id": "raboot",
+      "overallScore": 550.0
+    },
+    {
+      "id": "mienfoo",
+      "overallScore": 550.0
+    },
+    {
+      "id": "honchkrow_shadow",
+      "overallScore": 550.0
+    },
+    {
+      "id": "entei",
+      "overallScore": 550.0
+    },
+    {
+      "id": "machop_shadow",
+      "overallScore": 550.0
+    },
+    {
+      "id": "venusaur",
+      "overallScore": 549.0
+    },
+    {
+      "id": "wobbuffet_shadow",
+      "overallScore": 549.0
+    },
+    {
+      "id": "venomoth",
+      "overallScore": 549.0
+    },
+    {
+      "id": "ledian_shadow",
+      "overallScore": 549.0
+    },
+    {
+      "id": "drifloon_shadow",
+      "overallScore": 549.0
+    },
+    {
+      "id": "haxorus",
+      "overallScore": 548.0
+    },
+    {
+      "id": "eelektrik",
+      "overallScore": 548.0
+    },
+    {
+      "id": "krokorok",
+      "overallScore": 548.0
+    },
+    {
+      "id": "tyrunt",
+      "overallScore": 548.0
+    },
+    {
+      "id": "chandelure_shadow",
+      "overallScore": 548.0
+    },
+    {
+      "id": "buzzwole",
+      "overallScore": 548.0
+    },
+    {
+      "id": "raticate_alolan",
+      "overallScore": 547.0
+    },
+    {
+      "id": "hitmonlee",
+      "overallScore": 547.0
+    },
+    {
+      "id": "hitmonchan_shadow",
+      "overallScore": 547.0
+    },
+    {
+      "id": "swadloon",
+      "overallScore": 546.0
+    },
+    {
+      "id": "scyther_shadow",
+      "overallScore": 546.0
+    },
+    {
+      "id": "hitmonlee_shadow",
+      "overallScore": 546.0
+    },
+    {
+      "id": "ariados",
+      "overallScore": 546.0
+    },
+    {
+      "id": "drilbur_shadow",
+      "overallScore": 546.0
+    },
+    {
+      "id": "slowpoke_shadow",
+      "overallScore": 546.0
+    },
+    {
+      "id": "geodude_shadow",
+      "overallScore": 545.0
+    },
+    {
+      "id": "zoroark_hisuian",
+      "overallScore": 545.0
+    },
+    {
+      "id": "leavanny",
+      "overallScore": 545.0
+    },
+    {
+      "id": "pignite",
+      "overallScore": 545.0
+    },
+    {
+      "id": "kricketune",
+      "overallScore": 545.0
+    },
+    {
+      "id": "hitmonchan",
+      "overallScore": 545.0
+    },
+    {
+      "id": "golduck",
+      "overallScore": 545.0
+    },
+    {
+      "id": "slowking_galarian",
+      "overallScore": 545.0
+    },
+    {
+      "id": "machop",
+      "overallScore": 545.0
+    },
+    {
+      "id": "slowpoke",
+      "overallScore": 545.0
+    },
+    {
+      "id": "sharpedo_shadow",
+      "overallScore": 544.0
+    },
+    {
+      "id": "sawk",
+      "overallScore": 544.0
+    },
+    {
+      "id": "axew",
+      "overallScore": 544.0
+    },
+    {
+      "id": "darmanitan_standard_shadow",
+      "overallScore": 544.0
+    },
+    {
+      "id": "decidueye_hisuian",
+      "overallScore": 544.0
+    },
+    {
+      "id": "delcatty",
+      "overallScore": 543.0
+    },
+    {
+      "id": "meganium_shadow",
+      "overallScore": 543.0
+    },
+    {
+      "id": "sawk_shadow",
+      "overallScore": 543.0
+    },
+    {
+      "id": "urshifu_rapid_strike",
+      "overallScore": 543.0
+    },
+    {
+      "id": "graveler_shadow",
+      "overallScore": 543.0
+    },
+    {
+      "id": "mudbray",
+      "overallScore": 542.0
+    },
+    {
+      "id": "linoone_galarian",
+      "overallScore": 541.0
+    },
+    {
+      "id": "basculin",
+      "overallScore": 541.0
+    },
+    {
+      "id": "xatu",
+      "overallScore": 541.0
+    },
+    {
+      "id": "thundurus_incarnate",
+      "overallScore": 540.0
+    },
+    {
+      "id": "lairon_shadow",
+      "overallScore": 540.0
+    },
+    {
+      "id": "meloetta_aria",
+      "overallScore": 540.0
+    },
+    {
+      "id": "pawniard",
+      "overallScore": 540.0
+    },
+    {
+      "id": "floragato",
+      "overallScore": 539.0
+    },
+    {
+      "id": "avalugg",
+      "overallScore": 539.0
+    },
+    {
+      "id": "haxorus_shadow",
+      "overallScore": 538.0
+    },
+    {
+      "id": "stonjourner",
+      "overallScore": 538.0
+    },
+    {
+      "id": "venusaur_shadow",
+      "overallScore": 538.0
+    },
+    {
+      "id": "shiftry_shadow",
+      "overallScore": 538.0
+    },
+    {
+      "id": "golduck_shadow",
+      "overallScore": 538.0
+    },
+    {
+      "id": "kabuto",
+      "overallScore": 537.0
+    },
+    {
+      "id": "illumise",
+      "overallScore": 537.0
+    },
+    {
+      "id": "geodude_alolan_shadow",
+      "overallScore": 537.0
+    },
+    {
+      "id": "nidoking_shadow",
+      "overallScore": 537.0
+    },
+    {
+      "id": "girafarig_shadow",
+      "overallScore": 537.0
+    },
+    {
+      "id": "venomoth_shadow",
+      "overallScore": 537.0
+    },
+    {
+      "id": "heatran",
+      "overallScore": 537.0
+    },
+    {
+      "id": "aegislash_shield",
+      "overallScore": 770.0
+    },
+    {
+      "id": "purugly_shadow",
+      "overallScore": 536.0
+    },
+    {
+      "id": "klawf",
+      "overallScore": 536.0
+    },
+    {
+      "id": "dugtrio_shadow",
+      "overallScore": 536.0
+    },
+    {
+      "id": "vanillish",
+      "overallScore": 536.0
+    },
+    {
+      "id": "kartana",
+      "overallScore": 536.0
+    },
+    {
+      "id": "kabutops",
+      "overallScore": 536.0
+    },
+    {
+      "id": "bruxish",
+      "overallScore": 536.0
+    },
+    {
+      "id": "blacephalon",
+      "overallScore": 536.0
+    },
+    {
+      "id": "silicobra",
+      "overallScore": 535.0
+    },
+    {
+      "id": "linoone_galarian_shadow",
+      "overallScore": 535.0
+    },
+    {
+      "id": "perrserker",
+      "overallScore": 535.0
+    },
+    {
+      "id": "tauros_aqua",
+      "overallScore": 535.0
+    },
+    {
+      "id": "zebstrika_shadow",
+      "overallScore": 534.0
+    },
+    {
+      "id": "lileep_shadow",
+      "overallScore": 534.0
+    },
+    {
+      "id": "girafarig",
+      "overallScore": 534.0
+    },
+    {
+      "id": "darmanitan_standard",
+      "overallScore": 534.0
+    },
+    {
+      "id": "sandshrew_shadow",
+      "overallScore": 532.0
+    },
+    {
+      "id": "kyogre_shadow",
+      "overallScore": 532.0
+    },
+    {
+      "id": "rotom_fan",
+      "overallScore": 531.0
+    },
+    {
+      "id": "cursola",
+      "overallScore": 531.0
+    },
+    {
+      "id": "gothitelle_shadow",
+      "overallScore": 531.0
+    },
+    {
+      "id": "arboliva",
+      "overallScore": 530.0
+    },
+    {
+      "id": "geodude_alolan",
+      "overallScore": 530.0
+    },
+    {
+      "id": "scyther",
+      "overallScore": 530.0
+    },
+    {
+      "id": "electabuzz",
+      "overallScore": 529.0
+    },
+    {
+      "id": "tyrunt_shadow",
+      "overallScore": 529.0
+    },
+    {
+      "id": "cinderace",
+      "overallScore": 529.0
+    },
+    {
+      "id": "graveler",
+      "overallScore": 529.0
+    },
+    {
+      "id": "dugtrio",
+      "overallScore": 528.0
+    },
+    {
+      "id": "bibarel_shadow",
+      "overallScore": 528.0
+    },
+    {
+      "id": "rhyhorn",
+      "overallScore": 528.0
+    },
+    {
+      "id": "meowstic",
+      "overallScore": 528.0
+    },
+    {
+      "id": "heatmor",
+      "overallScore": 527.0
+    },
+    {
+      "id": "chandelure",
+      "overallScore": 527.0
+    },
+    {
+      "id": "meowstic_female",
+      "overallScore": 527.0
+    },
+    {
+      "id": "thundurus_incarnate_shadow",
+      "overallScore": 526.0
+    },
+    {
+      "id": "lampent",
+      "overallScore": 526.0
+    },
+    {
+      "id": "misdreavus",
+      "overallScore": 526.0
+    },
+    {
+      "id": "armaldo_shadow",
+      "overallScore": 526.0
+    },
+    {
+      "id": "kabuto_shadow",
+      "overallScore": 525.0
+    },
+    {
+      "id": "brionne",
+      "overallScore": 525.0
+    },
+    {
+      "id": "pinsir_shadow",
+      "overallScore": 525.0
+    },
+    {
+      "id": "moltres",
+      "overallScore": 525.0
+    },
+    {
+      "id": "tirtouga",
+      "overallScore": 525.0
+    },
+    {
+      "id": "beartic",
+      "overallScore": 525.0
+    },
+    {
+      "id": "slowpoke_galarian",
+      "overallScore": 525.0
+    },
+    {
+      "id": "parasect",
+      "overallScore": 523.0
+    },
+    {
+      "id": "regirock",
+      "overallScore": 523.0
+    },
+    {
+      "id": "dhelmise",
+      "overallScore": 522.0
+    },
+    {
+      "id": "pangoro",
+      "overallScore": 522.0
+    },
+    {
+      "id": "seviper",
+      "overallScore": 521.0
+    },
+    {
+      "id": "geodude",
+      "overallScore": 521.0
+    },
+    {
+      "id": "charmeleon_shadow",
+      "overallScore": 521.0
+    },
+    {
+      "id": "gengar_shadow",
+      "overallScore": 521.0
+    },
+    {
+      "id": "gothitelle",
+      "overallScore": 521.0
+    },
+    {
+      "id": "gallade",
+      "overallScore": 521.0
+    },
+    {
+      "id": "jolteon",
+      "overallScore": 520.0
+    },
+    {
+      "id": "kilowattrel",
+      "overallScore": 520.0
+    },
+    {
+      "id": "moltres_shadow",
+      "overallScore": 520.0
+    },
+    {
+      "id": "darumaka_galarian",
+      "overallScore": 520.0
+    },
+    {
+      "id": "xerneas",
+      "overallScore": 520.0
+    },
+    {
+      "id": "hattrem",
+      "overallScore": 520.0
+    },
+    {
+      "id": "celesteela",
+      "overallScore": 520.0
+    },
+    {
+      "id": "probopass",
+      "overallScore": 519.0
+    },
+    {
+      "id": "mesprit",
+      "overallScore": 518.0
+    },
+    {
+      "id": "gothorita_shadow",
+      "overallScore": 518.0
+    },
+    {
+      "id": "lunala",
+      "overallScore": 518.0
+    },
+    {
+      "id": "lampent_shadow",
+      "overallScore": 518.0
+    },
+    {
+      "id": "loudred",
+      "overallScore": 517.0
+    },
+    {
+      "id": "genesect_burn",
+      "overallScore": 517.0
+    },
+    {
+      "id": "ferrothorn_shadow",
+      "overallScore": 517.0
+    },
+    {
+      "id": "poliwhirl_shadow",
+      "overallScore": 517.0
+    },
+    {
+      "id": "fuecoco",
+      "overallScore": 517.0
+    },
+    {
+      "id": "raticate_alolan_shadow",
+      "overallScore": 517.0
+    },
+    {
+      "id": "ponyta_shadow",
+      "overallScore": 517.0
+    },
+    {
+      "id": "wailord_shadow",
+      "overallScore": 517.0
+    },
+    {
+      "id": "palpitoad",
+      "overallScore": 517.0
+    },
+    {
+      "id": "watchog_shadow",
+      "overallScore": 516.0
+    },
+    {
+      "id": "watchog",
+      "overallScore": 516.0
+    },
+    {
+      "id": "metagross",
+      "overallScore": 516.0
+    },
+    {
+      "id": "glalie",
+      "overallScore": 516.0
+    },
+    {
+      "id": "grotle_shadow",
+      "overallScore": 515.0
+    },
+    {
+      "id": "ponyta",
+      "overallScore": 515.0
+    },
+    {
+      "id": "espurr",
+      "overallScore": 515.0
+    },
+    {
+      "id": "armaldo",
+      "overallScore": 515.0
+    },
+    {
+      "id": "sirfetchd",
+      "overallScore": 514.0
+    },
+    {
+      "id": "frigibax",
+      "overallScore": 514.0
+    },
+    {
+      "id": "zekrom",
+      "overallScore": 513.0
+    },
+    {
+      "id": "pinsir",
+      "overallScore": 513.0
+    },
+    {
+      "id": "sharpedo",
+      "overallScore": 512.0
+    },
+    {
+      "id": "growlithe_hisuian",
+      "overallScore": 512.0
+    },
+    {
+      "id": "magmar",
+      "overallScore": 512.0
+    },
+    {
+      "id": "falinks",
+      "overallScore": 512.0
+    },
+    {
+      "id": "genesect_chill",
+      "overallScore": 511.0
+    },
+    {
+      "id": "toedscool",
+      "overallScore": 511.0
+    },
+    {
+      "id": "tapu_koko",
+      "overallScore": 511.0
+    },
+    {
+      "id": "cloyster",
+      "overallScore": 511.0
+    },
+    {
+      "id": "pidgeotto_shadow",
+      "overallScore": 511.0
+    },
+    {
+      "id": "corsola",
+      "overallScore": 511.0
+    },
+    {
+      "id": "braixen",
+      "overallScore": 511.0
+    },
+    {
+      "id": "dugtrio_alolan_shadow",
+      "overallScore": 511.0
+    },
+    {
+      "id": "phantump_shadow",
+      "overallScore": 510.0
+    },
+    {
+      "id": "houndour",
+      "overallScore": 510.0
+    },
+    {
+      "id": "vibrava",
+      "overallScore": 510.0
+    },
+    {
+      "id": "glimmora",
+      "overallScore": 510.0
+    },
+    {
+      "id": "gallade_shadow",
+      "overallScore": 510.0
+    },
+    {
+      "id": "braixen_shadow",
+      "overallScore": 509.0
+    },
+    {
+      "id": "rotom_mow",
+      "overallScore": 508.0
+    },
+    {
+      "id": "nuzleaf_shadow",
+      "overallScore": 508.0
+    },
+    {
+      "id": "luxray_shadow",
+      "overallScore": 508.0
+    },
+    {
+      "id": "staraptor",
+      "overallScore": 508.0
+    },
+    {
+      "id": "manectric_shadow",
+      "overallScore": 507.0
+    },
+    {
+      "id": "zoroark",
+      "overallScore": 507.0
+    },
+    {
+      "id": "shellos",
+      "overallScore": 507.0
+    },
+    {
+      "id": "pidgeotto",
+      "overallScore": 507.0
+    },
+    {
+      "id": "magmortar",
+      "overallScore": 507.0
+    },
+    {
+      "id": "celebi",
+      "overallScore": 507.0
+    },
+    {
+      "id": "dwebble_shadow",
+      "overallScore": 506.0
+    },
+    {
+      "id": "gabite_shadow",
+      "overallScore": 506.0
+    },
+    {
+      "id": "volbeat",
+      "overallScore": 506.0
+    },
+    {
+      "id": "excadrill",
+      "overallScore": 506.0
+    },
+    {
+      "id": "cobalion",
+      "overallScore": 506.0
+    },
+    {
+      "id": "houndour_shadow",
+      "overallScore": 505.0
+    },
+    {
+      "id": "growlithe",
+      "overallScore": 505.0
+    },
+    {
+      "id": "landorus_incarnate",
+      "overallScore": 505.0
+    },
+    {
+      "id": "poliwhirl",
+      "overallScore": 505.0
+    },
+    {
+      "id": "magmar_shadow",
+      "overallScore": 505.0
+    },
+    {
+      "id": "piloswine",
+      "overallScore": 505.0
+    },
+    {
+      "id": "mantyke",
+      "overallScore": 505.0
+    },
+    {
+      "id": "gengar",
+      "overallScore": 505.0
+    },
+    {
+      "id": "metagross_shadow",
+      "overallScore": 505.0
+    },
+    {
+      "id": "koffing",
+      "overallScore": 504.0
+    },
+    {
+      "id": "aggron",
+      "overallScore": 504.0
+    },
+    {
+      "id": "infernape",
+      "overallScore": 503.0
+    },
+    {
+      "id": "raichu_alolan",
+      "overallScore": 503.0
+    },
+    {
+      "id": "gothorita",
+      "overallScore": 503.0
+    },
+    {
+      "id": "delphox_shadow",
+      "overallScore": 503.0
+    },
+    {
+      "id": "espathra",
+      "overallScore": 502.0
+    },
+    {
+      "id": "purugly",
+      "overallScore": 501.0
+    },
+    {
+      "id": "nuzleaf",
+      "overallScore": 501.0
+    },
+    {
+      "id": "dwebble",
+      "overallScore": 501.0
+    },
+    {
+      "id": "vibrava_shadow",
+      "overallScore": 501.0
+    },
+    {
+      "id": "avalugg_hisuian",
+      "overallScore": 501.0
+    },
+    {
+      "id": "blaziken",
+      "overallScore": 501.0
+    },
+    {
+      "id": "glimmet",
+      "overallScore": 500.0
+    },
+    {
+      "id": "sudowoodo",
+      "overallScore": 500.0
+    },
+    {
+      "id": "drakloak",
+      "overallScore": 500.0
+    },
+    {
+      "id": "flareon",
+      "overallScore": 500.0
+    },
+    {
+      "id": "delphox",
+      "overallScore": 500.0
+    },
+    {
+      "id": "staraptor_shadow",
+      "overallScore": 499.0
+    },
+    {
+      "id": "loudred_shadow",
+      "overallScore": 498.0
+    },
+    {
+      "id": "garbodor",
+      "overallScore": 498.0
+    },
+    {
+      "id": "breloom",
+      "overallScore": 498.0
+    },
+    {
+      "id": "rhydon_shadow",
+      "overallScore": 498.0
+    },
+    {
+      "id": "monferno",
+      "overallScore": 498.0
+    },
+    {
+      "id": "axew_shadow",
+      "overallScore": 497.0
+    },
+    {
+      "id": "growlithe_shadow",
+      "overallScore": 497.0
+    },
+    {
+      "id": "masquerain",
+      "overallScore": 497.0
+    },
+    {
+      "id": "probopass_shadow",
+      "overallScore": 497.0
+    },
+    {
+      "id": "rayquaza",
+      "overallScore": 497.0
+    },
+    {
+      "id": "garbodor_shadow",
+      "overallScore": 496.0
+    },
+    {
+      "id": "larvesta",
+      "overallScore": 496.0
+    },
+    {
+      "id": "registeel_shadow",
+      "overallScore": 496.0
+    },
+    {
+      "id": "pineco_shadow",
+      "overallScore": 495.0
+    },
+    {
+      "id": "elekid",
+      "overallScore": 495.0
+    },
+    {
+      "id": "leafeon",
+      "overallScore": 495.0
+    },
+    {
+      "id": "lycanroc_midday",
+      "overallScore": 495.0
+    },
+    {
+      "id": "cryogonal",
+      "overallScore": 495.0
+    },
+    {
+      "id": "kleavor",
+      "overallScore": 495.0
+    },
+    {
+      "id": "tentacool",
+      "overallScore": 495.0
+    },
+    {
+      "id": "tirtouga_shadow",
+      "overallScore": 495.0
+    },
+    {
+      "id": "staravia_shadow",
+      "overallScore": 495.0
+    },
+    {
+      "id": "passimian",
+      "overallScore": 495.0
+    },
+    {
+      "id": "gardevoir",
+      "overallScore": 495.0
+    },
+    {
+      "id": "pineco",
+      "overallScore": 494.0
+    },
+    {
+      "id": "cubone_shadow",
+      "overallScore": 494.0
+    },
+    {
+      "id": "vivillon",
+      "overallScore": 494.0
+    },
+    {
+      "id": "excadrill_shadow",
+      "overallScore": 494.0
+    },
+    {
+      "id": "thwackey",
+      "overallScore": 493.0
+    },
+    {
+      "id": "gabite",
+      "overallScore": 493.0
+    },
+    {
+      "id": "magby",
+      "overallScore": 493.0
+    },
+    {
+      "id": "onix_shadow",
+      "overallScore": 493.0
+    },
+    {
+      "id": "mienshao",
+      "overallScore": 493.0
+    },
+    {
+      "id": "ambipom_shadow",
+      "overallScore": 492.0
+    },
+    {
+      "id": "buneary",
+      "overallScore": 492.0
+    },
+    {
+      "id": "karrablast_shadow",
+      "overallScore": 492.0
+    },
+    {
+      "id": "haunter",
+      "overallScore": 492.0
+    },
+    {
+      "id": "cubone",
+      "overallScore": 492.0
+    },
+    {
+      "id": "infernape_shadow",
+      "overallScore": 492.0
+    },
+    {
+      "id": "deerling",
+      "overallScore": 491.0
+    },
+    {
+      "id": "comfey",
+      "overallScore": 491.0
+    },
+    {
+      "id": "weezing",
+      "overallScore": 491.0
+    },
+    {
+      "id": "monferno_shadow",
+      "overallScore": 491.0
+    },
+    {
+      "id": "inteleon",
+      "overallScore": 490.0
+    },
+    {
+      "id": "stunky",
+      "overallScore": 490.0
+    },
+    {
+      "id": "espeon",
+      "overallScore": 490.0
+    },
+    {
+      "id": "lugia",
+      "overallScore": 490.0
+    },
+    {
+      "id": "charmeleon",
+      "overallScore": 490.0
+    },
+    {
+      "id": "shaymin_land",
+      "overallScore": 489.0
+    },
+    {
+      "id": "onix",
+      "overallScore": 489.0
+    },
+    {
+      "id": "magmortar_shadow",
+      "overallScore": 489.0
+    },
+    {
+      "id": "gholdengo",
+      "overallScore": 489.0
+    },
+    {
+      "id": "blaziken_shadow",
+      "overallScore": 489.0
+    },
+    {
+      "id": "totodile",
+      "overallScore": 488.0
+    },
+    {
+      "id": "simisear",
+      "overallScore": 488.0
+    },
+    {
+      "id": "golem_shadow",
+      "overallScore": 488.0
+    },
+    {
+      "id": "zapdos_galarian",
+      "overallScore": 488.0
+    },
+    {
+      "id": "zarude",
+      "overallScore": 487.0
+    },
+    {
+      "id": "landorus_incarnate_shadow",
+      "overallScore": 487.0
+    },
+    {
+      "id": "tangrowth",
+      "overallScore": 487.0
+    },
+    {
+      "id": "grapploct",
+      "overallScore": 487.0
+    },
+    {
+      "id": "toxicroak",
+      "overallScore": 487.0
+    },
+    {
+      "id": "frosmoth",
+      "overallScore": 486.0
+    },
+    {
+      "id": "tranquill_shadow",
+      "overallScore": 486.0
+    },
+    {
+      "id": "combusken",
+      "overallScore": 486.0
+    },
+    {
+      "id": "luxio",
+      "overallScore": 485.0
+    },
+    {
+      "id": "drizzile",
+      "overallScore": 485.0
+    },
+    {
+      "id": "quilava",
+      "overallScore": 485.0
+    },
+    {
+      "id": "cinccino",
+      "overallScore": 484.0
+    },
+    {
+      "id": "karrablast",
+      "overallScore": 484.0
+    },
+    {
+      "id": "clamperl",
+      "overallScore": 484.0
+    },
+    {
+      "id": "golem",
+      "overallScore": 484.0
+    },
+    {
+      "id": "gardevoir_shadow",
+      "overallScore": 484.0
+    },
+    {
+      "id": "flaaffy_shadow",
+      "overallScore": 483.0
+    },
+    {
+      "id": "phantump",
+      "overallScore": 483.0
+    },
+    {
+      "id": "pignite_shadow",
+      "overallScore": 483.0
+    },
+    {
+      "id": "clawitzer",
+      "overallScore": 483.0
+    },
+    {
+      "id": "duraludon",
+      "overallScore": 483.0
+    },
+    {
+      "id": "tyrantrum",
+      "overallScore": 483.0
+    },
+    {
+      "id": "combusken_shadow",
+      "overallScore": 482.0
+    },
+    {
+      "id": "mr_rime",
+      "overallScore": 482.0
+    },
+    {
+      "id": "eldegoss",
+      "overallScore": 481.0
+    },
+    {
+      "id": "zebstrika",
+      "overallScore": 481.0
+    },
+    {
+      "id": "weepinbell_shadow",
+      "overallScore": 481.0
+    },
+    {
+      "id": "weezing_shadow",
+      "overallScore": 481.0
+    },
+    {
+      "id": "snubbull",
+      "overallScore": 480.0
+    },
+    {
+      "id": "cloyster_shadow",
+      "overallScore": 480.0
+    },
+    {
+      "id": "carracosta_shadow",
+      "overallScore": 480.0
+    },
+    {
+      "id": "tornadus_therian",
+      "overallScore": 480.0
+    },
+    {
+      "id": "piloswine_shadow",
+      "overallScore": 480.0
+    },
+    {
+      "id": "mothim",
+      "overallScore": 479.0
+    },
+    {
+      "id": "staravia",
+      "overallScore": 479.0
+    },
+    {
+      "id": "glalie_shadow",
+      "overallScore": 479.0
+    },
+    {
+      "id": "flaaffy",
+      "overallScore": 478.0
+    },
+    {
+      "id": "torracat",
+      "overallScore": 478.0
+    },
+    {
+      "id": "sudowoodo_shadow",
+      "overallScore": 477.0
+    },
+    {
+      "id": "reuniclus_shadow",
+      "overallScore": 476.0
+    },
+    {
+      "id": "deino",
+      "overallScore": 476.0
+    },
+    {
+      "id": "exeggutor_alolan",
+      "overallScore": 476.0
+    },
+    {
+      "id": "rhydon",
+      "overallScore": 476.0
+    },
+    {
+      "id": "doduo",
+      "overallScore": 476.0
+    },
+    {
+      "id": "dugtrio_alolan",
+      "overallScore": 476.0
+    },
+    {
+      "id": "manectric",
+      "overallScore": 475.0
+    },
+    {
+      "id": "ivysaur_shadow",
+      "overallScore": 475.0
+    },
+    {
+      "id": "goldeen",
+      "overallScore": 475.0
+    },
+    {
+      "id": "enamorus_therian",
+      "overallScore": 475.0
+    },
+    {
+      "id": "mr_mime",
+      "overallScore": 475.0
+    },
+    {
+      "id": "weepinbell",
+      "overallScore": 474.0
+    },
+    {
+      "id": "aromatisse",
+      "overallScore": 473.0
+    },
+    {
+      "id": "zamazenta_crowned_shield",
+      "overallScore": 473.0
+    },
+    {
+      "id": "seel",
+      "overallScore": 472.0
+    },
+    {
+      "id": "totodile_shadow",
+      "overallScore": 472.0
+    },
+    {
+      "id": "tranquill",
+      "overallScore": 472.0
+    },
+    {
+      "id": "lugia_shadow",
+      "overallScore": 472.0
+    },
+    {
+      "id": "sneasel_hisuian",
+      "overallScore": 472.0
+    },
+    {
+      "id": "exeggutor_shadow",
+      "overallScore": 472.0
+    },
+    {
+      "id": "tyrantrum_shadow",
+      "overallScore": 472.0
+    },
+    {
+      "id": "typhlosion_hisuian",
+      "overallScore": 472.0
+    },
+    {
+      "id": "ivysaur",
+      "overallScore": 471.0
+    },
+    {
+      "id": "chansey",
+      "overallScore": 471.0
+    },
+    {
+      "id": "grovyle",
+      "overallScore": 470.0
+    },
+    {
+      "id": "gloom",
+      "overallScore": 470.0
+    },
+    {
+      "id": "rapidash_galarian",
+      "overallScore": 470.0
+    },
+    {
+      "id": "quilava_shadow",
+      "overallScore": 469.0
+    },
+    {
+      "id": "skrelp",
+      "overallScore": 469.0
+    },
+    {
+      "id": "braviary",
+      "overallScore": 469.0
+    },
+    {
+      "id": "oricorio_pom_pom",
+      "overallScore": 469.0
+    },
+    {
+      "id": "banette_shadow",
+      "overallScore": 469.0
+    },
+    {
+      "id": "dustox",
+      "overallScore": 469.0
+    },
+    {
+      "id": "tsareena",
+      "overallScore": 468.0
+    },
+    {
+      "id": "tauros",
+      "overallScore": 468.0
+    },
+    {
+      "id": "zapdos_shadow",
+      "overallScore": 468.0
+    },
+    {
+      "id": "carracosta",
+      "overallScore": 468.0
+    },
+    {
+      "id": "mr_mime_galarian",
+      "overallScore": 468.0
+    },
+    {
+      "id": "grovyle_shadow",
+      "overallScore": 467.0
+    },
+    {
+      "id": "oddish_shadow",
+      "overallScore": 467.0
+    },
+    {
+      "id": "banette",
+      "overallScore": 467.0
+    },
+    {
+      "id": "aron_shadow",
+      "overallScore": 467.0
+    },
+    {
+      "id": "absol_shadow",
+      "overallScore": 466.0
+    },
+    {
+      "id": "bouffalant",
+      "overallScore": 466.0
+    },
+    {
+      "id": "beautifly",
+      "overallScore": 466.0
+    },
+    {
+      "id": "seel_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "carnivine",
+      "overallScore": 465.0
+    },
+    {
+      "id": "exeggutor_alolan_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "rampardos_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "tangrowth_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "zygarde_10",
+      "overallScore": 465.0
+    },
+    {
+      "id": "boldore",
+      "overallScore": 465.0
+    },
+    {
+      "id": "boldore_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "elgyem",
+      "overallScore": 465.0
+    },
+    {
+      "id": "regirock_shadow",
+      "overallScore": 465.0
+    },
+    {
+      "id": "roggenrola_shadow",
+      "overallScore": 464.0
+    },
+    {
+      "id": "scolipede",
+      "overallScore": 464.0
+    },
+    {
+      "id": "toxicroak_shadow",
+      "overallScore": 464.0
+    },
+    {
+      "id": "sneasel_hisuian_shadow",
+      "overallScore": 463.0
+    },
+    {
+      "id": "gloom_shadow",
+      "overallScore": 462.0
+    },
+    {
+      "id": "koffing_shadow",
+      "overallScore": 462.0
+    },
+    {
+      "id": "deino_shadow",
+      "overallScore": 462.0
+    },
+    {
+      "id": "noivern",
+      "overallScore": 462.0
+    },
+    {
+      "id": "snubbull_shadow",
+      "overallScore": 460.0
+    },
+    {
+      "id": "cherrim_sunny",
+      "overallScore": 460.0
+    },
+    {
+      "id": "nosepass_shadow",
+      "overallScore": 460.0
+    },
+    {
+      "id": "emboar_shadow",
+      "overallScore": 458.0
+    },
+    {
+      "id": "bisharp",
+      "overallScore": 458.0
+    },
+    {
+      "id": "haunter_shadow",
+      "overallScore": 457.0
+    },
+    {
+      "id": "zapdos",
+      "overallScore": 457.0
+    },
+    {
+      "id": "tatsugiri_curly",
+      "overallScore": 457.0
+    },
+    {
+      "id": "tatsugiri_droopy",
+      "overallScore": 457.0
+    },
+    {
+      "id": "tatsugiri_stretchy",
+      "overallScore": 457.0
+    },
+    {
+      "id": "tauros_blaze",
+      "overallScore": 457.0
+    },
+    {
+      "id": "aggron_shadow",
+      "overallScore": 457.0
+    },
+    {
+      "id": "oddish",
+      "overallScore": 456.0
+    },
+    {
+      "id": "roggenrola",
+      "overallScore": 456.0
+    },
+    {
+      "id": "floette",
+      "overallScore": 456.0
+    },
+    {
+      "id": "kyurem_white",
+      "overallScore": 456.0
+    },
+    {
+      "id": "granbull",
+      "overallScore": 454.0
+    },
+    {
+      "id": "mismagius_shadow",
+      "overallScore": 453.0
+    },
+    {
+      "id": "darmanitan_galarian_standard",
+      "overallScore": 453.0
+    },
+    {
+      "id": "exeggutor",
+      "overallScore": 453.0
+    },
+    {
+      "id": "emboar",
+      "overallScore": 452.0
+    },
+    {
+      "id": "popplio",
+      "overallScore": 451.0
+    },
+    {
+      "id": "absol",
+      "overallScore": 451.0
+    },
+    {
+      "id": "stunky_shadow",
+      "overallScore": 451.0
+    },
+    {
+      "id": "oricorio_baile",
+      "overallScore": 451.0
+    },
+    {
+      "id": "sinistea",
+      "overallScore": 450.0
+    },
+    {
+      "id": "keldeo_ordinary",
+      "overallScore": 450.0
+    },
+    {
+      "id": "scolipede_shadow",
+      "overallScore": 450.0
+    },
+    {
+      "id": "granbull_shadow",
+      "overallScore": 450.0
+    },
+    {
+      "id": "nidorino",
+      "overallScore": 449.0
+    },
+    {
+      "id": "dragapult",
+      "overallScore": 449.0
+    },
+    {
+      "id": "reshiram",
+      "overallScore": 449.0
+    },
+    {
+      "id": "smoochum",
+      "overallScore": 449.0
+    },
+    {
+      "id": "polteageist",
+      "overallScore": 448.0
+    },
+    {
+      "id": "gigalith",
+      "overallScore": 448.0
+    },
+    {
+      "id": "klang",
+      "overallScore": 447.0
+    },
+    {
+      "id": "luxio_shadow",
+      "overallScore": 447.0
+    },
+    {
+      "id": "poltchageist",
+      "overallScore": 447.0
+    },
+    {
+      "id": "tentacool_shadow",
+      "overallScore": 447.0
+    },
+    {
+      "id": "sneasler_shadow",
+      "overallScore": 447.0
+    },
+    {
+      "id": "mismagius",
+      "overallScore": 447.0
+    },
+    {
+      "id": "seadra",
+      "overallScore": 446.0
+    },
+    {
+      "id": "rotom_wash",
+      "overallScore": 446.0
+    },
+    {
+      "id": "snover",
+      "overallScore": 446.0
+    },
+    {
+      "id": "swellow_shadow",
+      "overallScore": 446.0
+    },
+    {
+      "id": "exeggcute_shadow",
+      "overallScore": 446.0
+    },
+    {
+      "id": "natu_shadow",
+      "overallScore": 445.0
+    },
+    {
+      "id": "noivern_shadow",
+      "overallScore": 445.0
+    },
+    {
+      "id": "simisage",
+      "overallScore": 444.0
+    },
+    {
+      "id": "spritzee",
+      "overallScore": 444.0
+    },
+    {
+      "id": "omastar_shadow",
+      "overallScore": 444.0
+    },
+    {
+      "id": "roserade",
+      "overallScore": 443.0
+    },
+    {
+      "id": "yamask_shadow",
+      "overallScore": 443.0
+    },
+    {
+      "id": "hoopa",
+      "overallScore": 443.0
+    },
+    {
+      "id": "nosepass",
+      "overallScore": 442.0
+    },
+    {
+      "id": "clauncher",
+      "overallScore": 442.0
+    },
+    {
+      "id": "ninjask",
+      "overallScore": 442.0
+    },
+    {
+      "id": "sneasler",
+      "overallScore": 442.0
+    },
+    {
+      "id": "minun",
+      "overallScore": 441.0
+    },
+    {
+      "id": "thundurus_therian",
+      "overallScore": 440.0
+    },
+    {
+      "id": "vileplume_shadow",
+      "overallScore": 440.0
+    },
+    {
+      "id": "groudon_shadow",
+      "overallScore": 440.0
+    },
+    {
+      "id": "gigalith_shadow",
+      "overallScore": 440.0
+    },
+    {
+      "id": "beheeyem",
+      "overallScore": 440.0
+    },
+    {
+      "id": "aron",
+      "overallScore": 440.0
+    },
+    {
+      "id": "sneasel_shadow",
+      "overallScore": 439.0
+    },
+    {
+      "id": "ambipom",
+      "overallScore": 438.0
+    },
+    {
+      "id": "lombre",
+      "overallScore": 438.0
+    },
+    {
+      "id": "snover_shadow",
+      "overallScore": 438.0
+    },
+    {
+      "id": "eternatus",
+      "overallScore": 438.0
+    },
+    {
+      "id": "sneasel",
+      "overallScore": 438.0
+    },
+    {
+      "id": "exeggcute",
+      "overallScore": 438.0
+    },
+    {
+      "id": "nihilego",
+      "overallScore": 437.0
+    },
+    {
+      "id": "clefable",
+      "overallScore": 436.0
+    },
+    {
+      "id": "simipour",
+      "overallScore": 436.0
+    },
+    {
+      "id": "skorupi",
+      "overallScore": 436.0
+    },
+    {
+      "id": "yamask",
+      "overallScore": 436.0
+    },
+    {
+      "id": "mamoswine_shadow",
+      "overallScore": 436.0
+    },
+    {
+      "id": "vileplume",
+      "overallScore": 435.0
+    },
+    {
+      "id": "vanilluxe",
+      "overallScore": 435.0
+    },
+    {
+      "id": "swellow",
+      "overallScore": 435.0
+    },
+    {
+      "id": "corphish",
+      "overallScore": 434.0
+    },
+    {
+      "id": "honedge",
+      "overallScore": 433.0
+    },
+    {
+      "id": "skorupi_shadow",
+      "overallScore": 432.0
+    },
+    {
+      "id": "tapu_lele",
+      "overallScore": 432.0
+    },
+    {
+      "id": "pupitar",
+      "overallScore": 431.0
+    },
+    {
+      "id": "rotom_heat",
+      "overallScore": 431.0
+    },
+    {
+      "id": "hatterene",
+      "overallScore": 431.0
+    },
+    {
+      "id": "omanyte",
+      "overallScore": 430.0
+    },
+    {
+      "id": "mamoswine",
+      "overallScore": 430.0
+    },
+    {
+      "id": "jynx",
+      "overallScore": 430.0
+    },
+    {
+      "id": "genesect_shock",
+      "overallScore": 429.0
+    },
+    {
+      "id": "gastly_shadow",
+      "overallScore": 429.0
+    },
+    {
+      "id": "omastar",
+      "overallScore": 429.0
+    },
+    {
+      "id": "corphish_shadow",
+      "overallScore": 428.0
+    },
+    {
+      "id": "natu",
+      "overallScore": 428.0
+    },
+    {
+      "id": "dialga",
+      "overallScore": 427.0
+    },
+    {
+      "id": "magneton_shadow",
+      "overallScore": 427.0
+    },
+    {
+      "id": "azelf",
+      "overallScore": 427.0
+    },
+    {
+      "id": "mankey_shadow",
+      "overallScore": 427.0
+    },
+    {
+      "id": "drowzee_shadow",
+      "overallScore": 427.0
+    },
+    {
+      "id": "regice",
+      "overallScore": 427.0
+    },
+    {
+      "id": "musharna",
+      "overallScore": 426.0
+    },
+    {
+      "id": "nidorino_shadow",
+      "overallScore": 426.0
+    },
+    {
+      "id": "raticate",
+      "overallScore": 425.0
+    },
+    {
+      "id": "kyurem_black",
+      "overallScore": 425.0
+    },
+    {
+      "id": "pupitar_shadow",
+      "overallScore": 425.0
+    },
+    {
+      "id": "omanyte_shadow",
+      "overallScore": 425.0
+    },
+    {
+      "id": "stantler_shadow",
+      "overallScore": 424.0
+    },
+    {
+      "id": "lycanroc_midnight",
+      "overallScore": 424.0
+    },
+    {
+      "id": "lycanroc_dusk",
+      "overallScore": 423.0
+    },
+    {
+      "id": "tauros_combat",
+      "overallScore": 423.0
+    },
+    {
+      "id": "oricorio_sensu",
+      "overallScore": 422.0
+    },
+    {
+      "id": "weavile",
+      "overallScore": 421.0
+    },
+    {
+      "id": "dialga_origin",
+      "overallScore": 420.0
+    },
+    {
+      "id": "krabby_shadow",
+      "overallScore": 418.0
+    },
+    {
+      "id": "yamask_galarian",
+      "overallScore": 418.0
+    },
+    {
+      "id": "volcarona",
+      "overallScore": 418.0
+    },
+    {
+      "id": "mankey",
+      "overallScore": 418.0
+    },
+    {
+      "id": "genesect_douse",
+      "overallScore": 417.0
+    },
+    {
+      "id": "morelull",
+      "overallScore": 417.0
+    },
+    {
+      "id": "zorua_hisuian",
+      "overallScore": 416.0
+    },
+    {
+      "id": "articuno_galarian",
+      "overallScore": 416.0
+    },
+    {
+      "id": "rowlet",
+      "overallScore": 415.0
+    },
+    {
+      "id": "tangela",
+      "overallScore": 415.0
+    },
+    {
+      "id": "weavile_shadow",
+      "overallScore": 415.0
+    },
+    {
+      "id": "ponyta_galarian",
+      "overallScore": 415.0
+    },
+    {
+      "id": "yanma",
+      "overallScore": 415.0
+    },
+    {
+      "id": "unfezant",
+      "overallScore": 414.0
+    },
+    {
+      "id": "shaymin_sky",
+      "overallScore": 413.0
+    },
+    {
+      "id": "lilligant_hisuian",
+      "overallScore": 413.0
+    },
+    {
+      "id": "unfezant_shadow",
+      "overallScore": 412.0
+    },
+    {
+      "id": "drowzee",
+      "overallScore": 412.0
+    },
+    {
+      "id": "revavroom",
+      "overallScore": 412.0
+    },
+    {
+      "id": "tangela_shadow",
+      "overallScore": 411.0
+    },
+    {
+      "id": "crabrawler",
+      "overallScore": 410.0
+    },
+    {
+      "id": "solgaleo",
+      "overallScore": 410.0
+    },
+    {
+      "id": "frogadier",
+      "overallScore": 410.0
+    },
+    {
+      "id": "krabby",
+      "overallScore": 408.0
+    },
+    {
+      "id": "arcanine",
+      "overallScore": 408.0
+    },
+    {
+      "id": "wugtrio",
+      "overallScore": 407.0
+    },
+    {
+      "id": "braviary_hisuian",
+      "overallScore": 407.0
+    },
+    {
+      "id": "mewtwo_shadow",
+      "overallScore": 407.0
+    },
+    {
+      "id": "raticate_shadow",
+      "overallScore": 406.0
+    },
+    {
+      "id": "seadra_shadow",
+      "overallScore": 406.0
+    },
+    {
+      "id": "rampardos",
+      "overallScore": 406.0
+    },
+    {
+      "id": "archen_shadow",
+      "overallScore": 406.0
+    },
+    {
+      "id": "arcanine_shadow",
+      "overallScore": 404.0
+    },
+    {
+      "id": "komala",
+      "overallScore": 403.0
+    },
+    {
+      "id": "chinchou",
+      "overallScore": 403.0
+    },
+    {
+      "id": "frogadier_shadow",
+      "overallScore": 403.0
+    },
+    {
+      "id": "archeops_shadow",
+      "overallScore": 403.0
+    },
+    {
+      "id": "numel",
+      "overallScore": 402.0
+    },
+    {
+      "id": "bagon",
+      "overallScore": 401.0
+    },
+    {
+      "id": "kingler_shadow",
+      "overallScore": 399.0
+    },
+    {
+      "id": "liepard",
+      "overallScore": 397.0
+    },
+    {
+      "id": "gorebyss",
+      "overallScore": 397.0
+    },
+    {
+      "id": "yanmega",
+      "overallScore": 397.0
+    },
+    {
+      "id": "kingler",
+      "overallScore": 396.0
+    },
+    {
+      "id": "blissey",
+      "overallScore": 396.0
+    },
+    {
+      "id": "meowth_galarian",
+      "overallScore": 396.0
+    },
+    {
+      "id": "archeops",
+      "overallScore": 396.0
+    },
+    {
+      "id": "stantler",
+      "overallScore": 395.0
+    },
+    {
+      "id": "oricorio_pau",
+      "overallScore": 395.0
+    },
+    {
+      "id": "enamorus_incarnate",
+      "overallScore": 395.0
+    },
+    {
+      "id": "anorith",
+      "overallScore": 394.0
+    },
+    {
+      "id": "grumpig",
+      "overallScore": 394.0
+    },
+    {
+      "id": "porygon_shadow",
+      "overallScore": 393.0
+    },
+    {
+      "id": "pawmo",
+      "overallScore": 393.0
+    },
+    {
+      "id": "gimmighoul",
+      "overallScore": 393.0
+    },
+    {
+      "id": "hoopa_unbound",
+      "overallScore": 393.0
+    },
+    {
+      "id": "bagon_shadow",
+      "overallScore": 391.0
+    },
+    {
+      "id": "anorith_shadow",
+      "overallScore": 390.0
+    },
+    {
+      "id": "sandile",
+      "overallScore": 390.0
+    },
+    {
+      "id": "sigilyph",
+      "overallScore": 390.0
+    },
+    {
+      "id": "gastly",
+      "overallScore": 389.0
+    },
+    {
+      "id": "trapinch_shadow",
+      "overallScore": 387.0
+    },
+    {
+      "id": "gible",
+      "overallScore": 387.0
+    },
+    {
+      "id": "trapinch",
+      "overallScore": 386.0
+    },
+    {
+      "id": "numel_shadow",
+      "overallScore": 386.0
+    },
+    {
+      "id": "scorbunny",
+      "overallScore": 386.0
+    },
+    {
+      "id": "roselia",
+      "overallScore": 385.0
+    },
+    {
+      "id": "archen",
+      "overallScore": 385.0
+    },
+    {
+      "id": "lilligant",
+      "overallScore": 384.0
+    },
+    {
+      "id": "accelgor",
+      "overallScore": 384.0
+    },
+    {
+      "id": "stakataka",
+      "overallScore": 384.0
+    },
+    {
+      "id": "eevee",
+      "overallScore": 383.0
+    },
+    {
+      "id": "gible_shadow",
+      "overallScore": 383.0
+    },
+    {
+      "id": "boltund",
+      "overallScore": 382.0
+    },
+    {
+      "id": "shuppet_shadow",
+      "overallScore": 382.0
+    },
+    {
+      "id": "rotom_frost",
+      "overallScore": 381.0
+    },
+    {
+      "id": "piplup",
+      "overallScore": 380.0
+    },
+    {
+      "id": "indeedee_female",
+      "overallScore": 380.0
+    },
+    {
+      "id": "naganadel",
+      "overallScore": 379.0
+    },
+    {
+      "id": "grumpig_shadow",
+      "overallScore": 378.0
+    },
+    {
+      "id": "quaxly",
+      "overallScore": 378.0
+    },
+    {
+      "id": "ribombee",
+      "overallScore": 378.0
+    },
+    {
+      "id": "foongus",
+      "overallScore": 377.0
+    },
+    {
+      "id": "chespin_shadow",
+      "overallScore": 376.0
+    },
+    {
+      "id": "glaceon",
+      "overallScore": 376.0
+    },
+    {
+      "id": "zacian_hero",
+      "overallScore": 376.0
+    },
+    {
+      "id": "foongus_shadow",
+      "overallScore": 375.0
+    },
+    {
+      "id": "swirlix",
+      "overallScore": 375.0
+    },
+    {
+      "id": "bulbasaur_shadow",
+      "overallScore": 374.0
+    },
+    {
+      "id": "tepig_shadow",
+      "overallScore": 374.0
+    },
+    {
+      "id": "tepig",
+      "overallScore": 374.0
+    },
+    {
+      "id": "arcanine_hisuian",
+      "overallScore": 373.0
+    },
+    {
+      "id": "mewtwo",
+      "overallScore": 372.0
+    },
+    {
+      "id": "phanpy_shadow",
+      "overallScore": 371.0
+    },
+    {
+      "id": "liepard_shadow",
+      "overallScore": 371.0
+    },
+    {
+      "id": "phanpy",
+      "overallScore": 371.0
+    },
+    {
+      "id": "torchic",
+      "overallScore": 370.0
+    },
+    {
+      "id": "zorua",
+      "overallScore": 369.0
+    },
+    {
+      "id": "bulbasaur",
+      "overallScore": 368.0
+    },
+    {
+      "id": "piplup_shadow",
+      "overallScore": 367.0
+    },
+    {
+      "id": "deoxys_speed",
+      "overallScore": 367.0
+    },
+    {
+      "id": "kadabra",
+      "overallScore": 367.0
+    },
+    {
+      "id": "mareep",
+      "overallScore": 366.0
+    },
+    {
+      "id": "porygon",
+      "overallScore": 366.0
+    },
+    {
+      "id": "grookey",
+      "overallScore": 365.0
+    },
+    {
+      "id": "accelgor_shadow",
+      "overallScore": 365.0
+    },
+    {
+      "id": "alakazam_shadow",
+      "overallScore": 364.0
+    },
+    {
+      "id": "chespin",
+      "overallScore": 363.0
+    },
+    {
+      "id": "plusle",
+      "overallScore": 363.0
+    },
+    {
+      "id": "alakazam",
+      "overallScore": 362.0
+    },
+    {
+      "id": "shuppet",
+      "overallScore": 360.0
+    },
+    {
+      "id": "palkia_origin",
+      "overallScore": 360.0
+    },
+    {
+      "id": "palkia",
+      "overallScore": 358.0
+    },
+    {
+      "id": "groudon",
+      "overallScore": 358.0
+    },
+    {
+      "id": "klink",
+      "overallScore": 357.0
+    },
+    {
+      "id": "crabominable",
+      "overallScore": 357.0
+    },
+    {
+      "id": "cranidos_shadow",
+      "overallScore": 357.0
+    },
+    {
+      "id": "butterfree_shadow",
+      "overallScore": 357.0
+    },
+    {
+      "id": "fennekin",
+      "overallScore": 356.0
+    },
+    {
+      "id": "joltik",
+      "overallScore": 355.0
+    },
+    {
+      "id": "squirtle",
+      "overallScore": 355.0
+    },
+    {
+      "id": "terrakion",
+      "overallScore": 355.0
+    },
+    {
+      "id": "mareep_shadow",
+      "overallScore": 353.0
+    },
+    {
+      "id": "torchic_shadow",
+      "overallScore": 353.0
+    },
+    {
+      "id": "vulpix_shadow",
+      "overallScore": 353.0
+    },
+    {
+      "id": "fennekin_shadow",
+      "overallScore": 352.0
+    },
+    {
+      "id": "litwick_shadow",
+      "overallScore": 352.0
+    },
+    {
+      "id": "fidough",
+      "overallScore": 351.0
+    },
+    {
+      "id": "mime_jr",
+      "overallScore": 351.0
+    },
+    {
+      "id": "bergmite",
+      "overallScore": 348.0
+    },
+    {
+      "id": "shellder",
+      "overallScore": 347.0
+    },
+    {
+      "id": "woobat",
+      "overallScore": 347.0
+    },
+    {
+      "id": "regice_shadow",
+      "overallScore": 347.0
+    },
+    {
+      "id": "zamazenta_hero",
+      "overallScore": 347.0
+    },
+    {
+      "id": "joltik_shadow",
+      "overallScore": 346.0
+    },
+    {
+      "id": "xurkitree",
+      "overallScore": 346.0
+    },
+    {
+      "id": "squirtle_shadow",
+      "overallScore": 345.0
+    },
+    {
+      "id": "klinklang",
+      "overallScore": 345.0
+    },
+    {
+      "id": "impidimp",
+      "overallScore": 344.0
+    },
+    {
+      "id": "sizzlipede",
+      "overallScore": 344.0
+    },
+    {
+      "id": "dottler",
+      "overallScore": 344.0
+    },
+    {
+      "id": "chikorita",
+      "overallScore": 343.0
+    },
+    {
+      "id": "inkay",
+      "overallScore": 343.0
+    },
+    {
+      "id": "whirlipede",
+      "overallScore": 343.0
+    },
+    {
+      "id": "litwick",
+      "overallScore": 343.0
+    },
+    {
+      "id": "octillery",
+      "overallScore": 342.0
+    },
+    {
+      "id": "vulpix",
+      "overallScore": 341.0
+    },
+    {
+      "id": "zacian_crowned_sword",
+      "overallScore": 341.0
+    },
+    {
+      "id": "butterfree",
+      "overallScore": 341.0
+    },
+    {
+      "id": "dratini",
+      "overallScore": 340.0
+    },
+    {
+      "id": "reuniclus",
+      "overallScore": 340.0
+    },
+    {
+      "id": "inkay_shadow",
+      "overallScore": 339.0
+    },
+    {
+      "id": "pikachu_horizons",
+      "overallScore": 337.0
+    },
+    {
+      "id": "buizel",
+      "overallScore": 337.0
+    },
+    {
+      "id": "dratini_shadow",
+      "overallScore": 336.0
+    },
+    {
+      "id": "maractus",
+      "overallScore": 336.0
+    },
+    {
+      "id": "chikorita_shadow",
+      "overallScore": 335.0
+    },
+    {
+      "id": "indeedee_male",
+      "overallScore": 335.0
+    },
+    {
+      "id": "turtwig",
+      "overallScore": 334.0
+    },
+    {
+      "id": "pikachu_libre",
+      "overallScore": 329.0
+    },
+    {
+      "id": "voltorb_shadow",
+      "overallScore": 329.0
+    },
+    {
+      "id": "pheromosa",
+      "overallScore": 329.0
+    },
+    {
+      "id": "pansear",
+      "overallScore": 329.0
+    },
+    {
+      "id": "whirlipede_shadow",
+      "overallScore": 329.0
+    },
+    {
+      "id": "regigigas",
+      "overallScore": 327.0
+    },
+    {
+      "id": "turtwig_shadow",
+      "overallScore": 327.0
+    },
+    {
+      "id": "swablu",
+      "overallScore": 327.0
+    },
+    {
+      "id": "panpour",
+      "overallScore": 327.0
+    },
+    {
+      "id": "tornadus_incarnate_shadow",
+      "overallScore": 327.0
+    },
+    {
+      "id": "sewaddle",
+      "overallScore": 326.0
+    },
+    {
+      "id": "tornadus_incarnate",
+      "overallScore": 325.0
+    },
+    {
+      "id": "necrozma_dusk_mane",
+      "overallScore": 325.0
+    },
+    {
+      "id": "sunflora",
+      "overallScore": 324.0
+    },
+    {
+      "id": "cranidos",
+      "overallScore": 324.0
+    },
+    {
+      "id": "cubchoo",
+      "overallScore": 323.0
+    },
+    {
+      "id": "cyndaquil_shadow",
+      "overallScore": 323.0
+    },
+    {
+      "id": "cherrim_overcast",
+      "overallScore": 323.0
+    },
+    {
+      "id": "kyurem",
+      "overallScore": 322.0
+    },
+    {
+      "id": "swablu_shadow",
+      "overallScore": 322.0
+    },
+    {
+      "id": "chingling",
+      "overallScore": 322.0
+    },
+    {
+      "id": "shelmet",
+      "overallScore": 321.0
+    },
+    {
+      "id": "cyndaquil",
+      "overallScore": 321.0
+    },
+    {
+      "id": "shellder_shadow",
+      "overallScore": 321.0
+    },
+    {
+      "id": "gothita_shadow",
+      "overallScore": 321.0
+    },
+    {
+      "id": "venonat",
+      "overallScore": 320.0
+    },
+    {
+      "id": "vulpix_alolan",
+      "overallScore": 319.0
+    },
+    {
+      "id": "skiddo",
+      "overallScore": 318.0
+    },
+    {
+      "id": "shelmet_shadow",
+      "overallScore": 318.0
+    },
+    {
+      "id": "beldum_shadow",
+      "overallScore": 318.0
+    },
+    {
+      "id": "pansage",
+      "overallScore": 317.0
+    },
+    {
+      "id": "voltorb",
+      "overallScore": 317.0
+    },
+    {
+      "id": "litten",
+      "overallScore": 317.0
+    },
+    {
+      "id": "vulpix_alolan_shadow",
+      "overallScore": 317.0
+    },
+    {
+      "id": "tadbulb",
+      "overallScore": 316.0
+    },
+    {
+      "id": "greavard",
+      "overallScore": 316.0
+    },
+    {
+      "id": "munna",
+      "overallScore": 316.0
+    },
+    {
+      "id": "gothita",
+      "overallScore": 316.0
+    },
+    {
+      "id": "nacli",
+      "overallScore": 316.0
+    },
+    {
+      "id": "venonat_shadow",
+      "overallScore": 316.0
+    },
+    {
+      "id": "varoom",
+      "overallScore": 316.0
+    },
+    {
+      "id": "pikachu_pop_star",
+      "overallScore": 315.0
+    },
+    {
+      "id": "barboach_shadow",
+      "overallScore": 315.0
+    },
+    {
+      "id": "regigigas_shadow",
+      "overallScore": 315.0
+    },
+    {
+      "id": "necrozma_dawn_wings",
+      "overallScore": 315.0
+    },
+    {
+      "id": "oshawott",
+      "overallScore": 314.0
+    },
+    {
+      "id": "staryu",
+      "overallScore": 314.0
+    },
+    {
+      "id": "psyduck_shadow",
+      "overallScore": 313.0
+    },
+    {
+      "id": "jangmo_o",
+      "overallScore": 313.0
+    },
+    {
+      "id": "binacle",
+      "overallScore": 313.0
+    },
+    {
+      "id": "paras",
+      "overallScore": 313.0
+    },
+    {
+      "id": "psyduck",
+      "overallScore": 311.0
+    },
+    {
+      "id": "duosion_shadow",
+      "overallScore": 310.0
+    },
+    {
+      "id": "solosis_shadow",
+      "overallScore": 310.0
+    },
+    {
+      "id": "oshawott_shadow",
+      "overallScore": 308.0
+    },
+    {
+      "id": "beldum",
+      "overallScore": 308.0
+    },
+    {
+      "id": "sprigatito",
+      "overallScore": 307.0
+    },
+    {
+      "id": "lillipup",
+      "overallScore": 307.0
+    },
+    {
+      "id": "grubbin_shadow",
+      "overallScore": 306.0
+    },
+    {
+      "id": "fletchling_shadow",
+      "overallScore": 306.0
+    },
+    {
+      "id": "pikachu_flying",
+      "overallScore": 306.0
+    },
+    {
+      "id": "pikachu_kariyushi",
+      "overallScore": 306.0
+    },
+    {
+      "id": "trubbish",
+      "overallScore": 306.0
+    },
+    {
+      "id": "fletchling",
+      "overallScore": 305.0
+    },
+    {
+      "id": "barboach",
+      "overallScore": 305.0
+    },
+    {
+      "id": "chimchar",
+      "overallScore": 305.0
+    },
+    {
+      "id": "tapu_bulu",
+      "overallScore": 303.0
+    },
+    {
+      "id": "flabebe",
+      "overallScore": 303.0
+    },
+    {
+      "id": "chimchar_shadow",
+      "overallScore": 300.0
+    },
+    {
+      "id": "duosion",
+      "overallScore": 300.0
+    },
+    {
+      "id": "trubbish_shadow",
+      "overallScore": 300.0
+    },
+    {
+      "id": "petilil",
+      "overallScore": 299.0
+    },
+    {
+      "id": "deoxys_attack",
+      "overallScore": 299.0
+    },
+    {
+      "id": "porygon2",
+      "overallScore": 298.0
+    },
+    {
+      "id": "ferroseed",
+      "overallScore": 297.0
+    },
+    {
+      "id": "charmander",
+      "overallScore": 296.0
+    },
+    {
+      "id": "kadabra_shadow",
+      "overallScore": 296.0
+    },
+    {
+      "id": "kirlia_shadow",
+      "overallScore": 296.0
+    },
+    {
+      "id": "grubbin",
+      "overallScore": 295.0
+    },
+    {
+      "id": "shroodle",
+      "overallScore": 294.0
+    },
+    {
+      "id": "porygon2_shadow",
+      "overallScore": 294.0
+    },
+    {
+      "id": "croagunk",
+      "overallScore": 294.0
+    },
+    {
+      "id": "landorus_therian",
+      "overallScore": 293.0
+    },
+    {
+      "id": "ducklett_shadow",
+      "overallScore": 293.0
+    },
+    {
+      "id": "solosis",
+      "overallScore": 292.0
+    },
+    {
+      "id": "necrozma",
+      "overallScore": 291.0
+    },
+    {
+      "id": "ledyba_shadow",
+      "overallScore": 289.0
+    },
+    {
+      "id": "pikachu_rock_star",
+      "overallScore": 289.0
+    },
+    {
+      "id": "clobbopus",
+      "overallScore": 289.0
+    },
+    {
+      "id": "mudkip",
+      "overallScore": 288.0
+    },
+    {
+      "id": "meltan",
+      "overallScore": 288.0
+    },
+    {
+      "id": "voltorb_hisuian",
+      "overallScore": 286.0
+    },
+    {
+      "id": "salandit",
+      "overallScore": 286.0
+    },
+    {
+      "id": "cacnea",
+      "overallScore": 283.0
+    },
+    {
+      "id": "ledyba",
+      "overallScore": 282.0
+    },
+    {
+      "id": "snivy",
+      "overallScore": 282.0
+    },
+    {
+      "id": "ducklett",
+      "overallScore": 281.0
+    },
+    {
+      "id": "bellsprout",
+      "overallScore": 280.0
+    },
+    {
+      "id": "shieldon",
+      "overallScore": 278.0
+    },
+    {
+      "id": "ferroseed_shadow",
+      "overallScore": 278.0
+    },
+    {
+      "id": "bellsprout_shadow",
+      "overallScore": 277.0
+    },
+    {
+      "id": "snivy_shadow",
+      "overallScore": 276.0
+    },
+    {
+      "id": "croagunk_shadow",
+      "overallScore": 276.0
+    },
+    {
+      "id": "helioptile",
+      "overallScore": 275.0
+    },
+    {
+      "id": "spearow",
+      "overallScore": 275.0
+    },
+    {
+      "id": "tandemaus",
+      "overallScore": 275.0
+    },
+    {
+      "id": "shieldon_shadow",
+      "overallScore": 275.0
+    },
+    {
+      "id": "kirlia",
+      "overallScore": 275.0
+    },
+    {
+      "id": "cacnea_shadow",
+      "overallScore": 274.0
+    },
+    {
+      "id": "charmander_shadow",
+      "overallScore": 274.0
+    },
+    {
+      "id": "nincada",
+      "overallScore": 274.0
+    },
+    {
+      "id": "staryu_shadow",
+      "overallScore": 274.0
+    },
+    {
+      "id": "goomy",
+      "overallScore": 273.0
+    },
+    {
+      "id": "vanillite",
+      "overallScore": 271.0
+    },
+    {
+      "id": "minccino",
+      "overallScore": 270.0
+    },
+    {
+      "id": "skwovet",
+      "overallScore": 268.0
+    },
+    {
+      "id": "spoink_shadow",
+      "overallScore": 268.0
+    },
+    {
+      "id": "cottonee",
+      "overallScore": 267.0
+    },
+    {
+      "id": "mudkip_shadow",
+      "overallScore": 267.0
+    },
+    {
+      "id": "bronzor",
+      "overallScore": 267.0
+    },
+    {
+      "id": "skiploom",
+      "overallScore": 266.0
+    },
+    {
+      "id": "froakie_shadow",
+      "overallScore": 266.0
+    },
+    {
+      "id": "slugma",
+      "overallScore": 264.0
+    },
+    {
+      "id": "hoothoot_shadow",
+      "overallScore": 263.0
+    },
+    {
+      "id": "nickit",
+      "overallScore": 262.0
+    },
+    {
+      "id": "delibird",
+      "overallScore": 262.0
+    },
+    {
+      "id": "fomantis",
+      "overallScore": 262.0
+    },
+    {
+      "id": "helioptile_shadow",
+      "overallScore": 262.0
+    },
+    {
+      "id": "shinx_shadow",
+      "overallScore": 261.0
+    },
+    {
+      "id": "hoothoot",
+      "overallScore": 261.0
+    },
+    {
+      "id": "shroomish",
+      "overallScore": 260.0
+    },
+    {
+      "id": "budew",
+      "overallScore": 259.0
+    },
+    {
+      "id": "horsea_shadow",
+      "overallScore": 259.0
+    },
+    {
+      "id": "meowth_shadow",
+      "overallScore": 258.0
+    },
+    {
+      "id": "hatenna",
+      "overallScore": 258.0
+    },
+    {
+      "id": "riolu",
+      "overallScore": 258.0
+    },
+    {
+      "id": "skiploom_shadow",
+      "overallScore": 257.0
+    },
+    {
+      "id": "spheal_shadow",
+      "overallScore": 256.0
+    },
+    {
+      "id": "spoink",
+      "overallScore": 256.0
+    },
+    {
+      "id": "snorunt",
+      "overallScore": 255.0
+    },
+    {
+      "id": "purrloin_shadow",
+      "overallScore": 255.0
+    },
+    {
+      "id": "carvanha",
+      "overallScore": 254.0
+    },
+    {
+      "id": "smoliv",
+      "overallScore": 254.0
+    },
+    {
+      "id": "carvanha_shadow",
+      "overallScore": 253.0
+    },
+    {
+      "id": "meowth",
+      "overallScore": 253.0
+    },
+    {
+      "id": "spheal",
+      "overallScore": 252.0
+    },
+    {
+      "id": "purrloin",
+      "overallScore": 251.0
+    },
+    {
+      "id": "treecko",
+      "overallScore": 249.0
+    },
+    {
+      "id": "pikipek_shadow",
+      "overallScore": 245.0
+    },
+    {
+      "id": "larvitar_shadow",
+      "overallScore": 245.0
+    },
+    {
+      "id": "yamper",
+      "overallScore": 244.0
+    },
+    {
+      "id": "meowth_alolan",
+      "overallScore": 244.0
+    },
+    {
+      "id": "froakie",
+      "overallScore": 244.0
+    },
+    {
+      "id": "pidove",
+      "overallScore": 243.0
+    },
+    {
+      "id": "pikachu_shaymin",
+      "overallScore": 242.0
+    },
+    {
+      "id": "glameow",
+      "overallScore": 242.0
+    },
+    {
+      "id": "lechonk",
+      "overallScore": 242.0
+    },
+    {
+      "id": "abra_shadow",
+      "overallScore": 242.0
+    },
+    {
+      "id": "pidove_shadow",
+      "overallScore": 242.0
+    },
+    {
+      "id": "horsea",
+      "overallScore": 242.0
+    },
+    {
+      "id": "larvitar",
+      "overallScore": 241.0
+    },
+    {
+      "id": "porygon_z_shadow",
+      "overallScore": 241.0
+    },
+    {
+      "id": "treecko_shadow",
+      "overallScore": 241.0
+    },
+    {
+      "id": "nidoran_female",
+      "overallScore": 241.0
+    },
+    {
+      "id": "shinx",
+      "overallScore": 240.0
+    },
+    {
+      "id": "snorunt_shadow",
+      "overallScore": 240.0
+    },
+    {
+      "id": "baltoy_shadow",
+      "overallScore": 240.0
+    },
+    {
+      "id": "glameow_shadow",
+      "overallScore": 237.0
+    },
+    {
+      "id": "tinkatink",
+      "overallScore": 237.0
+    },
+    {
+      "id": "dewpider_shadow",
+      "overallScore": 237.0
+    },
+    {
+      "id": "charcadet",
+      "overallScore": 236.0
+    },
+    {
+      "id": "dewpider",
+      "overallScore": 235.0
+    },
+    {
+      "id": "electrike_shadow",
+      "overallScore": 234.0
+    },
+    {
+      "id": "diglett_alolan_shadow",
+      "overallScore": 234.0
+    },
+    {
+      "id": "rockruff",
+      "overallScore": 234.0
+    },
+    {
+      "id": "pikipek",
+      "overallScore": 233.0
+    },
+    {
+      "id": "abra",
+      "overallScore": 233.0
+    },
+    {
+      "id": "porygon_z",
+      "overallScore": 233.0
+    },
+    {
+      "id": "electrike",
+      "overallScore": 231.0
+    },
+    {
+      "id": "taillow_shadow",
+      "overallScore": 230.0
+    },
+    {
+      "id": "finneon",
+      "overallScore": 228.0
+    },
+    {
+      "id": "bidoof",
+      "overallScore": 227.0
+    },
+    {
+      "id": "bidoof_shadow",
+      "overallScore": 227.0
+    },
+    {
+      "id": "nidoran_female_shadow",
+      "overallScore": 227.0
+    },
+    {
+      "id": "baltoy",
+      "overallScore": 227.0
+    },
+    {
+      "id": "pikachu",
+      "overallScore": 224.0
+    },
+    {
+      "id": "deoxys",
+      "overallScore": 224.0
+    },
+    {
+      "id": "swinub_shadow",
+      "overallScore": 224.0
+    },
+    {
+      "id": "pikachu_5th_anniversary",
+      "overallScore": 221.0
+    },
+    {
+      "id": "taillow",
+      "overallScore": 221.0
+    },
+    {
+      "id": "diglett_alolan",
+      "overallScore": 220.0
+    },
+    {
+      "id": "dreepy",
+      "overallScore": 219.0
+    },
+    {
+      "id": "wooloo",
+      "overallScore": 219.0
+    },
+    {
+      "id": "sobble",
+      "overallScore": 218.0
+    },
+    {
+      "id": "wattrel",
+      "overallScore": 218.0
+    },
+    {
+      "id": "mareanie",
+      "overallScore": 218.0
+    },
+    {
+      "id": "steenee",
+      "overallScore": 216.0
+    },
+    {
+      "id": "remoraid",
+      "overallScore": 216.0
+    },
+    {
+      "id": "nidoran_male",
+      "overallScore": 214.0
+    },
+    {
+      "id": "swinub",
+      "overallScore": 213.0
+    },
+    {
+      "id": "yungoos",
+      "overallScore": 212.0
+    },
+    {
+      "id": "spinarak",
+      "overallScore": 212.0
+    },
+    {
+      "id": "clefairy",
+      "overallScore": 212.0
+    },
+    {
+      "id": "surskit",
+      "overallScore": 211.0
+    },
+    {
+      "id": "noibat_shadow",
+      "overallScore": 210.0
+    },
+    {
+      "id": "nidoran_male_shadow",
+      "overallScore": 208.0
+    },
+    {
+      "id": "blitzle_shadow",
+      "overallScore": 203.0
+    },
+    {
+      "id": "poliwag",
+      "overallScore": 203.0
+    },
+    {
+      "id": "makuhita_shadow",
+      "overallScore": 202.0
+    },
+    {
+      "id": "noibat",
+      "overallScore": 202.0
+    },
+    {
+      "id": "poliwag_shadow",
+      "overallScore": 202.0
+    },
+    {
+      "id": "luvdisc",
+      "overallScore": 201.0
+    },
+    {
+      "id": "jigglypuff",
+      "overallScore": 201.0
+    },
+    {
+      "id": "delibird_shadow",
+      "overallScore": 199.0
+    },
+    {
+      "id": "duskull_shadow",
+      "overallScore": 198.0
+    },
+    {
+      "id": "whismur_shadow",
+      "overallScore": 197.0
+    },
+    {
+      "id": "makuhita",
+      "overallScore": 197.0
+    },
+    {
+      "id": "ekans",
+      "overallScore": 197.0
+    },
+    {
+      "id": "blitzle",
+      "overallScore": 196.0
+    },
+    {
+      "id": "duskull",
+      "overallScore": 195.0
+    },
+    {
+      "id": "patrat",
+      "overallScore": 194.0
+    },
+    {
+      "id": "wooper",
+      "overallScore": 192.0
+    },
+    {
+      "id": "meditite",
+      "overallScore": 192.0
+    },
+    {
+      "id": "ekans_shadow",
+      "overallScore": 191.0
+    },
+    {
+      "id": "gulpin",
+      "overallScore": 191.0
+    },
+    {
+      "id": "patrat_shadow",
+      "overallScore": 190.0
+    },
+    {
+      "id": "cutiefly",
+      "overallScore": 190.0
+    },
+    {
+      "id": "wooper_shadow",
+      "overallScore": 188.0
+    },
+    {
+      "id": "sentret",
+      "overallScore": 187.0
+    },
+    {
+      "id": "skitty",
+      "overallScore": 187.0
+    },
+    {
+      "id": "toxel",
+      "overallScore": 187.0
+    },
+    {
+      "id": "unown",
+      "overallScore": 187.0
+    },
+    {
+      "id": "lotad",
+      "overallScore": 186.0
+    },
+    {
+      "id": "applin",
+      "overallScore": 185.0
+    },
+    {
+      "id": "tympole",
+      "overallScore": 184.0
+    },
+    {
+      "id": "cherubi",
+      "overallScore": 182.0
+    },
+    {
+      "id": "diglett_shadow",
+      "overallScore": 181.0
+    },
+    {
+      "id": "whismur",
+      "overallScore": 180.0
+    },
+    {
+      "id": "pidgey_shadow",
+      "overallScore": 179.0
+    },
+    {
+      "id": "gossifleur",
+      "overallScore": 178.0
+    },
+    {
+      "id": "pidgey",
+      "overallScore": 177.0
+    },
+    {
+      "id": "tynamo",
+      "overallScore": 175.0
+    },
+    {
+      "id": "wurmple",
+      "overallScore": 175.0
+    },
+    {
+      "id": "wingull",
+      "overallScore": 175.0
+    },
+    {
+      "id": "togepi",
+      "overallScore": 172.0
+    },
+    {
+      "id": "starly_shadow",
+      "overallScore": 171.0
+    },
+    {
+      "id": "marill",
+      "overallScore": 171.0
+    },
+    {
+      "id": "smeargle",
+      "overallScore": 168.0
+    },
+    {
+      "id": "starly",
+      "overallScore": 168.0
+    },
+    {
+      "id": "diglett",
+      "overallScore": 168.0
+    },
+    {
+      "id": "flittle",
+      "overallScore": 167.0
+    },
+    {
+      "id": "rattata_alolan_shadow",
+      "overallScore": 165.0
+    },
+    {
+      "id": "metapod_shadow",
+      "overallScore": 164.0
+    },
+    {
+      "id": "rattata",
+      "overallScore": 163.0
+    },
+    {
+      "id": "poochyena",
+      "overallScore": 163.0
+    },
+    {
+      "id": "poochyena_shadow",
+      "overallScore": 162.0
+    },
+    {
+      "id": "rattata_shadow",
+      "overallScore": 162.0
+    },
+    {
+      "id": "shuckle_shadow",
+      "overallScore": 162.0
+    },
+    {
+      "id": "combee",
+      "overallScore": 161.0
+    },
+    {
+      "id": "burmy_plant",
+      "overallScore": 161.0
+    },
+    {
+      "id": "burmy_sandy",
+      "overallScore": 161.0
+    },
+    {
+      "id": "burmy_trash",
+      "overallScore": 161.0
+    },
+    {
+      "id": "shuckle",
+      "overallScore": 160.0
+    },
+    {
+      "id": "zigzagoon_galarian_shadow",
+      "overallScore": 160.0
+    },
+    {
+      "id": "rookidee_shadow",
+      "overallScore": 160.0
+    },
+    {
+      "id": "metapod",
+      "overallScore": 156.0
+    },
+    {
+      "id": "wooper_paldean",
+      "overallScore": 156.0
+    },
+    {
+      "id": "scatterbug",
+      "overallScore": 154.0
+    },
+    {
+      "id": "venipede_shadow",
+      "overallScore": 154.0
+    },
+    {
+      "id": "zubat_shadow",
+      "overallScore": 153.0
+    },
+    {
+      "id": "rookidee",
+      "overallScore": 152.0
+    },
+    {
+      "id": "rattata_alolan",
+      "overallScore": 152.0
+    },
+    {
+      "id": "zubat",
+      "overallScore": 151.0
+    },
+    {
+      "id": "rolycoly",
+      "overallScore": 150.0
+    },
+    {
+      "id": "nymble",
+      "overallScore": 147.0
+    },
+    {
+      "id": "zigzagoon_galarian",
+      "overallScore": 147.0
+    },
+    {
+      "id": "venipede",
+      "overallScore": 147.0
+    },
+    {
+      "id": "ralts_shadow",
+      "overallScore": 146.0
+    },
+    {
+      "id": "tarountula",
+      "overallScore": 143.0
+    },
+    {
+      "id": "seedot",
+      "overallScore": 143.0
+    },
+    {
+      "id": "hoppip_shadow",
+      "overallScore": 142.0
+    },
+    {
+      "id": "caterpie_shadow",
+      "overallScore": 142.0
+    },
+    {
+      "id": "hoppip",
+      "overallScore": 140.0
+    },
+    {
+      "id": "pawmi",
+      "overallScore": 139.0
+    },
+    {
+      "id": "caterpie",
+      "overallScore": 138.0
+    },
+    {
+      "id": "seedot_shadow",
+      "overallScore": 137.0
+    },
+    {
+      "id": "bunnelby_shadow",
+      "overallScore": 135.0
+    },
+    {
+      "id": "wiglett",
+      "overallScore": 133.0
+    },
+    {
+      "id": "ralts",
+      "overallScore": 133.0
+    },
+    {
+      "id": "bunnelby",
+      "overallScore": 130.0
+    },
+    {
+      "id": "sunkern",
+      "overallScore": 128.0
+    },
+    {
+      "id": "igglybuff",
+      "overallScore": 125.0
+    },
+    {
+      "id": "wynaut",
+      "overallScore": 119.0
+    },
+    {
+      "id": "snom",
+      "overallScore": 117.0
+    },
+    {
+      "id": "pichu",
+      "overallScore": 117.0
+    },
+    {
+      "id": "zigzagoon",
+      "overallScore": 116.0
+    },
+    {
+      "id": "bounsweet",
+      "overallScore": 111.0
+    },
+    {
+      "id": "kricketot",
+      "overallScore": 110.0
+    },
+    {
+      "id": "tyrogue",
+      "overallScore": 109.0
+    },
+    {
+      "id": "slakoth",
+      "overallScore": 101.0
+    },
+    {
+      "id": "cleffa",
+      "overallScore": 101.0
+    },
+    {
+      "id": "azurill",
+      "overallScore": 100.0
+    },
+    {
+      "id": "wimpod",
+      "overallScore": 98.0
+    },
+    {
+      "id": "slaking",
+      "overallScore": 90.0
+    },
+    {
+      "id": "slakoth_shadow",
+      "overallScore": 88.0
+    },
+    {
+      "id": "silcoon",
+      "overallScore": 85.0
+    },
+    {
+      "id": "cascoon",
+      "overallScore": 85.0
+    },
+    {
+      "id": "happiny",
+      "overallScore": 84.0
+    },
+    {
+      "id": "kakuna_shadow",
+      "overallScore": 83.0
+    },
+    {
+      "id": "kakuna",
+      "overallScore": 81.0
+    },
+    {
+      "id": "weedle_shadow",
+      "overallScore": 80.0
+    },
+    {
+      "id": "weedle",
+      "overallScore": 79.0
+    },
+    {
+      "id": "blipbug",
+      "overallScore": 76.0
+    },
+    {
+      "id": "slaking_shadow",
+      "overallScore": 76.0
+    },
+    {
+      "id": "feebas",
+      "overallScore": 59.0
+    },
+    {
+      "id": "feebas_shadow",
+      "overallScore": 55.0
+    },
+    {
+      "id": "magikarp",
+      "overallScore": 45.0
+    },
+    {
+      "id": "magikarp_shadow",
+      "overallScore": 41.0
+    }
+  ]
+}

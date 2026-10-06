@@ -114,7 +114,7 @@
   function open(sourceId, opponentId, sourceButton) {
     const a = findPokemon(sourceId), b = findPokemon(opponentId);
     if (!a || !b) return;
-    const config = createMetaBattleConfig(a, b);
+    const config = createMetaRankingBattleConfig(a, b);
     [config.left, config.right].forEach(combatant => {
       const moves = metaRankingMoves(metaRankingDatasetEntry(combatant.p.id), combatant.p);
       combatant.fast = cloneMatrixMove(moves.fast);

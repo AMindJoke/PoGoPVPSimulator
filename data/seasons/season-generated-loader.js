@@ -8,7 +8,7 @@
   } catch (_) {}
   const next = root.BATTLE_NEXT_SEASON;
   const preview = next?.enabled && requested === next.id && next.generatedAssets;
-  const currentAssetVersion = "20260930-v64-rankings";
+  const currentAssetVersion = "20261006-v124-rankings";
   const files = ["data/great-league-rankings.js", "data/great-league-ranking-details.js"];
   if (preview) files.push(...Object.values(next.generatedAssets));
   // Preview battle rules must be resolved before the app initializes.

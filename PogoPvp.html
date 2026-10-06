@@ -20,7 +20,7 @@
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20260930-background-v2"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261006-v124"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -14479,7 +14479,7 @@
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v117">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261001-v73"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261006-v124"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -21929,7 +21929,7 @@
     function metaOfflineRankingEntry(entry, shieldCount, cellCount, candidatePriorActive = false) {
       const p = findPokemon(entry.id);
       if (!p) return null;
-      const moves = metaMovesForPokemon(p);
+      const moves = metaRankingMoves(entry, p);
       if (!moves.fast || !moves.charged.length) return null;
       const movesetScoreStale = window.PvPeakRankingDetails.movesetScoreStale(entry.moveset, {
         fast: moves.fast.id, charged: moves.charged.map(move => move.id)
@@ -22427,6 +22427,21 @@
         startEnergyA: 0,
         startEnergyB: 0
       };
+    }
+
+    function createMetaRankingBattleConfig(a, b) {
+      const config = createMetaBattleConfig(a, b);
+      const settings = activeMetaRankingSource()?.metadata?.simulationSettings;
+      if (settings?.ivProfile !== "rank1") return config;
+      for (const combatant of [config.left, config.right]) {
+        const build = metaRankingDatasetEntry(combatant.p.id)?.build;
+        if (!build) throw new Error(`Rank 1 build unavailable for ${combatant.p.name}.`);
+        const stats = statsForIvSpread(combatant.p, build.ivAtk, build.ivDef, build.ivHp);
+        Object.assign(combatant, stats, { maxHp: stats.hp, hp: stats.hp,
+          ivAtk: build.ivAtk, ivDef: build.ivDef, ivHp: build.ivHp,
+          energy: 0, baiting: settings.baiting, shieldMode: settings.shieldMode });
+      }
+      return config;
     }
 
     function createMetaCombatant(p, trainer) {
@@ -38038,7 +38053,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261006-v123").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261006-v124").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

@@ -104,7 +104,16 @@ const profilesArg = process.argv.find(arg => arg.startsWith("--profiles="));
 const profileFilter = profilesArg
   ? profilesArg.split("=")[1].split(",").map(value => value.trim()).filter(Boolean)
   : null;
-const matchupCacheRoot = path.join(ROOT, generationOutputRoot, "matchup-cache", "great-league");
+const matchupCacheRootArg = process.argv.find(arg => arg.startsWith("--matchup-cache-root="));
+const matchupCacheRoot = matchupCacheRootArg
+  ? path.resolve(ROOT, matchupCacheRootArg.slice("--matchup-cache-root=".length))
+  : path.join(ROOT, generationOutputRoot, "matchup-cache", "great-league");
+if (matchupCacheRootArg) {
+  const relativeCacheRoot = path.relative(path.join(ROOT, "reports"), matchupCacheRoot);
+  if (relativeCacheRoot.startsWith("..") || path.isAbsolute(relativeCacheRoot)) {
+    throw new Error("Experimental matchup cache must be inside reports.");
+  }
+}
 const fallbackMatchupCacheRoot = generationSeasonId
   ? path.join(ROOT, "data", "matchup-cache", "great-league")
   : null;
@@ -252,13 +261,13 @@ function readRootGlobal(relativePath, globalName) {
   return context[globalName] || context.window[globalName];
 }
 
-function generationData() {
+function generationData(seasonId = generationSeasonId) {
   const canonicalGameMaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
   const canonicalMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
-  if (!generationSeasonId) return { gameMaster: canonicalGameMaster, standardMovesets: canonicalMovesets, preview: null };
+  if (!seasonId) return { gameMaster: canonicalGameMaster, standardMovesets: canonicalMovesets, preview: null };
   const preview = readRootGlobal("data/seasons/next-season.js", "BATTLE_NEXT_SEASON");
-  if (!preview || safeCacheSegment(preview.id) !== generationSeasonId) {
-    throw new Error(`Unknown or unavailable generation season: ${generationSeasonId}`);
+  if (!preview || safeCacheSegment(preview.id) !== seasonId) {
+    throw new Error(`Unknown or unavailable generation season: ${seasonId}`);
   }
   activeGenerationPreview = preview;
   const moveResolved = seasonContext.applyMoveOverrides(canonicalGameMaster, preview.moveOverrides);
@@ -352,8 +361,16 @@ function createWorkerAdapter(source, options = {}) {
       }
     }
   };
-  vm.createContext(context);
-  vm.runInContext(source, context, { filename: "matrix-worker.js", timeout: 30000 });
+  if (options.native === true) {
+    // The source is generated from this repository's worker. Keep its mutable
+    // globals private while allowing Node to compile it in its normal realm.
+    new Function("globalThis", "self", "console", "setTimeout", "clearTimeout", `"use strict";\n${source}`)(
+      context, context.self, console, setTimeout, clearTimeout
+    );
+  } else {
+    vm.createContext(context);
+    vm.runInContext(source, context, { filename: "matrix-worker.js", timeout: 30000 });
+  }
   if (!context.self || typeof context.self.onmessage !== "function") {
     throw new Error("Live matrix worker did not expose an onmessage handler.");
   }
@@ -1379,10 +1396,12 @@ function compactRankingEntries(rankings, moveMap, standardMovesets, allPokemon) 
   return rankings.entries.map(row => {
     const p = allPokemon.get(row.id);
     const moves = p ? moveIdsFor(p, moveMap, standardMovesets) : { fast: null, charged: [] };
+    const stats = p ? (row.profile === RANK1_PROFILE ? rank1Stats(p) : defaultStats(p)) : null;
     return {
       ...row,
       types: p ? p.types : [],
       dex: p ? p.dex : 0,
+      build: stats ? { ivAtk: stats.ivAtk, ivDef: stats.ivDef, ivHp: stats.ivHp, level: stats.level, cp: stats.cp } : null,
       moveset: moves
     };
   });
@@ -1497,7 +1516,7 @@ function main() {
   if (!scenarios.length) throw new Error("No shield scenarios selected.");
 
   console.log(`Loading live simulator matrix worker for ${generationSeasonId || "current"}...`);
-  const adapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true });
+  const adapter = createWorkerAdapter(extractLiveWorkerSource(), { dreStandard: true, native: args.has("--native-worker") });
   const externalOpponentWeights = loadExternalOpponentWeights(weightSourcePath);
   if (candidatePriorWeight > 0 && !candidatePriorSourcePath) {
     throw new Error("--candidate-prior-weight requires --candidate-prior-source.");
@@ -1662,6 +1681,7 @@ function main() {
     matrixVersion: MATRIX_VERSION,
     engineVersion: MATRIX_VERSION,
     scoreVersion: MATCHUP_SCORE_VERSION,
+    simulationSettings: { ivProfile: profiles.length === 1 ? profiles[0] : null, baiting: "selective", shieldMode: "always", startEnergy: 0 },
     cpCap: CP_CAP,
     configuredPokemonCount: allPokemonRanking ? eligiblePokemon.length : metaConfig.pokemon.length,
     fullCandidateCount,
@@ -1925,5 +1945,6 @@ module.exports = {
   createBattleConfig,
   cloneBattleConfig,
   fastEnergyInTurns,
-  compactResult
+  compactResult,
+  compactCacheResult
 };

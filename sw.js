@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-06-v123-meta-card-provenance";
+const CACHE_VERSION = "2026-10-06-v124-meta-refresh";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -18,7 +18,7 @@ const CORE_ASSETS = [
   "./battle-data.js",
   "./cramorant-data.js",
   "./default-movesets.js",
-  "./data/seasons/season-generated-loader.js",
+  "./data/seasons/season-generated-loader.js?v=20261006-v124",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js",
   "./src/season/season-context.js",
@@ -42,7 +42,7 @@ const CORE_ASSETS = [
   "./src/analysis/iv-impact.js",
   "./src/analysis/ranking-details.js?v=20261006-v123",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
-  "./src/ui/meta-quick-matchup.js?v=20261001-v73",
+  "./src/ui/meta-quick-matchup.js?v=20261006-v124",
   "./src/ui/meta-quick-matchup.css?v=20261006-v123",
   "./src/analysis/pokemon-analysis-view-model.js",
   "./src/ui/pokemon-analysis.js",
@@ -122,8 +122,8 @@ const CORE_ASSETS = [
 // Warm only the current data after the shell. Reuse browser HTTP cache for
 // downloads already started by the page, while preserving first-visit offline use.
 const RANKING_ASSETS = [
-  "./data/great-league-rankings.js?v=20260930-v64-rankings",
-  "./data/great-league-ranking-details.js?v=20260930-v64-rankings",
+  "./data/great-league-rankings.js?v=20261006-v124-rankings",
+  "./data/great-league-ranking-details.js?v=20261006-v124-rankings",
   "./data/great-league-role-rankings.json?v=20260930-role-v1"
 ];
 
