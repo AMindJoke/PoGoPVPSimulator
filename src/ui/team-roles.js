@@ -10,6 +10,8 @@
       detailViews.set(detail.dataset.roleDetail,view);
       detail.querySelectorAll('[data-role-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.roleView===view)));
       detail.querySelectorAll('[data-role-panel]').forEach(panel=>panel.hidden=panel.dataset.rolePanel!==view);
+      const more=detail.querySelector('.team-workspace-more');if(more)more.open=!['lead','switch','closer'].includes(view);
+      card.querySelectorAll('.team-role-pick').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.roleOpen===view)));
       if(focus){detail.querySelector(`[data-role-view="${view}"]`)?.focus({preventScroll:true});detail.scrollIntoView({block:'nearest'});}
     }
     const image=(slot,side='own')=>`<img data-role-sprite="${slot}" data-role-side="${side}" alt="" aria-hidden="true">`;
@@ -68,11 +70,11 @@
       $('teamRolesAnalyze').hidden=state.phase==='complete' && !state.replyIncomplete;
       $('teamRolesCancel').hidden=state.phase!=='running';
       $('teamRolesDelay').value=String(delay);
-      $('teamRolesStatus').textContent=state.phase==='running' ? `Matchups & replies · ${state.done}/${state.total}…${state.reused ? ` · ${state.reused} reused` : ''}` : state.phase==='error' ? state.error : state.phase==='complete' ? `Full HP · ${state.analysis.opponents.length} opponents${state.reused ? ` · ${state.reused} reused` : ''}${state.replyIncomplete ? ' · reply check incomplete' : ''}` : enough ? 'Lead · switch · closer · 0 energy' : 'Add at least three Pokémon and an opponent team.';
+      $('teamRolesStatus').textContent=state.phase==='running' ? `Checking matchups & replies · ${state.done}/${state.total}…` : state.phase==='error' ? state.error : state.phase==='complete' ? `${state.analysis.opponents.length} opponents · full HP · 0 energy${state.replyIncomplete ? ' · reply check incomplete' : ''}` : enough ? '' : 'Add at least three Pokémon and an opponent team.';
       if(enough)$('teamTrioSuggestions').querySelector('summary').textContent='Suggested trios';
       const analysis=state.analysis;
-      $('teamTrioSuggestionsList').hidden=state.phase==='complete' || state.phase==='running';
-      if(state.phase!=='complete' || !analysis?.ready){$('teamRolesResults').innerHTML='';markup='';return;}
+      $('teamTrioSuggestionsList').hidden=!!options.workspace || state.phase==='complete' || state.phase==='running';
+      if(state.phase!=='complete' || !analysis?.ready){$('teamRolesResults').innerHTML='';markup='';options.workspace?.();return;}
       const profile=slot=>analysis.profiles.find(p=>p.slot===slot),name=slot=>own.team[slot].name,enemyName=slot=>opponent.team[slot].name;
       const metric=(value,caption,condition)=>`<strong>${value}/${analysis.opponents.length}</strong><small>${caption}</small>${condition}`;
       const cards=analysis.suggestions.map((candidate,index)=>{
@@ -89,7 +91,7 @@
           const scene=root.PvPeakTeamRoles.scenarios(delay).find(s=>s.id===id);
           return {role:id==='even1' ? 'lead' : id==='closer' ? 'closer' : 'switch', fragile:analysis.opponents.some(enemy=>root.PvPeakTeamRoles.sensitive(state.results.get(root.PvPeakTeamRoles.cellKey(slot,enemy,scene)))), markup:`<div class="team-role-matchup-row"><b>${escape(name(slot))}<small>${label} · ${scene.a}–${scene.b}${id==='switch1' ? ` · +${delay}t` : scene.bankFoeFast ? ' · foe +1 Fast energy' : ''}</small></b>${analysis.opponents.map(enemy=>{
             const result=state.results.get(root.PvPeakTeamRoles.cellKey(slot,enemy,scene)),outcome=root.PvPeakTeamRoles.outcome(result),mark=outcome==='A' ? '✓' : outcome==='draw' ? '≈' : outcome==='B' ? '×' : '?',fragile=root.PvPeakTeamRoles.sensitive(result);
-            return `<button type="button" class="team-role-matchup is-${outcome}" data-role-battle="${slot}" data-role-opponent="${enemy}" data-role-scenario="${id}" aria-label="${escape(`${name(slot)} versus ${enemyName(enemy)}: ${outcome==='A' ? 'Win' : outcome==='B' ? 'Loss' : outcome==='draw' ? 'Draw' : 'Unresolved'}${fragile ? '; a tested reply can change this result' : ''}.${cmpCopy(result?.cmpDependency)} Open Battle in a new tab.`)}">${image(enemy,'opponent')}<small class="team-role-matchup-name">${escape(enemyName(enemy))}</small><span>${mark}${fragile ? '<small class="team-role-flip-mark"> !</small>' : ''}${cmpMark(result?.cmpDependency)}</span></button>`;
+            return `<button type="button" class="team-role-matchup is-${outcome}" data-role-battle="${slot}" data-role-opponent="${enemy}" data-role-scenario="${id}" aria-label="${escape(`${name(slot)} versus ${enemyName(enemy)}: ${outcome==='A' ? 'Win' : outcome==='B' ? 'Loss' : outcome==='draw' ? 'Draw' : 'Unresolved'}${fragile ? '; a tested reply can change this result' : ''}.${cmpCopy(result?.cmpDependency)} ${options.inspect ? 'View matchup details.' : 'Open Battle in a new tab.'}`)}">${image(enemy,'opponent')}<small class="team-role-matchup-name">${escape(enemyName(enemy))}</small><span>${mark}${fragile ? '<small class="team-role-flip-mark"> !</small>' : ''}${cmpMark(result?.cmpDependency)}</span></button>`;
           }).join('')}</div>`};
         });
         const farm=candidate.farm, switchProfile=profile(candidate.switch), strategic=contextDetails(candidate,name,enemyName);
@@ -103,10 +105,10 @@
         const riskSummary=riskLabel || (replyCount ? 'Tested replies can flip results' : 'No coverage gaps · 1–1');
         const riskButton=`<button type="button" class="team-role-risk-preview${riskSlots.length || replyCount ? ' has-risk' : ''}" aria-controls="team-role-details-${index}" data-role-open="${riskSlots.length ? 'plan' : replyCount ? 'replies' : 'plan'}"><span><b>${escape(riskSummary)}</b>${preview}${replyCount && riskSlots.length ? `<small>${replyCount} tested flip${replyCount===1 ? '' : 's'}</small>` : ''}${replyCount==null ? '<small>Reply check incomplete</small>' : ''}</span><span aria-hidden="true">›</span></button>`;
         const panel=(id,body)=>`<section class="team-role-detail-panel" data-role-panel="${id}" aria-label="${id[0].toUpperCase()+id.slice(1)} details"${id==='lead' ? '' : ' hidden'}>${body}</section>`;
-        const rolePanels=['lead','switch','closer'].map(role=>panel(role,`${role==='switch' ? reliability(switchProfile,analysis.opponents,enemyName) : ''}<div class="team-role-matchups">${details.filter(row=>row.role===role).map(row=>row.markup).join('')}</div><p class="team-role-matchup-legend">✓ Win · ≈ Draw · × Loss${details.some(row=>row.role===role && row.fragile) ? ' · ! Tested reply can change outcome' : ''}</p><p>Tap a matchup → Battle ↗</p>${role==='switch' ? route(candidate,name,enemyName) : ''}`)).join('');
+        const rolePanels=['lead','switch','closer'].map(role=>panel(role,`${role==='switch' ? reliability(switchProfile,analysis.opponents,enemyName) : ''}<div class="team-role-matchups">${details.filter(row=>row.role===role).map(row=>row.markup).join('')}</div><p class="team-role-matchup-legend">✓ Win · ≈ Draw · × Loss${details.some(row=>row.role===role && row.fragile) ? ' · ! Tested reply can change outcome' : ''}</p><p>${options.inspect ? 'Tap a matchup for details' : 'Tap a matchup → Battle ↗'}</p>${role==='switch' ? route(candidate,name,enemyName) : ''}`)).join('');
         const plan=panel('plan',`${risk}${candidate.uncoveredLead.length ? `<div class="team-role-warning"><b>Foe +1 Fast · no switch win</b><span>${candidate.uncoveredLead.map(slot=>image(slot,'opponent')).join('')}</span></div>` : ''}${strategic}`);
         const conditions=panel('conditions',`<div class="team-role-scenarios">${scenarioRows}</div><p>New counter: zero starting energy with +${delay} turns of reaction delay. Staying lead: foe has one Fast move of energy, no delay, full HP and 1–1 shields. This energy check does not replay opening damage or cooldowns.</p><p>Switch hold: win/draw at 0–0, 1–1 and 2–2 without using more shields; tested 1–1 replies included when complete. Closer wins at 1–0 require a shield advantage.</p>${switchProfile.flips.length ? `<div class="team-role-reason"><b>Wins gained · +${delay}t · 1–1</b><span>${switchProfile.flips.map(slot=>image(slot,'opponent')).join('')}</span></div>` : ''}${candidate.shared.length ? `<p>At least two members lose at 1–1: ${candidate.shared.map(slot=>escape(enemyName(slot))).join(' · ')}.</p>` : ''}${farm ? `<div class="team-role-farm"><b>Farm after a lead loss</b>${image(candidate.lead)}<span>→</span>${image(farm.opponentSlot,'opponent')}<span>→</span>${image(farm.slot)}<span><strong>+${farm.energyAfter}</strong> energy · ${farm.hpPercent}% HP</span></div><p>Lead matchup at 1–1. Safe Fast-only farm, no additional shield used. Opponent stays in.</p>` : ''}`);
-        return `<article class="team-role-trio${selected ? ' is-selected' : ''}"><header><b>${escape(candidate.style)}</b><span>Answers to ${candidate.covered}/${candidate.total} · 1–1</span></header><div class="team-role-lineup">${roles.map(([label,slot,value,caption,condition])=>`<button type="button" class="team-role-pick" data-role-open="${label.toLowerCase()}" aria-controls="team-role-details-${index}" aria-label="${escape(`${label}: ${name(slot)}, ${value}/${candidate.total} ${caption}${label==='Switch' ? ` at 0–0, 1–1 and 2–2, with ${delay} turns reaction` : label==='Lead' ? ' at 1–1 shields' : ' at 1–0 shields'}. Show matchups.`)}"><small>${label}</small>${image(slot)}<b>${escape(name(slot))}</b>${metric(value,caption,condition)}<span class="team-role-pick-action">Matchups ⌄</span></button>`).join('')}</div>${decision}${riskButton}${counterLineup(candidate,index,name,enemyName)}<button type="button" class="secondary" data-role-trio="${candidate.slots.join(',')}" aria-pressed="${selected}">${selected ? 'Selected trio ✓' : 'Use trio'}</button><details class="team-role-detail" id="team-role-details-${index}" data-role-detail="trio-${index}"><summary>Matchups & details</summary><div class="team-role-detail-tabs" role="group" aria-label="Trio details">${['lead','switch','closer','plan','replies','conditions'].map(view=>`<button type="button" data-role-view="${view}" aria-pressed="${view==='lead'}">${view[0].toUpperCase()+view.slice(1)}${view==='replies' && replyCount ? ` · ${replyCount}` : ''}</button>`).join('')}</div>${rolePanels}${plan}${panel('replies',replyChecks(candidate,name,enemyName,delay))}${conditions}</details></article>`;
+        return `<article data-role-index="${index}" class="team-role-trio${selected ? ' is-selected' : ''}"><header><b>${escape(candidate.style)}</b><span>Answers to ${candidate.covered}/${candidate.total} · 1–1</span></header><div class="team-role-lineup">${roles.map(([label,slot,value,caption,condition])=>`<button type="button" class="team-role-pick" data-role-open="${label.toLowerCase()}" aria-controls="team-role-details-${index}" aria-label="${escape(`${label}: ${name(slot)}, ${value}/${candidate.total} ${caption}${label==='Switch' ? ` at 0–0, 1–1 and 2–2, with ${delay} turns reaction` : label==='Lead' ? ' at 1–1 shields' : ' at 1–0 shields'}. Show matchups.`)}"><small>${label}</small>${image(slot)}<b>${escape(name(slot))}</b>${metric(value,caption,condition)}<span class="team-role-pick-action">Matchups ⌄</span></button>`).join('')}</div>${decision}${riskButton}${counterLineup(candidate,index,name,enemyName)}<button type="button" class="secondary" data-role-trio="${candidate.slots.join(',')}" aria-pressed="${selected}">${selected ? 'Selected trio ✓' : 'Use trio'}</button><details class="team-role-detail" id="team-role-details-${index}" data-role-detail="trio-${index}"><summary>Matchups & details</summary><div class="team-role-detail-tabs" role="group" aria-label="Trio details">${['lead','switch','closer','plan','replies','conditions'].map(view=>`<button type="button" data-role-view="${view}" aria-pressed="${view==='lead'}">${view[0].toUpperCase()+view.slice(1)}${view==='replies' && replyCount ? ` · ${replyCount}` : ''}</button>`).join('')}</div>${rolePanels}${plan}${panel('replies',replyChecks(candidate,name,enemyName,delay))}${conditions}</details></article>`;
       }).join('');
       const leaders=analysis.leaders[selectedRole].map(p=>{
         const roleScenarios=selectedRole==='lead' ? ['even1','even2'] : selectedRole==='switch' ? ['switch0','switch1','switch2'] : ['even0','closer'];
@@ -116,7 +118,7 @@
         }).join('')}</div></div>`;
       }).join('');
       const next=`<p class="team-role-scope">${analysis.opponentContext ? `All ${analysis.opponentContext.poolCount} opposing trios checked · ` : ''}Individual matchups · full HP · 0 energy</p><div class="team-role-trios">${cards}</div>${opponentPanel(analysis.opponentContext,enemyName)}<details class="team-role-leaders" data-role-detail="leaders"><summary>Best Pokémon by role</summary><div class="team-role-tabs" role="group" aria-label="Role">${['lead','switch','closer'].map(role=>`<button type="button" class="secondary" data-role-tab="${role}" aria-pressed="${role===selectedRole}">${role[0].toUpperCase()+role.slice(1)}</button>`).join('')}</div>${leaders}<p>W = win · D = draw · L = loss. Unresolved results are marked ?.</p></details>`;
-      if(next===markup)return;
+      if(next===markup){options.workspace?.();return;}
       const open=new Set(Array.from($('teamRolesResults').querySelectorAll('details[open][data-role-detail]')).map(e=>e.dataset.roleDetail));
       markup=next;$('teamRolesResults').innerHTML=next;
       $('teamRolesResults').querySelectorAll('details[data-role-detail]').forEach(e=>e.open=open.has(e.dataset.roleDetail));
@@ -125,13 +127,14 @@
         const member=(img.dataset.roleSide==='opponent' ? opponent : own).team[Number(img.dataset.roleSprite)];options.setSprite(img,member);img.title=member.name;
         if(img.closest('.team-role-counter-lineup,.team-role-risk-preview,.team-role-reason,.team-role-warning,.team-role-farm,.team-role-route,.team-role-reliability,.team-role-options,.team-role-context')){img.removeAttribute('aria-hidden');img.alt=member.name;}
       });
+      options.workspace?.();
     }
     $('teamRolesAnalyze').onclick=()=>options.analysis.start();
     $('teamRolesCancel').onclick=()=>options.analysis.cancel();
     $('teamRolesDelay').onchange=e=>options.analysis.setDelay(e.target.value);
     $('teamRolesResults').onclick=e=>{
       const tab=e.target.closest('[data-role-tab]');if(tab){selectedRole=tab.dataset.roleTab;render();$('teamRolesResults').querySelector(`[data-role-tab="${selectedRole}"]`)?.focus({preventScroll:true});}
-      const trio=e.target.closest('[data-role-trio]');if(trio){options.useTrio(trio.dataset.roleTrio.split(',').map(Number));options.renderOpponent();render();}
+      const trio=e.target.closest('[data-role-trio]');if(trio){options.useTrio(trio.dataset.roleTrio.split(',').map(Number));options.renderOpponent();render();options.navigate?.(Number(trio.closest('.team-role-trio').dataset.roleIndex),'lead',true);}
       const battle=e.target.closest('[data-role-battle]');
       if(battle && e.target.closest('[data-role-cmp]')){
         const slot=Number(battle.dataset.roleBattle),enemy=Number(battle.dataset.roleOpponent),reverse=battle.dataset.rolePerspective==='opponent';
@@ -140,15 +143,15 @@
         root.PvPeakCmpDependencyUI?.show(cell?.cmpDependency,{A:(reverse?options.opponent():options.own()).team[reverse?enemy:slot].name,B:(reverse?options.own():options.opponent()).team[reverse?slot:enemy].name});
         return;
       }
-      if(battle)options.battle(Number(battle.dataset.roleBattle),Number(battle.dataset.roleOpponent),battle.dataset.roleScenario,null,battle.dataset.rolePerspective==='opponent');
+      if(battle){if(options.inspect && battle.dataset.rolePerspective!=='opponent')options.inspect({slot:Number(battle.dataset.roleBattle),enemy:Number(battle.dataset.roleOpponent),scenario:battle.dataset.roleScenario});else options.battle(Number(battle.dataset.roleBattle),Number(battle.dataset.roleOpponent),battle.dataset.roleScenario,null,battle.dataset.rolePerspective==='opponent');}
       const view=e.target.closest('[data-role-view]');if(view)showDetail(view.closest('.team-role-trio'),view.dataset.roleView);
-      const trigger=e.target.closest('[data-role-open]');if(trigger)showDetail(trigger.closest('.team-role-trio'),trigger.dataset.roleOpen,true);
+      const trigger=e.target.closest('[data-role-open]');if(trigger){if(options.navigate)options.navigate(Number(trigger.closest('.team-role-trio').dataset.roleIndex),trigger.dataset.roleOpen);else showDetail(trigger.closest('.team-role-trio'),trigger.dataset.roleOpen,true);}
       const reply=e.target.closest('[data-role-reply]');if(reply){
         const slot=Number(reply.dataset.roleReply),enemy=Number(reply.dataset.roleOpponent),scenario=root.PvPeakTeamRoles.scenarios(options.analysis.delay()).find(s=>s.id===reply.dataset.roleScenario);
         const cell=options.analysis.state().results.get(root.PvPeakTeamRoles.cellKey(slot,enemy,scenario));
         if(cell?.sensitivity?.status==='sensitive')options.battle(slot,enemy,scenario.id,cell.sensitivity.evidence);
       }
     };
-    return {render};
+    return {render,show(index,view){const card=$('teamRolesResults').querySelectorAll('.team-role-trio')[index];if(card)showDetail(card,view,false);}};
   }};
 })(typeof globalThis!=='undefined' ? globalThis : this);

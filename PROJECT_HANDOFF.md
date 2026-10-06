@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Team Builder: scelta, matchup e farm separati, 6 ottobre 2026
+
+- Nuovo workspace inglese con tre viste Which three?, Matchups e Farm. Roster e condizioni apribili; i tool contro il Meta restano nel gruppo Team vs Meta & other tools. Riutilizza renderer, risultati e handler esistenti: nessuna modifica a motore, ranking o dati.
+- Suggerimenti compatti con ruoli cliccabili, punto di forza, rischio e Toughest opposing trio ordinato. Use trio assegna i ruoli e apre Matchups; un tap su una cella apre il risultato reale, CMP/alternative quando presenti e Open in Battle. Switch distingue New counter dal caso Opponent stays, mostrando una sola matrice. Verifiche a scudi pari, recupero del lead e Plan/Replies/Conditions restano apribili.
+- La scelta manuale conserva il confronto senza attribuire ruoli inesistenti. Preferenza di lineup separata, valida solo per gli stessi roster/mosse/IV, ripristinata dopo reload e azzerata dalla selezione manuale. Farm permette di scegliere Pokémon sconfitto e avversario, mostrando solo il gruppo richiesto con i due farmer; risorse, timeline, continuazione e Battle restano nei dettagli.
+- Asset/cache v141. Verificati desktop 1280 e mobile 320/390, senza overflow, persistenza lineup, counter ordinati, switch con/ senza reazione, CMP e apertura Battle Mimikyu/Melmetal 1–1 con IV e mosse originali (Mimikyu vince con 69 HP). Suite UI/ruoli/build flow/contesto/farm/link/parità/PWA/cache passate e gate reference 15/15. Nessun errore JS osservato. Trio di prova ripristinato a Melmetal/Mimikyu/Clodsire; tab utente preservata. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### CMP compatto nel Team Builder, 6 ottobre 2026
 
 - Sigla ⇄ CMP inline da circa 30×14 px al posto del badge 44×28: fondo e bordo rimossi, colore ambra leggibile e area di tap estesa tramite pseudo-elemento. Risultato e sigla restano sulla stessa riga. Badge Battle e diagnostica invariati. Cache applicativa e CSS v132.

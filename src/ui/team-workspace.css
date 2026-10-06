@@ -1,0 +1,83 @@
+#teamAnalysisWorkspace [hidden] { display:none!important; }
+#teamAnalysisWorkspace { background:var(--panel);padding:0;border:0;border-radius:0;margin:10px 0; }
+#teamAnalysisWorkspace > .team-workspace-panel { width:100%;max-width:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible; }
+#teamAnalysisWorkspace > header { flex-direction:row;align-items:center;text-align:left;margin-bottom:8px; }
+#teamWorkspaceNav { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:14px 0; }
+#teamWorkspaceNav button { min-width:0;min-height:44px;padding:8px 3px;font-size:13px;background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none;text-transform:none;letter-spacing:normal; }
+#teamWorkspaceNav button[aria-pressed=true] { border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel)); }
+#teamWorkspaceCurrent { display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0; }
+#teamWorkspaceCurrent > div { display:flex;align-items:center;flex-wrap:wrap;gap:5px; }
+#teamWorkspaceCurrent span { display:flex; }
+#teamWorkspaceCurrent img { width:32px;height:32px;object-fit:contain; }
+#teamWorkspaceCurrent small { color:var(--muted);font-size:12px; }
+#teamWorkspaceCurrent button { min-height:44px;padding:6px;font-size:12px; }
+#teamWorkspaceOwnSetup,#teamWorkspaceSetup,#teamWorkspaceMetaTools { margin:10px 0;padding:8px 0;border-top:1px solid var(--line); }
+#teamWorkspaceSetup { margin:4px 0;padding:0;border:0; }
+#teamWorkspaceOwnSetup > summary,#teamWorkspaceSetup > summary,#teamWorkspaceManual > summary,#teamWorkspaceRoster > summary,#teamWorkspaceMetaTools > summary { min-height:44px;display:list-item;align-content:center;cursor:pointer;color:var(--accent);font-size:13px; }
+#teamAnalysisWorkspace #teamTrioSuggestions,#teamAnalysisWorkspace #teamTrioFarm { margin:0;padding:0;border:0; }
+#teamAnalysisWorkspace #teamTrioSuggestions > summary,#teamAnalysisWorkspace #teamTrioFarm > summary { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-trio > .team-role-detail { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-lineup > .team-role-pick { grid-template-rows:18px 44px minmax(32px,auto);gap:2px; }
+#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-pick > strong,#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-pick > small:not(:first-child),#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-pick > .team-role-condition,#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-pick > .team-role-pick-action { display:none; }
+#teamAnalysisWorkspace .team-role-decision { padding:8px 0;margin-top:6px;grid-template-columns:1fr; }
+#teamAnalysisWorkspace .team-role-decision > b { display:none; }
+#teamAnalysisWorkspace .team-role-scope { display:none; }
+#teamAnalysisWorkspace .team-role-controls { margin:0 0 8px; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-trios { grid-template-columns:minmax(0,1fr);margin:0; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-trio { padding:0;border:0;background:transparent; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-trio > header,#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-decision { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-trio > button[aria-pressed=true] { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-lineup > .team-role-pick { grid-template-rows:18px 38px minmax(32px,auto);gap:2px;background:var(--soft);border-color:var(--line); }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick > strong,#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick > small:not(:first-child),#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick > .team-role-condition { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick[aria-pressed=true] { border-color:var(--accent);color:var(--accent); }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick > .team-role-pick-action { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-pick img { width:38px;height:38px; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-detail > summary { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-detail-tabs button[data-role-view=lead],#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-detail-tabs button[data-role-view=switch],#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-detail-tabs button[data-role-view=closer] { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-detail-tabs { margin:10px 0; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-leaders,#teamAnalysisWorkspace[data-workspace-view=matchups] .team-role-options { display:none; }
+#teamAnalysisWorkspace .team-role-trio > .team-role-risk-preview { padding:8px 0; }
+#teamAnalysisWorkspace .team-role-trio > .team-role-detail { padding:0;border:0; }
+#teamAnalysisWorkspace .team-workspace-more { margin-top:12px; }
+.team-workspace-switch-tabs { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:8px 0; }
+.team-workspace-switch-tabs button { min-width:0;min-height:44px;padding:4px;font-size:12px;color:var(--ink);background:var(--soft);border:1px solid var(--line);box-shadow:none; }
+.team-workspace-switch-tabs button[aria-pressed=true] { color:var(--accent);border-color:var(--accent); }
+#teamAnalysisWorkspace #teamRolesAnalyze { color:var(--on-accent,#fff);background:var(--accent);border-color:var(--accent); }
+.team-workspace-members { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:12px 0; }
+.team-workspace-members button { display:grid;justify-items:center;gap:4px;min-width:0;min-height:44px;padding:6px;background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none;font-size:12px; }
+.team-workspace-members button[aria-pressed=true] { border-color:var(--accent);color:var(--accent); }
+.team-workspace-members img { width:36px;height:36px;object-fit:contain; }
+.team-workspace-baseline-head small { display:block;color:var(--muted);font-size:11px;margin:5px 0; }
+.team-workspace-comparison { display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;font-size:12px; }
+.team-workspace-comparison small { color:var(--muted); }
+.team-workspace-dialog { width:min(380px,calc(100vw - 24px));box-sizing:border-box;padding:16px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px; }
+.team-workspace-dialog::backdrop { background:#0005; }
+.team-workspace-dialog-head { display:flex;align-items:center;justify-content:space-between;gap:8px; }
+.team-workspace-dialog h3 { margin:0;font-size:16px; }
+.team-workspace-dialog button { min-height:44px;font-size:12px;background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none; }
+.team-workspace-dialog-head button { min-width:44px; }
+.team-workspace-dialog-pair { display:flex;align-items:center;justify-content:space-around;gap:8px;margin:14px 0; }
+.team-workspace-dialog-pair img { width:56px;height:56px;object-fit:contain; }
+.team-workspace-dialog p { font-size:12px;color:var(--muted); }
+.team-workspace-dialog .team-workspace-battle { width:100%;margin-top:12px;background:var(--accent);color:var(--on-accent,#fff); }
+.team-workspace-reply { font-size:12px;color:var(--danger);margin:10px 0;display:grid;gap:6px; }
+.team-workspace-cmp { color:#845000!important;background:#fff1cd!important; }
+body[data-theme=neo] .team-workspace-dialog .team-workspace-battle,body[data-theme=neo] #teamAnalysisWorkspace #teamRolesAnalyze { color:#0b0f1c; }
+#teamAnalysisWorkspace .team-farm-pickers { grid-column:1/-1; }
+#teamAnalysisWorkspace .team-farm-pickers > b { font-size:12px; }
+#teamAnalysisWorkspace .team-farm-pick-row { display:flex;flex-wrap:wrap;gap:5px;margin:7px 0 12px; }
+#teamAnalysisWorkspace .team-farm-pick-row button { display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 7px;font-size:12px;color:var(--ink);background:var(--soft);border:1px solid var(--line);box-shadow:none; }
+#teamAnalysisWorkspace .team-farm-pick-row button[aria-pressed=true] { border-color:var(--accent);color:var(--accent); }
+#teamAnalysisWorkspace .team-farm-pick-row img { width:28px;height:28px;object-fit:contain; }
+#teamAnalysisWorkspace #teamTrioFarmFilter { display:none; }
+#teamAnalysisWorkspace #teamTrioFarmResults { grid-template-columns:minmax(0,1fr); }
+#teamAnalysisWorkspace .team-farm-choices { grid-template-columns:minmax(0,1fr); }
+#teamAnalysisWorkspace .team-farm-group-head .team-farm-loss-context { display:none; }
+#teamAnalysisWorkspace .team-farm-choice { display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 8px;align-items:center; }
+#teamAnalysisWorkspace .team-farm-choice .team-farm-person { grid-column:1;grid-row:1/4;display:grid;grid-template-rows:38px auto; }
+#teamAnalysisWorkspace .team-farm-choice .team-farm-person img { width:38px;height:38px; }
+#teamAnalysisWorkspace .team-farm-choice > .team-farm-badge { min-height:0;grid-column:2; }
+#teamAnalysisWorkspace .team-farm-choice .team-farm-stats { grid-column:2;grid-template-columns:1fr 1fr;gap:8px; }
+#teamAnalysisWorkspace .team-farm-choice .team-farm-choice-action { grid-column:2;text-align:left; }
+#teamAnalysisWorkspace .team-farm-choice .team-farm-cost { grid-column:2;justify-content:start; }
+@media(min-width:900px) { #teamAnalysisWorkspace[data-workspace-view=trios] .team-role-trios { grid-template-columns:repeat(3,minmax(0,1fr)); } #teamAnalysisWorkspace .team-farm-choices { grid-template-columns:repeat(2,minmax(0,1fr)); } }

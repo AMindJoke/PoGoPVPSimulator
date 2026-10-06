@@ -21,13 +21,14 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync("src/ui/team-roles.js", "utf8"), context);
 const calls = [];
 const team = prefix => ({ team: Array.from({ length: 4 }, (_, index) => ({ name: `${prefix} ${index}`, pokemonId: `${prefix}-${index}` })) });
-const ui = context.PvPeakTeamRolesUI.create({
+const uiOptions = {
   own: () => team("Own"), opponent: () => team("Foe"), trioIds: () => [],
   escapeHtml: text => String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll('"', "&quot;"),
   shieldSvg: () => "<svg></svg>", setSprite: () => {}, moveName: id => id,
   analysis: { state: () => ({ phase: "complete", analysis, results, opponentResults }), delay: () => 2 },
   battle: (...args) => calls.push(args)
-});
+};
+const ui = context.PvPeakTeamRolesUI.create(uiOptions);
 ui.render();
 const markup = element("teamRolesResults").innerHTML;
 assert(markup.includes("✓ Win · ≈ Draw · × Loss"), "Results need a visible non-color legend");
@@ -68,4 +69,17 @@ assert.equal(calls.length,beforeCmpClick,'Tapping CMP opens its explanation inst
 assert.equal(cmpCalls[0][0],cmp);
 assert.equal(cmpCalls[0][1].A,`Foe ${conditional.opponentSlot}`);
 assert.equal(cmpCalls[0][1].B,`Own ${conditional.slot}`);
+const inspected=[];uiOptions.inspect=data=>inspected.push(data);
+click({roleBattle:'2',roleOpponent:'1',roleScenario:'switch1'});
+assert.deepEqual(JSON.parse(JSON.stringify(inspected.pop())),{slot:2,enemy:1,scenario:'switch1'},'Matchup details must preserve the precise role scenario');
+const inspectCount=inspected.length;
+click({roleBattle:'2',roleOpponent:'1',roleScenario:'even1',rolePerspective:'opponent'});
+assert.equal(inspected.length,inspectCount,'Opposing alignment must retain its reversed Battle route');
+assert.deepEqual(calls.pop(),[2,1,'even1',null,true]);
+const navigations=[],selections=[];
+uiOptions.navigate=(...args)=>navigations.push(args);uiOptions.useTrio=slots=>selections.push(slots);uiOptions.renderOpponent=()=>{};
+const trioTrigger={dataset:{roleTrio:'1,2,3'},closest:()=>({dataset:{roleIndex:'1'}})};
+element('teamRolesResults').onclick({target:{closest:selector=>selector==='[data-role-trio]'?trioTrigger:null}});
+assert.deepEqual(JSON.parse(JSON.stringify(selections.pop())),[1,2,3]);
+assert.deepEqual(navigations.pop(),[1,'lead',true],'Choosing a trio must retain its role order and navigate to the matchup view');
 console.log("Team role readability: named results, result legend, ordered clickable counters and perspective routing passed.");

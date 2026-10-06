@@ -32,6 +32,12 @@ These checks establish named mechanics and selected cases. They do not establish
 
 Battle and Suggested Trio role matchups show a compact CMP badge only when a priority-only replay changes the outcome. The check keeps the same IVs and starting resources, verifies the same preceding timeline and paired Charged Attacks, and tries at most four CMP turns. It does not replace the canonical result or certify that other IV builds have no breakpoints. Tap the badge for the decisive turn, effective Attack values and alternate outcome.
 
+## Team Builder analysis
+
+Against an opposing roster, **Which three?** presents compact role suggestions. Select **Use trio**, then **Matchups** to inspect Lead/Switch/Closer results; tapping a cell opens the real result and its Battle link. Switch distinguishes a new counter with reaction delay from an opponent staying with one Fast move of energy. CMP and tested alternatives remain available when they affect the outcome.
+
+**Farm** lets you choose a losing Pokémon and its opponent, then inspect the two teammates' real farm routes. Advanced plans, replies, conditions, ordered opposing counters and the full roster matrix remain expandable. Manual trio choices show comparison matchups without assigning suggested roles. These are individual simulations under explicit conditions, not a full 3v3 game or a prediction of opposing picks.
+
 ## Data
 
 The simulator uses a gamemaster stored in `battle-data.js`.

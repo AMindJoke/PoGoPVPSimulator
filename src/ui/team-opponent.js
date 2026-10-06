@@ -4,7 +4,7 @@
     const $ = id => document.getElementById(id), escape = options.escapeHtml;
     const section = $("teamOpponentPanel");
     let mobileSlot = 0, trioPickerMarkup = "", trioSuggestionsMarkup = "";
-    let farmSignature = "", farmMarkup = "", showAllFarm = false;
+    let farmSignature = "", farmMarkup = "", showAllFarm = false, farmLoss=null, farmFoe=null;
     const farmTargets = new Map(), openFarmRoutes = new Map();
     function selectedSlots() { return options.own().team.map((member,index) => member && options.trioIds().includes(member.pokemonId) ? index : null).filter(index=>index!=null); }
     function sprite(member, attr) { return member ? `<img ${attr} alt="${escape(member.name)}">` : ""; }
@@ -56,6 +56,7 @@
       mobile.innerHTML = current ? `<div class="opponent-mobile-head"><button type="button" class="secondary" data-opponent-page="-1" aria-label="Previous opponent"${mobileSlot === 0 ? " disabled" : ""}>‹</button><div>${sprite(current.member, 'data-mobile-opponent-sprite')}<strong>${escape(current.member.name)}</strong><small>${rowLabel(current)} · ${mobileSlot + 1}/${rows.length}</small></div><button type="button" class="secondary" data-opponent-page="1" aria-label="Next opponent"${mobileSlot === rows.length - 1 ? " disabled" : ""}>›</button></div><div class="opponent-mobile-grid">${own.team.map((member, index) => cell(member, index, current.slot, current.cells[index], true)).join("")}</div>${current.best != null ? `<p>Best answer: <strong>${escape(own.team[current.best].name)}</strong></p>` : ""}` : "";
       if (current) options.setSprite(mobile.querySelector("[data-mobile-opponent-sprite]"), current.member);
       own.team.forEach((member, index) => { const img = mobile.querySelector(`[data-own-result-sprite="${index}"]`); if (img && member) options.setSprite(img, member); });
+      options.workspace?.();
     }
     function renderTrio(rows) {
       const own=options.own(), slots=selectedSlots(), api=root.PvPeakTeamOpponent;
@@ -103,7 +104,7 @@
     function renderFarm(summary) {
       const state=options.farm(), own=options.own(), opponent=options.opponent();
       const panel=$("teamTrioFarm"); panel.hidden=selectedSlots().length!==3;
-      if(state.signature!==farmSignature) { farmSignature=state.signature; showAllFarm=false; farmTargets.clear(); openFarmRoutes.clear(); }
+      if(state.signature!==farmSignature) { farmSignature=state.signature; showAllFarm=false; farmLoss=null; farmFoe=null; farmTargets.clear(); openFarmRoutes.clear(); }
       const running=state.phase==="running", complete=state.phase==="complete";
       $("teamTrioFarmAnalyze").disabled=!summary.ready || running;
       $("teamTrioFarmAnalyze").hidden=complete;
@@ -115,13 +116,21 @@
       $("teamTrioFarmHeading").textContent=complete ? `Farm after a loss · ${safe.length} safe ${safe.length===1 ? "route" : "routes"}` : "Farm after a loss";
       const groups=root.PvPeakTeamFarmPresentation.groupRoutes(routes);
       const successful=groups.filter(group=>['safe','risk','charged'].includes(group.routes[0].status));
-      const preferred=(successful.length ? successful : groups).slice(0,3), visible=showAllFarm ? groups : preferred;
+      const preferred=(successful.length ? successful : groups).slice(0,3);
+      let visible=showAllFarm ? groups : preferred, pickers='';
+      if(options.workspace && complete && groups.length){
+        const slots=selectedSlots();if(!slots.includes(farmLoss))farmLoss=preferred[0].ownSlot;
+        const losses=groups.filter(group=>group.ownSlot===farmLoss);
+        if(!losses.some(group=>group.opponentSlot===farmFoe))farmFoe=losses[0]?.opponentSlot ?? null;
+        visible=losses.filter(group=>group.opponentSlot===farmFoe);
+        pickers=`<div class="team-farm-pickers"><b>After which loss?</b><div class="team-farm-pick-row" role="group" aria-label="Pokémon that faints">${slots.map(slot=>`<button type="button" data-farm-loss="${slot}" aria-pressed="${slot===farmLoss}">${farmImage(slot,'own')}${escape(own.team[slot].name)}</button>`).join('')}</div><b>Against</b><div class="team-farm-pick-row" role="group" aria-label="Opposing Pokémon">${losses.map(group=>`<button type="button" data-farm-foe="${group.opponentSlot}" aria-pressed="${group.opponentSlot===farmFoe}">${farmImage(group.opponentSlot,'opponent')}${escape(opponent.team[group.opponentSlot].name)}</button>`).join('')}</div>${!losses.length?'<p>No losing matchup for this Pokémon in the current comparison.</p>':''}</div>`;
+      }
       const filter=$("teamTrioFarmFilter"); filter.hidden=!complete || groups.length<=preferred.length;
       filter.textContent=showAllFarm ? "Best matchups" : `All matchups (${groups.length})`;
       filter.setAttribute("aria-pressed",String(showAllFarm));
       const label=route=>route.status==="safe" ? "✓ Safe farm" : route.status==="risk" ? "! Charged risk" : route.status==="charged" ? `Farm · ${route.chargedReceived} Charged` : route.status==="failed" ? "× Farm fails" : "Not resolved";
       const detail=route=>route.status==="safe" ? "KO before the opponent can launch a Charged Attack." : route.status==="risk" ? "The opponent can launch a Charged Attack before the KO, even though it did not in this simulated line." : route.status==="charged" ? `Farm completed with ${route.chargedReceived} opposing Charged Attacks and ${route.shieldsUsed} shields used.` : route.status==="incomplete" ? "This farm did not resolve within the simulation limit." : "The teammate did not survive a complete farm in this simulated line.";
-      const markup=!complete ? "" : !groups.length ? '<p>No losing matchups in this scenario.</p>' : `${!safe.length ? '<p class="team-farm-notice">No safe farm in this scenario.</p>' : ''}${visible.map(group=>{
+      const markup=!complete ? "" : !groups.length ? '<p>No losing matchups in this scenario.</p>' : `${pickers}${!safe.length ? '<p class="team-farm-notice">No safe farm in this scenario.</p>' : ''}${visible.map(group=>{
         const lost=own.team[group.ownSlot], enemy=opponent.team[group.opponentSlot], entry=group.routes[0].entry;
         if(!lost || !enemy)return '';
         const hp=Math.round(100*entry.opponentHp/entry.opponentMaxHp), selected=openFarmRoutes.get(group.key);
@@ -177,6 +186,8 @@
     $("teamTrioFarmCancel").onclick=options.cancelFarm;
     $("teamTrioFarmFilter").onclick=()=>{showAllFarm=!showAllFarm; renderResults();};
     $("teamTrioFarmResults").onclick=event=>{
+      const loss=event.target.closest('[data-farm-loss]'),foe=event.target.closest('[data-farm-foe]');
+      if(loss || foe){if(loss){farmLoss=Number(loss.dataset.farmLoss);farmFoe=null;}else farmFoe=Number(foe.dataset.farmFoe);renderResults();$("teamTrioFarmResults").querySelector(loss?`[data-farm-loss="${farmLoss}"]`:`[data-farm-foe="${farmFoe}"]`)?.focus({preventScroll:true});return;}
       const choice=event.target.closest('[data-farm-choice]');
       if(choice) {
         const key=choice.dataset.farmChoice,group=choice.dataset.farmGroup;
@@ -196,13 +207,13 @@
     };
     $("teamTrioPicker").onclick=event=>{
       const button=event.target.closest('[data-trio-slot]'); if(!button || button.disabled)return;
-      options.toggleTrio(Number(button.dataset.trioSlot)); renderResults();
+      options.toggleTrio(Number(button.dataset.trioSlot)); options.manualTrioChanged?.(); renderResults();
       $("teamTrioPicker").querySelector(`[data-trio-slot="${button.dataset.trioSlot}"]`)?.focus({preventScroll:true});
     };
     $("teamTrioSuggestionsList").onclick=event=>{
       const button=event.target.closest('[data-trio-suggestion]'); if(!button)return;
       const slots=button.dataset.trioSuggestion.split(',').map(Number);
-      options.useTrio(slots); renderResults(); $("teamTrioPicker").querySelector(`[data-trio-slot="${slots[0]}"]`)?.focus({preventScroll:true});
+      options.useTrio(slots); renderResults(); if(options.selectTrio)options.selectTrio();else $("teamTrioPicker").querySelector(`[data-trio-slot="${slots[0]}"]`)?.focus({preventScroll:true});
     };
     $("teamOpponentRoster").onclick = event => {
       const button = event.target.closest("button"); if (!button) return;
@@ -223,6 +234,6 @@
     $("teamOpponentShare").onclick = options.share;
     ["A", "B"].forEach(side => { $("teamOpponentShields" + side).onchange = event => options.shields(side, event.target.value); });
     ["A", "B"].forEach(side => { $("teamOpponentEnergy" + side).onchange=event=>options.energy(side,event.target.value); });
-    return { render, renderResults, open() { section.open = true; render(); } };
+    return { render, renderResults, resultLabel: options.resultLabel, resultMarkup: options.resultMarkup, battle: options.battle, open() { section.open = true; render(); } };
   } };
 })(globalThis);
