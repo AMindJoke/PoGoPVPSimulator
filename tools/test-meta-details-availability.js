@@ -43,6 +43,8 @@ assert.equal(rankingDetailsState(details, base, "first", "rank1", { error: "Netw
 assert.equal(rankingDetailsState(details, base, "first", "rank1", { engineVersion: "v46" }), "engine-stale",
   "Matching ranking/details fingerprints must not present an old engine's wins as current.");
 assert.equal(rankingDetailsState(details, base, "first", "rank1", { engineVersion: "v45" }), "ready");
+assert.equal(rankingDetailsState(details, base, "absent", "rank1", { engineVersion: "v46" }), "missing");
+assert.equal(rankingDetailsState({ ...details, entries: { first: { top50Coverage: 48 } } }, base, "first", "rank1", { engineVersion: "v46" }), "incomplete");
 
 // Execute the actual UI presenter: selected role rank is not source Overall rank,
 // and an unavailable matchup must not suppress the role summary or alternatives.
@@ -66,6 +68,8 @@ const historical = context.metaRankingDetailsHtml(entry);
 assert.match(historical, /data-meta-detail-state="engine-stale"/);
 assert.match(historical, /Overall Key Wins · Top 50 snapshot/);
 assert.match(historical, /Open a matchup/);
+assert.match(historical, /Saved results · older simulator/);
+assert.match(historical, /Saved: v45\. Live: v46\. Results may differ/);
 context.battleEngineVersion = "v45";
 context.metaRankingDetails = { ...details, sourceMovesetHash: "outdated" };
 const unavailable = context.metaRankingDetailsHtml(entry);

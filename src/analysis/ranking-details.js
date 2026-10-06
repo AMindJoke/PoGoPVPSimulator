@@ -78,14 +78,14 @@
     if (options.loading) return "loading";
     if (options.error) return "error";
     if (!rankingDetailsCurrent(details, ranking)) return "stale";
-    if (options.engineVersion && ranking.metadata.matrixVersion !== options.engineVersion) return "engine-stale";
     const detail = details.entries?.[id];
     if (!detail) return "missing";
     // Coverage belongs to the source Overall ranking, never a sorted role tab.
     const source = ranking.entries?.find(entry => entry.id === id && entry.profile === profile);
     if (!source) return "missing";
     const expected = 50 - Number(Number(source.rank) > 0 && Number(source.rank) <= 50);
-    return detail.top50Coverage === expected ? "ready" : "incomplete";
+    if (detail.top50Coverage !== expected) return "incomplete";
+    return options.engineVersion && ranking.metadata.matrixVersion !== options.engineVersion ? "engine-stale" : "ready";
   }
 
   function buildRankingRatings(entry = {}, analysis = {}) {

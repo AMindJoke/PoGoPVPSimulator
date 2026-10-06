@@ -1,4 +1,10 @@
 /* Inline ranking details and a live, isolated matchup preview. */
+/* Collapsed details must not leave their inner padding below the clickable row. */
+body[data-view="meta"] .meta-ranking > .meta-entry:not(.expanded) .meta-row-details-inner {
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
 .meta-quick-panel {
   --quick-bg: #f7f3eb;
   --quick-surface: #fffcf6;

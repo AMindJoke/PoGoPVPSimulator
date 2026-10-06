@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Meta: card chiuse e provenienza matchup, 6 ottobre 2026
+
+- Rimosso lo spazio residuo dei dettagli chiusi (26 px desktop) azzerando padding/min-height dell'interno: la riga cliccabile e l'hover blu ora occupano tutta la card. Focus tastiera con lo stesso sfondo nel tema chiaro. Verificata apertura/chiusura desktop e 390 px, senza overflow o errori JS.
+- Lo snapshot pubblicato usa battle-planner-v45, il motore live usa v46: avviso esplicito Saved results · older simulator e tooltip con entrambe le versioni. Non sono stati rigenerati ranking o dati. Quick matchup reale Mimikyu/Electrode Hisuian verificato: snapshot 751, live 731. I dettagli mancanti/incompleti hanno precedenza sull'avviso del vecchio motore.
+- Asset/cache v123; passate suite meta details availability, quick matchup, presentation UI, PWA e service worker. Planner e criteri di ranking invariati.
+
 ### Riepiloghi compatti di trii e farm, 5 ottobre 2026
 
 - Matrici Lead/Switch/Closer senza scroll orizzontale: condizioni sopra la griglia, tutti e sei i matchup su due righe da tre nelle card strette e su una riga da sei quando il contenitore è largo almeno 320 px. Verificate le tre viste a viewport 320/360/390/1440 px e la griglia ampia a 900 px, con pulsanti di almeno 44 px e nessun overflow. Asset/cache v122; passate suite UI Team Builder/Manual Mode, PWA e service worker. Calcoli e ranking invariati.

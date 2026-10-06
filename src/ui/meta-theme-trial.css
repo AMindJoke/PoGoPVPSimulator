@@ -62,6 +62,7 @@ body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-en
   background-color: var(--meta-trial-surface) !important;
 }
 body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-row:hover,
+body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry .meta-row:focus-visible,
 body[data-view="meta"]:not([data-theme="dark"]):not([data-theme="neo"]) .meta-entry.expanded .meta-row {
   background-color: var(--meta-trial-accent-soft) !important;
 }

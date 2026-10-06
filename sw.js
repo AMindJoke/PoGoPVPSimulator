@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-05-v122-visible-role-matchups";
+const CACHE_VERSION = "2026-10-06-v123-meta-card-provenance";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -40,10 +40,10 @@ const CORE_ASSETS = [
   "./src/ui/battle-alternatives.js?v=20261005-v117",
   "./src/ui/battle-alternatives.css?v=20261005-v117",
   "./src/analysis/iv-impact.js",
-  "./src/analysis/ranking-details.js?v=20261002-v109",
+  "./src/analysis/ranking-details.js?v=20261006-v123",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
   "./src/ui/meta-quick-matchup.js?v=20261001-v73",
-  "./src/ui/meta-quick-matchup.css?v=20261001-v73-v2",
+  "./src/ui/meta-quick-matchup.css?v=20261006-v123",
   "./src/analysis/pokemon-analysis-view-model.js",
   "./src/ui/pokemon-analysis.js",
   "./src/team-builder/team-builder-state.js",
@@ -61,7 +61,7 @@ const CORE_ASSETS = [
   "./src/ui/analysis-scenario-presentation.js",
   "./src/ui/home-presentation.css",
   "./src/ui/usability-refinements.css",
-  "./src/ui/meta-theme-trial.css",
+  "./src/ui/meta-theme-trial.css?v=20261006-v123",
   "./src/compendium/compendium-presentation.css",
   "./assets/team-builder-status-icons/win-hard.svg",
   "./assets/team-builder-status-icons/win-soft.svg",
