@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Team Builder: due schede di analisi collegate, 6 ottobre 2026
+
+- Your team parte aperto anche con roster completo. Against a team e Against the Meta sono due tab affiancati, collegati visivamente al pannello selezionato; un solo pannello visibile. Il primo contiene Which three?/Matchups/Farm; il secondo condizioni, copertura e tool Meta originali. Nessun controllo o risultato duplicato, nessun cambio al motore. Se esiste un avversario si apre la modalità team, altrimenti Meta; dopo un cambio manuale i render mantengono la scelta.
+- Breve istruzione nel pannello attivo, titoli coerenti, testi operativi e condizioni a 14 px, etichette secondarie almeno 12–13 px. Analysis setup rinominato Conditions. Tab ARIA, frecce/Home/End e focus; roster e input restano montati durante il cambio. Asset/cache v142.
+- Browser desktop 1280, mobile 390/320: roster aperto, pannello unico, connessione tab/contenuto e assenza overflow; tastiera e cambi ripetuti verificati, nessun errore JS. Suite UI, ruoli, PWA e service worker passate. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Team Builder: scelta, matchup e farm separati, 6 ottobre 2026
 
 - Nuovo workspace inglese con tre viste Which three?, Matchups e Farm. Roster e condizioni apribili; i tool contro il Meta restano nel gruppo Team vs Meta & other tools. Riutilizza renderer, risultati e handler esistenti: nessuna modifica a motore, ranking o dati.

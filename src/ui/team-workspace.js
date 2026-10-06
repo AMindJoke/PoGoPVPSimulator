@@ -4,7 +4,7 @@
     const $=id=>document.getElementById(id),escape=options.escapeHtml;
     const workspace=$('teamOpponentPanel').querySelector('.team-trio');
     workspace.id='teamAnalysisWorkspace';workspace.dataset.workspaceView='trios';
-    let view='trios',preview=null,baselineSlot=null,ownTouched=false,setupTouched=false,opponentTouched=false,metaTouched=false;
+    let view='trios',preview=null,baselineSlot=null,ownTouched=false,setupTouched=false,mode='meta',modeTouched=false;
     const selectionKey='pogo-pvp-team-workspace-lineup-v1';let savedSelection=null;
     const switchViews=new Map();
     try{savedSelection=JSON.parse(localStorage.getItem(selectionKey));}catch(_){}
@@ -26,9 +26,19 @@
     const farmPrepare=node('div','teamWorkspaceFarmPrepare','<button type="button">Prepare comparison matchups</button>');farmEmpty.after(farmPrepare);
     farmPrepare.querySelector('button').onclick=()=>$('teamOpponentAnalyze').click();
     const ownSetup=node('details','teamWorkspaceOwnSetup','<summary>Your team · edit Pokémon & moves</summary>');$('teamBuilderRoster').before(ownSetup);ownSetup.append($('teamBuilderRoster'));
-    const metaTools=node('details','teamWorkspaceMetaTools','<summary>Team vs Meta & other tools</summary>');
+    const metaTools=node('details','teamWorkspaceMetaTools','<summary>Against the Meta</summary>');
     const metaSiblings=[];for(let next=opponent.nextElementSibling;next;next=next.nextElementSibling)metaSiblings.push(next);
     opponent.after(metaTools);metaSiblings.forEach(el=>metaTools.append(el));
+    const modes=node('div','teamWorkspaceModes');opponent.before(modes);
+    const modeTabs=node('div','teamWorkspaceModeTabs',['team','meta'].map((id,i)=>`<button type="button" id="teamMode-${id}" role="tab" data-analysis-mode="${id}" aria-controls="${i===0?'teamOpponentPanel':'teamWorkspaceMetaTools'}" aria-selected="false"><b>${i===0?'Against a team':'Against the Meta'}</b><span>${i===0?'Choose a trio & plan your matchups':'Check coverage & improve your six'}</span></button>`).join(''));modeTabs.setAttribute('role','tablist');modeTabs.setAttribute('aria-label','Choose your analysis');
+    modes.append(modeTabs,opponent,metaTools);
+    [opponent,metaTools].forEach((panel,i)=>{panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',`teamMode-${i===0?'team':'meta'}`);panel.open=true;});
+    const teamIntro=node('div',null,'<h3>Prepare for an opponent</h3><p>Add their Pokémon, then find trios, inspect matchups or plan a farm.</p>');teamIntro.className='team-workspace-intro';opponent.querySelector(':scope > summary').after(teamIntro);
+    const metaIntro=node('div',null,'<h3>Test your team against the Meta</h3><p>Choose the field and shields, then prepare matchups to see your coverage.</p>');metaIntro.className='team-workspace-intro';metaTools.querySelector('summary').after(metaIntro);
+    $('teamMetaTitle').textContent='Conditions';
+    function selectMode(next,focus=false){mode=next;modeTouched=true;sync();if(focus)modeTabs.querySelector(`[data-analysis-mode="${mode}"]`).focus({preventScroll:true});}
+    modeTabs.onclick=e=>{const button=e.target.closest('[data-analysis-mode]');if(button)selectMode(button.dataset.analysisMode);};
+    modeTabs.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();selectMode(e.key==='Home'?'team':e.key==='End'?'meta':mode==='team'?'meta':'team',true);};
     const results=$('teamRolesResults');
     const selectedSlots=()=>options.trioIds().map(id=>options.own().team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
     const sprite=(member,slot)=>`<img data-workspace-sprite="${slot}" alt="${escape(member.name)}">`;
@@ -90,15 +100,14 @@
       comparison.textContent=`Comparison · shields ${enemy.shields?.A??1}–${enemy.shields?.B??1} · energy ${enemy.energy?.A||0}/${enemy.energy?.B||0}`;comparison.hidden=slots.length!==3;
       current.querySelectorAll('[data-workspace-sprite]').forEach(img=>options.setSprite(img,own.team[Number(img.dataset.workspaceSprite)]));
       baseline.querySelectorAll('[data-workspace-sprite]').forEach(img=>options.setSprite(img,own.team[Number(img.dataset.workspaceSprite)]));
-      if(!ownTouched)ownSetup.open=own.team.filter(Boolean).length<3;if(!setupTouched)setup.open=!enemy.team.some(Boolean);
+      if(!ownTouched)ownSetup.open=true;if(!setupTouched)setup.open=!enemy.team.some(Boolean);
       if(!own.team.some(Boolean))ownSetup.open=true;if(!enemy.team.some(Boolean))setup.open=true;
-      if(!opponentTouched&&own.team.filter(Boolean).length>=3&&enemy.team.some(Boolean))opponent.open=true;
-      if(!metaTouched)metaTools.open=!enemy.team.some(Boolean);
+      if(!modeTouched)mode=enemy.team.some(Boolean)?'team':'meta';
+      modes.dataset.analysisMode=mode;opponent.open=true;metaTools.open=true;opponent.hidden=mode!=='team';metaTools.hidden=mode!=='meta';
+      modeTabs.querySelectorAll('[data-analysis-mode]').forEach(button=>{const selected=button.dataset.analysisMode===mode;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
     }
     nav.onclick=e=>{const button=e.target.closest('[data-workspace-view]');if(button)show(button.dataset.workspaceView);};
     ownSetup.addEventListener('click',()=>ownTouched=true);setup.addEventListener('click',()=>setupTouched=true);
-    opponent.querySelector(':scope > summary').addEventListener('click',()=>opponentTouched=true);
-    metaTools.addEventListener('click',()=>metaTouched=true);
     current.onclick=e=>{if(e.target.closest('[data-workspace-change]')){preview=null;show('trios',true);manual.open=true;manual.scrollIntoView({block:'nearest'});}};
     baseline.onclick=e=>{const pick=e.target.closest('[data-workspace-slot]');if(pick){baselineSlot=Number(pick.dataset.workspaceSlot);sync();baseline.querySelector(`[data-workspace-slot="${baselineSlot}"]`).focus({preventScroll:true});}const battle=e.target.closest('[data-workspace-battle]');if(battle)options.battle(Number(battle.dataset.workspaceBattle),Number(battle.dataset.workspaceOpponent));};
     function inspect(data){

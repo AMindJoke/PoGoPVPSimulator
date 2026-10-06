@@ -1,4 +1,26 @@
 #teamAnalysisWorkspace [hidden] { display:none!important; }
+#teamWorkspaceModes > [hidden] { display:none!important; }
+#teamWorkspaceModeTabs { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:20px;position:relative;z-index:1; }
+#teamWorkspaceModeTabs button { min-width:0;min-height:76px;padding:14px 16px;display:grid;gap:5px;text-align:left;border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;background:var(--soft);color:var(--muted);box-shadow:none;text-transform:none;letter-spacing:normal; }
+#teamWorkspaceModeTabs button b { font-size:16px;color:var(--ink); }
+#teamWorkspaceModeTabs button span { font-size:14px;line-height:1.4; }
+#teamWorkspaceModeTabs button[aria-selected=true] { background:var(--panel);color:var(--ink);border-color:var(--accent);margin-bottom:-1px;padding-bottom:15px; }
+#teamWorkspaceModeTabs button[aria-selected=true] b { color:var(--accent); }
+#teamWorkspaceModes > #teamOpponentPanel,#teamWorkspaceModes > #teamWorkspaceMetaTools { margin:0;padding:18px;border:1px solid var(--accent);border-radius:0 0 10px 10px;background:var(--panel); }
+#teamWorkspaceModes > #teamOpponentPanel > summary,#teamWorkspaceModes > #teamWorkspaceMetaTools > summary { display:none; }
+.team-workspace-intro h3 { margin:0 0 6px;font-size:18px; }
+.team-workspace-intro p { margin:0 0 16px;font-size:14px;line-height:1.5;color:var(--muted); }
+#teamBuilderView #teamWorkspaceOwnSetup > summary { font-size:14px;color:var(--ink);font-weight:600; }
+#teamWorkspaceModes p,#teamWorkspaceModes small,#teamWorkspaceModes summary,#teamWorkspaceModes label,#teamWorkspaceModes .team-meta-status,#teamWorkspaceModes .team-analysis-progress-copy,#teamWorkspaceModes .team-role-controls,#teamWorkspaceModes .team-role-trio header span { font-size:14px;line-height:1.45; }
+#teamWorkspaceModes button,#teamWorkspaceModes select { font-size:14px; }
+#teamWorkspaceModes .team-meta-setup { width:100%;max-width:none;margin:0 0 14px; }
+#teamWorkspaceModes .team-meta-head h3 { font-size:16px; }
+#teamWorkspaceModes .team-meta-head p,#teamWorkspaceModes .team-meta-phase { display:none; }
+#teamWorkspaceModes .team-meta-controls label span,#teamWorkspaceModes .team-meta-shields > span { font-size:12px;letter-spacing:normal;text-transform:none; }
+#teamWorkspaceModes .team-analysis-progress-copy span,#teamWorkspaceModes .team-meta-roster summary span,#teamWorkspaceModes .team-meta-status { font-size:14px; }
+#teamWorkspaceModes .team-role-matchup-name { font-size:13px; }
+#teamWorkspaceModes .team-workspace-more > summary,#teamWorkspaceModes .team-role-counter-lineup > summary { min-height:44px;align-content:center; }
+@media(max-width:600px) { #teamWorkspaceModeTabs button { padding:12px 10px;min-height:64px; } #teamWorkspaceModeTabs button[aria-selected=true] { padding-bottom:13px; } #teamWorkspaceModeTabs button b { font-size:15px; } #teamWorkspaceModeTabs button span { display:none; } #teamWorkspaceModes > #teamOpponentPanel,#teamWorkspaceModes > #teamWorkspaceMetaTools { padding:12px; } }
 #teamAnalysisWorkspace { background:var(--panel);padding:0;border:0;border-radius:0;margin:10px 0; }
 #teamAnalysisWorkspace > .team-workspace-panel { width:100%;max-width:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible; }
 #teamAnalysisWorkspace > header { flex-direction:row;align-items:center;text-align:left;margin-bottom:8px; }

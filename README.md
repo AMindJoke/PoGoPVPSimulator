@@ -34,6 +34,8 @@ Battle and Suggested Trio role matchups show a compact CMP badge only when a pri
 
 ## Team Builder analysis
 
+Your roster starts expanded. Choose **Against a team** or **Against the Meta** in the connected tabs below it; only the selected analysis is displayed, with its controls and results preserved when switching.
+
 Against an opposing roster, **Which three?** presents compact role suggestions. Select **Use trio**, then **Matchups** to inspect Lead/Switch/Closer results; tapping a cell opens the real result and its Battle link. Switch distinguishes a new counter with reaction delay from an opponent staying with one Fast move of energy. CMP and tested alternatives remain available when they affect the outcome.
 
 **Farm** lets you choose a losing Pokémon and its opponent, then inspect the two teammates' real farm routes. Advanced plans, replies, conditions, ordered opposing counters and the full roster matrix remain expandable. Manual trio choices show comparison matchups without assigning suggested roles. These are individual simulations under explicit conditions, not a full 3v3 game or a prediction of opposing picks.
