@@ -1,0 +1,14 @@
+.cmp-badge,.team-role-cmp-mark { color:#845000; background:#fff1cd; border:1px solid #d5ad62; border-radius:4px; }
+button.cmp-badge { padding:5px 8px; min-height:34px; font-size:12px; font-weight:700; line-height:18px; box-shadow:none; text-transform:none; letter-spacing:normal; }
+button.cmp-badge:hover,button.cmp-badge:focus-visible { color:#633b00; background:#ffe7ad; border-color:#a57725; transform:none; box-shadow:none; }
+.team-role-cmp-mark { display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; min-width:44px; min-height:28px; padding:3px; font-size:10px!important; line-height:13px; cursor:pointer; vertical-align:middle; }
+.cmp-dialog { width:min(340px,calc(100vw - 32px)); box-sizing:border-box; padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); box-shadow:0 8px 36px #0003; }
+.cmp-dialog::backdrop { background:#0005; }
+.cmp-dialog-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+.cmp-dialog-head h3 { margin:0; font-size:16px; }
+.cmp-dialog-head button { min-width:44px; min-height:44px; padding:4px; background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:5px; font-size:20px; box-shadow:none; }
+.cmp-dialog p { margin:10px 0; font-size:13px; line-height:1.5; }
+.cmp-dialog small { color:var(--muted); font-size:11px; line-height:1.5; }
+.cmp-dialog-change { margin:12px 0; padding:10px; border-radius:6px; color:#845000; background:#fff1cd; font-size:13px; font-weight:700; }
+.cmp-timeline-mark { position:absolute; right:-4px; bottom:-6px; z-index:3; padding:0 2px; font-size:11px; line-height:12px; border:1px solid #d5ad62; border-radius:3px; background:#fff1cd; color:#845000; pointer-events:none; }
+body[data-theme="dark"] .cmp-badge,body[data-theme="dark"] .team-role-cmp-mark,body[data-theme="dark"] .cmp-dialog-change,body[data-theme="dark"] .cmp-timeline-mark { background:#493513; color:#f4cd83; border-color:#ac813b; }

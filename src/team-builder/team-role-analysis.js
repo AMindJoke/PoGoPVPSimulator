@@ -2,7 +2,7 @@
   'use strict';
   root.PvPeakTeamRoleAnalysis={create(options) {
     const cache=new Map(),cells=new Map(); let active={signature:'',phase:'idle',done:0,total:0,results:new Map(),farms:[]},worker=null,timer=null,delay=2;
-    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,options.cacheIdentity?.(),delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
+    function signature() {return JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,root.PvPeakCmpDependency?.VERSION,options.cacheIdentity?.(),delay,options.plan().map(job=>[job.slot,job.opponentSlot,job.key])]);}
     function stop() {clearTimeout(timer);timer=null;worker?.terminate();worker=null;}
     function state() {
       const key=signature();
@@ -39,6 +39,7 @@
             run.analysis=root.PvPeakTeamOpponentContext.analyze(run.analysis,opponent,run.results,run.opponentResults);
           }
           run.replyIncomplete=!!root.PvPeakBattleSensitivity && !run.analysis.sensitivityReady;
+          run.replyIncomplete ||= [...run.results.values(),...run.opponentResults.values()].some(result=>result.cmpDependency?.status==='incomplete');
           cache.set(run.signature,run);while(cache.size>6)cache.delete(cache.keys().next().value);
         }
         options.render();
@@ -53,10 +54,11 @@
           try {config=root.PvPeakTeamRoles.applyScenario(options.config(current.job),scenario);} catch(_){finish('A role build is unavailable. Please retry.');return;}
           const message={id:run.done+1,key:current.key,signature:current.key,source:'team-builder-roles',config,aShields:scenario.a,bShields:scenario.b,includeSwing:false,roleAnalysis:true};
           if(!current.farm && ['even1','switch1','closer','stay1'].includes(scenario.id))message.checkSensitivity=true;
+          if(!current.farm)message.checkCmpDependency=true;
           if(current.farm)message.farmCompanions=plan.filter(job=>job.opponentSlot===current.opponentSlot && job.slot!==current.slot).map(job=>({slot:job.slot,combatant:options.combatant(job.member,'A')}));
           // Full prepared inputs keep IVs, moves, energy, forms and farm teammates
           // distinct. Runtime identity isolates seasons and engine changes.
-          current.cacheKey=JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,options.cacheIdentity?.() ?? current.job.key,config,scenario.a,scenario.b,!!message.checkSensitivity,message.farmCompanions || null]);
+          current.cacheKey=JSON.stringify([root.PvPeakTeamRoles.VERSION,root.PvPeakBattleSensitivity?.VERSION,root.PvPeakBattleSensitivity?.MAX_CANDIDATES,root.PvPeakCmpDependency?.VERSION,options.cacheIdentity?.() ?? current.job.key,config,scenario.a,scenario.b,!!message.checkSensitivity,message.farmCompanions || null]);
           if(cells.has(current.cacheKey)){
             const result=cells.get(current.cacheKey);cells.delete(current.cacheKey);cells.set(current.cacheKey,result);
             accept(result);run.reused++;continue;
@@ -76,7 +78,7 @@
         const result=event.data.result;
         if(!current.farm && (!Number.isFinite(result.score) || !result.details?.outcome)){finish('A role matchup is incomplete. Please retry.');return;}
         const needsReplies=!current.farm && ['even1','switch1','closer','stay1'].includes(current.scenario.id) && !!root.PvPeakBattleSensitivity;
-        if(!needsReplies || result.sensitivity?.version===root.PvPeakBattleSensitivity.VERSION && ['checked','sensitive','not-applicable'].includes(result.sensitivity.status)){
+        if(result.cmpDependency?.status!=='incomplete' && (!needsReplies || result.sensitivity?.version===root.PvPeakBattleSensitivity.VERSION && ['checked','sensitive','not-applicable'].includes(result.sensitivity.status))){
           cells.set(current.cacheKey,result);while(cells.size>1536)cells.delete(cells.keys().next().value);
         }
         accept(result);if(run.done%6===0 || run.done===run.total)options.render();next();

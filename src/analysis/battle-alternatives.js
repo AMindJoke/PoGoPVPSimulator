@@ -177,7 +177,7 @@
         timer=setTimeout(()=>finish("Alternative search timed out. Retry."),options.jobTimeoutMs || 15000);
         try {worker.postMessage({id,key:`alternatives:${id}`,signature:"battle-alternatives",source:"battle-alternatives",
           config:input.config,aShields:input.aShields,bShields:input.bShields,
-          includeSwing:false,trace:true,debugTimeline:true,alternativeProbe:{targets:task.kind === "branch" ? [task.candidate.target] : task.targets || []}});}
+          includeSwing:false,trace:true,debugTimeline:true,checkCmpDependency:task.kind==='baseline',alternativeProbe:{targets:task.kind === "branch" ? [task.candidate.target] : task.targets || []}});}
         catch(_){finish("Alternative search could not start. Retry.");}
       };
       const next=()=>{

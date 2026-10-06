@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-06-v129-counter-shields";
+const CACHE_VERSION = "2026-10-06-v131-cmp-dependency";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -35,8 +35,11 @@ const CORE_ASSETS = [
   "./src/analysis/win-condition-view-model.js",
   "./src/analysis/matchup-story.js",
   "./src/analysis/battle-review.js",
-  "./src/analysis/battle-alternatives.js?v=20261005-v117",
+  "./src/analysis/battle-alternatives.js?v=20261006-v131",
   "./src/analysis/battle-sensitivity.js?v=20261005-v117",
+  "./src/analysis/cmp-dependency.js?v=20261006-v131",
+  "./src/ui/cmp-dependency.js?v=20261006-v131",
+  "./src/ui/cmp-dependency.css?v=20261006-v131",
   "./src/ui/battle-alternatives.js?v=20261005-v117",
   "./src/ui/battle-alternatives.css?v=20261005-v117",
   "./src/analysis/iv-impact.js",
@@ -103,10 +106,10 @@ const CORE_ASSETS = [
   "./src/team-builder/team-farm-battle-link.js?v=20261001-v94",
   "./src/team-builder/team-farm-presentation.js?v=20261001-v92",
   "./src/team-builder/team-builder-roles.js?v=20261005-v117",
-  "./src/team-builder/team-opponent-context.js?v=20261006-v129",
-  "./src/team-builder/team-role-analysis.js?v=20261005-v117",
-  "./src/ui/team-roles.js?v=20261006-v129",
-  "./src/ui/team-roles.css?v=20261006-v129",
+  "./src/team-builder/team-opponent-context.js?v=20261006-v131",
+  "./src/team-builder/team-role-analysis.js?v=20261006-v131",
+  "./src/ui/team-roles.js?v=20261006-v131",
+  "./src/ui/team-roles.css?v=20261006-v131",
   "./src/ui/team-opponent.js?v=20261005-v119",
   "./src/ui/team-opponent.css?v=20261005-v119",
   "./src/ui/pokemon-favorites.js?v=20261001-v76",

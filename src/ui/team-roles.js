@@ -13,6 +13,8 @@
       if(focus){detail.querySelector(`[data-role-view="${view}"]`)?.focus({preventScroll:true});detail.scrollIntoView({block:'nearest'});}
     }
     const image=(slot,side='own')=>`<img data-role-sprite="${slot}" data-role-side="${side}" alt="" aria-hidden="true">`;
+    const cmpMark=check=>check?.version==='cmp-dependency-v1' && check.status==='dependent' ? '<small class="team-role-cmp-mark" data-role-cmp title="CMP dependent: tap for the priority check">⇄ CMP</small>' : '';
+    const cmpCopy=check=>check?.version==='cmp-dependency-v1' && check.status==='dependent' ? ' CMP dependent; tap the CMP label for details.' : '';
     const counts=value=>`${value.wins}W · ${value.draws}D · ${value.losses}L${value.unresolved ? ` · ${value.unresolved}?` : ''}`;
     const shields=(a,b,extra='')=>`<span class="team-role-condition">${options.shieldSvg()}<span>${a}–${b}${extra}</span></span>`;
     function route(candidate,name,enemyName){
@@ -41,7 +43,7 @@
         const wins=answer.evenShields?.filter(cell=>cell.outcome==='A') || [];
         return wins.length===3 && wins.every(cell=>!cell.fragile) ? 'Wins · all even shields' : wins.length ? `Wins · ${wins.map(cell=>`${cell.shields}–${cell.shields}${cell.fragile ? ' !' : ''}`).join(', ')}` : 'No even-shield wins';
       };
-      return `<details class="team-role-counter-lineup" data-role-detail="counter-${index}"><summary><b>Toughest opposing trio</b><span>${reply.slots.map(slot=>image(slot,'opponent')).join('')}</span></summary><div class="team-role-counter-pairs">${pairs.map((answer,i)=>`<button type="button" data-role-battle="${answer.slot}" data-role-opponent="${answer.opponentSlot}" data-role-scenario="even1" data-role-perspective="opponent" aria-label="${escape(`${enemyName(answer.opponentSlot)} ${answer.outcome==='A' ? 'wins' : answer.outcome==='draw' ? 'draws' : 'loses'} versus your ${['Lead','Switch','Closer'][i]} ${name(answer.slot)} at 1–1. ${shieldWins(answer)}. Open Battle in a new tab.`)}"><small>vs your ${['Lead','Switch','Closer'][i]}</small><span>${image(answer.opponentSlot,'opponent')}<b class="team-role-alignment-${answer.outcome}" aria-hidden="true">${answer.outcome==='A' ? '→' : answer.outcome==='draw' ? '≈' : '×'}</b>${image(answer.slot)}</span><small class="team-role-counter-name">${escape(enemyName(answer.opponentSlot))}</small><small class="team-role-counter-shields">${escape(shieldWins(answer))}</small><small class="team-role-pick-action">Battle ↗</small></button>`).join('')}</div><small>${reply.alignment.covered}/3 opposing wins in this alignment · 1–1</small><small>1–1: → Win · ≈ Draw · × Loss${pairs.some(answer=>answer.evenShields?.some(cell=>cell.fragile)) ? ' · ! Tested reply can change this result' : ''}</small></details>`;
+      return `<details class="team-role-counter-lineup" data-role-detail="counter-${index}"><summary><b>Toughest opposing trio</b><span>${reply.slots.map(slot=>image(slot,'opponent')).join('')}</span></summary><div class="team-role-counter-pairs">${pairs.map((answer,i)=>`<button type="button" data-role-battle="${answer.slot}" data-role-opponent="${answer.opponentSlot}" data-role-scenario="even1" data-role-perspective="opponent" aria-label="${escape(`${enemyName(answer.opponentSlot)} ${answer.outcome==='A' ? 'wins' : answer.outcome==='draw' ? 'draws' : 'loses'} versus your ${['Lead','Switch','Closer'][i]} ${name(answer.slot)} at 1–1. ${shieldWins(answer)}.${cmpCopy(answer.cmpDependency)} Open Battle in a new tab.`)}"><small>vs your ${['Lead','Switch','Closer'][i]}</small><span>${image(answer.opponentSlot,'opponent')}<b class="team-role-alignment-${answer.outcome}" aria-hidden="true">${answer.outcome==='A' ? '→' : answer.outcome==='draw' ? '≈' : '×'}</b>${image(answer.slot)}</span><small class="team-role-counter-name">${escape(enemyName(answer.opponentSlot))}</small><small class="team-role-counter-shields">${escape(shieldWins(answer))}</small>${cmpMark(answer.cmpDependency)}<small class="team-role-pick-action">Battle ↗</small></button>`).join('')}</div><small>${reply.alignment.covered}/3 opposing wins in this alignment · 1–1</small><small>1–1: → Win · ≈ Draw · × Loss${pairs.some(answer=>answer.evenShields?.some(cell=>cell.fragile)) ? ' · ! Tested reply can change this result' : ''}</small></details>`;
     }
     function contextDetails(candidate,name,enemyName){
       const context=candidate.context;if(!context)return '';
@@ -62,7 +64,7 @@
       const state=options.analysis.state(), own=options.own(),opponent=options.opponent(),delay=options.analysis.delay();
       const enough=own.team.filter(Boolean).length>=3 && opponent.team.some(Boolean);
       $('teamRolesAnalyze').disabled=!enough || state.phase==='running';
-      $('teamRolesAnalyze').textContent=state.phase==='complete' ? state.replyIncomplete ? 'Retry reply checks' : 'Roles ready' : state.phase==='error' ? 'Retry role analysis' : 'Find roles & trios';
+      $('teamRolesAnalyze').textContent=state.phase==='complete' ? state.replyIncomplete ? 'Retry checks' : 'Roles ready' : state.phase==='error' ? 'Retry role analysis' : 'Find roles & trios';
       $('teamRolesAnalyze').hidden=state.phase==='complete' && !state.replyIncomplete;
       $('teamRolesCancel').hidden=state.phase!=='running';
       $('teamRolesDelay').value=String(delay);
@@ -87,7 +89,7 @@
           const scene=root.PvPeakTeamRoles.scenarios(delay).find(s=>s.id===id);
           return {role:id==='even1' ? 'lead' : id==='closer' ? 'closer' : 'switch', fragile:analysis.opponents.some(enemy=>root.PvPeakTeamRoles.sensitive(state.results.get(root.PvPeakTeamRoles.cellKey(slot,enemy,scene)))), markup:`<div class="team-role-matchup-row"><b>${escape(name(slot))}<small>${label} · ${scene.a}–${scene.b}${id==='switch1' ? ` · +${delay}t` : scene.bankFoeFast ? ' · foe +1 Fast energy' : ''}</small></b>${analysis.opponents.map(enemy=>{
             const result=state.results.get(root.PvPeakTeamRoles.cellKey(slot,enemy,scene)),outcome=root.PvPeakTeamRoles.outcome(result),mark=outcome==='A' ? '✓' : outcome==='draw' ? '≈' : outcome==='B' ? '×' : '?',fragile=root.PvPeakTeamRoles.sensitive(result);
-            return `<button type="button" class="team-role-matchup is-${outcome}" data-role-battle="${slot}" data-role-opponent="${enemy}" data-role-scenario="${id}" aria-label="${escape(`${name(slot)} versus ${enemyName(enemy)}: ${outcome==='A' ? 'Win' : outcome==='B' ? 'Loss' : outcome==='draw' ? 'Draw' : 'Unresolved'}${fragile ? '; a tested reply can change this result' : ''}. Open Battle in a new tab.`)}">${image(enemy,'opponent')}<small class="team-role-matchup-name">${escape(enemyName(enemy))}</small><span>${mark}${fragile ? '<small class="team-role-flip-mark"> !</small>' : ''}</span></button>`;
+            return `<button type="button" class="team-role-matchup is-${outcome}" data-role-battle="${slot}" data-role-opponent="${enemy}" data-role-scenario="${id}" aria-label="${escape(`${name(slot)} versus ${enemyName(enemy)}: ${outcome==='A' ? 'Win' : outcome==='B' ? 'Loss' : outcome==='draw' ? 'Draw' : 'Unresolved'}${fragile ? '; a tested reply can change this result' : ''}.${cmpCopy(result?.cmpDependency)} Open Battle in a new tab.`)}">${image(enemy,'opponent')}<small class="team-role-matchup-name">${escape(enemyName(enemy))}</small><span>${mark}${fragile ? '<small class="team-role-flip-mark"> !</small>' : ''}${cmpMark(result?.cmpDependency)}</span></button>`;
           }).join('')}</div>`};
         });
         const farm=candidate.farm, switchProfile=profile(candidate.switch), strategic=contextDetails(candidate,name,enemyName);
@@ -130,7 +132,15 @@
     $('teamRolesResults').onclick=e=>{
       const tab=e.target.closest('[data-role-tab]');if(tab){selectedRole=tab.dataset.roleTab;render();$('teamRolesResults').querySelector(`[data-role-tab="${selectedRole}"]`)?.focus({preventScroll:true});}
       const trio=e.target.closest('[data-role-trio]');if(trio){options.useTrio(trio.dataset.roleTrio.split(',').map(Number));options.renderOpponent();render();}
-      const battle=e.target.closest('[data-role-battle]');if(battle)options.battle(Number(battle.dataset.roleBattle),Number(battle.dataset.roleOpponent),battle.dataset.roleScenario,null,battle.dataset.rolePerspective==='opponent');
+      const battle=e.target.closest('[data-role-battle]');
+      if(battle && e.target.closest('[data-role-cmp]')){
+        const slot=Number(battle.dataset.roleBattle),enemy=Number(battle.dataset.roleOpponent),reverse=battle.dataset.rolePerspective==='opponent';
+        const scenario=root.PvPeakTeamRoles.scenarios(options.analysis.delay()).find(s=>s.id===battle.dataset.roleScenario);
+        const state=options.analysis.state(),cell=(reverse?state.opponentResults:state.results).get(root.PvPeakTeamRoles.cellKey(reverse?enemy:slot,reverse?slot:enemy,scenario));
+        root.PvPeakCmpDependencyUI?.show(cell?.cmpDependency,{A:(reverse?options.opponent():options.own()).team[reverse?enemy:slot].name,B:(reverse?options.own():options.opponent()).team[reverse?slot:enemy].name});
+        return;
+      }
+      if(battle)options.battle(Number(battle.dataset.roleBattle),Number(battle.dataset.roleOpponent),battle.dataset.roleScenario,null,battle.dataset.rolePerspective==='opponent');
       const view=e.target.closest('[data-role-view]');if(view)showDetail(view.closest('.team-role-trio'),view.dataset.roleView);
       const trigger=e.target.closest('[data-role-open]');if(trigger)showDetail(trigger.closest('.team-role-trio'),trigger.dataset.roleOpen,true);
       const reply=e.target.closest('[data-role-reply]');if(reply){

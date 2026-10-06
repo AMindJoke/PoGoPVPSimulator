@@ -1,0 +1,57 @@
+'use strict';
+const assert=require('node:assert/strict');
+const G=require('./build-great-league-meta-database');
+const CMP=require('../src/analysis/cmp-dependency');
+const Sensitivity=require('../src/analysis/battle-sensitivity');
+const Alternatives=require('../src/analysis/battle-alternatives');
+const UI=require('../src/ui/cmp-dependency');
+const gm=G.readWindowGlobal('battle-data.js','BATTLE_GAMEMASTER'),sets=G.readWindowGlobal('default-movesets.js','BATTLE_DEFAULT_MOVESETS');
+const moves=new Map(gm.moves.map(move=>[move.moveId,G.normalizeMove(move)]));
+const pokemon=new Map(gm.pokemon.filter(p=>p?.speciesId&&p.baseStats).map(p=>G.normalizePokemon(p,moves)).map(p=>[p.id,p]));
+const source=G.extractLiveWorkerSource();
+const plain=G.createWorkerAdapter(source,{dreStandard:true,strict:true});
+const checked=G.createWorkerAdapter(CMP.workerSource(source),{dreStandard:true,strict:true});
+const roles=G.createWorkerAdapter(CMP.workerSource(Sensitivity.workerSource(source)),{dreStandard:true,strict:true});
+const battle=G.createWorkerAdapter(CMP.workerSource(Alternatives.instrumentWorkerSource(source)),{dreStandard:true,strict:true});
+function config(){
+  const result=G.createBattleConfig(pokemon.get('melmetal'),pokemon.get('mimikyu'),G.DEFAULT_PROFILE,moves,sets,pokemon);
+  for(const [side,ids] of [[result.left,['THUNDER_SHOCK','DOUBLE_IRON_BASH','DYNAMIC_PUNCH']],[result.right,['SHADOW_CLAW','SHADOW_SNEAK','PLAY_ROUGH']]]){
+    side.shieldMode='smart';side.fast=structuredClone(moves.get(ids[0]));side.charged=ids.slice(1).map(id=>structuredClone(moves.get(id)));
+  }
+  return result;
+}
+const payload={id:1,key:'cmp-reference',config:config(),aShields:1,bShields:1,includeSwing:false,trace:true,debugTimeline:true};
+const normalize=value=>JSON.parse(JSON.stringify(value));
+const input=JSON.stringify(payload),baseline=plain.simulate(payload);
+const result=checked.simulate({...payload,checkCmpDependency:true});
+assert.equal(result.score,baseline.score);
+assert.deepEqual(normalize(result.details),normalize(baseline.details));
+assert.deepEqual(normalize(result.timelineTrace),normalize(baseline.timelineTrace),'CMP diagnostics must not change the original timeline');
+assert.equal(JSON.stringify(payload),input,'CMP diagnostics must not edit input Attack, HP, IVs or shields');
+assert.equal(result.cmpDependency.status,'dependent');
+assert.equal(result.cmpDependency.evidence.turn,25);
+assert.equal(result.cmpDependency.evidence.first,'B');
+assert.equal(result.cmpDependency.evidence.baselineOutcome,'B');
+assert.equal(result.cmpDependency.evidence.alternateOutcome,'A');
+assert.equal(result.cmpDependency.evidence.attackA,payload.config.left.attack);
+assert.equal(result.cmpDependency.evidence.attackB,payload.config.right.attack);
+const roleResult=roles.simulate({...payload,checkSensitivity:true,checkCmpDependency:true});
+assert.deepEqual(normalize(roleResult.cmpDependency),normalize(result.cmpDependency),'Bounded reply checks and CMP checks must coexist');
+assert.equal(roleResult.score,baseline.score);
+assert.equal(roleResult.sensitivity.status,'not-applicable');
+const battleResult=battle.simulate({...payload,checkCmpDependency:true,alternativeProbe:{targets:[]}});
+assert.deepEqual(normalize(battleResult.cmpDependency),normalize(result.cmpDependency));
+assert.equal(Alternatives.baselineMatches(battleResult,{outcome:baseline.details.outcome,A:baseline.decisionTrace.finalState.A,B:baseline.decisionTrace.finalState.B,timeline:Alternatives.timelineIdentity(battleResult.alternativeProbe.timeline)}),true);
+assert.equal(checked.simulate(payload).cmpDependency,undefined,'No priority override or metadata may leak into subsequent ordinary simulations');
+const fastOnly={...payload,diagnosticPlan:{defaultAction:'fast'}};
+const noCmp=checked.simulate({...fastOnly,checkCmpDependency:true});
+assert.equal(noCmp.cmpDependency.status,'checked');
+assert.equal(noCmp.cmpDependency.total,0);
+assert.equal(UI.dependent(noCmp.cmpDependency),false,'Attack difference without a decisive CMP must not produce a badge');
+assert.equal(UI.dependent({...result.cmpDependency,status:'incomplete'}),false);
+const copy=UI.describe(result.cmpDependency,{A:'Melmetal',B:'Mimikyu'});
+assert.equal(copy.heading,'T25 · Mimikyu fires first');
+assert.equal(copy.change,'Mimikyu wins → Melmetal wins');
+assert(copy.attacks.includes('120.97') && copy.attacks.includes('121.56'));
+assert.equal(UI.describe(result.cmpDependency,{A:'Melmetal',B:'Melmetal'}).change,'Melmetal (B) wins → Melmetal (A) wins','Mirror sides must remain distinguishable');
+console.log('CMP dependency passed: isolated T25 priority flip, unchanged canonical inputs/results/timeline, role and Battle parity, no-CMP and incomplete checks, accessible copy.');

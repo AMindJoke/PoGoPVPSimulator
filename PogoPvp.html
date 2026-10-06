@@ -32,8 +32,10 @@
   <script src="src/analysis/win-condition-view-model.js"></script>
   <script src="src/analysis/matchup-story.js"></script>
   <script src="src/analysis/battle-review.js"></script>
-  <script src="src/analysis/battle-alternatives.js?v=20261005-v117"></script>
+  <script src="src/analysis/battle-alternatives.js?v=20261006-v131"></script>
   <script src="src/analysis/battle-sensitivity.js?v=20261005-v117"></script>
+  <script src="src/analysis/cmp-dependency.js?v=20261006-v131"></script>
+  <script src="src/ui/cmp-dependency.js?v=20261006-v131"></script>
   <script src="src/ui/battle-alternatives.js?v=20261005-v117"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
@@ -56,9 +58,9 @@
   <script src="src/team-builder/team-farm-battle-link.js?v=20261001-v94"></script>
   <script src="src/team-builder/team-farm-presentation.js?v=20261001-v92"></script>
   <script src="src/team-builder/team-builder-roles.js?v=20261005-v117"></script>
-  <script src="src/team-builder/team-opponent-context.js?v=20261006-v129"></script>
-  <script src="src/team-builder/team-role-analysis.js?v=20261005-v117"></script>
-  <script src="src/ui/team-roles.js?v=20261006-v129"></script>
+  <script src="src/team-builder/team-opponent-context.js?v=20261006-v131"></script>
+  <script src="src/team-builder/team-role-analysis.js?v=20261006-v131"></script>
+  <script src="src/ui/team-roles.js?v=20261006-v131"></script>
   <script src="src/compendium/compendium-model.js"></script>
   <script src="src/compendium/move-reference.js"></script>
   <script src="src/compendium/quick-reference.js"></script>
@@ -14469,7 +14471,7 @@
   <link rel="stylesheet" href="src/team-builder/team-builder-presentation.css?v=20261005-v117">
   <link rel="stylesheet" href="src/ui/team-library.css?v=20261001-v74-v3">
   <link rel="stylesheet" href="src/ui/team-opponent.css?v=20261005-v119">
-  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261006-v129">
+  <link rel="stylesheet" href="src/ui/team-roles.css?v=20261006-v131">
   <link rel="stylesheet" href="src/ui/pokemon-favorites.css?v=20261001-v76">
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
@@ -14478,6 +14480,7 @@
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v117">
+  <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v131">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
   <script defer src="src/ui/meta-quick-matchup.js?v=20261006-v124"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
@@ -14847,6 +14850,7 @@
         <div id="manualTimelineStage" class="manual-timeline-stage">
           <div class="timeline-head">
             <span id="battleAlternativesMount" class="battle-alternatives-mount" hidden></span>
+            <span id="battleCmpMount" hidden></span>
             <div class="timeline-tools">
               <span class="timeline-legend">
                 <span><i class="legend-fast"></i>Fast</span>
@@ -15790,6 +15794,7 @@
       catch (_) { return null; }
     })();
     let suppressRender = false;
+    let battleCmpUi = null;
     let battleAlternativesRunner = null, battleAlternativesUi = null, battleAlternativesInputKey = "", teamRoleReplyRequest = null;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
@@ -20581,7 +20586,7 @@
         cacheIdentity: () => [activeSeasonData.identity, matchupResultVersion],
         render: () => teamRolesUI?.render(),
         worker: () => {
-          const source = window.PvPeakBattleSensitivity.workerSource(buildMatrixComputeWorkerSource());
+          const source = window.PvPeakCmpDependency.workerSource(window.PvPeakBattleSensitivity.workerSource(buildMatrixComputeWorkerSource()));
           const url = URL.createObjectURL(new Blob([source], { type: "application/javascript" }));
           try { return new Worker(url); } finally { URL.revokeObjectURL(url); }
         }
@@ -37161,6 +37166,7 @@
     function resetBattleAlternatives() {
       battleAlternativesRunner?.cancel();
       battleAlternativesUi?.reset();
+      battleCmpUi?.reset();
       battleAlternativesInputKey = "";
       teamRoleReplyRequest = null;
     }
@@ -37198,12 +37204,16 @@
       });
       battleAlternativesUi.reset();
       battleAlternativesRunner ||= api.createRunner(() => {
-        const source = api.instrumentWorkerSource(matrixComputeWorkerSourceCache || (matrixComputeWorkerSourceCache = buildMatrixComputeWorkerSource()));
+        const source = window.PvPeakCmpDependency.workerSource(api.instrumentWorkerSource(matrixComputeWorkerSourceCache || (matrixComputeWorkerSourceCache = buildMatrixComputeWorkerSource())));
         const url = URL.createObjectURL(new Blob([source], {type:"text/javascript"}));
         try {return new Worker(url);} finally {URL.revokeObjectURL(url);}
       });
       battleAlternativesRunner.start(input, state => {
-        if (battleAlternativesInputKey === key) battleAlternativesUi.update(state,input);
+        if (battleAlternativesInputKey === key) {
+          battleAlternativesUi.update(state,input);
+          battleCmpUi ||= window.PvPeakCmpDependencyUI.create({mount: $("battleCmpMount"), grid: $("manualTimelineGrid"), events: () => timeline});
+          battleCmpUi.update(state.phase === "error" ? null : state.baseline?.cmpDependency, {A: input.config.left.p.name, B: input.config.right.p.name});
+        }
       });
     }
 
@@ -37253,6 +37263,7 @@
       renderTechnicalTimelineState();
       renderManualTimelineSelectionCard();
       battleAlternativesUi?.refreshHighlights();
+      battleCmpUi?.refresh();
       if (mobileManualScroll && !sameMobileTimeline) scroll.scrollLeft = 0;
       else if (isFit && !mobileManualScroll) scroll.scrollLeft = 0;
       else if (keepAtEnd) scroll.scrollLeft = scroll.scrollWidth;
@@ -38061,7 +38072,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261006-v129").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261006-v131").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### CMP decisivo in Battle e Suggested Trios, 6 ottobre 2026
+
+- Badge ambra ⇄ CMP nelle griglie ruoli e counter Toughest opposing trio, e sopra la timeline Battle con marker sulla caricata decisiva. Tap apre turno, Attack effettivo e cambio esito; mirror distinguono A/B. Nessun badge per il solo confronto Attack o un CMP che non cambia risultato.
+- Diagnostica cmp-dependency-v1 isolata nel worker: massimo quattro turni CMP, priorità modificata soltanto nella copia dello stato del turn engine; IV, Attack dei combattenti, danni e condizioni iniziali conservati. Prova valida solo con prefisso timeline e coppia di caricate identici; risultato canonico invariato. Convive con sensibilità e alternative, non eseguita sui rami delle alternative o sui farm. Cache ruoli include versione diagnostica; check incompleto non salvato e pulsante Retry checks disponibile. Quick, punteggi, ranking e planner invariati. Asset/cache v131.
+- Caso reale Melmetal/Mimikyu 1–1: T25, Attack 120.9668/121.5640, vince Mimikyu (score 295); invertendo solo CMP vince Melmetal. Test verifica risultato/timeline/input immutati, isolamento tra richieste, composizione worker Battle/ruoli, assenza badge senza CMP e distinzione mirror. Gate completo 15/15 e suite UI/build/PWA/cache passati. Browser: badge e dialog Team Builder/Battle su desktop e 390 px, marker sulla caricata T25, nessun overflow. È una verifica bounded di dipendenza dal CMP, non un certificato di robustezza a tutti gli IV. Planner migration 100% → 100%, hybrid fallback 0% → 0%.
+
 ### Leggibilità Team Builder e casi di riferimento, 6 ottobre 2026
 
 - Dettagli Lead/Switch/Closer con nomi avversari visibili, legenda vittoria/pareggio/sconfitta e avviso delle alternative solo quando presenti. Griglie senza scroll: tre colonne nelle card strette, sei solo da 480 px di contenitore; hover/focus con sfondo tenue e testo leggibile. Linea Toughest opposing trio conservata con sprite ordinati e tre accoppiamenti cliccabili in Battle. Ogni counter apre esattamente la simulazione avversaria (opponent su A), mantenendo IV, mosse, scudi 1–1 e reazione zero; non invertirla perché il tie deterministico può cambiare risultato. Quick e farm non modificati. Asset/cache v128.

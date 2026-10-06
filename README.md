@@ -30,6 +30,8 @@ The command fails if any check fails and writes `reports/battle-reference-checks
 
 These checks establish named mechanics and selected cases. They do not establish globally optimal play, cover every matchup, or model real device/network latency. Controlled action sequences deliberately separate mechanics from the planner's strategic choices.
 
+Battle and Suggested Trio role matchups show a compact CMP badge only when a priority-only replay changes the outcome. The check keeps the same IVs and starting resources, verifies the same preceding timeline and paired Charged Attacks, and tries at most four CMP turns. It does not replace the canonical result or certify that other IV builds have no breakpoints. Tap the badge for the decisive turn, effective Attack values and alternate outcome.
+
 ## Data
 
 The simulator uses a gamemaster stored in `battle-data.js`.

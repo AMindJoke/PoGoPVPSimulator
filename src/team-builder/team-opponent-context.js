@@ -15,7 +15,7 @@
           return {shields:n,outcome:Roles.outcome(result),fragile:Roles.sensitive(result)};
         });
         const result=read(order[i],slot,{a:1,b:1,delay:0});
-        return {slot,opponentSlot:order[i],score:result.score,outcome:Roles.outcome(result),evenShields};
+        return {slot,opponentSlot:order[i],score:result.score,outcome:Roles.outcome(result),evenShields,cmpDependency:result.cmpDependency};
       });
       return {slots:order,answers,covered:answers.filter(answer=>answer.outcome==='A').length,
         allEvenCovered:answers.filter(answer=>answer.evenShields.every(cell=>cell.outcome==='A' && !cell.fragile)).length,
