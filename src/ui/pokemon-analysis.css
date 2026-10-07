@@ -24,6 +24,35 @@
 #analysisContent .analysis-matchup-copy strong, #analysisContent .analysis-matchup-copy em { white-space: normal; overflow-wrap: anywhere; }
 #analysisContent .analysis-matchup-result button { min-height: 36px; font-size: 12px; }
 #analysisContent .analysis-iv-deltas { grid-template-columns: repeat(3,minmax(0,1fr)); }
+#analysisContent .analysis-preview { border: 0; padding: 0; background: transparent; }
+#analysisContent .analysis-preview > section { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--analysis-surface); }
+#analysisContent .analysis-preview-picks { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+#analysisContent .analysis-preview-picks button { display: grid; grid-template-columns: 42px minmax(0,1fr); gap: 8px; align-items: center; text-align: left; min-height: 78px; padding: 9px; }
+#analysisContent .analysis-preview-picks img { width: 42px; height: 42px; }
+#analysisContent .analysis-preview-picks strong { display: block; font-size: 13px; line-height: 1.35; }
+#analysisContent .analysis-preview-rating { display: inline-flex; gap: 10px; align-items: center; margin-top: 5px; font-size: 12px; font-weight: 750; }
+#analysisContent .analysis-preview-rating.win { color: #187557; }
+#analysisContent .analysis-preview-rating.loss { color: #a83457; }
+#analysisContent .analysis-preview-picks button:hover, #analysisContent .analysis-matchup-open:hover { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 7%,var(--panel)); }
+#analysisContent .analysis-matchup-columns > section { padding: 0; border: 0; }
+#analysisContent .analysis-matchup-columns > section > header { margin-bottom: 12px; }
+#analysisContent .analysis-matchup-row { display: block; padding: 0; margin-bottom: 9px; min-height: 0; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); overflow: hidden; }
+#analysisContent .analysis-matchup-open { display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: 12px; align-items: center; width: 100%; padding: 12px; margin: 0; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink); text-align: left; box-shadow: none; }
+#analysisContent .analysis-matchup-open img { width: 52px; height: 52px; }
+#analysisContent .analysis-matchup-copy strong { display: block; font-size: 14px; }
+#analysisContent .analysis-matchup-result > b { padding: 3px 8px; min-width: 0; font-size: 14px; }
+#analysisContent .analysis-battle-link { color: var(--accent); font-size: 12px; }
+#analysisContent .analysis-matchup-moves { border-top: 1px solid var(--line); padding: 0 12px; }
+#analysisContent .analysis-matchup-moves summary { padding: 8px 0; cursor: pointer; color: var(--muted); font-size: 12px; }
+#analysisContent .analysis-matchup-moves p { margin: 0 0 10px; font-size: 13px; line-height: 1.5; }
+@media (max-width: 400px) {
+  #analysisContent .analysis-preview > section { padding: 12px; }
+  #analysisContent .analysis-preview-picks button { grid-template-columns: 32px minmax(0,1fr); gap: 5px; padding: 6px; }
+  #analysisContent .analysis-preview-picks img { width: 32px; height: 38px; }
+  #analysisContent .analysis-preview-picks strong { font-size: 12px; }
+  #analysisContent .analysis-matchup-open { grid-template-columns: 40px minmax(0,1fr) auto; padding: 10px 8px; gap: 7px; }
+  #analysisContent .analysis-matchup-open img { width: 40px; height: 44px; }
+}
 @media (max-width: 700px) {
   #analysisContent .analysis-rating-panel { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 12px; text-align: left; }
   #analysisContent .analysis-rating-value { margin: 0; }

@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Pokémon Analysis: card key wins/losses, 7 ottobre 2026
+
+- Overview usa griglie 2×2 con sprite a sinistra, nome su più righe e rating compatto. Key losses mantiene il nome coerente con Matchups. Rimossi i quattro riquadri stretti per riga.
+- Matchups presenta card con intera area principale cliccabile per Battle, sprite/nome/tipi e rating/esito separati. Rank ripetuto rimosso, mosse avversarie in disclosure; niente bottoncino annidato. Hover copre tutta l’area di apertura. Calcoli e dati invariati.
+- Verificati desktop 1280, mobile 390 e 320 senza overflow, apertura mosse e schede. Test Pokémon Analysis, PWA e service worker passati; asset/cache v157. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Pokémon Analysis: panoramica, matchup e build, 7 ottobre 2026
 
 - Tre schede Overview/Matchups/Build, navigabili anche da tastiera. Identità e mosse una volta nel hero; panoramica con sprite cliccabili di key wins/counter, indicazioni sintetiche e confronto ruoli. Consigli generali, mosse alternative e soglie tecniche nei dettagli. Mobile senza overflow a 320/390 px; pannello ranking compatto.

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-07-v156-pokemon-analysis";
+const CACHE_VERSION = "2026-10-07-v157-pokemon-analysis";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -47,9 +47,9 @@ const CORE_ASSETS = [
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
   "./src/ui/meta-quick-matchup.js?v=20261006-v124",
   "./src/ui/meta-quick-matchup.css?v=20261006-v123",
-  "./src/analysis/pokemon-analysis-view-model.js?v=20261007-v156",
-  "./src/ui/pokemon-analysis.js?v=20261007-v156",
-  "./src/ui/pokemon-analysis.css?v=20261007-v156",
+  "./src/analysis/pokemon-analysis-view-model.js?v=20261007-v157",
+  "./src/ui/pokemon-analysis.js?v=20261007-v157",
+  "./src/ui/pokemon-analysis.css?v=20261007-v157",
   "./src/team-builder/team-builder-state.js",
   "./src/team-builder/team-builder-library.js?v=20261001-v74-v2",
   "./src/ui/team-library.js?v=20261001-v76",
