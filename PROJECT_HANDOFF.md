@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Pokémon Analysis: card confronto approvate, 7 ottobre 2026
+
+- Matchups mostra Pokémon analizzato e avversario affiancati con “vs”; sprite/nome avversario più evidenti. Esito descrittivo in primo piano e rating secondario, accenti verde/rosa. Mosse avversarie sempre visibili con font e icone tipo Meta; intera card apre Battle. Overview conserva sprite/nome senza frecce.
+- Desktop due colonne, schermi intermedi una; mobile esito in riga separata a tutta larghezza. Su 320 px nomi compatti senza spezzare ogni parola. Dati, soglie descrittive e calcoli invariati: restano snapshot precomputati a uno scudo. Asset/cache v163. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Pokémon Analysis: altezza card come Meta, 7 ottobre 2026
 
 - Mosse affiancate a sprite/nome/tipi, anziché sotto: singola riga di layout desktop, rating a destra. Padding ridotto; card desktop misurate 88 px e mobile 390 circa 113 px. Su 320 px nomi/mosse/tipi vanno a capo quando necessario (113–145 px), senza nascondere o rimpicciolire le tre mosse a 14 px. Tipi possono andare a capo per evitare sovrapposizioni.

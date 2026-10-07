@@ -43,7 +43,9 @@ for (const id of ['matchups', 'build']) assert.match(page, new RegExp(`id="analy
 assert.match(page, /Ranking index · not a win probability/);
 assert.match(page, /Battle rating: 500 is even/);
 assert.match(page, /&lt;Opponent&gt;/);
-assert.match(page, /<small class="analysis-visually-hidden">Even<\/small>/);
+assert.match(page, /<b class="win">Even<\/b><small>Rating 500<\/small>/);
+assert.match(page, /analysis-duel-own/);
+assert.match(page, /analysis-duel-vs">vs/);
 assert.match(page, /class="analysis-opponent-moves"><span class="meta-move-pill fast"/);
 assert.match(page, /--move-icon:url\('data:image\/svg\+xml,test'\)/);
 assert.doesNotMatch(page, /Opponent moves<\/summary>|analysis-matchup-moves|↗/);

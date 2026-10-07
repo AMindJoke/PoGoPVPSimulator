@@ -93,13 +93,12 @@
     return "Close loss";
   }
 
-  function matchupRows(items, kind, sourceId) {
+  function matchupRows(items, kind, sourceId, identity) {
     if (!items.length) return `<p class="analysis-empty-state">No reliable ${kind === "win" ? "winning" : "losing"} matchup details are available.</p>`;
-    return items.map(item => `<article class="analysis-matchup-row" style="--opponent-type:${escapeHtml(item.types?.[0]?.color || "#66788c")}">
+    return items.map(item => `<article class="analysis-matchup-row analysis-duel-card ${kind}">
       <button type="button" class="analysis-matchup-open" data-analysis-matchup="${escapeHtml(item.id)}" data-analysis-source="${escapeHtml(sourceId)}" aria-label="Open battle against ${escapeHtml(item.name)}">
-      <img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt="">
-      <span class="analysis-matchup-copy"><strong>${escapeHtml(item.name)}</strong><span>${typeChips(item.types)}</span></span>
-      <span class="analysis-matchup-result"><b class="${escapeHtml(kind)}" title="${escapeHtml(matchupDescriptor(Number(item.score)))}">${escapeHtml(item.score)}</b><small class="analysis-visually-hidden">${escapeHtml(matchupDescriptor(Number(item.score)))}</small></span>
+      <span class="analysis-matchup-duel"><span class="analysis-duel-mon analysis-duel-own"><img src="${escapeHtml(identity.image)}" data-fallback="${escapeHtml(identity.fallbackImage)}" alt=""><span>${escapeHtml(identity.name)}</span></span><span class="analysis-duel-vs">vs</span><span class="analysis-duel-mon analysis-duel-opponent"><img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt=""><strong>${escapeHtml(item.name)}</strong></span></span>
+      <span class="analysis-matchup-result"><b class="${escapeHtml(kind)}">${escapeHtml(matchupDescriptor(Number(item.score)))}</b><small>Rating ${escapeHtml(item.score)}</small></span>
       <span class="analysis-opponent-moves">${(item.moveDetails?.length ? item.moveDetails : (item.moves || []).map(name => ({ name }))).map(move => `<span class="meta-move-pill ${move.kind || "charged"}" style="--move-type:${escapeHtml(move.color || "#66788c")};--move-icon:url('${escapeHtml(move.icon || "")}')"><span>${escapeHtml(move.name)}</span></span>`).join("")}</span>
       </button>
     </article>`).join("");
@@ -112,7 +111,7 @@
       title: "Meta Matchups",
       eyebrow: `${model.keyMatchups.shieldState} snapshot`,
       className: "analysis-wide-card",
-      content: `<p class="analysis-score-caption">Battle rating: 500 is even · above 500 favors this Pokémon. Open Battle to run the current simulator.</p><div class="analysis-matchup-columns"><section><header><span class="win" aria-hidden="true">&#8593;</span><strong>Key wins</strong></header>${matchupRows(model.keyMatchups.wins, "win", model.id)}</section><section><header><span class="loss" aria-hidden="true">&#8595;</span><strong>Key losses</strong></header>${matchupRows(model.keyMatchups.losses, "loss", model.id)}</section></div><p class="analysis-source-note">Source: ${escapeHtml(model.provenance.matchups)}.</p>`
+      content: `<p class="analysis-score-caption">Battle rating: 500 is even · above 500 favors this Pokémon. Open Battle to run the current simulator.</p><div class="analysis-matchup-columns"><section><header><span class="win" aria-hidden="true">&#8593;</span><strong>Key wins</strong></header>${matchupRows(model.keyMatchups.wins, "win", model.id, model.identity)}</section><section><header><span class="loss" aria-hidden="true">&#8595;</span><strong>Key losses</strong></header>${matchupRows(model.keyMatchups.losses, "loss", model.id, model.identity)}</section></div><p class="analysis-source-note">Source: ${escapeHtml(model.provenance.matchups)}.</p>`
     });
   }
 
