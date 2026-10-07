@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Pokémon Analysis: altezza card come Meta, 7 ottobre 2026
+
+- Mosse affiancate a sprite/nome/tipi, anziché sotto: singola riga di layout desktop, rating a destra. Padding ridotto; card desktop misurate 88 px e mobile 390 circa 113 px. Su 320 px nomi/mosse/tipi vanno a capo quando necessario (113–145 px), senza nascondere o rimpicciolire le tre mosse a 14 px. Tipi possono andare a capo per evitare sovrapposizioni.
+- Verifica desktop/390/320, nessun overflow o sovrapposizione nome/mosse; test Pokémon Analysis, PWA e cache passati. Solo layout, dati/calcoli invariati. Asset/cache v160. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Pokémon Analysis: stile Meta e mosse visibili, 7 ottobre 2026
 
 - Correzione su richiesta utente: card matchup con accento del tipo, nomi 16 px, tipi 12 px, mosse 14 px sempre visibili. Font Arial e simboli tipo identici al trattamento Meta; adapter passa nome/kind/colore e la stessa metaTypeIconDataUri. Fast separata dalle caricate con linea leggera. Nessuna disclosure mosse, etichetta Battle/freccia o descrizione esito ripetuta; il rating mantiene tooltip e testo accessibile.

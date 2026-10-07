@@ -48,15 +48,17 @@
 }
 /* Matchup cards follow Meta's type accent and always-visible move list. */
 #analysisContent .analysis-matchup-row { border-left: 4px solid var(--opponent-type); background: var(--analysis-surface); }
-#analysisContent .analysis-matchup-open { grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px 12px; padding: 14px; }
-#analysisContent .analysis-matchup-open img { grid-row: 1 / 3; width: 56px; height: 56px; }
+#analysisContent .analysis-matchup-open { grid-template-columns: 44px minmax(0,1fr) minmax(0,1fr) auto; gap: 8px; padding: 8px 10px; }
+#analysisContent .analysis-matchup-open img { grid-column: 1; grid-row: 1; width: 44px; height: 44px; }
+#analysisContent .analysis-matchup-copy { grid-column: 2; grid-row: 1; }
 #analysisContent .analysis-matchup-copy strong { font-size: 16px; line-height: 1.35; }
 #analysisContent .analysis-matchup-copy .analysis-type-chip { font-size: 12px; padding: 2px 6px; }
-#analysisContent .analysis-matchup-result { align-self: start; }
+#analysisContent .analysis-matchup-copy > span { flex-wrap: wrap; }
+#analysisContent .analysis-matchup-result { grid-column: 4; grid-row: 1; align-self: center; }
 #analysisContent .analysis-matchup-result > b { font-size: 18px; padding: 5px 8px; border-radius: 5px; }
-#analysisContent .analysis-opponent-moves { grid-column: 2 / -1; display: grid; gap: 4px; min-width: 0; }
-#analysisContent .analysis-opponent-moves .meta-move-pill { display: flex; align-items: center; gap: 7px; min-width: 0; width: 100%; padding: 2px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--ink); font: 500 14px/1.4 Arial,sans-serif; }
-#analysisContent .analysis-opponent-moves .meta-move-pill.fast { padding-bottom: 5px; border-bottom: 1px solid var(--line); }
+#analysisContent .analysis-opponent-moves { grid-column: 3; grid-row: 1; display: grid; gap: 2px; min-width: 0; }
+#analysisContent .analysis-opponent-moves .meta-move-pill { display: flex; align-items: center; gap: 5px; min-width: 0; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--ink); font: 500 14px/1.3 Arial,sans-serif; }
+#analysisContent .analysis-opponent-moves .meta-move-pill.fast { padding-bottom: 2px; border-bottom: 1px solid var(--line); }
 #analysisContent .analysis-opponent-moves .meta-move-pill::before { content: ""; flex: 0 0 16px; width: 16px; height: 16px; border-radius: 3px; background: var(--move-type) var(--move-icon) center / 13px 13px no-repeat; }
 #analysisContent .analysis-opponent-moves .meta-move-pill span { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 #analysisContent .analysis-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -64,8 +66,12 @@
 #analysisContent .analysis-preview-picks button { min-height: 82px; }
 #analysisContent .analysis-score-caption { font-size: 14px !important; }
 @media (max-width: 700px) {
-  #analysisContent .analysis-matchup-open { grid-template-columns: 46px minmax(0,1fr) auto; padding: 12px 10px; gap: 9px; }
-  #analysisContent .analysis-matchup-open img { width: 46px; height: 50px; }
+  #analysisContent #analysisMatchups { padding: 14px; }
+  #analysisContent .analysis-matchup-open { grid-template-columns: 36px minmax(0,.85fr) minmax(0,1.15fr); padding: 7px 8px; gap: 7px; }
+  #analysisContent .analysis-matchup-open img { width: 36px; height: 40px; }
+  #analysisContent .analysis-matchup-result { grid-column: 3; align-self: start; justify-self: end; }
+  #analysisContent .analysis-matchup-result > b { font-size: 16px; padding: 3px 6px; }
+  #analysisContent .analysis-opponent-moves { padding-top: 27px; }
   #analysisContent .analysis-matchup-columns > section > header { flex-direction: row; justify-content: flex-start; font-size: 16px; }
   #analysisContent .analysis-preview-picks button { grid-template-columns: 36px minmax(0,1fr); gap: 7px; }
   #analysisContent .analysis-preview-picks img { width: 36px; height: 42px; }
@@ -83,7 +89,6 @@
   #analysisContent .analysis-snapshot article > b { display: none; }
   #analysisContent .analysis-matchup-columns { grid-template-columns: 1fr; }
   #analysisContent .analysis-matchup-row { grid-template-columns: 40px minmax(0,1fr) auto; gap: 6px; }
-  #analysisContent .analysis-matchup-row img { width: 40px; height: 40px; }
   #analysisContent .analysis-iv-layout { grid-template-columns: 1fr; }
   #analysisContent .analysis-iv-profiles { grid-template-columns: repeat(3,minmax(0,1fr)); }
   #analysisContent .analysis-iv-profiles button { padding: 8px 5px; min-width: 0; }
