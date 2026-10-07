@@ -40,9 +40,9 @@
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
-  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v165"></script>
-  <script src="src/ui/pokemon-analysis.js?v=20261007-v165"></script>
-  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v165">
+  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v168"></script>
+  <script src="src/ui/pokemon-analysis.js?v=20261007-v168"></script>
+  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v168">
   <script src="src/battle/charged-move-collection.js"></script>
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
@@ -21075,7 +21075,7 @@
       const thresholdCombatants = thresholdOpponents.map(item => {
         const opponent = findPokemon(item.id);
         const combatant = opponent ? defaultCombatant(opponent) : null;
-        return opponent && combatant?.fast ? { opponent, combatant } : null;
+        return opponent && combatant?.fast ? { opponent, combatant, image: imageUrl(opponent), fallbackImage: fallbackImageUrl(opponent) } : null;
       }).filter(Boolean);
       const breakpoints = [];
       const bulkpoints = [];
@@ -21088,6 +21088,8 @@
       const baselineIvProfile = ivProfiles.find(profile => profile.id === "balanced") || ivProfiles[0];
       const signedIvDelta = value => `${value > 0 ? "+" : ""}${value.toFixed(1)}`;
       ivProfiles.forEach(profile => {
+        profile.effects = [];
+        profile.sampleSize = thresholdCombatants.length;
         profile.purpose = profile.id === "balanced"
           ? "Maximum overall stat product: the reference build for general consistency."
           : profile.id === "attack"
@@ -21109,21 +21111,29 @@
         ];
         const candidate = { ...selectedCombatant, attack: profile.attackValue, defense: profile.defenseValue, maxHp: profile.hpValue, hp: profile.hpValue };
         const insights = [];
-        thresholdCombatants.forEach(({ opponent, combatant }) => {
+        thresholdCombatants.forEach(({ opponent, combatant, image, fallbackImage }) => {
+          const addEffect = (kind, tone, label, before, after, move) => profile.effects.push({ kind, tone, label, before, after, move, opponent: opponent.name, opponentId: opponent.id, image, fallbackImage });
           const candidateFastDamage = estimate(candidate, combatant, candidate.fast);
           const baselineFastDamage = estimate(selectedCombatant, combatant, selectedCombatant.fast);
+          if (candidateFastDamage !== baselineFastDamage) addEffect("damage", candidateFastDamage > baselineFastDamage ? "positive" : "negative", "Fast damage", baselineFastDamage, candidateFastDamage, candidate.fast.name);
           if (candidateFastDamage > baselineFastDamage) insights.push(`Fast move gains ${candidateFastDamage - baselineFastDamage} damage vs ${opponent.name}.`);
           if (candidateFastDamage < baselineFastDamage) insights.push(`Fast move loses ${baselineFastDamage - candidateFastDamage} damage vs ${opponent.name}.`);
           if (candidate.attack > combatant.attack && selectedCombatant.attack <= combatant.attack) insights.push(`Gains CMP priority against ${opponent.name}.`);
           if (candidate.attack < combatant.attack && selectedCombatant.attack >= combatant.attack) insights.push(`Loses CMP priority against ${opponent.name}.`);
+          const cmpState = attack => attack > combatant.attack ? "First" : attack < combatant.attack ? "Second" : "Tie";
+          const baselineCmp = cmpState(selectedCombatant.attack);
+          const candidateCmp = cmpState(candidate.attack);
+          if (baselineCmp !== candidateCmp) addEffect("cmp", candidate.attack > selectedCombatant.attack ? "positive" : "negative", "CMP order", baselineCmp, candidateCmp, "Simultaneous charged moves");
           const candidateTaken = estimate(combatant, candidate, combatant.fast);
           const baselineTaken = estimate(combatant, selectedCombatant, combatant.fast);
+          if (candidateTaken !== baselineTaken) addEffect("bulk", candidateTaken < baselineTaken ? "positive" : "negative", "Damage taken", baselineTaken, candidateTaken, combatant.fast.name);
           if (candidateTaken < baselineTaken) insights.push(`Takes ${baselineTaken - candidateTaken} less fast-move damage from ${opponent.name}.`);
           if (candidateTaken > baselineTaken) insights.push(`Takes ${candidateTaken - baselineTaken} more fast-move damage from ${opponent.name}.`);
           const chargedThreat = combatant.charged.filter(Boolean).sort((a, b) => estimate(combatant, selectedCombatant, b) - estimate(combatant, selectedCombatant, a))[0];
           if (chargedThreat) {
             const baselineSurvives = selectedCombatant.maxHp > estimate(combatant, selectedCombatant, chargedThreat);
             const candidateSurvives = candidate.maxHp > estimate(combatant, candidate, chargedThreat);
+            if (candidateSurvives !== baselineSurvives) addEffect("survival", candidateSurvives ? "positive" : "negative", "At full HP", baselineSurvives ? "Survives" : "KO", candidateSurvives ? "Survives" : "KO", chargedThreat.name);
             if (candidateSurvives && !baselineSurvives) insights.push(`At full HP, survives one ${chargedThreat.name} from ${opponent.name}.`);
             if (!candidateSurvives && baselineSurvives) insights.push(`At full HP, no longer survives one ${chargedThreat.name} from ${opponent.name}.`);
           }
@@ -21369,6 +21379,9 @@
         button.setAttribute("aria-selected", String(active));
       });
       output.innerHTML = window.PvPeakPokemonAnalysis.PokemonIVProfileDetail(profile);
+      output.querySelectorAll("img[data-fallback]").forEach(sprite => {
+        sprite.onerror = () => { sprite.onerror = null; sprite.src = sprite.dataset.fallback || ""; };
+      });
     }
 
     function loadAnalysisPokemon(pokemonId, profileId = "balanced") {
@@ -38111,7 +38124,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261007-v165").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261007-v168").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

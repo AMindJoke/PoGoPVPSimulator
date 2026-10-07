@@ -136,3 +136,43 @@ body[data-theme="dark"] #analysisContent .analysis-duel-card .analysis-matchup-r
 #analysisContent .analysis-preview-picks .analysis-preview-outcome { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; color: var(--outcome-color); background: var(--outcome-soft); font: 800 14px/1 Arial,sans-serif; }
 body[data-theme="dark"] #analysisContent .analysis-preview-win { --outcome-color: #83d4b0; --outcome-soft: #243e35; }
 body[data-theme="dark"] #analysisContent .analysis-preview-loss { --outcome-color: #f3a3bc; --outcome-soft: #422b37; }
+/* Readable build selection and concrete differences grouped by opponent. */
+#analysisContent .analysis-iv-profiles button { color: var(--ink); background: var(--panel); transform: none; gap: 6px; padding: 12px; }
+#analysisContent .analysis-iv-profiles button:hover, #analysisContent .analysis-iv-profiles button:focus-visible { color: var(--ink); background: color-mix(in srgb,var(--accent) 7%,var(--panel)); border-color: var(--accent); transform: none; }
+#analysisContent .analysis-iv-profiles button[aria-selected="true"] { background: color-mix(in srgb,var(--accent) 10%,var(--panel)); border-left-color: var(--accent); }
+#analysisContent .analysis-iv-profiles button strong { font-size: 16px; }
+#analysisContent .analysis-iv-profiles button span, #analysisContent .analysis-iv-profiles button small { color: var(--muted); font-size: 13px; line-height: 1.35; }
+#analysisContent .analysis-iv-canvas { padding: 16px; min-width: 0; }
+#analysisContent .analysis-iv-detail-head strong { font-size: 18px; }
+#analysisContent .analysis-iv-detail-head small, #analysisContent .analysis-iv-detail-head > span { font-size: 13px; line-height: 1.4; color: var(--muted); }
+#analysisContent .analysis-iv-canvas h4 { font-size: 15px; margin: 18px 0 10px; }
+#analysisContent .analysis-iv-canvas h4 small { font-size: 12px; font-weight: 400; color: var(--muted); }
+#analysisContent .analysis-iv-deltas dt { font-size: 13px; }
+#analysisContent .analysis-iv-deltas dd { font-size: 18px; }
+#analysisContent .analysis-build-effects { display: grid; gap: 8px; }
+#analysisContent .analysis-build-effect { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+#analysisContent .analysis-build-opponent { display: flex; align-items: center; gap: 8px; min-width: 0; }
+#analysisContent .analysis-build-opponent img { width: 44px; height: 44px; object-fit: contain; }
+#analysisContent .analysis-build-opponent strong { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+#analysisContent .analysis-build-changes { display: grid; gap: 8px; }
+#analysisContent .analysis-build-change { display: flex; gap: 8px; align-items: center; }
+#analysisContent .analysis-build-kind { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: 5px; background: var(--subtle); font: 700 18px/1 Arial,sans-serif; }
+#analysisContent .analysis-build-change strong { display: flex; flex-wrap: wrap; gap: 4px 10px; font: 500 14px/1.4 Arial,sans-serif; }
+#analysisContent .analysis-build-change b { font-weight: 700; }
+#analysisContent .analysis-build-change small { display: block; margin-top: 2px; color: var(--muted); font: 400 13px/1.4 Arial,sans-serif; }
+#analysisContent .analysis-build-change.positive b, #analysisContent .analysis-iv-deltas .positive { color: #176c52; }
+#analysisContent .analysis-build-change.negative b, #analysisContent .analysis-iv-deltas .negative { color: #a33759; }
+body[data-theme="dark"] #analysisContent .analysis-build-change.positive b, body[data-theme="dark"] #analysisContent .analysis-iv-deltas .positive { color: #83d4b0; }
+body[data-theme="dark"] #analysisContent .analysis-build-change.negative b, body[data-theme="dark"] #analysisContent .analysis-iv-deltas .negative { color: #f3a3bc; }
+#analysisContent .analysis-build-empty { font-size: 14px; line-height: 1.5; padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+#analysisContent .analysis-iv-canvas .analysis-disclosure { margin: 14px 0; }
+#analysisContent .analysis-iv-canvas .analysis-disclosure summary { font-size: 14px; }
+@media (max-width: 700px) {
+  #analysisContent .analysis-iv-profiles button { padding: 10px 7px; }
+  #analysisContent .analysis-iv-profiles button strong { font-size: 14px; }
+  #analysisContent .analysis-iv-profiles button small { font-size: 12px; }
+  #analysisContent .analysis-build-effect { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
+  #analysisContent .analysis-build-opponent img { width: 36px; height: 36px; }
+  #analysisContent .analysis-iv-canvas { padding: 12px; }
+}
+#analysisContent .analysis-iv-detail-head > span { background: var(--panel); color: var(--muted); font-weight: 500; }

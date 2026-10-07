@@ -51,7 +51,7 @@ assert.match(page, /--move-icon:url\('data:image\/svg\+xml,test'\)/);
 assert.doesNotMatch(page, /Opponent moves<\/summary>|analysis-matchup-moves|↗/);
 assert.match(page, /More sampled changes \(1\)/);
 assert.match(page, /data-analysis-use-build="attack"/);
-assert.match(page, /<dd>-8<\/dd>/);
+assert.match(page, /<dd[^>]*>-8<\/dd>/);
 assert.doesNotMatch(page, /Detected impact/);
 const stale = normalize({ ...fixture, movesetScoreStale: true });
 assert.strictEqual(stale.availability.matchups, false);
@@ -99,5 +99,25 @@ assert.match(tradeoffs, /Fast move loses 2 damage/);
 assert.match(tradeoffs, /Loses CMP priority/);
 assert.match(tradeoffs, /Takes 2 more fast-move damage/);
 assert.strictEqual(tradeoffContext.ivProfiles[1].hasPracticalImpact, true, 'A negative threshold change is still a detected difference.');
+const effectRows = tradeoffContext.ivProfiles[1].effects;
+assert.deepStrictEqual(Array.from(effectRows, item => [item.kind, item.tone, item.before, item.after]), [
+  ['damage', 'negative', 10, 8], ['cmp', 'negative', 'First', 'Second'], ['bulk', 'negative', 9, 11]
+]);
+const structuredDetail = UI.PokemonIVProfileDetail({ ...tradeoffContext.ivProfiles[1], effects: effectRows });
+assert.match(structuredDetail, /analysis-build-opponent/);
+assert.match(structuredDetail, /10 → 8/);
+assert.match(structuredDetail, /First → Second/);
+assert.ok(!structuredDetail.includes('Fast move loses 2 damage'), 'Structured cards must replace the text list.');
+const survivalContext = {
+  ivProfiles: [{ id: 'balanced', attackValue: 10, defenseValue: 10, hpValue: 10 }, { id: 'attack', attackValue: 12, defenseValue: 8, hpValue: 8 }],
+  selectedCombatant: { attack: 10, defense: 10, maxHp: 10, fast: { name: 'Fast' } },
+  thresholdCombatants: [{ opponent: { name: 'Counter' }, combatant: { attack: 10, defense: 10, fast: { name: 'Fast' }, charged: [{ name: 'Charged', charged: true }] } }],
+  estimate: (attacker, defender, move) => move.charged ? 8 : 2
+};
+vm.createContext(survivalContext);
+vm.runInContext(tradeoffSource, survivalContext);
+assert.deepStrictEqual(Array.from(survivalContext.ivProfiles[1].effects, item => [item.kind, item.before, item.after]), [
+  ['cmp', 'Tie', 'First'], ['survival', 'Survives', 'KO']
+], 'Exact HP damage is a KO; CMP tie-to-first is an advantage, not an outcome flip.');
 
 console.log("Pokémon Analysis search UI contract tests passed.");

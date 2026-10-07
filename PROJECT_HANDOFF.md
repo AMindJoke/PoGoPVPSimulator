@@ -1,4 +1,9 @@
 # PoGoPVPSimulator — Handoff operativo
+### Pokémon Analysis: differenze build visive, 7 ottobre 2026
+
+- Build raggruppa le differenze reali per avversario con sprite, categoria e prima→dopo: danno Fast, ordine CMP, danno Fast subito, sopravvivenza a un singolo colpo da HP pieni. Tre avversari iniziali, altri apribili. Statistiche esatte/purpose nei dettagli; delta Attack/Defense/HP restano subito visibili. Balanced identificata come riferimento, non come build senza utilità. Nessun nuovo simulatore o outcome flip dichiarato.
+- Dati prodotti dagli stessi estimate/stats reali; test coprono guadagni/perdite, tie→first CMP e KO a danno uguale agli HP. CMP mostra anche passaggi da/verso Tie. Survival confronta danno grezzo senza scudi/abilità, esplicitato nella fonte; sei avversari campionati, nessuna pretesa di copertura dell’intero meta. Fallback sprite riassociato anche dopo cambio build.
+- Hover Balanced/Attack/Defense con fondo tenue e testo scuro/leggibile, selezione distinta. Font profili 13–16 px, cambiamenti 14 px e dettagli 13 px. Verificati desktop/390/320 senza overflow e hover effettivo. Test UI/tradeoff, PWA/cache passati. Asset/cache v168. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
 
 ### Overview: segnali visivi Win/Loss, 7 ottobre 2026
 
