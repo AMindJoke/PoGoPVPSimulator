@@ -40,9 +40,9 @@
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
-  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v169"></script>
-  <script src="src/ui/pokemon-analysis.js?v=20261007-v169"></script>
-  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v169">
+  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v170"></script>
+  <script src="src/ui/pokemon-analysis.js?v=20261007-v170"></script>
+  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v170">
   <script src="src/battle/charged-move-collection.js"></script>
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
@@ -38124,7 +38124,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261007-v169").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261007-v170").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

@@ -1,5 +1,9 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### BP: spazio e colori, 7 ottobre 2026
+
+- Sigla BP con spaziatura positiva e riquadro più ampio; verde per breakpoint (danno inflitto), rosso per bulkpoint (danno subito), indipendentemente dal guadagno/perdita che mantiene il proprio colore sul valore. Varianti dark leggibili. Asset/cache v170. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Build: sigla BP, 7 ottobre 2026
 
 - Breakpoint e bulkpoint mostrano BP in grassetto anziché spade/rombo; Fast damage e Damage taken distinguono la direzione. Solo presentazione, asset/cache v169. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
