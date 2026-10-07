@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Pokémon Analysis: stile Meta e mosse visibili, 7 ottobre 2026
+
+- Correzione su richiesta utente: card matchup con accento del tipo, nomi 16 px, tipi 12 px, mosse 14 px sempre visibili. Font Arial e simboli tipo identici al trattamento Meta; adapter passa nome/kind/colore e la stessa metaTypeIconDataUri. Fast separata dalle caricate con linea leggera. Nessuna disclosure mosse, etichetta Battle/freccia o descrizione esito ripetuta; il rating mantiene tooltip e testo accessibile.
+- Overview conserva card sprite/nome a 14 px, rimuove rating e freccia obliqua. Non sono modificati punteggi o simulatore. Verificati tutti gli otto set da tre mosse visibili a 320 px, font effettivi 16/14 px e nessun overflow; desktop/mobile 390. Test Pokémon Analysis con regressione mosse visibili/icone/assenza frecce, PWA e cache passati. Asset/cache v158. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Pokémon Analysis: card key wins/losses, 7 ottobre 2026
 
 - Overview usa griglie 2×2 con sprite a sinistra, nome su più righe e rating compatto. Key losses mantiene il nome coerente con Matchups. Rimossi i quattro riquadri stretti per riga.

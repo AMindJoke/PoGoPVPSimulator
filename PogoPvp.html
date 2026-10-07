@@ -40,9 +40,9 @@
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
-  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v157"></script>
-  <script src="src/ui/pokemon-analysis.js?v=20261007-v157"></script>
-  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v157">
+  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v158"></script>
+  <script src="src/ui/pokemon-analysis.js?v=20261007-v158"></script>
+  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v158">
   <script src="src/battle/charged-move-collection.js"></script>
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
@@ -20992,6 +20992,7 @@
           image: opponent ? imageUrl(opponent) : "",
           fallbackImage: opponent ? fallbackImageUrl(opponent) : "",
           moves: opponentMoves ? [opponentMoves.fast, ...opponentMoves.charged].filter(Boolean).map(move => move.name) : [],
+          moveDetails: opponentMoves ? [opponentMoves.fast, ...opponentMoves.charged].filter(Boolean).map((move, index) => ({ name: move.name, kind: index === 0 ? "fast" : "charged", color: typeColors[move.type] || "#66788c", icon: metaTypeIconDataUri(move.type, typeColors[move.type] || "#66788c") })) : [],
           types: opponent?.types?.map(type => {
             const color = typeColors[type] || "#66788c";
             return { label: title(type), color, textColor: contrastText(color) };
@@ -38110,7 +38111,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261007-v157").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261007-v158").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

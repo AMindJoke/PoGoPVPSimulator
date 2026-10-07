@@ -95,13 +95,13 @@
 
   function matchupRows(items, kind, sourceId) {
     if (!items.length) return `<p class="analysis-empty-state">No reliable ${kind === "win" ? "winning" : "losing"} matchup details are available.</p>`;
-    return items.map(item => `<article class="analysis-matchup-row">
+    return items.map(item => `<article class="analysis-matchup-row" style="--opponent-type:${escapeHtml(item.types?.[0]?.color || "#66788c")}">
       <button type="button" class="analysis-matchup-open" data-analysis-matchup="${escapeHtml(item.id)}" data-analysis-source="${escapeHtml(sourceId)}" aria-label="Open battle against ${escapeHtml(item.name)}">
       <img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt="">
       <span class="analysis-matchup-copy"><strong>${escapeHtml(item.name)}</strong><span>${typeChips(item.types)}</span></span>
-      <span class="analysis-matchup-result"><b class="${escapeHtml(kind)}">${escapeHtml(item.score)}</b><small>${escapeHtml(matchupDescriptor(Number(item.score)))}</small><span class="analysis-battle-link">Battle ↗</span></span>
+      <span class="analysis-matchup-result"><b class="${escapeHtml(kind)}" title="${escapeHtml(matchupDescriptor(Number(item.score)))}">${escapeHtml(item.score)}</b><small class="analysis-visually-hidden">${escapeHtml(matchupDescriptor(Number(item.score)))}</small></span>
+      <span class="analysis-opponent-moves">${(item.moveDetails?.length ? item.moveDetails : (item.moves || []).map(name => ({ name }))).map(move => `<span class="meta-move-pill ${move.kind || "charged"}" style="--move-type:${escapeHtml(move.color || "#66788c")};--move-icon:url('${escapeHtml(move.icon || "")}')"><span>${escapeHtml(move.name)}</span></span>`).join("")}</span>
       </button>
-      ${(item.moves || []).length ? `<details class="analysis-matchup-moves"><summary>Opponent moves</summary><p>${escapeHtml(item.moves.join(" · "))}</p></details>` : ""}
     </article>`).join("");
   }
 
@@ -163,7 +163,7 @@
   }
 
   function PokemonAnalysisPage(model) {
-    const preview = (items, label, kind) => `<section><h3>${label}</h3><div class="analysis-preview-picks">${items.map(item => `<button type="button" data-analysis-matchup="${escapeHtml(item.id)}" data-analysis-source="${escapeHtml(model.id)}" aria-label="Open battle against ${escapeHtml(item.name)}"><img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt=""><span><strong>${escapeHtml(item.name)}</strong><small class="analysis-preview-rating ${kind}">${escapeHtml(item.score)} <span aria-hidden="true">↗</span></small></span></button>`).join("")}</div></section>`;
+    const preview = (items, label, kind) => `<section><h3>${label}</h3><div class="analysis-preview-picks">${items.map(item => `<button type="button" data-analysis-matchup="${escapeHtml(item.id)}" data-analysis-source="${escapeHtml(model.id)}" aria-label="Open battle against ${escapeHtml(item.name)}"><img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt=""><span><strong>${escapeHtml(item.name)}</strong></span></button>`).join("")}</div></section>`;
     return `${PokemonHeroCard(model)}<div class="analysis-workspace"><div class="analysis-page-tabs" role="tablist" aria-label="Pokémon analysis">${["overview", "matchups", "build"].map((id, index) => `<button type="button" role="tab" id="analysisTab-${id}" aria-controls="analysisPanel-${id}" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}" data-analysis-panel="${id}">${["Overview", "Matchups", "Build"][index]}</button>`).join("")}</div><div id="analysisPanel-overview" role="tabpanel" aria-labelledby="analysisTab-overview" class="analysis-dossier-grid">${PokemonSnapshot(model)}${model.availability.matchups ? `<div class="analysis-preview">${preview(model.keyMatchups.wins, "Key wins", "win")}${preview(model.keyMatchups.losses, "Key losses", "loss")}</div>` : `<p class="analysis-empty-state">No current matchup snapshot available. Use Battle to test this Pokémon.</p>`}${PokemonIdentitySection(model)}<details class="analysis-guidance"><summary>General play advice</summary>${PokemonPlaybookSection(model)}</details></div><div id="analysisPanel-matchups" role="tabpanel" aria-labelledby="analysisTab-matchups" class="analysis-dossier-grid" hidden>${PokemonMatchupsSection(model) || `<p class="analysis-empty-state">No current matchup snapshot available.</p>`}</div><div id="analysisPanel-build" role="tabpanel" aria-labelledby="analysisTab-build" class="analysis-dossier-grid" hidden>${PokemonBuildSection(model)}<details class="analysis-guidance"><summary>Other available moves</summary><div class="analysis-alternative-moves">${model.recommendedMoves.alternatives.map(move => moveChip(move, true)).join("") || "No alternative moves available."}</div></details>${PokemonTechnicalSection(model)}</div></div>`;
   }
 

@@ -33,7 +33,7 @@ const fixture = {
   id: 'mimikyu', name: 'Mimikyu', role: 'Switch specialist', rating: 925,
   quickFacts: [{ label: 'Best role', value: 'Switch (632)' }, { label: 'Shield plan', value: 'Shield dependent' }],
   categories: [{ label: 'Switch', score: 632 }],
-  keyWins: [{ id: 'test', name: '<Opponent>', score: 500 }],
+  keyWins: [{ id: 'test', name: '<Opponent>', score: 500, moves: ['Fast example', 'Charged example'], moveDetails: [{ name: 'Fast example', kind: 'fast', color: '#123456', icon: 'data:image/svg+xml,test' }, { name: 'Charged example', kind: 'charged', color: '#654321', icon: 'data:image/svg+xml,test' }] }],
   ivProfiles: [{ id: 'attack', label: 'Attack', ivs: '15 / 1 / 1', deltas: [{ label: 'HP vs Balanced', value: '-8' }], insights: ['Gain', 'Loss', 'CMP', 'Survival'], hasPracticalImpact: true }]
 };
 const page = UI.PokemonAnalysisPage(normalize(fixture));
@@ -43,7 +43,10 @@ for (const id of ['matchups', 'build']) assert.match(page, new RegExp(`id="analy
 assert.match(page, /Ranking index · not a win probability/);
 assert.match(page, /Battle rating: 500 is even/);
 assert.match(page, /&lt;Opponent&gt;/);
-assert.match(page, /<small>Even<\/small>/);
+assert.match(page, /<small class="analysis-visually-hidden">Even<\/small>/);
+assert.match(page, /class="analysis-opponent-moves"><span class="meta-move-pill fast"/);
+assert.match(page, /--move-icon:url\('data:image\/svg\+xml,test'\)/);
+assert.doesNotMatch(page, /Opponent moves<\/summary>|analysis-matchup-moves|↗/);
 assert.match(page, /More sampled changes \(1\)/);
 assert.match(page, /data-analysis-use-build="attack"/);
 assert.match(page, /<dd>-8<\/dd>/);
