@@ -127,3 +127,12 @@ body[data-theme="dark"] #analysisContent .analysis-duel-card .analysis-matchup-r
   #analysisContent .analysis-duel-opponent strong { font-size: 12px; overflow-wrap: normal; }
   #analysisContent .analysis-duel-own > span { font-size: 11px; }
 }
+/* Overview outcomes use both color and shape, visible before reading labels. */
+#analysisContent .analysis-preview-win { --outcome-color: #176c52; --outcome-soft: #e5f2e9; }
+#analysisContent .analysis-preview-loss { --outcome-color: #a33759; --outcome-soft: #f8e8ec; }
+#analysisContent .analysis-preview h3 { display: flex; align-items: center; gap: 8px; }
+#analysisContent .analysis-outcome-symbol { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: var(--outcome-color); background: var(--outcome-soft); font: 800 20px/1 Arial,sans-serif; }
+#analysisContent .analysis-preview-picks button { position: relative; padding-right: 9px; border-left: 3px solid var(--outcome-color); background: color-mix(in srgb,var(--outcome-soft) 38%,var(--panel)); }
+#analysisContent .analysis-preview-picks .analysis-preview-outcome { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; color: var(--outcome-color); background: var(--outcome-soft); font: 800 14px/1 Arial,sans-serif; }
+body[data-theme="dark"] #analysisContent .analysis-preview-win { --outcome-color: #83d4b0; --outcome-soft: #243e35; }
+body[data-theme="dark"] #analysisContent .analysis-preview-loss { --outcome-color: #f3a3bc; --outcome-soft: #422b37; }

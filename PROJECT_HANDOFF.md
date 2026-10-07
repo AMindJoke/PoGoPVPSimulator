@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Overview: segnali visivi Win/Loss, 7 ottobre 2026
+
+- Key wins e Key losses hanno simboli ✓/× nei titoli e su ogni card, bordo e fondo tenui verdi/rosati. Segnali distinti anche senza affidarsi al colore; niente testo aggiuntivo o modifica ai calcoli. Asset/cache v165. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Pokémon Analysis: card confronto approvate, 7 ottobre 2026
 
 - Matchups mostra Pokémon analizzato e avversario affiancati con “vs”; sprite/nome avversario più evidenti. Esito descrittivo in primo piano e rating secondario, accenti verde/rosa. Mosse avversarie sempre visibili con font e icone tipo Meta; intera card apre Battle. Overview conserva sprite/nome senza frecce.
