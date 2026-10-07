@@ -40,8 +40,9 @@
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
-  <script src="src/analysis/pokemon-analysis-view-model.js"></script>
-  <script src="src/ui/pokemon-analysis.js"></script>
+  <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v156"></script>
+  <script src="src/ui/pokemon-analysis.js?v=20261007-v156"></script>
+  <link rel="stylesheet" href="src/ui/pokemon-analysis.css?v=20261007-v156">
   <script src="src/battle/charged-move-collection.js"></script>
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
@@ -21089,8 +21090,8 @@
         profile.purpose = profile.id === "balanced"
           ? "Maximum overall stat product: the reference build for general consistency."
           : profile.id === "attack"
-            ? "Trades bulk for Attack, targeting CMP wins and fast-move breakpoints."
-            : "Trades Attack for Defense and HP, targeting survival thresholds.";
+            ? "Prioritizes Attack for CMP and fast-move damage. Compare the actual bulk changes below."
+            : "Prioritizes Defense. Attack and HP may rise or fall; compare the actual changes below.";
         if (!baselineIvProfile || profile === baselineIvProfile || !selectedCombatant) {
           profile.insights = ["Highest overall stat product among eligible Great League spreads."];
           profile.deltas = [];
@@ -21108,23 +21109,25 @@
         const candidate = { ...selectedCombatant, attack: profile.attackValue, defense: profile.defenseValue, maxHp: profile.hpValue, hp: profile.hpValue };
         const insights = [];
         thresholdCombatants.forEach(({ opponent, combatant }) => {
-          if (insights.length >= 3) return;
           const candidateFastDamage = estimate(candidate, combatant, candidate.fast);
           const baselineFastDamage = estimate(selectedCombatant, combatant, selectedCombatant.fast);
           if (candidateFastDamage > baselineFastDamage) insights.push(`Fast move gains ${candidateFastDamage - baselineFastDamage} damage vs ${opponent.name}.`);
-          if (candidate.attack > combatant.attack && selectedCombatant.attack <= combatant.attack) insights.push(`Wins CMP against ${opponent.name}.`);
+          if (candidateFastDamage < baselineFastDamage) insights.push(`Fast move loses ${baselineFastDamage - candidateFastDamage} damage vs ${opponent.name}.`);
+          if (candidate.attack > combatant.attack && selectedCombatant.attack <= combatant.attack) insights.push(`Gains CMP priority against ${opponent.name}.`);
+          if (candidate.attack < combatant.attack && selectedCombatant.attack >= combatant.attack) insights.push(`Loses CMP priority against ${opponent.name}.`);
           const candidateTaken = estimate(combatant, candidate, combatant.fast);
           const baselineTaken = estimate(combatant, selectedCombatant, combatant.fast);
           if (candidateTaken < baselineTaken) insights.push(`Takes ${baselineTaken - candidateTaken} less fast-move damage from ${opponent.name}.`);
-          if (insights.length >= 3) return;
+          if (candidateTaken > baselineTaken) insights.push(`Takes ${candidateTaken - baselineTaken} more fast-move damage from ${opponent.name}.`);
           const chargedThreat = combatant.charged.filter(Boolean).sort((a, b) => estimate(combatant, selectedCombatant, b) - estimate(combatant, selectedCombatant, a))[0];
           if (chargedThreat) {
             const baselineSurvives = selectedCombatant.maxHp > estimate(combatant, selectedCombatant, chargedThreat);
             const candidateSurvives = candidate.maxHp > estimate(combatant, candidate, chargedThreat);
-            if (candidateSurvives && !baselineSurvives) insights.push(`Survives ${chargedThreat.name} from ${opponent.name}.`);
+            if (candidateSurvives && !baselineSurvives) insights.push(`At full HP, survives one ${chargedThreat.name} from ${opponent.name}.`);
+            if (!candidateSurvives && baselineSurvives) insights.push(`At full HP, no longer survives one ${chargedThreat.name} from ${opponent.name}.`);
           }
         });
-        profile.insights = [...new Set(insights)].slice(0, 3);
+        profile.insights = [...new Set(insights)];
         profile.hasPracticalImpact = profile.insights.length > 0;
         if (!profile.insights.length) profile.insights = ["No important matchup threshold change was detected in the sampled key matchups."];
       });
@@ -21306,6 +21309,30 @@
       const normalize = window.PvPeakPokemonAnalysisViewModel?.normalizePokemonAnalysisViewModel;
       const model = typeof normalize === "function" ? normalize(rawModel) : rawModel;
       root.innerHTML = renderer.PokemonAnalysisPage(model);
+      root.querySelectorAll("[data-analysis-panel]").forEach(button => {
+        const activate = () => {
+          root.querySelectorAll("[data-analysis-panel]").forEach(tab => {
+            const active = tab === button;
+            tab.setAttribute("aria-selected", String(active));
+            tab.tabIndex = active ? 0 : -1;
+            root.querySelector(`#analysisPanel-${tab.dataset.analysisPanel}`).hidden = !active;
+          });
+        };
+        button.onclick = activate;
+        button.onkeydown = event => {
+          const tabs = [...root.querySelectorAll("[data-analysis-panel]")];
+          const index = tabs.indexOf(button);
+          const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : event.key === "ArrowRight" ? (index + 1) % tabs.length : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length : -1;
+          if (next < 0) return;
+          event.preventDefault();
+          tabs[next].click();
+          tabs[next].focus();
+        };
+      });
+      root.onclick = event => {
+        const button = event.target.closest("[data-analysis-use-build]");
+        if (button) loadAnalysisPokemon(model.id, button.dataset.analysisUseBuild);
+      };
       root.querySelectorAll("img[data-fallback]").forEach(sprite => {
         sprite.onerror = () => {
           sprite.onerror = null;
@@ -21343,13 +21370,15 @@
       output.innerHTML = window.PvPeakPokemonAnalysis.PokemonIVProfileDetail(profile);
     }
 
-    function loadAnalysisPokemon(pokemonId) {
+    function loadAnalysisPokemon(pokemonId, profileId = "balanced") {
       if (!findPokemon(pokemonId)) return;
+      // Enter first: refreshing Battle's pickers applies default IVs and moves.
+      // Apply the requested analysis build after that refresh.
+      setAppView("simulator");
       setPokemonSelection("p1", pokemonId);
-      applyIvOptimizationProfile("p1", "balanced");
+      applyIvOptimizationProfile("p1", profileId);
       applyMetaRankingMoves("p1", pokemonId);
       resetBattleStateFromSetup();
-      setAppView("simulator");
       const reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
       window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
     }
@@ -38081,7 +38110,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261007-v152").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261007-v156").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

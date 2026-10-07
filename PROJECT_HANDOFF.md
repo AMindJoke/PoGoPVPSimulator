@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Pokémon Analysis: panoramica, matchup e build, 7 ottobre 2026
+
+- Tre schede Overview/Matchups/Build, navigabili anche da tastiera. Identità e mosse una volta nel hero; panoramica con sprite cliccabili di key wins/counter, indicazioni sintetiche e confronto ruoli. Consigli generali, mosse alternative e soglie tecniche nei dettagli. Mobile senza overflow a 320/390 px; pannello ranking compatto.
+- Ranking index distinto dal Battle rating e dai punteggi di ruolo; i matchup sono snapshot a uno scudo e Battle esegue il simulatore corrente. Guard anche nel view model per nascondere matchup di moveset obsoleti. Rating 500 indicato Even.
+- Build confrontate con Balanced tramite delta Attack/Defense/HP reali; soglie campionate mostrano anche perdite di danno/CMP/sopravvivenza. Prime tre indicazioni visibili, altre apribili. CMP priority non presentata come cambio esito; sopravvivenza dichiarata a HP pieni. Defense non promette guadagni di HP o perdita Attack: dipende dalla spread effettiva.
+- Try this build in Battle trasferisce il profilo scelto: ingresso nella vista prima dell’applicazione IV/mosse, per evitare che refreshPokemonLists ripristini i default. Verificato Mimikyu Attack 15/1/1, CP1498, Attack129.5, Defense134.9, HP99; apertura Mimikyu/Kingdra a 1–1 funzionante, nessun errore JS. Test UI/view model/tradeoff/handoff, PWA e cache passati. Asset/cache v156. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### Team Builder: scelta guidata, confronto e ripresa, 7 ottobre 2026
 
 - Un’unica azione cambia con il contesto: Add your Pokémon se il team ha meno di tre membri, Add opponent se manca il roster avversario, Analyze/Update analysis quando pronto. I primi due aprono direttamente il picker originale. Una breve istruzione nell’introduzione segue setup, scelta, matchup e farm.

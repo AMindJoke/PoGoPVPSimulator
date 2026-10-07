@@ -40,15 +40,14 @@
         <div class="analysis-hero-title"><h2>${escapeHtml(identity.name)}</h2><span class="analysis-rank-badge">#${escapeHtml(identity.rank)}</span></div>
         <div class="analysis-hero-types">${typeChips(identity.types)}</div>
         <strong class="analysis-hero-role">${escapeHtml(identity.role)}</strong>
-        <p>${escapeHtml(model.summary.statement)}</p>
         ${loadout ? `<div class="analysis-hero-loadout" aria-label="Recommended moveset">${loadout}</div>` : ""}
         ${identity.movesetScoreStale ? `<p class="ranking-moveset-warning">Score reflects the previous moveset. Updated moves are shown above; key matchups are hidden until recalculated.</p>` : ""}
       </div>
       <aside class="analysis-rating-panel">
-        <span class="analysis-eyebrow">Overall Meta score</span>
+        <span class="analysis-eyebrow">Meta ranking score</span>
         <div class="analysis-rating-value"><strong>${escapeHtml(rating)}</strong><span>/ 1000</span></div>
         <div class="analysis-rating-track"><i style="width:${Math.max(0, Math.min(100, Number(rating) / 10 || 0))}%"></i></div>
-        <dl><div><dt>Overall rank</dt><dd>#${escapeHtml(identity.rank)}</dd></div><div><dt>League</dt><dd>${escapeHtml(identity.league)}</dd></div></dl>
+        <p class="analysis-score-caption">Ranking index · not a win probability</p>
         <button type="button" class="analysis-primary-action" data-analysis-use-pokemon="${escapeHtml(model.id)}">Use in Battle</button>
       </aside>
     </section>`;
@@ -56,20 +55,18 @@
 
   function PokemonSnapshot(model) {
     if (!model.availability.summary) return "";
-    const symbols = ["R", "C", "S", "E"];
-    return `<section class="analysis-snapshot" aria-labelledby="analysisSnapshotTitle"><header><span aria-hidden="true">&#10022;</span><h3 id="analysisSnapshotTitle">Competitive Snapshot</h3></header><div>${model.summary.facts.map((fact, index) => `<article><b>${symbols[index] || "I"}</b><span><small>${escapeHtml(fact.label)}</small><strong>${escapeHtml(fact.value)}</strong></span></article>`).join("")}</div></section>`;
+    return `<section class="analysis-snapshot" aria-labelledby="analysisSnapshotTitle"><header><h3 id="analysisSnapshotTitle">At a glance</h3></header><div>${model.summary.facts.filter(fact => fact.label !== "Best role").map(fact => `<article><span><small>${escapeHtml(fact.label)}</small><strong>${escapeHtml(fact.value)}</strong></span></article>`).join("")}</div></section>`;
   }
 
   function PokemonIdentitySection(model) {
     const identity = model.competitiveIdentity;
     const categories = identity.categories.map(category => `<div><span>${escapeHtml(category.label)}</span><strong>${escapeHtml(category.score)}</strong></div>`).join("");
-    const traits = identity.traits.map(trait => `<span>${escapeHtml(trait)}</span>`).join("");
     return Section({
       id: "analysisIdentity",
-      title: "Why Use It",
-      eyebrow: "Competitive identity",
+      title: "Role comparison",
+      eyebrow: "Ranking scenarios",
       className: "analysis-identity-card",
-      content: `<strong class="analysis-lead-copy">${escapeHtml(identity.role)}</strong><p>${escapeHtml(identity.statement)}</p>${categories ? `<div class="analysis-role-scores" aria-label="Role scores">${categories}</div>` : ""}${traits ? `<div class="analysis-trait-list">${traits}</div>` : ""}`
+      content: `${categories ? `<div class="analysis-role-scores" aria-label="Role scores">${categories}</div>` : `<p>No role scores available.</p>`}<p>Scenario scores compare roles; they do not guarantee a safe switch or sweep.</p>`
     });
   }
 
@@ -87,6 +84,7 @@
   }
 
   function matchupDescriptor(score) {
+    if (score === 500) return "Even";
     if (score >= 700) return "Strong win";
     if (score >= 550) return "Favored";
     if (score > 500) return "Close win";
@@ -109,16 +107,20 @@
     return Section({
       id: "analysisMatchups",
       title: "Meta Matchups",
-      eyebrow: `${model.keyMatchups.shieldState} modeled results`,
+      eyebrow: `${model.keyMatchups.shieldState} snapshot`,
       className: "analysis-wide-card",
-      content: `<div class="analysis-matchup-columns"><section><header><span class="win" aria-hidden="true">&#8593;</span><strong>Key wins</strong></header>${matchupRows(model.keyMatchups.wins, "win", model.id)}</section><section><header><span class="loss" aria-hidden="true">&#8595;</span><strong>Key losses</strong></header>${matchupRows(model.keyMatchups.losses, "loss", model.id)}</section></div><p class="analysis-source-note">Source: ${escapeHtml(model.provenance.matchups)}. Scores are not live usage statistics.</p>`
+      content: `<p class="analysis-score-caption">Battle rating: 500 is even · above 500 favors this Pokémon. Open Battle to run the current simulator.</p><div class="analysis-matchup-columns"><section><header><span class="win" aria-hidden="true">&#8593;</span><strong>Key wins</strong></header>${matchupRows(model.keyMatchups.wins, "win", model.id)}</section><section><header><span class="loss" aria-hidden="true">&#8595;</span><strong>Key losses</strong></header>${matchupRows(model.keyMatchups.losses, "loss", model.id)}</section></div><p class="analysis-source-note">Source: ${escapeHtml(model.provenance.matchups)}.</p>`
     });
   }
 
   function PokemonIVProfileDetail(profile) {
     if (!profile) return `<p class="analysis-empty-state">No IV profile is available for this Pokemon.</p>`;
-    const insights = (profile.insights || []).map(item => `<li>${escapeHtml(item)}</li>`).join("");
-    return `<div class="analysis-iv-detail-head"><span>Rank #${escapeHtml(profile.rank)}</span><div><strong>${escapeHtml(profile.label)}</strong><small>${escapeHtml(profile.ivs)}</small></div></div><dl class="analysis-iv-stats"><div><dt>Level</dt><dd>${escapeHtml(profile.level)}</dd></div><div><dt>CP</dt><dd>${escapeHtml(profile.cp)}</dd></div><div><dt>Attack</dt><dd>${escapeHtml(profile.attack)}</dd></div><div><dt>Defense</dt><dd>${escapeHtml(profile.defense)}</dd></div><div><dt>HP</dt><dd>${escapeHtml(profile.hp)}</dd></div></dl><p>${escapeHtml(profile.purpose || "Great League IV profile")}</p>${insights ? `<ul class="analysis-iv-insights">${insights}</ul>` : ""}`;
+    const insightItems = profile.insights || [];
+    const renderInsights = items => items.map(item => `<li>${escapeHtml(item)}</li>`).join("");
+    const insights = renderInsights(insightItems.slice(0, 3));
+    const extraInsights = insightItems.length > 3 ? `<details class="analysis-disclosure"><summary>More sampled changes (${insightItems.length - 3})</summary><ul class="analysis-iv-insights">${renderInsights(insightItems.slice(3))}</ul></details>` : "";
+    const deltas = (profile.deltas || []).map(item => `<div><dt>${escapeHtml(item.label.replace(" vs Balanced", ""))}</dt><dd>${escapeHtml(item.value)}</dd></div>`).join("");
+    return `<div class="analysis-iv-detail-head"><span>Stat product rank #${escapeHtml(profile.rank)}</span><div><strong>${escapeHtml(profile.label)}</strong><small>${escapeHtml(profile.ivs)}</small></div></div><dl class="analysis-iv-stats"><div><dt>Level</dt><dd>${escapeHtml(profile.level)}</dd></div><div><dt>CP</dt><dd>${escapeHtml(profile.cp)}</dd></div><div><dt>Attack</dt><dd>${escapeHtml(profile.attack)}</dd></div><div><dt>Defense</dt><dd>${escapeHtml(profile.defense)}</dd></div><div><dt>HP</dt><dd>${escapeHtml(profile.hp)}</dd></div></dl>${deltas ? `<h4>Compared with Balanced</h4><dl class="analysis-iv-stats analysis-iv-deltas">${deltas}</dl>` : ""}<p>${escapeHtml(profile.purpose || "Great League IV profile")}</p>${insights ? `<ul class="analysis-iv-insights">${insights}</ul>` : ""}${extraInsights}<button type="button" data-analysis-use-build="${escapeHtml(profile.id)}">Try this build in Battle</button>`;
   }
 
   function PokemonBuildSection(model) {
@@ -130,7 +132,7 @@
       title: "IV & Build",
       eyebrow: "How to build it",
       className: "analysis-wide-card",
-      content: `<div class="analysis-iv-layout"><div class="analysis-iv-profiles" role="tablist" aria-label="IV profiles">${profiles.map(profile => `<button type="button" role="tab" aria-selected="${profile === selected}" class="${profile === selected ? "active" : ""}" data-analysis-iv-profile="${escapeHtml(profile.id)}"><strong>${escapeHtml(profile.label)}</strong><span>${escapeHtml(profile.ivs)}</span>${profile.hasPracticalImpact ? `<small>Detected impact</small>` : ""}</button>`).join("")}</div><div class="analysis-iv-canvas" data-analysis-iv-output>${PokemonIVProfileDetail(selected)}</div></div><p class="analysis-source-note">Source: ${escapeHtml(model.provenance.ivAnalysis)}.</p>`
+      content: `<div class="analysis-iv-layout"><div class="analysis-iv-profiles" role="tablist" aria-label="IV profiles">${profiles.map(profile => `<button type="button" role="tab" aria-selected="${profile === selected}" class="${profile === selected ? "active" : ""}" data-analysis-iv-profile="${escapeHtml(profile.id)}"><strong>${escapeHtml(profile.label)}</strong><span>${escapeHtml(profile.ivs)}</span><small>${profile.id === "balanced" ? "Reference build" : profile.hasPracticalImpact ? "Sampled thresholds differ" : "No sampled change"}</small></button>`).join("")}</div><div class="analysis-iv-canvas" data-analysis-iv-output>${PokemonIVProfileDetail(selected)}</div></div><p class="analysis-source-note">Damage and CMP checks against sampled opponents, not verified outcome flips. Survival assumes full HP. Source: ${escapeHtml(model.provenance.ivAnalysis)}.</p>`
     });
   }
 
@@ -158,7 +160,8 @@
   }
 
   function PokemonAnalysisPage(model) {
-    return `${PokemonHeroCard(model)}<div class="analysis-dossier-grid">${PokemonSnapshot(model)}${PokemonIdentitySection(model)}${PokemonMovesSection(model)}${PokemonMatchupsSection(model)}${PokemonBuildSection(model)}${PokemonPlaybookSection(model)}${PokemonTechnicalSection(model)}</div>`;
+    const preview = (items, label) => `<section><h3>${label}</h3><div class="analysis-preview-picks">${items.map(item => `<button type="button" data-analysis-matchup="${escapeHtml(item.id)}" data-analysis-source="${escapeHtml(model.id)}" aria-label="Open battle against ${escapeHtml(item.name)}"><img src="${escapeHtml(item.image)}" data-fallback="${escapeHtml(item.fallbackImage)}" alt=""><span>${escapeHtml(item.name)}</span></button>`).join("")}</div></section>`;
+    return `${PokemonHeroCard(model)}<div class="analysis-workspace"><div class="analysis-page-tabs" role="tablist" aria-label="Pokémon analysis">${["overview", "matchups", "build"].map((id, index) => `<button type="button" role="tab" id="analysisTab-${id}" aria-controls="analysisPanel-${id}" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}" data-analysis-panel="${id}">${["Overview", "Matchups", "Build"][index]}</button>`).join("")}</div><div id="analysisPanel-overview" role="tabpanel" aria-labelledby="analysisTab-overview" class="analysis-dossier-grid">${PokemonSnapshot(model)}${model.availability.matchups ? `<div class="analysis-preview">${preview(model.keyMatchups.wins, "Key wins")}${preview(model.keyMatchups.losses, "Watch out for")}</div>` : `<p class="analysis-empty-state">No current matchup snapshot available. Use Battle to test this Pokémon.</p>`}${PokemonIdentitySection(model)}<details class="analysis-guidance"><summary>General play advice</summary>${PokemonPlaybookSection(model)}</details></div><div id="analysisPanel-matchups" role="tabpanel" aria-labelledby="analysisTab-matchups" class="analysis-dossier-grid" hidden>${PokemonMatchupsSection(model) || `<p class="analysis-empty-state">No current matchup snapshot available.</p>`}</div><div id="analysisPanel-build" role="tabpanel" aria-labelledby="analysisTab-build" class="analysis-dossier-grid" hidden>${PokemonBuildSection(model)}<details class="analysis-guidance"><summary>Other available moves</summary><div class="analysis-alternative-moves">${model.recommendedMoves.alternatives.map(move => moveChip(move, true)).join("") || "No alternative moves available."}</div></details>${PokemonTechnicalSection(model)}</div></div>`;
   }
 
   return {

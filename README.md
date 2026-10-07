@@ -2,6 +2,8 @@
 
 Browser-based Pokémon GO PvP battle simulator and manual scenario review workspace.
 
+Pokémon Analysis separates Overview, Matchups and Build. Overview highlights key opponents with sprites; Matchups explains the precomputed one-shield Battle ratings; Build compares actual IV stat changes and sampled damage/CMP thresholds. These thresholds do not certify outcome flips. “Try this build in Battle” transfers the selected IV profile and recommended moves to the current simulator.
+
 ## Open locally
 
 Open `PogoPvp.html` in a browser.

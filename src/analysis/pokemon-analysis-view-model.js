@@ -20,6 +20,8 @@
     const bulkpoints = list(input.bulkpoints);
     const facts = list(input.quickFacts).slice(0, 4);
     const playItems = list(input.playPlan).filter(item => item?.text);
+    const wins = input.movesetScoreStale ? [] : list(input.keyWins).slice(0, 4);
+    const losses = input.movesetScoreStale ? [] : list(input.keyLosses).slice(0, 4);
 
     return {
       id: input.id || "",
@@ -51,8 +53,8 @@
       },
       keyMatchups: {
         shieldState: "1 shield",
-        wins: list(input.keyWins).slice(0, 4),
-        losses: list(input.keyLosses).slice(0, 4)
+        wins,
+        losses
       },
       ivAnalysis: {
         profiles,
@@ -69,7 +71,7 @@
         ranking: input.rank != null && input.rating != null,
         summary: facts.length > 0,
         moves: moves.length > 0,
-        matchups: list(input.keyWins).length > 0 || list(input.keyLosses).length > 0,
+        matchups: wins.length > 0 || losses.length > 0,
         ivAnalysis: profiles.length > 0,
         playGuidance: playItems.length > 0,
         technicalAnalysis: breakpoints.length > 0 || bulkpoints.length > 0
