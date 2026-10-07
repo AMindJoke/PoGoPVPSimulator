@@ -2,7 +2,7 @@
 
 ### BP: spazio e colori, 7 ottobre 2026
 
-- Sigla BP con spaziatura positiva e riquadro più ampio; verde per breakpoint (danno inflitto), rosso per bulkpoint (danno subito), indipendentemente dal guadagno/perdita che mantiene il proprio colore sul valore. Varianti dark leggibili. Asset/cache v170. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+- Sigla BP alta 20 px, spaziatura normale e riquadro quadrato 32 px; verde per breakpoint (danno inflitto), rosso per bulkpoint (danno subito), indipendentemente dal guadagno/perdita che mantiene il proprio colore sul valore. Varianti dark leggibili. Asset/cache v171. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
 
 ### Build: sigla BP, 7 ottobre 2026
 
