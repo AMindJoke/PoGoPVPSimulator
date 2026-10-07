@@ -1,5 +1,13 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Team Builder: scelta guidata, confronto e ripresa, 7 ottobre 2026
+
+- Un’unica azione cambia con il contesto: Add your Pokémon se il team ha meno di tre membri, Add opponent se manca il roster avversario, Analyze/Update analysis quando pronto. I primi due aprono direttamente il picker originale. Una breve istruzione nell’introduzione segue setup, scelta, matchup e farm.
+- Suggested trios confronta le stesse tre misure reali: avversari con due risposte vincenti a 1–1, hold dello switch a tutti gli scudi pari, vittorie closer a 1–0. La misura prioritaria della strategia ha fondo tenue. Lineup identiche nello stesso ordine unite conservando i nomi delle strategie; gli stessi tre in ruoli diversi restano separati, con ruoli cambiati evidenziati. Rischi, CMP, counter ordinati e dettagli restano accessibili; nessuna modifica al ranking o al motore.
+- Edit setup e modifiche esterne conservano vista/lineup ordinata/ruolo. Dopo Update analysis si ritorna al contesto se ancora valido; se la lineup non è più suggerita si torna alla scelta con avviso. Mantiene New counter/Opponent stays, focus sull’ultimo matchup e selezione farm per identità Pokémon quando disponibile. Selezione manuale esplicita sostituisce il vecchio preview. Asset/cache v152.
+- Test guided empty states, coordinatore, confronto/duplicati/role swap/ripresa, UI/leggibilità, build flow, parità Battle, link farm e PWA/cache passati. Browser 320/390/1280 senza overflow/errori: confronto metriche, ritorno Switch/Opponent stays dopo cambio reazione, Farm dopo cambio scudi (Mimikyu senza perdite e Abomasnow/Melmetal), condizioni originarie ripristinate. Preview 8772 riavviato dal repository E:. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Team Builder: setup unico prima dei risultati, 6 ottobre 2026
 
 - Against a team raggruppa roster avversario, scudi/energia di confronto, reazione switch e selettore manuale opzionale aperto in un solo setup. Analyze coordina prima il confronto e poi i ruoli, riusando risultati validi; dopo il completamento mostra riepilogo compatto con Edit setup e Which three?/Matchups/Farm. La scelta dei suggerimenti resta nei risultati; Change trio riapre il selettore nel setup.

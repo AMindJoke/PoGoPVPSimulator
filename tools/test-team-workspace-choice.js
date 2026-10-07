@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict');
+const {compareCandidates,restoreContext}=require('../src/ui/team-workspace');
+const make=(slots,style,extra={})=>({slots,style,total:6,backups:3,switchEven:2,closerWins:5,...extra});
+const candidates=[make([0,1,2],'Balanced'),make([0,1,2],'Switch resilience'),make([1,0,2],'Shield closer',{sensitivity:{switchHolds:1}}),make([0,1,3],'Other')];
+const result=compareCandidates(candidates);
+assert.deepEqual(result[0].styles,['Balanced','Switch resilience']);
+assert.equal(result[1].duplicate,true);
+assert.equal(result[2].sameMembers,true);
+assert.deepEqual(result[2].changedRoles,[true,true,false]);
+assert.deepEqual(result[2].metrics,[3,1,5]);
+assert.equal(result[3].sameMembers,false);
+assert.deepEqual(candidates[0].slots,[0,1,2]);
+const team=[{pokemonId:'a'},{pokemonId:'b'},{pokemonId:'c'},{pokemonId:'d'}];
+assert.deepEqual(restoreContext(null,candidates,team),{view:'trios'});
+const context={view:'matchups',lineup:'b,a,c',role:'switch',baselineId:'b'};
+assert.equal(restoreContext(context,candidates,team).index,2);
+assert.equal(restoreContext(context,candidates,team).role,'switch');
+assert.deepEqual(restoreContext(context,[candidates[0]],team),{view:'trios',missing:true});
+assert.equal(restoreContext({view:'farm'},candidates,team).view,'farm');
+assert.equal(restoreContext({view:'matchups',lineup:null,baselineId:'b'},candidates,team).view,'matchups');
+// Ordered Pokémon identity survives roster slot changes; reversed roles are not treated as identical.
+const reordered=[team[1],team[0],team[2],team[3]];
+assert.equal(restoreContext(context,[make([0,1,2],'Balanced')],reordered).index,0);
+console.log('Trio comparison: exact duplicates merged, role swaps distinct, checked counts and identity-based resume/fallback passed.');

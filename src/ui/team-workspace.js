@@ -1,6 +1,24 @@
 (function(root){
   'use strict';
-  root.PvPeakTeamWorkspace={create(options){
+  function compareCandidates(candidates){
+    const groups=new Map(),first=candidates[0];
+    return candidates.map((candidate,index)=>{
+      const key=candidate.slots.join(','),earlier=groups.get(key);
+      if(earlier){earlier.styles.push(candidate.style);return {duplicate:true};}
+      const item={duplicate:false,styles:[candidate.style],index,
+        sameMembers:!!first&&index>0&&[...candidate.slots].sort().join(',')===[...first.slots].sort().join(','),
+        changedRoles:first?candidate.slots.map((slot,i)=>slot!==first.slots[i]):[false,false,false],
+        metrics:[candidate.backups,candidate.sensitivity?.switchHolds??candidate.switchEven,candidate.closerWins],total:candidate.total};
+      groups.set(key,item);return item;
+    });
+  }
+  function restoreContext(context,candidates,team){
+    if(!context)return {view:'trios'};
+    const index=candidates.findIndex(c=>c.slots.map(slot=>team[slot]?.pokemonId).join(',')===context.lineup);
+    if(context.view==='matchups'&&context.lineup&&index<0)return {view:'trios',missing:true};
+    return {...context,index};
+  }
+  root.PvPeakTeamWorkspace={compareCandidates,restoreContext,create(options){
     const $=id=>document.getElementById(id),escape=options.escapeHtml;
     const workspace=$('teamOpponentPanel').querySelector('.team-trio');
     workspace.id='teamAnalysisWorkspace';workspace.dataset.workspaceView='trios';
@@ -29,7 +47,29 @@
     setup.append(manual);
     const actions=node('div','teamWorkspaceActions','<span role="status" aria-live="polite"></span><button type="button" data-analyze>Analyze</button><button type="button" class="secondary" data-cancel hidden>Cancel</button>');setup.append(actions);
     const recap=node('div','teamWorkspaceRecap');setup.before(recap);
-    let editing=true,accepted='',pending=null,advancing=false,flowError='';
+    let editing=true,accepted='',pending=null,advancing=false,flowError='',returnContext=null,resumeNotice='',lastMatchup=null,lastViewedLineup=null,lastRole='lead',farmRestore=null;
+    function rememberContext(){
+      if(!accepted||returnContext)return;
+      const card=results.querySelector('.team-role-trio:not([hidden])');
+      returnContext={view,lineup:view==='matchups'?(lastViewedLineup||savedSelection?.ids||null):null,
+        role:card?.querySelector('[data-role-view][aria-pressed=true]')?.dataset.roleView||lastRole,baselineId:options.own().team[baselineSlot]?.pokemonId,
+        farmLoss:options.own().team[Number($('teamTrioFarmResults').querySelector('[data-farm-loss][aria-pressed=true]')?.dataset.farmLoss)]?.pokemonId,
+        farmFoe:options.opponent().team[Number($('teamTrioFarmResults').querySelector('[data-farm-foe][aria-pressed=true]')?.dataset.farmFoe)]?.pokemonId};
+    }
+    function resume(){
+      const state=options.rolesState(),target=restoreContext(returnContext,state.analysis.suggestions,options.own().team);
+      view=target.view;preview=target.lineup||null;
+      if(target.baselineId)baselineSlot=options.own().team.findIndex(member=>member?.pokemonId===target.baselineId);
+      resumeNotice=target.missing?'Previous lineup is no longer suggested. Choose a new trio.':'';
+      returnContext=null;sync();
+      if(target.index>=0&&view==='matchups')options.rolesUI().show(target.index,target.role);
+      if(view==='matchups'&&lastMatchup){
+        const slot=options.own().team.findIndex(member=>member?.pokemonId===lastMatchup.own),enemy=options.opponent().team.findIndex(member=>member?.pokemonId===lastMatchup.enemy);
+        const cell=results.querySelector(`.team-role-trio:not([hidden]) [data-role-battle="${slot}"][data-role-opponent="${enemy}"][data-role-scenario="${lastMatchup.scenario}"]`);
+        if(cell&&!cell.closest('[hidden]'))cell.focus({preventScroll:true});
+      }
+      if(view==='farm'){farmRestore=target;sync();if(selectedSlots().length===3&&options.farmState().phase==='idle')options.startFarm();}
+    }
     const inputKey=()=>JSON.stringify([fingerprint(),options.opponent().shields,options.opponent().energy,options.delay()]);
     const comparisonReady=()=>{const rows=options.rows(),slots=options.own().team.map((member,slot)=>member?slot:null).filter(slot=>slot!==null);return !!rows.length&&rows.every(row=>slots.every(slot=>!!row.cells[slot]));};
     function advance(){
@@ -42,18 +82,20 @@
           pending.phase='roles';options.startRoles();
         }
         const state=options.rolesState();
-        if(state.phase==='complete'){accepted=pending.key;pending=null;editing=false;view='trios';sync();nav.scrollIntoView({block:'nearest'});}
+        if(state.phase==='complete'){accepted=pending.key;pending=null;editing=false;resume();nav.scrollIntoView({block:'nearest'});}
         else if(state.phase==='error'||state.phase==='idle'){pending=null;sync();}
       });
     }
     actions.onclick=e=>{
       if(e.target.closest('[data-cancel]')){pending=null;options.cancelComparison();options.cancelRoles();sync();}
       if(e.target.closest('[data-analyze]')){
+        if(options.own().team.filter(Boolean).length<3){ownSetup.open=true;$('teamBuilderRoster').querySelector('[data-team-add]')?.click();return;}
+        if(!options.opponent().team.some(Boolean)){$('teamOpponentRoster').querySelector('[data-team-add]')?.click();return;}
         if(pending)return;flowError='';pending={key:inputKey(),phase:'comparison'};
         if(!comparisonReady()||options.comparisonFailed())options.startComparison();sync();advance();
       }
     };
-    recap.onclick=()=>{editing=true;sync();setup.scrollIntoView({block:'start'});};
+    recap.onclick=()=>{rememberContext();editing=true;sync();setup.scrollIntoView({block:'start'});};
     const baseline=node('div','teamWorkspaceBaseline');panels.matchups.append(baseline);
     const roster=node('details','teamWorkspaceRoster','<summary>Full roster matchup matrix</summary>');roster.append($('teamOpponentResults'));panels.matchups.append(roster);
     const farmEmpty=node('p','teamWorkspaceFarmEmpty');panels.farm.append(farmEmpty,$('teamTrioFarm'));$('teamTrioFarm').open=true;
@@ -77,8 +119,9 @@
     const results=$('teamRolesResults');
     const selectedSlots=()=>options.trioIds().map(id=>options.own().team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
     const sprite=(member,slot)=>`<img data-workspace-sprite="${slot}" alt="${escape(member.name)}">`;
-    function show(next,focus=false){view=next;workspace.dataset.workspaceView=next;sync();if(next==='farm'&&selectedSlots().length===3&&comparisonReady()&&options.farmState().phase==='idle')options.startFarm();if(focus){nav.querySelector(`[data-workspace-view="${next}"]`).focus({preventScroll:true});nav.scrollIntoView({block:'nearest'});}}
-    function showMatchups(index,role='lead',selected=false){preview=options.rolesState().analysis?.suggestions[index]?.slots.map(slot=>options.own().team[slot]?.pokemonId).join(',')||null;if(selected&&preview){savedSelection={ids:preview,source:fingerprint()};try{localStorage.setItem(selectionKey,JSON.stringify(savedSelection));}catch(_){}}show('matchups');options.rolesUI().show(index,role);nav.scrollIntoView({block:'nearest'});}
+    function show(next,focus=false){resumeNotice='';view=next;workspace.dataset.workspaceView=next;sync();if(next==='farm'&&selectedSlots().length===3&&comparisonReady()&&options.farmState().phase==='idle')options.startFarm();if(focus){nav.querySelector(`[data-workspace-view="${next}"]`).focus({preventScroll:true});nav.scrollIntoView({block:'nearest'});}}
+    function showMatchups(index,role='lead',selected=false){preview=options.rolesState().analysis?.suggestions[index]?.slots.map(slot=>options.own().team[slot]?.pokemonId).join(',')||null;lastViewedLineup=preview;lastRole=role;if(selected&&preview){savedSelection={ids:preview,source:fingerprint()};try{localStorage.setItem(selectionKey,JSON.stringify(savedSelection));}catch(_){}}show('matchups');options.rolesUI().show(index,role);nav.scrollIntoView({block:'nearest'});}
+    results.addEventListener('click',e=>{const tab=e.target.closest('[data-role-view]');if(tab)lastRole=tab.dataset.roleView;},true);
     function baselineMarkup(slots){
       const rows=options.rows(),own=options.own(),enemy=options.opponent();
       if(!slots.includes(baselineSlot))baselineSlot=slots[0];
@@ -96,14 +139,24 @@
       const chosen=candidates.findIndex(c=>c.slots.map(slot=>own.team[slot]?.pokemonId).join(',')===(preview||assigned));
       if(preview&&chosen<0)preview=null;
       const active=chosen>=0?chosen:candidates.findIndex(c=>c.slots.map(slot=>own.team[slot]?.pokemonId).join(',')===assigned);
+      const comparisons=compareCandidates(candidates);
       panels.trios.hidden=view!=='trios';panels.matchups.hidden=view!=='matchups';panels.farm.hidden=view!=='farm';
       nav.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.workspaceView===view)));
       const shownSlots=view==='matchups'&&active>=0?candidates[active].slots:assigned.split(',').map(id=>own.team.findIndex(member=>member?.pokemonId===id)).filter(slot=>slot>=0);
       current.innerHTML=`<div><small>${view==='matchups'&&preview&&preview!==assigned?'Preview trio':'Your trio'}</small><span>${shownSlots.map(slot=>`<span class="team-workspace-member">${sprite(own.team[slot],slot)}<b>${escape(own.team[slot].name)}</b></span>`).join('')||'<span class="team-workspace-no-trio">Choose three Pokémon from your team</span>'}</span></div><button type="button" data-workspace-change>${shownSlots.length===3?'Change trio':'Choose trio'}</button>`;
       current.hidden=view==='trios';manual.hidden=view!=='trios';manual.open=view==='trios';
       if(view==='matchups')panels.matchups.insertBefore(results,baseline);else $('teamTrioSuggestions').querySelector('.team-role-controls').after(results);
-      results.querySelectorAll('.team-role-trio').forEach((card,index)=>{card.hidden=view==='farm'||view==='matchups'&&index!==active;});
+      results.querySelectorAll('.team-role-trio').forEach((card,index)=>{card.hidden=view==='farm'||view==='matchups'&&index!==active||view==='trios'&&comparisons[index]?.duplicate;});
       results.querySelectorAll('.team-role-trio').forEach((card,index)=>{
+        const comparison= comparisons[index];
+        if(comparison&&!comparison.duplicate){
+          card.querySelector('header > b').textContent=comparison.styles.join(' · ');
+          let metrics=card.querySelector('.team-workspace-metrics');
+          if(!metrics){metrics=node('div');metrics.className='team-workspace-metrics';card.querySelector('.team-role-decision').after(metrics);}
+          const labels=['2 answers','Switch hold','Closer · 1–0'],styles=['Balanced','Switch resilience','Shield closer'],descriptions=['Opponents with at least two winning answers at 1–1','Opponents held at all even shields; tested replies included when complete','Closer wins with a 1–0 shield advantage'];
+          metrics.innerHTML=comparison.metrics.map((value,i)=>`<div class="${comparison.styles.includes(styles[i])?'is-priority':''}" title="${descriptions[i]}" aria-label="${descriptions[i]}: ${value}/${comparison.total}"><b>${value}/${comparison.total}</b><small>${labels[i]}</small></div>`).join('')+(comparison.sameMembers?'<span class="team-workspace-role-swap">Same three · different roles</span>':'');
+          card.querySelectorAll('.team-role-pick').forEach((button,i)=>button.classList.toggle('is-role-change',comparison.sameMembers&&comparison.changedRoles[i]));
+        }
         const selected=candidates[index].slots.map(slot=>own.team[slot]?.pokemonId).join(',')===assigned;
         card.classList.toggle('is-selected',selected);const use=card.querySelector('[data-role-trio]');use.setAttribute('aria-pressed',String(selected));use.textContent=selected?'Selected trio ✓':'Use trio';
         const detail=card.querySelector('.team-role-detail');
@@ -143,28 +196,38 @@
       modes.dataset.analysisMode=mode;opponent.open=true;metaTools.open=true;opponent.hidden=mode!=='team';metaTools.hidden=mode!=='meta';
       modeTabs.querySelectorAll('[data-analysis-mode]').forEach(button=>{const selected=button.dataset.analysisMode===mode;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
       const dirty=!!accepted&&accepted!==inputKey(),ready=!!accepted&&!dirty;
-      if(dirty)editing=true;
+      if(dirty){rememberContext();editing=true;}
       setup.hidden=!editing;recap.hidden=editing;
       manual.hidden=!editing;manual.open=true;
       current.hidden=editing||view==='trios';nav.hidden=editing||!ready;
       Object.entries(panels).forEach(([id,panel])=>panel.hidden=editing||!ready||view!==id);
-      const enough=own.team.filter(Boolean).length>=3&&enemy.team.some(Boolean);
-      actions.querySelector('[data-analyze]').disabled=!enough||!!pending;
-      actions.querySelector('[data-analyze]').textContent=pending?'Analyzing…':dirty?'Update analysis':'Analyze';
+      const ownCount=own.team.filter(Boolean).length,enemyCount=enemy.team.filter(Boolean).length,enough=ownCount>=3&&enemyCount>0;
+      actions.querySelector('[data-analyze]').disabled=!!pending;
+      actions.querySelector('[data-analyze]').textContent=pending?'Analyzing…':ownCount<3?'Add your Pokémon':!enemyCount?'Add opponent':dirty?'Update analysis':'Analyze';
       actions.querySelector('[data-cancel]').hidden=!pending;
-      actions.querySelector('[role=status]').textContent=pending?(pending.phase==='comparison'?$('teamOpponentStatus').textContent:$('teamRolesStatus').textContent):flowError|| (dirty?'Setup changed · update the analysis.':state.phase==='error'?state.error:!enough?'Add at least three Pokémon to your team and an opponent.':ready?'Your analysis is ready.':'Choose a trio yourself or let the suggestions guide you.');
+      actions.querySelector('[role=status]').textContent=pending?(pending.phase==='comparison'?$('teamOpponentStatus').textContent:$('teamRolesStatus').textContent):flowError|| (ownCount<3?`${ownCount}/6 on your team · add at least three to analyze.`:!enemyCount?'Add the roster you want to face.':dirty?'Setup changed · update the analysis.':state.phase==='error'?state.error:ready?'Your analysis is ready.':'Ready to analyze · manual trio is optional.');
+      teamIntro.querySelector('p').textContent=editing?(ownCount<3?'Start with your team, then add the opponent.':!enemyCount?'Add the opposing Pokémon to find your best trios.':'Check the conditions, then press Analyze.'):resumeNotice||(view==='trios'?'Compare trios, then select Use trio.':view==='matchups'?'Pick Lead, Switch or Closer, then tap an opponent.':'Choose the losing matchup to see who can farm.');
       recap.innerHTML=`<div class="team-workspace-recap-roster">${enemy.team.map((member,slot)=>member?`<img data-recap-sprite="${slot}" alt="${escape(member.name)}" title="${escape(member.name)}">`:'').join('')}</div><span>Shields ${enemy.shields.A}–${enemy.shields.B} · energy ${enemy.energy.A}/${enemy.energy.B} · reaction ${options.delay()}t</span><button type="button" class="secondary">Edit setup</button>`;
       recap.querySelectorAll('[data-recap-sprite]').forEach(img=>options.setSprite(img,enemy.team[Number(img.dataset.recapSprite)]));
+      if(farmRestore&&!editing&&view==='farm'&&options.farmState().phase==='complete'){
+        const saved=farmRestore;farmRestore=null;
+        queueMicrotask(()=>{
+          const loss=own.team.findIndex(member=>member?.pokemonId===saved.farmLoss),foe=enemy.team.findIndex(member=>member?.pokemonId===saved.farmFoe);
+          $('teamTrioFarmResults').querySelector(`[data-farm-loss="${loss}"][aria-pressed=false]`)?.click();
+          $('teamTrioFarmResults').querySelector(`[data-farm-foe="${foe}"][aria-pressed=false]`)?.click();
+        });
+      }
       advance();
     }
     nav.onclick=e=>{const button=e.target.closest('[data-workspace-view]');if(button)show(button.dataset.workspaceView);};
     ownSetup.addEventListener('click',()=>ownTouched=true);
-    current.onclick=e=>{if(e.target.closest('[data-workspace-change]')){preview=null;editing=true;sync();manual.open=true;manual.scrollIntoView({block:'nearest'});}};
+    current.onclick=e=>{if(e.target.closest('[data-workspace-change]')){rememberContext();preview=null;editing=true;sync();manual.open=true;manual.scrollIntoView({block:'nearest'});}};
     baseline.onclick=e=>{const pick=e.target.closest('[data-workspace-slot]');if(pick){baselineSlot=Number(pick.dataset.workspaceSlot);sync();baseline.querySelector(`[data-workspace-slot="${baselineSlot}"]`).focus({preventScroll:true});}const battle=e.target.closest('[data-workspace-battle]');if(battle)options.battle(Number(battle.dataset.workspaceBattle),Number(battle.dataset.workspaceOpponent));};
     function inspect(data){
       const state=options.rolesState(),scenario=root.PvPeakTeamRoles.scenarios(options.delay()).find(s=>s.id===data.scenario);
       const result=state.results.get(root.PvPeakTeamRoles.cellKey(data.slot,data.enemy,scenario));if(!result)return;
       const own=options.own().team[data.slot],enemy=options.opponent().team[data.enemy];
+      lastMatchup={own:own.pokemonId,enemy:enemy.pokemonId,scenario:data.scenario};
       let dialog=$('teamWorkspaceMatchupDialog');if(!dialog){dialog=node('dialog','teamWorkspaceMatchupDialog');dialog.className='team-workspace-dialog';document.body.append(dialog);}
       const outcome=result.details.outcome==='A'?'Win':result.details.outcome==='B'?'Loss':result.details.outcome==='draw'?'Draw':'Unresolved';
       const sensitive=root.PvPeakTeamRoles.sensitive(result),cmp=root.PvPeakCmpDependencyUI.dependent(result.cmpDependency);
@@ -174,7 +237,8 @@
       dialog.onclick=e=>{if(e.target.closest('[data-dialog-close]'))dialog.close();if(e.target.closest('[data-dialog-cmp]')){dialog.close();root.PvPeakCmpDependencyUI.show(result.cmpDependency,{A:own.name,B:enemy.name});}if(e.target.closest('[data-dialog-battle]')||e.target.closest('[data-dialog-reply]')){const evidence=e.target.closest('[data-dialog-reply]')?result.sensitivity.evidence:null;dialog.close();options.roleBattle(data.slot,data.enemy,data.scenario,evidence);}};
       dialog.showModal();dialog.querySelector('[data-dialog-close]').focus();
     }
-    function clearSelection(){preview=null;savedSelection=null;try{localStorage.removeItem(selectionKey);}catch(_){}sync();}
+    function clearSelection(){preview=null;savedSelection=null;lastViewedLineup=null;if(returnContext)returnContext={view:selectedSlots().length===3?'matchups':'trios',lineup:null,role:'lead'};try{localStorage.removeItem(selectionKey);}catch(_){}sync();}
     sync();return {sync,show,showMatchups,inspect,clearSelection};
   }};
+  if(typeof module==='object'&&module.exports)module.exports=root.PvPeakTeamWorkspace;
 })(globalThis);

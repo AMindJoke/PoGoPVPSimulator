@@ -15,6 +15,7 @@ function harness(overrides = {}) {
       startRoles:()=>{h.starts++;h.phase=h.afterStart||h.phase;},
       cancelRoles:()=>h.cancels++,rolesState:()=>({phase:h.phase})};
     const nav={scrollIntoView:()=>h.scrolls++};
+    const resume=()=>{view='trios';sync();};
     ${source.slice(start,end)}
     return {advance,state:()=>({pending,accepted,editing,view,flowError})};
   `)(h, fn=>tasks.push(fn));
@@ -38,4 +39,13 @@ for(const input of [{ready:false},{failed:1}]){
 {
   const t=harness({phase:'error'});t.tick();assert.equal(t.flow.state().pending,null);assert.equal(t.flow.state().editing,true);assert.equal(t.flow.state().accepted,'');
 }
-console.log('Unified setup: sequential comparison/roles, warm reuse, stale cancellation and incomplete/error results passed.');
+const actionStart=source.indexOf('    actions.onclick='),actionEnd=source.indexOf('    recap.onclick=',actionStart);
+for(const [ownCount,enemyCount,expected] of [[0,0,'teamBuilderRoster'],[2,6,'teamBuilderRoster'],[6,0,'teamOpponentRoster']]){
+  const calls=[],actions={};
+  new Function('actions','options','$','ownSetup',source.slice(actionStart,actionEnd))(actions,{
+    own:()=>({team:Array(ownCount).fill({pokemonId:'own'})}),opponent:()=>({team:Array(enemyCount).fill({pokemonId:'foe'})})
+  },id=>({querySelector:()=>({click:()=>calls.push(id)})}),{});
+  actions.onclick({target:{closest:selector=>selector==='[data-analyze]'?{}:null}});
+  assert.deepEqual(calls,[expected]);
+}
+console.log('Unified setup: guided empty states, sequential completion, warm reuse, stale cancellation and failed results passed.');
