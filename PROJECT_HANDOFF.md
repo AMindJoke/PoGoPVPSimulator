@@ -1,4 +1,8 @@
 # PoGoPVPSimulator — Handoff operativo
+
+### Build: sigla BP, 7 ottobre 2026
+
+- Breakpoint e bulkpoint mostrano BP in grassetto anziché spade/rombo; Fast damage e Damage taken distinguono la direzione. Solo presentazione, asset/cache v169. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
 ### Pokémon Analysis: differenze build visive, 7 ottobre 2026
 
 - Build raggruppa le differenze reali per avversario con sprite, categoria e prima→dopo: danno Fast, ordine CMP, danno Fast subito, sopravvivenza a un singolo colpo da HP pieni. Tre avversari iniziali, altri apribili. Statistiche esatte/purpose nei dettagli; delta Attack/Defense/HP restano subito visibili. Balanced identificata come riferimento, non come build senza utilità. Nessun nuovo simulatore o outcome flip dichiarato.

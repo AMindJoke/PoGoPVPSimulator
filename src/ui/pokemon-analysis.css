@@ -176,3 +176,4 @@ body[data-theme="dark"] #analysisContent .analysis-build-change.negative b, body
   #analysisContent .analysis-iv-canvas { padding: 12px; }
 }
 #analysisContent .analysis-iv-detail-head > span { background: var(--panel); color: var(--muted); font-weight: 500; }
+#analysisContent .analysis-build-kind.analysis-build-bp { font: 900 14px/1 Arial,sans-serif; letter-spacing: -.4px; color: var(--ink); }
