@@ -70,29 +70,9 @@
       marker.className="battle-alternative-standard-marker";marker.dataset.label=`Change · T${item.node.turn}`;marker.setAttribute("aria-hidden","true");marker.style.left=`${x}px`;scroll.append(marker);
       if(reveal)scroll.scrollLeft=Math.max(0,x-scroll.clientWidth/2);
     }
-    function timelineHtml(result,item) {
-      const raw=previewEvents(result.alternativeProbe.timeline);
-      const model=options.timelineModel(raw), percent=value=>value/model.visualTurns*100;
-      const changedIndex=decisionEventIndex(result.alternativeProbe.timeline,item,true);
-      const changed=model.rows.find(event=>event.sourceIndex===changedIndex);
-      const combatants={A:input.config.left,B:input.config.right};
-      const rows=["A","B"].map(side=>{
-        const combatant=combatants[side];
-        const events=model.rows.filter(event=>event.trainer===side).map(event=>{
-          const move=event.move, shield=event.kind === "shield" || event.kind === "form-protect";
-          const type=shield ? "shield" : event.kind;
-          const color=options.typeColor(move?.type);
-          const decisive=event.sourceIndex===changedIndex;
-          const label=`${decisive ? "Changed choice · " : ""}${shield ? event.kind === "form-protect" ? "Form protection" : "Shield" : move?.name || event.kind} · Turn ${event.start}${!shield ? ` · ${Math.round(event.damage || 0)} damage` : ""}`;
-          const content=shield ? options.shieldSvg() : event.kind === "charge" ? options.typeIcon(move?.type) : "";
-          const trail=event.kind === "charge" ? `<span class="battle-alternative-charge-trail" style="left:${percent(event.visualStart)}%;width:${percent(event.visualTurn-event.visualStart)}%;--alternative-type:${escape(color)}"></span>` : "";
-          return `${trail}<span class="battle-alternative-event ${type}${decisive ? " battle-alternative-decisive" : ""}" role="img" aria-label="${escape(label)}" title="${escape(label)}" style="left:${percent(event.visualTurn)}%;--alternative-type:${escape(color)}">${content}</span>`;
-        }).join("");
-        return {label:`<div class="battle-alternative-lane-label">${sprite(side,pokemonLabel(side,input))}</div>`,
-          track:`<div class="battle-alternative-track" aria-label="${escape(combatant.p.name)} actions">${events}</div>`};
-      });
+    function timelineHtml(result) {
       return `<div class="battle-alternative-preview-heading"><strong>Alternative · ${escape(outcomeLabel(options.api.outcome(result),input))}</strong><span>Read-only</span></div>
-        <div class="battle-alternative-graph"><div class="battle-alternative-lane-labels"><span>Turn</span>${rows.map(row=>row.label).join("")}</div><div class="battle-alternative-scroll" tabindex="0" aria-label="Alternative timeline; scroll for longer battles"><div class="battle-alternative-content" style="min-width:${model.minWidth}px"><div class="battle-alternative-ruler">${model.ticks.map(tick=>`<span style="left:${percent(tick.visualTurn)}%">${tick.turn}</span>`).join("")}</div><div class="battle-alternative-tracks">${changed ? `<span class="battle-alternative-preview-marker" data-label="Change · T${item.node.turn}" aria-hidden="true" style="left:${percent(changed.visualTurn)}%"></span>` : ""}${rows.map(row=>row.track).join("")}</div></div></div></div>`;
+        <div class="timeline-grid"><div class="timeline-label" data-alternative-label="A">${sprite("A",pokemonLabel("A",input))}</div><div class="timeline-label" data-alternative-label="B">${sprite("B",pokemonLabel("B",input))}</div><div class="timeline-scroll battle-alternative-scroll" tabindex="0" aria-label="Alternative timeline; scroll for longer battles"><div class="timeline-ruler" data-alternative-ruler></div><div class="timeline-track" data-alternative-track="A"></div><div class="timeline-track" data-alternative-track="B"></div></div></div>`;
     }
     function moveFor(id, side) {const c=side === "A" ? input.config.left : input.config.right;return [c.fast,...c.charged].find(move=>move?.id===id) || options.move(id);}
     function actionHtml(action, node) {
@@ -135,7 +115,8 @@
       const alternative=open && view === "alternative" && !!item;
       grid.hidden=alternative;preview.hidden=!alternative;
       if(alternative) {
-        preview.innerHTML=timelineHtml(item.result,item);
+        preview.innerHTML=timelineHtml(item.result);
+        options.renderTimeline(preview,item.result.alternativeProbe.timeline,input.config,decisionEventIndex(item.result.alternativeProbe.timeline,item,true),item.node.turn);
         const changed=preview.querySelector(".battle-alternative-decisive"),scroll=preview.querySelector(".battle-alternative-scroll");
         if(scroll && !reveal && previewScroll!==null)scroll.scrollLeft=previewScroll;
         else if(changed && scroll)scroll.scrollLeft=Math.max(0,changed.offsetLeft-scroll.clientWidth/2);
@@ -156,7 +137,7 @@
       render(true);
     }
     mount.addEventListener("click",act);detail.addEventListener("click",event=>{if(event.target.tagName!=="SELECT")act(event);});detail.addEventListener("change",act);
-    return {reset,render,refreshHighlights,update(next,config){state=next;input=config;
+    return {reset,render,refreshHighlights,refreshTimeline(){if(open && view === "alternative")render();},update(next,config){state=next;input=config;
       if(input.testedReply && !requestedShown && state.findings.length){requestedShown=true;open=true;view="alternative";options.pauseReplay?.();}
       render();}};
   }

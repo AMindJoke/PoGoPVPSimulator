@@ -36,7 +36,7 @@
   <script src="src/analysis/battle-sensitivity.js?v=20261005-v117"></script>
   <script src="src/analysis/cmp-dependency.js?v=20261006-v131"></script>
   <script src="src/ui/cmp-dependency.js?v=20261006-v131"></script>
-  <script src="src/ui/battle-alternatives.js?v=20261005-v117"></script>
+  <script src="src/ui/battle-alternatives.js?v=20261008-v177"></script>
   <script src="src/analysis/iv-impact.js"></script>
   <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
@@ -8802,12 +8802,14 @@
         drop-shadow(0 0 4px rgba(143, 79, 184, .82))
         drop-shadow(0 0 9px rgba(92, 45, 145, .55));
     }
-    #p1TimelineLabel {
+    #p1TimelineLabel,
+    [data-alternative-label="A"] {
       grid-column: 1;
       grid-row: 2;
       justify-content: flex-end;
     }
-    #p2TimelineLabel {
+    #p2TimelineLabel,
+    [data-alternative-label="B"] {
       grid-column: 1;
       grid-row: 3;
       justify-content: flex-end;
@@ -8849,10 +8851,12 @@
     .timeline-track.lane-hover {
       background: rgba(21, 111, 143, .06);
     }
-    #p1Timeline {
+    #p1Timeline,
+    [data-alternative-track="A"] {
       background: color-mix(in srgb, #1683a2 4%, var(--soft));
     }
-    #p2Timeline {
+    #p2Timeline,
+    [data-alternative-track="B"] {
       background: color-mix(in srgb, #7654b5 4%, var(--soft));
     }
     #p1Timeline.lane-hover,
@@ -14483,7 +14487,7 @@
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261006-v123">
-  <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261005-v117">
+  <link rel="stylesheet" href="src/ui/battle-alternatives.css?v=20261008-v177">
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261007-v152">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
@@ -37439,9 +37443,7 @@
       if (!battleAlternativesUi) battleAlternativesUi = window.PvPeakBattleAlternativesUI.create({
         api, mount: $("battleAlternativesMount"), detail: $("battleAlternativesDetail"), preview: $("battleAlternativeTimeline"), grid: $("manualTimelineGrid"),
         imageUrl, setPokemonImage, move: id => moveMap.get(id), movePill: metaMovePill, shieldSvg,
-        typeColor: type => typeColors[type] || "#66788c",
-        typeIcon: type => `<svg viewBox="0 0 64 64" fill="#fff" aria-hidden="true">${typeIconShape(type || "normal")}</svg>`,
-        timelineModel: events => window.PvPeakMetaQuickMatchupModel.compactTimelineModel(events, chargeWindowTurns, chargePauseTurns),
+        renderTimeline: renderAlternativeBattleTimeline,
         standardEvents: () => timeline,
         pauseReplay: stopTimelineReplay,
         retry: () => {battleAlternativesInputKey = ""; renderBattleAlternatives();}
@@ -37457,6 +37459,51 @@
           battleAlternativesUi.update(state,input);
           battleCmpUi ||= window.PvPeakCmpDependencyUI.create({mount: $("battleCmpMount"), grid: $("manualTimelineGrid"), events: () => timeline});
           battleCmpUi.update(state.phase === "error" ? null : state.baseline?.cmpDependency, {A: input.config.left.p.name, B: input.config.right.p.name});
+        }
+      });
+    }
+
+    // Rendering is synchronous. Restore the standard line even if a renderer fails.
+    function withAlternativeTimelineContext(events, config, render) {
+      const saved = { timeline, left, right, initialTimelineState, selectedTimelineIndex };
+      try {
+        timeline = events;
+        left = config.left;
+        right = config.right;
+        initialTimelineState = { A: config.left, B: config.right };
+        selectedTimelineIndex = null;
+        return render();
+      } finally {
+        timeline = saved.timeline;
+        left = saved.left;
+        right = saved.right;
+        initialTimelineState = saved.initialTimelineState;
+        selectedTimelineIndex = saved.selectedTimelineIndex;
+      }
+    }
+
+    function renderAlternativeBattleTimeline(container, events, config, changedIndex, changedTurn) {
+      const scroll = container.querySelector(".timeline-scroll");
+      withAlternativeTimelineContext(events, config, () => {
+        const chargeSlots = timelineChargeSlots();
+        const chargeStarts = uniqueChargeStarts(chargeSlots);
+        const visible = timeline.filter(event => !event.hiddenFromTimeline);
+        const rawMaxTurn = Math.max(20, ...visible.map(event => event.kind === "fast" ? timelineFastImpactTurn(event) + 2 : event.start + event.duration + 1));
+        const maxTurn = rawMaxTurn + chargeSlots.length * chargePauseTurns + (timelineIsFit() ? 3 : 0);
+        const turnPx = timelineTurnPixels(maxTurn, scroll);
+        scroll.classList.toggle("fit-mode", timelineIsFit());
+        scroll.classList.toggle("overview-mode", timelineZoomPercent() < 100);
+        renderTimelineRuler(maxTurn, turnPx, container.querySelector("[data-alternative-ruler]"));
+        for (const side of ["A", "B"]) renderTimelineRow(side, container.querySelector(`[data-alternative-track="${side}"]`), maxTurn, turnPx, chargeSlots, chargeStarts);
+        const block = container.querySelector(`.timeline-block[data-event-index="${changedIndex}"]`);
+        if (block) {
+          block.classList.add("battle-alternative-decisive");
+          const marker = document.createElement("span");
+          marker.className = "battle-alternative-standard-marker";
+          marker.dataset.label = `Change · T${changedTurn}`;
+          marker.setAttribute("aria-hidden", "true");
+          marker.style.left = `${block.offsetLeft + block.offsetWidth / 2 + block.parentElement.parentElement.offsetLeft}px`;
+          scroll.append(marker);
         }
       });
     }
@@ -37507,6 +37554,7 @@
       renderTechnicalTimelineState();
       renderManualTimelineSelectionCard();
       battleAlternativesUi?.refreshHighlights();
+      battleAlternativesUi?.refreshTimeline();
       battleCmpUi?.refresh();
       if (mobileManualScroll && !sameMobileTimeline) scroll.scrollLeft = 0;
       else if (isFit && !mobileManualScroll) scroll.scrollLeft = 0;
@@ -37651,7 +37699,8 @@
     }
 
     function timelineTurnPixels(maxTurn, scroll) {
-      const available = Math.max(1, scroll.clientWidth - 2);
+      const width = scroll.clientWidth || $("battleAlternativeTimeline")?.querySelector(".timeline-scroll")?.clientWidth || 1;
+      const available = Math.max(1, width - 2);
       const fit = Math.min(24, available / Math.max(1, maxTurn));
       const readableFit = manualMobileTimelineScrollEnabled() ? Math.max(18, fit) : fit;
       return readableFit * timelineZoomPercent() / 100;
@@ -37702,11 +37751,11 @@
       return turn + pauses * chargePauseTurns;
     }
 
-    function renderTimelineRuler(maxTurn, turnPx) {
+    function renderTimelineRuler(maxTurn, turnPx, ruler = $("timelineRuler")) {
       const width = maxTurn * turnPx;
       const every = turnPx < 18 ? 5 : turnPx < 28 ? 2 : 1;
-      $("timelineRuler").style.setProperty("--turn-px", `${turnPx}px`);
-      $("timelineRuler").innerHTML = `<div class="timeline-lane" style="width:${width}px">` +
+      ruler.style.setProperty("--turn-px", `${turnPx}px`);
+      ruler.innerHTML = `<div class="timeline-lane" style="width:${width}px">` +
         Array.from({ length: maxTurn + 1 }, (_, turn) => {
           if (turn % every !== 0) return "";
           const cls = turn === 0 ? "turn-label start" : turn === maxTurn ? "turn-label end" : "turn-label";
@@ -37721,7 +37770,7 @@
     }
 
     function renderTimelineRow(trainer, id, maxTurn, turnPx, chargeSlots, chargeStarts) {
-      const row = $(id);
+      const row = typeof id === "string" ? $(id) : id;
       const events = timeline.map((event, index) => ({ event, index })).filter(item => item.event.trainer === trainer && !item.event.hiddenFromTimeline);
       const collisionLanes = manualTimelineCollisionLanes(events, turnPx, chargeSlots);
       row.style.setProperty("--turn-px", `${turnPx}px`);
@@ -38316,7 +38365,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261008-v176").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261008-v177").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

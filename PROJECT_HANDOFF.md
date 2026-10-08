@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Timeline alternative nello stile Battle, 8 ottobre 2026
+
+- View alternative riusa renderTimelineRuler/renderTimelineRow e le classi timeline-grid/scroll/track/block della linea normale: stessi Fast, caricate, scudi viola, trail, KO, sprite, griglia e sizing responsive. Rimossi renderer e CSS compatti separati. Marker della scelta modificata preservato, zoom comune abilitato anche nell’alternativa e refresh al cambio zoom; larghezza visibile usata quando il grid standard è nascosto.
+- Il renderer opera sincronicamente in un contesto di lettura degli eventi alternativi e ripristina sempre timeline/combatant/stato iniziale/selezione via finally; nessuna simulazione o modifica del ramo standard. Test nuovo: markup identico per eventi identici, Fast/caricata/scudo/KO, restore normale e in errore, zoom con grid nascosto, toggle Standard/Alternative. Test motore alternative passati: 16 casi, 270 rami legali, 14 flip, 7 shield-reply checks, cache/cancel/mismatch. Test PWA e sintassi inline passati. Verifica tramite renderer/DOM simulato, non screenshot del browser. Asset/cache v177. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Ricerca Team Builder parallela, 8 ottobre 2026
 
 - Nuovo simulation-worker-pool.js: worker isolati solo per final member/replacement, massimo 4 desktop / 2 touch, ulteriormente limitati da core e RAM dichiarati. Avvio solo sui miss dopo hydration. Blocchi di 4 richieste, handler Battle invariato; progress e ranking esistenti, limite 600 e top 50 invariati. Template combatant per membro/IV/mosse/energia/opponent riutilizzati nel run, eliminati a fine/cancel e nuovo run. Battle/Meta mantengono il worker originale.

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-08-v176-parallel-search";
+const CACHE_VERSION = "2026-10-08-v177-alternative-timeline";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -40,8 +40,8 @@ const CORE_ASSETS = [
   "./src/analysis/cmp-dependency.js?v=20261006-v131",
   "./src/ui/cmp-dependency.js?v=20261006-v131",
   "./src/ui/cmp-dependency.css?v=20261006-v132",
-  "./src/ui/battle-alternatives.js?v=20261005-v117",
-  "./src/ui/battle-alternatives.css?v=20261005-v117",
+  "./src/ui/battle-alternatives.js?v=20261008-v177",
+  "./src/ui/battle-alternatives.css?v=20261008-v177",
   "./src/analysis/iv-impact.js",
   "./src/analysis/ranking-details.js?v=20261006-v123",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
