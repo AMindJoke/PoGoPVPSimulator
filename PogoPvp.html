@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20261001-v76">
   <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
+  <script src="src/battle/announced-moves.js?v=20261008-v178"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
@@ -18596,7 +18597,7 @@
       members.forEach(member => {
         const pokemon = findPokemon(member.pokemonId);
         if (!pokemon) throw new Error("SHARED_TEAM_POKEMON_UNKNOWN");
-        if (!pokemon.fast.includes(member.fastMoveId) || !member.chargedMoveIds.every(id => pokemon.charged.includes(id))) throw new Error("SHARED_TEAM_MOVESET_INVALID");
+        if (!selectableFastMoveIds(pokemon).includes(member.fastMoveId) || !member.chargedMoveIds.every(id => pokemon.charged.includes(id))) throw new Error("SHARED_TEAM_MOVESET_INVALID");
       });
       const provider = teamBuilderMetaRegistry?.get(payload.state.analysisConfig.meta);
       if (!provider || provider.league !== payload.state.league) throw new Error("SHARED_TEAM_META_INVALID");
@@ -20366,7 +20367,7 @@
       const charged = Array.isArray(side?.chargedMoveIds) ? side.chargedMoveIds : [];
       const ivs = [side?.ivAtk, side?.ivDef, side?.ivHp];
       return !!pokemon
-        && pokemon.fast.includes(side.fastMoveId)
+        && selectableFastMoveIds(pokemon).includes(side.fastMoveId)
         && charged.length > 0
         && charged.length <= selectedChargedMoveLimit(pokemon)
         && charged.every(moveId => pokemon.charged.includes(moveId))
@@ -20888,12 +20889,13 @@
       $("teamBuilderEditorFeedback").textContent = "";
     }
 
-    function teamBuilderMoveOptions(moveIds, selected, eliteMoves = new Set()) {
+    function teamBuilderMoveOptions(moveIds, selected, eliteMoves = new Set(), pokemon = null) {
       return moveIds.map(moveId => {
         const move = moveMap.get(moveId);
         if (!move) return "";
         const legacyMark = eliteMoves.has(moveId) ? " *" : "";
-        return `<option value="${escapeHtml(move.id)}"${move.id === selected ? " selected" : ""}>${escapeHtml(move.name + legacyMark)}</option>`;
+        const announced = window.PvPeakAnnouncedMoves?.label?.(pokemon, moveId) || "";
+        return `<option value="${escapeHtml(move.id)}"${move.id === selected ? " selected" : ""}>${escapeHtml(move.name + legacyMark + announced)}</option>`;
       }).join("");
     }
 
@@ -20938,7 +20940,7 @@
       shadowToggle.setAttribute("aria-pressed", isShadow(pokemon) ? "true" : "false");
       shadowToggle.textContent = isShadow(pokemon) ? "Shadow on" : "Use Shadow";
       const eliteMoves = new Set(pokemon.eliteMoves || []);
-      $("teamBuilderFastMove").innerHTML = teamBuilderMoveOptions(pokemon.fast, draft.fastMoveId, eliteMoves);
+      $("teamBuilderFastMove").innerHTML = teamBuilderMoveOptions(selectableFastMoveIds(pokemon), draft.fastMoveId, eliteMoves, pokemon);
       ensureTeamBuilderChargedMoveSelects(pokemon).forEach((select, index) => {
         select.innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[index], eliteMoves);
       });
@@ -20977,7 +20979,7 @@
       const chargedLimit = selectedChargedMoveLimit(target);
       teamBuilderEditorDraft = {
         ...defaults,
-        fastMoveId: target.fast.includes(teamBuilderEditorDraft.fastMoveId) ? teamBuilderEditorDraft.fastMoveId : defaults.fastMoveId,
+        fastMoveId: selectableFastMoveIds(target).includes(teamBuilderEditorDraft.fastMoveId) ? teamBuilderEditorDraft.fastMoveId : defaults.fastMoveId,
         chargedMoveIds: charged.length >= chargedLimit ? charged.slice(0, chargedLimit) : defaults.chargedMoveIds,
         build: teamBuilderResolvedBuild(target, teamBuilderEditorDraft.build?.profile || "default", teamBuilderEditorDraft.build)
       };
@@ -21024,7 +21026,7 @@
       const draft = teamBuilderEditorDraft;
       const pokemon = draft && findPokemon(draft.pokemonId);
       const charged = [...new Set(draft?.chargedMoveIds || [])];
-      if (!pokemon || !pokemon.fast.includes(draft.fastMoveId) || charged.length !== 2 || charged.some(moveId => !pokemon.charged.includes(moveId))) {
+      if (!pokemon || !selectableFastMoveIds(pokemon).includes(draft.fastMoveId) || charged.length !== 2 || charged.some(moveId => !pokemon.charged.includes(moveId))) {
         $("teamBuilderEditorFeedback").textContent = "Choose one legal Fast Move and two different Charged Moves.";
         return;
       }
@@ -23024,13 +23026,19 @@
       return selects.slice(0, limit);
     }
 
+    function selectableFastMoveIds(pokemon) {
+      return (window.PvPeakAnnouncedMoves?.fastIds?.(pokemon) || pokemon?.fast || []).filter(id => moveMap.has(id));
+    }
+
     function fillMoveSelect(id, moveIds, pokemon = null) {
       const eliteMoves = new Set((pokemon && pokemon.eliteMoves) || []);
       const noneOption = id.includes("Charged") ? `<option value="">&#60;None&#62;</option>` : "";
-      $(id).innerHTML = noneOption + moveIds.map(moveId => {
+      const selectable = id.endsWith("Fast") && pokemon ? selectableFastMoveIds(pokemon) : moveIds;
+      $(id).innerHTML = noneOption + selectable.map(moveId => {
         const m = moveMap.get(moveId);
         const legacyMark = eliteMoves.has(moveId) ? " *" : "";
-        return `<option value="${m.id}">${escapeHtml(m.name + legacyMark)}</option>`;
+        const announced = window.PvPeakAnnouncedMoves?.label?.(pokemon, moveId) || "";
+        return `<option value="${m.id}">${escapeHtml(m.name + legacyMark + announced)}</option>`;
       }).join("");
       colorMoveSelect(id);
     }
@@ -38365,7 +38373,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261008-v177").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261008-v178").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

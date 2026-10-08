@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Mosse annunciate e preview manuale, 8 ottobre 2026
+
+- Audit annunci ufficiali 17 settembre–8 ottobre (incluso CD futuro annunciato prima): Zoroark di Unima, non Hisui, riceve Sucker Punch il 10 ottobre. Nuovo announced-moves.js aggiunge la scelta Upcoming (10 Oct) solo nei selettori manuali Battle/Team Builder e nelle relative validazioni di build/link. Non muta il Game Master: default, pool curato Meta 43, candidati automatici e generazione ranking continuano a usare le mosse attuali. Nessuna promozione automatica per data: dopo uscita verificare disponibilita reale, promuovere nei dati canonici e rigenerare se necessario.
+- Registro fonti data/move-updates/2026-10-08.json: Brave Bird+ Mega Staraptor (19 settembre) e Discharge+ Mega Manectric (13 ottobre) solo registrati, non simulati: mancano parametri completi energia/Mega-level, e la forma Mega Staraptor nei dati locali. Nessun valore inventato.
+- Test nuovo announced-moves: selettori Upcoming, canonical pool immutato, esclusione Hisui e Meta automatico, validazione link Battle e simulazione worker reale Sucker Punch. Audit 27 mosse/48 campi stagionali gia coerenti. Navigation matchup parity, Team Builder UI, matchup/share link e PWA passati; sintassi inline compilata. Nessuna verifica visuale nel browser. Asset/cache v178. Planner migration 100% -> 100%; hybrid fallback 0% -> 0%.
+
+
 ### Timeline alternative nello stile Battle, 8 ottobre 2026
 
 - View alternative riusa renderTimelineRuler/renderTimelineRow e le classi timeline-grid/scroll/track/block della linea normale: stessi Fast, caricate, scudi viola, trail, KO, sprite, griglia e sizing responsive. Rimossi renderer e CSS compatti separati. Marker della scelta modificata preservato, zoom comune abilitato anche nell’alternativa e refresh al cambio zoom; larghezza visibile usata quando il grid standard è nascosto.

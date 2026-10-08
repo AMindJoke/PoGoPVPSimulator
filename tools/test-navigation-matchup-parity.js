@@ -32,6 +32,7 @@ const context = {
   window: { PvPeakTeamBuilderBattleLink: Link, PvPeakTeamBuilderAnalysis: require("../src/team-builder/team-builder-analysis.js") }, activeSeasonData: { id: "twilight-trails" }
 };
 vm.createContext(context);
+vm.runInContext(section("selectableFastMoveIds", "fillMoveSelect"), context);
 vm.runInContext(section("teamBuilderBattleLaunchSide", "openTeamBuilderMatchup") + section("validTeamBuilderBattleSide", "loadTeamBuilderBattleFromLocation") + section("loadMetaMatchup", "applyMetaRankingMoves"), context);
 const clone = value => JSON.parse(JSON.stringify(value));
 function reboundSide(base, prefix) {

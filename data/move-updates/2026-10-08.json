@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-08",
+  "window": {
+    "from": "2026-09-17",
+    "to": "2026-10-08"
+  },
+  "scope": "Official announcements; move additions and availability relevant to simulator. Announcement is not a complete live Game Master audit.",
+  "findings": [
+    {
+      "pokemonIds": [
+        "zoroark"
+      ],
+      "moveId": "SUCKER_PUNCH",
+      "eventDate": "2026-10-10",
+      "status": "upcoming",
+      "implementation": "Manual Battle/Team Builder preview; excluded from canonical pools, automatic movesets and offline ranking generation.",
+      "source": "https://pokemongo.com/news/communityday-october-2026-zorua",
+      "notes": "Announcement concerns Unovan Zorua/Zoroark only; Hisuian form is not confirmed."
+    },
+    {
+      "pokemonName": "Mega Staraptor",
+      "moveName": "Brave Bird+",
+      "eventDate": "2026-09-19",
+      "status": "released-announced",
+      "trainerPower": 70,
+      "userDefenseStages": -3,
+      "implementation": "Not simulated: canonical Mega form and complete move/level parameters absent. No guessed energy cost.",
+      "source": "https://pokemongo.com/news/staraptor-super-mega-raid-day-2026"
+    },
+    {
+      "pokemonIds": [
+        "manectric_mega"
+      ],
+      "moveName": "Discharge+",
+      "eventDate": "2026-10-13",
+      "status": "upcoming",
+      "trainerPower": 50,
+      "implementation": "Recorded only: complete energy/Mega-level parameters absent. Excluded from current Meta.",
+      "source": "https://pokemongo.com/en/news/fall-marathon-buddy-trek-2026"
+    },
+    {
+      "scope": "Twilight Trails seasonal balance",
+      "eventDate": "2026-09-08",
+      "status": "before-window",
+      "implementation": "Existing confirmed-moves-20260908.json checked against canonical move fields; no changes needed.",
+      "source": "https://pokemongo.com/news/go-battle-league-twilight-trails"
+    }
+  ]
+}
