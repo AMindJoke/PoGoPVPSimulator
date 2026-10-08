@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Shortlist competitiva Team Builder, 8 ottobre 2026
+
+- Completamento e sostituzioni limitati ai 600 migliori candidati eleggibili del ranking rank1 corrente, dopo Species Clause e verifica build legale. Nessun fallback all’intero roster se il ranking manca: attesa del loader, messaggio esplicito in caso di indisponibilità, guardia contro cambi di team/contesto/cancellazione durante il caricamento. Pool Meta curato di 43 e pool minacce invariati; ordine finale dei suggerimenti ancora basato sulle simulazioni di copertura, non sul rank generale. La shortlist è un compromesso prestazionale: specialisti oltre i 600 non sono cercati.
+- Test roster canonico: 600 build, esclusi Magikarp e Bulbasaur, inclusi Raichu/Golisopod/Clodsire; parità CP/IV, refill dopo esclusione di una specie, ranking con profili/duplicati, assenza ranking e caricamento asincrono. Test candidates, UI contract, analysis, meta, shared cache e PWA passati; Battle reale Raichu→Corviknight rating 649. Circa 60% di celle in meno rispetto a 1496 candidati, tempo reale non misurato nel browser. Asset/cache v174. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Cache condivisa Battle / Meta / Team Builder, 8 ottobre 2026
 
 - Nuovo shared-matchup-cache.js: firma comune con versione/stagione/score, firme fisiche dei combatant (mosse/IV/stat/HP/energia/policy), scudi, moltiplicatori Shadow e contesto (turni/farm). Non usa ranking snapshot vecchi: il dataset v45 non è intercambiabile con runtime v46. Supporta anche lettura delle celle live legacy con chiavi della versione corrente; reazione/farm/stati non freschi esclusi dal fallback legacy Battle.

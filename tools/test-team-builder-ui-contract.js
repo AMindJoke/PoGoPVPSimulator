@@ -8,7 +8,7 @@ const presentationStyles = fs.readFileSync(path.join(__dirname, "..", "src", "te
 
 assert.match(html, /src="src\/team-builder\/team-builder-state\.js"/);
 assert.match(html, /src="src\/team-builder\/team-builder-meta\.js"/);
-assert.match(html, /src="src\/team-builder\/team-builder-analysis\.js\?v=20261008-v172"/);
+assert.match(html, /src="src\/team-builder\/team-builder-analysis\.js\?v=20261008-v174"/);
 assert.match(html, /src="src\/team-builder\/team-builder-share\.js(?:\?v=[^"]+)?"/);
 assert.match(html, /id="teamBuilderTab"[^>]+data-view-target="team-builder"/);
 assert.match(html, /id="teamBuilderView" class="app-view team-builder-view"/);
@@ -134,7 +134,7 @@ assert.match(html, /function applyTeamBuilderReplacement\(candidateId\)[\s\S]{0,
 assert.match(html, /id="teamBuilderFinalSlot" class="team-final-slot"[^>]+aria-labelledby="teamBuilderFinalSlotTitle"/, "Final Slot Finder must use a native contextual Team Builder section.");
 assert.match(html, /\.team-final-slot \{[^}]*width: 100%;[^}]*max-width: none;[^}]*padding: 0;/, "The global battle-section width must not collapse Final Slot Finder on desktop.");
 assert.match(html, /function renderTeamBuilderFinalSlotFinder\(\)[\s\S]{0,500}selected >= 1 && selected < window\.PvPeakTeamBuilder\.TEAM_SIZE/, "Final Slot Finder must appear only for incomplete 1/6 through 5/6 teams.");
-assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,800}allPokemon\.filter\(window\.PvPeakTeamBuilderAnalysis\.eligibleOptimizationPokemon\)[\s\S]{0,500}speciesKey/, "Candidates must use the full available roster and preserve Species Clause filtering.");
+assert.match(html, /function teamBuilderEligibleOptimizationMembers\(\)[\s\S]{0,800}window\.PvPeakTeamBuilderAnalysis\.rankedOptimizationPokemon\(allPokemon[\s\S]{0,500}speciesKey/, "Candidates must use the ranked roster and preserve Species Clause filtering.");
 assert.match(html, /function prepareTeamBuilderFinalSlotPlan\(\)[\s\S]{0,1800}PvPeakTeamBuilderAnalysis\.createPlan[\s\S]{0,500}finalSlotCandidateId/, "Final Slot Finder must reuse canonical cached matchup jobs.");
 assert.match(html, /function teamBuilderFinalSlotRanking\(\)[\s\S]{0,1400}rankTeamCandidates\([\s\S]{0,200}mode: "append"/, "Final-slot results must use the shared deterministic optimization layer.");
 assert.match(html, /team-final-slot-method">Highest improvement points first<\//, "Final-slot results must explain that improvement points determine the visible order.");

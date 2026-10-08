@@ -48,7 +48,7 @@
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/analysis/shared-matchup-cache.js?v=20261008-v173"></script>
-  <script src="src/team-builder/team-builder-analysis.js?v=20261008-v172"></script>
+  <script src="src/team-builder/team-builder-analysis.js?v=20261008-v174"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
@@ -15334,7 +15334,7 @@
         </section>
         <section id="teamBuilderFinalSlot" class="team-final-slot" aria-labelledby="teamBuilderFinalSlotTitle">
           <div class="team-final-slot-entry"><div><h3 id="teamBuilderFinalSlotTitle">Complete your team</h3><p id="teamBuilderFinalSlotCopy">Find the Pok&eacute;mon that best repairs your current coverage gaps.</p></div><button id="teamBuilderFinalSlotAnalyze" type="button">Find final member</button></div>
-          <div id="teamBuilderFinalSlotProgressWrap" class="team-final-slot-progress"><div class="team-replacement-progress"><div class="team-replacement-progress-copy"><span id="teamBuilderFinalSlotStatus">Ready to evaluate eligible candidates.</span><span id="teamBuilderFinalSlotCount">0 / 0</span></div><div id="teamBuilderFinalSlotProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Final slot candidate analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div><div class="team-replacement-actions"><button id="teamBuilderFinalSlotCancel" class="secondary" type="button" hidden>Cancel</button></div></div>
+          <div id="teamBuilderFinalSlotProgressWrap" class="team-final-slot-progress"><div class="team-replacement-progress"><div class="team-replacement-progress-copy"><span id="teamBuilderFinalSlotStatus">Search up to 600 top-ranked candidates.</span><span id="teamBuilderFinalSlotCount">0 / 0</span></div><div id="teamBuilderFinalSlotProgress" class="team-analysis-progress-track" role="progressbar" aria-label="Final slot candidate analysis" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i></i></div></div><div class="team-replacement-actions"><button id="teamBuilderFinalSlotCancel" class="secondary" type="button" hidden>Cancel</button></div></div>
           <div id="teamBuilderFinalSlotResults" class="team-final-slot-results"><div class="team-final-slot-results-head"><div><h4>Best final members</h4><p id="teamBuilderFinalSlotResultsCopy">Ranked by deterministic improvement against your priority threats.</p></div><span class="team-final-slot-method">Highest improvement points first</span></div><div id="teamBuilderFinalSlotRanking" class="team-final-slot-ranking"></div><button id="teamBuilderFinalSlotShowAll" class="secondary team-final-slot-more" type="button" hidden>Show all candidates</button></div>
         </section>
         <div id="teamBuilderThreatCoverage" class="team-coverage is-primary" aria-labelledby="teamBuilderThreatCoverageTitle">
@@ -19652,10 +19652,26 @@
       teamBuilderFinalSlotSourceSignature = `${teamBuilderFinalSlotContextSignature()}|${opponentIds.join(",")}`;
     }
 
-    function startTeamBuilderFinalSlotAnalysis() {
+    async function teamBuilderCandidateRankingReady(statusId) {
+      if (metaRankingData?.entries?.length) return true;
+      const status = $(statusId);
+      status.textContent = "Loading candidate ranking…";
+      ensureMetaRankingData();
+      if (metaRankingLoadPromise) await metaRankingLoadPromise;
+      if (metaRankingData?.entries?.length) return true;
+      status.textContent = "Candidate ranking unavailable. Try again when connected.";
+      return false;
+    }
+
+    async function startTeamBuilderFinalSlotAnalysis() {
       if (teamBuilderAnalysisActive || !teamBuilderState || !teamBuilderMetaDefinition) return;
       const selected = teamBuilderState.team.filter(Boolean).length;
       if (selected < 1 || selected >= window.PvPeakTeamBuilder.TEAM_SIZE) return;
+      const rankingToken = teamBuilderAnalysisRunToken;
+      const rankingState = JSON.stringify(teamBuilderState);
+      if (!metaRankingData?.entries?.length) $("teamBuilderFinalSlotProgressWrap").classList.add("is-visible");
+      if (!await teamBuilderCandidateRankingReady("teamBuilderFinalSlotStatus")) return;
+      if (teamBuilderAnalysisActive || rankingToken !== teamBuilderAnalysisRunToken || rankingState !== JSON.stringify(teamBuilderState)) return;
       refreshTeamBuilderAnalysisPlan();
       const coveragePlan = teamBuilderCombinedCoveragePlan();
       if (!coveragePlan.length || coveragePlan.some(job => !teamBuilderAnalysisCache.has(job.key))) {
@@ -19691,9 +19707,9 @@
       const done = active ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
       wrap.classList.toggle("is-visible", total > 0 || active || teamBuilderFinalSlotPendingStart);
-      if (active) $("teamBuilderFinalSlotStatus").textContent = `Evaluating ${teamBuilderFinalSlotCandidates.size} eligible candidates against ${teamBuilderFinalSlotTargetGroups.length} priority threats${teamBuilderAnalysisCacheHits ? ` \u00b7 ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` \u00b7 ${teamBuilderAnalysisFailed} failed` : ""}`;
+      if (active) $("teamBuilderFinalSlotStatus").textContent = `Evaluating ${teamBuilderFinalSlotCandidates.size} top-ranked candidates against ${teamBuilderFinalSlotTargetGroups.length} priority threats${teamBuilderAnalysisCacheHits ? ` \u00b7 ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` \u00b7 ${teamBuilderAnalysisFailed} failed` : ""}`;
       else if (total && cached === total) $("teamBuilderFinalSlotStatus").textContent = `${teamBuilderFinalSlotCandidates.size} candidates ready \u00b7 ${teamBuilderFinalSlotTargetGroups.length} priority threats.`;
-      else if (!teamBuilderFinalSlotPendingStart) $("teamBuilderFinalSlotStatus").textContent = "Ready to evaluate eligible candidates.";
+      else if (!teamBuilderFinalSlotPendingStart) $("teamBuilderFinalSlotStatus").textContent = "Search up to 600 top-ranked candidates.";
       $("teamBuilderFinalSlotCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderFinalSlotProgress");
       bar.style.setProperty("--analysis-progress", `${progress}%`);
@@ -19903,10 +19919,11 @@
 
     function teamBuilderEligibleOptimizationMembers() {
       const currentKeys = new Set(teamBuilderState.team.filter(Boolean).map(member => window.PvPeakTeamBuilder.speciesKey(member)));
-      return allPokemon.filter(window.PvPeakTeamBuilderAnalysis.eligibleOptimizationPokemon).filter(pokemon =>
+      return window.PvPeakTeamBuilderAnalysis.rankedOptimizationPokemon(allPokemon, metaRankingData?.entries, metaRankingPreferredProfile).filter(pokemon =>
         !currentKeys.has(window.PvPeakTeamBuilder.speciesKey(pokemon))
       ).map(pokemon => ({ candidateId: pokemon.id, member: teamBuilderDefaultMember(pokemon, { includeRank: false }) }))
-        .filter(({ member }) => member && member.chargedMoveIds.length >= selectedChargedMoveLimit(findPokemon(member.pokemonId)) && Number.isFinite(member.build.cp) && member.build.cp <= 1500);
+        .filter(({ member }) => member && member.chargedMoveIds.length >= selectedChargedMoveLimit(findPokemon(member.pokemonId)) && Number.isFinite(member.build.cp) && member.build.cp <= 1500)
+        .slice(0, window.PvPeakTeamBuilderAnalysis.OPTIMIZATION_CANDIDATE_LIMIT);
     }
 
     function teamBuilderEligibleReplacementMembers() {
@@ -19948,8 +19965,12 @@
       teamBuilderReplacementSourceSignature = `${teamBuilderReplacementSlot}|${window.PvPeakTeamBuilderAnalysis.memberSignature(teamBuilderState.team[teamBuilderReplacementSlot])}|${teamBuilderReplacementTargets.join(",")}|${teamBuilderState.analysisConfig.shields}|${teamBuilderState.analysisConfig.meta}`;
     }
 
-    function startTeamBuilderReplacementAnalysis() {
+    async function startTeamBuilderReplacementAnalysis() {
       if (teamBuilderAnalysisActive || !teamBuilderReplacementTargets.length || !teamBuilderState.team[teamBuilderReplacementSlot]) return;
+      const rankingToken = teamBuilderAnalysisRunToken;
+      const rankingState = JSON.stringify([teamBuilderState, teamBuilderReplacementSlot, teamBuilderReplacementTargets]);
+      if (!await teamBuilderCandidateRankingReady("teamBuilderReplacementStatus")) return;
+      if (teamBuilderAnalysisActive || rankingToken !== teamBuilderAnalysisRunToken || rankingState !== JSON.stringify([teamBuilderState, teamBuilderReplacementSlot, teamBuilderReplacementTargets])) return;
       prepareTeamBuilderReplacementPlan();
       if (!teamBuilderReplacementPlan.length) return;
       $("teamBuilderReplacementResults").classList.remove("is-visible");
@@ -19978,7 +19999,7 @@
       if (!teamBuilderReplacementTargets.length) status.textContent = "Select at least one current threat.";
       else if (replacementActive) status.textContent = `Simulating ${candidateCount} candidates against ${teamBuilderReplacementTargets.length} selected threats${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
       else if (total && cached === total) status.textContent = `${candidateCount} candidates are ready for comparison.`;
-      else status.textContent = `${candidateCount} eligible candidates · ${teamBuilderReplacementTargets.length} selected threats.`;
+      else status.textContent = `${candidateCount} top-ranked candidates · ${teamBuilderReplacementTargets.length} selected threats.`;
       $("teamBuilderReplacementCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderReplacementProgress");
       bar.style.setProperty("--analysis-progress", `${progress}%`);
@@ -38220,7 +38241,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261008-v173").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261008-v174").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

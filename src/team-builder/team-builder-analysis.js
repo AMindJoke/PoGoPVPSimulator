@@ -8,6 +8,7 @@
   const SCHEMA_VERSION = 1;
   const STORAGE_KEY = "pvpeak-team-builder-analysis-v1";
   const MAX_CACHE_ENTRIES = 12000;
+  const OPTIMIZATION_CANDIDATE_LIMIT = 600;
 
   // Search results outlive eviction from the bounded persistent cache.
   function createSearchResults(plan, cache, previous = new Map()) {
@@ -25,6 +26,16 @@
     if (form.isMega || form.isPrimal || ["mega", "primal"].includes(form.kind)) return false;
     // Same below-CP-cap availability exclusions as the Great League dataset.
     return !["giratina_altered", "mewtwo_armored"].includes(pokemon.id);
+  }
+  // Ranking chooses the search pool; simulated coverage still chooses the suggestions.
+  function rankedOptimizationPokemon(pokemon, entries, profile = "rank1") {
+    const ranks = new Map();
+    for (const entry of entries || []) {
+      if (entry.profile !== profile || !Number.isFinite(entry.rank) || entry.rank < 1) continue;
+      ranks.set(entry.id, Math.min(ranks.get(entry.id) ?? Infinity, entry.rank));
+    }
+    return pokemon.filter(item => eligibleOptimizationPokemon(item) && ranks.has(item.id))
+      .sort((a, b) => ranks.get(a.id) - ranks.get(b.id) || a.id.localeCompare(b.id));
   }
   const OPTIMIZATION_WEIGHTS = Object.freeze({
     zeroToOne: 120,
@@ -527,6 +538,8 @@
     MAX_CACHE_ENTRIES,
     createSearchResults,
     eligibleOptimizationPokemon,
+    rankedOptimizationPokemon,
+    OPTIMIZATION_CANDIDATE_LIMIT,
     OPTIMIZATION_WEIGHTS,
     memberSignature,
     jobKey,
