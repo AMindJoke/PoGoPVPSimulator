@@ -1,5 +1,10 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Risultati candidati: migliori 50, 8 ottobre 2026
+
+- Final member: 5 suggerimenti iniziali; il pulsante espande ai migliori 50 risultati completi (o meno se disponibili), con ritorno ai top 5. Tutti i 600 candidati restano simulati e ordinati per miglioramento; nessuna espansione ai 600. Asset/cache v175.
+
+
 ### Shortlist competitiva Team Builder, 8 ottobre 2026
 
 - Completamento e sostituzioni limitati ai 600 migliori candidati eleggibili del ranking rank1 corrente, dopo Species Clause e verifica build legale. Nessun fallback all’intero roster se il ranking manca: attesa del loader, messaggio esplicito in caso di indisponibilità, guardia contro cambi di team/contesto/cancellazione durante il caricamento. Pool Meta curato di 43 e pool minacce invariati; ordine finale dei suggerimenti ancora basato sulle simulazioni di copertura, non sul rank generale. La shortlist è un compromesso prestazionale: specialisti oltre i 600 non sono cercati.
