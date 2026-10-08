@@ -47,7 +47,7 @@
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
-  <script src="src/team-builder/team-builder-analysis.js?v=20261002-v107"></script>
+  <script src="src/team-builder/team-builder-analysis.js?v=20261008-v172"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
@@ -15943,6 +15943,8 @@
     let teamBuilderFinalSlotSourceSignature = "";
     let teamBuilderFinalSlotTargetGroups = [];
     const teamBuilderFinalSlotCandidates = new Map();
+    let teamBuilderFinalSlotResults = new Map();
+    let teamBuilderReplacementResults = new Map();
     let teamBuilderFinalSlotPendingStart = false;
     let teamBuilderFinalSlotShowAll = false;
     let teamBuilderComparisonBaseline = null;
@@ -18372,7 +18374,7 @@
       } catch (_) {}
     }
 
-    function teamBuilderDefaultMember(pokemon) {
+    function teamBuilderDefaultMember(pokemon, options = {}) {
       const moves = metaMovesForPokemon(pokemon);
       if (!moves.fast || !moves.charged?.length) return null;
       return {
@@ -18384,11 +18386,11 @@
         fastMoveId: moves.fast.id,
         chargedMoveIds: moves.charged.map(move => move.id).slice(0, selectedChargedMoveLimit(pokemon)),
         selectedChargedMoveLimit: selectedChargedMoveLimit(pokemon),
-        build: teamBuilderResolvedBuild(pokemon, "default")
+        build: teamBuilderResolvedBuild(pokemon, "default", {}, options)
       };
     }
 
-    function teamBuilderResolvedBuild(pokemon, profile = "default", custom = {}) {
+    function teamBuilderResolvedBuild(pokemon, profile = "default", custom = {}, options = {}) {
       let ivAtk = 0;
       let ivDef = 15;
       let ivHp = 15;
@@ -18407,7 +18409,7 @@
         const defaults = pokemon.defaultIVs?.cp1500;
         if (defaults) [ivAtk, ivDef, ivHp] = defaults.slice(1, 4);
       }
-      const stats = statsForIvSpread(pokemon, ivAtk, ivDef, ivHp);
+      const stats = statsForIvSpread(pokemon, ivAtk, ivDef, ivHp, options);
       return {
         profile,
         league: teamBuilderState?.league || "great",
@@ -19041,7 +19043,7 @@
       const pokemon = findPokemon(member.pokemonId);
       if (!pokemon) throw new Error("TEAM_ANALYSIS_POKEMON_MISSING");
       const build = member.build || {};
-      const stats = statsForIvSpread(pokemon, clampIv(build.ivAtk), clampIv(build.ivDef), clampIv(build.ivHp));
+      const stats = statsForIvSpread(pokemon, clampIv(build.ivAtk), clampIv(build.ivDef), clampIv(build.ivHp), { includeRank: build.rank !== null });
       const fast = moveMap.get(member.fastMoveId);
       const charged = member.chargedMoveIds.map(id => moveMap.get(id)).filter(Boolean);
       if (!fast || charged.length < selectedChargedMoveLimit(pokemon)) throw new Error("TEAM_ANALYSIS_MOVESET_INVALID");
@@ -19116,7 +19118,9 @@
     function storeTeamBuilderAnalysisResult(job, result) {
       const normalized = window.PvPeakTeamBuilderAnalysis.normalizeResult(job, result);
       teamBuilderAnalysisCache.set(job.key, normalized);
-      if (teamBuilderAnalysisDone % 12 === 0) teamBuilderAnalysisCache.persist();
+      if (job.finalSlotCandidateId) teamBuilderFinalSlotResults.set(job.key, normalized);
+      if (job.replacementCandidateId || job.replacementBaseline) teamBuilderReplacementResults.set(job.key, normalized);
+      if (teamBuilderAnalysisDone % ((job.finalSlotCandidateId || job.replacementCandidateId) ? 200 : 12) === 0) teamBuilderAnalysisCache.persist();
     }
 
     function finishTeamBuilderAnalysis() {
@@ -19157,8 +19161,8 @@
       if (renderProgress) {
         if (cancelledContext === "opponent") renderTeamBuilderAnalysisProgress();
         else if (cancelledFinalSlotPending) renderTeamBuilderFinalSlotProgress();
-        else if (cancelledContext === "replacement") renderTeamBuilderReplacementProgress();
-        else if (cancelledContext === "final-slot") renderTeamBuilderFinalSlotProgress();
+        else if (cancelledContext === "replacement") { renderTeamBuilderReplacementProgress(); renderTeamBuilderReplacementRanking(); }
+        else if (cancelledContext === "final-slot") { renderTeamBuilderFinalSlotProgress(); renderTeamBuilderFinalSlotRanking(); }
         else if (cancelledContext === "comparison") renderTeamBuilderComparisonProgress();
         else {
           renderTeamBuilderAnalysisProgress();
@@ -19168,9 +19172,11 @@
     }
 
     function renderTeamBuilderActiveAnalysisProgress() {
+      // Broad searches use the worker; avoid rescanning thousands of results on every cell.
+      if (["final-slot", "replacement"].includes(teamBuilderAnalysisContext) && teamBuilderAnalysisDone % 50 !== 0) return;
       if (teamBuilderAnalysisContext === "opponent") teamOpponentUIController?.renderResults();
-      else if (teamBuilderAnalysisContext === "replacement") renderTeamBuilderReplacementProgress();
-      else if (teamBuilderAnalysisContext === "final-slot") renderTeamBuilderFinalSlotProgress();
+      else if (teamBuilderAnalysisContext === "replacement") { renderTeamBuilderReplacementProgress(); if (teamBuilderAnalysisDone % 200 === 0) renderTeamBuilderReplacementRanking(); }
+      else if (teamBuilderAnalysisContext === "final-slot") { renderTeamBuilderFinalSlotProgress(); if (teamBuilderAnalysisDone % 200 === 0) renderTeamBuilderFinalSlotRanking(); }
       else if (teamBuilderAnalysisContext === "comparison") renderTeamBuilderComparisonProgress();
       else renderTeamBuilderAnalysisProgress();
     }
@@ -19505,6 +19511,7 @@
 
     function resetTeamBuilderFinalSlotEvaluation() {
       teamBuilderFinalSlotPlan = [];
+      teamBuilderFinalSlotResults.clear();
       teamBuilderFinalSlotSourceSignature = "";
       teamBuilderFinalSlotTargetGroups = [];
       teamBuilderFinalSlotCandidates.clear();
@@ -19567,6 +19574,7 @@
         }).forEach(job => jobs.push(Object.freeze({ ...job, finalSlotCandidateId: candidateId })));
       });
       teamBuilderFinalSlotPlan = jobs;
+      teamBuilderFinalSlotResults = window.PvPeakTeamBuilderAnalysis.createSearchResults(jobs, teamBuilderAnalysisCache, teamBuilderFinalSlotResults);
       teamBuilderFinalSlotSourceSignature = `${teamBuilderFinalSlotContextSignature()}|${opponentIds.join(",")}`;
     }
 
@@ -19588,7 +19596,7 @@
       $("teamBuilderFinalSlotResults").classList.remove("is-visible");
       teamBuilderAnalysisContext = "final-slot";
       teamBuilderAnalysisRunToken++;
-      teamBuilderAnalysisQueue = teamBuilderFinalSlotPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
+      teamBuilderAnalysisQueue = teamBuilderFinalSlotPlan.filter(job => !teamBuilderFinalSlotResults.has(job.key));
       teamBuilderAnalysisCacheHits = teamBuilderFinalSlotPlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
       teamBuilderAnalysisFailed = 0;
@@ -19603,7 +19611,7 @@
       const wrap = $("teamBuilderFinalSlotProgressWrap");
       if (!wrap) return;
       const total = teamBuilderFinalSlotPlan.length;
-      const cached = total ? teamBuilderFinalSlotPlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache.has(job.key)), 0) : 0;
+      const cached = total ? teamBuilderFinalSlotResults.size : 0;
       const active = teamBuilderAnalysisActive && teamBuilderAnalysisContext === "final-slot";
       const done = active ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
@@ -19628,7 +19636,7 @@
       const candidates = {};
       teamBuilderFinalSlotPlan.forEach(job => {
         if (!candidates[job.finalSlotCandidateId]) candidates[job.finalSlotCandidateId] = {};
-        candidates[job.finalSlotCandidateId][job.opponentId] = teamBuilderAnalysisCache.get(job.key);
+        candidates[job.finalSlotCandidateId][job.opponentId] = teamBuilderFinalSlotResults.get(job.key);
       });
       return window.PvPeakTeamBuilderAnalysis.rankTeamCandidates({
         mode: "append",
@@ -19644,7 +19652,7 @@
       results.classList.toggle("is-visible", ranking.length > 0);
       if (!ranking.length) return;
       const visible = teamBuilderFinalSlotShowAll ? ranking : ranking.slice(0, 5);
-      $("teamBuilderFinalSlotResultsCopy").textContent = `${ranking.length} complete candidates compared across ${teamBuilderFinalSlotTargetGroups.length} priority threats. No team member has been changed.`;
+      $("teamBuilderFinalSlotResultsCopy").textContent = `${teamBuilderAnalysisActive ? "Search in progress · " : ""}${ranking.length} complete candidates compared across ${teamBuilderFinalSlotTargetGroups.length} priority threats. No team member has been changed.`;
       const list = $("teamBuilderFinalSlotRanking");
       list.innerHTML = visible.map((item, index) => {
         const member = teamBuilderFinalSlotCandidates.get(item.candidateId);
@@ -19653,7 +19661,7 @@
         const eliteMoves = new Set(pokemon?.eliteMoves || []);
         const moves = [teamBuilderMoveLine(member?.fastMoveId, "Fast Move unavailable", eliteMoves), ...(member?.chargedMoveIds || []).map(id => teamBuilderMoveLine(id, "Charged Move unavailable", eliteMoves))].join("");
         const score = `${item.optimizationScore >= 0 ? "+" : ""}${item.optimizationScore}`;
-        return `<article class="team-final-slot-result"><span class="team-final-slot-rank">${index + 1}</span><img data-team-final-slot-sprite="${index}" alt=""><div class="team-final-slot-copy"><strong>${escapeHtml(pokemon?.name || item.candidateId)}</strong><div class="team-final-slot-types">${types}</div><div class="team-final-slot-metrics"><span>0-answer <b>${item.zeroAnswerBefore}&rarr;${item.zeroAnswerAfter}</b></span><span>1-answer <b>${item.oneAnswerBefore}&rarr;${item.oneAnswerAfter}</b></span></div><div class="team-final-slot-moves">${moves}</div></div><div class="team-final-slot-action"><span class="team-final-slot-score">${score}<small>improvement points</small></span><button type="button" data-team-add-final-slot="${escapeHtml(item.candidateId)}">Add to team</button></div></article>`;
+        return `<article class="team-final-slot-result"><span class="team-final-slot-rank">${index + 1}</span><img data-team-final-slot-sprite="${index}" alt=""><div class="team-final-slot-copy"><strong>${escapeHtml(pokemon?.name || item.candidateId)}</strong><div class="team-final-slot-types">${types}</div><div class="team-final-slot-metrics"><span>0-answer <b>${item.zeroAnswerBefore}&rarr;${item.zeroAnswerAfter}</b></span><span>1-answer <b>${item.oneAnswerBefore}&rarr;${item.oneAnswerAfter}</b></span></div><div class="team-final-slot-moves">${moves}</div></div><div class="team-final-slot-action"><span class="team-final-slot-score">${score}<small>improvement points</small></span><button type="button" ${teamBuilderAnalysisActive ? "disabled" : ""} data-team-add-final-slot="${escapeHtml(item.candidateId)}">Add to team</button></div></article>`;
       }).join("");
       visible.forEach((item, index) => {
         const pokemon = findPokemon(item.candidateId);
@@ -19672,7 +19680,7 @@
       if (!member || slot < 0 || teamBuilderAnalysisActive) return;
       try {
         cancelTeamBuilderAnalysis(false);
-        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, slot, member);
+        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, slot, { ...member, build: teamBuilderResolvedBuild(findPokemon(candidateId), "default") });
       } catch (_) { return; }
       persistTeamBuilderState();
       resetTeamBuilderFinalSlotEvaluation();
@@ -19682,6 +19690,7 @@
 
     function resetTeamBuilderReplacementEvaluation() {
       teamBuilderReplacementPlan = [];
+      teamBuilderReplacementResults.clear();
       teamBuilderReplacementSourceSignature = "";
       teamBuilderReplacementCandidates.clear();
       $("teamBuilderReplacementResults")?.classList.remove("is-visible");
@@ -19819,11 +19828,10 @@
 
     function teamBuilderEligibleOptimizationMembers() {
       const currentKeys = new Set(teamBuilderState.team.filter(Boolean).map(member => window.PvPeakTeamBuilder.speciesKey(member)));
-      return (teamBuilderMetaDefinition?.pokemonIds || []).map(candidateId => {
-        const pokemon = findPokemon(candidateId);
-        const member = pokemon && teamBuilderDefaultMember(pokemon);
-        return { candidateId, member };
-      }).filter(item => item.member && item.member.chargedMoveIds.length >= 2 && !currentKeys.has(window.PvPeakTeamBuilder.speciesKey(item.member)));
+      return allPokemon.filter(window.PvPeakTeamBuilderAnalysis.eligibleOptimizationPokemon).filter(pokemon =>
+        !currentKeys.has(window.PvPeakTeamBuilder.speciesKey(pokemon))
+      ).map(pokemon => ({ candidateId: pokemon.id, member: teamBuilderDefaultMember(pokemon, { includeRank: false }) }))
+        .filter(({ member }) => member && member.chargedMoveIds.length >= selectedChargedMoveLimit(findPokemon(member.pokemonId)) && Number.isFinite(member.build.cp) && member.build.cp <= 1500);
     }
 
     function teamBuilderEligibleReplacementMembers() {
@@ -19861,6 +19869,7 @@
         candidateJobs.forEach(job => jobs.push(Object.freeze({ ...job, replacementCandidateId: candidateId })));
       });
       teamBuilderReplacementPlan = jobs;
+      teamBuilderReplacementResults = window.PvPeakTeamBuilderAnalysis.createSearchResults(jobs, teamBuilderAnalysisCache, teamBuilderReplacementResults);
       teamBuilderReplacementSourceSignature = `${teamBuilderReplacementSlot}|${window.PvPeakTeamBuilderAnalysis.memberSignature(teamBuilderState.team[teamBuilderReplacementSlot])}|${teamBuilderReplacementTargets.join(",")}|${teamBuilderState.analysisConfig.shields}|${teamBuilderState.analysisConfig.meta}`;
     }
 
@@ -19871,7 +19880,7 @@
       $("teamBuilderReplacementResults").classList.remove("is-visible");
       teamBuilderAnalysisContext = "replacement";
       teamBuilderAnalysisRunToken++;
-      teamBuilderAnalysisQueue = teamBuilderReplacementPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
+      teamBuilderAnalysisQueue = teamBuilderReplacementPlan.filter(job => !teamBuilderReplacementResults.has(job.key));
       teamBuilderAnalysisCacheHits = teamBuilderReplacementPlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
       teamBuilderAnalysisFailed = 0;
@@ -19884,7 +19893,7 @@
 
     function renderTeamBuilderReplacementProgress() {
       const total = teamBuilderReplacementPlan.length;
-      const cached = total ? teamBuilderReplacementPlan.reduce((count, job) => count + Number(teamBuilderAnalysisCache.has(job.key)), 0) : 0;
+      const cached = total ? teamBuilderReplacementResults.size : 0;
       const replacementActive = teamBuilderAnalysisActive && teamBuilderAnalysisContext === "replacement";
       const done = replacementActive ? Math.min(total, teamBuilderAnalysisDone) : cached;
       const progress = total ? Math.round(done / total * 100) : 0;
@@ -19893,7 +19902,7 @@
       if (!teamBuilderReplacementTargets.length) status.textContent = "Select at least one current threat.";
       else if (replacementActive) status.textContent = `Simulating ${candidateCount} candidates against ${teamBuilderReplacementTargets.length} selected threats${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
       else if (total && cached === total) status.textContent = `${candidateCount} candidates are ready for comparison.`;
-      else status.textContent = `${candidateCount} eligible meta candidates · ${teamBuilderReplacementTargets.length} selected threats.`;
+      else status.textContent = `${candidateCount} eligible candidates · ${teamBuilderReplacementTargets.length} selected threats.`;
       $("teamBuilderReplacementCount").textContent = `${done} / ${total}`;
       const bar = $("teamBuilderReplacementProgress");
       bar.style.setProperty("--analysis-progress", `${progress}%`);
@@ -19910,27 +19919,27 @@
       if (!teamBuilderReplacementPlan.length || teamBuilderReplacementSourceSignature !== expectedSignature) return;
       const baselineByOpponent = {};
       teamBuilderReplacementPlan.filter(job => job.replacementBaseline).forEach(job => {
-        baselineByOpponent[job.opponentId] = teamBuilderAnalysisCache.get(job.key);
+        baselineByOpponent[job.opponentId] = teamBuilderReplacementResults.get(job.key);
       });
       if (teamBuilderReplacementTargets.some(id => !baselineByOpponent[id])) return;
       const candidates = {};
       teamBuilderReplacementPlan.forEach(job => {
         if (job.replacementBaseline) return;
         if (!candidates[job.replacementCandidateId]) candidates[job.replacementCandidateId] = {};
-        candidates[job.replacementCandidateId][job.opponentId] = teamBuilderAnalysisCache.get(job.key);
+        candidates[job.replacementCandidateId][job.opponentId] = teamBuilderReplacementResults.get(job.key);
       });
       const ranking = window.PvPeakTeamBuilderAnalysis.rankReplacementCandidates({ baselineByOpponent, candidates });
       const results = $("teamBuilderReplacementResults");
       results.classList.toggle("is-visible", ranking.length > 0);
       if (!ranking.length) return;
       const original = findPokemon(teamBuilderState.team[teamBuilderReplacementSlot].pokemonId);
-      $("teamBuilderReplacementResultsCopy").textContent = `${ranking.length} complete candidates compared with ${original?.name || "the selected member"} across ${teamBuilderReplacementTargets.length} targeted threats.`;
+      $("teamBuilderReplacementResultsCopy").textContent = `${teamBuilderAnalysisActive ? "Search in progress · " : ""}${ranking.length} complete candidates compared with ${original?.name || "the selected member"} across ${teamBuilderReplacementTargets.length} targeted threats.`;
       const list = $("teamBuilderReplacementRanking");
       list.innerHTML = ranking.slice(0, 10).map((item, index) => {
         const member = teamBuilderReplacementCandidates.get(item.candidateId);
         const pokemon = findPokemon(item.candidateId);
         const delta = `${item.averageDelta >= 0 ? "+" : ""}${item.averageDelta}`;
-        return `<article class="team-replacement-result"><img data-team-replacement-result-sprite="${index}" alt=""><div class="team-replacement-result-copy"><strong>${index + 1}. ${escapeHtml(pokemon?.name || item.candidateId)}</strong><span><b>${item.hardLossesFixed} hard losses fixed</b> · ${item.favorableGained} answers gained · ${item.newHardLosses} new hard losses</span><span>${escapeHtml(moveMap.get(member?.fastMoveId)?.name || "—")} · ${(member?.chargedMoveIds || []).map(id => escapeHtml(moveMap.get(id)?.name || id)).join(" / ")}</span></div><div class="team-replacement-result-action"><strong>${delta} avg</strong><button type="button" data-team-apply-replacement="${escapeHtml(item.candidateId)}">Use in slot ${teamBuilderReplacementSlot + 1}</button></div></article>`;
+        return `<article class="team-replacement-result"><img data-team-replacement-result-sprite="${index}" alt=""><div class="team-replacement-result-copy"><strong>${index + 1}. ${escapeHtml(pokemon?.name || item.candidateId)}</strong><span><b>${item.hardLossesFixed} hard losses fixed</b> · ${item.favorableGained} answers gained · ${item.newHardLosses} new hard losses</span><span>${escapeHtml(moveMap.get(member?.fastMoveId)?.name || "—")} · ${(member?.chargedMoveIds || []).map(id => escapeHtml(moveMap.get(id)?.name || id)).join(" / ")}</span></div><div class="team-replacement-result-action"><strong>${delta} avg</strong><button type="button" ${teamBuilderAnalysisActive ? "disabled" : ""} data-team-apply-replacement="${escapeHtml(item.candidateId)}">Use in slot ${teamBuilderReplacementSlot + 1}</button></div></article>`;
       }).join("");
       ranking.slice(0, 10).forEach((item, index) => {
         const pokemon = findPokemon(item.candidateId);
@@ -19947,7 +19956,7 @@
       if (!member || teamBuilderAnalysisActive) return;
       if (!teamBuilderComparisonBaseline) captureTeamBuilderComparisonBaseline(false);
       try {
-        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderReplacementSlot, member);
+        teamBuilderState = window.PvPeakTeamBuilder.setMember(teamBuilderState, teamBuilderReplacementSlot, { ...member, build: teamBuilderResolvedBuild(findPokemon(candidateId), "default") });
       } catch (_) { return; }
       persistTeamBuilderState();
       teamBuilderReplacementTargets = [];
@@ -23431,7 +23440,7 @@
       return statsForIvSpread(p, ivAtk, ivDef, ivHp);
     }
 
-    function statsForIvSpread(p, ivAtk, ivDef, ivHp) {
+    function statsForIvSpread(p, ivAtk, ivDef, ivHp, options = {}) {
       let best = null;
       for (const [level, cpm] of cpMultipliers) {
         const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
@@ -23439,6 +23448,7 @@
         else break;
       }
       if (!best) best = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
+      if (options.includeRank === false) return { ...best, rank: null, rankPercent: null, statProduct: best.attack * best.defense * best.hp };
       const rank = ivRank(p, ivAtk, ivDef, ivHp);
       best.rank = rank.rank;
       best.rankPercent = rank.percent;
@@ -38124,7 +38134,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261007-v171").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261008-v172").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

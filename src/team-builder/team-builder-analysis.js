@@ -8,6 +8,24 @@
   const SCHEMA_VERSION = 1;
   const STORAGE_KEY = "pvpeak-team-builder-analysis-v1";
   const MAX_CACHE_ENTRIES = 12000;
+
+  // Search results outlive eviction from the bounded persistent cache.
+  function createSearchResults(plan, cache, previous = new Map()) {
+    const results = new Map();
+    for (const job of plan) {
+      const result = previous.get(job.key) || cache.get(job.key);
+      if (result) results.set(job.key, result);
+    }
+    return results;
+  }
+
+  function eligibleOptimizationPokemon(pokemon) {
+    if (!pokemon || pokemon.released === false || !pokemon.fast?.length || !(pokemon.charged?.length >= 2)) return false;
+    const form = pokemon.form || {};
+    if (form.isMega || form.isPrimal || ["mega", "primal"].includes(form.kind)) return false;
+    // Same below-CP-cap availability exclusions as the Great League dataset.
+    return !["giratina_altered", "mewtwo_armored"].includes(pokemon.id);
+  }
   const OPTIMIZATION_WEIGHTS = Object.freeze({
     zeroToOne: 120,
     oneToTwo: 70,
@@ -507,6 +525,8 @@
     SCHEMA_VERSION,
     STORAGE_KEY,
     MAX_CACHE_ENTRIES,
+    createSearchResults,
+    eligibleOptimizationPokemon,
     OPTIMIZATION_WEIGHTS,
     memberSignature,
     jobKey,
