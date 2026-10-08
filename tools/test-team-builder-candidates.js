@@ -68,7 +68,7 @@ const actualRanking = Analysis.rankTeamCandidates({ mode: "append", baselineGrou
 assert.equal(actualRanking[0].zeroToOne, 1);
 console.log("Live Battle worker outside-meta coverage test passed (Raichu vs Corviknight: " + result.score + ").");
 const calls = [];
-const cancellation = { teamBuilderAnalysisContext: "final-slot", teamBuilderFinalSlotPendingStart: false, teamBuilderAnalysisRunToken: 4, teamBuilderAnalysisActive: true, teamBuilderAnalysisQueue: [{ key: "pending" }], teamBuilderAnalysisPending: new Map(), teamBuilderAnalysisCache: { persist() {} }, clearTimeout() {}, teamOpponentUIController: { renderResults() {} }, renderTeamBuilderFinalSlotProgress() { calls.push("progress"); }, renderTeamBuilderFinalSlotRanking() { calls.push("ranking"); } };
+const cancellation = { sharedMatchupCache: { flush() {} }, teamBuilderReuseKeys: new Map(), teamBuilderAnalysisContext: "final-slot", teamBuilderFinalSlotPendingStart: false, teamBuilderAnalysisRunToken: 4, teamBuilderAnalysisActive: true, teamBuilderAnalysisQueue: [{ key: "pending" }], teamBuilderAnalysisPending: new Map(), teamBuilderAnalysisCache: { persist() {} }, clearTimeout() {}, teamOpponentUIController: { renderResults() {} }, renderTeamBuilderFinalSlotProgress() { calls.push("progress"); }, renderTeamBuilderFinalSlotRanking() { calls.push("ranking"); } };
 vm.createContext(cancellation);
 const cancelStart = html.indexOf("    function cancelTeamBuilderAnalysis(");
 vm.runInContext(html.slice(cancelStart, html.indexOf("\n    function ", cancelStart + 1)), cancellation);

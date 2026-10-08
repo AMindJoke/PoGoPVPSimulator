@@ -47,6 +47,7 @@
   <script src="src/battle/pokemon-form.js"></script>
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
+  <script src="src/analysis/shared-matchup-cache.js?v=20261008-v173"></script>
   <script src="src/team-builder/team-builder-analysis.js?v=20261008-v172"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
@@ -15828,6 +15829,11 @@
     const hpSwingAnalysisPending = new Set();
     const shieldMatrixCacheLimit = 900;
     const shieldMatrixCacheVersion = `matrix-v17:${matchupResultVersion}`;
+    const sharedMatchupCache = window.PvPeakSharedMatchupCache.createStore(window.indexedDB);
+    const sharedMatrixRequestKeys = new Map();
+    const teamBuilderReuseKeys = new Map();
+    const teamBuilderDurableKeys = new Set();
+    let teamBuilderForceRefresh = false;
     let matrixCacheWorker = null;
     let matrixCacheWorkerSeq = 0;
     let matrixComputeWorker = null;
@@ -18862,6 +18868,7 @@
       if (!teamBuilderState.team.filter(Boolean).length || !coveragePlan.length || teamBuilderAnalysisActive) return;
       teamBuilderAnalysisContext = "coverage";
       teamBuilderAnalysisRunToken++;
+      persistTeamBuilderCachedPlan(coveragePlan);
       teamBuilderAnalysisQueue = coveragePlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
       teamBuilderAnalysisCacheHits = coveragePlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
@@ -18871,8 +18878,69 @@
       if (teamBuilderAnalysisActive) processTeamBuilderAnalysisQueue(teamBuilderAnalysisRunToken);
     }
 
-    function processTeamBuilderAnalysisQueue(token) {
+    function persistTeamBuilderCachedPlan(plan) {
+      // Migrate compatible localStorage hits too, before a broad search evicts them.
+      for (const job of plan) {
+        const result = teamBuilderFinalSlotResults.get(job.key) || teamBuilderReplacementResults.get(job.key) || teamBuilderAnalysisCache.get(job.key);
+        if (result && !teamBuilderDurableKeys.has(job.key)) {
+          sharedMatchupCache.set("team-builder-results-v1|" + job.key, result);
+          teamBuilderDurableKeys.add(job.key);
+        }
+      }
+    }
+
+    function sharedMatchupKey(config, a, b) {
+      return window.PvPeakSharedMatchupCache.key(matchupResultVersion, config, a, b, matrixCombatantSignature);
+    }
+
+    function teamBuilderReuseRecord(job) {
+      const config = createTeamBuilderBattleConfig(job);
+      const [a, b] = job.shields.split("-").map(Number);
+      const signature = window.PvPeakSharedMatchupCache.legacyBattleSignature(config);
+      return { job, shared: sharedMatchupKey(config, a, b), durable: "team-builder-results-v1|" + job.key,
+        battle: signature ? shieldMatrixCacheKey(signature, a, b) : null,
+        meta: config ? metaMatchupCacheVersion + "|" + matrixCombatantSignature(config.left) + ">" + matrixCombatantSignature(config.right) + "|" + a + "-" + b : null };
+    }
+
+    async function hydrateTeamBuilderSearchBatch(token) {
+      const batch = teamBuilderAnalysisQueue.slice(0, 128).map(job => teamBuilderReuseRecord(job));
+      const values = await sharedMatchupCache.getMany(batch.flatMap(item => [item.durable, item.shared, item.battle, item.meta]).filter(Boolean));
       if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      teamBuilderReuseKeys.clear();
+      const pending = [];
+      for (const item of batch) {
+        const saved = values.get(item.durable);
+        const raw = values.get(item.shared) || shieldMatrixCache.get(item.battle) || metaMatchupCache.get(item.meta) || values.get(item.battle) || values.get(item.meta);
+        if (saved && Number.isFinite(saved.score)) {
+          teamBuilderDurableKeys.add(item.job.key);
+          acceptTeamBuilderCachedResult(item.job, { ...saved, key: item.job.key, slot: item.job.slot });
+        } else if (raw && Number.isFinite(raw.score)) {
+          teamBuilderReuseKeys.set(item.job.key, item);
+          storeTeamBuilderAnalysisResult(item.job, raw);
+        } else {
+          teamBuilderReuseKeys.set(item.job.key, item);
+          pending.push(item.job);
+          continue;
+        }
+        teamBuilderAnalysisCacheHits++;
+        teamBuilderAnalysisDone++;
+      }
+      teamBuilderAnalysisQueue.splice(0, batch.length, ...pending);
+      renderTeamBuilderActiveAnalysisProgress(true);
+    }
+
+    function acceptTeamBuilderCachedResult(job, normalized) {
+      teamBuilderAnalysisCache.set(job.key, normalized);
+      if (job.finalSlotCandidateId) teamBuilderFinalSlotResults.set(job.key, normalized);
+      if (job.replacementCandidateId || job.replacementBaseline) teamBuilderReplacementResults.set(job.key, normalized);
+    }
+
+    async function processTeamBuilderAnalysisQueue(token) {
+      if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      while (teamBuilderAnalysisQueue.length && !teamBuilderReuseKeys.has(teamBuilderAnalysisQueue[0].key) && !(teamBuilderAnalysisContext === "opponent" && teamBuilderForceRefresh)) {
+        await hydrateTeamBuilderSearchBatch(token);
+        if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      }
       const job = teamBuilderAnalysisQueue.shift();
       if (!job) {
         finishTeamBuilderAnalysis();
@@ -19117,14 +19185,18 @@
 
     function storeTeamBuilderAnalysisResult(job, result) {
       const normalized = window.PvPeakTeamBuilderAnalysis.normalizeResult(job, result);
-      teamBuilderAnalysisCache.set(job.key, normalized);
-      if (job.finalSlotCandidateId) teamBuilderFinalSlotResults.set(job.key, normalized);
-      if (job.replacementCandidateId || job.replacementBaseline) teamBuilderReplacementResults.set(job.key, normalized);
+      acceptTeamBuilderCachedResult(job, normalized);
+      const reuse = teamBuilderReuseKeys.get(job.key) || teamBuilderReuseRecord(job);
+      sharedMatchupCache.set(reuse.durable, normalized);
+      teamBuilderDurableKeys.add(job.key);
+      sharedMatchupCache.set(reuse.shared, result);
+      teamBuilderReuseKeys.delete(job.key);
       if (teamBuilderAnalysisDone % ((job.finalSlotCandidateId || job.replacementCandidateId) ? 200 : 12) === 0) teamBuilderAnalysisCache.persist();
     }
 
     function finishTeamBuilderAnalysis() {
       const completedContext = teamBuilderAnalysisContext;
+      void sharedMatchupCache.flush();
       teamBuilderAnalysisActive = false;
       teamBuilderAnalysisCache.persist();
       renderTeamBuilderAnalysisProgress();
@@ -19149,6 +19221,8 @@
 
     function cancelTeamBuilderAnalysis(renderProgress = true) {
       const cancelledContext = teamBuilderAnalysisContext;
+      void sharedMatchupCache.flush();
+      teamBuilderReuseKeys.clear();
       const cancelledFinalSlotPending = teamBuilderFinalSlotPendingStart;
       teamBuilderAnalysisRunToken++;
       teamBuilderAnalysisActive = false;
@@ -19171,9 +19245,9 @@
       }
     }
 
-    function renderTeamBuilderActiveAnalysisProgress() {
+    function renderTeamBuilderActiveAnalysisProgress(force = false) {
       // Broad searches use the worker; avoid rescanning thousands of results on every cell.
-      if (["final-slot", "replacement"].includes(teamBuilderAnalysisContext) && teamBuilderAnalysisDone % 50 !== 0) return;
+      if (!force && ["final-slot", "replacement"].includes(teamBuilderAnalysisContext) && teamBuilderAnalysisDone % 50 !== 0) return;
       if (teamBuilderAnalysisContext === "opponent") teamOpponentUIController?.renderResults();
       else if (teamBuilderAnalysisContext === "replacement") { renderTeamBuilderReplacementProgress(); if (teamBuilderAnalysisDone % 200 === 0) renderTeamBuilderReplacementRanking(); }
       else if (teamBuilderAnalysisContext === "final-slot") { renderTeamBuilderFinalSlotProgress(); if (teamBuilderAnalysisDone % 200 === 0) renderTeamBuilderFinalSlotRanking(); }
@@ -19596,6 +19670,7 @@
       $("teamBuilderFinalSlotResults").classList.remove("is-visible");
       teamBuilderAnalysisContext = "final-slot";
       teamBuilderAnalysisRunToken++;
+      persistTeamBuilderCachedPlan(teamBuilderFinalSlotPlan);
       teamBuilderAnalysisQueue = teamBuilderFinalSlotPlan.filter(job => !teamBuilderFinalSlotResults.has(job.key));
       teamBuilderAnalysisCacheHits = teamBuilderFinalSlotPlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
@@ -19880,6 +19955,7 @@
       $("teamBuilderReplacementResults").classList.remove("is-visible");
       teamBuilderAnalysisContext = "replacement";
       teamBuilderAnalysisRunToken++;
+      persistTeamBuilderCachedPlan(teamBuilderReplacementPlan);
       teamBuilderAnalysisQueue = teamBuilderReplacementPlan.filter(job => !teamBuilderReplacementResults.has(job.key));
       teamBuilderAnalysisCacheHits = teamBuilderReplacementPlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
@@ -20049,6 +20125,7 @@
       if (!teamBuilderComparisonPlan.length) return;
       teamBuilderAnalysisContext = "comparison";
       teamBuilderAnalysisRunToken++;
+      persistTeamBuilderCachedPlan(teamBuilderComparisonPlan);
       teamBuilderAnalysisQueue = teamBuilderComparisonPlan.filter(job => !teamBuilderAnalysisCache.has(job.key));
       teamBuilderAnalysisCacheHits = teamBuilderComparisonPlan.length - teamBuilderAnalysisQueue.length;
       teamBuilderAnalysisDone = teamBuilderAnalysisCacheHits;
@@ -20450,7 +20527,8 @@
     function startTeamOpponentAnalysis() {
       cancelTeamBuilderAnalysis(false); refreshTeamOpponentPlan();
       if (!teamBuilderOpponentPlan.length) return;
-      if (teamBuilderOpponentPlan.every(job => teamBuilderAnalysisCache.has(job.key))) {
+      teamBuilderForceRefresh = teamBuilderOpponentPlan.every(job => teamBuilderAnalysisCache.has(job.key));
+      if (teamBuilderForceRefresh) {
         teamBuilderOpponentPlan.forEach(job => teamBuilderAnalysisCache.delete(job.key));
         teamBuilderAnalysisCache.persist();
       }
@@ -22423,14 +22501,15 @@
       if (metaBuildActive) processMetaBuildQueue();
     }
 
-    function processMetaBuildQueue() {
+    async function processMetaBuildQueue() {
       if (!metaBuildActive) return;
       if (!metaBuildQueue.length) {
         metaBuildActive = false;
         renderMetaRankings();
         return;
       }
-      const job = metaBuildQueue.shift();
+      const queue = metaBuildQueue;
+      const job = queue.shift();
       if (!job) {
         setTimeout(processMetaBuildQueue, 0);
         return;
@@ -22440,8 +22519,20 @@
         setTimeout(processMetaBuildQueue, 0);
         return;
       }
+      const config = createMetaBattleConfig(job.a, job.b);
+      const sharedKey = sharedMatchupKey(config, job.aShields, job.bShields);
+      const values = await sharedMatchupCache.getMany([sharedKey, job.key]);
+      const reused = values.get(sharedKey) || values.get(job.key);
+      if (!metaBuildActive || metaBuildQueue !== queue) return;
+      if (reused) {
+        storeMetaMatchupResult(job.key, reused);
+        metaBuildDone++;
+        setTimeout(processMetaBuildQueue, 0);
+        return;
+      }
       if (!requestMetaMatchupCompute(job)) {
         const result = simulateMetaMatchupCell(job.a, job.b, job.aShields, job.bShields);
+        sharedMatchupCache.set(sharedKey, result);
         storeMetaMatchupResult(job.key, result);
         metaBuildDone++;
         setTimeout(processMetaBuildQueue, 0);
@@ -22454,6 +22545,7 @@
       try {
         const requestId = ++matrixComputeWorkerSeq;
         registerWorkerPerfRequest(requestId, "meta", "meta");
+        sharedMatrixRequestKeys.set(job.key, sharedMatchupKey(createMetaBattleConfig(job.a, job.b), job.aShields, job.bShields));
         matrixComputeWorker.postMessage({
           id: requestId,
           source: "meta",
@@ -35405,6 +35497,7 @@
         const result = simulateShieldMatrixCell(aShields, bShields, { includeSwing: false });
         result.swingReady = false;
         result.analysisSource = "Live Simulation";
+        sharedMatchupCache.set(sharedMatchupKey(createMatrixBattleConfig(), aShields, bShields), result);
         shieldMatrixCache.set(key, result);
         persistShieldMatrixCells([[key, result]]);
         trimShieldMatrixCache();
@@ -35419,6 +35512,7 @@
       const enriched = simulateShieldMatrixCell(aShields, bShields, { includeSwing: true });
       enriched.swingReady = true;
       enriched.analysisSource = existing.analysisSource || "Live Simulation";
+      sharedMatchupCache.set(sharedMatchupKey(createMatrixBattleConfig(), aShields, bShields), enriched);
       shieldMatrixCache.set(key, enriched);
       persistShieldMatrixCells([[key, enriched]]);
       trimShieldMatrixCache();
@@ -35509,6 +35603,7 @@
       if (shieldMatrixComputing.has(key)) return true;
       const config = createMatrixBattleConfig();
       if (!config) return false;
+      sharedMatrixRequestKeys.set(key, sharedMatchupKey(config, aShields, bShields));
       shieldMatrixComputing.add(key);
       try {
         const requestId = ++matrixComputeWorkerSeq;
@@ -35556,30 +35651,15 @@
     }
 
     function hydrateShieldMatrixCache(signature) {
-      if (!matrixCacheWorker || shieldMatrixHydrated.has(signature) || shieldMatrixHydrating.has(signature)) return false;
+      if (shieldMatrixHydrated.has(signature) || shieldMatrixHydrating.has(signature)) return false;
+      const config = createMatrixBattleConfig();
+      if (!config) return false;
       shieldMatrixHydrating.add(signature);
-      try {
-        matrixCacheWorker.postMessage({
-          id: ++matrixCacheWorkerSeq,
-          type: "getMany",
-          signature,
-          keys: shieldMatrixKeys(signature)
-        });
-        const timeout = setTimeout(() => {
-          shieldMatrixHydrating.delete(signature);
-          shieldMatrixHydrated.add(signature);
-          shieldMatrixHydrateTimeouts.delete(signature);
-          if (!shieldMatrixPendingTimer && document.body.classList.contains("battle-results-visible") && shieldMatrixSignature() === signature) {
-            shieldMatrixPendingSignature = "";
-            scheduleShieldMatrixCalculation(signature);
-          }
-        }, 900);
-        shieldMatrixHydrateTimeouts.set(signature, timeout);
-      } catch (_) {
-        matrixCacheWorker = null;
-        shieldMatrixHydrating.delete(signature);
-        return false;
-      }
+      const records = [];
+      for (let a = 0; a <= 2; a++) for (let b = 0; b <= 2; b++) records.push({ local: shieldMatrixCacheKey(signature, a, b), shared: sharedMatchupKey(config, a, b) });
+      void sharedMatchupCache.getMany(records.flatMap(item => [item.local, item.shared])).then(values => {
+        handleMatrixCacheWorkerMessage({ data: { type: "getManyResult", signature, entries: records.map(item => [item.local, values.get(item.local) || values.get(item.shared) || null]) } });
+      });
       return true;
     }
 
@@ -35644,6 +35724,9 @@
           delete message.result.decisionTrace;
         }
         message.result.analysisSource = message.result.analysisSource || "Live Simulation";
+        const sharedKey = sharedMatrixRequestKeys.get(message.key);
+        if (sharedKey) sharedMatchupCache.set(sharedKey, message.result);
+        sharedMatrixRequestKeys.delete(message.key);
         shieldMatrixCache.set(message.key, message.result);
         persistShieldMatrixCells([[message.key, message.result]]);
         trimShieldMatrixCache();
@@ -35674,6 +35757,9 @@
 
     function handleMetaComputeWorkerMessage(message) {
       if (message.type === "matrixCellResult" && message.key && message.result) {
+        const sharedKey = sharedMatrixRequestKeys.get(message.key);
+        if (sharedKey) sharedMatchupCache.set(sharedKey, message.result);
+        sharedMatrixRequestKeys.delete(message.key);
         storeMetaMatchupResult(message.key, message.result);
       } else if (message.type === "matrixCellError") {
         matrixComputeWorker = null;
@@ -38134,7 +38220,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261008-v172").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261008-v173").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

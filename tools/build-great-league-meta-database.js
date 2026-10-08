@@ -315,6 +315,7 @@ function extractLiveWorkerSource() {
     console,
     window: {
       PvPeakBattleReliability: battleReliability,
+      PvPeakSharedMatchupCache: require("../src/analysis/shared-matchup-cache.js"),
       PvPeakTurnEngine: turnEngine,
       createPvPeakTurnEngineApi: turnEngine.createApi,
       PvPeakMatchupPlanner: matchupPlanner,

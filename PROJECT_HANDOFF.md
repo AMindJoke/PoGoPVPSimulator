@@ -1,5 +1,11 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Cache condivisa Battle / Meta / Team Builder, 8 ottobre 2026
+
+- Nuovo shared-matchup-cache.js: firma comune con versione/stagione/score, firme fisiche dei combatant (mosse/IV/stat/HP/energia/policy), scudi, moltiplicatori Shadow e contesto (turni/farm). Non usa ranking snapshot vecchi: il dataset v45 non è intercambiabile con runtime v46. Supporta anche lettura delle celle live legacy con chiavi della versione corrente; reazione/farm/stati non freschi esclusi dal fallback legacy Battle.
+- Persistenza IndexedDB sullo store matrix-cache già esistente; una transazione per blocco, memoria limitata a 1.500 elementi. Team Builder conserva risultati compatti anche oltre le 12.000 celle localStorage, migra gli hit esistenti prima dell’evizione e consulta persistente/shared/Battle/Meta in blocchi di 128. Calcola solo miss; i risultati raw condivisi consentono riuso successivo in Battle e nella costruzione cache Meta. Letture cancellate non aggiornano un nuovo run; Recheck esplicito contro roster completo preserva il ricalcolo voluto. Scritture ogni 100 elementi o 300 ms, flush a fine/cancel. DB non disponibile/quota: fallback in memoria e calcolo dei miss; persistenza soggetta allo storage del browser.
+- Test nuovi: 12.550 risultati recuperati da nuova istanza con adapter IndexedDB asincrono, batch da 300 hit e zero simulazioni, riuso Team→Battle/Meta, chiavi sensibili a variazioni, slot riassegnato, cancellazione e fallback. Test candidates/analysis/UI/opponent/PWA/navigation parity/Meta Quick passati; inline compilata. test-cache-score-parity.js fallisce già sulla prima migrazione legacy (486 vs 480), codice e test identici a HEAD, prima di accedere al nuovo worker; nessuna modifica a scoring/migrazione. Browser CUA ancora non avviabile per sandbox: IndexedDB verificato via adapter, non via browser reale. Asset/cache v173. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
 ### BP: spazio e colori, 7 ottobre 2026
 
 - Sigla BP alta 20 px, spaziatura normale e riquadro quadrato 32 px; verde per breakpoint (danno inflitto), rosso per bulkpoint (danno subito), indipendentemente dal guadagno/perdita che mantiene il proprio colore sul valore. Varianti dark leggibili. Asset/cache v171. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
