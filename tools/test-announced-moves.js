@@ -11,10 +11,13 @@ assert.ok(!z.fast.includes('SUCKER_PUNCH'));
 assert.ok(Announced.fastIds(z).includes('SUCKER_PUNCH'));
 assert.ok(!Announced.fastIds(hisui).includes('SUCKER_PUNCH'));
 assert.equal(JSON.stringify(z.fast), original);
-assert.match(Announced.label(z,'SUCKER_PUNCH'), /Upcoming/);
+const before = new Date(2026,9,10,13,59,59);
+assert.match(Announced.label(z,'SUCKER_PUNCH',before), /Upcoming/);
+assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,10,14,0)), '');
+assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,11)), '');
 const html = fs.readFileSync('PogoPvp.html','utf8');
 function section(start,end) { return html.slice(html.indexOf('    function '+start+'('), html.indexOf('    function '+end+'(')); }
-const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: Announced }, moveMap:moves,
+const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: {...Announced,label:(p,id)=>Announced.label(p,id,before)} }, moveMap:moves,
   $: id => fields[id] ||= {}, colorMoveSelect:()=>{}, escapeHtml:s=>s,
   findPokemon:id=>pokemon.get(id), selectedChargedMoveLimit:()=>2,
   standardMovesetFor:()=>({fast:'SUCKER_PUNCH',charged:z.charged.slice(0,2)}),

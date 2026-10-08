@@ -1,5 +1,9 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Rimozione automatica Upcoming, 8 ottobre 2026
+
+- label valuta la data locale dell’utente: dal 10 ottobre alle 14:00 Sucker Punch non mostra Upcoming nei selettori generati/aperti nuovamente. Nessun nuovo deploy necessario per rimuovere la dicitura. Una pagina gia aperta richiede rigenerazione del selettore o reload; nessun timer permanente. Dati canonici/default/ranking richiedono ancora verifica della release e promozione separata. Test deterministici prima, al momento e dopo la soglia; asset/cache v179.
+
 ### Mosse annunciate e preview manuale, 8 ottobre 2026
 
 - Audit annunci ufficiali 17 settembre–8 ottobre (incluso CD futuro annunciato prima): Zoroark di Unima, non Hisui, riceve Sucker Punch il 10 ottobre. Nuovo announced-moves.js aggiunge la scelta Upcoming (10 Oct) solo nei selettori manuali Battle/Team Builder e nelle relative validazioni di build/link. Non muta il Game Master: default, pool curato Meta 43, candidati automatici e generazione ranking continuano a usare le mosse attuali. Nessuna promozione automatica per data: dopo uscita verificare disponibilita reale, promuovere nei dati canonici e rigenerare se necessario.

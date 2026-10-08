@@ -17,9 +17,13 @@
     const current = pokemon?.fast || pokemon?.fastMoves || [];
     return [...new Set([...current, ...forPokemon(pokemon).filter(u => u.kind === "fast").map(u => u.moveId)])];
   }
-  function label(pokemon, moveId) {
+  function label(pokemon, moveId, now = new Date()) {
     const update = forPokemon(pokemon).find(u => u.moveId === moveId && u.status === "upcoming");
-    return update ? " · Upcoming (" + update.labelDate + ")" : "";
+    if (!update) return "";
+    const [year, month, day] = update.eventDate.split("-").map(Number);
+    const [hour, minute] = update.eventStartLocal.split(":").map(Number);
+    const release = new Date(year, month - 1, day, hour, minute);
+    return now.getTime() < release.getTime() ? " · Upcoming (" + update.labelDate + ")" : "";
   }
   return Object.freeze({ updates, forPokemon, fastIds, label });
 });
