@@ -30,7 +30,7 @@ row=Opponent.rows(plan,cache)[0]; assert.equal(row.ready,true); assert.equal(row
 assert.equal(Opponent.createPlan({...input,team:Array(6).fill(null)}).length,0);
 const html=fs.readFileSync("PogoPvp.html","utf8");
 const start=html.indexOf("    function createTeamBuilderBattleConfig("),end=html.indexOf("    function createTeamBuilderCombatant(");
-const calls=[], context={findPokemon:id=>({id}),createTeamBuilderCombatant:(value,side)=>{calls.push([value,side]);return {...value};},createMetaCombatant:()=>{throw Error("Opponent builds must not use default meta moves");}};
+const calls=[], context={teamBuilderPreparedCombatants:new Map(),window:{PvPeakTeamBuilderAnalysis:Analysis},findPokemon:id=>({id}),createTeamBuilderCombatant:(value,side)=>{calls.push([value,side]);return {...value};},createMetaCombatant:()=>{throw Error("Opponent builds must not use default meta moves");}};
 vm.createContext(context); vm.runInContext(html.slice(start,end),context);
 context.createTeamBuilderBattleConfig(plan[0]); assert.equal(calls[1][0],opposing[0]); assert.equal(calls[1][1],"B");
 console.log("Opponent team planning, cache invalidation, partial results and canonical config passed.");

@@ -1,0 +1,10 @@
+{
+  "cells": 512,
+  "serialMs": 7465,
+  "parallelMs": 4314,
+  "speedup": 1.73,
+  "reductionPercent": 42.2,
+  "exactResultParity": true,
+  "environment": "Node native worker threads; cold startup included, no browser/UI/IndexedDB timing",
+  "date": "2026-10-08T08:43:54.572Z"
+}

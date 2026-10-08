@@ -1,5 +1,12 @@
 # PoGoPVPSimulator — Handoff operativo
 
+### Ricerca Team Builder parallela, 8 ottobre 2026
+
+- Nuovo simulation-worker-pool.js: worker isolati solo per final member/replacement, massimo 4 desktop / 2 touch, ulteriormente limitati da core e RAM dichiarati. Avvio solo sui miss dopo hydration. Blocchi di 4 richieste, handler Battle invariato; progress e ranking esistenti, limite 600 e top 50 invariati. Template combatant per membro/IV/mosse/energia/opponent riutilizzati nel run, eliminati a fine/cancel e nuovo run. Battle/Meta mantengono il worker originale.
+- Pump serializzato durante le letture asincrone cache; fine solo a coda e pending vuoti. ID richiesta evita collisioni con risposte di run precedenti. Timeout/crash del pool termina il worker e reinserisce le richieste incomplete per recupero via percorso seriale. Cancel termina tutti i worker dedicati, nessuna risposta tardiva accettata. URL blob revocato dopo creazione.
+- Test: controller reale con cache + 53 richieste, risultati fuori ordine, concorrenza, crash e retry, no doppio conteggio/fine prematura, ID vecchi, timeout/dispose, key IV/energia e riuso dei template. Test UI/candidates/shared cache/analysis/PWA/opponent/navigation parity e parità VM/native/live (50 casi) passati. Benchmark riproducibile tools/benchmark-team-builder-workers.js, 512 matchup, 1 worker/singole richieste: 7465 ms; 3 worker/blocchi: 4314 ms (1,73×; −42,2%). Parità esatta di tutti i risultati, risorse incluse. Node worker_threads sulla macchina a 4 core, avvio a freddo incluso; non è una misura nel browser/telefono o dell'intero flusso UI/IndexedDB. Report reports/team-builder-worker-benchmark.json. Asset/cache v176. Planner migration 100% → 100%; hybrid fallback 0% → 0%.
+
+
 ### Risultati candidati: migliori 50, 8 ottobre 2026
 
 - Final member: 5 suggerimenti iniziali; il pulsante espande ai migliori 50 risultati completi (o meno se disponibili), con ritorno ai top 5. Tutti i 600 candidati restano simulati e ordinati per miglioramento; nessuna espansione ai 600. Asset/cache v175.

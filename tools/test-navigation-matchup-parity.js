@@ -28,7 +28,8 @@ const context = {
   applyMetaRankingMoves: (prefix, id, side) => { field(`${prefix}Fast`).value = side.fast.id; context.ensureChargedMoveSelects(prefix).forEach((select, i) => { select.value = side.charged[i]?.id || ""; }); },
   resetBattleStateFromSetup: () => {}, runBattleToEnd: () => { runs++; },
   createTeamBuilderBattleConfig: () => selections.config,
-  window: { PvPeakTeamBuilderBattleLink: Link }, activeSeasonData: { id: "twilight-trails" }
+  teamBuilderPreparedCombatants: new Map(),
+  window: { PvPeakTeamBuilderBattleLink: Link, PvPeakTeamBuilderAnalysis: require("../src/team-builder/team-builder-analysis.js") }, activeSeasonData: { id: "twilight-trails" }
 };
 vm.createContext(context);
 vm.runInContext(section("teamBuilderBattleLaunchSide", "openTeamBuilderMatchup") + section("validTeamBuilderBattleSide", "loadTeamBuilderBattleFromLocation") + section("loadMetaMatchup", "applyMetaRankingMoves"), context);
