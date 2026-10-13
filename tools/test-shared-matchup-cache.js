@@ -47,7 +47,7 @@ async function main() {
   // Run the real queue/hydration code: 300 cached cells cross multiple batches
   // without a single simulator dispatch. Also mix compact and shared results.
   const jobs=Array.from({length:300},(_,i)=>({key:"job-"+i,slot:i%6,member:{pokemonId:"x"},opponentId:"y",shields:"1-1"}));
-  const values=new Map(jobs.map((job,i)=>[i%2?"shared|"+job.key:"durable|"+job.key,i%2?{score:650,details:{winnerEdge:1,aHp:.5}}:{score:650,slot:99}]));
+  const values=new Map(jobs.map((job,i)=>[i%2?"shared|"+job.key:"team-builder-results-v1|"+job.key,i%2?{score:650,details:{winnerEdge:1,aHp:.5}}:{score:650,slot:99}]));
   let dispatches=0; let finished;
   const complete=new Promise(resolve=>finished=resolve);
   const cache=new Map();

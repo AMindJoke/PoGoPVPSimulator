@@ -49,7 +49,7 @@
   <script src="src/team-builder/team-builder-state.js"></script>
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/analysis/shared-matchup-cache.js?v=20261008-v173"></script>
-  <script src="src/analysis/simulation-worker-pool.js?v=20261008-v176"></script>
+  <script src="src/analysis/simulation-worker-pool.js?v=20261013-v177"></script>
   <script src="src/team-builder/team-builder-analysis.js?v=20261008-v174"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
@@ -18914,24 +18914,34 @@
     }
 
     async function hydrateTeamBuilderSearchBatch(token) {
-      const batch = teamBuilderAnalysisQueue.slice(0, 128).map(job => teamBuilderReuseRecord(job));
-      const values = await sharedMatchupCache.getMany(batch.flatMap(item => [item.durable, item.shared, item.battle, item.meta]).filter(Boolean));
+      const batch = teamBuilderAnalysisQueue.slice(0, 128);
+      const durableKeys = batch.map(job => "team-builder-results-v1|" + job.key);
+      const savedValues = await sharedMatchupCache.getMany(durableKeys);
       if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      const fallback = batch.filter((job, index) => !Number.isFinite(savedValues.get(durableKeys[index])?.score))
+        .map(job => teamBuilderReuseRecord(job));
+      const values = fallback.length
+        ? await sharedMatchupCache.getMany(fallback.flatMap(item => [item.shared, item.battle, item.meta]).filter(Boolean))
+        : new Map();
+      if (!teamBuilderAnalysisActive || token !== teamBuilderAnalysisRunToken) return;
+      const fallbackByKey = new Map(fallback.map(item => [item.job.key, item]));
       teamBuilderReuseKeys.clear();
       const pending = [];
-      for (const item of batch) {
-        const saved = values.get(item.durable);
-        const raw = values.get(item.shared) || shieldMatrixCache.get(item.battle) || metaMatchupCache.get(item.meta) || values.get(item.battle) || values.get(item.meta);
+      for (let index = 0; index < batch.length; index++) {
+        const job = batch[index];
+        const saved = savedValues.get(durableKeys[index]);
         if (saved && Number.isFinite(saved.score)) {
-          teamBuilderDurableKeys.add(item.job.key);
-          acceptTeamBuilderCachedResult(item.job, { ...saved, key: item.job.key, slot: item.job.slot });
-        } else if (raw && Number.isFinite(raw.score)) {
-          teamBuilderReuseKeys.set(item.job.key, item);
-          storeTeamBuilderAnalysisResult(item.job, raw);
+          teamBuilderDurableKeys.add(job.key);
+          acceptTeamBuilderCachedResult(job, { ...saved, key: job.key, slot: job.slot });
         } else {
-          teamBuilderReuseKeys.set(item.job.key, item);
-          pending.push(item.job);
-          continue;
+          const item = fallbackByKey.get(job.key);
+          const raw = values.get(item.shared) || shieldMatrixCache.get(item.battle) || metaMatchupCache.get(item.meta) || values.get(item.battle) || values.get(item.meta);
+          teamBuilderReuseKeys.set(job.key, item);
+          if (raw && Number.isFinite(raw.score)) storeTeamBuilderAnalysisResult(job, raw);
+          else {
+            pending.push(job);
+            continue;
+          }
         }
         teamBuilderAnalysisCacheHits++;
         teamBuilderAnalysisDone++;
@@ -19786,6 +19796,7 @@
       const progress = total ? Math.round(done / total * 100) : 0;
       wrap.classList.toggle("is-visible", total > 0 || active || teamBuilderFinalSlotPendingStart);
       if (active) $("teamBuilderFinalSlotStatus").textContent = `Evaluating ${teamBuilderFinalSlotCandidates.size} top-ranked candidates against ${teamBuilderFinalSlotTargetGroups.length} priority threats${teamBuilderAnalysisCacheHits ? ` \u00b7 ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` \u00b7 ${teamBuilderAnalysisFailed} failed` : ""}`;
+      else if (total && cached === total && teamBuilderAnalysisContext === "final-slot" && teamBuilderAnalysisDone === total) $("teamBuilderFinalSlotStatus").textContent = `${teamBuilderAnalysisCacheHits} cached \u00b7 ${total - teamBuilderAnalysisCacheHits - teamBuilderAnalysisFailed} simulated`;
       else if (total && cached === total) $("teamBuilderFinalSlotStatus").textContent = `${teamBuilderFinalSlotCandidates.size} candidates ready \u00b7 ${teamBuilderFinalSlotTargetGroups.length} priority threats.`;
       else if (!teamBuilderFinalSlotPendingStart) $("teamBuilderFinalSlotStatus").textContent = "Search up to 600 top-ranked candidates.";
       $("teamBuilderFinalSlotCount").textContent = `${done} / ${total}`;
@@ -20077,6 +20088,7 @@
       const status = $("teamBuilderReplacementStatus");
       if (!teamBuilderReplacementTargets.length) status.textContent = "Select at least one current threat.";
       else if (replacementActive) status.textContent = `Simulating ${candidateCount} candidates against ${teamBuilderReplacementTargets.length} selected threats${teamBuilderAnalysisCacheHits ? ` · ${teamBuilderAnalysisCacheHits} cached` : ""}${teamBuilderAnalysisFailed ? ` · ${teamBuilderAnalysisFailed} failed` : ""}`;
+      else if (total && cached === total && teamBuilderAnalysisContext === "replacement" && teamBuilderAnalysisDone === total) status.textContent = `${teamBuilderAnalysisCacheHits} cached \u00b7 ${total - teamBuilderAnalysisCacheHits - teamBuilderAnalysisFailed} simulated`;
       else if (total && cached === total) status.textContent = `${candidateCount} candidates are ready for comparison.`;
       else status.textContent = `${candidateCount} top-ranked candidates · ${teamBuilderReplacementTargets.length} selected threats.`;
       $("teamBuilderReplacementCount").textContent = `${done} / ${total}`;

@@ -5,6 +5,10 @@ const { performance } = require("node:perf_hooks");
 const os = require("node:os"), fs = require("node:fs");
 const G = require("./build-great-league-meta-database.js");
 const Pool = require("../src/analysis/simulation-worker-pool.js");
+const mobile = process.argv.includes("--mobile");
+const write = process.argv.includes("--write");
+const batchSizes = process.argv.includes("--batches") ? [1, 4, 8, 16] : [4];
+const workerArg = process.argv.find(arg=>arg.startsWith("--workers="));
 const source = G.extractLiveWorkerSource();
 const gm = G.readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
 const moves = new Map(gm.moves.map(m=>[m.moveId,G.normalizeMove(m)]));
@@ -46,9 +50,16 @@ async function run(size,batchSize) {
 (async()=>{
   console.log("Benchmark: "+jobs.length+" real Battle cells, cold workers; machine cores: "+os.availableParallelism());
   const serial=await run(1,1);console.log("Before (1 worker, single messages): "+Math.round(serial.ms)+" ms");
-  const parallel=await run(Pool.workerLimit({cores:os.availableParallelism(),memory:os.totalmem()/2**30}),4);
-  for(const job of jobs)assert.deepEqual(parallel.results.get(job.key),serial.results.get(job.key),job.key);
-  const report={cells:jobs.length,serialMs:Math.round(serial.ms),parallelMs:Math.round(parallel.ms),speedup:Number((serial.ms/parallel.ms).toFixed(2)),reductionPercent:Number((100*(1-parallel.ms/serial.ms)).toFixed(1)),exactResultParity:true,environment:"Node native worker threads; cold startup included, no browser/UI/IndexedDB timing",date:new Date().toISOString()};
-  fs.mkdirSync("reports",{recursive:true});fs.writeFileSync("reports/team-builder-worker-benchmark.json",JSON.stringify(report,null,2)+"\n");
+  const size=workerArg ? Number(workerArg.split("=")[1]) : Pool.workerLimit({cores:os.availableParallelism(),memory:os.totalmem()/2**30,mobile});
+  if(!Number.isInteger(size)||size<1||size>8)throw new Error("--workers must be an integer from 1 to 8");
+  const runs=[];
+  for(const batchSize of batchSizes){
+    const parallel=await run(size,batchSize);
+    for(const job of jobs)assert.deepEqual(parallel.results.get(job.key),serial.results.get(job.key),job.key);
+    runs.push({batchSize,parallelMs:Math.round(parallel.ms),speedup:Number((serial.ms/parallel.ms).toFixed(2))});
+  }
+  const chosen=runs.find(item=>item.batchSize===4);
+  const report={cells:jobs.length,workers:size,mobile,serialMs:Math.round(serial.ms),parallelMs:chosen.parallelMs,speedup:chosen.speedup,reductionPercent:Number((100*(1-chosen.parallelMs/serial.ms)).toFixed(1)),runs,exactResultParity:true,environment:"Node native worker threads; cold startup included, no browser/UI/IndexedDB timing",date:new Date().toISOString()};
+  if(write){fs.mkdirSync("reports",{recursive:true});fs.writeFileSync("reports/team-builder-worker-benchmark.json",JSON.stringify(report,null,2)+"\n");}
   console.log(JSON.stringify(report));
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -9,7 +9,11 @@ function extract(name) {
   return html.slice(start, tail < 0 ? html.length : start + 1 + tail);
 }
 assert.equal(Pool.workerLimit({cores:16,memory:16}),4);
-assert.equal(Pool.workerLimit({cores:8,memory:8,mobile:true}),2);
+assert.equal(Pool.workerLimit({cores:8,memory:8,mobile:true}),3);
+assert.equal(Pool.workerLimit({cores:6,memory:4,mobile:true}),3);
+assert.equal(Pool.workerLimit({cores:4,memory:4,mobile:true}),2);
+assert.equal(Pool.workerLimit({cores:8,memory:3,mobile:true}),2);
+assert.equal(Pool.workerLimit({cores:8,memory:undefined,mobile:true}),3);
 assert.equal(Pool.workerLimit({cores:8,memory:2}),1);
 assert.equal(Pool.workerLimit({cores:1}),1);
 
@@ -41,7 +45,7 @@ async function queueCase(crash) {
     teamBuilderAnalysisActive:true,teamBuilderAnalysisRunToken:1,teamBuilderAnalysisContext:"final-slot",teamBuilderForceRefresh:false,
     teamBuilderAnalysisQueue:[...jobs],teamBuilderAnalysisPending:new Map(),teamBuilderReuseKeys:new Map(),teamBuilderDurableKeys:new Set(),
     teamBuilderAnalysisDone:0,teamBuilderAnalysisCacheHits:0,teamBuilderAnalysisFailed:0,
-    sharedMatchupCache:{getMany:async keys=>{await new Promise(r=>setTimeout(r,1));return new Map(keys.filter(k=>k==="durable|job-0").map(k=>[k,{score:600}]));}},
+    sharedMatchupCache:{getMany:async keys=>{await new Promise(r=>setTimeout(r,1));return new Map(keys.filter(k=>k==="team-builder-results-v1|job-0").map(k=>[k,{score:600}]));}},
     shieldMatrixCache:new Map(),metaMatchupCache:new Map(),
     teamBuilderReuseRecord:job=>({job,durable:"durable|"+job.key,shared:"shared|"+job.key}),
     createTeamBuilderBattleConfig:()=>({left:{},right:{}}),
@@ -67,6 +71,53 @@ async function queueCase(crash) {
   c.teamBuilderAnalysisPending.set("job-0",{job:jobs[0],token:2,requestId:999});
   c.handleTeamBuilderComputeWorkerMessage({id:1,key:"job-0",type:"matrixCellResult",result:{score:0}});
   assert.equal(c.teamBuilderAnalysisPending.size,1);
+}
+
+async function cacheHydrationCase() {
+  const jobs = ["saved", "shared", "missing"].map(key => ({ key, slot: 0 }));
+  const lookups = [], reused = new Map(), reuseKeys = new Map(), durableKeys = new Set();
+  let prepared = 0, rendered = 0;
+  const c = {
+    teamBuilderAnalysisQueue: [...jobs], teamBuilderAnalysisActive: true, teamBuilderAnalysisRunToken: 1,
+    teamBuilderReuseKeys: reuseKeys, teamBuilderDurableKeys: durableKeys, teamBuilderAnalysisCacheHits: 0,
+    teamBuilderAnalysisDone: 0,
+    sharedMatchupCache: { async getMany(keys) {
+      lookups.push([...keys]);
+      return new Map(keys.flatMap(key => key === "team-builder-results-v1|saved" ? [[key, { score: 700 }]]
+        : key === "shared|shared" ? [[key, { score: 600 }]] : []));
+    } },
+    teamBuilderReuseRecord(job) { prepared++; return { job, shared: "shared|" + job.key, battle: null, meta: null }; },
+    shieldMatrixCache: new Map(), metaMatchupCache: new Map(),
+    acceptTeamBuilderCachedResult(job, result) { reused.set(job.key, result); },
+    storeTeamBuilderAnalysisResult(job, result) { reused.set(job.key, result); },
+    renderTeamBuilderActiveAnalysisProgress() { rendered++; }
+  };
+  vm.createContext(c);
+  vm.runInContext(extract("hydrateTeamBuilderSearchBatch"), c);
+  await c.hydrateTeamBuilderSearchBatch(1);
+  assert.deepEqual(lookups[0], jobs.map(job => "team-builder-results-v1|" + job.key));
+  assert.deepEqual(lookups[1], ["shared|shared", "shared|missing"]);
+  assert.equal(prepared, 2, "A durable hit must not build a combatant or compatibility keys.");
+  assert.equal(reused.size, 2);
+  assert.equal(reuseKeys.has("missing"), true);
+  assert.equal(c.teamBuilderAnalysisQueue.length, 1);
+  assert.equal(c.teamBuilderAnalysisQueue[0].key, "missing");
+  assert.equal(c.teamBuilderAnalysisCacheHits, 2);
+  assert.equal(c.teamBuilderAnalysisDone, 2);
+  assert.equal(rendered, 1);
+  assert.equal(durableKeys.has("saved"), true);
+
+  const allSaved = {
+    ...c, teamBuilderAnalysisQueue: [...jobs], teamBuilderAnalysisDone: 0,
+    teamBuilderAnalysisCacheHits: 0, sharedMatchupCache: { async getMany(keys) {
+      return new Map(keys.map(key => [key, { score: 700 }]));
+    } }, teamBuilderReuseRecord() { throw new Error("Durable hits must skip fallback preparation."); }
+  };
+  vm.createContext(allSaved);
+  vm.runInContext(extract("hydrateTeamBuilderSearchBatch"), allSaved);
+  await allSaved.hydrateTeamBuilderSearchBatch(1);
+  assert.equal(allSaved.teamBuilderAnalysisQueue.length, 0);
+  assert.equal(allSaved.teamBuilderAnalysisCacheHits, jobs.length);
 }
 
 function templatesCase() {
@@ -96,4 +147,4 @@ function timeoutAndDisposeCase() {
   const second=Pool.createPool({size:1,createWorker:()=>worker2,onResult:()=>results++,onFailure:()=>failures++,setTimer:()=>1,clearTimer(){}});
   second.dispatch([{id:3,key:"c"}]);second.dispose();worker2.onmessage({data:{id:3,key:"c"}});assert.equal(results,0);assert.equal(failures,2);
 }
-(async()=>{templatesCase();timeoutAndDisposeCase();await queueCase(false);await queueCase(true);console.log("Adaptive workers, parallel queue/cache, out-of-order parity, failure retry, stale replies, timeout/dispose and combatant reuse passed.");})().catch(e=>{console.error(e);process.exitCode=1;});
+(async()=>{templatesCase();timeoutAndDisposeCase();await cacheHydrationCase();await queueCase(false);await queueCase(true);console.log("Adaptive workers, durable-first cache hydration, parallel queue, failure retry, stale replies, timeout/dispose and combatant reuse passed.");})().catch(e=>{console.error(e);process.exitCode=1;});

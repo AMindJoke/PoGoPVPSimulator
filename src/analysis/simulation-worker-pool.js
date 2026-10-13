@@ -4,8 +4,11 @@
   if (root) root.PvPeakSimulationWorkerPool = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
-  function workerLimit({ cores = 2, memory = 4, mobile = false } = {}) {
-    return Math.max(1, Math.min(mobile ? 2 : 4, Math.floor(Number(cores) || 2) - 1, Number(memory) <= 2 ? 1 : 4));
+  function workerLimit({ cores = 2, memory = null, mobile = false } = {}) {
+    const availableCores = Math.floor(Number(cores) || 2);
+    const availableMemory = memory == null ? 4 : Number(memory);
+    const mobileLimit = availableCores >= 6 && (memory == null || availableMemory >= 4) ? 3 : 2;
+    return Math.max(1, Math.min(mobile ? mobileLimit : 4, availableCores - 1, availableMemory <= 2 ? 1 : 4));
   }
   // Every entry still goes through the unchanged, synchronous Battle handler.
   function batchWorkerSource(source) {
