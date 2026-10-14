@@ -41,19 +41,25 @@
       startEnergy: Number(side.startEnergy || 0)
     };
     if (side.startingFastCount != null) normalized.startingFastCount = Number(side.startingFastCount);
+    if (side.megaLevel != null) normalized.megaLevel = Number(side.megaLevel);
     if (!normalized.pokemonId || !normalized.fastMoveId || !chargedMoveIds.length || chargedMoveIds.length > 10
       || ![normalized.ivAtk, normalized.ivDef, normalized.ivHp].every(value => Number.isInteger(value) && value >= 0 && value <= 15)
       || !Number.isInteger(normalized.shields) || normalized.shields < 0 || normalized.shields > 2
       || !["off", "selective", "on"].includes(normalized.baiting)
       || !["always", "smart", "no-first"].includes(normalized.shieldMode)
       || !Number.isInteger(normalized.startEnergy) || normalized.startEnergy < 0 || normalized.startEnergy > 100
-      || (normalized.startingFastCount != null && (!Number.isInteger(normalized.startingFastCount) || normalized.startingFastCount < 0 || normalized.startingFastCount > 100))) throw new Error("BATTLE_SETUP_INVALID");
+      || (normalized.startingFastCount != null && (!Number.isInteger(normalized.startingFastCount) || normalized.startingFastCount < 0 || normalized.startingFastCount > 100))
+      || (normalized.megaLevel != null && (!Number.isInteger(normalized.megaLevel) || normalized.megaLevel < 1 || normalized.megaLevel > 4))) throw new Error("BATTLE_SETUP_INVALID");
     return Object.freeze(normalized);
   }
 
   function normalizePayload(payload) {
     if (!payload || Number(payload.version) !== VERSION) throw new Error("TEAM_BUILDER_BATTLE_VERSION_UNSUPPORTED");
     const result = { version: VERSION, left: normalizeSide(payload.left), right: normalizeSide(payload.right) };
+    if (payload.battleFormat != null) {
+      if (!["standard", "ultra", "master", "mega-great", "mega-ultra", "mega-master"].includes(payload.battleFormat)) throw new Error("BATTLE_FORMAT_INVALID");
+      result.battleFormat = payload.battleFormat;
+    }
     if (payload.seasonId != null) {
       if (!/^[a-z0-9-]{1,80}$/.test(payload.seasonId)) throw new Error("BATTLE_SEASON_INVALID");
       result.seasonId = payload.seasonId;

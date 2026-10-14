@@ -15,13 +15,16 @@
   <link rel="icon" href="assets/go-pvp-favicon-48.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="stylesheet" href="src/training/fast-count-trainer.css?v=20261001-v76">
+  <link rel="stylesheet" href="src/battle/mega-presentation.css?v=20261014-mega8">
   <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
-  <script src="src/battle/announced-moves.js?v=20261008-v179"></script>
+  <script src="data/mega-overlay-20261013.js?v=20261013-mega1"></script>
+  <script src="src/battle/mega-rules.js?v=20261014-mega2"></script>
+  <script src="src/battle/announced-moves.js?v=20261013-v180"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20261006-v124"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261008-v180"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -58,7 +61,7 @@
   <script src="src/ui/team-opponent.js?v=20261007-v152"></script>
   <script src="src/team-builder/team-matchup-share.js?v=20261001-v92"></script>
   <script src="src/ui/pokemon-favorites.js?v=20261001-v76"></script>
-  <script src="src/team-builder/team-builder-battle-link.js?v=20261005-v117"></script>
+  <script src="src/team-builder/team-builder-battle-link.js?v=20261013-mega1"></script>
   <script src="src/team-builder/team-farm-battle-link.js?v=20261001-v94"></script>
   <script src="src/team-builder/team-farm-presentation.js?v=20261001-v92"></script>
   <script src="src/team-builder/team-builder-roles.js?v=20261005-v117"></script>
@@ -14492,7 +14495,7 @@
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261007-v152">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261006-v124"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261008-v180"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -14574,6 +14577,7 @@
       </section>
     </div>
     <div id="simulatorView" class="app-view">
+    <div class="battle-format-row"><label for="battleFormat">Battle format</label><select id="battleFormat"><option value="standard">Great League</option><option value="ultra">Ultra League</option><option value="master">Master League</option></select></div>
     <div class="toolbar scenario-status-toolbar">
       <div class="scenario-toolbar-copy">
         <strong id="scenarioToolbarTitle">Manual Review</strong>
@@ -14655,6 +14659,17 @@
             <div class="move-group-title">Charged Moves</div>
             <label data-charged-slot="1"><span>Charged 1</span><select id="p1Charged1" class="move-select" data-charged-slot="1"></select></label>
             <label data-charged-slot="2"><span>Charged 2</span><select id="p1Charged2" class="move-select" data-charged-slot="2"></select></label>
+            <div id="p1MegaMove" class="mega-charged-move move-select" hidden></div>
+          </div>
+          <div id="p1MegaControls" class="mega-controls" hidden>
+            <div class="mega-level-heading"><span>Mega Level</span><strong id="p1MegaBonus">1.2×</strong></div>
+            <input id="p1MegaLevel" type="hidden" value="3">
+            <div class="mega-level-picker" role="group" aria-label="Pokemon A Mega Level">
+              <button type="button" data-mega-level="1" aria-pressed="false" title="Base Level · 1.0×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>1</span></button>
+              <button type="button" data-mega-level="2" aria-pressed="false" title="High Level · 1.1×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>2</span></button>
+              <button type="button" data-mega-level="3" aria-pressed="true" title="Max Level · 1.2×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>3</span></button>
+              <button type="button" data-mega-level="4" aria-pressed="false" title="Super Max Level · 1.3×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>4</span></button>
+            </div>
           </div>
           <details class="iv-details advanced-panel options-panel">
             <summary>Battle Options</summary>
@@ -14766,6 +14781,17 @@
             <div class="move-group-title">Charged Moves</div>
             <label data-charged-slot="1"><span>Charged 1</span><select id="p2Charged1" class="move-select" data-charged-slot="1"></select></label>
             <label data-charged-slot="2"><span>Charged 2</span><select id="p2Charged2" class="move-select" data-charged-slot="2"></select></label>
+            <div id="p2MegaMove" class="mega-charged-move move-select" hidden></div>
+          </div>
+          <div id="p2MegaControls" class="mega-controls" hidden>
+            <div class="mega-level-heading"><span>Mega Level</span><strong id="p2MegaBonus">1.2×</strong></div>
+            <input id="p2MegaLevel" type="hidden" value="3">
+            <div class="mega-level-picker" role="group" aria-label="Pokemon B Mega Level">
+              <button type="button" data-mega-level="1" aria-pressed="false" title="Base Level · 1.0×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>1</span></button>
+              <button type="button" data-mega-level="2" aria-pressed="false" title="High Level · 1.1×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>2</span></button>
+              <button type="button" data-mega-level="3" aria-pressed="true" title="Max Level · 1.2×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>3</span></button>
+              <button type="button" data-mega-level="4" aria-pressed="false" title="Super Max Level · 1.3×"><span class="mega-level-icon" aria-hidden="true"><img src="assets/mega-level/mega-center.png" alt=""></span><span>4</span></button>
+            </div>
           </div>
           <details class="iv-details advanced-panel options-panel">
             <summary>Battle Options</summary>
@@ -15191,7 +15217,7 @@
       <section id="fastThresholdPanel" class="fast-threshold-panel" aria-labelledby="fastThresholdTitle" hidden>
         <div class="fast-threshold-head">
           <h2 id="fastThresholdTitle">Breakpoints &amp; Bulkpoints</h2>
-          <span class="fast-threshold-cap">Great League · CP 1500</span>
+          <span id="fastThresholdCap" class="fast-threshold-cap">Great League · CP 1500</span>
         </div>
         <div id="fastThresholdContent" class="fast-threshold-content" role="table" aria-label="Fast Move damage thresholds" aria-live="polite"></div>
       </section>
@@ -15622,6 +15648,10 @@
     };
     window.BATTLE_ACTIVE_SEASON_DATA = activeSeasonData;
     const gm = activeSeasonData.gameMaster;
+    const megaRules = window.PvPeakMegaRules;
+    const megaOverlay = window.BATTLE_MEGA_OVERLAY || { pokemon: [], moves: [] };
+    function battleFormat() { return megaRules.format($("battleFormat")?.value || "standard"); }
+    function battleCpCap() { return battleFormat().cpCap; }
     const ivOptimization = window.PvPeakIvOptimization;
     const ivImpactPresenter = window.PvPeakIvImpact || {};
     const rankingDetailsPresenter = window.PvPeakRankingDetails || {};
@@ -16165,7 +16195,7 @@
       initMatrixCacheWorker();
       initMatrixComputeWorker();
 
-      moveMap = new Map(gm.moves.map(m => [m.moveId, {
+      moveMap = new Map([...gm.moves, ...megaOverlay.moves].map(m => [m.moveId, {
         id: m.moveId,
         name: window.PvPeakEnergyTrainer?.displayMoveName?.(m.name || m.moveId) || m.name || m.moveId,
         sourceName: m.name || m.moveId,
@@ -16181,10 +16211,12 @@
         buffTarget: m.buffTarget || null,
         buffApplyChance: Number(m.buffApplyChance ?? 0),
         damageMethod: m.damageMethod || null,
+        isMegaMove: m.isMegaMove === true,
         tags: Array.isArray(m.tags) ? [...m.tags] : []
       }]));
 
-      allPokemon = gm.pokemon
+      const megaIds = new Set(megaOverlay.pokemon.map(p => p.speciesId));
+      allPokemon = [...gm.pokemon.filter(p => !megaIds.has(p.speciesId)), ...megaOverlay.pokemon]
         .filter(p => p && p.speciesId && p.speciesName && p.baseStats)
         .map(p => ({
           id: p.speciesId,
@@ -16226,6 +16258,23 @@
       });
       $("p1Pokemon").onchange = () => selectPokemon("p1", $("p1Pokemon").value, true);
       $("p2Pokemon").onchange = () => selectPokemon("p2", $("p2Pokemon").value, true);
+      $("battleFormat").onchange = () => {
+        refreshPokemonLists();
+        ["p1", "p2"].forEach(prefix => {
+          const selected = findPokemon($(`${prefix}Pokemon`).value);
+          if (selected) { applyDefaultIvs(prefix); fillMoves(prefix); }
+        });
+        resetBattleStateFromSetup();
+      };
+      ["p1", "p2"].forEach(prefix => {
+        document.querySelectorAll(`#${prefix}MegaControls [data-mega-level]`).forEach(button => {
+          button.onclick = () => {
+            $(`${prefix}MegaLevel`).value = button.dataset.megaLevel;
+            renderMegaControls(prefix);
+            syncSelection(prefix);
+          };
+        });
+      });
       $("p1Fast").onchange = () => handleFastMoveChange("p1");
       $("p2Fast").onchange = () => handleFastMoveChange("p2");
       ["p1", "p2"].forEach(prefix => bindChargedMoveSelects(prefix));
@@ -20374,11 +20423,12 @@
       window.open(url, "_blank", "noopener,noreferrer");
     }
 
-    function validTeamBuilderBattleSide(side) {
+    function validTeamBuilderBattleSide(side, formatId = "standard") {
       const pokemon = findPokemon(side?.pokemonId);
       const charged = Array.isArray(side?.chargedMoveIds) ? side.chargedMoveIds : [];
       const ivs = [side?.ivAtk, side?.ivDef, side?.ivHp];
       return !!pokemon
+        && megaRules.isEligible(pokemon, formatId)
         && selectableFastMoveIds(pokemon).includes(side.fastMoveId)
         && charged.length > 0
         && charged.length <= selectedChargedMoveLimit(pokemon)
@@ -20392,6 +20442,8 @@
 
     function applyTeamBuilderBattleSide(prefix, side) {
       setPokemonSelection(prefix, side.pokemonId);
+      $(`${prefix}MegaLevel`).value = String(side.megaLevel || 3);
+      renderMegaControls(prefix);
       $(`${prefix}Fast`).value = side.fastMoveId;
       ensureChargedMoveSelects(prefix, findPokemon(side.pokemonId)).forEach((select, index) => { select.value = side.chargedMoveIds[index] || ""; });
       colorMoveSelect(`${prefix}Fast`);
@@ -20410,10 +20462,10 @@
     }
 
     function battleShareSide(prefix) {
-      return {
+      const side = {
         pokemonId: $(`${prefix}Pokemon`).value,
         fastMoveId: $(`${prefix}Fast`).value,
-        chargedMoveIds: selectedChargedMoves(prefix).map(move => move.id),
+        chargedMoveIds: chargedMoveSelects(prefix).filter(select => !select.disabled && select.value).map(select => select.value),
         ivAtk: Number($(`${prefix}IvAtk`).value),
         ivDef: Number($(`${prefix}IvDef`).value),
         ivHp: Number($(`${prefix}IvHp`).value),
@@ -20423,6 +20475,8 @@
         startEnergy: clampEnergy($(`${prefix}StartEnergy`).value),
         startingFastCount: validStartingFastAdvantage(prefix)?.count || 0
       };
+      if (battleFormat().mega && megaRules.isMega(findPokemon(side.pokemonId))) side.megaLevel = Number($(`${prefix}MegaLevel`).value);
+      return side;
     }
 
     async function copyBattleShareLink() {
@@ -20433,6 +20487,7 @@
       try {
         const api = window.PvPeakTeamBuilderBattleLink;
         const payload = { version: api.VERSION, seasonId: activeSeasonData.id, left: battleShareSide("p1"), right: battleShareSide("p2"), reactionDelayTurns: battleReactionDelay };
+        if ($("battleFormat").value !== "standard") payload.battleFormat = $("battleFormat").value;
         const url = farmBattleContext ? window.PvPeakTeamFarmBattleLink.createUrl(window.location.href, { ...farmBattleContext.recipe, start: farmBattleContext.start || null }) : api.createUrl(window.location.href, payload);
         await writeManualScenarioLinkToClipboard(url);
         $("battleLinkFeedback").textContent = "Battle link copied.";
@@ -20549,7 +20604,7 @@
     function loadTeamBuilderBattleFromLocation() {
       if (!new URLSearchParams(window.location.search).has("tbBattle")) return false;
       const payload = window.PvPeakTeamBuilderBattleLink?.readLocation?.(window.location);
-      if (!payload || !validTeamBuilderBattleSide(payload.left) || !validTeamBuilderBattleSide(payload.right)
+      if (!payload || !validTeamBuilderBattleSide(payload.left, payload.battleFormat) || !validTeamBuilderBattleSide(payload.right, payload.battleFormat)
         || (payload.seasonId && payload.seasonId !== activeSeasonData.id)) {
         setAppView("simulator");
         $("battleShareError").hidden = false;
@@ -20557,6 +20612,8 @@
       }
       $("battleShareError").hidden = true;
       setAppView("simulator");
+      $("battleFormat").value = megaRules.canonicalFormatId(payload.battleFormat);
+      refreshPokemonLists();
       applyTeamBuilderBattleSide("p1", payload.left);
       applyTeamBuilderBattleSide("p2", payload.right);
       resetBattleStateFromSetup();
@@ -20927,7 +20984,7 @@
         label.className = "team-editor-field";
         label.dataset.teamBuilderChargedSlot = String(slot);
         label.innerHTML = `Charged Move ${slot}<select id="teamBuilderChargedMove${slot}" data-team-builder-charged-slot="${slot}"></select>`;
-        container.append(label);
+        container.insertBefore(label, $(`${prefix}MegaMove`));
         selects = teamBuilderChargedMoveSelects();
       }
       selects.forEach((select, index) => {
@@ -22816,7 +22873,7 @@
     }
 
     function filteredBaseList() {
-      return allPokemon;
+      return allPokemon.filter(pokemon => megaRules.isEligible(pokemon, $("battleFormat").value));
     }
 
     function refreshPokemonLists() {
@@ -22969,7 +23026,7 @@
     function selectPokemon(prefix, pokemonId, updateInput) {
       clearStartingFastAdvantage(prefix);
       const p = findPokemon(pokemonId);
-      if (!p) {
+      if (!p || !megaRules.isEligible(p, $("battleFormat").value)) {
         $(`${prefix}Pokemon`).value = "";
         if (updateInput) $(`${prefix}Search`).value = "";
         closePokemonSuggestions(prefix);
@@ -22998,7 +23055,33 @@
       fillMoveSelect(`${prefix}Fast`, p.fast, p);
       ensureChargedMoveSelects(prefix, p).forEach(select => fillMoveSelect(select.id, p.charged, p));
       chooseRecommendedMoves(prefix, p);
+      renderMegaControls(prefix);
       syncSelection(prefix);
+    }
+
+    function renderMegaControls(prefix) {
+      const pokemon = findPokemon($(`${prefix}Pokemon`).value);
+      const controls = $(`${prefix}MegaControls`);
+      const moveSlot = $(`${prefix}MegaMove`);
+      const active = battleFormat().mega && megaRules.isMega(pokemon);
+      controls.hidden = !active;
+      moveSlot.hidden = true;
+      if (!active) return;
+      const level = megaRules.level($(`${prefix}MegaLevel`).value);
+      $(`${prefix}MegaBonus`).textContent = `${megaRules.bonus(level).toFixed(1)}×`;
+      controls.querySelectorAll("[data-mega-level]").forEach(button => {
+        button.setAttribute("aria-pressed", String(Number(button.dataset.megaLevel) === level));
+      });
+      const move = moveMap.get(pokemon.extraChargedMoves?.[0]);
+      const boosted = megaRules.chargedMove(move, level);
+      if (!boosted) return;
+      const color = typeColors[boosted.type] || "#66788c";
+      moveSlot.style.setProperty("--move-color", color);
+      moveSlot.style.setProperty("--move-icon", `url("${typeIconDataUri(boosted.type, color)}")`);
+      moveSlot.innerHTML = `<span class="mega-charged-name">${escapeHtml(boosted.name)}</span><span class="mega-charged-badge" aria-hidden="true">✦</span>`;
+      moveSlot.setAttribute("aria-label", `Mega charged move ${boosted.name}, ${boosted.power.toFixed(1)} power, ${boosted.energyCost} energy`);
+      moveSlot.title = `${boosted.name} · ${boosted.power.toFixed(1)} power · ${boosted.energyCost} energy`;
+      moveSlot.hidden = false;
     }
 
     function chargedMoveSelects(prefix) {
@@ -23303,18 +23386,24 @@
 
     function sideReadyForBattle(prefix) {
       const charged = selectedChargedMoves(prefix);
+      const normalCharged = chargedMoveSelects(prefix).some(select => !select.disabled && !!select.value);
+      const pokemon = findPokemon($(`${prefix}Pokemon`).value);
       return (
-        findPokemon($(`${prefix}Pokemon`).value) &&
+        pokemon && megaRules.isEligible(pokemon, $("battleFormat").value) &&
         moveMap.get($(`${prefix}Fast`).value) &&
-        charged.length > 0
+        normalCharged && charged.length > 0
       );
     }
 
     function selectedChargedMoves(prefix) {
-      return chargedMoveSelects(prefix)
+      const pokemon = findPokemon($(`${prefix}Pokemon`).value);
+      const normal = chargedMoveSelects(prefix)
         .filter(select => !select.disabled)
         .map(select => moveMap.get(select.value))
         .filter(Boolean);
+      return battleFormat().mega
+        ? megaRules.selectedChargedMoves(pokemon, normal, $(`${prefix}MegaLevel`).value, moveMap)
+        : normal;
     }
 
     function resetBattleStateFromSetup() {
@@ -23430,6 +23519,8 @@
       $(`${prefix}Hp`).style.width = "0%";
       $(`${prefix}HpText`).textContent = "";
       $(`${prefix}EnergyPanel`).innerHTML = "";
+      $(`${prefix}MegaControls`).hidden = true;
+      $(`${prefix}MegaMove`).hidden = true;
     }
 
     function setStartEnergy(prefix, value, options = {}) {
@@ -23509,10 +23600,12 @@
 
     function applyDefaultIvs(prefix) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
-      const defaults = p && p.defaultIVs && p.defaultIVs.cp1500 ? p.defaultIVs.cp1500 : null;
-      const ivAtk = defaults ? defaults[1] : 0;
-      const ivDef = defaults ? defaults[2] : 15;
-      const ivHp = defaults ? defaults[3] : 15;
+      const key = battleCpCap() === 2500 ? "cp2500" : "cp1500";
+      const defaults = p?.defaultIVs?.[key] || null;
+      const master = battleCpCap() === Infinity;
+      const ivAtk = master ? 15 : defaults ? defaults[1] : 0;
+      const ivDef = master ? 15 : defaults ? defaults[2] : 15;
+      const ivHp = master ? 15 : defaults ? defaults[3] : 15;
       $(`${prefix}IvAtk`).value = ivAtk;
       $(`${prefix}IvDef`).value = ivDef;
       $(`${prefix}IvHp`).value = ivHp;
@@ -23533,7 +23626,7 @@
 
     function applyIvOptimizationProfile(prefix, profile) {
       const p = findPokemon($(`${prefix}Pokemon`).value);
-      const result = p ? rankingsForPokemon(p).profiles?.[profile] : null;
+      const result = p ? rankingsForPokemon(p, battleCpCap()).profiles?.[profile] : null;
       if (!result) return;
       $(`${prefix}IvAtk`).value = result.attackIv;
       $(`${prefix}IvDef`).value = result.defenseIv;
@@ -23599,14 +23692,14 @@
       const profile = $(`${prefix}IvProfile`)?.value || "custom";
       let ivs = null;
       if (profile === "balanced") {
-        const defaults = combatant.p.defaultIVs?.cp1500;
+        const defaults = combatant.p.defaultIVs?.[battleCpCap() === 2500 ? "cp2500" : "cp1500"];
         if (defaults) ivs = [defaults[1], defaults[2], defaults[3]];
       } else {
-        const balanced = rankingsForPokemon(combatant.p).profiles?.balanced;
+        const balanced = rankingsForPokemon(combatant.p, battleCpCap()).profiles?.balanced;
         if (balanced) ivs = [balanced.attackIv, balanced.defenseIv, balanced.staminaIv];
       }
       if (!ivs) return null;
-      const stats = statsForIvSpread(combatant.p, ...ivs.map(clampIv));
+      const stats = statsForIvSpread(combatant.p, ...ivs.map(clampIv), { cpCap: battleCpCap() });
       if (stats.ivAtk === combatant.ivAtk && stats.ivDef === combatant.ivDef && stats.ivHp === combatant.ivHp) return null;
       return { ...combatant, ...stats, maxHp: stats.hp, hp: stats.hp, attackStage: 0, defenseStage: 0 };
     }
@@ -23649,19 +23742,20 @@
       const ivAtk = clampIv($(`${prefix}IvAtk`).value);
       const ivDef = clampIv($(`${prefix}IvDef`).value);
       const ivHp = clampIv($(`${prefix}IvHp`).value);
-      return statsForIvSpread(p, ivAtk, ivDef, ivHp);
+      return statsForIvSpread(p, ivAtk, ivDef, ivHp, { cpCap: battleCpCap() });
     }
 
     function statsForIvSpread(p, ivAtk, ivDef, ivHp, options = {}) {
+      const cpCap = options.cpCap ?? 1500;
       let best = null;
       for (const [level, cpm] of cpMultipliers) {
         const stats = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, level, cpm);
-        if (stats.cp <= 1500) best = stats;
+        if (stats.cp <= cpCap) best = stats;
         else break;
       }
       if (!best) best = pokemonStatsAtLevel(p, ivAtk, ivDef, ivHp, cpMultipliers[0][0], cpMultipliers[0][1]);
       if (options.includeRank === false) return { ...best, rank: null, rankPercent: null, statProduct: best.attack * best.defense * best.hp };
-      const rank = ivRank(p, ivAtk, ivDef, ivHp);
+      const rank = ivRank(p, ivAtk, ivDef, ivHp, cpCap);
       best.rank = rank.rank;
       best.rankPercent = rank.percent;
       best.statProduct = rank.statProduct;
@@ -23676,20 +23770,21 @@
       return { level, cpm, cp, attack, defense, hp, ivAtk, ivDef, ivHp, statProduct: attack * defense * hp };
     }
 
-    function ivRank(p, ivAtk, ivDef, ivHp) {
-      const ranks = rankingsForPokemon(p);
+    function ivRank(p, ivAtk, ivDef, ivHp, cpCap = 1500) {
+      const ranks = rankingsForPokemon(p, cpCap);
       const key = `${ivAtk}/${ivDef}/${ivHp}`;
       return ranks.byIv.get(key) || { rank: 4096, percent: 0, statProduct: 0 };
     }
 
-    function rankingsForPokemon(p) {
-      if (rankCache.has(p.id)) return rankCache.get(p.id);
+    function rankingsForPokemon(p, cpCap = 1500) {
+      const cacheKey = `${p.id}:${cpCap}`;
+      if (rankCache.has(cacheKey)) return rankCache.get(cacheKey);
       const maxStats = { attack: 0, defense: 0, hp: 0 };
       const rows = ivOptimization.buildEligibleIvCandidates((atk, def, hp) => {
         let best = null;
         for (const [level, cpm] of cpMultipliers) {
           const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
-          if (stats.cp <= 1500) best = stats;
+          if (stats.cp <= cpCap) best = stats;
           else break;
         }
         if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
@@ -23713,7 +23808,7 @@
         profiles: optimization.profiles,
         rankOneKey: optimization.profiles.balanced?.key || "0/15/15"
       };
-      rankCache.set(p.id, result);
+      rankCache.set(cacheKey, result);
       return result;
     }
 
@@ -23829,7 +23924,7 @@
     }
 
     function matrixInputIdentity() {
-      return (farmBattleContext ? `farm:${JSON.stringify(farmBattleContext.recipe)}|` : battleReactionDelay ? `reaction:${battleReactionDelay}|` : "") + ["p1", "p2"].map(prefix => {
+      return `${$("battleFormat").value}|` + (farmBattleContext ? `farm:${JSON.stringify(farmBattleContext.recipe)}|` : battleReactionDelay ? `reaction:${battleReactionDelay}|` : "") + ["p1", "p2"].map(prefix => {
         const chargedIds = chargedMoveSelects(prefix).filter(select => !select.disabled).map(select => select.value);
         return [
         $(`${prefix}Pokemon`)?.value,
@@ -23840,6 +23935,7 @@
         $(`${prefix}IvHp`)?.value,
         $(`${prefix}Level`)?.value,
         $(`${prefix}Cp`)?.value,
+        $(`${prefix}MegaLevel`)?.value,
         $(`${prefix}StartEnergy`)?.value,
         $(`${prefix}Baiting`)?.value,
         $(`${prefix}ShieldMode`)?.value,
@@ -24006,6 +24102,7 @@
 
     function combatantStatsForForm(combatant, targetPokemon) {
       const originalCpm = Number(combatant.cpm || combatant.attack / Math.max(1, combatant.p.atk + combatant.ivAtk));
+      const cpCap = typeof battleCpCap === "function" ? battleCpCap() : 1500;
       let targetLevel = Number(combatant.level || 1);
       const isDifferentFromInitialForm = combatant.initialFormId && combatant.initialFormId !== targetPokemon.id;
 
@@ -24041,7 +24138,7 @@
           targetLevel,
           cpm
         );
-        if (stats.cp <= 1500) return stats;
+        if (stats.cp <= cpCap) return stats;
         targetLevel -= 1;
       }
       return stats || pokemonStatsAtLevel(
@@ -24222,7 +24319,7 @@
       if (!isFinite(delta) || delta <= 0.005) return { label: "BP hit", title: `${move.name}: ${damage} damage` };
       const maxAttack = maxReachableStat(attacker.p, "attack");
       if (neededAttack > maxAttack + 0.005) {
-        return { label: "No BP", title: `${move.name}: next breakpoint at ${neededAttack.toFixed(1)} ATK, above the Great League maximum (${maxAttack.toFixed(1)})` };
+        return { label: "No BP", title: `${move.name}: next breakpoint at ${neededAttack.toFixed(1)} ATK, above the ${battleFormat().label} maximum (${maxAttack.toFixed(1)})` };
       }
       return { label: `BP +${delta.toFixed(1)}`, title: `${move.name}: ${damage} -> ${damage + 1} damage at ${neededAttack.toFixed(1)} ATK` };
     }
@@ -24238,19 +24335,20 @@
       if (!isFinite(delta) || delta <= 0.005) return { label: "Bulk hit", title: `${move.name}: ${damage} damage taken` };
       const maxDefense = maxReachableStat(defender.p, "defense");
       if (neededDefense > maxDefense + 0.005) {
-        return { label: "No Bulk", title: `${move.name}: next bulkpoint at ${neededDefense.toFixed(1)} DEF, above the Great League maximum (${maxDefense.toFixed(1)})` };
+        return { label: "No Bulk", title: `${move.name}: next bulkpoint at ${neededDefense.toFixed(1)} DEF, above the ${battleFormat().label} maximum (${maxDefense.toFixed(1)})` };
       }
       return { label: `Bulk +${delta.toFixed(1)}`, title: `${move.name}: ${damage} -> ${damage - 1} damage at ${neededDefense.toFixed(1)} DEF` };
     }
 
     function fastThresholdSpreadRows(pokemon) {
-      if (fastThresholdSpreadCache.has(pokemon.id)) {
-        const cached = fastThresholdSpreadCache.get(pokemon.id);
-        fastThresholdSpreadCache.delete(pokemon.id);
-        fastThresholdSpreadCache.set(pokemon.id, cached);
+      const cacheKey = `${pokemon.id}:${battleCpCap()}`;
+      if (fastThresholdSpreadCache.has(cacheKey)) {
+        const cached = fastThresholdSpreadCache.get(cacheKey);
+        fastThresholdSpreadCache.delete(cacheKey);
+        fastThresholdSpreadCache.set(cacheKey, cached);
         return cached;
       }
-      const ranks = rankingsForPokemon(pokemon);
+      const ranks = rankingsForPokemon(pokemon, battleCpCap());
       const spreads = [];
       for (let ivAtk = 0; ivAtk <= 15; ivAtk++) {
         for (let ivDef = 0; ivDef <= 15; ivDef++) {
@@ -24258,7 +24356,7 @@
             let best = null;
             for (const [level, cpm] of cpMultipliers) {
               const stats = pokemonStatsAtLevel(pokemon, ivAtk, ivDef, ivHp, level, cpm);
-              if (stats.cp <= 1500) best = stats;
+              if (stats.cp <= battleCpCap()) best = stats;
               else break;
             }
             if (!best) continue;
@@ -24275,7 +24373,7 @@
           }
         }
       }
-      fastThresholdSpreadCache.set(pokemon.id, spreads);
+      fastThresholdSpreadCache.set(cacheKey, spreads);
       if (fastThresholdSpreadCache.size > 12) fastThresholdSpreadCache.delete(fastThresholdSpreadCache.keys().next().value);
       return spreads;
     }
@@ -24386,13 +24484,14 @@
         return;
       }
       panel.hidden = false;
-      const signature = ["p1", "p2"].map(prefix => [
+      $("fastThresholdCap").textContent = `${battleFormat().label} · ${Number.isFinite(battleCpCap()) ? `CP ${battleCpCap()}` : "No CP cap"}`;
+      const signature = [$("battleFormat").value, ...["p1", "p2"].map(prefix => [
         $(`${prefix}Pokemon`).value,
         $(`${prefix}Fast`).value,
         $(`${prefix}IvAtk`).value,
         $(`${prefix}IvDef`).value,
         $(`${prefix}IvHp`).value
-      ].join("/")).join("|");
+      ].join("/"))].join("|");
       if (signature === fastThresholdRenderCacheKey && panel.dataset.setupSignature === signature) return;
       fastThresholdRenderCacheKey = signature;
       const a = create("p1", "A");
@@ -24404,7 +24503,7 @@
     }
 
     function maxReachableStat(p, statName) {
-      const rankings = rankingsForPokemon(p);
+      const rankings = rankingsForPokemon(p, battleCpCap());
       if (rankings.maxStats && rankings.maxStats[statName]) return rankings.maxStats[statName];
       let maxAttack = 0;
       let maxDefense = 0;
@@ -24415,7 +24514,7 @@
             let best = null;
             for (const [level, cpm] of cpMultipliers) {
               const stats = pokemonStatsAtLevel(p, atk, def, hp, level, cpm);
-              if (stats.cp <= 1500) best = stats;
+              if (stats.cp <= battleCpCap()) best = stats;
               else break;
             }
             if (!best) best = pokemonStatsAtLevel(p, atk, def, hp, cpMultipliers[0][0], cpMultipliers[0][1]);
@@ -33159,6 +33258,7 @@
     function updateBattleAvailability() {
       const ready = setupReadyForBattle();
       $("copyBattleLink").disabled = !ready;
+      $("copyBattleLink").title = "Copy Battle Link";
       $("battleLinkFeedback").textContent = "";
       $("battleCta").disabled = !ready;
       $("battleCta").title = ready ? "Start battle" : "Choose both Pokemon first";
@@ -33276,14 +33376,16 @@
       const prefix = id.slice(0, 2);
       const combatant = prefix === "p1" ? left : right;
       const charged = chargedOverride || (combatant && combatant.charged ? combatant.charged : []);
+      $(id).dataset.moveCount = String(charged.length);
       $(id).innerHTML = energyCollectionMarkup(charged, energy, prefix,
-        `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>`);
+        `<div class="energy-core"><strong>${Math.max(0, energy)}</strong><span>energy</span></div>`, true);
     }
 
-    function energyCollectionMarkup(charged, energy, prefix, coreMarkup) {
+    function energyCollectionMarkup(charged, energy, prefix, coreMarkup, sequential = false) {
       const moves = Array.isArray(charged) ? charged : [];
       const split = Math.ceil(moves.length / 2);
       const orbs = moves.map((move, index) => energyMoveOrb(move, energy, prefix, index));
+      if (moves.length === 3) return sequential ? coreMarkup + orbs.join("") : orbs[0] + coreMarkup + orbs[1] + orbs[2];
       return orbs.slice(0, split).join("") + coreMarkup + orbs.slice(split).join("");
     }
 
@@ -35382,8 +35484,8 @@
         aMoves: inspectorMoves(left),
         bMoves: inspectorMoves(right),
         profile: inspectorProfileSummary(),
-        league: "Great League",
-        cpCap: 1500,
+        league: battleFormat().label,
+        cpCap: battleCpCap(),
         source: scenarios.every(scenario => scenario.source === "Precomputed") ? "Precomputed" : "Live Simulation",
         provenance: scenarios.find(scenario => scenario.shieldState === selectedShieldState)?.result?.provenance || null,
         scenarios,
@@ -38385,7 +38487,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261008-v179").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261014-v189").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

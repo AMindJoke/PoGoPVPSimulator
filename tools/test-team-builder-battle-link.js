@@ -29,4 +29,11 @@ assert.throws(() => BattleLink.encode({ ...payload, left: { ...payload.left, shi
 assert.throws(() => BattleLink.encode({ ...payload, left: { ...payload.left, startEnergy: -1 } }), /INVALID/);
 assert.equal(BattleLink.decode("a".repeat(20001)), null);
 
+const megaPayload = { ...payload, battleFormat: "mega-ultra", left: { ...payload.left, pokemonId: "raichu_mega_x", megaLevel: 4 } };
+assert.deepEqual(BattleLink.decode(BattleLink.encode(megaPayload)), BattleLink.normalizePayload(megaPayload));
+assert.equal(BattleLink.decode(BattleLink.encode(megaPayload)).left.megaLevel, 4);
+assert.equal(BattleLink.decode(BattleLink.encode({ ...megaPayload, battleFormat: "ultra" })).battleFormat, "ultra");
+assert.throws(() => BattleLink.encode({ ...megaPayload, battleFormat: "unknown" }), /BATTLE_FORMAT_INVALID/);
+assert.throws(() => BattleLink.encode({ ...megaPayload, left: { ...megaPayload.left, megaLevel: 5 } }), /BATTLE_SETUP_INVALID/);
+
 console.log("Team Builder direct Battle link tests passed.");

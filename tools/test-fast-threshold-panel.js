@@ -28,8 +28,8 @@ for (const helper of [
 ]) {
   assert.match(html, new RegExp(`function ${helper}\\(`), `${helper} must be part of the live simulator.`);
 }
-assert.match(html, /function fastThresholdSpreadRows\(pokemon\)[\s\S]*?ivAtk <= 15[\s\S]*?ivDef <= 15[\s\S]*?ivHp <= 15[\s\S]*?stats\.cp <= 1500/,
-  "Threshold candidates must be drawn from legal Great League IV spreads.");
+assert.match(html, /function fastThresholdSpreadRows\(pokemon\)[\s\S]*?ivAtk <= 15[\s\S]*?ivDef <= 15[\s\S]*?ivHp <= 15[\s\S]*?stats\.cp <= battleCpCap\(\)/,
+  "Threshold candidates must be drawn from legal IV spreads for the active battle format.");
 assert.match(html, /function fastBreakpointRows\([\s\S]*?damage <= currentDamage/,
   "Breakpoint rows must represent reachable increases over current damage.");
 assert.match(html, /function fastBulkpointRows\([\s\S]*?damage >= currentDamage/,
