@@ -680,4 +680,5 @@ assert(principleMetrics.migratedCategories.includes("farm"));
 assert(principleMetrics.migratedCategories.includes("bait"));
 assert(principleMetrics.migratedCategories.includes("move-ordering"));
 
+require("./test-smart-shield-charged-route");
 console.log("Battle Intelligence tests passed.");

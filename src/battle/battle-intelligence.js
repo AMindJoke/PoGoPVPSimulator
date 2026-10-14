@@ -2438,6 +2438,28 @@ function createPvPeakBattleIntelligenceApi() {
       triggered.push("MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE");
     }
 
+    // A low-damage Attack debuff can consume time without drawing a Smart Shield.
+    const weakAttackDebuff = selected.guaranteedEffect
+      && ((selected.buffTarget === "opponent" && numeric(selected.buffs?.[0]) < 0)
+        || (selected.buffTarget === "both" && numeric(selected.buffsOpponent?.[0]) < 0));
+    const directCloser = weakAttackDebuff
+      && opponent.shieldMode === "smart"
+      && numeric(opponent.shields) > 0
+      && (numeric(opponent.shields) === 1
+        || numeric(actor.hp) <= numeric(actor.maxHp) * .6)
+      ? moves
+        .filter(move => numeric(actor.energy) >= move.energyCost
+          && move.damage >= numeric(opponent.hp)
+          && move.damage >= selected.damage * 2)
+        .sort((a, b) => a.energyCost - b.energyCost || b.damage - a.damage)[0]
+      : null;
+    if (directCloser && directCloser !== selected
+      && selected.damage < numeric(opponent.hp) * .3
+      && selected.energyCost < 55) {
+      selected = directCloser;
+      triggered.push("BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD", "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+    }
+
     const opponentBest = canonicalBestChargedMove(opponentMoves);
     if (selected.selfDebuffing && numeric(actor.shields) === 0 && numeric(actor.energy) < 100 && opponentBest
       && numeric(opponent.energy) >= opponentBest.energyCost

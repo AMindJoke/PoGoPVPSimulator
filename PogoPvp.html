@@ -100,7 +100,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20261002-planner-v46"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261014-planner-v46-smart-route1"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -38487,7 +38487,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261014-v189").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261014-v190").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
