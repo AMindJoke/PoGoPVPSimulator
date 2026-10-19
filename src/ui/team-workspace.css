@@ -157,3 +157,15 @@ body[data-theme=neo] .team-workspace-dialog .team-workspace-battle,body[data-the
 
 .team-workspace-metrics > div { padding:5px 2px; border-radius:6px; text-align:center; }
 .team-workspace-metrics > .is-priority { background:color-mix(in srgb,var(--accent) 8%,var(--panel)); }
+
+#teamWorkspaceModes .team-workspace-explanation { margin:0 0 14px; color:var(--ink); font-size:14px; line-height:1.5; text-align:left; }
+#teamWorkspaceModes .team-workspace-tradeoff { margin:12px 0 8px; color:var(--muted); font-size:13px; line-height:1.5; text-align:left; }
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-workspace-explanation,
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-workspace-tradeoff,
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-workspace-replies,
+#teamAnalysisWorkspace[data-workspace-view=matchups] .team-workspace-reply-note { display:none; }
+#teamAnalysisWorkspace[data-workspace-view=trios] .team-role-risk-preview > span:first-child > small { display:none; }
+#teamWorkspaceModes .team-workspace-risk-names { flex-basis:100%; color:var(--ink); font-size:13px; line-height:1.5; overflow-wrap:break-word; }
+#teamWorkspaceModes .team-workspace-replies { display:block; width:100%; min-height:44px; padding:8px 0; border:0; border-radius:0; background:none; box-shadow:none; color:var(--ink); font-size:13px; line-height:1.5; text-align:left; text-decoration:underline; text-underline-offset:3px; white-space:normal; }
+#teamWorkspaceModes .team-workspace-replies:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#teamWorkspaceModes .team-workspace-reply-note { margin:8px 0; color:var(--muted); font-size:13px; }

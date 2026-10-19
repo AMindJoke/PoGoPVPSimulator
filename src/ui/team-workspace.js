@@ -1,5 +1,32 @@
 (function(root){
   'use strict';
+  const candidateMetrics=candidate=>[candidate.backups,candidate.sensitivity?.switchHolds??candidate.switchEven,candidate.closerWins];
+  function explainCandidate(candidate,reference,ownTeam,opponentTeam){
+    const metrics=candidateMetrics(candidate),total=candidate.total;
+    const name=slot=>ownTeam[slot]?.name||'This Pok\u00e9mon';
+    const opponentName=slot=>opponentTeam[slot]?.name||'Unknown opponent';
+    const focus=candidate.style==='Switch resilience'
+      ? `${name(candidate.switch)} wins or draws against ${metrics[1]}/${total} opponents across all even shields, without using an extra shield.`
+      : candidate.style==='Shield closer'
+        ? `${name(candidate.closer)} wins ${metrics[2]}/${total} matchups with a 1\u20130 shield advantage.`
+        : `At 1\u20131, ${metrics[0]}/${total} opponents have at least two winning answers in this trio.`;
+    let tradeoff='';
+    if(reference&&reference!==candidate){
+      const base=candidateMetrics(reference),labels=[['opponent with a backup win','opponents with a backup win'],['switch hold','switch holds'],['closer win at 1\u20130','closer wins at 1\u20130']];
+      const changes=metrics.flatMap((value,i)=>{
+        const delta=value-base[i],count=Math.abs(delta);
+        return delta?[`${count} ${delta>0?'more':'fewer'} ${labels[i][count===1?0:1]}`]:[];
+      });
+      const sameMembers=[...candidate.slots].sort((a,b)=>a-b).join(',')===[...reference.slots].sort((a,b)=>a-b).join(',');
+      tradeoff=changes.length
+        ? `Compared with ${reference.style}: ${changes.join('; ')}.`
+        : `Same three counts as ${reference.style}; ${sameMembers?'the same Pok\u00e9mon in different roles':'a different lineup'}.`;
+    }
+    const riskSlots=candidate.gaps?.length?candidate.gaps:candidate.sole?.length?candidate.sole.map(answer=>answer.opponentSlot)
+      :candidate.context?.reply?.covered?candidate.context.reply.slots:candidate.uncoveredLead||[];
+    return {focus,tradeoff,riskNames:[...new Set(riskSlots)].map(opponentName).join(', '),
+      replyRisks:candidate.sensitivity?.risks?.length??null};
+  }
   function compareCandidates(candidates){
     const groups=new Map(),first=candidates[0];
     return candidates.map((candidate,index)=>{
@@ -8,7 +35,7 @@
       const item={duplicate:false,styles:[candidate.style],index,
         sameMembers:!!first&&index>0&&[...candidate.slots].sort().join(',')===[...first.slots].sort().join(','),
         changedRoles:first?candidate.slots.map((slot,i)=>slot!==first.slots[i]):[false,false,false],
-        metrics:[candidate.backups,candidate.sensitivity?.switchHolds??candidate.switchEven,candidate.closerWins],total:candidate.total};
+        metrics:candidateMetrics(candidate),total:candidate.total};
       groups.set(key,item);return item;
     });
   }
@@ -18,7 +45,7 @@
     if(context.view==='matchups'&&context.lineup&&index<0)return {view:'trios',missing:true};
     return {...context,index};
   }
-  root.PvPeakTeamWorkspace={compareCandidates,restoreContext,create(options){
+  root.PvPeakTeamWorkspace={compareCandidates,restoreContext,explainCandidate,create(options){
     const $=id=>document.getElementById(id),escape=options.escapeHtml;
     const workspace=$('teamOpponentPanel').querySelector('.team-trio');
     workspace.id='teamAnalysisWorkspace';workspace.dataset.workspaceView='trios';
@@ -151,6 +178,24 @@
         const comparison= comparisons[index];
         if(comparison&&!comparison.duplicate){
           card.querySelector('header > b').textContent=comparison.styles.join(' · ');
+          const explanation=explainCandidate(candidates[index],index?candidates[0]:null,own.team,enemy.team);
+          let focus=card.querySelector('.team-workspace-explanation');
+          if(!focus){focus=node('p');focus.className='team-workspace-explanation';card.querySelector('header').after(focus);}
+          focus.textContent=explanation.focus;
+          let tradeoff=card.querySelector('.team-workspace-tradeoff');
+          if(!tradeoff){tradeoff=node('p');tradeoff.className='team-workspace-tradeoff';card.querySelector('.team-role-decision').after(tradeoff);}
+          tradeoff.textContent=explanation.tradeoff;tradeoff.hidden=!explanation.tradeoff;
+          const risk=card.querySelector('.team-role-risk-preview');
+          let riskNames=risk.querySelector('.team-workspace-risk-names');
+          if(!riskNames){riskNames=node('span');riskNames.className='team-workspace-risk-names';risk.querySelector(':scope > span').append(riskNames);}
+          riskNames.textContent=explanation.riskNames;riskNames.hidden=!explanation.riskNames;
+          let replies=card.querySelector('.team-workspace-replies');
+          if(!replies){replies=node('button');replies.type='button';replies.className='team-workspace-replies';replies.dataset.roleOpen='replies';risk.after(replies);}
+          replies.hidden=!explanation.replyRisks;
+          replies.textContent=`View ${explanation.replyRisks} tested ${explanation.replyRisks===1?'reply':'replies'} that change a matchup`;
+          let incomplete=card.querySelector('.team-workspace-reply-note');
+          if(!incomplete){incomplete=node('p');incomplete.className='team-workspace-reply-note';replies.after(incomplete);}
+          incomplete.hidden=explanation.replyRisks!==null;incomplete.textContent='Opponent reply checks are incomplete.';
           let metrics=card.querySelector('.team-workspace-metrics');
           if(!metrics){metrics=node('div');metrics.className='team-workspace-metrics';card.querySelector('.team-role-decision').after(metrics);}
           const labels=['2 answers','Switch hold','Closer · 1–0'],styles=['Balanced','Switch resilience','Shield closer'],descriptions=['Opponents with at least two winning answers at 1–1','Opponents held at all even shields; tested replies included when complete','Closer wins with a 1–0 shield advantage'];

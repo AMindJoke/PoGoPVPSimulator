@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-19-v197-home-news";
+const CACHE_VERSION = "2026-10-19-v198-trio-clarity";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -120,9 +120,9 @@ const CORE_ASSETS = [
   "./src/team-builder/team-opponent-context.js?v=20261006-v131",
   "./src/team-builder/team-role-analysis.js?v=20261006-v131",
   "./src/ui/team-roles.js?v=20261007-v152",
-  "./src/ui/team-workspace.js?v=20261007-v152",
-  "./src/ui/team-workspace.css?v=20261007-v152",
-  "./src/ui/team-roles.css?v=20261006-v131",
+  "./src/ui/team-workspace.js?v=20261019-trio-clarity1",
+  "./src/ui/team-workspace.css?v=20261019-trio-clarity1",
+  "./src/ui/team-roles.css?v=20261019-reply-hover1",
   "./src/ui/team-opponent.js?v=20261007-v152",
   "./src/ui/team-opponent.css?v=20261005-v119",
   "./src/ui/pokemon-favorites.js?v=20261001-v76",

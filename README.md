@@ -50,7 +50,9 @@ Against an opposing roster, one setup groups the opponent builds, comparison shi
 
 **Farm** prepares routes when first opened for a ready trio, then lets you choose a losing Pokémon and its opponent, then inspect the two teammates' real farm routes. Advanced plans, replies, conditions, ordered opposing counters and the full roster matrix remain expandable. Manual trio choices show comparison matchups without assigning suggested roles. These are individual simulations under explicit conditions, not a full 3v3 game or a prediction of opposing picks.
 
-The setup coordinator is checked with `node tools/test-team-setup-flow.js` (guided empty states, sequential completion, warm reuse, changed-input cancellation and failed/incomplete results). `node tools/test-team-workspace-choice.js` checks duplicate grouping, distinct role swaps, actual checked counts and resume by Pokémon identity.
+Each suggestion now explains its shield conditions, compares its counts with the first lineup, and names the opponents behind its main risk. Tested opponent replies have a direct link to their detailed results; incomplete reply checks are explicitly marked.
+
+The setup coordinator is checked with `node tools/test-team-setup-flow.js` (guided empty states, sequential completion, warm reuse, changed-input cancellation and failed/incomplete results). `node tools/test-team-workspace-choice.js` checks duplicate grouping, distinct role swaps, actual checked counts, explanations and resume by Pokémon identity. `node tools/test-team-workspace-readability-browser.js` runs a real analysis at desktop and mobile widths, checks reply navigation and trio selection, and saves screenshots under `reports/team-workspace-readability`.
 
 ## Data
 

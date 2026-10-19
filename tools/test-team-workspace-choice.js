@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const {compareCandidates,restoreContext}=require('../src/ui/team-workspace');
+const {compareCandidates,restoreContext,explainCandidate}=require('../src/ui/team-workspace');
 const make=(slots,style,extra={})=>({slots,style,total:6,backups:3,switchEven:2,closerWins:5,...extra});
 const candidates=[make([0,1,2],'Balanced'),make([0,1,2],'Switch resilience'),make([1,0,2],'Shield closer',{sensitivity:{switchHolds:1}}),make([0,1,3],'Other')];
 const result=compareCandidates(candidates);
@@ -22,3 +22,26 @@ assert.equal(restoreContext({view:'matchups',lineup:null,baselineId:'b'},candida
 const reordered=[team[1],team[0],team[2],team[3]];
 assert.equal(restoreContext(context,[make([0,1,2],'Balanced')],reordered).index,0);
 console.log('Trio comparison: exact duplicates merged, role swaps distinct, checked counts and identity-based resume/fallback passed.');
+
+const own=[{name:'Sableye'},{name:'Melmetal'},{name:'Quagsire'},{name:'Altaria'}];
+const opponent=[{name:'Mimikyu'},{name:'Tinkaton'},{name:'Kingdra'},{name:'Clodsire'}];
+const balanced={...make([0,1,2],'Balanced'),lead:0,switch:1,closer:2,gaps:[0,3],sole:[],sensitivity:{switchHolds:2,risks:[]}};
+const snapshot=JSON.stringify(balanced);
+const baseline=explainCandidate(balanced,null,own,opponent);
+assert.match(baseline.focus,/3\/6.*at least two winning answers/);
+assert.equal(baseline.tradeoff,'');assert.equal(baseline.riskNames,'Mimikyu, Clodsire');assert.equal(baseline.replyRisks,0);
+const alternative={...balanced,style:'Switch resilience',slots:[0,1,3],backups:2,sensitivity:{switchHolds:3,risks:[{},{}]}};
+const explained=explainCandidate(alternative,balanced,own,opponent);
+assert.match(explained.focus,/Melmetal wins or draws.*3\/6.*even shields.*without using an extra shield/);
+assert.match(explained.tradeoff,/1 fewer opponent with a backup win; 1 more switch hold/);
+assert.equal(explained.replyRisks,2);
+const closer=explainCandidate({...balanced,style:'Shield closer',closerWins:6,sensitivity:{switchHolds:2,closerWins:1,risks:[{}]}},balanced,own,opponent);
+assert.match(closer.focus,/Quagsire wins 6\/6.*1\u20130 shield advantage/,'Explain the same baseline count shown by the existing metric, not an unlabelled different policy');
+const reorderedExplanation=explainCandidate({...balanced,slots:[1,0,2]},balanced,own,opponent);
+assert.match(reorderedExplanation.tradeoff,/Same three counts.*same Pok\u00e9mon in different roles/);
+assert.match(explainCandidate({...balanced,slots:[0,1,3]},balanced,own,opponent).tradeoff,/Same three counts.*different lineup/);
+assert.equal(explainCandidate({...balanced,gaps:[],sole:[{opponentSlot:2},{opponentSlot:1},{opponentSlot:2}]},null,own,opponent).riskNames,'Kingdra, Tinkaton');
+assert.equal(explainCandidate({...balanced,gaps:[],sole:[],context:{reply:{covered:1,slots:[3,1]}}},null,own,opponent).riskNames,'Clodsire, Tinkaton');
+assert.equal(explainCandidate({...balanced,sensitivity:null,switchEven:0},null,own,opponent).replyRisks,null);
+assert.equal(JSON.stringify(balanced),snapshot,'Explanations must not edit candidate results or ranking data');
+console.log('Trio explanations passed: explicit shield conditions, signed comparisons, equal metrics, full risk names and incomplete reply checks.');
