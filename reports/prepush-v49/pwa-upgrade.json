@@ -1,0 +1,184 @@
+{
+  "baseline": "135d9153d190e4248ddc4a25d8535c6cb6c03c3c",
+  "runs": [
+    {
+      "mobile": false,
+      "before": {
+        "engine": "battle-planner-v46",
+        "ranking": "battle-planner-v46",
+        "details": "battle-planner-v46",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261014-v190",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-14-v190-smart-route"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "after": {
+        "engine": "battle-planner-v49",
+        "ranking": "battle-planner-v49",
+        "details": "battle-planner-v49",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261018-v196",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-18-v196-meta-refresh"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "rankingReady": "ready",
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "cacheIsolation": {
+        "currentHits": 0,
+        "oldKeysRetained": 3,
+        "separated": true
+      },
+      "offline": {
+        "engine": "battle-planner-v49",
+        "ranking": "battle-planner-v49",
+        "details": "battle-planner-v49",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261018-v196",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-18-v196-meta-refresh"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "rankingReady": "ready",
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "offlineBattle": {
+        "score": 423,
+        "engine": "battle-planner-v49",
+        "canonicalScore": 423,
+        "cmpStatus": "checked"
+      },
+      "errors": []
+    },
+    {
+      "mobile": true,
+      "before": {
+        "engine": "battle-planner-v46",
+        "ranking": "battle-planner-v46",
+        "details": "battle-planner-v46",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261014-v190",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-14-v190-smart-route"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "after": {
+        "engine": "battle-planner-v49",
+        "ranking": "battle-planner-v49",
+        "details": "battle-planner-v49",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261018-v196",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-18-v196-meta-refresh"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "rankingReady": "ready",
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "cacheIsolation": {
+        "currentHits": 0,
+        "oldKeysRetained": 3,
+        "separated": true
+      },
+      "offline": {
+        "engine": "battle-planner-v49",
+        "ranking": "battle-planner-v49",
+        "details": "battle-planner-v49",
+        "controller": "http://127.0.0.1:57508/sw.js?v=20261018-v196",
+        "caches": [
+          "pogo-pvp-simulator-2026-10-18-v196-meta-refresh"
+        ],
+        "team": [
+          "florges",
+          "kingdra",
+          "melmetal"
+        ],
+        "rankingReady": "ready",
+        "selectedBuild": {
+          "profile": "default",
+          "league": "great",
+          "ivAtk": 6,
+          "ivDef": 13,
+          "ivHp": 14,
+          "level": 17,
+          "cp": 1499,
+          "rank": 38
+        }
+      },
+      "offlineBattle": {
+        "score": 423,
+        "engine": "battle-planner-v49",
+        "canonicalScore": 423,
+        "cmpStatus": "checked"
+      },
+      "errors": []
+    }
+  ],
+  "passed": true
+}

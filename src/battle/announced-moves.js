@@ -5,11 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   // Explicit previews only. Promotion into current data requires release verification.
-  const updates = Object.freeze([Object.freeze({
-    pokemonId: "zoroark", moveId: "SUCKER_PUNCH", kind: "fast", status: "upcoming",
-    eventDate: "2026-10-10", eventStartLocal: "14:00", labelDate: "10 Oct",
-    source: "https://pokemongo.com/news/communityday-october-2026-zorua"
-  })]);
+  const updates = Object.freeze([]);
   function forPokemon(pokemon) {
     return updates.filter(update => update.pokemonId === (pokemon?.id || pokemon?.speciesId));
   }

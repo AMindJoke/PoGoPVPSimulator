@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-14-v190-smart-route";
+const CACHE_VERSION = "2026-10-18-v196-meta-refresh";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -23,7 +23,7 @@ const CORE_ASSETS = [
   "./src/battle/announced-moves.js?v=20261013-v180",
   "./cramorant-data.js",
   "./default-movesets.js",
-  "./data/seasons/season-generated-loader.js?v=20261008-v180",
+  "./data/seasons/season-generated-loader.js?v=20261018-v196",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js",
   "./src/season/season-context.js",
@@ -42,7 +42,7 @@ const CORE_ASSETS = [
   "./src/analysis/battle-review.js",
   "./src/analysis/battle-alternatives.js?v=20261006-v131",
   "./src/analysis/battle-sensitivity.js?v=20261005-v117",
-  "./src/analysis/cmp-dependency.js?v=20261006-v131",
+  "./src/analysis/cmp-dependency.js?v=20261019-v49",
   "./src/ui/cmp-dependency.js?v=20261006-v131",
   "./src/ui/cmp-dependency.css?v=20261006-v132",
   "./src/ui/battle-alternatives.js?v=20261008-v177",
@@ -50,7 +50,7 @@ const CORE_ASSETS = [
   "./src/analysis/iv-impact.js",
   "./src/analysis/ranking-details.js?v=20261006-v123",
   "./src/analysis/meta-quick-matchup.js?v=20261001-v73",
-  "./src/ui/meta-quick-matchup.js?v=20261008-v180",
+  "./src/ui/meta-quick-matchup.js?v=20261018-v196",
   "./src/ui/meta-quick-matchup.css?v=20261006-v123",
   "./src/analysis/pokemon-analysis-view-model.js?v=20261007-v171",
   "./src/ui/pokemon-analysis.js?v=20261007-v171",
@@ -62,7 +62,7 @@ const CORE_ASSETS = [
   "./src/team-builder/team-builder-meta.js",
   "./src/analysis/shared-matchup-cache.js?v=20261008-v173",
   "./src/analysis/simulation-worker-pool.js?v=20261008-v176",
-  "./src/team-builder/team-builder-analysis.js?v=20261008-v174",
+  "./src/team-builder/team-builder-analysis.js?v=20261019-ranking-guard",
   "./src/team-builder/team-builder-matrix.css",
   "./src/team-builder/team-builder-presentation.css",
   "./src/meta-mobile.css",
@@ -135,8 +135,8 @@ const CORE_ASSETS = [
 // Warm only the current data after the shell. Reuse browser HTTP cache for
 // downloads already started by the page, while preserving first-visit offline use.
 const RANKING_ASSETS = [
-  "./data/great-league-rankings.js?v=20261008-v180-rankings",
-  "./data/great-league-ranking-details.js?v=20261008-v180-rankings",
+  "./data/great-league-rankings.js?v=20261018-v196-rankings",
+  "./data/great-league-ranking-details.js?v=20261018-v196-rankings",
   "./data/great-league-role-rankings.json?v=20260930-role-v1"
 ];
 

@@ -1,10 +1,19 @@
 {
   "cells": 512,
-  "serialMs": 7465,
-  "parallelMs": 4314,
-  "speedup": 1.73,
-  "reductionPercent": 42.2,
+  "workers": 4,
+  "mobile": false,
+  "serialMs": 2569,
+  "parallelMs": 1013,
+  "speedup": 2.54,
+  "reductionPercent": 60.6,
+  "runs": [
+    {
+      "batchSize": 4,
+      "parallelMs": 1013,
+      "speedup": 2.54
+    }
+  ],
   "exactResultParity": true,
   "environment": "Node native worker threads; cold startup included, no browser/UI/IndexedDB timing",
-  "date": "2026-10-08T08:43:54.572Z"
+  "date": "2026-10-18T22:38:49.053Z"
 }

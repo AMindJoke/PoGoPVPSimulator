@@ -1,0 +1,208 @@
+{
+  "environment": "Local Chromium desktop/mobile emulation, not physical phone timing",
+  "runs": [
+    {
+      "mobile": false,
+      "coverageJobs": 720,
+      "cancel": {
+        "oldToken": 1,
+        "token": 2,
+        "done": 8,
+        "active": false
+      },
+      "coverageResume": {
+        "dispatched": 712,
+        "failed": 0,
+        "done": 720,
+        "cacheHits": 8,
+        "context": "coverage",
+        "total": 720,
+        "status": "All 720 deterministic matchups are ready from cache.",
+        "ms": 3570
+      },
+      "parity": [
+        {
+          "member": "melmetal",
+          "opponent": "mimikyu",
+          "cached": 295,
+          "battle": 295
+        },
+        {
+          "member": "melmetal",
+          "opponent": "snorlax_shadow",
+          "cached": 655,
+          "battle": 655
+        },
+        {
+          "member": "melmetal",
+          "opponent": "castform",
+          "cached": 687,
+          "battle": 687
+        },
+        {
+          "member": "sableye_shadow",
+          "opponent": "castform",
+          "cached": 559,
+          "battle": 559
+        },
+        {
+          "member": "altaria",
+          "opponent": "castform",
+          "cached": 394,
+          "battle": 394
+        },
+        {
+          "member": "victreebel_shadow",
+          "opponent": "castform",
+          "cached": 616,
+          "battle": 616
+        },
+        {
+          "member": "quagsire_shadow",
+          "opponent": "castform",
+          "cached": 294,
+          "battle": 294
+        },
+        {
+          "member": "carbink",
+          "opponent": "castform",
+          "cached": 594,
+          "battle": 594
+        }
+      ],
+      "coveragePersistentWarm": {
+        "dispatched": 0,
+        "failed": 0,
+        "done": 720,
+        "cacheHits": 720,
+        "context": "coverage",
+        "total": 720,
+        "status": "All 720 deterministic matchups are ready from cache.",
+        "ms": 124
+      },
+      "replacementCold": {
+        "dispatched": 1801,
+        "failed": 0,
+        "done": 1803,
+        "cacheHits": 2,
+        "context": "replacement",
+        "total": 1803,
+        "status": "2 cached · 1801 simulated",
+        "ms": 2437
+      },
+      "replacementPersistentWarm": {
+        "dispatched": 0,
+        "failed": 0,
+        "done": 1803,
+        "cacheHits": 1803,
+        "context": "replacement",
+        "total": 1803,
+        "status": "1803 cached · 0 simulated",
+        "ms": 93
+      },
+      "errors": []
+    },
+    {
+      "mobile": true,
+      "coverageJobs": 720,
+      "cancel": {
+        "oldToken": 1,
+        "token": 2,
+        "done": 8,
+        "active": false
+      },
+      "coverageResume": {
+        "dispatched": 712,
+        "failed": 0,
+        "done": 720,
+        "cacheHits": 8,
+        "context": "coverage",
+        "total": 720,
+        "status": "All 720 deterministic matchups are ready from cache.",
+        "ms": 3957
+      },
+      "parity": [
+        {
+          "member": "melmetal",
+          "opponent": "mimikyu",
+          "cached": 295,
+          "battle": 295
+        },
+        {
+          "member": "melmetal",
+          "opponent": "snorlax_shadow",
+          "cached": 655,
+          "battle": 655
+        },
+        {
+          "member": "melmetal",
+          "opponent": "castform",
+          "cached": 687,
+          "battle": 687
+        },
+        {
+          "member": "sableye_shadow",
+          "opponent": "castform",
+          "cached": 559,
+          "battle": 559
+        },
+        {
+          "member": "altaria",
+          "opponent": "castform",
+          "cached": 394,
+          "battle": 394
+        },
+        {
+          "member": "victreebel_shadow",
+          "opponent": "castform",
+          "cached": 616,
+          "battle": 616
+        },
+        {
+          "member": "quagsire_shadow",
+          "opponent": "castform",
+          "cached": 294,
+          "battle": 294
+        },
+        {
+          "member": "carbink",
+          "opponent": "castform",
+          "cached": 594,
+          "battle": 594
+        }
+      ],
+      "coveragePersistentWarm": {
+        "dispatched": 0,
+        "failed": 0,
+        "done": 720,
+        "cacheHits": 720,
+        "context": "coverage",
+        "total": 720,
+        "status": "All 720 deterministic matchups are ready from cache.",
+        "ms": 120
+      },
+      "replacementCold": {
+        "dispatched": 1801,
+        "failed": 0,
+        "done": 1803,
+        "cacheHits": 2,
+        "context": "replacement",
+        "total": 1803,
+        "status": "2 cached · 1801 simulated",
+        "ms": 2716
+      },
+      "replacementPersistentWarm": {
+        "dispatched": 0,
+        "failed": 0,
+        "done": 1803,
+        "cacheHits": 1803,
+        "context": "replacement",
+        "total": 1803,
+        "status": "1803 cached · 0 simulated",
+        "ms": 95
+      },
+      "errors": []
+    }
+  ],
+  "passed": true
+}

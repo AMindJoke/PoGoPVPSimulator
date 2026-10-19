@@ -15,7 +15,7 @@
     id: "twilight-trails",
     label: "Twilight Trails",
     dataVersion: "twilight-trails-confirmed-1",
-    rankingVersion: "great-league-twilight-trails-confirmed-v46-score-v5-124",
+    rankingVersion: "great-league-twilight-trails-confirmed-v49-score-v5-196",
     enabled: false,
     sourceUrl,
     moveOverrides: Object.freeze({

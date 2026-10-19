@@ -24,6 +24,7 @@
     if (!pokemon || pokemon.released === false || !pokemon.fast?.length || !(pokemon.charged?.length >= 2)) return false;
     const form = pokemon.form || {};
     if (form.isMega || form.isPrimal || ["mega", "primal"].includes(form.kind)) return false;
+    if (pokemon.tags?.includes("duplicate")) return false;
     // Same below-CP-cap availability exclusions as the Great League dataset.
     return !["giratina_altered", "mewtwo_armored"].includes(pokemon.id);
   }
@@ -532,7 +533,14 @@
     });
   }
 
+  function rankingState(ranking, engineVersion, seasonId) {
+    if (!ranking?.entries?.length) return "missing";
+    return ranking.metadata?.matrixVersion === engineVersion
+      && ranking.metadata?.seasonId === seasonId ? "ready" : "stale";
+  }
+
   return Object.freeze({
+    rankingState,
     SCHEMA_VERSION,
     STORAGE_KEY,
     MAX_CACHE_ENTRIES,

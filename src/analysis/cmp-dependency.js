@@ -7,13 +7,9 @@
   const VERSION='cmp-dependency-v1',MAX_CHECKS=4;
   function workerSource(source){
     source=source.replace(/\r\n/g,'\n');
-    const anchor=`const preparedActors = actors.map(([attacker, defender]) => ({
-          attacker,
-          defender,
-          plan: prepareAutomaticBattleAction(attacker, defender)
-        }));`;
+    const anchor='const strictDreStandard = globalThis.BATTLE_DRE_STANDARD === true';
     if(source.split(anchor).length!==2)throw new Error('CMP diagnostic hook unavailable');
-    source=source.replace(anchor,anchor+`
+    source=source.replace(anchor,`
         if(globalThis.__cmpProbe && chargedContinuationDepth===0
           && !globalThis.__battleAlternativeProbe?.targets?.length
           && preparedActors.length===2
@@ -22,7 +18,8 @@
             attackA:left.attack,attackB:right.attack,
             moves:preparedActors.map(item=>[item.attacker.trainer,item.plan.action.moveId || item.plan.action.move?.id]).sort(),
             prefix:JSON.stringify(timeline.filter(event=>event.start<currentTurn).map(event=>[event.trainer,event.kind,event.move?.id || event.moveId,event.start,event.duration,event.damage,event.energyBefore,event.energyAfter,event.hpBefore,event.hpAfter]))});
-        }`);
+        }
+        `+anchor);
     const prefix=`const cmpOriginalPost=self.postMessage;let cmpCaptured=null;self.postMessage=function(message){if(cmpCaptured)cmpCaptured.message=message;else cmpOriginalPost.call(self,message);};\n`;
     return prefix+source+`\n;(()=>{
       const originalState=turnEngineState;

@@ -1,0 +1,456 @@
+{
+  "baselineRef": "135d9153d190e4248ddc4a25d8535c6cb6c03c3c",
+  "currentEngine": "battle-planner-v47",
+  "cases": 1385,
+  "improved": 17,
+  "regressed": 0,
+  "unresolvedFlips": 0,
+  "changed": 17,
+  "durationMs": [
+    26492,
+    26455
+  ],
+  "timing": [
+    {
+      "medianMs": 10.83,
+      "p95Ms": 58.7,
+      "p99Ms": 106.72,
+      "maxMs": 183.02
+    },
+    {
+      "medianMs": 10.98,
+      "p95Ms": 57.99,
+      "p99Ms": 102.31,
+      "maxMs": 175.8
+    }
+  ],
+  "failures": [],
+  "changes": [
+    {
+      "id": "talonflame_shadow--dewgong--0s",
+      "before": {
+        "winner": "A",
+        "score": 528
+      },
+      "after": {
+        "winner": "B",
+        "score": 499
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 3,
+        "side": "B",
+        "turn": 18,
+        "before": {
+          "type": "charged_move",
+          "moveId": "ICY_WIND"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "DRILL_RUN"
+        }
+      }
+    },
+    {
+      "id": "talonflame--corsola_galarian--2s",
+      "before": {
+        "winner": "B",
+        "score": 313
+      },
+      "after": {
+        "winner": "A",
+        "score": 546
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 7,
+        "side": "A",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--skeledirge--1s",
+      "before": {
+        "winner": "B",
+        "score": 432
+      },
+      "after": {
+        "winner": "A",
+        "score": 637
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 0,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--gastrodon--2s",
+      "before": {
+        "winner": "B",
+        "score": 286
+      },
+      "after": {
+        "winner": "A",
+        "score": 621
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 5,
+        "side": "A",
+        "turn": 24,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--quagsire_shadow--1s",
+      "before": {
+        "winner": "B",
+        "score": 252
+      },
+      "after": {
+        "winner": "A",
+        "score": 551
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 6,
+        "side": "A",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--guzzlord--1s",
+      "before": {
+        "winner": "B",
+        "score": 321
+      },
+      "after": {
+        "winner": "A",
+        "score": 561
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 2,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--dewgong--1s",
+      "before": {
+        "winner": "B",
+        "score": 428
+      },
+      "after": {
+        "winner": "A",
+        "score": 664
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 5,
+        "side": "A",
+        "turn": 19,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "talonflame--dewgong--2s",
+      "before": {
+        "winner": "B",
+        "score": 329
+      },
+      "after": {
+        "winner": "A",
+        "score": 549
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 8,
+        "side": "A",
+        "turn": 25,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--azumarill--1s",
+      "before": {
+        "winner": "B",
+        "score": 438
+      },
+      "after": {
+        "winner": "A",
+        "score": 523
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 6,
+        "side": "A",
+        "turn": 25,
+        "before": {
+          "type": "charged_move",
+          "moveId": "SHADOW_BALL"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--florges--florges--0s",
+      "before": {
+        "winner": "A",
+        "score": 501
+      },
+      "after": {
+        "winner": "B",
+        "score": 499
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 3,
+        "side": "B",
+        "turn": 12,
+        "before": {
+          "type": "charged_move",
+          "moveId": "MOONBLAST"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "CHILLING_WATER"
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--florges--florges--1s",
+      "before": {
+        "winner": "A",
+        "score": 501
+      },
+      "after": {
+        "winner": "B",
+        "score": 499
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 9,
+        "side": "B",
+        "turn": 23,
+        "before": {
+          "type": "charged_move",
+          "moveId": "MOONBLAST"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "CHILLING_WATER"
+        }
+      }
+    },
+    {
+      "id": "expanded--talonflame--corsola_galarian--always--2s",
+      "before": {
+        "winner": "B",
+        "score": 313
+      },
+      "after": {
+        "winner": "A",
+        "score": 546
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 7,
+        "side": "A",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "expanded--corsola_galarian--talonflame--smart--2s",
+      "before": {
+        "winner": "A",
+        "score": 687
+      },
+      "after": {
+        "winner": "B",
+        "score": 454
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 7,
+        "side": "B",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "expanded--corsola_galarian--talonflame--always--2s",
+      "before": {
+        "winner": "A",
+        "score": 687
+      },
+      "after": {
+        "winner": "B",
+        "score": 454
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 7,
+        "side": "B",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "expanded--talonflame--quagsire_shadow--always--1s",
+      "before": {
+        "winner": "B",
+        "score": 252
+      },
+      "after": {
+        "winner": "A",
+        "score": 551
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 6,
+        "side": "A",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "expanded--quagsire_shadow--talonflame--smart--1s",
+      "before": {
+        "winner": "A",
+        "score": 748
+      },
+      "after": {
+        "winner": "B",
+        "score": 449
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 6,
+        "side": "B",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    },
+    {
+      "id": "expanded--quagsire_shadow--talonflame--always--1s",
+      "before": {
+        "winner": "A",
+        "score": 748
+      },
+      "after": {
+        "winner": "B",
+        "score": 449
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 6,
+        "side": "B",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "BRAVE_BIRD"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLY"
+        }
+      }
+    }
+  ],
+  "scope": "Identical current data and mechanics dependencies; reference HTML battle functions and strategic selector. Outcome classification follows the first changed decision, not a fixed A/B side. Does not certify optimal play."
+}

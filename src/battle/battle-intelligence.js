@@ -62,6 +62,8 @@ function createPvPeakBattleIntelligenceApi() {
 
   const fastPathCache = new Map();
   const MAX_CACHE_ENTRIES = 2048;
+  const MAX_STRATEGIC_CONTINUATIONS = 12;
+  const MAX_STRATEGIC_SHIELD_CONTINUATIONS = 16;
   const MAX_DECISION_SAMPLES = 8192;
   const statistics = createStatistics();
   const principleStatistics = createPrincipleStatistics();
@@ -746,15 +748,33 @@ function createPvPeakBattleIntelligenceApi() {
     ];
     const triggered = ["ROUTE-004_CHARGED_READINESS_CALCULATION"];
     const rejected = [];
-    const finish = (candidate, category, intent, evidence = {}) => ({
-      ...resolvedPrinciple(candidate, category, intent, triggered, rejected, {
+    const finish = (candidate, category, intent, evidence = {}) => {
+      const timingReview = canonicalTimingContinuationDecision({
+        state, actor, opponent, moves, candidates, candidate, fast, category, evidence, context
+      });
+      if (timingReview) {
+        evidence = { ...evidence, timingComparison: timingReview.comparison };
+        statistics.continuationSearches++;
+        if (timingReview.candidate !== candidate) {
+          candidate = timingReview.candidate;
+          category = "timing";
+          intent = candidate.action.type === ACTION_TYPES.FAST_MOVE
+            ? PRINCIPLE_TIMING_INTENTS.WAIT_ONE_FAST : "VERIFIED_TIMING_CONTINUATION";
+          removePrincipleIds(triggered, ["TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN"]);
+          triggered.push("TIMING-011_OPTIMIZE_CHARGED_TIMING");
+          if (candidate.action.type === ACTION_TYPES.FAST_MOVE) triggered.push("TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN");
+          removePrincipleIds(rejected, triggered);
+        }
+      }
+      return { ...resolvedPrinciple(candidate, category, intent, triggered, rejected, {
         plannerMode: PLANNER_MODES.CANONICAL,
         plannerVersion: "canonical-v1",
         chargedReadiness: readiness,
         ...evidence
       }),
-      principlesEvaluated: allPrinciples
-    });
+        principlesEvaluated: allPrinciples
+      };
+    };
 
     if (!moves.length) {
       triggered.push("AVAIL-001_NO_ACTIVE_CHARGED_MOVE");
@@ -1073,6 +1093,73 @@ function createPvPeakBattleIntelligenceApi() {
       };
     });
     return moves.sort((a, b) => a.energyCost - b.energyCost || a.index - b.index);
+  }
+
+  function canonicalTimingContinuationDecision({ state, actor, opponent, moves, candidates, candidate, fast, category, evidence, context }) {
+    if (!candidate || !fast || !context.dreStandard || category === "tactical" || category === "availability" || category === "farm"
+      || evidence.formTransition || actor.mechanicState?.formTransition
+      || numeric(actor.fastMove?.turns, 1) < 3
+      || numeric(actor.energy) + numeric(actor.fastMove?.energyGain) > 100
+      || numeric(actor.mechanicState?.timingContinuationCount) >= 2
+      || typeof context.compareTimingContinuations !== "function") return null;
+    const effect = moves.find(move => move.guaranteedEffect && move.selfBuffing && !move.selfDebuffing
+      && (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || move.id === candidate.action.moveId)
+      && numeric(actor.energy) >= move.energyCost
+      && canonicalCandidateForMove(move, candidates)
+      && (typeof context.hasGuaranteedEffect !== "function" || context.hasGuaranteedEffect({ moveId: move.id, move: move.original })));
+    if (!effect) return null;
+    const incomingFast = canonicalFastDamage(opponent, context, "opponent");
+    if (numeric(actor.hp) <= incomingFast || nextPendingLethal(state, candidate.action.side)) return null;
+    const wait = candidates.find(item => item.action.type === ACTION_TYPES.WAIT);
+    const choices = [candidate, canonicalCandidateForMove(effect, candidates), fast, wait]
+      .filter((item, index, list) => item && list.indexOf(item) === index);
+    if (choices.length < 2) return null;
+    const comparison = context.compareTimingContinuations(candidate.action, choices.map(item => item.action));
+    if (!comparison?.complete) return null;
+    const matches = (left, right) => left?.type === right?.type
+      && (left?.type !== ACTION_TYPES.CHARGED_MOVE || left.moveId === right.moveId);
+    for (const item of choices) {
+      const alternative = comparison.alternatives.find(branch => matches(branch.action, item.action));
+      const projection = alternative?.responses.find(response => response.responseId === "policy");
+      if (projection) item.evidence = { ...(item.evidence || {}), continuation: {
+        outcome: ["loss", "draw", "win"][projection.outcome],
+        remainingHp: projection.remainingHp, remainingEnergy: projection.remainingEnergy,
+        remainingShields: projection.remainingShields, opponentResponses: alternative.responses
+      } };
+    }
+    return { candidate: choices.find(item => matches(item.action, comparison.action)) || candidate, comparison };
+  }
+
+  function selectRobustContinuation(alternatives, originalId) {
+    const original = alternatives.find(item => item.id === originalId);
+    const responseIds = original?.responses?.map(response => response.responseId) || [];
+    const complete = alternatives.length >= 2 && responseIds.includes("policy")
+      && new Set(responseIds).size === responseIds.length
+      && alternatives.reduce((sum, item) => sum + (item.responses?.length || 0), 0) <= MAX_STRATEGIC_CONTINUATIONS
+      && alternatives.every(item => item.responses?.length === responseIds.length
+        && responseIds.every(id => {
+          const response = item.responses.find(branch => branch.responseId === id);
+          return response?.complete && [0, 1, 2].includes(response.outcome);
+        }));
+    if (!complete) return { id: originalId, complete: false, reason: "INCOMPLETE_RESPONSE_COMPARISON" };
+    const outcome = (item, id = "policy") => item.responses.find(response => response.responseId === id)?.outcome;
+    let chosen = original;
+    for (const item of alternatives) if (outcome(item) > outcome(chosen)) chosen = item;
+    const defaultChoiceId = chosen.id;
+    // Protect an already projected win, but never change a losing/drawing line in hope of an off-policy mistake.
+    if (outcome(chosen) === 2) for (const item of alternatives) {
+      if (outcome(item) !== 2) continue;
+      if (responseIds.every(id => outcome(item, id) >= outcome(chosen, id))
+        && responseIds.some(id => outcome(item, id) > outcome(chosen, id))) chosen = item;
+    }
+    const values = chosen.responses.map(response => response.outcome);
+    return {
+      id: chosen.id, complete: true, responseIds, defaultChoiceId,
+      responseSensitive: Math.min(...values) !== Math.max(...values),
+      worstOutcome: Math.min(...values),
+      reason: chosen.id !== defaultChoiceId ? "ROBUST_WIN_PRESERVED"
+        : chosen.id !== originalId ? "STANDARD_OUTCOME_IMPROVED" : "ORIGINAL_CHOICE_RETAINED"
+    };
   }
 
   function canonicalFormTransitionDecision({ actor, opponent, moves, fast, chargedCandidates, context }) {
@@ -2516,6 +2603,23 @@ function createPvPeakBattleIntelligenceApi() {
         evidence: { selectedCost: selected.energyCost, currentEnergy: actor.energy }
       };
     }
+    const plannedOpener = moves.find(move => move.id === sequence[0]?.id);
+    const effectOrderAmbiguous = numeric(opponent.shields) > 0
+      ? selected.selfDebuffing || plannedOpener?.selfDebuffing
+      : selected.guaranteedEffect || plannedOpener?.guaranteedEffect;
+    let chargedComparison = null;
+    if (plannedOpener && selected.id !== plannedOpener.id && effectOrderAmbiguous
+      && numeric(actor.energy) >= plannedOpener.energyCost
+      && canonicalCandidateForMove(plannedOpener, chargedCandidates)
+      && typeof context.compareChargedContinuations === "function") {
+      chargedComparison = context.compareChargedContinuations(selected.id, [selected.id, plannedOpener.id]);
+      const verifiedMove = [selected, plannedOpener].find(move => move.id === chargedComparison?.moveId);
+      if (verifiedMove) {
+        selected = verifiedMove;
+        statistics.continuationSearches++;
+        triggered.push("MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS");
+      }
+    }
     if (selected.guaranteedEffect) {
       triggered.push("EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS");
     }
@@ -2526,7 +2630,7 @@ function createPvPeakBattleIntelligenceApi() {
       selectedMoveId: selected.id,
       triggered,
       rejected,
-      evidence: { finalSequence: sequence.map(move => move.id), repeatedGuaranteedAttackDebuffRoute }
+      evidence: { finalSequence: sequence.map(move => move.id), repeatedGuaranteedAttackDebuffRoute, chargedComparison }
     };
   }
 
@@ -4158,24 +4262,18 @@ function createPvPeakBattleIntelligenceApi() {
     });
     if (principleEvaluation.resolved && principleEvaluation.candidate) {
       const cached = fastPathCache.get(cacheKey);
-      if (cached) {
-        const action = legalActions.find(item => actionKey(item) === cached.actionKey);
-        if (action) {
-          statistics.cacheHits++;
-          perfDebug?.recordCache("battle-intelligence", true, { size: fastPathCache.size });
-          const result = resultFromCached(action, candidates, cached, policy, principleEvaluation);
-          finishTiming(startedAt, selectionSpan);
-          return result;
-        }
-      }
-      statistics.cacheMisses++;
-      perfDebug?.recordCache("battle-intelligence", false, { size: fastPathCache.size });
+      // A nested rollout can cache the same state with a smaller search budget.
+      // Its action and evidence must never replace the fresh outer decision.
+      const memoized = cached?.actionKey === actionKey(principleEvaluation.candidate.action);
+      statistics[memoized ? "cacheHits" : "cacheMisses"]++;
+      perfDebug?.recordCache("battle-intelligence", memoized, { size: fastPathCache.size });
       const chosen = principleEvaluation.candidate;
       chosen.reasonCodes = [...new Set([
         primaryPrincipleReasonCode(principleEvaluation, chosen.action),
         ...chosen.reasonCodes,
         ...principleReasonCodes(principleEvaluation.principlesTriggered),
-        ...principleEvidenceReasonCodes(principleEvaluation)
+        ...principleEvidenceReasonCodes(principleEvaluation),
+        memoized ? "MEMOIZED_RESULT" : null
       ].filter(Boolean))];
       for (const principleId of principleEvaluation.principleIds) {
         if (!chosen.principleIds.includes(principleId)) chosen.principleIds.push(principleId);
@@ -4207,6 +4305,19 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function explainPrincipleDecision(evaluation) {
+    if (evaluation.evidence?.timingComparison?.actionChanged) {
+      if (evaluation.evidence.timingComparison.reason === "ROBUST_WIN_PRESERVED") {
+        return "This timing preserves the configured-policy win across more sampled legal responses.";
+      }
+      return "A bounded canonical comparison verified this timing choice against the sampled opponent responses.";
+    }
+    const comparison = evaluation.evidence?.compact?.postProcessing?.chargedComparison;
+    if (comparison && comparison.moveId !== comparison.originalMoveId) {
+      if (comparison.reason === "ROBUST_WIN_PRESERVED") {
+        return "This Charged opener preserves the configured-policy win across more sampled legal responses.";
+      }
+      return "The planned Charged opener improves the projected battle outcome when both move orders are replayed.";
+    }
     if (evaluation.intent === "FAST_MOVE" && evaluation.category === "availability") {
       return "The Principle Engine determined that no Charged action is currently available or affordable.";
     }
@@ -4246,6 +4357,9 @@ function createPvPeakBattleIntelligenceApi() {
   }
 
   function primaryPrincipleReasonCode(evaluation = {}, action = null) {
+    if (evaluation.evidence?.timingComparison?.actionChanged) return "BETTER_PROJECTED_OUTCOME";
+    const comparison = evaluation.evidence?.compact?.postProcessing?.chargedComparison;
+    if (comparison && comparison.moveId !== comparison.originalMoveId) return "BETTER_PROJECTED_OUTCOME";
     if (evaluation.intent === "IMMEDIATE_LETHAL") return "LETHAL_MOVE_AVAILABLE";
     if (evaluation.intent === "THROW_BEFORE_FAINT") return "FORCED_THROW_BEFORE_FAINT";
     if (evaluation.intent === "THROW_BEFORE_OPPONENT_LETHAL") return "LETHAL_CHARGED_CONCEDED";
@@ -4789,26 +4903,7 @@ function createPvPeakBattleIntelligenceApi() {
     if (!result?.action || !result.fastPath) return;
     if (fastPathCache.size >= MAX_CACHE_ENTRIES) fastPathCache.delete(fastPathCache.keys().next().value);
     fastPathCache.set(key, {
-      actionKey: actionKey(result.action),
-      sourceRuleIds: result.sourceRuleIds,
-      principleIds: result.principleIds,
-      reasonCodes: result.reasonCodes,
-      explanation: result.explanation,
-      evidence: result.evidence
-    });
-  }
-
-  function resultFromCached(action, candidates, cached, policy, principleEvaluation = null) {
-    const candidate = candidates.find(item => actionKey(item.action) === cached.actionKey) || createCandidate(action);
-    candidate.sourceRuleIds = [...cached.sourceRuleIds];
-    candidate.principleIds = [...(cached.principleIds || [])];
-    candidate.reasonCodes = [...cached.reasonCodes, "MEMOIZED_RESULT"];
-    candidate.evidence = cached.evidence;
-    return selectionResult(candidate, candidates, policy, true, candidate.reasonCodes, cached.explanation, {
-      principleEvaluation,
-      fallbackUsed: false,
-      principleDecisionPreserved: true,
-      finalAuthority: "PRINCIPLE_ENGINE"
+      actionKey: actionKey(result.action)
     });
   }
 
@@ -4891,6 +4986,8 @@ function createPvPeakBattleIntelligenceApi() {
     STRATEGIC_STATE_SCHEMA_VERSION,
     PRIORITY_CLASSES,
     POLICIES,
+    MAX_STRATEGIC_CONTINUATIONS,
+    MAX_STRATEGIC_SHIELD_CONTINUATIONS,
     PLANNER_MODES,
     DEFAULT_PLANNER_MODE,
     PRINCIPLE_TIMING_INTENTS,
@@ -4908,6 +5005,7 @@ function createPvPeakBattleIntelligenceApi() {
     selectShieldAction,
     createPrincipleOutcomeVector,
     comparePrincipleOutcomeVectors,
+    selectRobustContinuation,
     detectPrincipleAmbiguity,
     pruneDominatedCandidates,
     clearCache,

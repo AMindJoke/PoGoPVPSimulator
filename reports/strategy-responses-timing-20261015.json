@@ -1,0 +1,532 @@
+{
+  "baselineRef": "local-worker-snapshot",
+  "baselineSourceHash": "763c6ec1a7bf0aeed95e8300bb8a9d324dde14a1bcff34a510ad3b66c80c67b4",
+  "currentEngine": "battle-planner-v48",
+  "cases": 1385,
+  "improved": 11,
+  "regressed": 0,
+  "unresolvedFlips": 0,
+  "changed": 20,
+  "durationMs": [
+    26114,
+    29467
+  ],
+  "timing": [
+    {
+      "medianMs": 10.92,
+      "p95Ms": 58.65,
+      "p99Ms": 97.88,
+      "maxMs": 153.69
+    },
+    {
+      "medianMs": 12.41,
+      "p95Ms": 65.99,
+      "p99Ms": 100.82,
+      "maxMs": 145.52
+    }
+  ],
+  "failures": [],
+  "changes": [
+    {
+      "id": "furret--talonflame_shadow--2s",
+      "before": {
+        "winner": "A",
+        "score": 504
+      },
+      "after": {
+        "winner": "A",
+        "score": 634
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 11,
+        "side": "B",
+        "turn": 26,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "furret--skeledirge--2s",
+      "before": {
+        "winner": "A",
+        "score": 739
+      },
+      "after": {
+        "winner": "A",
+        "score": 726
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 4,
+        "side": "B",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        }
+      }
+    },
+    {
+      "id": "talonflame_shadow--corsola_galarian--1s",
+      "before": {
+        "winner": "B",
+        "score": 455
+      },
+      "after": {
+        "winner": "A",
+        "score": 627
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 0,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "talonflame_shadow--dewgong--0s",
+      "before": {
+        "winner": "B",
+        "score": 499
+      },
+      "after": {
+        "winner": "A",
+        "score": 618
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 4,
+        "side": "A",
+        "turn": 19,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "talonflame_shadow--dewgong--1s",
+      "before": {
+        "winner": "B",
+        "score": 465
+      },
+      "after": {
+        "winner": "A",
+        "score": 600
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 1,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "corsola_galarian--skeledirge--1s",
+      "before": {
+        "winner": "A",
+        "score": 706
+      },
+      "after": {
+        "winner": "B",
+        "score": 471
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 4,
+        "side": "B",
+        "turn": 19,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--cramorant--2s",
+      "before": {
+        "winner": "B",
+        "score": 266
+      },
+      "after": {
+        "winner": "B",
+        "score": 338
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 11,
+        "side": "A",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--dunsparce--2s",
+      "before": {
+        "winner": "B",
+        "score": 320
+      },
+      "after": {
+        "winner": "B",
+        "score": 312
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 13,
+        "side": "A",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--feraligatr_shadow--1s",
+      "before": {
+        "winner": "B",
+        "score": 229
+      },
+      "after": {
+        "winner": "B",
+        "score": 301
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 4,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--quagsire_shadow--2s",
+      "before": {
+        "winner": "B",
+        "score": 250
+      },
+      "after": {
+        "winner": "B",
+        "score": 253
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 8,
+        "side": "A",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "skeledirge--dewgong--1s",
+      "before": {
+        "winner": "B",
+        "score": 499
+      },
+      "after": {
+        "winner": "A",
+        "score": 617
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 1,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        }
+      }
+    },
+    {
+      "id": "rank1--furret--talonflame_shadow--2s",
+      "before": {
+        "winner": "A",
+        "score": 519
+      },
+      "after": {
+        "winner": "A",
+        "score": 648
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 11,
+        "side": "B",
+        "turn": 26,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--florges--florges--0s",
+      "before": {
+        "winner": "B",
+        "score": 499
+      },
+      "after": {
+        "winner": "A",
+        "score": 571
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 2,
+        "side": "A",
+        "turn": 12,
+        "before": {
+          "type": "charged_move",
+          "moveId": "MOONBLAST"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "CHILLING_WATER"
+        }
+      }
+    },
+    {
+      "id": "reported-rosters--florges--florges--1s",
+      "before": {
+        "winner": "B",
+        "score": 499
+      },
+      "after": {
+        "winner": "A",
+        "score": 592
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 8,
+        "side": "A",
+        "turn": 23,
+        "before": {
+          "type": "charged_move",
+          "moveId": "MOONBLAST"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "CHILLING_WATER"
+        }
+      }
+    },
+    {
+      "id": "expanded--talonflame_shadow--corsola_galarian--always--1s",
+      "before": {
+        "winner": "B",
+        "score": 455
+      },
+      "after": {
+        "winner": "A",
+        "score": 627
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 0,
+        "side": "A",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "expanded--corsola_galarian--talonflame_shadow--smart--1s",
+      "before": {
+        "winner": "A",
+        "score": 545
+      },
+      "after": {
+        "winner": "B",
+        "score": 373
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 0,
+        "side": "B",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "expanded--corsola_galarian--talonflame_shadow--always--1s",
+      "before": {
+        "winner": "A",
+        "score": 545
+      },
+      "after": {
+        "winner": "B",
+        "score": 373
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 0,
+        "side": "B",
+        "turn": 15,
+        "before": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        },
+        "after": {
+          "type": "charged_move",
+          "moveId": "FLAME_CHARGE"
+        }
+      }
+    },
+    {
+      "id": "expanded--cramorant--skeledirge--smart--2s",
+      "before": {
+        "winner": "A",
+        "score": 734
+      },
+      "after": {
+        "winner": "A",
+        "score": 662
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 11,
+        "side": "B",
+        "turn": 26,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "expanded--skeledirge--corsola_galarian--smart--1s",
+      "before": {
+        "winner": "B",
+        "score": 294
+      },
+      "after": {
+        "winner": "A",
+        "score": 529
+      },
+      "classification": "improved-for-first-changed-side",
+      "firstDifference": {
+        "index": 4,
+        "side": "A",
+        "turn": 19,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    },
+    {
+      "id": "expanded--quagsire_shadow--skeledirge--smart--2s",
+      "before": {
+        "winner": "A",
+        "score": 750
+      },
+      "after": {
+        "winner": "A",
+        "score": 747
+      },
+      "classification": "resources-only",
+      "firstDifference": {
+        "index": 8,
+        "side": "B",
+        "turn": 20,
+        "before": {
+          "type": "charged_move",
+          "moveId": "TORCH_SONG"
+        },
+        "after": {
+          "type": "fast_move",
+          "moveId": "INCINERATE"
+        }
+      }
+    }
+  ],
+  "scope": "Identical current data and mechanics dependencies; reference HTML battle functions and strategic selector. Outcome classification follows the first changed decision, not a fixed A/B side. Does not certify optimal play."
+}

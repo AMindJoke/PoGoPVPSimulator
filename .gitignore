@@ -11,6 +11,8 @@ data/great-league-rank1-stats-cache.json
 reports/battle-regressions/
 reports/battle-contradictions/
 reports/planner-benchmark/
+reports/meta-refresh-*/
+reports/prepush-v49-staged-check/
 vendor/pvpoke/**
 !vendor/pvpoke/
 !vendor/pvpoke/.pinned-revision

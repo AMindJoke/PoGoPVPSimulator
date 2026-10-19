@@ -1,23 +1,26 @@
 const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
 const G = require('./build-great-league-meta-database');
 const Announced = require('../src/battle/announced-moves');
+const MegaRules = require('../src/battle/mega-rules');
 const gm = G.readWindowGlobal('battle-data.js', 'BATTLE_GAMEMASTER');
 const moves = new Map(gm.moves.map(m => [m.moveId, G.normalizeMove(m)]));
 const pokemon = new Map(gm.pokemon.filter(p => p.speciesId && p.baseStats).map(p => G.normalizePokemon(p, moves)).map(p => [p.id,p]));
 const z = pokemon.get('zoroark'), hisui = pokemon.get('zoroark_hisuian');
 assert.ok(z && hisui);
 const original = JSON.stringify(z.fast);
-assert.ok(!z.fast.includes('SUCKER_PUNCH'));
+assert.ok(z.fast.includes('SUCKER_PUNCH'));
 assert.ok(Announced.fastIds(z).includes('SUCKER_PUNCH'));
 assert.ok(!Announced.fastIds(hisui).includes('SUCKER_PUNCH'));
 assert.equal(JSON.stringify(z.fast), original);
 const before = new Date(2026,9,10,13,59,59);
-assert.match(Announced.label(z,'SUCKER_PUNCH',before), /Upcoming/);
+assert.equal(Announced.label(z,'SUCKER_PUNCH',before), '');
 assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,10,14,0)), '');
 assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,11)), '');
+assert.equal(gm.pokemon.find(p => p.speciesId === 'bramblin').released, true);
+assert.equal(gm.pokemon.find(p => p.speciesId === 'brambleghast').released, false);
 const html = fs.readFileSync('PogoPvp.html','utf8');
 function section(start,end) { return html.slice(html.indexOf('    function '+start+'('), html.indexOf('    function '+end+'(')); }
-const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: {...Announced,label:(p,id)=>Announced.label(p,id,before)} }, moveMap:moves,
+const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: {...Announced,label:(p,id)=>Announced.label(p,id,before)} }, moveMap:moves, megaRules:MegaRules,
   $: id => fields[id] ||= {}, colorMoveSelect:()=>{}, escapeHtml:s=>s,
   findPokemon:id=>pokemon.get(id), selectedChargedMoveLimit:()=>2,
   standardMovesetFor:()=>({fast:'SUCKER_PUNCH',charged:z.charged.slice(0,2)}),
@@ -25,11 +28,13 @@ const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: {...Announced,label:(
 vm.createContext(ctx);
 vm.runInContext(section('selectableFastMoveIds','chooseRecommendedMoves') + section('teamBuilderMoveOptions','teamBuilderChargedMoveSelects') + section('metaMovesForPokemon','metaCacheLabel') + section('validTeamBuilderBattleSide','applyTeamBuilderBattleSide'), ctx);
 ctx.fillMoveSelect('p1Fast',z.fast,z);
-assert.match(fields.p1Fast.innerHTML, /SUCKER_PUNCH.*Upcoming/);
+assert.match(fields.p1Fast.innerHTML, /SUCKER_PUNCH/);
+assert.ok(!fields.p1Fast.innerHTML.includes('Upcoming'));
 ctx.fillMoveSelect('p1Charged',z.charged,z);
 assert.ok(!fields.p1Charged.innerHTML.includes('Upcoming'));
-assert.match(ctx.teamBuilderMoveOptions(ctx.selectableFastMoveIds(z),'SUCKER_PUNCH',new Set(),z), /SUCKER_PUNCH" selected.*Upcoming/);
-assert.notEqual(ctx.metaMovesForPokemon(z).fast.id,'SUCKER_PUNCH');
+assert.match(ctx.teamBuilderMoveOptions(ctx.selectableFastMoveIds(z),'SUCKER_PUNCH',new Set(),z), /SUCKER_PUNCH" selected/);
+assert.ok(!ctx.teamBuilderMoveOptions(ctx.selectableFastMoveIds(z),'SUCKER_PUNCH',new Set(),z).includes('Upcoming'));
+assert.equal(ctx.metaMovesForPokemon(z).fast.id,'SUCKER_PUNCH');
 const side = {pokemonId:z.id,fastMoveId:'SUCKER_PUNCH',chargedMoveIds:z.charged.slice(0,2),ivAtk:4,ivDef:14,ivHp:14,shields:1,baiting:'selective',shieldMode:'smart',startEnergy:0};
 assert.equal(ctx.validTeamBuilderBattleSide(side),true);
 assert.equal(ctx.validTeamBuilderBattleSide({...side,pokemonId:hisui.id}),false);
@@ -43,4 +48,4 @@ assert.ok(Number.isFinite(result.score));
 const patches=require('../data/seasons/twilight-trails/confirmed-moves-20260908.json').moves;
 let fieldsChecked=0;
 for(const [id,patch] of Object.entries(patches)) { const move=gm.moves.find(m=>m.moveId===id); for(const [key,value] of Object.entries(patch)){assert.equal(JSON.stringify(move[key]),JSON.stringify(value),id+' '+key);fieldsChecked++;} }
-console.log('Announced moves passed: explicit preview, selectors, Hisui exclusion, auto Meta exclusion, Battle link validation, real worker score '+result.score+', '+fieldsChecked+' seasonal fields.');
+console.log('Released moves passed: canonical Zoroark move, selectors, Hisui exclusion, Bramblin release, Battle link validation, real worker score '+result.score+', '+fieldsChecked+' seasonal fields.');

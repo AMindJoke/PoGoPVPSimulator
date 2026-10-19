@@ -10,9 +10,13 @@ let source = G.extractLiveWorkerSource();
 const anchor = "const counterfactual = input.counterfactual || null;";
 assert.equal(source.split(anchor).length, 2);
 // A one-level forecast must reproduce an actual replay with the same future
-// policy. Disable only the adaptive shield refinement for this comparison;
-// the forecast still runs, records both outcomes and uses canonical mechanics.
+// policy. Disable adaptive shield and strategic continuation refinement for
+// this mechanical parity check; neither is recursively searched in a forecast.
+// The forecast still records both outcomes and uses canonical mechanics.
 source = source.replace(anchor, "const counterfactual = null;");
+const strategyAnchor = "function compareCanonicalStrategyContinuations(attacker, defender, actions, originalAction) {";
+assert.equal(source.split(strategyAnchor).length, 2);
+source = source.replace(strategyAnchor, `${strategyAnchor}\nreturn null;`);
 const worker = G.createWorkerAdapter(Audit.instrument(source), { dreStandard: true, strict: true });
 const all = Audit.buildCases(runtime);
 const cases = [...all.slice(0, 12), ...all.filter(item => item.id === "golden--defense-buff-sableye-empoleon-1s")];

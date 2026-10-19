@@ -67846,7 +67846,8 @@ window.BATTLE_GAMEMASTER = {
       ],
       "fastMoves": [
         "SHADOW_CLAW",
-        "SNARL"
+        "SNARL",
+        "SUCKER_PUNCH"
       ],
       "chargedMoves": [
         "FOUL_PLAY",
@@ -96908,7 +96909,7 @@ window.BATTLE_GAMEMASTER = {
       },
       "buddyDistance": 5,
       "thirdMoveCost": 75000,
-      "released": false,
+      "released": true,
       "family": {
         "id": "FAMILY_BRAMBLIN",
         "evolutions": [

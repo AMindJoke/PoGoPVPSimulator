@@ -38,7 +38,7 @@ const classification = rows.reduce((counts, row) => {
   counts[row[5]] = (counts[row[5]] || 0) + 1;
   return counts;
 }, {});
-assert.deepEqual(classification, { EXACT_PARITY: 36, INTENTIONAL_ADAPTATION: 7 });
+assert.deepEqual(classification, { EXACT_PARITY: 34, INTENTIONAL_ADAPTATION: 9 });
 
 for (const forbidden of [
   "quagsire", "corsola", "aqua_tail", "mud_bomb",

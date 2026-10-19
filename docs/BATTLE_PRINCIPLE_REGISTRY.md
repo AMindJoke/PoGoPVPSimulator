@@ -25,38 +25,9 @@ This file is generated from `src/battle/battle-principles.js`. Do not edit it wi
 - `110` AMBIGUITY_ESCALATION
 - `120` STABLE_TIE_BREAKS
 
-## Runtime Rule Mapping
+## Runtime Ownership
 
-The current Battle Intelligence runtime still emits legacy `BI_*` rule IDs. Each active runtime rule must map to one or more principle IDs so no strategic behavior remains anonymous during the rebuild.
-
-| Runtime rule | Principle IDs |
-|---|---|
-| `BI_ONLY_LEGAL_ACTION` | `AVAIL-001_NO_ACTIVE_CHARGED_MOVE`, `AVAIL-002_CHEAPEST_CHARGED_NOT_AFFORDABLE`, `ROUTE-026_BUILD_TO_SELECTED_MOVE` |
-| `BI_THROW_BEFORE_FAINT` | `TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT` |
-| `BI_REACHABLE_CHARGED` | `ROUTE-004_CHARGED_READINESS_CALCULATION`, `TACTICAL-006_FORCED_THROW_BEFORE_FAST_FAINT` |
-| `BI_GUARANTEED_LETHAL` | `TACTICAL-008_IMMEDIATE_UNSHIELDED_CHARGED_LETHAL` |
-| `BI_AVOID_LETHAL_OVERFARM` | `SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON`, `TIMING-019_DO_NOT_WAIT_IF_OPPONENT_REACHES_LETHAL_CHARGED_PRESSURE` |
-| `BI_GUARANTEED_EFFECT` | `EFFECT-031_APPLY_GUARANTEED_ATTACK_DEFENSE_EFFECTS` |
-| `BI_CMP_AWARE` | `SURVIVAL-005_ESTIMATE_SURVIVAL_HORIZON` |
-| `BI_MATCHUP_PLAN` | `COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE`, `SEARCH-029_BOUND_PLANNER_STATE_COUNT` |
-| `BI_HYBRID_BASELINE` | `COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE`, `COMPACT-030_ORDER_SEARCH_BY_TIME_BREAKPOINT` |
-| `BI_SELECTIVE_DEEP_SEARCH` | `SEARCH-029_BOUND_PLANNER_STATE_COUNT`, `SEARCH-035_PRUNE_DOMINATED_STATES` |
-| `BI_FARM_DOWN` | `FARM-033_FARM_DOWN_ROUTE_CANDIDATE` |
-| `BI_CONTINUATION` | `COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE`, `MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS` |
-| `BI_PCSV` | `ROUTE-007_TWO_COPIES_OUTRANK_ONE_NUKE`, `COMPACT-028_SEARCH_FASTEST_EFFECTIVE_KO_ROUTE` |
-| `BI_TIMING_CONTINUATION` | `TIMING-011_OPTIMIZE_CHARGED_TIMING`, `TIMING-021_SAFE_TIMING_WAIT_MEANS_ONE_FAST_THEN_REPLAN` |
-| `BI_OVERFARM` | `TIMING-016_DO_NOT_WAIT_IF_ENERGY_OVERFLOWS`, `TIMING-017_DO_NOT_WAIT_IF_CURRENT_CHARGED_RESOURCES_BECOME_UNUSABLE` |
-| `BI_BAIT_VALUE` | `BAIT-024_LONG_MATCHUP_MAY_PREFER_CREDIBLE_BAIT`, `BAIT-037_BUILD_ENERGY_TO_REPRESENT_NUKE`, `BAIT-038_DO_NOT_BAIT_WHEN_OPPONENT_WOULD_NOT_SHIELD` |
-| `BI_TIMING_VALUE` | `TIMING-011_OPTIMIZE_CHARGED_TIMING`, `TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS`, `TIMING-013_DISABLE_SAME_DURATION_OPTIMIZATION`, `TIMING-014_DISABLE_EXACT_MULTIPLE_OPTIMIZATION` |
-| `BI_SELF_DEBUFF_RISK` | `EFFECT-027_STACK_SELF_DEBUFFING_MOVES`, `EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY` |
-| `BI_SELF_DEBUFF_AVOIDANCE` | `MOVE-025_LONG_MATCHUP_MAY_PREFER_NON_DEBUFFING_MOVE`, `BAIT-039_AVOID_SELF_DEBUFFING_BAIT_WHEN_INAPPROPRIATE`, `EFFECT-042_AVOID_NONLETHAL_SELF_DEBUFF_NUKE_WHILE_HEALTHY` |
-| `BI_CANDIDATE_EVIDENCE` | `MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS`, `MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE`, `TIE-036_PREFER_FEWER_SELF_DEBUFFS_IN_EQUIVALENT_STATES` |
-| `BI_SHIELD_POLICY` | `SHIELD-034_SHIELDED_CHARGED_CONSUMES_SHIELD`, `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
-| `BI_SHIELD_PREVENTS_KO` | `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
-| `BI_SHIELD_PRESERVES_WIN` | `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
-| `BI_SHIELD_AVOIDS_FARM` | `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
-| `BI_SHIELD_HEAVY_PRESSURE` | `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
-| `BI_SAVE_SHIELD_LOW_THREAT` | `SHIELD-043_CURRENT_AND_FUTURE_RESOURCE_VALUE` |
+Automatic strategy is owned directly by the Principle Engine. Legacy `BI_*` rules are not loaded or emitted by production runtime.
 
 ## Principles
 
@@ -81,7 +52,7 @@ Continue with Fast Move when the actor has no active Charged Moves.
 - category: `availability`
 - ownerLayer: `Action Availability`
 - priority: `CANONICAL_LEGALITY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: actor.energy < cheapestActiveChargedMove.energyCost
 - output: `FAST_MOVE_INTENT_OR_AMBIGUITY_ESCALATION`
 - allowedOutputs: `fast_move`, `retain_future_breakpoint_alternative`
@@ -113,7 +84,7 @@ Honor explicit farm-energy simulation policy unless canonical forced action rule
 - category: `route`
 - ownerLayer: `Route Planner`
 - priority: `COMPACT_ROUTE_GENERATION`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: chargedMoveReachability is requested
 - output: `CHARGED_REACHABILITY_VECTOR`
 - allowedOutputs: `reachability_vector`
@@ -129,7 +100,7 @@ Compute Fast turns needed to reach every Charged Move using canonical ready turn
 - category: `survival`
 - ownerLayer: `Survival Evaluator`
 - priority: `FORCED_SURVIVAL_ACTIONS`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: actor survival pressure must be evaluated
 - output: `SURVIVAL_HORIZON`
 - allowedOutputs: `survival_horizon`
@@ -161,7 +132,7 @@ Throw the best meaningful affordable Charged Move when the actor cannot survive 
 - category: `route`
 - ownerLayer: `Route Planner`
 - priority: `COMPACT_ROUTE_GENERATION`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: actor.energy >= cheapMove.energyCost * 2 && completeRouteValue(twoCheap) > completeRouteValue(oneNuke)
 - output: `RETAIN_ROUTE_ALTERNATIVE`
 - allowedOutputs: `retain_route`, `charged_move`
@@ -209,7 +180,7 @@ Avoid spending Charged energy when a registered or pending own Fast impact alrea
 - category: `special-mechanics`
 - ownerLayer: `Special Mechanics`
 - priority: `IMMEDIATE_TERMINAL_MECHANICS`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: opponent has generic protection/form mechanic && opponent.shields === 0
 - output: `CHARGED_MOVE_INTENT`
 - allowedOutputs: `charged_move`, `fast_move_until_affordable`
@@ -225,23 +196,23 @@ Use the cheapest safe non-self-debuffing Charged Move to break a generic protect
 - category: `timing`
 - ownerLayer: `Timing Evaluator`
 - priority: `TIMING_SAFETY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: chargedMoveTimingOptimization is enabled and timing can materially improve
 - output: `THROW_NOW_OR_FAST_THEN_REPLAN`
 - allowedOutputs: `charged_move`, `fast_move`, `wait`
-- reasonCodes: `OPTIMAL_CHARGE_TIMING`
-- inputs: `ownFastDuration`, `opponentFastDuration`, `opponentCooldown`, `pendingImpacts`, `safetyChecks`
+- reasonCodes: `OPTIMAL_CHARGE_TIMING`, `BETTER_PROJECTED_OUTCOME`
+- inputs: `ownFastDuration`, `opponentFastDuration`, `opponentCooldown`, `pendingImpacts`, `safetyChecks`, `fullStateContinuation`
 - forbiddenSideEffects: `MUST_NOT_APPLY_DAMAGE`, `MUST_NOT_APPLY_ENERGY`, `MUST_NOT_REGISTER_ACTION`, `MUST_NOT_RESOLVE_ACTION`, `MUST_NOT_MUTATE_CANONICAL_STATE`, `MUST_NOT_USE_SPECIES_ID_EXCEPTION`
-- tests: `principle-timing-011-optimize-charged-timing`, `tools/test-timing-compatibility.js`
+- tests: `principle-timing-011-optimize-charged-timing`, `tools/test-timing-compatibility.js`, `tools/test-strategic-timing-responses.js`
 
-Prefer safe throw timing that avoids granting unnecessary opponent Fast Move turns.
+Prefer safe throw timing; a bounded canonical comparison may revise the timing of an affordable guaranteed self-buff before another long Fast.
 
 ### TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS - Timing target depends on Fast durations
 
 - category: `timing`
 - ownerLayer: `Timing Evaluator`
 - priority: `TIMING_SAFETY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: timing target must be computed
 - output: `TIMING_TARGET`
 - allowedOutputs: `timing_target`
@@ -321,7 +292,7 @@ Reject waiting when current, queued, and proposed Fast energy would exceed 100 u
 - category: `timing-safety`
 - ownerLayer: `Timing Safety`
 - priority: `TIMING_SAFETY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: survivingActionWindows < currentReachableChargedCount
 - output: `THROW_NOW`
 - allowedOutputs: `charged_move`
@@ -353,7 +324,7 @@ Reject timing waits when an affordable Charged Move is an immediate legal lethal
 - category: `timing-safety`
 - ownerLayer: `Timing Safety`
 - priority: `TIMING_SAFETY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: waitProjection.opponentGetsLethalCharged === true
 - output: `THROW_NOW`
 - allowedOutputs: `charged_move`
@@ -385,7 +356,7 @@ Reject a wait when opponent Fast Moves fitting into the proposed window KO the a
 - category: `timing`
 - ownerLayer: `Timing Evaluator`
 - priority: `TIMING_SAFETY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: timingPoor && allTimingSafetyChecksPass
 - output: `FAST_MOVE_INTENT_THEN_REPLAN`
 - allowedOutputs: `fast_move`
@@ -433,7 +404,7 @@ Use the strongest efficient repeated Charged cycle as long-match baseline.
 - category: `bait`
 - ownerLayer: `Bait Policy`
 - priority: `BAIT_SHIELD_POLICY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: longCycle && baitingEnabled && opponent.shields > 0 && wouldShield(expensiveThreat)
 - output: `BAIT_ROUTE_CANDIDATE`
 - allowedOutputs: `charged_move_candidate`, `straight_route`
@@ -449,7 +420,7 @@ Allow a cheaper bait in long matchups only when shields remain, baiting is enabl
 - category: `move-selection`
 - ownerLayer: `Move Selection`
 - priority: `BUFF_DEBUFF_SEQUENCING`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: bestMove.selfDebuffing && stableAlternativeEfficiencyAcceptable
 - output: `NON_DEBUFFING_MOVE_CANDIDATE`
 - allowedOutputs: `charged_move_candidate`
@@ -497,7 +468,7 @@ Safely bank multiple self-debuffing moves to reduce time spent under the debuff.
 - category: `compact-planner`
 - ownerLayer: `Compact Planner`
 - priority: `COMPACT_ROUTE_GENERATION`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: compact route evaluation is requested
 - output: `COMPACT_ROUTE_SET`
 - allowedOutputs: `route_set`
@@ -513,7 +484,7 @@ Generate bounded routes using Fast continuation, Charged Moves, shields, farm-do
 - category: `search`
 - ownerLayer: `Search Budget`
 - priority: `AMBIGUITY_ESCALATION`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: search is running
 - output: `SEARCH_BUDGET_STATE`
 - allowedOutputs: `complete`, `incomplete`
@@ -561,7 +532,7 @@ Guaranteed own buffs and opponent debuffs must alter future route damage and sur
 - category: `chance-policy`
 - ownerLayer: `Chance Policy`
 - priority: `BUFF_DEBUFF_SEQUENCING`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: move has non-guaranteed effect
 - output: `NO_PROC_MATRIX_OR_REVIEW_BRANCHES`
 - allowedOutputs: `no_proc`, `scenario_review_proc_branch`, `scenario_review_no_proc_branch`
@@ -609,7 +580,7 @@ When a route assumes a defender shield, Charged damage is shield damage and one 
 - category: `search`
 - ownerLayer: `Search Pruning`
 - priority: `AMBIGUITY_ESCALATION`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: candidate state is dominated by a comparable state
 - output: `PRUNE_WITH_REASON`
 - allowedOutputs: `prune`, `retain`
@@ -641,7 +612,7 @@ Prefer fewer self-debuffs and more guaranteed positive buffs when two states are
 - category: `bait`
 - ownerLayer: `Bait Policy`
 - priority: `BAIT_SHIELD_POLICY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: baitingEnabled && cheapMoveAvailable && expensiveThreatWouldShield
 - output: `FAST_UNTIL_BAIT_CREDIBLE_OR_BAIT_ROUTE`
 - allowedOutputs: `fast_move`, `charged_move_candidate`
@@ -689,16 +660,16 @@ Reject self-debuffing bait when it does not produce a superior outcome over a st
 - category: `move-ordering`
 - ownerLayer: `Move Ordering`
 - priority: `OUTCOME_COMPARISON`
-- status: `MODIFIED_FROM_PVPOKE`
-- condition: noShieldConstraint && noSelfDebuffDominance && outcomeIsPreserved
+- status: `ADAPTED`
+- condition: routeMovesReordered && meaningfulDamageOrEffectOrder
 - output: `DAMAGE_ORDERED_ROUTE`
 - allowedOutputs: `charged_move_candidate`
-- reasonCodes: `BEST_IMMEDIATE_DAMAGE`
-- inputs: `moveDamage`, `routeOutcome`, `selfDebuffRisk`, `shieldState`
+- reasonCodes: `BEST_IMMEDIATE_DAMAGE`, `BETTER_PROJECTED_OUTCOME`
+- inputs: `moveDamage`, `routeOutcome`, `selfDebuffRisk`, `shieldState`, `fullStateContinuation`
 - forbiddenSideEffects: `MUST_NOT_APPLY_DAMAGE`, `MUST_NOT_APPLY_ENERGY`, `MUST_NOT_REGISTER_ACTION`, `MUST_NOT_RESOLVE_ACTION`, `MUST_NOT_MUTATE_CANONICAL_STATE`, `MUST_NOT_USE_SPECIES_ID_EXCEPTION`
-- tests: `principle-move-040-useful-immediate-damage`
+- tests: `principle-move-040-useful-immediate-damage`, `tools/test-strategic-move-order.js`, `tools/test-strategic-response-selection.js`
 
-Prefer useful immediate damage only when shields and self-debuff sequencing do not dominate and it cannot turn a proven win into a loss.
+Prefer useful immediate damage unless a completed canonical comparison proves the planned effect-bearing opener has a better outcome.
 
 ### MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE - With shields, allow cheaper efficient non-debuffing move
 
@@ -737,13 +708,13 @@ Prefer a stable alternative when a nonlethal self-debuffing nuke is not needed a
 - category: `shield`
 - ownerLayer: `Shield Policy`
 - priority: `BAIT_SHIELD_POLICY`
-- status: `MODIFIED_FROM_PVPOKE`
+- status: `ADAPTED`
 - condition: defender is asked to shield a Charged Move
 - output: `SHIELD_OR_NO_SHIELD_DECISION`
 - allowedOutputs: `shield`, `no_shield`, `retain_material_counterfactual`
 - reasonCodes: `SHIELD_PREVENTS_KO`, `SHIELD_HEAVY_PRESSURE`, `SHIELD_PRESERVES_WIN_CONDITION`, `SHIELD_SAVED_LOW_THREAT`
 - inputs: `incomingDamage`, `defender.hp`, `defender.shields`, `attacker.fastDpt`, `futureChargedReachability`, `baitPolicy`, `selfDebuffNukeSignal`
 - forbiddenSideEffects: `MUST_NOT_APPLY_DAMAGE`, `MUST_NOT_APPLY_ENERGY`, `MUST_NOT_REGISTER_ACTION`, `MUST_NOT_RESOLVE_ACTION`, `MUST_NOT_MUTATE_CANONICAL_STATE`, `MUST_NOT_USE_SPECIES_ID_EXCEPTION`
-- tests: `principle-shield-043-current-future-resource-value`, `DM-01`
+- tests: `principle-shield-043-current-future-resource-value`, `DM-01`, `tools/test-strategy-shield-policy-parity.js`, `tools/test-configured-policy-line.js`
 
 Shield decisions consider immediate lethal, damage pressure, remaining shields, next-cycle pressure, Fast DPT, future Charged reachability, self-debuff nuke pressure, and bait policy.

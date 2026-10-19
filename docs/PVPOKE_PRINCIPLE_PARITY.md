@@ -22,7 +22,7 @@ The source range is pinned to the revision above. “Adapted” means only a doc
 | TACTICAL-008 | ActionLogic L211-L230 | With shields down, throw an affordable non-self-debuff lethal unless Fast already KOs; respect bait ordering | Same branch and ordering | EXACT_PARITY |
 | TACTICAL-009 | ActionLogic L211-L230 plus Battle L467-L487 | Do not spend a Charged when an already registered Fast impact KOs | Canonical pending-event check | INTENTIONAL_ADAPTATION |
 | SPECIAL-010 | ActionLogic L236-L247 | Break protect form with the fastest non-self-debuff Charged | Generic capability-equivalent branch | INTENTIONAL_ADAPTATION |
-| TIMING-011 | ActionLogic L255-L359 | Return Fast when the current Charged timing is poor and every safety gate passes | Same branch before long-match/DP | EXACT_PARITY |
+| TIMING-011 | ActionLogic L255-L359; approved canonical continuation | Return Fast when the current Charged timing is poor and every safety gate passes | Same initial branch; bounded canonical response comparison may revise timing of an affordable guaranteed self-buff around a long Fast | INTENTIONAL_ADAPTATION |
 | TIMING-012 | ActionLogic L257-L269 | Base target 1 turn; selected duration pairs target 2 turns | Same duration table | EXACT_PARITY |
 | TIMING-013 | ActionLogic L271-L273 | Disable for equal Fast durations | Same gate | EXACT_PARITY |
 | TIMING-014 | ActionLogic L275-L278 | Disable when own longer duration is an exact multiple | Same gate | EXACT_PARITY |
@@ -51,7 +51,7 @@ The source range is pinned to the revision above. “Adapted” means only a doc
 | BAIT-037 | ActionLogic L839-L855 | Build to the represented expensive move before throwing the planned cheap move, with self-buff exception | Same branch after DP route selection | EXACT_PARITY |
 | BAIT-038 | ActionLogic L857-L864 | If represented nuke would not be shielded and is sufficiently more efficient, use it instead of bait | Same `wouldShield` call and DPE ratio | EXACT_PARITY |
 | BAIT-039 | ActionLogic L905-L912 | Do not bait with a self-debuff move when the stronger move is non-debuffing | Same post-processing override | EXACT_PARITY |
-| MOVE-040 | ActionLogic L866-L878 | Without bait constraints, order route moves by immediate damage | Same post-processing sort | EXACT_PARITY |
+| MOVE-040 | ActionLogic L866-L878; canonical continuation | Without bait constraints, order route moves by immediate damage | Prefer configured-policy outcome; response-wise dominance may protect an already projected win, but cannot change tied losing/drawing lines for an off-policy advantage | INTENTIONAL_ADAPTATION |
 | MOVE-041 | ActionLogic L880-L884, L890-L903, L914-L927 | With shields, permit cheaper efficient non-debuffing alternatives and PvPoke's close-energy bandaids | Same ordered overrides, explicitly classified as historical PvPoke bandaids | EXACT_PARITY |
 | EFFECT-042 | ActionLogic L885-L903, L929-L951 | Avoid healthy nonlethal self-debuff nuke, defer through survivable Charged, and stack when safe | Same ordered gates | EXACT_PARITY |
 | SHIELD-043 | ActionLogic L1116-L1200; Battle L1081-L1169 | `wouldShield`: current damage, future cycle damage, Fast DPT, future Charged pressure, self-attack-debuff nuke, always-bait override | Same deterministic value path; randomized weights are retained only as trace evidence | EXACT_PARITY |

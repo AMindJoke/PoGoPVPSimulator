@@ -226,16 +226,16 @@ const BATTLE_PRINCIPLES = Object.freeze([
     id: "TIMING-011_OPTIMIZE_CHARGED_TIMING",
     category: "timing",
     name: "Optimize Charged timing",
-    description: "Prefer safe throw timing that avoids granting unnecessary opponent Fast Move turns.",
+    description: "Prefer safe throw timing; a bounded canonical comparison may revise the timing of an affordable guaranteed self-buff before another long Fast.",
     ownerLayer: "Timing Evaluator",
     priority: PRINCIPLE_PRIORITY_GROUPS.TIMING_SAFETY,
     condition: "chargedMoveTimingOptimization is enabled and timing can materially improve",
-    inputs: ["ownFastDuration", "opponentFastDuration", "opponentCooldown", "pendingImpacts", "safetyChecks"],
+    inputs: ["ownFastDuration", "opponentFastDuration", "opponentCooldown", "pendingImpacts", "safetyChecks", "fullStateContinuation"],
     output: "THROW_NOW_OR_FAST_THEN_REPLAN",
     allowedOutputs: ["charged_move", "fast_move", "wait"],
-    reasonCodes: ["OPTIMAL_CHARGE_TIMING"],
+    reasonCodes: ["OPTIMAL_CHARGE_TIMING", "BETTER_PROJECTED_OUTCOME"],
     status: PRINCIPLE_STATUS.ADAPTED,
-    tests: ["principle-timing-011-optimize-charged-timing", "tools/test-timing-compatibility.js"]
+    tests: ["principle-timing-011-optimize-charged-timing", "tools/test-timing-compatibility.js", "tools/test-strategic-timing-responses.js"]
   }),
   principle({
     id: "TIMING-012_TARGET_DEPENDS_ON_FAST_DURATIONS",
@@ -661,16 +661,17 @@ const BATTLE_PRINCIPLES = Object.freeze([
     id: "MOVE-040_PREFER_USEFUL_IMMEDIATE_DAMAGE_WITHOUT_BAIT_CONSTRAINTS",
     category: "move-ordering",
     name: "Without bait constraints, prefer useful immediate damage",
-    description: "Prefer useful immediate damage only when shields and self-debuff sequencing do not dominate and it cannot turn a proven win into a loss.",
+    description: "Prefer useful immediate damage unless a completed canonical comparison proves the planned effect-bearing opener has a better outcome.",
     ownerLayer: "Move Ordering",
     priority: PRINCIPLE_PRIORITY_GROUPS.OUTCOME_COMPARISON,
-    condition: "noShieldConstraint && noSelfDebuffDominance && outcomeIsPreserved",
-    inputs: ["moveDamage", "routeOutcome", "selfDebuffRisk", "shieldState"],
+    condition: "routeMovesReordered && meaningfulDamageOrEffectOrder",
+    inputs: ["moveDamage", "routeOutcome", "selfDebuffRisk", "shieldState", "fullStateContinuation"],
     output: "DAMAGE_ORDERED_ROUTE",
     allowedOutputs: ["charged_move_candidate"],
-    reasonCodes: ["BEST_IMMEDIATE_DAMAGE"],
+    reasonCodes: ["BEST_IMMEDIATE_DAMAGE", "BETTER_PROJECTED_OUTCOME"],
     status: PRINCIPLE_STATUS.ADAPTED,
-    tests: ["principle-move-040-useful-immediate-damage"]
+    tests: ["principle-move-040-useful-immediate-damage", "tools/test-strategic-move-order.js", "tools/test-strategic-response-selection.js"],
+    notes: "Prefer a strictly better configured-policy outcome. Among already projected wins, permit strict response-wise dominance to protect the win. Never switch tied losing/drawing lines merely for an off-policy advantage."
   }),
   principle({
     id: "MOVE-041_WITH_SHIELDS_ALLOW_CHEAPER_EFFICIENT_NON_DEBUFFING_MOVE",
@@ -715,7 +716,8 @@ const BATTLE_PRINCIPLES = Object.freeze([
     allowedOutputs: ["shield", "no_shield", "retain_material_counterfactual"],
     reasonCodes: ["SHIELD_PREVENTS_KO", "SHIELD_HEAVY_PRESSURE", "SHIELD_PRESERVES_WIN_CONDITION", "SHIELD_SAVED_LOW_THREAT"],
     status: PRINCIPLE_STATUS.ADAPTED,
-    tests: ["principle-shield-043-current-future-resource-value", "DM-01"]
+    tests: ["principle-shield-043-current-future-resource-value", "DM-01", "tools/test-strategy-shield-policy-parity.js", "tools/test-configured-policy-line.js"],
+    notes: "Canonical strategic forecasts use the same Smart refinement as live battles with an independent shield-recursion guard. Replay frozen legal root actions and timing state; cap nested shield rollouts at sixteen and reject exhausted strategic forecasts."
   })
 ]);
 

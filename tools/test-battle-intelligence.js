@@ -586,6 +586,25 @@ select(statSensitiveA);
 select(statSensitiveB);
 assert.equal(Intelligence.getStatistics().cacheMisses, 4, "Different stat spreads must occupy distinct strategic cache entries.");
 
+const contextualCache = Intelligence.createApi();
+const contextualSelect = (currentState, context) => contextualCache.selectAction({
+  state: currentState, side: "A", legalActions: TurnEngine.getLegalActions(currentState, "A"),
+  context: { chargedTimingOptimization: false, estimateDamage: action => Number(action.move?.damage || 0), ...context }
+});
+assert.equal(contextualSelect(lethalState).action.moveId, "CHEAP");
+const revisedProjection = contextualSelect(lethalState, {
+  estimateDamage: action => action.moveId === "CHEAP" ? 0 : Number(action.move?.damage || 0)
+});
+assert.equal(revisedProjection.principleResult.action.moveId, "NUKE");
+assert.equal(revisedProjection.action.moveId, "NUKE", "A cached action must not overwrite a fresh projected choice.");
+
+const sameActionState = state({ hpA: 100, hpB: 140, energyA: 60 });
+contextualSelect(sameActionState);
+const revisedEvidence = contextualSelect(sameActionState, { canonicalOpponentLethalBeforeNextWindow: true });
+assert(revisedEvidence.reasonCodes.includes("MEMOIZED_RESULT"));
+assert(revisedEvidence.reasonCodes.includes("LETHAL_CHARGED_CONCEDED"), "A cache hit must retain the current decision's reasoning.");
+assert.deepEqual(revisedEvidence.evidence.principleEngine, revisedEvidence.principleResult.evidence);
+
 Intelligence.clearCache();
 Intelligence.resetAudit();
 Intelligence.configureAudit({ enabled: true, strict: false, retainEvents: true });
@@ -681,4 +700,10 @@ assert(principleMetrics.migratedCategories.includes("bait"));
 assert(principleMetrics.migratedCategories.includes("move-ordering"));
 
 require("./test-smart-shield-charged-route");
+require("./test-strategic-move-order");
+require("./test-strategic-response-selection");
+require("./test-strategic-timing-responses");
+require("./test-strategic-timing-guards");
+require("./test-strategy-shield-policy-parity");
+require("./test-configured-policy-line");
 console.log("Battle Intelligence tests passed.");

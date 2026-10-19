@@ -16,6 +16,8 @@ assert.deepEqual(Array.from(context.teamBuilderEligibleOptimizationMembers(), x 
 assert.deepEqual(Analysis.rankedOptimizationPokemon(roster, []), [], "No exhaustive fallback without ranking.");
 const shortlist = Analysis.rankedOptimizationPokemon([p("b", 20), p("a", 21), p("unranked",22)], [{id:"b",rank:10,profile:"rank1"},{id:"a",rank:1,profile:"other"},{id:"a",rank:20,profile:"rank1"},{id:"a",rank:2,profile:"rank1"}]);
 assert.deepEqual(shortlist.map(p=>p.id), ["a", "b"], "Rank order, profile and duplicate handling are deterministic.");
+const duplicateShortlist = Analysis.rankedOptimizationPokemon([p("cradily", 346), p("cradily_b", 346, { tags: ["duplicate", "duplicate1500"] }), p("golisopodsh", 768, { tags: ["duplicate"] })], [{id:"cradily",rank:76,profile:"rank1"},{id:"cradily_b",rank:77,profile:"rank1"},{id:"golisopodsh",rank:78,profile:"rank1"}]);
+assert.deepEqual(duplicateShortlist.map(p=>p.id), ["cradily"], "Technical duplicate species must not appear as separate suggestions.");
 const cache = Analysis.createCache(null);
 const plan = Array.from({ length: Analysis.MAX_CACHE_ENTRIES + 500 }, (_, i) => ({ key: "job-" + i }));
 let results = Analysis.createSearchResults(plan, cache);
@@ -49,6 +51,7 @@ const candidates = runtime.teamBuilderEligibleOptimizationMembers();
 assert.equal(candidates.length, 600);
 assert.ok(!candidates.some(c => ["magikarp", "bulbasaur"].includes(c.candidateId)));
 assert.ok(candidates.every(({ member }) => member.build.cp <= 1500 && Number.isFinite(member.build.cp)));
+assert.ok(!candidates.some(c => ["cradily_b", "golisopodsh"].includes(c.candidateId)), "Canonical candidate search must exclude flagged duplicates.");
 for (const id of ["golisopod", "raichu", "clodsire"]) {
   const candidate = candidates.find(c => c.candidateId === id);
   assert.ok(candidate, id + " must be evaluated");
@@ -90,7 +93,12 @@ assert.ok(withoutRaichu.every(c => State.speciesKey(c.member) !== State.speciesK
 assert.ok(withoutRaichu.some(c => !candidates.some(old => old.candidateId === c.candidateId)));
 
 const status = { textContent: "" };
-const loading = { metaRankingData: null, metaRankingLoadPromise: null, $: () => status, ensureMetaRankingData() { loading.metaRankingLoadPromise = Promise.resolve().then(() => { loading.metaRankingData = { entries: [{id:"raichu"}] }; }); } };
+const currentMetadata = { matrixVersion: Builder.MATRIX_VERSION, seasonId: "twilight-trails" };
+assert.equal(Analysis.rankingState(null, Builder.MATRIX_VERSION, "twilight-trails"), "missing");
+for (const metadata of [{}, { ...currentMetadata, matrixVersion: "battle-planner-v46" }, { ...currentMetadata, seasonId: "other" }]) {
+  assert.equal(Analysis.rankingState({ entries: [{}], metadata }, Builder.MATRIX_VERSION, "twilight-trails"), "stale");
+}
+const loading = { window: { PvPeakTeamBuilderAnalysis: Analysis }, battleEngineVersion: Builder.MATRIX_VERSION, activeSeasonData: { id: "twilight-trails" }, metaRankingData: null, metaRankingLoadPromise: null, $: () => status, ensureMetaRankingData() { loading.metaRankingLoadPromise = Promise.resolve().then(() => { loading.metaRankingData = { entries: [{id:"raichu"}], metadata: currentMetadata }; }); } };
 vm.createContext(loading);
 const readyStart = html.indexOf("    async function teamBuilderCandidateRankingReady(");
 vm.runInContext(html.slice(readyStart, html.indexOf("\n    async function ", readyStart + 1)), loading);
@@ -102,5 +110,10 @@ vm.runInContext(html.slice(readyStart, html.indexOf("\n    async function ", rea
   loading.ensureMetaRankingData = () => { loading.metaRankingLoadPromise = Promise.resolve(); };
   assert.equal(await loading.teamBuilderCandidateRankingReady("status"), false);
   assert.match(status.textContent, /unavailable/);
+  loading.metaRankingData = { entries: [{}], metadata: { ...currentMetadata, matrixVersion: "battle-planner-v46" } };
+  assert.equal(await loading.teamBuilderCandidateRankingReady("status"), false);
+  assert.match(status.textContent, /updating/);
+  loading.metaRankingData.metadata = currentMetadata;
+  assert.equal(await loading.teamBuilderCandidateRankingReady("status"), true);
   console.log("Ranking readiness, missing-data guard and shortlist refill tests passed.");
 })().catch(error => { console.error(error); process.exitCode = 1; });

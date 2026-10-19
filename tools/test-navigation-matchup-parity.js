@@ -1,6 +1,7 @@
 const assert = require("node:assert/strict"), fs = require("node:fs"), vm = require("node:vm");
 const G = require("./build-great-league-meta-database");
 const Link = require("../src/team-builder/team-builder-battle-link");
+const MegaRules = require("../src/battle/mega-rules");
 const html = fs.readFileSync("PogoPvp.html", "utf8");
 function section(start, end) { return html.slice(html.indexOf(`    function ${start}(`), html.indexOf(`    function ${end}(`)); }
 const gm = G.readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
@@ -12,6 +13,7 @@ const fields = {}, selections = {}, charged = {};
 const field = id => fields[id] ||= { value: "" };
 let runs = 0;
 const context = {
+  megaRules: MegaRules, battleFormat: () => MegaRules.format("standard"), renderMegaControls: () => {},
   $: field, findPokemon: id => pokemon.get(id), moveMap: moves,
   setPokemonSelection: (prefix, id) => { field(`${prefix}Pokemon`).value = id; },
   ensureChargedMoveSelects: prefix => charged[prefix] ||= [{ value: "" }, { value: "" }],

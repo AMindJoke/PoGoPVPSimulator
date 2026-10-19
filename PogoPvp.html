@@ -24,12 +24,12 @@
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20261008-v180"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261018-v196"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20261002-planner-v46"></script>
+  <script src="src/reliability/battle-reliability.js?v=20261018-planner-v49"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -38,7 +38,7 @@
   <script src="src/analysis/battle-review.js"></script>
   <script src="src/analysis/battle-alternatives.js?v=20261006-v131"></script>
   <script src="src/analysis/battle-sensitivity.js?v=20261005-v117"></script>
-  <script src="src/analysis/cmp-dependency.js?v=20261006-v131"></script>
+  <script src="src/analysis/cmp-dependency.js?v=20261019-v49"></script>
   <script src="src/ui/cmp-dependency.js?v=20261006-v131"></script>
   <script src="src/ui/battle-alternatives.js?v=20261008-v177"></script>
   <script src="src/analysis/iv-impact.js"></script>
@@ -53,7 +53,7 @@
   <script src="src/team-builder/team-builder-meta.js"></script>
   <script src="src/analysis/shared-matchup-cache.js?v=20261008-v173"></script>
   <script src="src/analysis/simulation-worker-pool.js?v=20261013-v177"></script>
-  <script src="src/team-builder/team-builder-analysis.js?v=20261008-v174"></script>
+  <script src="src/team-builder/team-builder-analysis.js?v=20261019-ranking-guard"></script>
   <script src="src/team-builder/team-builder-share.js?v=20261001-v74"></script>
   <script src="src/team-builder/team-builder-library.js?v=20261001-v74-v2"></script>
   <script src="src/ui/team-library.js?v=20261001-v76"></script>
@@ -100,7 +100,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20261014-planner-v46-smart-route1"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261018-planner-v49-shield-policy1"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -14495,7 +14495,7 @@
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261007-v152">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261008-v180"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261018-v196"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -15838,6 +15838,7 @@
     let battleAlternativesRunner = null, battleAlternativesUi = null, battleAlternativesInputKey = "", teamRoleReplyRequest = null;
     let activeAutoTurnContext = null;
     let chargedContinuationDepth = 0;
+    let shieldContinuationDepth = 0;
     let chargedContinuationOpening = null;
     let chargedContinuationMode = "presentation";
     let projectedChargedSequenceValueEnabled = true;
@@ -16952,6 +16953,7 @@
         materializeResolvedActionTrace,
         traceOutcomeForSide,
         traceAffordableChargedMoves,
+        automaticShieldSearchEnabled,
         simulateShieldDecisionContinuation,
         buildShieldCounterfactual,
         recordBattleInsight,
@@ -17013,6 +17015,11 @@
         projectedChargedSequenceValue,
         projectedChargeTimingQuality,
         simulateBestChargedTimingContinuation,
+        strategyActionDescriptor,
+        strategyActionId,
+        plausibleOpponentChargedReply,
+        compareCanonicalStrategyContinuations,
+        simulateCanonicalActionContinuation,
         simulateBattleIntelligenceContinuation,
         simulateChargedCandidateContinuation,
         compareChargedContinuationResults,
@@ -17147,6 +17154,7 @@
         let suppressRender = true;
         let activeAutoTurnContext = null;
         let chargedContinuationDepth = 0;
+        let shieldContinuationDepth = 0;
         let chargedContinuationOpening = null;
         let chargedContinuationMode = "presentation";
         let projectedChargedSequenceValueEnabled = true;
@@ -18841,7 +18849,7 @@
         ids.push(pokemon.id);
       };
       teamBuilderMetaDefinition?.pokemonIds?.forEach(add);
-      const ranked = Array.isArray(metaRankingData?.entries)
+      const ranked = window.PvPeakTeamBuilderAnalysis.rankingState(metaRankingData, battleEngineVersion, activeSeasonData.id) === "ready"
         ? metaRankingData.entries.filter(entry => entry.profile === metaRankingPreferredProfile).sort((a, b) => Number(a.rank || 9999) - Number(b.rank || 9999))
         : [];
       for (const entry of ranked) {
@@ -19789,12 +19797,17 @@
     }
 
     async function teamBuilderCandidateRankingReady(statusId) {
-      if (metaRankingData?.entries?.length) return true;
+      const state = () => window.PvPeakTeamBuilderAnalysis.rankingState(metaRankingData, battleEngineVersion, activeSeasonData.id);
+      if (state() === "ready") return true;
       const status = $(statusId);
       status.textContent = "Loading candidate ranking…";
       ensureMetaRankingData();
       if (metaRankingLoadPromise) await metaRankingLoadPromise;
-      if (metaRankingData?.entries?.length) return true;
+      if (state() === "ready") return true;
+      if (state() === "stale") {
+        status.textContent = "Candidate ranking is updating for this simulator version. Please reload after the update.";
+        return false;
+      }
       status.textContent = "Candidate ranking unavailable. Try again when connected.";
       return false;
     }
@@ -28969,15 +28982,26 @@
       const shieldOpenings = defender.shieldContinuationOverrides || [];
       const shieldOpeningIndex = shieldOpenings.findIndex(opening => opening.attackerSide === attacker.trainer
         && opening.moveId === move.id && opening.turn === Number(activeAutoTurnContext?.currentTurn ?? battleTurns[attacker.trainer] ?? 0));
+      let fixedShieldResponse = false;
       if (chargedContinuationDepth > 0 && shieldOpeningIndex >= 0) {
         const [shieldOpening] = shieldOpenings.splice(shieldOpeningIndex, 1);
         shieldDecision = { shield: shieldOpening.shielded && defender.shields > 0, reason: "Shield continuation opening", reasonCode: null };
+        fixedShieldResponse = true;
+      }
+      const strategyOpening = chargedContinuationOpening;
+      if (chargedContinuationDepth > 0 && strategyOpening?.canonicalRoot
+        && strategyOpening.trainer === attacker.trainer && !strategyOpening.shieldResponseApplied
+        && typeof strategyOpening.shieldResponse === "boolean" && options.shielded === undefined
+        && defender.shieldMode === "smart" && defender.shields > 0) {
+        strategyOpening.shieldResponseApplied = true;
+        shieldDecision = { shield: strategyOpening.shieldResponse, reason: "Sampled opponent shield response", reasonCode: null };
+        fixedShieldResponse = true;
       }
       let shieldCounterfactual = null;
       if (
         options.shielded === undefined &&
         defender.shields > 0 &&
-        chargedContinuationDepth === 0 &&
+        !fixedShieldResponse && automaticShieldSearchEnabled() &&
         (battleDecisionCounterfactualsEnabled || defender.shieldMode === "smart")
       ) {
         shieldCounterfactual = buildShieldCounterfactual(attacker, defender, move, shieldDecision.shield);
@@ -29016,7 +29040,7 @@
         if (shieldCounterfactual) shieldCounterfactual.shielded = !!shieldDecision.shield;
       }
       const shielded = shieldDecision.shield;
-      if (chargedContinuationDepth === 0 && activeAutoTurnContext?.shieldContinuationSnapshot) {
+      if (automaticShieldSearchEnabled() && activeAutoTurnContext?.shieldContinuationSnapshot) {
         (activeAutoTurnContext.resolvedShieldChoices ||= []).push({ attackerSide: attacker.trainer, defenderSide: defender.trainer,
           moveId: move.id, turn: activeAutoTurnContext.currentTurn, shielded: !!shielded });
       }
@@ -29871,6 +29895,11 @@
         }));
     }
 
+    function automaticShieldSearchEnabled() {
+      return shieldContinuationDepth === 0
+        && (chargedContinuationDepth === 0 || chargedContinuationOpening?.canonicalRoot === true);
+    }
+
     function simulateShieldDecisionContinuation(attacker, defender, move, shielded) {
       // Restart the exact automatic round, including both choices made before
       // either action resolved. A mid-Charged replay can otherwise change CMP,
@@ -29894,6 +29923,7 @@
       const defenderSide = defender.trainer;
       let evaluation = null;
       chargedContinuationDepth++;
+      shieldContinuationDepth++;
       try {
         left = JSON.parse(JSON.stringify(opening.left));
         right = JSON.parse(JSON.stringify(opening.right));
@@ -29904,7 +29934,11 @@
         manualPendingFastEvents = JSON.parse(JSON.stringify(opening.manualPendingFastEvents || []));
         suppressRender = true;
         activeAutoTurnContext = null;
-        chargedContinuationOpening = null;
+        chargedContinuationOpening = {
+          canonicalRoot: true, trainer: attackerSide, turn: opening.currentTurn,
+          actions: opening.actions, planStates: opening.planStates, planOptions: opening.planOptions,
+          registered: false, completed: false, invalid: false
+        };
 
         for (const choice of [...shieldPrefix, { attackerSide, defenderSide, moveId: move.id, turn: opening.currentTurn, shielded: !!shielded }]) {
           const combatant = choice.defenderSide === "A" ? left : right;
@@ -29922,7 +29956,8 @@
           remainingEnergy: Number(finalDefender.energy || 0),
           remainingShields: Number(finalDefender.shields || 0),
           moveAccess: traceAffordableChargedMoves(finalDefender, finalAttacker).length,
-          complete: !left.shieldContinuationOverrides?.length && !right.shieldContinuationOverrides?.length && battleEnded(),
+          complete: !chargedContinuationOpening.invalid
+            && !left.shieldContinuationOverrides?.length && !right.shieldContinuationOverrides?.length && battleEnded(),
           steps
         };
       } finally {
@@ -29936,12 +29971,22 @@
         suppressRender = saved.suppressRender;
         activeAutoTurnContext = saved.activeAutoTurnContext;
         chargedContinuationOpening = saved.chargedContinuationOpening;
+        shieldContinuationDepth--;
         chargedContinuationDepth--;
       }
       return evaluation;
     }
 
     function buildShieldCounterfactual(attacker, defender, move, chosenShielded) {
+      if (chargedContinuationDepth > 0 && shieldContinuationDepth === 0 && chargedContinuationOpening?.canonicalRoot) {
+        const api = typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence;
+        const budget = chargedContinuationOpening.shieldSearchBudget ||= { used: 0, exhausted: false };
+        if (budget.used + 2 > api.MAX_STRATEGIC_SHIELD_CONTINUATIONS) {
+          budget.exhausted = true;
+          return null;
+        }
+        budget.used += 2;
+      }
       const withShield = simulateShieldDecisionContinuation(attacker, defender, move, true);
       const withoutShield = simulateShieldDecisionContinuation(attacker, defender, move, false);
       if (!withShield?.complete || !withoutShield?.complete) return null;
@@ -30773,6 +30818,19 @@
           hasGuaranteedEffect(action) {
             const move = validChargedMoves(attacker).find(candidate => candidate.id === action.moveId) || action.move;
             return guaranteedStatEffectChangesState(attacker, defender, move) && !hasSelfDebuff(move);
+          },
+          compareChargedContinuations(selectedMoveId, moveIds) {
+            const available = validChargedMoves(attacker)
+              .filter(move => moveIds.includes(move.id) && attacker.energy >= move.energyCost);
+            if (available.length !== 2 || !available.some(move => move.id === selectedMoveId)) return null;
+            const actions = available.map(move => ({ type: "charged_move", moveId: move.id }));
+            const comparison = compareCanonicalStrategyContinuations(attacker, defender, actions,
+              actions.find(action => action.moveId === selectedMoveId));
+            return comparison?.complete
+              ? { ...comparison, moveId: comparison.action.moveId, originalMoveId: selectedMoveId } : null;
+          },
+          compareTimingContinuations(originalAction, actions) {
+            return compareCanonicalStrategyContinuations(attacker, defender, actions, originalAction);
           }
         }
       });
@@ -31235,6 +31293,30 @@
       if (battleEnded() || !attacker || !defender || attacker.hp <= 0 || defender.hp <= 0) return false;
       const legalActions = legalBattleActions(attacker, Number(battleTurns[attacker.trainer] || 0));
       if (!legalActions.length) return false;
+      const opening = chargedContinuationOpening;
+      const openingRequest = opening?.actions ? opening.actions[attacker.trainer]
+        : opening?.trainer === attacker.trainer ? opening?.action : opening?.opponentAction;
+      if (chargedContinuationDepth > 0 && opening?.canonicalRoot && opening.actions && !openingRequest
+        && opening.turn === Number(battleTurns[attacker.trainer] || 0)) return false;
+      if (chargedContinuationDepth > 0 && opening?.canonicalRoot && openingRequest
+        && opening.turn === Number(battleTurns[attacker.trainer] || 0)) {
+        let action = legalActions.find(candidate => strategyActionId(candidate) === strategyActionId(openingRequest));
+        if (openingRequest.type === "wait") {
+          const available = validChargedMoves(attacker).filter(move => attacker.energy >= move.energyCost);
+          action = buildChargeTimingWaitAction(attacker, defender, available);
+        }
+        if (!action) { opening.invalid = true; return false; }
+        if (opening.trainer === attacker.trainer) opening.registered = true;
+        return {
+          attacker, defender, action,
+          replayState: opening.planStates?.[attacker.trainer] || null,
+          options: opening.planOptions?.[attacker.trainer] || { source: "strategy-continuation", deferCooldownReset: true },
+          beforeExecute() {
+            Object.assign(attacker, opening.planStates?.[attacker.trainer] || {});
+            if (opening.trainer === attacker.trainer) opening.completed = true;
+          }
+        };
+      }
       const diagnosticAction = diagnosticPlannedAction(attacker, legalActions);
       if (diagnosticAction) {
         return {
@@ -31255,13 +31337,15 @@
           && attacker.energy + gain <= 100
           && estimate(defender, attacker, defender.fast) < attacker.hp;
         if (safeToContinue) {
+          const replayState = { timingPlanFastMovesRemaining: Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1) };
           return {
             attacker,
             defender,
             action: plannedFast,
+            replayState,
             options: { source: "persisted-timing-plan" },
             beforeExecute() {
-              attacker.timingPlanFastMovesRemaining = Math.max(0, Number(attacker.timingPlanFastMovesRemaining || 0) - 1);
+              Object.assign(attacker, replayState);
             }
           };
         }
@@ -31309,17 +31393,20 @@
       }
       if (intelligenceSelection.action.type === "fast_move") {
         const waitReason = intelligenceSelection.explanation;
+        const replayState = isPrincipleTimingSelection(intelligenceSelection) ? {
+          timingContinuationLastFastStart: Number(battleTurns[attacker.trainer] || 0),
+          timingContinuationCount: Number(attacker.timingContinuationCount || 0) + 1,
+          timingPlanFastMovesRemaining: 0, timingPlanMoveId: null
+        } : null;
         return {
           attacker,
           defender,
           action: intelligenceSelection.action,
+          replayState,
           options: { source: "battle-intelligence" },
           beforeExecute() {
-            if (isPrincipleTimingSelection(intelligenceSelection)) {
-              attacker.timingContinuationLastFastStart = Number(battleTurns[attacker.trainer] || 0);
-              attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-              attacker.timingPlanFastMovesRemaining = 0;
-              attacker.timingPlanMoveId = null;
+            if (replayState) {
+              Object.assign(attacker, replayState);
               recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
             }
             if (available.length && waitReason) {
@@ -31332,9 +31419,14 @@
         const timingWindow = intelligenceSelection.action.metadata?.timingWindow || chargeTimingWaitWindow(attacker, defender);
         if (!timingWindow) return false;
         const timingPlan = intelligenceSelection.chosenCandidate?.evidence?.continuation?.timingPlan || null;
+        const replayState = {
+          timingContinuationCount: Number(attacker.timingContinuationCount || 0) + 1,
+          timingPlanMoveId: timingPlan?.moveId || null
+        };
         return {
           attacker,
           defender,
+          replayState,
           action: {
             ...intelligenceSelection.action,
             metadata: { ...(intelligenceSelection.action.metadata || {}), timingWindow }
@@ -31344,8 +31436,7 @@
             moveId: timingPlan?.moveId || null
           },
           beforeExecute() {
-            attacker.timingContinuationCount = Number(attacker.timingContinuationCount || 0) + 1;
-            attacker.timingPlanMoveId = timingPlan?.moveId || null;
+            Object.assign(attacker, replayState);
             recordBattleIntelligenceTimingDecision(attacker, defender, intelligenceSelection);
           }
         };
@@ -31567,30 +31658,40 @@
         timelineStart,
         actorOrder: actors.map(([actor]) => actor.trainer),
         acted: new Set(),
+        preparedPlans: {},
         deferTerminalFinalization: true
       };
       activeAutoTurnContext = context;
       let progressed = false;
       try {
-        const preparedActors = actors.map(([attacker, defender]) => ({
-          attacker,
-          defender,
-          plan: prepareAutomaticBattleAction(attacker, defender)
-        }));
+        const preparedActors = actors.map(([attacker, defender]) => {
+          const plan = prepareAutomaticBattleAction(attacker, defender);
+          context.preparedPlans[attacker.trainer] = {
+            action: plan?.action || null, replayState: plan?.replayState || null, options: plan?.options || null
+          };
+          return { attacker, defender, plan };
+        });
+        if (chargedContinuationDepth > 0 && chargedContinuationOpening?.canonicalRoot
+          && chargedContinuationOpening.turn === currentTurn) {
+          chargedContinuationOpening.rootActions = Object.fromEntries(preparedActors
+            .filter(item => item.plan?.action)
+            .map(item => [item.attacker.trainer, strategyActionDescriptor(item.plan.action)]));
+        }
         if (chargedContinuationDepth > 0 && left.shieldExpectedOpeningActions) {
           const expected = left.shieldExpectedOpeningActions;
           delete left.shieldExpectedOpeningActions;
-          // Keep normal plan callbacks (timing state, form handling), and reject
-          // a branch if replanning from the same snapshot changes either choice.
+          // Both prepared actions and their timing state are frozen in a shield replay.
           const normalize = action => [action?.type === "charged" ? "charged_move" : action?.type === "fast" ? "fast_move" : action?.type, action?.moveId || action?.move?.id || null];
           if (preparedActors.some(item => JSON.stringify(normalize(item.plan?.action)) !== JSON.stringify(normalize(expected[item.attacker.trainer])))) return false;
         }
-        if (chargedContinuationDepth === 0
+        if (automaticShieldSearchEnabled()
           && preparedActors.some(item => ["charged", "charged_move"].includes(item.plan?.action?.type))
           && (battleDecisionCounterfactualsEnabled || [left, right].some(side => side.shieldMode === "smart" && side.shields > 0))) {
           context.shieldContinuationSnapshot = JSON.parse(JSON.stringify({
             left, right, timeline, battleTurns, manualPendingFastEvents, currentTurn,
-            actions: Object.fromEntries(preparedActors.filter(item => item.plan?.action).map(item => [item.attacker.trainer, item.plan.action]))
+            actions: Object.fromEntries(preparedActors.map(item => [item.attacker.trainer, item.plan?.action || null])),
+            planStates: Object.fromEntries(preparedActors.map(item => [item.attacker.trainer, item.plan?.replayState || null])),
+            planOptions: Object.fromEntries(preparedActors.map(item => [item.attacker.trainer, item.plan?.options || null]))
           }));
         }
         const strictDreStandard = globalThis.BATTLE_DRE_STANDARD === true
@@ -31705,6 +31806,7 @@
     function runAutomaticBattleToEnd(maxSteps = 1000) {
       let steps = 0;
       while (!battleEnded() && steps < maxSteps) {
+        if (chargedContinuationOpening?.shieldSearchBudget?.exhausted) break;
         if (!automaticBattleStep()) break;
         steps++;
       }
@@ -32131,6 +32233,147 @@
           }))
         }
       };
+    }
+
+    function strategyActionDescriptor(action) {
+      const type = action?.type === "charged" ? "charged_move" : action?.type === "fast" ? "fast_move" : action?.type;
+      return { type, moveId: type === "charged_move" ? action.moveId || action.move?.id || null : null,
+        metadata: type === "wait" ? action.metadata || null : null };
+    }
+
+    function strategyActionId(action) {
+      const normalized = strategyActionDescriptor(action);
+      return `${normalized.type}:${normalized.moveId || ""}`;
+    }
+
+    function plausibleOpponentChargedReply(attacker, defender, normalAction) {
+      if (defender.linePolicy === "farm-energy") return null;
+      const legal = legalBattleActions(defender, Number(activeAutoTurnContext.currentTurn || 0));
+      const charged = validChargedMoves(defender)
+        .filter(move => legal.some(action => strategyActionDescriptor(action).type === "charged_move" && action.moveId === move.id))
+        .sort((a, b) => estimate(defender, attacker, b) - estimate(defender, attacker, a) || a.energyCost - b.energyCost);
+      const strongest = charged[0];
+      if (!strongest) return null;
+      for (const move of charged) {
+        const action = { type: "charged_move", moveId: move.id };
+        if (strategyActionId(action) === strategyActionId(normalAction)) continue;
+        if (defender.baiting === "off" || defender.linePolicy === "force-straight") {
+          if (move === strongest) return action;
+          continue;
+        }
+        if (move === strongest || guaranteedStatEffectBenefitsUser(defender, attacker, move)) return action;
+        const nuke = attacker.shields > 0 ? credibleShieldPressureMove(defender, attacker, move) : null;
+        if (nuke && defender.energy >= nuke.energyCost) return action;
+      }
+      return null;
+    }
+
+    function compareCanonicalStrategyContinuations(attacker, defender, actions, originalAction) {
+      if (chargedContinuationDepth > 0 || !activeAutoTurnContext || activeAutoTurnContext.acted?.size) return null;
+      const api = typeof PvPeakBattleIntelligence !== "undefined" ? PvPeakBattleIntelligence : window.PvPeakBattleIntelligence;
+      const originalId = strategyActionId(originalAction);
+      const choices = [...new Map([originalAction, ...actions].map(action => {
+        const normalized = strategyActionDescriptor(action);
+        return [strategyActionId(normalized), { id: strategyActionId(normalized), action: normalized }];
+      })).values()];
+      if (choices.length < 2 || choices.length > 3) return null;
+      const stateKey = api.strategicStateKey(battleIntelligenceState(Number(activeAutoTurnContext.currentTurn || 0)), battleIntelligencePolicy());
+      const cache = activeAutoTurnContext.strategyContinuations ||= new Map();
+      const budget = activeAutoTurnContext.strategyContinuationBudget ||= { A: 0, B: 0 };
+      const evaluate = (choice, response) => {
+        const key = JSON.stringify([attacker.trainer, stateKey,
+          activeAutoTurnContext.preparedPlans?.[defender.trainer] || null, choice.action, response]);
+        if (!cache.has(key)) {
+          if (budget[attacker.trainer] >= api.MAX_STRATEGIC_CONTINUATIONS) return { complete: false, responseId: response.id };
+          budget[attacker.trainer]++;
+          cache.set(key, simulateCanonicalActionContinuation(attacker, choice.action, response));
+        }
+        return { ...cache.get(key), responseId: response.id };
+      };
+      const responses = [{ id: "policy" }];
+      const alternatives = choices.map(choice => ({ ...choice, responses: [evaluate(choice, responses[0])] }));
+      if (defender.shieldMode === "smart" && defender.shields > 0) {
+        responses.push({ id: "shield", shieldResponse: true }, { id: "no-shield", shieldResponse: false });
+      }
+      const reply = plausibleOpponentChargedReply(attacker, defender, alternatives[0].responses[0].opponentAction);
+      if (reply) responses.push({ id: `reply:${reply.moveId}`, opponentAction: reply });
+      if (choices.length * responses.length > api.MAX_STRATEGIC_CONTINUATIONS) return null;
+      for (const choice of alternatives) {
+        choice.responses.push(...responses.slice(1).map(response => evaluate(choice, response)));
+        choice.complete = choice.responses.every(response => response.complete);
+        choice.outcome = choice.responses[0].outcome;
+        choice.moveId = choice.action.moveId;
+      }
+      const selection = api.selectRobustContinuation(alternatives, originalId);
+      return { ...selection, action: choices.find(choice => choice.id === selection.id)?.action || strategyActionDescriptor(originalAction),
+        originalId, actionChanged: selection.id !== originalId, branchCount: choices.length * responses.length,
+        opponentResponses: responses, alternatives };
+    }
+
+    function simulateCanonicalActionContinuation(attacker, action, response = {}) {
+      const saved = {
+        left, right, log, timeline, initialTimelineState, battleTurns,
+        manualPendingFastEvents, suppressRender, activeAutoTurnContext, chargedContinuationOpening
+      };
+      const trainer = attacker.trainer;
+      const opponentTrainer = trainer === "A" ? "B" : "A";
+      const opponentPlan = response.opponentAction ? null : saved.activeAutoTurnContext?.preparedPlans?.[opponentTrainer];
+      const opening = {
+        canonicalRoot: true, trainer, action: strategyActionDescriptor(action),
+        opponentAction: response.opponentAction || null, shieldResponse: response.shieldResponse,
+        turn: Number(battleTurns[trainer] || 0), registered: false, completed: false, invalid: false
+      };
+      if (opponentPlan) {
+        opening.actions = { [trainer]: opening.action, [opponentTrainer]: strategyActionDescriptor(opponentPlan.action) };
+        if (!opponentPlan.action) opening.actions[opponentTrainer] = null;
+        opening.planStates = { [opponentTrainer]: opponentPlan.replayState };
+        opening.planOptions = { [opponentTrainer]: opponentPlan.options };
+      }
+      chargedContinuationDepth++;
+      try {
+        left = JSON.parse(JSON.stringify(saved.left));
+        right = JSON.parse(JSON.stringify(saved.right));
+        log = [];
+        timeline = JSON.parse(JSON.stringify(saved.timeline || []));
+        initialTimelineState = saved.initialTimelineState ? JSON.parse(JSON.stringify(saved.initialTimelineState)) : null;
+        battleTurns = { ...saved.battleTurns };
+        manualPendingFastEvents = JSON.parse(JSON.stringify(saved.manualPendingFastEvents || []));
+        suppressRender = true;
+        activeAutoTurnContext = null;
+        chargedContinuationOpening = opening;
+        // Replay the whole round so CMP, registered Fasts and form changes use
+        // the same resolution path as the battle being evaluated.
+        const steps = runAutomaticBattleToEnd(1000);
+        const actor = trainer === "A" ? left : right;
+        const opponent = trainer === "A" ? right : left;
+        return {
+          moveId: action.moveId || null,
+          complete: opening.registered && !opening.invalid && !opening.shieldSearchBudget?.exhausted && battleEnded(),
+          outcome: chargedContinuationOutcome(actor, opponent),
+          remainingHp: actor.hp,
+          remainingEnergy: actor.energy,
+          remainingShields: actor.shields,
+          opponentRemainingHp: opponent.hp,
+          opponentAction: opening.rootActions?.[trainer === "A" ? "B" : "A"] || null,
+          shieldResponseApplied: !!opening.shieldResponseApplied,
+          openingExecuted: opening.completed,
+          shieldSearches: opening.shieldSearchBudget?.used || 0,
+          shieldSearchExhausted: !!opening.shieldSearchBudget?.exhausted,
+          steps
+        };
+      } finally {
+        left = saved.left;
+        right = saved.right;
+        log = saved.log;
+        timeline = saved.timeline;
+        initialTimelineState = saved.initialTimelineState;
+        battleTurns = saved.battleTurns;
+        manualPendingFastEvents = saved.manualPendingFastEvents;
+        suppressRender = saved.suppressRender;
+        activeAutoTurnContext = saved.activeAutoTurnContext;
+        chargedContinuationOpening = saved.chargedContinuationOpening;
+        chargedContinuationDepth--;
+      }
     }
 
     function simulateBattleIntelligenceContinuation(attacker, defender, action, options = {}) {
@@ -38487,7 +38730,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261014-v190").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261018-v196").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
