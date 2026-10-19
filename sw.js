@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-10-18-v196-meta-refresh";
+const CACHE_VERSION = "2026-10-19-v197-home-news";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -71,6 +71,9 @@ const CORE_ASSETS = [
   "./src/ui/analysis-scenario-presentation.css",
   "./src/ui/analysis-scenario-presentation.js",
   "./src/ui/home-presentation.css",
+  "./src/ui/site-updates.css?v=20261019-news1",
+  "./data/site-updates.js?v=20261019-news1",
+  "./src/ui/site-updates.js?v=20261019-news1",
   "./src/ui/usability-refinements.css",
   "./src/ui/meta-theme-trial.css?v=20261006-v123",
   "./src/compendium/compendium-presentation.css",

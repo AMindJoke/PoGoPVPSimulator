@@ -20,6 +20,12 @@ Required files:
 
 Optional/local files such as `.exe`, `.zip`, and old test files are not needed for the web version.
 
+## Home updates
+
+Before publishing a user-facing release, add a short entry to `data/site-updates.js`: what changed and what someone will notice when using the site. Home shows the latest three entries; older notes stay in the file. Use plain language rather than commit messages or engine version numbers. See `docs/SITE_UPDATES.md` for the writing and release checklist.
+
+Run `npm run test:site-updates` and the Home/PWA checks after editing the feed. The updates are also available offline.
+
 ## Battle reference checks
 
 Before changing battle mechanics or publishing a simulator update, run:

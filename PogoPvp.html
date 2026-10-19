@@ -14488,6 +14488,9 @@
   <link rel="stylesheet" href="src/compendium/compendium-presentation.css?v=20260929-v1">
   <link rel="stylesheet" href="src/ui/analysis-scenario-presentation.css?v=20260929-v2">
   <link rel="stylesheet" href="src/ui/home-presentation.css?v=20260929-v1">
+  <link rel="stylesheet" href="src/ui/site-updates.css?v=20261019-news1">
+  <script src="data/site-updates.js?v=20261019-news1"></script>
+  <script defer src="src/ui/site-updates.js?v=20261019-news1"></script>
   <link rel="stylesheet" href="src/ui/usability-refinements.css?v=20260930-v1">
   <link rel="stylesheet" href="src/ui/meta-theme-trial.css?v=20261006-v123">
   <link rel="stylesheet" href="src/ui/meta-quick-matchup.css?v=20261006-v123">
@@ -14571,6 +14574,11 @@
               <span class="home-tool-watermark" aria-hidden="true"></span>
             </button>
           </div>
+        </section>
+
+        <section id="homeNews" class="home-news" aria-labelledby="homeNewsTitle" hidden>
+          <h2 id="homeNewsTitle">What's new</h2>
+          <ol id="homeNewsList" class="home-news-list"></ol>
         </section>
 
         <footer class="home-footer">Independent Pokémon GO PvP analysis and judge reference tool.<br>Not affiliated with Niantic, The Pokémon Company or Play! Pokémon.</footer>
@@ -38730,7 +38738,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261018-v196").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261019-v197").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

@@ -9,7 +9,14 @@ const { chromium } = require(path.join(process.env.USERPROFILE, ".cache/codex-ru
 const root = path.resolve(__dirname, "..");
 const baseline = process.argv.find(arg => arg.startsWith("--baseline="))?.slice("--baseline=".length) || "135d9153";
 const report = { baseline: execFileSync("git", ["rev-parse", baseline], { cwd: root, encoding: "utf8" }).trim(), runs: [] };
-const output = path.join(root, "reports/prepush-v49/pwa-upgrade.json");
+const readGit = file => execFileSync("git", ["show", `${report.baseline}:${file}`], { cwd: root, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");
+const currentEngine = require("../src/reliability/battle-reliability").BATTLE_ENGINE_VERSION;
+const baselineEngine = readGit("src/reliability/battle-reliability.js").match(/const BATTLE_ENGINE_VERSION = "([^"]+)"/)[1];
+const currentCache = fs.readFileSync(path.join(root, "sw.js"), "utf8").match(/const CACHE_VERSION = "([^"]+)"/)[1];
+const registration = source => source.match(/navigator\.serviceWorker\.register\("\.\/([^"]+)"/)[1];
+const currentWorker = registration(html), baselineWorker = registration(readGit("PogoPvp.html"));
+const output = path.join(root, "reports/pwa-release-upgrade/latest.json");
 const save = () => fs.writeFileSync(output, JSON.stringify(report, null, 2) + "\n");
 const snapshots = new Map();
 let release = "old";
@@ -41,7 +48,8 @@ async function snapshot(page) {
     details: metaRankingDetails?.sourceMatrixVersion, controller: navigator.serviceWorker.controller?.scriptURL,
     caches: await caches.keys(), team: teamBuilderState.team.filter(Boolean).map(member => member.pokemonId),
     rankingReady: window.PvPeakTeamBuilderAnalysis.rankingState?.(metaRankingData, battleEngineVersion, activeSeasonData.id),
-    selectedBuild: teamBuilderState.team[0]?.build }));
+    selectedBuild: teamBuilderState.team[0]?.build,
+    news: Array.from(document.querySelectorAll("#homeNewsList .home-news-title"), node => node.textContent) }));
 }
 async function ready(page, url) {
   await page.goto(url, { waitUntil: "load" });
@@ -65,29 +73,33 @@ async function check(browser, origin, mobile) {
       localStorage.setItem("pwa-upgrade-old-job-keys", JSON.stringify(window.__oldJobs));
     });
     const run = { mobile, before: await snapshot(page) }; report.runs.push(run); save();
-    assert.match(run.before.controller, /v190/); assert.equal(run.before.engine, "battle-planner-v46");
+    assert.ok(run.before.controller.endsWith(baselineWorker)); assert.equal(run.before.engine, baselineEngine);
     release = "new";
     await page.reload({ waitUntil: "load" });
-    await page.waitForFunction(() => navigator.serviceWorker.controller?.scriptURL.includes("v196"), null, { timeout: 120000 });
+    await page.waitForFunction(worker => navigator.serviceWorker.controller?.scriptURL.endsWith(worker), currentWorker, { timeout: 120000 });
     await page.reload({ waitUntil: "load" });
-    await page.waitForFunction(() => typeof metaRankingData !== "undefined" && metaRankingData?.metadata?.matrixVersion === "battle-planner-v49", null, { timeout: 120000 });
+    await page.waitForFunction(engine => typeof metaRankingData !== "undefined" && metaRankingData?.metadata?.matrixVersion === engine, currentEngine, { timeout: 120000 });
     run.after = await snapshot(page);
-    assert.equal(run.after.engine, "battle-planner-v49"); assert.equal(run.after.details, run.after.engine);
+    assert.equal(run.after.engine, currentEngine); assert.equal(run.after.details, run.after.engine);
     assert.equal(run.after.rankingReady, "ready"); assert.deepEqual(run.after.team, run.before.team);
     assert.deepEqual(run.after.selectedBuild, run.before.selectedBuild);
-    assert.deepEqual(run.after.caches.filter(name => name.startsWith("pogo-pvp-simulator-")), ["pogo-pvp-simulator-2026-10-18-v196-meta-refresh"]);
+    assert.deepEqual(run.after.caches.filter(name => name.startsWith("pogo-pvp-simulator-")), ["pogo-pvp-simulator-" + currentCache]);
     run.cacheIsolation = await page.evaluate(async () => {
       const oldKeys = JSON.parse(localStorage.getItem("pwa-upgrade-old-job-keys"));
       const jobs = teamBuilderCombinedCoveragePlan();
       const durable = await sharedMatchupCache.getMany(oldKeys.map(key => "team-builder-results-v1|" + key));
       return { currentHits: jobs.filter(job => teamBuilderAnalysisCache.has(job.key)).length, oldKeysRetained: durable.size, separated: jobs.every(job => !oldKeys.includes(job.key)) };
     });
-    assert.equal(run.cacheIsolation.currentHits, 0); assert.equal(run.cacheIsolation.oldKeysRetained, 3); assert.ok(run.cacheIsolation.separated);
+    assert.equal(run.cacheIsolation.oldKeysRetained, 3);
+    if (baselineEngine !== currentEngine) {
+      assert.equal(run.cacheIsolation.currentHits, 0); assert.ok(run.cacheIsolation.separated);
+    } else assert.equal(run.cacheIsolation.currentHits, 3, "A presentation-only update must preserve compatible results");
     await context.setOffline(true);
     await ready(page, url);
     run.offline = await snapshot(page);
-    assert.equal(run.offline.engine, "battle-planner-v49"); assert.equal(run.offline.rankingReady, "ready");
+    assert.equal(run.offline.engine, currentEngine); assert.equal(run.offline.rankingReady, "ready");
     assert.deepEqual(run.offline.team, run.before.team);
+    if (html.includes('id="homeNews"')) assert.equal(run.offline.news.length, 3, "The latest site updates must be readable offline");
     run.offlineBattle = await page.evaluate(async () => {
       const job = teamBuilderCombinedCoveragePlan()[0];
       const source = window.PvPeakCmpDependency.workerSource(buildMatrixComputeWorkerSource());
@@ -104,7 +116,7 @@ async function check(browser, origin, mobile) {
         return { score: result.score, engine: result.provenance?.currentEngineVersion, canonicalScore: simulateTeamBuilderMatchupCell(job).score, cmpStatus: result.cmpDependency?.status };
       } finally { worker.terminate(); URL.revokeObjectURL(url); }
     });
-    assert.ok(Number.isFinite(run.offlineBattle.score)); assert.equal(run.offlineBattle.engine, "battle-planner-v49");
+    assert.ok(Number.isFinite(run.offlineBattle.score)); assert.equal(run.offlineBattle.engine, currentEngine);
     assert.equal(run.offlineBattle.score, run.offlineBattle.canonicalScore);
     assert.ok(["checked", "dependent", "unverified"].includes(run.offlineBattle.cmpStatus), "Updated offline CMP module must instrument the v49 worker");
     run.errors = errors; assert.deepEqual(errors, []); save(); console.log(JSON.stringify(run));

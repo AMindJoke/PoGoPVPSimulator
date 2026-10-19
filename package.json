@@ -23,6 +23,8 @@
     "test:pwa-upgrade": "node tools/test-pwa-release-upgrade.js",
     "test:mobile-keyboard": "node tools/test-mobile-keyboard-contract.js",
     "test:home": "node tools/test-home-ui-contract.js",
+    "test:site-updates": "node tools/test-site-updates.js",
+    "test:site-updates-browser": "node tools/test-site-updates-browser.js",
     "test:pokemon-analysis-ui": "node tools/test-pokemon-analysis-ui-contract.js",
     "generate:great-league-ranking": "npm run generate:rankings",
     "generate:great-league-ranking:full": "npm run generate:great-league-full",
