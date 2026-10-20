@@ -1,0 +1,2384 @@
+{
+  "engineVersion": "battle-planner-v50",
+  "generatedAt": "2026-10-20T07:40:25.111Z",
+  "scope": "Published top 100 plus configured meta; fresh simulations, zero starting energy, equal shields",
+  "rows": [
+    {
+      "pokemonId": "houndoom_shadow",
+      "profile": "default",
+      "shieldMode": "always",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            38,
+            57,
+            64
+          ],
+          "averageScore": 504.3867924528302
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            33,
+            56,
+            65
+          ],
+          "averageScore": 504.84591194968556
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "electrode_hisuian",
+          "shields": 1,
+          "outcome": "A",
+          "score": 797,
+          "previousOutcome": "B",
+          "previousScore": 474
+        },
+        {
+          "opponentId": "sableye",
+          "shields": 0,
+          "outcome": "B",
+          "score": 426,
+          "previousOutcome": "A",
+          "previousScore": 650
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 0,
+          "outcome": "A",
+          "score": 532,
+          "previousOutcome": "B",
+          "previousScore": 436
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 1,
+          "outcome": "B",
+          "score": 251,
+          "previousOutcome": "A",
+          "previousScore": 705
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 345,
+          "previousOutcome": "A",
+          "previousScore": 633
+        },
+        {
+          "opponentId": "florges",
+          "shields": 2,
+          "outcome": "B",
+          "score": 418,
+          "previousOutcome": "A",
+          "previousScore": 578
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 755,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "steelix_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 687,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "pachirisu",
+          "shields": 0,
+          "outcome": "B",
+          "score": 364,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 381
+        },
+        {
+          "opponentId": "spidops",
+          "shields": 1,
+          "outcome": "A",
+          "score": 774,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 1,
+          "outcome": "B",
+          "score": 358,
+          "previousOutcome": "A",
+          "previousScore": 538
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "B",
+          "score": 420,
+          "previousOutcome": "A",
+          "previousScore": 657
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 487
+        },
+        {
+          "opponentId": "mightyena_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "furret",
+          "shields": 2,
+          "outcome": "A",
+          "score": 711,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "charjabug_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 711,
+          "previousOutcome": "B",
+          "previousScore": 482
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 501
+        },
+        {
+          "opponentId": "cradily",
+          "shields": 1,
+          "outcome": "B",
+          "score": 474,
+          "previousOutcome": "A",
+          "previousScore": 593
+        },
+        {
+          "opponentId": "cradily_b",
+          "shields": 1,
+          "outcome": "B",
+          "score": 474,
+          "previousOutcome": "A",
+          "previousScore": 593
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 357,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "kangaskhan",
+          "shields": 1,
+          "outcome": "A",
+          "score": 503,
+          "previousOutcome": "B",
+          "previousScore": 305
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 586
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 321,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 332,
+          "previousOutcome": "A",
+          "previousScore": 551
+        },
+        {
+          "opponentId": "gligar_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 425,
+          "previousOutcome": "A",
+          "previousScore": 636
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 1,
+          "outcome": "B",
+          "score": 247,
+          "previousOutcome": "A",
+          "previousScore": 636
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 338,
+          "previousOutcome": "A",
+          "previousScore": 530
+        },
+        {
+          "opponentId": "servine",
+          "shields": 1,
+          "outcome": "A",
+          "score": 774,
+          "previousOutcome": "B",
+          "previousScore": 489
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 0,
+          "outcome": "B",
+          "score": 451,
+          "previousOutcome": "A",
+          "previousScore": 646
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 1,
+          "outcome": "B",
+          "score": 375,
+          "previousOutcome": "A",
+          "previousScore": 712
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 2,
+          "outcome": "B",
+          "score": 422,
+          "previousOutcome": "A",
+          "previousScore": 638
+        },
+        {
+          "opponentId": "medicham",
+          "shields": 2,
+          "outcome": "A",
+          "score": 730,
+          "previousOutcome": "B",
+          "previousScore": 385
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom_shadow",
+      "profile": "default",
+      "shieldMode": "smart",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            38,
+            56,
+            70
+          ],
+          "averageScore": 510.4339622641509
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            33,
+            56,
+            71
+          ],
+          "averageScore": 507.97169811320754
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "vigoroth",
+          "shields": 2,
+          "outcome": "A",
+          "score": 602,
+          "previousOutcome": "B",
+          "previousScore": 404
+        },
+        {
+          "opponentId": "sableye",
+          "shields": 0,
+          "outcome": "B",
+          "score": 426,
+          "previousOutcome": "A",
+          "previousScore": 650
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 0,
+          "outcome": "A",
+          "score": 532,
+          "previousOutcome": "B",
+          "previousScore": 436
+        },
+        {
+          "opponentId": "seismitoad",
+          "shields": 1,
+          "outcome": "A",
+          "score": 617,
+          "previousOutcome": "B",
+          "previousScore": 406
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 1,
+          "outcome": "B",
+          "score": 251,
+          "previousOutcome": "A",
+          "previousScore": 705
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 345,
+          "previousOutcome": "A",
+          "previousScore": 633
+        },
+        {
+          "opponentId": "florges",
+          "shields": 2,
+          "outcome": "B",
+          "score": 418,
+          "previousOutcome": "A",
+          "previousScore": 578
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "steelix_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 687,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "pachirisu",
+          "shields": 0,
+          "outcome": "B",
+          "score": 364,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 381
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 1,
+          "outcome": "B",
+          "score": 358,
+          "previousOutcome": "A",
+          "previousScore": 538
+        },
+        {
+          "opponentId": "araquanid",
+          "shields": 1,
+          "outcome": "B",
+          "score": 470,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "B",
+          "score": 420,
+          "previousOutcome": "A",
+          "previousScore": 657
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 487
+        },
+        {
+          "opponentId": "mightyena_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "furret",
+          "shields": 2,
+          "outcome": "A",
+          "score": 711,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "charjabug_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 711,
+          "previousOutcome": "B",
+          "previousScore": 482
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 357,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "kangaskhan",
+          "shields": 1,
+          "outcome": "A",
+          "score": 503,
+          "previousOutcome": "B",
+          "previousScore": 305
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 586
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 321,
+          "previousOutcome": "A",
+          "previousScore": 571
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 332,
+          "previousOutcome": "A",
+          "previousScore": 551
+        },
+        {
+          "opponentId": "gligar_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 425,
+          "previousOutcome": "A",
+          "previousScore": 636
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 1,
+          "outcome": "B",
+          "score": 247,
+          "previousOutcome": "A",
+          "previousScore": 636
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 338,
+          "previousOutcome": "A",
+          "previousScore": 530
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 0,
+          "outcome": "B",
+          "score": 451,
+          "previousOutcome": "A",
+          "previousScore": 646
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 2,
+          "outcome": "A",
+          "score": 655,
+          "previousOutcome": "B",
+          "previousScore": 490
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom_shadow",
+      "profile": "rank1",
+      "shieldMode": "always",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            36,
+            48,
+            61
+          ],
+          "averageScore": 495.07547169811323
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            31,
+            49,
+            68
+          ],
+          "averageScore": 498.3490566037736
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "vigoroth",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 497
+        },
+        {
+          "opponentId": "electrode_hisuian",
+          "shields": 1,
+          "outcome": "A",
+          "score": 800,
+          "previousOutcome": "B",
+          "previousScore": 460
+        },
+        {
+          "opponentId": "sableye",
+          "shields": 0,
+          "outcome": "B",
+          "score": 414,
+          "previousOutcome": "A",
+          "previousScore": 655
+        },
+        {
+          "opponentId": "sableye_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 718,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 0,
+          "outcome": "A",
+          "score": 544,
+          "previousOutcome": "B",
+          "previousScore": 424
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 620,
+          "previousOutcome": "B",
+          "previousScore": 472
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 0,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 632
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 1,
+          "outcome": "B",
+          "score": 250,
+          "previousOutcome": "A",
+          "previousScore": 707
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 344,
+          "previousOutcome": "A",
+          "previousScore": 637
+        },
+        {
+          "opponentId": "florges",
+          "shields": 2,
+          "outcome": "B",
+          "score": 415,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 339
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 799,
+          "previousOutcome": "B",
+          "previousScore": 491
+        },
+        {
+          "opponentId": "steelix_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 692,
+          "previousOutcome": "B",
+          "previousScore": 495
+        },
+        {
+          "opponentId": "pachirisu",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 697,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "bellibolt",
+          "shields": 1,
+          "outcome": "A",
+          "score": 739,
+          "previousOutcome": "B",
+          "previousScore": 442
+        },
+        {
+          "opponentId": "snorlax_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 744,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 1,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 2,
+          "outcome": "A",
+          "score": 700,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "B",
+          "score": 406,
+          "previousOutcome": "A",
+          "previousScore": 661
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "mightyena_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "furret",
+          "shields": 2,
+          "outcome": "A",
+          "score": 715,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "charjabug_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 716,
+          "previousOutcome": "B",
+          "previousScore": 466
+        },
+        {
+          "opponentId": "ninetales",
+          "shields": 1,
+          "outcome": "A",
+          "score": 612,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 495,
+          "previousOutcome": "A",
+          "previousScore": 501
+        },
+        {
+          "opponentId": "cradily",
+          "shields": 1,
+          "outcome": "B",
+          "score": 466,
+          "previousOutcome": "A",
+          "previousScore": 597
+        },
+        {
+          "opponentId": "cradily_b",
+          "shields": 1,
+          "outcome": "B",
+          "score": 466,
+          "previousOutcome": "A",
+          "previousScore": 597
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 659
+        },
+        {
+          "opponentId": "ludicolo",
+          "shields": 2,
+          "outcome": "A",
+          "score": 757,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 590
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 318,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 321,
+          "previousOutcome": "A",
+          "previousScore": 556
+        },
+        {
+          "opponentId": "gligar_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 409,
+          "previousOutcome": "A",
+          "previousScore": 641
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 335,
+          "previousOutcome": "A",
+          "previousScore": 535
+        },
+        {
+          "opponentId": "servine",
+          "shields": 1,
+          "outcome": "A",
+          "score": 777,
+          "previousOutcome": "B",
+          "previousScore": 487
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 0,
+          "outcome": "B",
+          "score": 449,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 1,
+          "outcome": "B",
+          "score": 375,
+          "previousOutcome": "A",
+          "previousScore": 714
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 2,
+          "outcome": "B",
+          "score": 422,
+          "previousOutcome": "A",
+          "previousScore": 643
+        },
+        {
+          "opponentId": "medicham",
+          "shields": 2,
+          "outcome": "A",
+          "score": 732,
+          "previousOutcome": "B",
+          "previousScore": 382
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom_shadow",
+      "profile": "rank1",
+      "shieldMode": "smart",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            36,
+            49,
+            67
+          ],
+          "averageScore": 502.69182389937106
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            31,
+            51,
+            73
+          ],
+          "averageScore": 503.66037735849056
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "vigoroth",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 497
+        },
+        {
+          "opponentId": "sableye",
+          "shields": 0,
+          "outcome": "B",
+          "score": 414,
+          "previousOutcome": "A",
+          "previousScore": 655
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 0,
+          "outcome": "A",
+          "score": 544,
+          "previousOutcome": "B",
+          "previousScore": 424
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 0,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 632
+        },
+        {
+          "opponentId": "seismitoad",
+          "shields": 1,
+          "outcome": "A",
+          "score": 626,
+          "previousOutcome": "B",
+          "previousScore": 394
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 1,
+          "outcome": "B",
+          "score": 250,
+          "previousOutcome": "A",
+          "previousScore": 707
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 344,
+          "previousOutcome": "A",
+          "previousScore": 637
+        },
+        {
+          "opponentId": "florges",
+          "shields": 2,
+          "outcome": "B",
+          "score": 415,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 1,
+          "outcome": "A",
+          "score": 504,
+          "previousOutcome": "B",
+          "previousScore": 410
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 339
+        },
+        {
+          "opponentId": "steelix_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 692,
+          "previousOutcome": "B",
+          "previousScore": 495
+        },
+        {
+          "opponentId": "pachirisu",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 697,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "bellibolt",
+          "shields": 1,
+          "outcome": "A",
+          "score": 739,
+          "previousOutcome": "B",
+          "previousScore": 442
+        },
+        {
+          "opponentId": "snorlax_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 744,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 1,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 2,
+          "outcome": "A",
+          "score": 700,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "B",
+          "score": 406,
+          "previousOutcome": "A",
+          "previousScore": 661
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 1,
+          "outcome": "B",
+          "score": 451,
+          "previousOutcome": "A",
+          "previousScore": 501
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "mightyena_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "furret",
+          "shields": 2,
+          "outcome": "A",
+          "score": 715,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "charjabug_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 716,
+          "previousOutcome": "B",
+          "previousScore": 466
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 659
+        },
+        {
+          "opponentId": "ludicolo",
+          "shields": 2,
+          "outcome": "A",
+          "score": 757,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 590
+        },
+        {
+          "opponentId": "hydreigon_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 318,
+          "previousOutcome": "A",
+          "previousScore": 578
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 321,
+          "previousOutcome": "A",
+          "previousScore": 556
+        },
+        {
+          "opponentId": "gligar_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 409,
+          "previousOutcome": "A",
+          "previousScore": 641
+        },
+        {
+          "opponentId": "gligar_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 664,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 335,
+          "previousOutcome": "A",
+          "previousScore": 535
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 0,
+          "outcome": "B",
+          "score": 449,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 2,
+          "outcome": "A",
+          "score": 660,
+          "previousOutcome": "B",
+          "previousScore": 490
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom",
+      "profile": "default",
+      "shieldMode": "always",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            36,
+            35,
+            57
+          ],
+          "averageScore": 478.90880503144655
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            26,
+            42,
+            64
+          ],
+          "averageScore": 480.4685534591195
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "mimikyu",
+          "shields": 1,
+          "outcome": "B",
+          "score": 445,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "sableye_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 538,
+          "previousOutcome": "B",
+          "previousScore": 459
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 610,
+          "previousOutcome": "B",
+          "previousScore": 419
+        },
+        {
+          "opponentId": "thievul",
+          "shields": 2,
+          "outcome": "A",
+          "score": 623,
+          "previousOutcome": "B",
+          "previousScore": 478
+        },
+        {
+          "opponentId": "spiritomb",
+          "shields": 0,
+          "outcome": "B",
+          "score": 465,
+          "previousOutcome": "A",
+          "previousScore": 718
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 1,
+          "outcome": "A",
+          "score": 592,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 313,
+          "previousOutcome": "A",
+          "previousScore": 633
+        },
+        {
+          "opponentId": "florges",
+          "shields": 0,
+          "outcome": "B",
+          "score": 273,
+          "previousOutcome": "A",
+          "previousScore": 539
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 0,
+          "outcome": "B",
+          "score": 466,
+          "previousOutcome": "A",
+          "previousScore": 624
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 1,
+          "outcome": "A",
+          "score": 566,
+          "previousOutcome": "B",
+          "previousScore": 461
+        },
+        {
+          "opponentId": "steelix",
+          "shields": 2,
+          "outcome": "A",
+          "score": 726,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 305
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 755,
+          "previousOutcome": "B",
+          "previousScore": 434
+        },
+        {
+          "opponentId": "mightyena",
+          "shields": 2,
+          "outcome": "A",
+          "score": 658,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "spidops",
+          "shields": 0,
+          "outcome": "B",
+          "score": 415,
+          "previousOutcome": "A",
+          "previousScore": 539
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 1,
+          "outcome": "A",
+          "score": 546,
+          "previousOutcome": "B",
+          "previousScore": 472
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "morpeko_full_belly",
+          "shields": 1,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 698
+        },
+        {
+          "opponentId": "moltres_galarian",
+          "shields": 0,
+          "outcome": "B",
+          "score": 402,
+          "previousOutcome": "A",
+          "previousScore": 546
+        },
+        {
+          "opponentId": "moltres_galarian",
+          "shields": 1,
+          "outcome": "A",
+          "score": 671,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 755,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 602,
+          "previousOutcome": "B",
+          "previousScore": 321
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 672,
+          "previousOutcome": "B",
+          "previousScore": 462
+        },
+        {
+          "opponentId": "pidgeot",
+          "shields": 0,
+          "outcome": "B",
+          "score": 374,
+          "previousOutcome": "A",
+          "previousScore": 574
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 420,
+          "previousOutcome": "A",
+          "previousScore": 657
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 487
+        },
+        {
+          "opponentId": "ninetales",
+          "shields": 1,
+          "outcome": "A",
+          "score": 639,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 358,
+          "previousOutcome": "A",
+          "previousScore": 538
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 312,
+          "previousOutcome": "A",
+          "previousScore": 692
+        },
+        {
+          "opponentId": "ludicolo",
+          "shields": 0,
+          "outcome": "B",
+          "score": 326,
+          "previousOutcome": "A",
+          "previousScore": 525
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 0,
+          "outcome": "B",
+          "score": 422,
+          "previousOutcome": "A",
+          "previousScore": 578
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 309,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "medicham",
+          "shields": 2,
+          "outcome": "A",
+          "score": 690,
+          "previousOutcome": "B",
+          "previousScore": 342
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom",
+      "profile": "default",
+      "shieldMode": "smart",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            36,
+            40,
+            60
+          ],
+          "averageScore": 487.8867924528302
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            26,
+            44,
+            67
+          ],
+          "averageScore": 485.5345911949685
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "mimikyu",
+          "shields": 1,
+          "outcome": "B",
+          "score": 445,
+          "previousOutcome": "A",
+          "previousScore": 622
+        },
+        {
+          "opponentId": "sableye_shadow",
+          "shields": 2,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 617,
+          "previousOutcome": "B",
+          "previousScore": 393
+        },
+        {
+          "opponentId": "thievul",
+          "shields": 2,
+          "outcome": "A",
+          "score": 532,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "spiritomb",
+          "shields": 0,
+          "outcome": "B",
+          "score": 465,
+          "previousOutcome": "A",
+          "previousScore": 718
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 1,
+          "outcome": "A",
+          "score": 607,
+          "previousOutcome": "B",
+          "previousScore": 449
+        },
+        {
+          "opponentId": "clodsire",
+          "shields": 2,
+          "outcome": "A",
+          "score": 671,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 313,
+          "previousOutcome": "A",
+          "previousScore": 633
+        },
+        {
+          "opponentId": "florges",
+          "shields": 0,
+          "outcome": "B",
+          "score": 273,
+          "previousOutcome": "A",
+          "previousScore": 539
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 0,
+          "outcome": "B",
+          "score": 466,
+          "previousOutcome": "A",
+          "previousScore": 624
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 1,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 461
+        },
+        {
+          "opponentId": "steelix",
+          "shields": 2,
+          "outcome": "A",
+          "score": 726,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 305
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 755,
+          "previousOutcome": "B",
+          "previousScore": 434
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 602,
+          "previousOutcome": "B",
+          "previousScore": 404
+        },
+        {
+          "opponentId": "mightyena",
+          "shields": 2,
+          "outcome": "A",
+          "score": 658,
+          "previousOutcome": "draw",
+          "previousScore": 500
+        },
+        {
+          "opponentId": "spidops",
+          "shields": 0,
+          "outcome": "B",
+          "score": 415,
+          "previousOutcome": "A",
+          "previousScore": 539
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "moltres_galarian",
+          "shields": 0,
+          "outcome": "B",
+          "score": 402,
+          "previousOutcome": "A",
+          "previousScore": 546
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 705,
+          "previousOutcome": "B",
+          "previousScore": 344
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 602,
+          "previousOutcome": "B",
+          "previousScore": 321
+        },
+        {
+          "opponentId": "pidgeot",
+          "shields": 0,
+          "outcome": "B",
+          "score": 374,
+          "previousOutcome": "A",
+          "previousScore": 574
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 420,
+          "previousOutcome": "A",
+          "previousScore": 657
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 582,
+          "previousOutcome": "B",
+          "previousScore": 487
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 358,
+          "previousOutcome": "A",
+          "previousScore": 538
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 312,
+          "previousOutcome": "A",
+          "previousScore": 692
+        },
+        {
+          "opponentId": "ludicolo",
+          "shields": 0,
+          "outcome": "B",
+          "score": 326,
+          "previousOutcome": "A",
+          "previousScore": 525
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 0,
+          "outcome": "B",
+          "score": 422,
+          "previousOutcome": "A",
+          "previousScore": 578
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 2,
+          "outcome": "A",
+          "score": 611,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 309,
+          "previousOutcome": "A",
+          "previousScore": 582
+        },
+        {
+          "opponentId": "nidorina",
+          "shields": 2,
+          "outcome": "A",
+          "score": 505,
+          "previousOutcome": "B",
+          "previousScore": 363
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom",
+      "profile": "rank1",
+      "shieldMode": "always",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            35,
+            31,
+            55
+          ],
+          "averageScore": 471.82389937106916
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            26,
+            37,
+            64
+          ],
+          "averageScore": 475.41509433962267
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "tinkaton",
+          "shields": 0,
+          "outcome": "B",
+          "score": 385,
+          "previousOutcome": "A",
+          "previousScore": 512
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 616,
+          "previousOutcome": "B",
+          "previousScore": 408
+        },
+        {
+          "opponentId": "spiritomb",
+          "shields": 0,
+          "outcome": "B",
+          "score": 454,
+          "previousOutcome": "A",
+          "previousScore": 720
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 0,
+          "outcome": "B",
+          "score": 475,
+          "previousOutcome": "A",
+          "previousScore": 565
+        },
+        {
+          "opponentId": "clodsire",
+          "shields": 2,
+          "outcome": "A",
+          "score": 702,
+          "previousOutcome": "B",
+          "previousScore": 469
+        },
+        {
+          "opponentId": "ninetales_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 612,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "malamar_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 744,
+          "previousOutcome": "B",
+          "previousScore": 499
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 637
+        },
+        {
+          "opponentId": "florges",
+          "shields": 0,
+          "outcome": "B",
+          "score": 352,
+          "previousOutcome": "A",
+          "previousScore": 549
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 0,
+          "outcome": "B",
+          "score": 448,
+          "previousOutcome": "A",
+          "previousScore": 653
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 300
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 759,
+          "previousOutcome": "B",
+          "previousScore": 426
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 497
+        },
+        {
+          "opponentId": "bellibolt",
+          "shields": 1,
+          "outcome": "A",
+          "score": 684,
+          "previousOutcome": "B",
+          "previousScore": 429
+        },
+        {
+          "opponentId": "spidops",
+          "shields": 0,
+          "outcome": "B",
+          "score": 487,
+          "previousOutcome": "A",
+          "previousScore": 548
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 0,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "A",
+          "score": 506,
+          "previousOutcome": "B",
+          "previousScore": 480
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 1,
+          "outcome": "A",
+          "score": 552,
+          "previousOutcome": "B",
+          "previousScore": 466
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 454
+        },
+        {
+          "opponentId": "morpeko_full_belly",
+          "shields": 1,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 700
+        },
+        {
+          "opponentId": "moltres_galarian",
+          "shields": 1,
+          "outcome": "A",
+          "score": 674,
+          "previousOutcome": "B",
+          "previousScore": 448
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 339
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 799,
+          "previousOutcome": "B",
+          "previousScore": 491
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 606,
+          "previousOutcome": "B",
+          "previousScore": 318
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 677,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "pidgeot",
+          "shields": 1,
+          "outcome": "B",
+          "score": 448,
+          "previousOutcome": "A",
+          "previousScore": 608
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 406,
+          "previousOutcome": "A",
+          "previousScore": 661
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "ninetales",
+          "shields": 1,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 493
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 700,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 373,
+          "previousOutcome": "A",
+          "previousScore": 696
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 1,
+          "outcome": "A",
+          "score": 637,
+          "previousOutcome": "B",
+          "previousScore": 474
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 0,
+          "outcome": "B",
+          "score": 402,
+          "previousOutcome": "A",
+          "previousScore": 587
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 286,
+          "previousOutcome": "A",
+          "previousScore": 693
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 306,
+          "previousOutcome": "A",
+          "previousScore": 586
+        },
+        {
+          "opponentId": "medicham",
+          "shields": 2,
+          "outcome": "A",
+          "score": 694,
+          "previousOutcome": "B",
+          "previousScore": 339
+        },
+        {
+          "opponentId": "deoxys_defense",
+          "shields": 1,
+          "outcome": "A",
+          "score": 568,
+          "previousOutcome": "B",
+          "previousScore": 499
+        }
+      ]
+    },
+    {
+      "pokemonId": "houndoom",
+      "profile": "rank1",
+      "shieldMode": "smart",
+      "opponents": 106,
+      "sets": [
+        {
+          "coverage": "FLAMETHROWER",
+          "wins": [
+            35,
+            39,
+            64
+          ],
+          "averageScore": 482.77358490566036
+        },
+        {
+          "coverage": "TRAILBLAZE",
+          "wins": [
+            26,
+            41,
+            67
+          ],
+          "averageScore": 481.44654088050316
+        }
+      ],
+      "flips": [
+        {
+          "opponentId": "tinkaton",
+          "shields": 0,
+          "outcome": "B",
+          "score": 385,
+          "previousOutcome": "A",
+          "previousScore": 512
+        },
+        {
+          "opponentId": "umbreon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 578,
+          "previousOutcome": "B",
+          "previousScore": 427
+        },
+        {
+          "opponentId": "spiritomb",
+          "shields": 0,
+          "outcome": "B",
+          "score": 454,
+          "previousOutcome": "A",
+          "previousScore": 720
+        },
+        {
+          "opponentId": "mandibuzz",
+          "shields": 0,
+          "outcome": "B",
+          "score": 475,
+          "previousOutcome": "A",
+          "previousScore": 565
+        },
+        {
+          "opponentId": "clodsire",
+          "shields": 2,
+          "outcome": "A",
+          "score": 702,
+          "previousOutcome": "B",
+          "previousScore": 427
+        },
+        {
+          "opponentId": "feraligatr",
+          "shields": 2,
+          "outcome": "B",
+          "score": 311,
+          "previousOutcome": "A",
+          "previousScore": 637
+        },
+        {
+          "opponentId": "florges",
+          "shields": 0,
+          "outcome": "B",
+          "score": 352,
+          "previousOutcome": "A",
+          "previousScore": 549
+        },
+        {
+          "opponentId": "morgrem",
+          "shields": 0,
+          "outcome": "B",
+          "score": 448,
+          "previousOutcome": "A",
+          "previousScore": 653
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 300
+        },
+        {
+          "opponentId": "empoleon",
+          "shields": 2,
+          "outcome": "A",
+          "score": 759,
+          "previousOutcome": "B",
+          "previousScore": 426
+        },
+        {
+          "opponentId": "vigoroth_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 609,
+          "previousOutcome": "B",
+          "previousScore": 497
+        },
+        {
+          "opponentId": "bellibolt",
+          "shields": 1,
+          "outcome": "A",
+          "score": 684,
+          "previousOutcome": "B",
+          "previousScore": 429
+        },
+        {
+          "opponentId": "spidops",
+          "shields": 0,
+          "outcome": "B",
+          "score": 487,
+          "previousOutcome": "A",
+          "previousScore": 548
+        },
+        {
+          "opponentId": "ampharos",
+          "shields": 0,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 651
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 0,
+          "outcome": "A",
+          "score": 506,
+          "previousOutcome": "B",
+          "previousScore": 480
+        },
+        {
+          "opponentId": "muk_alolan",
+          "shields": 2,
+          "outcome": "A",
+          "score": 501,
+          "previousOutcome": "B",
+          "previousScore": 454
+        },
+        {
+          "opponentId": "empoleon_shadow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 707,
+          "previousOutcome": "B",
+          "previousScore": 339
+        },
+        {
+          "opponentId": "fearow",
+          "shields": 1,
+          "outcome": "A",
+          "score": 606,
+          "previousOutcome": "B",
+          "previousScore": 318
+        },
+        {
+          "opponentId": "pidgeot",
+          "shields": 1,
+          "outcome": "B",
+          "score": 448,
+          "previousOutcome": "A",
+          "previousScore": 608
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 0,
+          "outcome": "B",
+          "score": 406,
+          "previousOutcome": "A",
+          "previousScore": 661
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 451,
+          "previousOutcome": "A",
+          "previousScore": 501
+        },
+        {
+          "opponentId": "muk_alolan_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 588,
+          "previousOutcome": "B",
+          "previousScore": 468
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 1,
+          "outcome": "B",
+          "score": 347,
+          "previousOutcome": "A",
+          "previousScore": 560
+        },
+        {
+          "opponentId": "ampharos_shadow",
+          "shields": 2,
+          "outcome": "A",
+          "score": 700,
+          "previousOutcome": "B",
+          "previousScore": 456
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 0,
+          "outcome": "B",
+          "score": 373,
+          "previousOutcome": "A",
+          "previousScore": 696
+        },
+        {
+          "opponentId": "jumpluff",
+          "shields": 1,
+          "outcome": "A",
+          "score": 637,
+          "previousOutcome": "B",
+          "previousScore": 474
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 0,
+          "outcome": "B",
+          "score": 402,
+          "previousOutcome": "A",
+          "previousScore": 587
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 1,
+          "outcome": "B",
+          "score": 286,
+          "previousOutcome": "A",
+          "previousScore": 693
+        },
+        {
+          "opponentId": "electrode",
+          "shields": 2,
+          "outcome": "B",
+          "score": 499,
+          "previousOutcome": "A",
+          "previousScore": 501
+        },
+        {
+          "opponentId": "seaking",
+          "shields": 2,
+          "outcome": "B",
+          "score": 306,
+          "previousOutcome": "A",
+          "previousScore": 586
+        }
+      ]
+    }
+  ],
+  "simulations": 5088
+}

@@ -106,7 +106,7 @@
     "docs:battle-principles": "node tools/generate-battle-principle-registry-doc.js",
     "test:battle-intelligence": "node tools/test-battle-intelligence.js",
     "test:strategic-continuations": "node tools/test-strategic-response-selection.js && node tools/test-strategic-move-order.js && node tools/test-strategic-timing-responses.js && node tools/test-strategic-timing-guards.js && node tools/test-strategy-shield-policy-parity.js && node tools/test-configured-policy-line.js",
-    "test:shield-policy-parity": "node tools/test-strategy-shield-policy-parity.js && node tools/test-configured-policy-line.js",
+    "test:shield-policy-parity": "node tools/test-strategy-shield-policy-parity.js && node tools/test-configured-policy-line.js && node tools/test-quagsire-houndoom-shield-cycle.js",
     "test:legacy-hybrid-reference": "node tools/test-hybrid-battle-intelligence.js",
     "audit:battle-intelligence": "node tools/run-battle-intelligence-audit.js",
     "test:battle-review": "node tools/test-battle-review.js",

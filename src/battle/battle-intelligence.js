@@ -1098,20 +1098,25 @@ function createPvPeakBattleIntelligenceApi() {
   function canonicalTimingContinuationDecision({ state, actor, opponent, moves, candidates, candidate, fast, category, evidence, context }) {
     if (!candidate || !fast || !context.dreStandard || category === "tactical" || category === "availability" || category === "farm"
       || evidence.formTransition || actor.mechanicState?.formTransition
-      || numeric(actor.fastMove?.turns, 1) < 3
       || numeric(actor.energy) + numeric(actor.fastMove?.energyGain) > 100
       || numeric(actor.mechanicState?.timingContinuationCount) >= 2
       || typeof context.compareTimingContinuations !== "function") return null;
-    const effect = moves.find(move => move.guaranteedEffect && move.selfBuffing && !move.selfDebuffing
+    const effect = numeric(actor.fastMove?.turns, 1) >= 3 && moves.find(move => move.guaranteedEffect && move.selfBuffing && !move.selfDebuffing
       && (candidate.action.type !== ACTION_TYPES.CHARGED_MOVE || move.id === candidate.action.moveId)
       && numeric(actor.energy) >= move.energyCost
       && canonicalCandidateForMove(move, candidates)
       && (typeof context.hasGuaranteedEffect !== "function" || context.hasGuaranteedEffect({ moveId: move.id, move: move.original })));
-    if (!effect) return null;
+    // With Always shields, delaying a lethal move delays the whole shield
+    // removal cycle. Compare that cycle rather than only the Fast alignment.
+    const lethalPressure = candidate.action.type === ACTION_TYPES.FAST_MOVE
+      && opponent.shieldMode === "always" && numeric(opponent.shields) > 0
+      && moves.find(move => !move.selfDebuffing && move.damage >= numeric(opponent.hp)
+        && numeric(actor.energy) >= move.energyCost && canonicalCandidateForMove(move, candidates));
+    if (!effect && !lethalPressure) return null;
     const incomingFast = canonicalFastDamage(opponent, context, "opponent");
     if (numeric(actor.hp) <= incomingFast || nextPendingLethal(state, candidate.action.side)) return null;
     const wait = candidates.find(item => item.action.type === ACTION_TYPES.WAIT);
-    const choices = [candidate, canonicalCandidateForMove(effect, candidates), fast, wait]
+    const choices = [candidate, canonicalCandidateForMove(effect || lethalPressure, candidates), fast, effect ? wait : null]
       .filter((item, index, list) => item && list.indexOf(item) === index);
     if (choices.length < 2) return null;
     const comparison = context.compareTimingContinuations(candidate.action, choices.map(item => item.action));

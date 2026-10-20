@@ -7,6 +7,16 @@
   // Newest releases first. Keep older entries; Home shows only the latest three.
   return [
     {
+      id: "20261020-shield-cycle",
+      date: "2026-10-20",
+      category: "Battle",
+      title: "Better timing against Always shields",
+      changes: [
+        "Battle now checks whether throwing a lethal Charged Move sooner is better than building more energy against Always shields.",
+        "This fixes a Quagsire Shadow alternative that lost to Houndoom Shadow by delaying Aqua Tail too long."
+      ]
+    },
+    {
       id: "20261019-battle-rankings",
       date: "2026-10-19",
       category: "Battle & Meta",

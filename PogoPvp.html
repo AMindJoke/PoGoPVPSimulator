@@ -30,7 +30,7 @@
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20261018-planner-v49"></script>
+  <script src="src/reliability/battle-reliability.js?v=20261020-planner-v50"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -101,7 +101,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20261018-planner-v49-shield-policy1"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261020-planner-v50-shield-cycle1"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -38739,7 +38739,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261019-v198").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261020-v199").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
