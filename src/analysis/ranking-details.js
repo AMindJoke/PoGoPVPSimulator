@@ -31,8 +31,8 @@
     const roles = new Map(roleEntries.filter(entry => entry.profile === profile).map(entry => [entry.id, entry]));
     const canonical = new Map();
     for (const base of preferred.length ? preferred : baseEntries) {
-      if (!base?.id || !resolvePokemon(base.id)) continue;
-      const id = canonicalPokemonId(base.id, resolvePokemon);
+      if (!base?.id || !resolvePokemon(base.pokemonId || base.id)) continue;
+      const id = base.variantId ? base.id : canonicalPokemonId(base.id, resolvePokemon);
       const entry = { ...base, ...(roles.get(base.id) || {}) };
       const previous = canonical.get(id);
       // Prefer the actual species record over its cosmetic aliases, regardless of input order.

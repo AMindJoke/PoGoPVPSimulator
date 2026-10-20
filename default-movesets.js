@@ -6649,8 +6649,9 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "INCINERATE",
     "charged": [
       "FOUL_PLAY",
-      "FLAMETHROWER"
-    ]
+      "TRAILBLAZE"
+    ],
+    "alternatives": [{ "id": "flamethrower", "ranked": true, "fast": "INCINERATE", "charged": ["FOUL_PLAY", "FLAMETHROWER"] }]
   },
   "kingler_shadow": {
     "fast": "BUBBLE",
@@ -6887,8 +6888,9 @@ window.BATTLE_DEFAULT_MOVESETS = {
     "fast": "INCINERATE",
     "charged": [
       "FOUL_PLAY",
-      "FLAMETHROWER"
-    ]
+      "TRAILBLAZE"
+    ],
+    "alternatives": [{ "id": "flamethrower", "ranked": true, "fast": "INCINERATE", "charged": ["FOUL_PLAY", "FLAMETHROWER"] }]
   },
   "porygon2_shadow": {
     "fast": "CHARGE_BEAM",

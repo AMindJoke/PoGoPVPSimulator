@@ -1,10 +1,10 @@
 window.GREAT_LEAGUE_RANKING_DETAILS = {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-18T22:42:42.184Z",
-  "sourceRankingGeneratedAt": "2026-10-18T22:40:57.850Z",
-  "sourceMovesetHash": "4bf9be619b048103531fab50137f8415a2f55b301ed91a7504191b3500688acc",
+  "generatedAt": "2026-10-20T07:54:30.205Z",
+  "sourceRankingGeneratedAt": "2026-10-20T07:52:33.373Z",
+  "sourceMovesetHash": "216e5608d18f64c64e63eb31c23aa4c40d90028e9d6806c6201bb53d23b2028b",
   "sourceGameMasterHash": "47ee1e8b89700613348fc563dc9142099488d9de883b5f4f7e2153821a6d849e",
-  "sourceMatrixVersion": "battle-planner-v49",
+  "sourceMatrixVersion": "battle-planner-v50",
   "top50Size": 50,
   "scoreVersion": "resource-score-v5",
   "entries": {
@@ -133,7 +133,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 267
         },
         {
@@ -243,7 +243,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 689
         },
         {
@@ -335,13 +335,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 642
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 637
         }
       ],
@@ -397,7 +397,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 743
         },
         {
@@ -805,7 +805,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 280
         },
         {
@@ -835,7 +835,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 823
         },
         {
@@ -859,7 +859,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 775
         }
       ],
@@ -1169,7 +1169,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 266
         },
         {
@@ -1391,7 +1391,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 352
         },
         {
@@ -1636,80 +1636,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "seismitoad": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 49,
-      "wins": [
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 756
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 734
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 733
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 724
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 720
-        }
-      ],
-      "losses": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 177
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 257
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 291
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 308
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 335
-        }
-      ]
-    },
     "feraligatr": {
       "ratings": {
         "overall": 4,
@@ -1781,6 +1707,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Regidrago",
           "rank": 37,
           "score": 289
+        }
+      ]
+    },
+    "seismitoad": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 49,
+      "wins": [
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 756
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 734
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 733
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 724
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 720
+        }
+      ],
+      "losses": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 177
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 257
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 291
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 308
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 335
         }
       ]
     },
@@ -2149,7 +2149,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 305
         }
       ]
@@ -2173,7 +2173,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 741
         },
         {
@@ -2297,7 +2297,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 312
         }
       ]
@@ -2339,7 +2339,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 591
         }
       ],
@@ -2519,7 +2519,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 334
         }
       ]
@@ -2691,7 +2691,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 711
         },
         {
@@ -2797,7 +2797,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 244
         },
         {
@@ -3055,7 +3055,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 692
         },
         {
@@ -3135,7 +3135,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 681
         },
         {
@@ -3289,7 +3289,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 716
         },
         {
@@ -3327,7 +3327,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 297
         },
         {
@@ -3363,7 +3363,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 709
         },
         {
@@ -3463,7 +3463,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 276
         },
         {
@@ -3499,7 +3499,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 771
         },
         {
@@ -3851,7 +3851,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 349
         }
       ]
@@ -3875,7 +3875,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 725
         },
         {
@@ -4009,7 +4009,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 4,
         "consistency": 0,
         "shieldDependence": 1,
-        "technicalDifficulty": 1,
+        "technicalDifficulty": 0,
         "closingPotential": 4
       },
       "top50Coverage": 50,
@@ -4097,7 +4097,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 675
         },
         {
@@ -4387,7 +4387,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 778
         },
         {
@@ -4485,7 +4485,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 644
         }
       ],
@@ -4615,7 +4615,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 706
         },
         {
@@ -4949,7 +4949,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 307
         },
         {
@@ -5071,13 +5071,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 620
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 584
         }
       ],
@@ -5207,7 +5207,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 678
         },
         {
@@ -5287,7 +5287,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 722
         },
         {
@@ -5407,6 +5407,154 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mandibuzz",
           "rank": 18,
           "score": 343
+        }
+      ]
+    },
+    "hakamo_o": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 5,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 750
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 737
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 729
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 728
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 718
+        }
+      ],
+      "losses": [
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 240
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 268
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 276
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 286
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 318
+        }
+      ]
+    },
+    "jumpluff": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 0,
+        "technicalDifficulty": 0,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 731
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 705
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 705
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 702
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 690
+        }
+      ],
+      "losses": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 258
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 308
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 315
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 325
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 337
         }
       ]
     },
@@ -5558,154 +5706,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "jumpluff": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 0,
-        "technicalDifficulty": 0,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 731
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 705
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 705
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 702
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 690
-        }
-      ],
-      "losses": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 258
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 308
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 315
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 325
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 337
-        }
-      ]
-    },
-    "hakamo_o": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 5,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 750
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 737
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 729
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 728
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 718
-        }
-      ],
-      "losses": [
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 240
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 268
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 276
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 286
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 318
-        }
-      ]
-    },
     "wormadam_trash": {
       "ratings": {
         "overall": 4,
@@ -5793,13 +5793,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 701
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 692
         },
         {
@@ -5941,7 +5941,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 769
         },
         {
@@ -6021,7 +6021,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 666
         },
         {
@@ -6139,7 +6139,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 316
         },
         {
@@ -6224,6 +6224,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "gligar_shadow": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 681
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 674
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 656
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 626
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 610
+        }
+      ],
+      "losses": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 282
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 300
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 332
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 338
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 347
+        }
+      ]
+    },
     "zweilous_shadow": {
       "ratings": {
         "overall": 4,
@@ -6261,7 +6335,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 732
         }
       ],
@@ -6361,7 +6435,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 273
         },
         {
@@ -6391,7 +6465,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 654
         },
         {
@@ -6443,80 +6517,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mimikyu",
           "rank": 1,
           "score": 354
-        }
-      ]
-    },
-    "gligar_shadow": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 681
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 674
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 656
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 626
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 610
-        }
-      ],
-      "losses": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 282
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 300
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 332
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 338
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 347
         }
       ]
     },
@@ -6693,7 +6693,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 712
         },
         {
@@ -6873,7 +6873,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 342
         },
         {
@@ -6977,7 +6977,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 828
         },
         {
@@ -7001,7 +7001,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 763
         }
       ],
@@ -7051,7 +7051,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 750
         },
         {
@@ -7163,7 +7163,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 316
         },
         {
@@ -7323,7 +7323,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 234
         },
         {
@@ -7371,7 +7371,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 568
         }
       ],
@@ -7465,7 +7465,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 351
         },
         {
@@ -7556,80 +7556,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "annihilape": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 739
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 710
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 690
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 670
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 646
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 176
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 315
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 321
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 341
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 351
-        }
-      ]
-    },
     "lumineon": {
       "ratings": {
         "overall": 4,
@@ -7661,7 +7587,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 587
         },
         {
@@ -7741,7 +7667,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 656
         }
       ],
@@ -7889,7 +7815,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 635
         }
       ],
@@ -7997,6 +7923,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Empoleon",
           "rank": 29,
           "score": 325
+        }
+      ]
+    },
+    "castform": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 782
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 680
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 680
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 660
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 650
+        }
+      ],
+      "losses": [
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 239
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 267
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 274
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 287
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 307
         }
       ]
     },
@@ -8145,6 +8145,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Goodra",
           "rank": 30,
           "score": 318
+        }
+      ]
+    },
+    "politoed_shadow": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 739
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 724
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 614
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 599
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 553
+        }
+      ],
+      "losses": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 222
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 225
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 235
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 246
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 253
         }
       ]
     },
@@ -8370,80 +8444,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "castform": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 782
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 680
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 680
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 660
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 650
-        }
-      ],
-      "losses": [
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 239
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 267
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 274
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 287
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 307
-        }
-      ]
-    },
     "turtonator": {
       "ratings": {
         "overall": 4,
@@ -8489,7 +8489,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 274
         },
         {
@@ -8515,80 +8515,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Vigoroth (Shadow)",
           "rank": 35,
           "score": 349
-        }
-      ]
-    },
-    "politoed_shadow": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 2,
-        "technicalDifficulty": 1,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 739
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 724
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 614
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 599
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 553
-        }
-      ],
-      "losses": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 222
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 225
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 235
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 246
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 253
         }
       ]
     },
@@ -9093,7 +9019,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 289
         },
         {
@@ -9115,7 +9041,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 4,
         "consistency": 1,
         "shieldDependence": 5,
-        "technicalDifficulty": 2,
+        "technicalDifficulty": 3,
         "closingPotential": 4
       },
       "top50Coverage": 50,
@@ -9123,7 +9049,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 653
         },
         {
@@ -9277,7 +9203,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 655
         },
         {
@@ -9351,7 +9277,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 653
         },
         {
@@ -9431,13 +9357,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 634
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 625
         },
         {
@@ -9517,7 +9443,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 678
         }
       ],
@@ -9573,7 +9499,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 661
         },
         {
@@ -9765,7 +9691,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 316
         },
         {
@@ -10183,7 +10109,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 579
         }
       ],
@@ -10351,7 +10277,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 283
         },
         {
@@ -10579,7 +10505,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 274
         },
         {
@@ -10664,6 +10590,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "dedenne": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 733
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 733
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 708
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 697
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 636
+        }
+      ],
+      "losses": [
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 218
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 244
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 261
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 265
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 268
+        }
+      ]
+    },
     "jumpluff_shadow": {
       "ratings": {
         "overall": 4,
@@ -10683,7 +10683,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 712
         },
         {
@@ -10735,6 +10735,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Muk (Alolan)",
           "rank": 47,
           "score": 302
+        }
+      ]
+    },
+    "annihilape": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 739
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 710
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 690
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 670
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 646
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 176
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 315
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 321
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 341
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 351
         }
       ]
     },
@@ -10812,80 +10886,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "dedenne": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 733
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 733
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 708
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 697
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 636
-        }
-      ],
-      "losses": [
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 218
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 244
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 261
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 265
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 268
-        }
-      ]
-    },
     "audino": {
       "ratings": {
         "overall": 4,
@@ -10911,7 +10911,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 619
         },
         {
@@ -10973,7 +10973,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 810
         },
         {
@@ -11133,7 +11133,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 720
         },
         {
@@ -11435,7 +11435,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 701
         },
         {
@@ -11509,7 +11509,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 619
         },
         {
@@ -11547,7 +11547,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 289
         }
       ]
@@ -11663,7 +11663,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 591
         }
       ],
@@ -11819,7 +11819,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 189
         },
         {
@@ -11831,7 +11831,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 220
         },
         {
@@ -12435,7 +12435,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 302
         }
       ]
@@ -12445,7 +12445,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 1,
-        "technicalDifficulty": 0,
+        "technicalDifficulty": 1,
         "closingPotential": 4
       },
       "top50Coverage": 50,
@@ -12533,7 +12533,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 750
         },
         {
@@ -12971,7 +12971,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 822
         },
         {
@@ -13101,7 +13101,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 382
         }
       ]
@@ -13131,13 +13131,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 653
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 648
         },
         {
@@ -13379,7 +13379,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 264
         },
         {
@@ -13459,7 +13459,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 249
         },
         {
@@ -13587,7 +13587,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 623
         }
       ],
@@ -13957,7 +13957,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 593
         }
       ],
@@ -14013,7 +14013,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 633
         },
         {
@@ -14167,7 +14167,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 705
         },
         {
@@ -14321,7 +14321,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 599
         },
         {
@@ -14469,7 +14469,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 631
         },
         {
@@ -14569,7 +14569,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 239
         },
         {
@@ -14617,7 +14617,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 587
         },
         {
@@ -14637,7 +14637,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 224
         },
         {
@@ -14679,7 +14679,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 695
         },
         {
@@ -14813,7 +14813,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 3,
-        "technicalDifficulty": 2,
+        "technicalDifficulty": 1,
         "closingPotential": 4
       },
       "top50Coverage": 50,
@@ -14877,7 +14877,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 361
         }
       ]
@@ -14919,7 +14919,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 694
         }
       ],
@@ -14993,7 +14993,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 676
         }
       ],
@@ -15197,7 +15197,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 667
         },
         {
@@ -15326,80 +15326,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "bewear_shadow": {
-      "ratings": {
-        "overall": 4,
-        "consistency": 0,
-        "shieldDependence": 2,
-        "technicalDifficulty": 1,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 771
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 757
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 688
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 678
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 674
-        }
-      ],
-      "losses": [
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 229
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 293
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 295
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 301
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 305
-        }
-      ]
-    },
     "servine_shadow": {
       "ratings": {
         "overall": 3,
@@ -15425,7 +15351,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 741
         },
         {
@@ -15511,7 +15437,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 607
         }
       ],
@@ -15696,6 +15622,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "bewear_shadow": {
+      "ratings": {
+        "overall": 4,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 771
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 757
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 688
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 678
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 674
+        }
+      ],
+      "losses": [
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 229
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 293
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 295
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 301
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 305
+        }
+      ]
+    },
     "swampert_shadow": {
       "ratings": {
         "overall": 3,
@@ -15747,7 +15747,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 222
         },
         {
@@ -15969,7 +15969,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 275
         },
         {
@@ -16171,7 +16171,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 745
         },
         {
@@ -16493,7 +16493,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 230
         },
         {
@@ -16529,7 +16529,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 805
         },
         {
@@ -16703,7 +16703,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 285
         },
         {
@@ -16745,7 +16745,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 702
         },
         {
@@ -16967,7 +16967,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 756
         },
         {
@@ -16985,7 +16985,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 688
         },
         {
@@ -17047,7 +17047,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 723
         },
         {
@@ -17171,7 +17171,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 263
         }
       ]
@@ -17343,7 +17343,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 632
         },
         {
@@ -17677,7 +17677,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 272
         },
         {
@@ -17707,7 +17707,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 666
         },
         {
@@ -17911,7 +17911,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 311
         }
       ]
@@ -17920,7 +17920,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 3,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -18027,7 +18027,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 611
         }
       ],
@@ -18142,7 +18142,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 3,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -18169,7 +18169,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 692
         },
         {
@@ -18212,6 +18212,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "lanturn": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 729
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 685
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 649
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 644
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 584
+        }
+      ],
+      "losses": [
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 213
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 229
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 231
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 269
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 275
+        }
+      ]
+    },
     "trevenant_shadow": {
       "ratings": {
         "overall": 3,
@@ -18225,7 +18299,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 787
         },
         {
@@ -18360,80 +18434,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "lanturn": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 729
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 685
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 649
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 644
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 584
-        }
-      ],
-      "losses": [
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 213
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 229
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 231
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 269
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 275
-        }
-      ]
-    },
     "galvantula": {
       "ratings": {
         "overall": 3,
@@ -18471,7 +18471,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 682
         }
       ],
@@ -18503,7 +18503,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 279
         }
       ]
@@ -18891,7 +18891,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 791
         },
         {
@@ -18983,7 +18983,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 655
         },
         {
@@ -19193,7 +19193,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 715
         },
         {
@@ -19607,7 +19607,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 297
         },
         {
@@ -19631,7 +19631,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 815
         },
         {
@@ -19649,7 +19649,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 723
         },
         {
@@ -19791,7 +19791,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 697
         },
         {
@@ -19891,7 +19891,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 246
         },
         {
@@ -19971,7 +19971,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 289
         },
         {
@@ -20019,7 +20019,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 719
         },
         {
@@ -20081,7 +20081,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 782
         },
         {
@@ -20205,7 +20205,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 315
         }
       ]
@@ -20247,7 +20247,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 736
         }
       ],
@@ -20711,7 +20711,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 309
         },
         {
@@ -20907,7 +20907,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 655
         },
         {
@@ -21111,7 +21111,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 750
         },
         {
@@ -21472,7 +21472,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 5,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -21673,7 +21673,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 256
         },
         {
@@ -21863,7 +21863,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 665
         },
         {
@@ -21931,7 +21931,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 784
         },
         {
@@ -22055,7 +22055,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 278
         }
       ]
@@ -22191,7 +22191,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 221
         },
         {
@@ -22253,7 +22253,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 247
         },
         {
@@ -22319,7 +22319,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 681
         }
       ],
@@ -22375,7 +22375,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 663
         },
         {
@@ -22493,7 +22493,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 275
         },
         {
@@ -22555,13 +22555,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 201
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 210
         },
         {
@@ -22726,6 +22726,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "houndoom_shadow__flamethrower": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 794
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 745
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 741
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 707
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 701
+        }
+      ],
+      "losses": [
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 186
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 214
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 230
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 238
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 255
+        }
+      ]
+    },
     "hypno": {
       "ratings": {
         "overall": 3,
@@ -22819,7 +22893,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 784
         },
         {
@@ -23115,7 +23189,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 595
         },
         {
@@ -23167,80 +23241,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar (Shadow)",
           "rank": 22,
           "score": 318
-        }
-      ]
-    },
-    "houndoom_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 794
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 745
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 741
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 707
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 701
-        }
-      ],
-      "losses": [
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 186
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 214
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 230
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 238
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 255
         }
       ]
     },
@@ -23301,7 +23301,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 225
         },
         {
@@ -23443,7 +23443,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 217
         },
         {
@@ -23495,14 +23495,14 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 505
         },
         {
-          "id": "seismitoad",
-          "name": "Seismitoad",
+          "id": "feraligatr",
+          "name": "Feraligatr",
           "rank": 23,
           "score": 501
         },
         {
-          "id": "feraligatr",
-          "name": "Feraligatr",
+          "id": "seismitoad",
+          "name": "Seismitoad",
           "rank": 24,
           "score": 501
         }
@@ -23540,80 +23540,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "pawmot": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "dunsparce",
-          "name": "Dunsparce",
-          "rank": 33,
-          "score": 770
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 749
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 741
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 720
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 720
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 195
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 254
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 256
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 274
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 309
-        }
-      ]
-    },
     "fletchinder_shadow": {
       "ratings": {
         "overall": 3,
@@ -23639,7 +23565,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 690
         },
         {
@@ -23762,80 +23688,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "skeledirge": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 836
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 703
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 678
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 675
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 674
-        }
-      ],
-      "losses": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 196
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 225
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 226
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 228
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 235
-        }
-      ]
-    },
     "wormadam_sandy": {
       "ratings": {
         "overall": 3,
@@ -23907,6 +23759,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mightyena",
           "rank": 40,
           "score": 296
+        }
+      ]
+    },
+    "pawmot": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 33,
+          "score": 770
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 749
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 741
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 720
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 720
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 195
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 254
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 256
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 274
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 309
         }
       ]
     },
@@ -23984,6 +23910,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "skeledirge": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 836
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 703
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 678
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 675
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 674
+        }
+      ],
+      "losses": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 196
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 225
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 226
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 228
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 235
+        }
+      ]
+    },
     "qwilfish": {
       "ratings": {
         "overall": 3,
@@ -24009,7 +24009,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 546
         },
         {
@@ -24041,7 +24041,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 282
         },
         {
@@ -24385,7 +24385,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 589
         }
       ],
@@ -24419,80 +24419,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Ampharos",
           "rank": 45,
           "score": 240
-        }
-      ]
-    },
-    "primarina": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 693
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 682
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 681
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 672
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 653
-        }
-      ],
-      "losses": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 215
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 217
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 237
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 251
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 263
         }
       ]
     },
@@ -24567,6 +24493,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Araquanid",
           "rank": 46,
           "score": 325
+        }
+      ]
+    },
+    "primarina": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 693
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 682
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 681
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 672
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 653
+        }
+      ],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 215
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 217
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 237
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 251
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 263
         }
       ]
     },
@@ -24713,7 +24713,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 299
         }
       ]
@@ -24731,7 +24731,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 617
         },
         {
@@ -24866,11 +24866,85 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "abomasnow_shadow": {
+    "houndoom": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 728
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 716
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 712
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 707
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 699
+        }
+      ],
+      "losses": [
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 182
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 203
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 221
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 226
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 230
+        }
+      ]
+    },
+    "abomasnow_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -25033,7 +25107,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 625
         },
         {
@@ -25145,13 +25219,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 191
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 202
         },
         {
@@ -25187,7 +25261,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 754
         },
         {
@@ -25267,7 +25341,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 617
         },
         {
@@ -25341,7 +25415,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 626
         },
         {
@@ -25643,7 +25717,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 552
         }
       ],
@@ -25915,7 +25989,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 657
         },
         {
@@ -26255,7 +26329,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 244
         },
         {
@@ -26269,6 +26343,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Vigoroth",
           "rank": 4,
           "score": 293
+        }
+      ]
+    },
+    "tentacruel_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 706
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 601
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 597
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 579
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 578
+        }
+      ],
+      "losses": [
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 180
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 183
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 231
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 252
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 266
         }
       ]
     },
@@ -26323,7 +26471,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 260
         },
         {
@@ -26343,6 +26491,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Steelix (Shadow)",
           "rank": 31,
           "score": 289
+        }
+      ]
+    },
+    "houndoom_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 800
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 794
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 745
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 739
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 727
+        }
+      ],
+      "losses": [
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 186
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 221
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 230
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 243
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 250
         }
       ]
     },
@@ -26383,7 +26605,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 677
         }
       ],
@@ -26397,7 +26619,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 215
         },
         {
@@ -26451,7 +26673,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 674
         },
         {
@@ -26713,80 +26935,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Zweilous",
           "rank": 48,
           "score": 309
-        }
-      ]
-    },
-    "tentacruel_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 706
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 601
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 597
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 579
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 578
-        }
-      ],
-      "losses": [
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 180
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 183
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 231
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 252
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 266
         }
       ]
     },
@@ -27086,80 +27234,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "baxcalibur": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 701
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 690
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 668
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 655
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 655
-        }
-      ],
-      "losses": [
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 193
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 270
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 280
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 303
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 323
-        }
-      ]
-    },
     "bayleef": {
       "ratings": {
         "overall": 3,
@@ -27185,7 +27259,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 776
         },
         {
@@ -27321,7 +27395,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 806
         },
         {
@@ -27345,7 +27419,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 733
         }
       ],
@@ -27379,6 +27453,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corviknight",
           "rank": 3,
           "score": 280
+        }
+      ]
+    },
+    "baxcalibur": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 701
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 690
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 668
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 655
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 655
+        }
+      ],
+      "losses": [
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 193
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 270
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 280
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 303
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 323
         }
       ]
     },
@@ -27456,7 +27604,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "houndoom": {
+    "houndoom__flamethrower": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
@@ -27543,7 +27691,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 785
         },
         {
@@ -27608,7 +27756,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 3,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -27667,7 +27815,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 255
         },
         {
@@ -27747,7 +27895,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 281
         }
       ]
@@ -27877,7 +28025,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 179
         },
         {
@@ -28221,7 +28369,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 630
         },
         {
@@ -28469,7 +28617,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 228
         },
         {
@@ -28489,80 +28637,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Empoleon",
           "rank": 29,
           "score": 250
-        }
-      ]
-    },
-    "vikavolt_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 5,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 824
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 797
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 758
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 738
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 683
-        }
-      ],
-      "losses": [
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 227
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 238
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 249
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 256
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 262
         }
       ]
     },
@@ -28623,7 +28697,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 273
         },
         {
@@ -28771,7 +28845,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 304
         },
         {
@@ -28845,7 +28919,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 266
         },
         {
@@ -28887,7 +28961,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 664
         },
         {
@@ -28899,7 +28973,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 636
         }
       ],
@@ -29158,6 +29232,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "vikavolt_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 5,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 824
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 797
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 758
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 738
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 683
+        }
+      ],
+      "losses": [
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 227
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 238
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 249
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 256
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 262
+        }
+      ]
+    },
     "drilbur": {
       "ratings": {
         "overall": 3,
@@ -29380,6 +29528,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "rapidash_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 818
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 805
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 792
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 730
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 720
+        }
+      ],
+      "losses": [
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 202
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 224
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 229
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 240
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 250
+        }
+      ]
+    },
     "shiftry": {
       "ratings": {
         "overall": 3,
@@ -29393,13 +29615,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 833
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 832
         },
         {
@@ -29451,6 +29673,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Guzzlord",
           "rank": 41,
           "score": 276
+        }
+      ]
+    },
+    "sandshrew_alolan": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 722
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 713
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 710
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 707
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 671
+        }
+      ],
+      "losses": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 218
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 282
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 305
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 307
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 327
         }
       ]
     },
@@ -29553,7 +29849,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],
@@ -29587,80 +29883,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Florges",
           "rank": 25,
           "score": 291
-        }
-      ]
-    },
-    "rapidash_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 818
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 805
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 792
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 730
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 720
-        }
-      ],
-      "losses": [
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 202
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 224
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 229
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 240
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 250
         }
       ]
     },
@@ -29812,80 +30034,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "sandshrew_alolan": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 722
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 713
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 710
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 707
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 671
-        }
-      ],
-      "losses": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 218
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 282
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 305
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 307
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 327
-        }
-      ]
-    },
     "eelektrik": {
       "ratings": {
         "overall": 3,
@@ -29931,7 +30079,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 216
         },
         {
@@ -30085,7 +30233,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 244
         },
         {
@@ -30763,7 +30911,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 272
         }
       ]
@@ -30873,7 +31021,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 723
         },
         {
@@ -30916,6 +31064,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "rufflet": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 790
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 771
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 630
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 626
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 625
+        }
+      ],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 156
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 208
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 208
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 246
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 276
+        }
+      ]
+    },
     "dodrio": {
       "ratings": {
         "overall": 3,
@@ -30929,7 +31151,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 801
         },
         {
@@ -31035,7 +31257,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 231
         },
         {
@@ -31061,80 +31283,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Vigoroth",
           "rank": 4,
           "score": 302
-        }
-      ]
-    },
-    "rufflet": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 790
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 771
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 630
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 626
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 625
-        }
-      ],
-      "losses": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 156
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 208
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 208
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 246
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 276
         }
       ]
     },
@@ -31225,7 +31373,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 777
         },
         {
@@ -31411,7 +31559,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 240
         },
         {
@@ -31447,7 +31595,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 795
         },
         {
@@ -31767,7 +31915,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 532
         }
       ],
@@ -31952,80 +32100,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "crocalor": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 682
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 665
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 650
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 639
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 636
-        }
-      ],
-      "losses": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 191
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 216
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 222
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 247
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 262
-        }
-      ]
-    },
     "golem_alolan_shadow": {
       "ratings": {
         "overall": 3,
@@ -32097,6 +32171,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Rillaboom",
           "rank": 12,
           "score": 236
+        }
+      ]
+    },
+    "crocalor": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 682
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 665
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 650
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 639
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 636
+        }
+      ],
+      "losses": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 191
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 216
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 222
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 247
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 262
         }
       ]
     },
@@ -32219,7 +32367,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 154
         },
         {
@@ -32261,7 +32409,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 789
         },
         {
@@ -32353,7 +32501,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 557
         },
         {
@@ -32557,7 +32705,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 803
         },
         {
@@ -32637,7 +32785,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 702
         },
         {
@@ -33051,7 +33199,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 268
         },
         {
@@ -33199,7 +33347,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 336
         },
         {
@@ -33241,7 +33389,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 558
         },
         {
@@ -33489,7 +33637,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 255
         },
         {
@@ -33685,7 +33833,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 593
         },
         {
@@ -33732,7 +33880,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 5,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -33933,7 +34081,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 247
         },
         {
@@ -33950,85 +34098,11 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "shiftry_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 811
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 804
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 758
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 735
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 728
-        }
-      ],
-      "losses": [
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 90
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 205
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 221
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 287
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 294
-        }
-      ]
-    },
     "bayleef_shadow": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 3,
+        "shieldDependence": 2,
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
@@ -34037,7 +34111,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 893
         },
         {
@@ -34061,7 +34135,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 705
         }
       ],
@@ -34176,7 +34250,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 5,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -34320,80 +34394,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "electivire": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 0,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 712
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 695
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 667
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 636
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 634
-        }
-      ],
-      "losses": [
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 256
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 268
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 272
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 283
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 284
-        }
-      ]
-    },
     "leavanny": {
       "ratings": {
         "overall": 3,
@@ -34407,7 +34407,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 841
         },
         {
@@ -34431,7 +34431,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 714
         }
       ],
@@ -34531,7 +34531,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 303
         },
         {
@@ -34539,6 +34539,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Ninetales (Shadow)",
           "rank": 21,
           "score": 310
+        }
+      ]
+    },
+    "scizor": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 704
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 656
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 636
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 615
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 607
+        }
+      ],
+      "losses": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 230
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 274
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 279
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 290
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 293
         }
       ]
     },
@@ -34613,80 +34687,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Quagsire (Shadow)",
           "rank": 8,
           "score": 207
-        }
-      ]
-    },
-    "scizor": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 704
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 656
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 636
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 615
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 607
-        }
-      ],
-      "losses": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 230
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 274
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 279
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 290
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 293
         }
       ]
     },
@@ -34912,6 +34912,154 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "shiftry_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 811
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 804
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 758
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 735
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 728
+        }
+      ],
+      "losses": [
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 90
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 205
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 221
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 287
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 294
+        }
+      ]
+    },
+    "electivire": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 0,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 712
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 695
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 667
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 636
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 634
+        }
+      ],
+      "losses": [
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 256
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 268
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 272
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 283
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 284
+        }
+      ]
+    },
     "glalie": {
       "ratings": {
         "overall": 3,
@@ -35043,7 +35191,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 276
         },
         {
@@ -35091,7 +35239,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 683
         },
         {
@@ -35419,7 +35567,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 231
         },
         {
@@ -35529,7 +35677,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 706
         },
         {
@@ -35726,6 +35874,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "regieleki": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 865
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 780
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 720
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 705
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 690
+        }
+      ],
+      "losses": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 122
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 161
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 166
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 194
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 217
+        }
+      ]
+    },
     "aurorus_shadow": {
       "ratings": {
         "overall": 3,
@@ -35804,7 +36026,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 5,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -35879,7 +36101,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 5,
-        "technicalDifficulty": 4,
+        "technicalDifficulty": 3,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -36022,80 +36244,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "regieleki": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 865
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 720
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 705
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 690
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 669
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 122
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 161
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 166
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 194
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 217
-        }
-      ]
-    },
     "wobbuffet": {
       "ratings": {
         "overall": 3,
@@ -36174,7 +36322,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 2,
+        "shieldDependence": 1,
         "technicalDifficulty": 1,
         "closingPotential": 4
       },
@@ -36417,7 +36565,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 770
         },
         {
@@ -36429,7 +36577,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 704
         }
       ],
@@ -36463,80 +36611,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Muk (Alolan)",
           "rank": 47,
           "score": 295
-        }
-      ]
-    },
-    "reshiram_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 743
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 713
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 703
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 671
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 669
-        }
-      ],
-      "losses": [
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 248
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 279
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 282
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 286
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 288
         }
       ]
     },
@@ -36688,6 +36762,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "reshiram_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 743
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 713
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 703
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 671
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 669
+        }
+      ],
+      "losses": [
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 248
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 279
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 282
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 286
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 288
+        }
+      ]
+    },
     "pangoro": {
       "ratings": {
         "overall": 3,
@@ -36707,7 +36855,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 710
         },
         {
@@ -36799,7 +36947,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 513
         }
       ],
@@ -37243,7 +37391,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 639
         }
       ],
@@ -37275,7 +37423,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 312
         }
       ]
@@ -37354,11 +37502,85 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "heliolisk": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 837
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 732
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 671
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 657
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 648
+        }
+      ],
+      "losses": [
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 207
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 219
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 221
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 237
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 241
+        }
+      ]
+    },
     "raichu_alolan": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 3,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 4
       },
@@ -37428,80 +37650,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "heliolisk": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 837
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 732
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 671
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 657
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 648
-        }
-      ],
-      "losses": [
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 207
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 219
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 221
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 237
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 241
-        }
-      ]
-    },
     "raticate_alolan": {
       "ratings": {
         "overall": 3,
@@ -37539,7 +37687,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 557
         }
       ],
@@ -37755,13 +37903,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 584
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 578
         }
       ],
@@ -37872,12 +38020,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "garchomp": {
+    "sandshrew": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 5,
-        "technicalDifficulty": 4,
+        "technicalDifficulty": 2,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -37886,31 +38034,31 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "id": "bellibolt",
           "name": "Bellibolt",
           "rank": 38,
-          "score": 863
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 803
+          "score": 769
         },
         {
           "id": "pachirisu",
           "name": "Pachirisu",
           "rank": 34,
-          "score": 756
+          "score": 717
         },
         {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 740
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 687
         },
         {
           "id": "muk_alolan",
           "name": "Muk (Alolan)",
           "rank": 47,
-          "score": 710
+          "score": 636
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 581
         }
       ],
       "losses": [
@@ -37918,30 +38066,30 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "id": "mimikyu",
           "name": "Mimikyu",
           "rank": 1,
-          "score": 223
+          "score": 190
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 239
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 263
         },
         {
           "id": "empoleon",
           "name": "Empoleon",
           "rank": 29,
-          "score": 234
+          "score": 271
         },
         {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 250
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 269
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
           "score": 277
         }
       ]
@@ -38094,12 +38242,86 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "sandshrew": {
+    "prinplup_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 0,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 589
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 545
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 501
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 501
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 195
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 199
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 229
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 229
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 231
+        }
+      ]
+    },
+    "garchomp": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 5,
-        "technicalDifficulty": 2,
+        "technicalDifficulty": 4,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -38108,31 +38330,31 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "id": "bellibolt",
           "name": "Bellibolt",
           "rank": 38,
-          "score": 769
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 717
+          "score": 863
         },
         {
           "id": "ampharos",
           "name": "Ampharos",
           "rank": 45,
-          "score": 687
+          "score": 803
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 756
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 740
         },
         {
           "id": "muk_alolan",
           "name": "Muk (Alolan)",
           "rank": 47,
-          "score": 636
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 581
+          "score": 710
         }
       ],
       "losses": [
@@ -38140,30 +38362,30 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "id": "mimikyu",
           "name": "Mimikyu",
           "rank": 1,
-          "score": 190
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 239
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 263
+          "score": 223
         },
         {
           "id": "empoleon",
           "name": "Empoleon",
           "rank": 29,
-          "score": 271
+          "score": 234
         },
         {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 250
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 269
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
           "score": 277
         }
       ]
@@ -38261,7 +38483,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 710
         },
         {
@@ -38305,7 +38527,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 226
         },
         {
@@ -38613,7 +38835,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 784
         },
         {
@@ -38853,7 +39075,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 740
         },
         {
@@ -38919,12 +39141,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 597
         },
         {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 591
-        },
-        {
           "id": "vigoroth_shadow",
           "name": "Vigoroth (Shadow)",
           "rank": 35,
@@ -38935,6 +39151,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Muk (Alolan)",
           "rank": 47,
           "score": 518
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 507
         }
       ],
       "losses": [
@@ -38970,80 +39192,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "prinplup_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 0,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 589
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 545
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 501
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 501
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 195
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 199
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 229
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 229
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 231
-        }
-      ]
-    },
     "drifloon": {
       "ratings": {
         "overall": 3,
@@ -39075,7 +39223,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         },
         {
@@ -39229,7 +39377,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 695
         }
       ],
@@ -39303,7 +39451,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 557
         }
       ],
@@ -39419,7 +39567,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 3,
         "consistency": 0,
         "shieldDependence": 5,
-        "technicalDifficulty": 3,
+        "technicalDifficulty": 2,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -39599,7 +39747,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 570
         }
       ],
@@ -39633,6 +39781,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Sableye (Shadow)",
           "rank": 13,
           "score": 140
+        }
+      ]
+    },
+    "castform_snowy": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 798
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 730
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 718
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 688
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 663
+        }
+      ],
+      "losses": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 176
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 232
+        },
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 239
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 252
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 255
         }
       ]
     },
@@ -39687,7 +39909,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 232
         },
         {
@@ -39895,7 +40117,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 652
         }
       ],
@@ -40031,7 +40253,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 570
         },
         {
@@ -40117,7 +40339,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 630
         }
       ],
@@ -40173,7 +40395,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 670
         },
         {
@@ -40225,80 +40447,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Regidrago",
           "rank": 37,
           "score": 290
-        }
-      ]
-    },
-    "hydrapple": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 0,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 810
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 800
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 714
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 708
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 695
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 225
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 227
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 262
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 269
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 274
         }
       ]
     },
@@ -40439,7 +40587,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 256
         },
         {
@@ -40463,7 +40611,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 645
         },
         {
@@ -40598,6 +40746,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "hydrapple": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 0,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 810
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 800
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 714
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 708
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 695
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 225
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 227
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 262
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 269
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 274
+        }
+      ]
+    },
     "floragato": {
       "ratings": {
         "overall": 3,
@@ -40623,7 +40845,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 728
         },
         {
@@ -40759,7 +40981,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 799
         },
         {
@@ -40777,7 +40999,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 721
         },
         {
@@ -41055,7 +41277,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 581
         },
         {
@@ -41277,7 +41499,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 741
         },
         {
@@ -41335,80 +41557,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Melmetal",
           "rank": 16,
           "score": 225
-        }
-      ]
-    },
-    "castform_snowy": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 798
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 730
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 718
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 688
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 663
-        }
-      ],
-      "losses": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 176
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 232
-        },
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 239
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 252
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 255
         }
       ]
     },
@@ -42283,7 +42431,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 243
         },
         {
@@ -42479,7 +42627,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 611
         },
         {
@@ -42573,7 +42721,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 271
         },
         {
@@ -42621,7 +42769,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 720
         }
       ],
@@ -42803,80 +42951,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corviknight",
           "rank": 3,
           "score": 266
-        }
-      ]
-    },
-    "jolteon": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 764
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 687
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 660
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 585
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 535
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 167
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 217
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 223
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 237
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 239
         }
       ]
     },
@@ -43176,6 +43250,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "jolteon": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 764
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 687
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 660
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 585
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 535
+        }
+      ],
+      "losses": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 167
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 217
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 223
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 237
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 239
+        }
+      ]
+    },
     "lairon": {
       "ratings": {
         "overall": 3,
@@ -43245,7 +43393,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 231
         }
       ]
@@ -43269,7 +43417,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 606
         },
         {
@@ -43287,7 +43435,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 560
         }
       ],
@@ -43472,80 +43620,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "machop": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 797
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 794
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 781
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 779
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 774
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 180
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 224
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 257
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 262
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 267
-        }
-      ]
-    },
     "giratina_origin": {
       "ratings": {
         "overall": 3,
@@ -43617,6 +43691,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Thievul",
           "rank": 15,
           "score": 217
+        }
+      ]
+    },
+    "machop": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 797
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 794
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 781
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 779
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 774
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 180
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 224
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 257
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 262
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 267
         }
       ]
     },
@@ -43893,7 +44041,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 285
         },
         {
@@ -43947,7 +44095,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 671
         }
       ],
@@ -44055,80 +44203,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Ninetales (Shadow)",
           "rank": 21,
           "score": 298
-        }
-      ]
-    },
-    "tauros_aqua": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 714
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 712
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 704
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 648
-        },
-        {
-          "id": "dunsparce",
-          "name": "Dunsparce",
-          "rank": 33,
-          "score": 643
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 132
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 249
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 249
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 257
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 258
         }
       ]
     },
@@ -44485,7 +44559,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 246
         },
         {
@@ -44831,7 +44905,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 207
         },
         {
@@ -44851,6 +44925,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar",
           "rank": 20,
           "score": 283
+        }
+      ]
+    },
+    "tauros_aqua": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 714
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 712
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 704
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 648
+        },
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 33,
+          "score": 643
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 132
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 249
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 249
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 257
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 258
         }
       ]
     },
@@ -44899,7 +45047,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 201
         },
         {
@@ -44917,7 +45065,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 225
         },
         {
@@ -44965,7 +45113,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 545
         }
       ],
@@ -44999,80 +45147,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar",
           "rank": 20,
           "score": 182
-        }
-      ]
-    },
-    "sawk_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 743
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 741
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 705
-        },
-        {
-          "id": "dunsparce",
-          "name": "Dunsparce",
-          "rank": 33,
-          "score": 699
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 699
-        }
-      ],
-      "losses": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 159
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 193
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 243
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 247
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 253
         }
       ]
     },
@@ -45150,77 +45224,77 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "typhlosion_hisuian": {
+    "sawk_shadow": {
       "ratings": {
         "overall": 3,
         "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
       },
       "top50Coverage": 50,
       "wins": [
         {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 743
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 741
+        },
+        {
           "id": "empoleon",
           "name": "Empoleon",
           "rank": 29,
-          "score": 715
+          "score": 705
         },
         {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 654
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 33,
+          "score": 699
         },
         {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 627
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 627
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 610
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 699
         }
       ],
       "losses": [
         {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 140
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 159
         },
         {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 146
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 193
         },
         {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 147
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 243
         },
         {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 155
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 247
         },
         {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 164
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 253
         }
       ]
     },
@@ -45243,7 +45317,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 614
         },
         {
@@ -45443,6 +45517,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Florges",
           "rank": 25,
           "score": 271
+        }
+      ]
+    },
+    "typhlosion_hisuian": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 715
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 654
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 627
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 627
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 610
+        }
+      ],
+      "losses": [
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 140
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 146
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 147
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 155
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 164
         }
       ]
     },
@@ -45731,7 +45879,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 207
         },
         {
@@ -45897,7 +46045,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 688
         },
         {
@@ -46009,7 +46157,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 268
         },
         {
@@ -46267,7 +46415,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 749
         },
         {
@@ -46385,7 +46533,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 208
         },
         {
@@ -46465,7 +46613,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 257
         }
       ]
@@ -46489,7 +46637,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 675
         },
         {
@@ -46607,7 +46755,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 252
         },
         {
@@ -46911,80 +47059,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Tinkaton",
           "rank": 2,
           "score": 270
-        }
-      ]
-    },
-    "kabuto_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 754
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 667
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 617
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 593
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 576
-        }
-      ],
-      "losses": [
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 200
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 210
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 231
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 254
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 296
         }
       ]
     },
@@ -47432,6 +47506,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "kabuto_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 754
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 667
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 617
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 593
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 574
+        }
+      ],
+      "losses": [
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 200
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 210
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 231
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 254
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 296
+        }
+      ]
+    },
     "slowpoke_shadow": {
       "ratings": {
         "overall": 3,
@@ -47469,7 +47617,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 577
         }
       ],
@@ -47523,6 +47671,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 795
         },
         {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 785
+        },
+        {
           "id": "pachirisu",
           "name": "Pachirisu",
           "rank": 34,
@@ -47539,12 +47693,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Stunfisk",
           "rank": 11,
           "score": 691
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 671
         }
       ],
       "losses": [
@@ -47691,7 +47839,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 621
         }
       ],
@@ -47889,7 +48037,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 809
         },
         {
@@ -47907,7 +48055,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 709
         },
         {
@@ -48019,7 +48167,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 231
         }
       ]
@@ -48271,7 +48419,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 645
         },
         {
@@ -48383,7 +48531,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 246
         },
         {
@@ -48493,7 +48641,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 729
         },
         {
@@ -48505,7 +48653,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 709
         }
       ],
@@ -48875,7 +49023,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 545
         }
       ],
@@ -49245,7 +49393,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 647
         }
       ],
@@ -49709,7 +49857,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 250
         }
       ]
@@ -49851,7 +49999,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 240
         },
         {
@@ -49973,7 +50121,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 644
         }
       ],
@@ -50103,7 +50251,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 563
         },
         {
@@ -50251,7 +50399,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 562
         },
         {
@@ -50291,6 +50439,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mightyena",
           "rank": 40,
           "score": 161
+        }
+      ]
+    },
+    "stufful_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 5,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 748
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 693
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 687
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 684
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 648
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 255
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 278
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 289
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 302
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 314
         }
       ]
     },
@@ -50368,80 +50590,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "gigalith_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 648
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 634
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 621
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 617
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 609
-        }
-      ],
-      "losses": [
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 155
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 161
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 195
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 248
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 253
-        }
-      ]
-    },
     "snubbull": {
       "ratings": {
         "overall": 3,
@@ -50511,7 +50659,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 281
         }
       ]
@@ -50573,7 +50721,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 257
         },
         {
@@ -50715,7 +50863,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 216
         },
         {
@@ -50905,7 +51053,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         },
         {
@@ -50945,80 +51093,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corsola (Galarian)",
           "rank": 7,
           "score": 291
-        }
-      ]
-    },
-    "stufful_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 5,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 748
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 693
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 687
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 684
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 648
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 255
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 278
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 289
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 302
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 314
         }
       ]
     },
@@ -51170,6 +51244,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "gigalith_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 648
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 634
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 621
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 617
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 609
+        }
+      ],
+      "losses": [
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 155
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 161
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 195
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 248
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 253
+        }
+      ]
+    },
     "yveltal": {
       "ratings": {
         "overall": 2,
@@ -51264,7 +51412,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 178
         },
         {
@@ -51284,80 +51432,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Wartortle",
           "rank": 32,
           "score": 216
-        }
-      ]
-    },
-    "elekid": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 747
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 709
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 683
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 611
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 587
-        }
-      ],
-      "losses": [
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 225
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 234
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 242
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 242
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 255
         }
       ]
     },
@@ -51492,7 +51566,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 257
         },
         {
@@ -51583,77 +51657,77 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "arbok_shadow": {
+    "elekid": {
       "ratings": {
-        "overall": 2,
+        "overall": 3,
         "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
         "closingPotential": 3
       },
       "top50Coverage": 50,
       "wins": [
         {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 742
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 747
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 709
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 683
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 611
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 587
+        }
+      ],
+      "losses": [
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 225
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 234
         },
         {
           "id": "rillaboom",
           "name": "Rillaboom",
           "rank": 12,
-          "score": 622
+          "score": 242
         },
         {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 616
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 242
         },
         {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 596
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 549
-        }
-      ],
-      "losses": [
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 220
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 254
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 264
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 271
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 275
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 255
         }
       ]
     },
@@ -51824,7 +51898,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 550
         }
       ],
@@ -52009,6 +52083,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "arbok_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 742
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 622
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 616
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 596
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 549
+        }
+      ],
+      "losses": [
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 220
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 254
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 264
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 271
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 275
+        }
+      ]
+    },
     "carkol": {
       "ratings": {
         "overall": 2,
@@ -52060,7 +52208,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 167
         },
         {
@@ -52220,7 +52368,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 234
         },
         {
@@ -52300,7 +52448,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 245
         }
       ]
@@ -52406,7 +52554,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 232
         },
         {
@@ -52794,7 +52942,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 245
         }
       ]
@@ -52873,6 +53021,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "zarude": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 0,
+        "technicalDifficulty": 0,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 758
+        },
+        {
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 750
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 715
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 685
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 682
+        }
+      ],
+      "losses": [
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 122
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 173
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 206
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 211
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 226
+        }
+      ]
+    },
     "ponyta_shadow": {
       "ratings": {
         "overall": 3,
@@ -52942,82 +53164,8 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
-          "score": 281
-        }
-      ]
-    },
-    "zarude": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 0,
-        "technicalDifficulty": 0,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 758
-        },
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 750
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 715
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 685
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
           "rank": 24,
-          "score": 682
-        }
-      ],
-      "losses": [
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 122
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 173
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 206
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 211
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 226
+          "score": 281
         }
       ]
     },
@@ -53226,7 +53374,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 224
         },
         {
@@ -53317,80 +53465,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "braixen_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 724
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 669
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 639
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 608
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 603
-        }
-      ],
-      "losses": [
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 196
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 231
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 272
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 284
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 288
-        }
-      ]
-    },
     "pignite_shadow": {
       "ratings": {
         "overall": 3,
@@ -53442,7 +53516,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 214
         },
         {
@@ -53610,6 +53684,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Morpeko (Full Belly)",
           "rank": 49,
           "score": 233
+        }
+      ]
+    },
+    "braixen_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 724
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 669
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 639
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 608
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 603
+        }
+      ],
+      "losses": [
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 196
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 231
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 272
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 284
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 288
         }
       ]
     },
@@ -54033,80 +54181,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "purugly": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 625
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 584
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 570
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 550
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 544
-        }
-      ],
-      "losses": [
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 152
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 186
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 186
-        },
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 202
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 229
-        }
-      ]
-    },
     "garbodor": {
       "ratings": {
         "overall": 3,
@@ -54181,6 +54255,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "purugly": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 625
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 584
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 570
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 550
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 544
+        }
+      ],
+      "losses": [
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 152
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 186
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 186
+        },
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 202
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 229
+        }
+      ]
+    },
     "staraptor": {
       "ratings": {
         "overall": 3,
@@ -54200,7 +54348,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 725
         },
         {
@@ -54255,80 +54403,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "blacephalon": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 773
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 765
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 736
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 727
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 727
-        }
-      ],
-      "losses": [
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 106
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 171
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 175
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 178
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 183
-        }
-      ]
-    },
     "arboliva": {
       "ratings": {
         "overall": 2,
@@ -54342,7 +54416,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 870
         },
         {
@@ -54360,7 +54434,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 765
         },
         {
@@ -54502,7 +54576,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 645
         },
         {
@@ -54608,7 +54682,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 228
         },
         {
@@ -54694,7 +54768,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 220
         }
       ]
@@ -54884,7 +54958,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 586
         }
       ],
@@ -54918,6 +54992,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corviknight",
           "rank": 3,
           "score": 265
+        }
+      ]
+    },
+    "blacephalon": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 773
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 765
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 736
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 727
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 727
+        }
+      ],
+      "losses": [
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 106
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 171
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 175
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 178
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 183
         }
       ]
     },
@@ -54966,7 +55114,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 218
         },
         {
@@ -55138,7 +55286,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 250
         }
       ]
@@ -55230,7 +55378,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 606
         },
         {
@@ -55558,7 +55706,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 175
         },
         {
@@ -56013,80 +56161,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "loudred_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 610
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 573
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 569
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 566
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 545
-        }
-      ],
-      "losses": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 241
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 268
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 275
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 289
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 289
-        }
-      ]
-    },
     "hattrem": {
       "ratings": {
         "overall": 2,
@@ -56161,77 +56235,77 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "scolipede": {
+    "loudred_shadow": {
       "ratings": {
-        "overall": 3,
+        "overall": 2,
         "consistency": 0,
-        "shieldDependence": 2,
-        "technicalDifficulty": 1,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
         "closingPotential": 3
       },
       "top50Coverage": 50,
       "wins": [
         {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 677
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 610
         },
         {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 619
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 573
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 569
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 566
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 545
+        }
+      ],
+      "losses": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 241
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 268
         },
         {
           "id": "florges",
           "name": "Florges",
           "rank": 25,
-          "score": 601
+          "score": 275
         },
         {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 582
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 289
         },
         {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 563
-        }
-      ],
-      "losses": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 233
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 234
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 242
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 250
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 250
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 289
         }
       ]
     },
@@ -56378,7 +56452,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 222
         }
       ]
@@ -56488,7 +56562,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 724
         },
         {
@@ -56528,6 +56602,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Clodsire",
           "rank": 19,
           "score": 253
+        }
+      ]
+    },
+    "scolipede": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 677
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 619
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 601
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 563
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 533
+        }
+      ],
+      "losses": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 233
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 234
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 242
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 250
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 250
         }
       ]
     },
@@ -56674,7 +56822,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 237
         }
       ]
@@ -56852,7 +57000,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 645
         },
         {
@@ -57180,7 +57328,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 252
         },
         {
@@ -57271,6 +57419,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "raticate_alolan_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 688
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 659
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 617
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 606
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 604
+        }
+      ],
+      "losses": [
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 186
+        },
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 207
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 211
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 218
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 224
+        }
+      ]
+    },
     "brionne": {
       "ratings": {
         "overall": 2,
@@ -57345,80 +57567,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "ho_oh_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 728
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 713
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 693
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 667
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 647
-        }
-      ],
-      "losses": [
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 176
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 192
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 198
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 212
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 230
-        }
-      ]
-    },
     "absol_shadow": {
       "ratings": {
         "overall": 2,
@@ -57456,7 +57604,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 649
         }
       ],
@@ -57586,7 +57734,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 734
         },
         {
@@ -57604,7 +57752,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 671
         }
       ],
@@ -57746,7 +57894,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 565
         },
         {
@@ -57786,80 +57934,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Regidrago",
           "rank": 37,
           "score": 300
-        }
-      ]
-    },
-    "raticate_alolan_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 688
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 659
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 617
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 606
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 604
-        }
-      ],
-      "losses": [
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 186
-        },
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 207
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 211
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 218
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 224
         }
       ]
     },
@@ -57937,6 +58011,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "ho_oh_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 728
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 713
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 693
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 667
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 647
+        }
+      ],
+      "losses": [
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 176
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 192
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 198
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 212
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 230
+        }
+      ]
+    },
     "bonsly": {
       "ratings": {
         "overall": 2,
@@ -58000,7 +58148,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 213
         },
         {
@@ -58228,7 +58376,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 263
         }
       ]
@@ -58258,7 +58406,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 727
         },
         {
@@ -58607,7 +58755,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 2,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 3,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -58674,80 +58822,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Snorlax (Shadow)",
           "rank": 43,
           "score": 150
-        }
-      ]
-    },
-    "staravia": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 776
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 625
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 612
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 587
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 575
-        }
-      ],
-      "losses": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 125
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 174
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 190
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 208
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 210
         }
       ]
     },
@@ -58924,13 +58998,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 744
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 714
         },
         {
@@ -59078,7 +59152,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 533
         },
         {
@@ -59158,7 +59232,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],
@@ -59220,7 +59294,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 577
         },
         {
@@ -59266,6 +59340,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mandibuzz",
           "rank": 18,
           "score": 184
+        }
+      ]
+    },
+    "staravia": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 776
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 625
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 612
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 587
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 575
+        }
+      ],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 125
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 174
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 190
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 208
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 210
         }
       ]
     },
@@ -59616,7 +59764,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 201
         },
         {
@@ -59644,7 +59792,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 2,
         "consistency": 0,
         "shieldDependence": 3,
-        "technicalDifficulty": 2,
+        "technicalDifficulty": 1,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -59658,7 +59806,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 626
         },
         {
@@ -59918,7 +60066,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 244
         },
         {
@@ -60256,7 +60404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 652
         },
         {
@@ -60330,7 +60478,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 703
         },
         {
@@ -60682,7 +60830,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 568
         },
         {
@@ -60708,7 +60856,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 242
         },
         {
@@ -60873,6 +61021,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "falinks": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 785
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 763
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 738
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 655
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 651
+        }
+      ],
+      "losses": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 176
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 214
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 227
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 233
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 240
+        }
+      ]
+    },
     "rhyhorn": {
       "ratings": {
         "overall": 2,
@@ -61009,6 +61231,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "probopass_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 630
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 620
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 598
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 591
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 194
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 199
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 218
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 219
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 221
+        }
+      ]
+    },
     "garbodor_shadow": {
       "ratings": {
         "overall": 2,
@@ -61022,7 +61318,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 695
         },
         {
@@ -61083,80 +61379,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "falinks": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 785
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 763
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 738
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 655
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 651
-        }
-      ],
-      "losses": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 176
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 214
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 227
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 233
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 240
-        }
-      ]
-    },
     "grovyle_shadow": {
       "ratings": {
         "overall": 2,
@@ -61170,7 +61392,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 817
         },
         {
@@ -61188,7 +61410,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 727
         },
         {
@@ -61235,7 +61457,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 2,
         "consistency": 0,
-        "shieldDependence": 3,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -61262,7 +61484,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 587
         },
         {
@@ -61379,80 +61601,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "probopass_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 630
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 620
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 598
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 591
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 194
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 199
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 218
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 219
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 221
-        }
-      ]
-    },
     "goldeen": {
       "ratings": {
         "overall": 2,
@@ -61521,7 +61669,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 577
         },
         {
@@ -61570,11 +61718,79 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "skrelp": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 588
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 568
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 501
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 216
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 237
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 253
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 257
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 260
+        }
+      ]
+    },
     "mienshao": {
       "ratings": {
         "overall": 2,
         "consistency": 0,
-        "shieldDependence": 4,
+        "shieldDependence": 3,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -61641,74 +61857,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corsola (Galarian)",
           "rank": 7,
           "score": 244
-        }
-      ]
-    },
-    "skrelp": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 2,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 588
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 568
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 501
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 216
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 237
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 253
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 257
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 260
         }
       ]
     },
@@ -62175,7 +62323,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 685
         },
         {
@@ -62435,7 +62583,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 224
         },
         {
@@ -62527,7 +62675,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 581
         },
         {
@@ -62565,7 +62713,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 204
         }
       ]
@@ -62849,7 +62997,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 263
         },
         {
@@ -62897,7 +63045,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 592
         },
         {
@@ -63151,7 +63299,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 253
         }
       ]
@@ -63225,7 +63373,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 227
         }
       ]
@@ -63533,7 +63681,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 604
         },
         {
@@ -63639,7 +63787,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 201
         },
         {
@@ -64169,82 +64317,8 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 220
-        }
-      ]
-    },
-    "gabite": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 0,
-        "technicalDifficulty": 0,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 789
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 664
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 663
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 615
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 581
-        }
-      ],
-      "losses": [
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 194
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 208
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 239
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 244
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 263
         }
       ]
     },
@@ -64319,6 +64393,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Zweilous",
           "rank": 48,
           "score": 217
+        }
+      ]
+    },
+    "gabite": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 0,
+        "technicalDifficulty": 0,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 789
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 664
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 663
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 615
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 581
+        }
+      ],
+      "losses": [
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 194
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 208
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 239
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 244
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 263
         }
       ]
     },
@@ -64883,148 +65031,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "masquerain": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 797
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 755
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 716
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 662
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 654
-        }
-      ],
-      "losses": [
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 193
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 195
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 217
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 230
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 237
-        }
-      ]
-    },
-    "chandelure": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 794
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 754
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 662
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 632
-        }
-      ],
-      "losses": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 137
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 182
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 194
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 199
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 200
-        }
-      ]
-    },
     "breloom": {
       "ratings": {
         "overall": 2,
@@ -65096,80 +65102,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Muk (Alolan)",
           "rank": 47,
           "score": 243
-        }
-      ]
-    },
-    "ivysaur_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 773
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 675
-        },
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 665
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 663
-        },
-        {
-          "id": "florges",
-          "name": "Florges",
-          "rank": 25,
-          "score": 638
-        }
-      ],
-      "losses": [
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 162
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 177
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 194
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 202
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 245
         }
       ]
     },
@@ -65247,6 +65179,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "ivysaur_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 773
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 675
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 665
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 663
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 25,
+          "score": 638
+        }
+      ],
+      "losses": [
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 162
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 177
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 194
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 202
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 245
+        }
+      ]
+    },
     "vibrava_shadow": {
       "ratings": {
         "overall": 2,
@@ -65318,6 +65324,148 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Morgrem",
           "rank": 26,
           "score": 279
+        }
+      ]
+    },
+    "chandelure": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 794
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 754
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 662
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 632
+        }
+      ],
+      "losses": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 137
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 182
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 194
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 199
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 200
+        }
+      ]
+    },
+    "masquerain": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 797
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 755
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 716
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 662
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 654
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 193
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 195
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 217
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 230
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 237
         }
       ]
     },
@@ -65494,7 +65642,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 559
         },
         {
@@ -65541,7 +65689,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 2,
         "consistency": 0,
-        "shieldDependence": 3,
+        "shieldDependence": 4,
         "technicalDifficulty": 2,
         "closingPotential": 3
       },
@@ -65562,7 +65710,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 649
         },
         {
@@ -65624,7 +65772,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 695
         },
         {
@@ -65877,86 +66025,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "gabite_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 792
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 721
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 674
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 648
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 641
-        }
-      ],
-      "losses": [
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 194
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 214
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 237
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 247
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 267
-        }
-      ]
-    },
     "exeggutor_alolan": {
       "ratings": {
         "overall": 2,
         "consistency": 0,
         "shieldDependence": 3,
-        "technicalDifficulty": 1,
+        "technicalDifficulty": 2,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -65982,7 +66056,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 696
         },
         {
@@ -66124,7 +66198,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 573
         },
         {
@@ -66192,7 +66266,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 670
         },
         {
@@ -66210,7 +66284,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 588
         }
       ],
@@ -66244,6 +66318,74 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Zweilous",
           "rank": 48,
           "score": 229
+        }
+      ]
+    },
+    "dwebble": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 603
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 516
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 516
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 514
+        }
+      ],
+      "losses": [
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 194
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 194
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 199
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 200
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 205
         }
       ]
     },
@@ -66316,8 +66458,82 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 222
+        }
+      ]
+    },
+    "gabite_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 792
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 721
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 674
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 648
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 641
+        }
+      ],
+      "losses": [
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 194
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 214
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 237
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 247
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 267
         }
       ]
     },
@@ -66408,13 +66624,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 588
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 555
         },
         {
@@ -66469,74 +66685,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "dwebble": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 603
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 516
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 514
-        }
-      ],
-      "losses": [
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 194
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 194
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 199
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 200
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 205
-        }
-      ]
-    },
     "mesprit": {
       "ratings": {
         "overall": 2,
         "consistency": 0,
         "shieldDependence": 3,
-        "technicalDifficulty": 1,
+        "technicalDifficulty": 2,
         "closingPotential": 3
       },
       "top50Coverage": 50,
@@ -66643,6 +66797,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "genesect_shock": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 840
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 802
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 724
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 634
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 549
+        }
+      ],
+      "losses": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 186
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 224
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 229
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 242
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 249
+        }
+      ]
+    },
     "geodude_shadow": {
       "ratings": {
         "overall": 2,
@@ -66700,7 +66928,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 225
         },
         {
@@ -67107,7 +67335,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 182
         },
         {
@@ -67272,80 +67500,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "genesect_shock": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 840
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 802
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 724
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 634
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 549
-        }
-      ],
-      "losses": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 186
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 224
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 229
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 242
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 249
-        }
-      ]
-    },
     "tsareena": {
       "ratings": {
         "overall": 2,
@@ -67359,7 +67513,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 857
         },
         {
@@ -67383,7 +67537,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 666
         }
       ],
@@ -67445,7 +67599,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -67569,13 +67723,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 705
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 542
         },
         {
@@ -67630,6 +67784,68 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "chinchou": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 679
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 623
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 525
+        }
+      ],
+      "losses": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 157
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 176
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 196
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 198
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 212
+        }
+      ]
+    },
     "exeggutor_alolan_shadow": {
       "ratings": {
         "overall": 2,
@@ -67661,7 +67877,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 666
         },
         {
@@ -67760,68 +67976,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "chinchou": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 679
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 623
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 525
-        }
-      ],
-      "losses": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 157
-        },
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 176
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 196
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 198
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 212
-        }
-      ]
-    },
     "rotom_heat": {
       "ratings": {
         "overall": 2,
@@ -67891,7 +68045,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 201
         }
       ]
@@ -67941,7 +68095,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 172
         },
         {
@@ -67961,80 +68115,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Steelix",
           "rank": 28,
           "score": 189
-        }
-      ]
-    },
-    "sneasler_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 656
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 627
-        },
-        {
-          "id": "bellibolt",
-          "name": "Bellibolt",
-          "rank": 38,
-          "score": 627
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 603
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 593
-        }
-      ],
-      "losses": [
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 67
-        },
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 67
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 124
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 130
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 158
         }
       ]
     },
@@ -68109,6 +68189,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar (Shadow)",
           "rank": 22,
           "score": 165
+        }
+      ]
+    },
+    "sneasler_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 656
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 627
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 38,
+          "score": 627
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 603
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 593
+        }
+      ],
+      "losses": [
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 67
+        },
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 67
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 124
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 130
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 158
         }
       ]
     },
@@ -68341,7 +68495,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 552
         },
         {
@@ -68390,6 +68544,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "aggron": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 751
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 662
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 661
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 628
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 626
+        }
+      ],
+      "losses": [
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 165
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 171
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 173
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 183
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 184
+        }
+      ]
+    },
     "tranquill": {
       "ratings": {
         "overall": 2,
@@ -68415,7 +68643,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 572
         },
         {
@@ -68625,7 +68853,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 721
         },
         {
@@ -68637,7 +68865,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 629
         },
         {
@@ -68848,7 +69076,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 572
         }
       ],
@@ -68916,7 +69144,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 596
         },
         {
@@ -68984,7 +69212,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 567
         },
         {
@@ -69249,6 +69477,112 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "drizzile": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 536
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 147
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 203
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 209
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 219
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 222
+        }
+      ]
+    },
+    "clawitzer": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 177
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 186
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 196
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 200
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 208
+        }
+      ]
+    },
     "phantump": {
       "ratings": {
         "overall": 2,
@@ -69471,6 +69805,56 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "banette_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 591
+        }
+      ],
+      "losses": [
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 121
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 122
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 174
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 176
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 184
+        }
+      ]
+    },
     "genesect_douse": {
       "ratings": {
         "overall": 2,
@@ -69545,136 +69929,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "aggron": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 751
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 662
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 661
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 628
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 626
-        }
-      ],
-      "losses": [
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 165
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 171
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 173
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 183
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 184
-        }
-      ]
-    },
-    "drizzile": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 536
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 147
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 203
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 209
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 219
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 222
-        }
-      ]
-    },
     "onix": {
       "ratings": {
         "overall": 2,
@@ -69732,7 +69986,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 187
         },
         {
@@ -69740,106 +69994,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Tinkaton",
           "rank": 2,
           "score": 202
-        }
-      ]
-    },
-    "banette_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 591
-        }
-      ],
-      "losses": [
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 121
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 122
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 174
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 176
-        },
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 184
-        }
-      ]
-    },
-    "clawitzer": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 177
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 186
-        },
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 196
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 200
-        },
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 208
         }
       ]
     },
@@ -69880,7 +70034,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 606
         }
       ],
@@ -70048,7 +70202,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 231
         },
         {
@@ -70102,7 +70256,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 557
         }
       ],
@@ -70306,13 +70460,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 666
         },
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 594
         }
       ],
@@ -70400,7 +70554,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 262
         },
         {
@@ -70602,7 +70756,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 592
         },
         {
@@ -70719,80 +70873,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "manectric": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "mandibuzz",
-          "name": "Mandibuzz",
-          "rank": 18,
-          "score": 641
-        },
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 595
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 583
-        },
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 5,
-          "score": 575
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 575
-        }
-      ],
-      "losses": [
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 154
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 167
-        },
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 180
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 202
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 209
-        }
-      ]
-    },
     "sudowoodo_shadow": {
       "ratings": {
         "overall": 2,
@@ -70886,7 +70966,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 559
         },
         {
@@ -71012,6 +71092,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Spiritomb",
           "rank": 17,
           "score": 152
+        }
+      ]
+    },
+    "manectric": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 18,
+          "score": 641
+        },
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 595
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 583
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 5,
+          "score": 575
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 575
+        }
+      ],
+      "losses": [
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 154
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 167
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 180
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 202
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 209
         }
       ]
     },
@@ -71350,7 +71504,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 213
         },
         {
@@ -71750,7 +71904,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 578
         }
       ],
@@ -72344,7 +72498,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 215
         },
         {
@@ -72380,7 +72534,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 578
         },
         {
@@ -72760,12 +72914,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 621
         },
         {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 501
-        },
-        {
           "id": "morgrem",
           "name": "Morgrem",
           "rank": 26,
@@ -73114,7 +73262,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 567
         },
         {
@@ -73220,7 +73368,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 231
         },
         {
@@ -73424,7 +73572,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 197
         },
         {
@@ -73546,7 +73694,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 642
         },
         {
@@ -73614,7 +73762,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 625
         },
         {
@@ -74086,7 +74234,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 224
         },
         {
@@ -74222,7 +74370,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 219
         },
         {
@@ -74370,7 +74518,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 226
         },
         {
@@ -74550,7 +74698,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 232
         },
         {
@@ -74728,7 +74876,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 670
         },
         {
@@ -74834,7 +74982,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 210
         },
         {
@@ -75012,7 +75160,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 575
         },
         {
@@ -75080,7 +75228,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 609
         },
         {
@@ -75346,7 +75494,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 578
         },
         {
@@ -76242,80 +76390,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "weavile": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 693
-        },
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 670
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 660
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 632
-        },
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 623
-        }
-      ],
-      "losses": [
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 193
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 196
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 210
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 211
-        },
-        {
-          "id": "vigoroth",
-          "name": "Vigoroth",
-          "rank": 4,
-          "score": 223
-        }
-      ]
-    },
     "pupitar_shadow": {
       "ratings": {
         "overall": 2,
@@ -76440,6 +76514,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "weavile": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 693
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 670
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 660
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 632
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 623
+        }
+      ],
+      "losses": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 193
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 196
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 210
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 211
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 223
+        }
+      ]
+    },
     "darmanitan_galarian_standard": {
       "ratings": {
         "overall": 2,
@@ -76511,80 +76659,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Corsola (Galarian)",
           "rank": 7,
           "score": 252
-        }
-      ]
-    },
-    "reuniclus_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 800
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 742
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 671
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 624
-        },
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 506
-        }
-      ],
-      "losses": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 169
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 209
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 220
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 231
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 236
         }
       ]
     },
@@ -76693,7 +76767,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -76727,6 +76801,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Stunfisk",
           "rank": 11,
           "score": 188
+        }
+      ]
+    },
+    "reuniclus_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 800
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 742
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 671
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 624
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 506
+        }
+      ],
+      "losses": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 169
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 209
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 220
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 231
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 236
         }
       ]
     },
@@ -77187,7 +77335,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],
@@ -77323,7 +77471,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -77609,7 +77757,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 191
         },
         {
@@ -77751,7 +77899,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 204
         },
         {
@@ -77800,7 +77948,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 188
         },
         {
@@ -77848,7 +77996,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 545
         },
         {
@@ -79213,68 +79361,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "azelf": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 552
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 501
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 74
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 76
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 102
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 106
-        },
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 107
-        }
-      ]
-    },
     "krabby_shadow": {
       "ratings": {
         "overall": 2,
@@ -79450,8 +79536,64 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 232
+        }
+      ]
+    },
+    "azelf": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 552
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 74
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 76
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 102
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 106
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 107
         }
       ]
     },
@@ -79554,7 +79696,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 606
         }
       ],
@@ -79846,7 +79988,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 179
         },
         {
@@ -79870,7 +80012,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 566
         },
         {
@@ -80018,13 +80160,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 563
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 545
         },
         {
@@ -80155,7 +80297,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 193
         },
         {
@@ -80273,7 +80415,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 242
         }
       ]
@@ -80297,7 +80439,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],
@@ -80779,7 +80921,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 537
         },
         {
@@ -80875,62 +81017,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Morgrem",
           "rank": 26,
           "score": 119
-        }
-      ]
-    },
-    "corphish_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 0,
-        "shieldDependence": 3,
-        "technicalDifficulty": 1,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 683
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 618
-        }
-      ],
-      "losses": [
-        {
-          "id": "pachirisu",
-          "name": "Pachirisu",
-          "rank": 34,
-          "score": 159
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 176
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 198
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 212
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 219
         }
       ]
     },
@@ -81085,7 +81171,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 173
         },
         {
@@ -81164,6 +81250,62 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "corphish_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 1,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 683
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 618
+        }
+      ],
+      "losses": [
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 159
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 176
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 198
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 212
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 219
+        }
+      ]
+    },
     "archen_shadow": {
       "ratings": {
         "overall": 2,
@@ -81239,7 +81381,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 556
         },
         {
@@ -81499,49 +81641,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "krabby": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 173
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 176
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 198
-        },
-        {
-          "id": "regidrago",
-          "name": "Regidrago",
-          "rank": 37,
-          "score": 205
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 220
-        }
-      ]
-    },
     "whirlipede": {
       "ratings": {
         "overall": 2,
@@ -81616,6 +81715,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "krabby": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 173
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 176
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 198
+        },
+        {
+          "id": "regidrago",
+          "name": "Regidrago",
+          "rank": 37,
+          "score": 205
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 220
+        }
+      ]
+    },
     "frogadier": {
       "ratings": {
         "overall": 2,
@@ -81625,14 +81767,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "closingPotential": 3
       },
       "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 529
-        }
-      ],
+      "wins": [],
       "losses": [
         {
           "id": "goodra",
@@ -82095,7 +82230,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 181
         },
         {
@@ -82143,7 +82278,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 542
         },
         {
@@ -82421,7 +82556,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 894
         },
         {
@@ -82433,7 +82568,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 595
         }
       ],
@@ -82592,12 +82727,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "score": 501
         },
         {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 501
-        },
-        {
           "id": "araquanid",
           "name": "Araquanid",
           "rank": 46,
@@ -82712,7 +82841,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 625
         }
       ],
@@ -82886,7 +83015,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 594
         },
         {
@@ -83059,7 +83188,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 580
         },
         {
@@ -83437,7 +83566,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],
@@ -83703,7 +83832,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 579
         },
         {
@@ -83751,7 +83880,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         "overall": 2,
         "consistency": 0,
         "shieldDependence": 5,
-        "technicalDifficulty": 5,
+        "technicalDifficulty": 4,
         "closingPotential": 1
       },
       "top50Coverage": 50,
@@ -83873,7 +84002,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
     "mareep_shadow": {
       "ratings": {
         "overall": 2,
-        "consistency": 0,
+        "consistency": 1,
         "shieldDependence": 5,
         "technicalDifficulty": 3,
         "closingPotential": 1
@@ -84399,7 +84528,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 212
         },
         {
@@ -85047,7 +85176,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 561
         },
         {
@@ -85109,7 +85238,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 689
         },
         {
@@ -85201,7 +85330,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 511
         }
       ],
@@ -85275,7 +85404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 550
         }
       ],
@@ -85309,6 +85438,56 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Spidops",
           "rank": 42,
           "score": 221
+        }
+      ]
+    },
+    "foongus_shadow": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 1,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 36,
+          "score": 138
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 170
+        },
+        {
+          "id": "snorlax_shadow",
+          "name": "Snorlax (Shadow)",
+          "rank": 43,
+          "score": 171
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 22,
+          "score": 173
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 35,
+          "score": 196
         }
       ]
     },
@@ -85386,62 +85565,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "foongus_shadow": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 1,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 501
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 501
-        }
-      ],
-      "losses": [
-        {
-          "id": "snorlax",
-          "name": "Snorlax",
-          "rank": 36,
-          "score": 138
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 170
-        },
-        {
-          "id": "snorlax_shadow",
-          "name": "Snorlax (Shadow)",
-          "rank": 43,
-          "score": 171
-        },
-        {
-          "id": "malamar_shadow",
-          "name": "Malamar (Shadow)",
-          "rank": 22,
-          "score": 173
-        },
-        {
-          "id": "vigoroth_shadow",
-          "name": "Vigoroth (Shadow)",
-          "rank": 35,
-          "score": 196
-        }
-      ]
-    },
     "accelgor": {
       "ratings": {
         "overall": 1,
@@ -85473,7 +85596,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 629
         },
         {
@@ -85513,62 +85636,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Empoleon",
           "rank": 29,
           "score": 213
-        }
-      ]
-    },
-    "fennekin_shadow": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 714
-        },
-        {
-          "id": "spidops",
-          "name": "Spidops",
-          "rank": 42,
-          "score": 604
-        }
-      ],
-      "losses": [
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 176
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 44,
-          "score": 176
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 185
-        },
-        {
-          "id": "kingdra",
-          "name": "Kingdra",
-          "rank": 39,
-          "score": 193
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 194
         }
       ]
     },
@@ -85820,6 +85887,62 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "fennekin_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 714
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 42,
+          "score": 604
+        }
+      ],
+      "losses": [
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 176
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 44,
+          "score": 176
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 185
+        },
+        {
+          "id": "kingdra",
+          "name": "Kingdra",
+          "rank": 39,
+          "score": 193
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 194
+        }
+      ]
+    },
     "glaceon": {
       "ratings": {
         "overall": 1,
@@ -85871,7 +85994,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 191
         },
         {
@@ -86210,7 +86333,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 773
         },
         {
@@ -86328,7 +86451,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 192
         },
         {
@@ -86420,7 +86543,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 573
         },
         {
@@ -86438,7 +86561,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 537
         }
       ],
@@ -86933,7 +87056,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 190
         },
         {
@@ -87036,6 +87159,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "bramblin": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 120
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 132
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 138
+        },
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 33,
+          "score": 139
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 146
+        }
+      ]
+    },
     "klinklang": {
       "ratings": {
         "overall": 1,
@@ -87099,7 +87265,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 607
         },
         {
@@ -87210,49 +87376,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "bramblin": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 2,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 120
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 132
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 138
-        },
-        {
-          "id": "dunsparce",
-          "name": "Dunsparce",
-          "rank": 33,
-          "score": 139
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 146
-        }
-      ]
-    },
     "maractus": {
       "ratings": {
         "overall": 1,
@@ -87290,7 +87413,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -87358,13 +87481,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 519
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 514
         }
       ],
@@ -87507,7 +87630,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 192
         },
         {
@@ -87592,7 +87715,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         },
         {
@@ -87672,7 +87795,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 605
         }
       ],
@@ -88093,6 +88216,56 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "necrozma_dawn_wings": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 12,
+          "score": 516
+        }
+      ],
+      "losses": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 81
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 49,
+          "score": 92
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 102
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 106
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 106
+        }
+      ]
+    },
     "shuppet": {
       "ratings": {
         "overall": 1,
@@ -88226,56 +88399,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar",
           "rank": 20,
           "score": 205
-        }
-      ]
-    },
-    "necrozma_dawn_wings": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "rillaboom",
-          "name": "Rillaboom",
-          "rank": 12,
-          "score": 516
-        }
-      ],
-      "losses": [
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 81
-        },
-        {
-          "id": "morpeko_full_belly",
-          "name": "Morpeko (Full Belly)",
-          "rank": 49,
-          "score": 92
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 102
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 106
-        },
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 106
         }
       ]
     },
@@ -89060,6 +89183,62 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "pikachu": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 1,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "corviknight",
+          "name": "Corviknight",
+          "rank": 3,
+          "score": 619
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 615
+        }
+      ],
+      "losses": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 131
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 131
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 145
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 158
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 162
+        }
+      ]
+    },
     "voltorb_shadow": {
       "ratings": {
         "overall": 1,
@@ -89200,62 +89379,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Melmetal",
           "rank": 16,
           "score": 197
-        }
-      ]
-    },
-    "pikachu": {
-      "ratings": {
-        "overall": 2,
-        "consistency": 1,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "corviknight",
-          "name": "Corviknight",
-          "rank": 3,
-          "score": 619
-        },
-        {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 615
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 131
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 131
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 145
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 158
-        },
-        {
-          "id": "clodsire",
-          "name": "Clodsire",
-          "rank": 19,
-          "score": 162
         }
       ]
     },
@@ -89408,56 +89531,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "tornadus_incarnate": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "seismitoad",
-          "name": "Seismitoad",
-          "rank": 23,
-          "score": 519
-        }
-      ],
-      "losses": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 139
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 164
-        },
-        {
-          "id": "guzzlord",
-          "name": "Guzzlord",
-          "rank": 41,
-          "score": 164
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 31,
-          "score": 168
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 187
-        }
-      ]
-    },
     "delibird": {
       "ratings": {
         "overall": 1,
@@ -89498,6 +89571,56 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mimikyu",
           "rank": 1,
           "score": 191
+        }
+      ]
+    },
+    "tornadus_incarnate": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 1,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 24,
+          "score": 519
+        }
+      ],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 139
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 164
+        },
+        {
+          "id": "guzzlord",
+          "name": "Guzzlord",
+          "rank": 41,
+          "score": 164
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 31,
+          "score": 168
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 187
         }
       ]
     },
@@ -89589,7 +89712,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 179
         }
       ]
@@ -89811,7 +89934,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 200
         },
         {
@@ -89878,7 +90001,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 628
         },
         {
@@ -89890,7 +90013,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 573
         },
         {
@@ -90101,7 +90224,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 542
         },
         {
@@ -90241,49 +90364,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Zweilous",
           "rank": 48,
           "score": 189
-        }
-      ]
-    },
-    "gothita_shadow": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 2,
-        "shieldDependence": 3,
-        "technicalDifficulty": 2,
-        "closingPotential": 2
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "mightyena_shadow",
-          "name": "Mightyena (Shadow)",
-          "rank": 50,
-          "score": 72
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 73
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 76
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 80
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 83
         }
       ]
     },
@@ -90528,6 +90608,123 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "gothita_shadow": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 50,
+          "score": 72
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 73
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 76
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 80
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 83
+        }
+      ]
+    },
+    "tapu_bulu": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 595
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 6,
+          "score": 581
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 570
+        },
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 14,
+          "score": 555
+        },
+        {
+          "id": "feraligatr",
+          "name": "Feraligatr",
+          "rank": 23,
+          "score": 545
+        }
+      ],
+      "losses": [
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 47,
+          "score": 52
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 133
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 16,
+          "score": 139
+        },
+        {
+          "id": "corviknight_shadow",
+          "name": "Corviknight (Shadow)",
+          "rank": 27,
+          "score": 151
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 175
+        }
+      ]
+    },
     "tornadus_incarnate_shadow": {
       "ratings": {
         "overall": 1,
@@ -90621,77 +90818,59 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "tapu_bulu": {
+    "vulpix_alolan": {
       "ratings": {
         "overall": 1,
-        "consistency": 0,
+        "consistency": 1,
         "shieldDependence": 5,
-        "technicalDifficulty": 4,
-        "closingPotential": 3
+        "technicalDifficulty": 3,
+        "closingPotential": 1
       },
       "top50Coverage": 50,
       "wins": [
         {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 595
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 9,
+          "score": 691
         },
         {
-          "id": "electrode_hisuian",
-          "name": "Electrode (Hisuian)",
-          "rank": 6,
-          "score": 581
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 570
-        },
-        {
-          "id": "umbreon",
-          "name": "Umbreon",
-          "rank": 14,
-          "score": 555
-        },
-        {
-          "id": "feraligatr",
-          "name": "Feraligatr",
-          "rank": 24,
-          "score": 545
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 546
         }
       ],
       "losses": [
         {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 47,
-          "score": 52
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 133
+          "id": "wartortle",
+          "name": "Wartortle",
+          "rank": 32,
+          "score": 164
         },
         {
           "id": "melmetal",
           "name": "Melmetal",
           "rank": 16,
-          "score": 139
+          "score": 183
         },
         {
-          "id": "corviknight_shadow",
-          "name": "Corviknight (Shadow)",
-          "rank": 27,
-          "score": 151
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 29,
+          "score": 183
         },
         {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 175
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 21,
+          "score": 193
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 46,
+          "score": 197
         }
       ]
     },
@@ -90776,13 +90955,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 596
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 570
         }
       ],
@@ -90909,62 +91088,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Melmetal",
           "rank": 16,
           "score": 175
-        }
-      ]
-    },
-    "vulpix_alolan": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 1,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "altaria",
-          "name": "Altaria",
-          "rank": 9,
-          "score": 691
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 546
-        }
-      ],
-      "losses": [
-        {
-          "id": "wartortle",
-          "name": "Wartortle",
-          "rank": 32,
-          "score": 164
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 16,
-          "score": 183
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 29,
-          "score": 183
-        },
-        {
-          "id": "ninetales_shadow",
-          "name": "Ninetales (Shadow)",
-          "rank": 21,
-          "score": 193
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 46,
-          "score": 197
         }
       ]
     },
@@ -91350,7 +91473,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 1,
         "consistency": 0,
-        "shieldDependence": 1,
+        "shieldDependence": 2,
         "technicalDifficulty": 1,
         "closingPotential": 2
       },
@@ -91519,7 +91642,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 535
         }
       ],
@@ -92095,7 +92218,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -92284,7 +92407,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
     "treecko": {
       "ratings": {
         "overall": 1,
-        "consistency": 1,
+        "consistency": 0,
         "shieldDependence": 2,
         "technicalDifficulty": 1,
         "closingPotential": 2
@@ -92312,13 +92435,13 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 569
         },
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 530
         }
       ],
@@ -92775,7 +92898,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 568
         },
         {
@@ -93281,7 +93404,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 788
         },
         {
@@ -93293,7 +93416,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 614
         }
       ],
@@ -93839,7 +93962,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 203
         }
       ]
@@ -94502,19 +94625,12 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 1,
         "consistency": 1,
-        "shieldDependence": 1,
+        "shieldDependence": 2,
         "technicalDifficulty": 1,
         "closingPotential": 1
       },
       "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "malamar",
-          "name": "Malamar",
-          "rank": 20,
-          "score": 610
-        }
-      ],
+      "wins": [],
       "losses": [
         {
           "id": "florges",
@@ -95214,49 +95330,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "abra_shadow": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 2,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 87
-        },
-        {
-          "id": "sableye",
-          "name": "Sableye",
-          "rank": 10,
-          "score": 99
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 110
-        },
-        {
-          "id": "goodra",
-          "name": "Goodra",
-          "rank": 30,
-          "score": 112
-        },
-        {
-          "id": "zweilous",
-          "name": "Zweilous",
-          "rank": 48,
-          "score": 112
-        }
-      ]
-    },
     "nidoran_female": {
       "ratings": {
         "overall": 1,
@@ -95383,6 +95456,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Morgrem",
           "rank": 26,
           "score": 167
+        }
+      ]
+    },
+    "abra_shadow": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 87
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 99
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 110
+        },
+        {
+          "id": "goodra",
+          "name": "Goodra",
+          "rank": 30,
+          "score": 112
+        },
+        {
+          "id": "zweilous",
+          "name": "Zweilous",
+          "rank": 48,
+          "score": 112
         }
       ]
     },
@@ -95558,49 +95674,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "abra": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 2,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 88
-        },
-        {
-          "id": "ampharos",
-          "name": "Ampharos",
-          "rank": 45,
-          "score": 88
-        },
-        {
-          "id": "thievul",
-          "name": "Thievul",
-          "rank": 15,
-          "score": 89
-        },
-        {
-          "id": "morgrem",
-          "name": "Morgrem",
-          "rank": 26,
-          "score": 94
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 98
-        }
-      ]
-    },
     "glameow_shadow": {
       "ratings": {
         "overall": 1,
@@ -95641,6 +95714,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Steelix",
           "rank": 28,
           "score": 193
+        }
+      ]
+    },
+    "abra": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 88
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 45,
+          "score": 88
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 15,
+          "score": 89
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 26,
+          "score": 94
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 98
         }
       ]
     },
@@ -95866,49 +95982,6 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
-    "blitzle_shadow": {
-      "ratings": {
-        "overall": 1,
-        "consistency": 2,
-        "shieldDependence": 0,
-        "technicalDifficulty": 0,
-        "closingPotential": 1
-      },
-      "top50Coverage": 50,
-      "wins": [],
-      "losses": [
-        {
-          "id": "sableye_shadow",
-          "name": "Sableye (Shadow)",
-          "rank": 13,
-          "score": 94
-        },
-        {
-          "id": "spiritomb",
-          "name": "Spiritomb",
-          "rank": 17,
-          "score": 104
-        },
-        {
-          "id": "mimikyu",
-          "name": "Mimikyu",
-          "rank": 1,
-          "score": 121
-        },
-        {
-          "id": "corsola_galarian",
-          "name": "Corsola (Galarian)",
-          "rank": 7,
-          "score": 126
-        },
-        {
-          "id": "mightyena",
-          "name": "Mightyena",
-          "rank": 40,
-          "score": 134
-        }
-      ]
-    },
     "diglett_alolan_shadow": {
       "ratings": {
         "overall": 1,
@@ -95962,6 +96035,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Mandibuzz",
           "rank": 18,
           "score": 136
+        }
+      ]
+    },
+    "blitzle_shadow": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 0,
+        "technicalDifficulty": 0,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 13,
+          "score": 94
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 17,
+          "score": 104
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 121
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 7,
+          "score": 126
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 40,
+          "score": 134
         }
       ]
     },
@@ -98009,8 +98125,8 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
       "ratings": {
         "overall": 1,
         "consistency": 2,
-        "shieldDependence": 1,
-        "technicalDifficulty": 1,
+        "shieldDependence": 0,
+        "technicalDifficulty": 0,
         "closingPotential": 1
       },
       "top50Coverage": 50,
@@ -98265,7 +98381,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 501
         }
       ],
@@ -98715,7 +98831,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "seismitoad",
           "name": "Seismitoad",
-          "rank": 23,
+          "rank": 24,
           "score": 139
         },
         {
@@ -98917,7 +99033,7 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         {
           "id": "feraligatr",
           "name": "Feraligatr",
-          "rank": 24,
+          "rank": 23,
           "score": 501
         }
       ],

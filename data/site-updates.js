@@ -7,6 +7,16 @@
   // Newest releases first. Keep older entries; Home shows only the latest three.
   return [
     {
+      id: "20261020-houndoom-variants",
+      date: "2026-10-20",
+      category: "Battle & Meta",
+      title: "Two Houndoom movesets in the rankings",
+      changes: [
+        "Houndoom now starts with Trailblaze. You can also find its Flamethrower set in the rankings, for both regular and Shadow Houndoom.",
+        "Great League rankings and key wins/losses have been recalculated with the latest battle changes."
+      ]
+    },
+    {
       id: "20261020-shield-cycle",
       date: "2026-10-20",
       category: "Battle",

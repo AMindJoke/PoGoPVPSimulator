@@ -42,7 +42,7 @@ const model = normalizePokemonAnalysisViewModel({ id: "cradily", rating: merged[
 assert.equal(model.identity.rating, 850);
 assert.equal(model.identity.movesetScoreStale, true);
 const hero = PokemonHeroCard(model);
-assert.match(hero, /Overall Meta score/);
+assert.match(hero, /Meta ranking score/);
 assert.match(hero, /Score reflects the previous moveset/);
 
 const html = fs.readFileSync(path.join(root, "PogoPvp.html"), "utf8");

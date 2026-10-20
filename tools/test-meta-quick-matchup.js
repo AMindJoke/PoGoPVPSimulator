@@ -97,6 +97,7 @@ const bridge = html.slice(html.indexOf("    function loadMetaMatchup("), html.in
 const inputs = {}, appliedMoves = [];
 let resetCount = 0;
 const context = {
+  metaRankingDatasetEntry: () => null,
   $: id => inputs[id] ||= { value: null }, findPokemon: id => ({ id }),
   setAppView: () => {}, setPokemonSelection: () => {}, applyIvOptimizationProfile: () => {},
   setIvProfileState: () => {}, clearStartingFastAdvantage: () => {}, setBaiting: () => {}, setShieldMode: () => {},

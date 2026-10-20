@@ -437,6 +437,24 @@ function isShadow(p) {
   return p.id.endsWith("_shadow") || p.id.includes("_shadow_");
 }
 
+function addRankingVariants(pokemonMap, movesets) {
+  for (const pokemon of [...pokemonMap.values()]) {
+    for (const set of movesets[pokemon.id]?.alternatives || []) {
+      if (!set.ranked) continue;
+      if (!/^[a-z0-9_-]+$/.test(set.id || "") || !pokemon.fast.includes(set.fast)
+        || !Array.isArray(set.charged) || set.charged.length !== 2
+        || !set.charged.every(id => pokemon.charged.includes(id))) {
+        throw new Error(`Invalid ranked moveset variant for ${pokemon.id}.`);
+      }
+      const id = `${pokemon.id}__${set.id}`;
+      if (pokemonMap.has(id)) throw new Error(`Duplicate ranked moveset variant: ${id}.`);
+      pokemonMap.set(id, { ...pokemon, id, rankingPokemonId: pokemon.id,
+        rankingVariantId: set.id, rankingMoveset: { fast: set.fast, charged: [...set.charged] } });
+    }
+  }
+  return pokemonMap;
+}
+
 function isEligibleGreatLeaguePokemon(p) {
   if (!p || p.released === false || !p.fast.length || !p.charged.length) return false;
   if (pokemonForms.isMega(p) || pokemonForms.kind(p) === pokemonForms.FORM_KINDS.PRIMAL) return false;
@@ -588,7 +606,7 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
 
 function selectMoves(p, moveMap, standardMovesets) {
   if (movesCache.has(p.id)) return movesCache.get(p.id);
-  const standard = standardMovesetFor(p, standardMovesets);
+  const standard = p.rankingMoveset || standardMovesetFor(p, standardMovesets);
   const fast = standard && p.fast.includes(standard.fast)
     ? moveMap.get(standard.fast)
     : p.fast.map(id => moveMap.get(id)).filter(Boolean).sort((a, b) => fastMoveScore(b) - fastMoveScore(a))[0];
@@ -628,7 +646,7 @@ function createCombatant(p, trainer, profile, moveMap, standardMovesets, pokemon
   }
   const combatant = {
     trainer,
-    p: cloneForMatrix(p),
+    p: cloneForMatrix(p.rankingPokemonId ? pokemonMap.get(p.rankingPokemonId) : p),
     fast: cloneForMatrix(moves.fast),
     charged: [cloneForMatrix(moves.charged[0]), cloneForMatrix(moves.charged[1] || null)],
     level: stats.level,
@@ -654,7 +672,7 @@ function createCombatant(p, trainer, profile, moveMap, standardMovesets, pokemon
     shadowAtkMult: isShadow(p) ? 1.2 : 1,
     shadowDefMult: isShadow(p) ? 0.83333331 : 1,
     cpm: stats.cpm || stats.attack / Math.max(1, p.atk + stats.ivAtk),
-    initialFormId: p.id,
+    initialFormId: p.rankingPokemonId || p.id,
     formCatalog: buildCombatantFormCatalog(p, pokemonMap, moveMap)
   };
   return combatant;
@@ -1400,6 +1418,7 @@ function compactRankingEntries(rankings, moveMap, standardMovesets, allPokemon) 
     const stats = p ? (row.profile === RANK1_PROFILE ? rank1Stats(p) : defaultStats(p)) : null;
     return {
       ...row,
+      ...(p?.rankingPokemonId ? { pokemonId: p.rankingPokemonId, variantId: p.rankingVariantId } : {}),
       types: p ? p.types : [],
       dex: p ? p.dex : 0,
       build: stats ? { ivAtk: stats.ivAtk, ivDef: stats.ivDef, ivHp: stats.ivHp, level: stats.level, cp: stats.cp } : null,
@@ -1471,6 +1490,7 @@ function main() {
     .map(p => normalizePokemon(p, moveMap))
     .filter(p => p.fast.length && p.charged.length)
     .map(p => [p.id, p]));
+  addRankingVariants(allPokemon, standardMovesets);
 
   const eligiblePokemon = [...allPokemon.values()]
     .filter(isEligibleGreatLeaguePokemon)
@@ -1491,7 +1511,7 @@ function main() {
   const metaPool = configuredOpponentIds.map(id => allPokemon.get(id)).filter(Boolean);
   let pool = allPokemonRanking ? eligiblePokemon : metaPool;
   let opponentPool = opponentPoolMode === "all"
-    ? eligiblePokemon
+      ? eligiblePokemon.filter(p => !p.rankingPokemonId)
     : opponentPoolMode === "meta"
       ? metaPool
       : pool;
@@ -1523,6 +1543,11 @@ function main() {
     throw new Error("--candidate-prior-weight requires --candidate-prior-source.");
   }
   const candidatePrior = loadCandidatePrior(candidatePriorSourcePath);
+  if (candidatePrior) for (const pokemon of pool) {
+    if (pokemon.rankingPokemonId && candidatePrior.has(pokemon.rankingPokemonId)) {
+      candidatePrior.set(pokemon.id, candidatePrior.get(pokemon.rankingPokemonId));
+    }
+  }
   if (candidatePrior) {
     console.log(`Loaded ${candidatePrior.size.toLocaleString()} candidate prior scores from ${candidatePriorSourcePath} (${Math.round(candidatePriorWeight * 100)}% blend).`);
   }
@@ -1924,6 +1949,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  addRankingVariants,
   MATRIX_VERSION,
   DEFAULT_PROFILE,
   RANK1_PROFILE,

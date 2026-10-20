@@ -69,6 +69,7 @@ const pokemonMap = new Map(sourceData.gameMaster.pokemon
   .filter(pokemon => pokemon && pokemon.speciesId && pokemon.baseStats)
   .map(pokemon => G.normalizePokemon(pokemon, moveMap))
   .map(pokemon => [pokemon.id, pokemon]));
+G.addRankingVariants(pokemonMap, sourceData.standardMovesets);
 const expectedOpponentSignatures = new Map(entries.map(entry => {
   const pokemon = pokemonMap.get(entry.id);
   const combatant = pokemon

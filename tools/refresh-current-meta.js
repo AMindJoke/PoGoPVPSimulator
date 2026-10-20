@@ -75,6 +75,10 @@ function verifyPublished(sourceData) {
   const ranking = read(path.join(currentRoot, `${rankingName}.json`));
   const details = read(path.join(currentRoot, `${detailsName}.json`));
   verifyBundle(ranking, details, seed, sourceData);
+  const defaults = JSON.parse(JSON.stringify(sourceData.standardMovesets));
+  same(read(path.join(seasonRoot, "default-movesets.json")), defaults, "Season default movesets differ");
+  same(readScript(path.join(seasonRoot, "default-movesets.js"), "TWILIGHT_TRAILS_DEFAULT_MOVESETS"),
+    defaults, "Season default moveset script differs");
   for (const [base, prefix] of [[currentRoot, "GREAT_LEAGUE"], [seasonRoot, "TWILIGHT_TRAILS"]]) {
     same(read(path.join(base, `${rankingName}.json`)), ranking, `${base}: ranking differs`);
     same(read(path.join(base, `${detailsName}.json`)), details, `${base}: details differ`);
@@ -197,6 +201,11 @@ function main() {
     }
   }
   const offlineCache = nextOfflineCache();
+  for (const extension of ["json", "js"]) {
+    fs.copyFileSync(path.join(seasonRoot, `default-movesets.${extension}`),
+      path.join(backup, `season-default-movesets.${extension}`));
+  }
+  writeAsset(seasonRoot, "default-movesets", sourceData.standardMovesets, "TWILIGHT_TRAILS_DEFAULT_MOVESETS");
   writeAsset(currentRoot, rankingName, prepared.ranking, "GREAT_LEAGUE_RANKINGS");
   writeAsset(currentRoot, detailsName, prepared.details, "GREAT_LEAGUE_RANKING_DETAILS");
   writeAsset(seasonRoot, rankingName, prepared.ranking, "TWILIGHT_TRAILS_RANKINGS");

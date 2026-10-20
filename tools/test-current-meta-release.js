@@ -40,8 +40,10 @@ assert.throws(() => verifyBundle(ranking, details,
 const moves = new Map(sourceData.gameMaster.moves.map(move => [move.moveId, G.normalizeMove(move)]));
 const pokemon = new Map(sourceData.gameMaster.pokemon.filter(p => p?.speciesId && p.baseStats)
   .map(p => G.normalizePokemon(p, moves)).map(p => [p.id, p]));
+G.addRankingVariants(pokemon, sourceData.standardMovesets);
 const entries = [...ranking.entries].sort((a, b) => a.rank - b.rank);
-const sample = [...new Set([...entries.slice(0, 20), ...entries.filter((_, index) => index % 100 === 0)])];
+const sample = [...new Set([...entries.slice(0, 20), ...entries.filter((_, index) => index % 100 === 0),
+  ...entries.filter(entry => entry.variantId || ["houndoom", "houndoom_shadow"].includes(entry.id))])];
 const byId = new Map(entries.map(entry => [entry.id, entry]));
 const worker = G.createWorkerAdapter(G.extractLiveWorkerSource(), { dreStandard: true, strict: true });
 let count = 0;

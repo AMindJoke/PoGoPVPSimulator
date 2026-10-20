@@ -23,9 +23,9 @@
   <script src="src/battle/mega-rules.js?v=20261014-mega2"></script>
   <script src="src/battle/announced-moves.js?v=20261013-v180"></script>
   <script src="cramorant-data.js"></script>
-  <script src="default-movesets.js?v=20260928-piloswine-v1"></script>
+  <script src="default-movesets.js?v=20261020-houndoom-variants1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20261018-v196"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261020-v200"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
@@ -43,7 +43,7 @@
   <script src="src/ui/cmp-dependency.js?v=20261006-v131"></script>
   <script src="src/ui/battle-alternatives.js?v=20261008-v177"></script>
   <script src="src/analysis/iv-impact.js"></script>
-  <script src="src/analysis/ranking-details.js?v=20261006-v123"></script>
+  <script src="src/analysis/ranking-details.js?v=20261020-variants1"></script>
   <script src="src/analysis/meta-quick-matchup.js?v=20261001-v73"></script>
   <script src="src/analysis/pokemon-analysis-view-model.js?v=20261007-v171"></script>
   <script src="src/ui/pokemon-analysis.js?v=20261007-v171"></script>
@@ -14499,7 +14499,7 @@
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261019-trio-clarity1">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261018-v196"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261020-v200"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -21182,9 +21182,9 @@
       return overallRankingEntries();
     }
 
-    function overallRankingEntries() {
+    function overallRankingEntries(includeVariants = false) {
       return window.PvPeakRankingDetails.buildOverallRankingEntries(
-        metaRankingData?.entries || [],
+        (metaRankingData?.entries || []).filter(entry => includeVariants || !entry.variantId),
         metaRoleRankingSource()?.entries || [],
         activeMetaRankingSource()?.metadata || {},
         findPokemon,
@@ -21892,8 +21892,9 @@
     function metaCompareEntry(id) {
       const cached = metaOfflineRowsCache?.find(entry => entry.id === id);
       if (cached) return cached;
-      const p = findPokemon(id);
-      return p ? { id: p.id, name: p.name, p, moves: metaMovesForPokemon(p) } : null;
+      const ranked = metaRankingDatasetEntry(id);
+      const p = findPokemon(ranked?.pokemonId || id);
+      return p ? { id, name: p.name, p, moves: metaRankingMoves(ranked, p) } : null;
     }
 
     function metaCompareSlotHtml(id, slot) {
@@ -21940,7 +21941,7 @@
     }
 
     function selectMetaComparePokemon(id) {
-      if (!metaCompareMode || !findPokemon(id)) return;
+      if (!metaCompareMode || !metaCompareEntry(id)) return;
       const existingIndex = metaCompareSelection.indexOf(id);
       if (existingIndex >= 0) {
         metaCompareSelection.splice(existingIndex, 1);
@@ -21969,7 +21970,7 @@
     function applyMetaComparisonSide(prefix, id) {
       const entry = metaCompareEntry(id);
       if (!entry) return;
-      setPokemonSelection(prefix, id);
+      setPokemonSelection(prefix, entry.p.id);
       const selections = [[`${prefix}Fast`, entry.moves.fast?.id], ...chargedMoveSelects(prefix)
         .filter(select => !select.disabled)
         .map((select, index) => [select.id, entry.moves.charged[index]?.id || ""])];
@@ -22215,7 +22216,7 @@
       const shieldCount = metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const cellCount = metadata.cells || 0;
       if (!metaOfflineRowsCache) {
-        const entries = overallRankingEntries();
+        const entries = overallRankingEntries(true);
         const roleEntries = new Map((metaRoleRankingSource()?.entries || [])
           .filter(entry => entry.profile === metaRankingPreferredProfile)
           .map(entry => [entry.id, entry]));
@@ -22272,7 +22273,7 @@
     }
 
     function metaOfflineRankingEntry(entry, shieldCount, cellCount, candidatePriorActive = false) {
-      const p = findPokemon(entry.id);
+      const p = findPokemon(entry.pokemonId || entry.id);
       if (!p) return null;
       const moves = metaRankingMoves(entry, p);
       if (!moves.fast || !moves.charged.length) return null;
@@ -22369,16 +22370,17 @@
         entry.moves.charged.length ? `<i class="meta-move-divider" aria-hidden="true"></i>` : "",
         ...entry.moves.charged.map(move => metaMovePill(move, "charged"))
       ].join("");
-      const detailId = `meta-details-${entry.p.id.replace(/[^a-z0-9_-]/gi, "-")}`;
+      const entryId = entry.id || entry.p.id;
+      const detailId = `meta-details-${entryId.replace(/[^a-z0-9_-]/gi, "-")}`;
       const primaryType = entry.p.types[0] || "normal";
       const secondaryType = entry.p.types[1] || primaryType;
       const primaryColor = typeColors[primaryType] || "#66788c";
       const secondaryColor = typeColors[secondaryType] || primaryColor;
       const typeStyle = `--meta-type-a:${primaryColor};--meta-type-b:${secondaryColor};--meta-icon-a:url('${metaTypeIconDataUri(primaryType, primaryColor)}');--meta-icon-b:url('${metaTypeIconDataUri(secondaryType, secondaryColor)}')`;
       const typeClass = entry.p.types.length > 1 ? "dual-type" : "single-type";
-      const compareIndex = metaCompareSelection.indexOf(entry.p.id);
+      const compareIndex = metaCompareSelection.indexOf(entryId);
       const compareClass = compareIndex === 0 ? "compare-a" : compareIndex === 1 ? "compare-b" : "";
-      return `<div class="meta-entry ${typeClass} ${compareClass}" data-meta-entry="${escapeHtml(entry.p.id)}" style="${typeStyle}"><div class="meta-row" data-meta-expand="${escapeHtml(entry.p.id)}" role="button" tabindex="0" aria-expanded="false" aria-pressed="${compareIndex >= 0 ? "true" : "false"}" aria-controls="${detailId}">
+      return `<div class="meta-entry ${typeClass} ${compareClass}" data-meta-entry="${escapeHtml(entryId)}" style="${typeStyle}"><div class="meta-row" data-meta-expand="${escapeHtml(entryId)}" role="button" tabindex="0" aria-expanded="false" aria-pressed="${compareIndex >= 0 ? "true" : "false"}" aria-controls="${detailId}">
         <span class="meta-rank">${rank}</span>
         <span class="meta-mon">
           <img src="${escapeHtml(imageUrl(entry.p))}" alt="" loading="lazy" decoding="async" fetchpriority="low" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(entry.p))}'">
@@ -22393,7 +22395,7 @@
           <strong>${entry.score}</strong>
           ${scoreBreakdown ? `<small>${escapeHtml(scoreBreakdown)}</small>` : ""}
         </span>
-      </div>${entry.movesetScoreStale ? `<div class="ranking-moveset-warning">Score: previous moveset</div>` : ""}<div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entry.p.id)}"></div></div></div>`;
+      </div>${entry.movesetScoreStale ? `<div class="ranking-moveset-warning">Score: previous moveset</div>` : ""}<div class="meta-row-details" id="${detailId}"><div class="meta-row-details-inner" data-meta-details-for="${escapeHtml(entryId)}"></div></div></div>`;
     }
 
     function toggleMetaRankingRow(row) {
@@ -22433,7 +22435,7 @@
 
     function metaRankingDetailsHtml(entry) {
       const detailState = rankingDetailsPresenter.rankingDetailsState(
-        metaRankingDetails, activeMetaRankingSource(), entry.p.id, metaRankingPreferredProfile,
+        metaRankingDetails, activeMetaRankingSource(), entry.id || entry.p.id, metaRankingPreferredProfile,
         { loading: metaRankingLoading, error: metaRankingLoadError, engineVersion: battleEngineVersion }
       );
       const detailMessages = {
@@ -22444,7 +22446,7 @@
         missing: "Key matchups are not available for this Pokemon yet.",
         incomplete: "Key matchup coverage is incomplete for this Pokemon."
       };
-      const detail = metaRankingDetails.entries?.[entry.p.id] || {};
+      const detail = metaRankingDetails.entries?.[entry.id || entry.p.id] || {};
       const currentWins = currentMetaMatchupRows(detail.wins, entry.p.id);
       const currentLosses = currentMetaMatchupRows(detail.losses, entry.p.id);
       const alternatives = metaAlternativeMovesets(entry, detail);
@@ -22474,9 +22476,9 @@
       const pokemon = entry?.p;
       if (!pokemon) return [];
       const standard = standardMovesetFor(pokemon);
-      const declared = Array.isArray(standard?.alternatives) ? standard.alternatives : [];
+      const declared = [standard, ...(Array.isArray(standard?.alternatives) ? standard.alternatives : [])].filter(Boolean);
       const generated = Array.isArray(detail?.alternativeMovesets) ? detail.alternativeMovesets : [];
-      const primary = metaRankingMoves(metaRankingDatasetEntry(pokemon.id), pokemon);
+      const primary = entry.moves || metaRankingMoves(metaRankingDatasetEntry(pokemon.id), pokemon);
       const primaryKey = [primary.fast?.id, ...primary.charged.map(move => move.id)].filter(Boolean).join("|");
       const seen = new Set([primaryKey]);
       return [...declared, ...generated].reduce((sets, set) => {
@@ -22523,7 +22525,7 @@
       }).join("");
       const outcome = score > 500 ? `${sourceEntry.p.name} wins` : score < 500 ? `${sourceEntry.p.name} loses` : "draw";
       const aria = `Preview ${sourceEntry.p.name} versus ${opponent.name}. Ranked one-shield matchup: ${outcome} with score ${score}.`;
-      return `<button type="button" class="meta-matchup-card ${opponent.types.length > 1 ? "dual-type" : "single-type"}" data-meta-source="${escapeHtml(sourceEntry.p.id)}" data-meta-matchup="${escapeHtml(opponentId)}" style="--key-type-a:${primaryColor};--key-type-b:${secondaryColor}" aria-label="${escapeHtml(aria)}">
+      return `<button type="button" class="meta-matchup-card ${opponent.types.length > 1 ? "dual-type" : "single-type"}" data-meta-source="${escapeHtml(sourceEntry.id || sourceEntry.p.id)}" data-meta-matchup="${escapeHtml(opponentId)}" style="--key-type-a:${primaryColor};--key-type-b:${secondaryColor}" aria-label="${escapeHtml(aria)}">
         <img src="${escapeHtml(imageUrl(opponent))}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escapeHtml(fallbackImageUrl(opponent))}'">
         <span class="meta-matchup-name">${escapeHtml(opponent.name)}</span>
         <span class="meta-matchup-types">${typeBadges}</span>
@@ -22546,7 +22548,7 @@
 
     function metaRankingMoves(rankingEntry, pokemon) {
       const standard = standardMovesetFor(pokemon);
-      const source = standard?.metaOverride ? standard : rankingEntry?.moveset;
+      const source = rankingEntry?.variantId ? rankingEntry.moveset : standard?.metaOverride ? standard : rankingEntry?.moveset;
       const fastId = source?.fast;
       const chargedIds = Array.isArray(source?.charged) ? source.charged : [];
       const fast = fastId && pokemon.fast.includes(fastId) ? moveMap.get(fastId) : null;
@@ -22603,6 +22605,7 @@
       const model = metadata && metadata.rankingModel ? metadata.rankingModel : null;
       const states = metadata && metadata.shieldScenarios ? metadata.shieldScenarios.length : 0;
       const candidates = metadata ? Number(metadata.pokemonCount || 0).toLocaleString() : "";
+      const candidateLabel = source?.entries?.some(entry => entry.variantId) ? "ranked movesets" : "Pokemon";
       const opponents = metadata ? Number(metadata.opponentPokemonCount || 0).toLocaleString() : "";
       const roleText = metaRankingRole !== "overall"
         ? ` Showing the ${metaRankingRoleLabel(metaRankingRole)} role score; Consistency is intentionally omitted from this selector.`
@@ -22618,7 +22621,7 @@
             : ` Scores combine Lead, Closer, Switch, Charger, and Attacker roles with opponent-strength weights${Number(model.advantageTurns) ? ` and a ${Number(model.advantageTurns)}-turn energy advantage for Switch/Charger` : ""}.`
           : " Scores use equal-shield categories, opponent-strength weights, and a competitive geometric overall."
         : "";
-      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} Pokemon` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${roleText}${modelText}</div>`;
+      return `<div class="meta-ranking-note">Ranking score is calculated from precomputed Great League simulations using Rank 1 IVs${candidates ? ` for ${candidates} ${candidateLabel}` : ""}${opponents ? ` against ${opponents} meta opponents` : ""}${states ? ` across ${states} shield states` : ""}${cells ? ` (${cells} total matchup sims)` : ""}.${roleText}${modelText}</div>`;
     }
 
     function metaStatsForPokemon(p) {
@@ -22855,6 +22858,19 @@
     }
 
     function loadMetaMatchup(sourceId, opponentId, options = {}) {
+      const variant = metaRankingDatasetEntry(sourceId);
+      if (variant?.pokemonId) {
+        const pokemon = findPokemon(variant.pokemonId), opponent = findPokemon(opponentId);
+        if (!pokemon || !opponent) return;
+        if (!options.config) {
+          const config = createMetaRankingBattleConfig(pokemon, opponent);
+          const moves = metaRankingMoves(variant, pokemon);
+          config.left.fast = cloneMatrixMove(moves.fast);
+          config.left.charged = moves.charged.map(cloneMatrixMove);
+          options = { ...options, config };
+        }
+        sourceId = pokemon.id;
+      }
       if (!findPokemon(sourceId) || !findPokemon(opponentId)) return;
       setAppView("simulator");
       setPokemonSelection("p1", sourceId);
@@ -38739,7 +38755,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261020-v199").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261020-v201").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

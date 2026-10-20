@@ -132,7 +132,7 @@ function validateDataset(dataset, options = {}) {
     if (keys.has(key)) issues.push(`Duplicate Pokemon/profile entry: ${key}.`);
     keys.add(key);
     ids.add(entry.id);
-    if (knownPokemonIds && entry.id && !knownPokemonIds.has(entry.id)) {
+    if (knownPokemonIds && entry.id && !knownPokemonIds.has(entry.pokemonId || entry.id)) {
       issues.push(`Unknown Pokemon id in ranking: ${entry.id}.`);
     }
     const score = scoreValue(entry);

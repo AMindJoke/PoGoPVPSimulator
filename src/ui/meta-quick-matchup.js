@@ -112,11 +112,11 @@
   }
 
   function open(sourceId, opponentId, sourceButton) {
-    const a = findPokemon(sourceId), b = findPokemon(opponentId);
+    const a = metaCompareEntry(sourceId)?.p || findPokemon(sourceId), b = findPokemon(opponentId);
     if (!a || !b) return;
     const config = createMetaRankingBattleConfig(a, b);
-    [config.left, config.right].forEach(combatant => {
-      const moves = metaRankingMoves(metaRankingDatasetEntry(combatant.p.id), combatant.p);
+    [config.left, config.right].forEach((combatant, index) => {
+      const moves = metaRankingMoves(metaRankingDatasetEntry(index === 0 ? sourceId : opponentId), combatant.p);
       combatant.fast = cloneMatrixMove(moves.fast);
       combatant.charged = moves.charged.map(cloneMatrixMove);
     });

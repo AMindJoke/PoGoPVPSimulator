@@ -19,6 +19,7 @@ function fill(options) {
   const moves = new Map(data.gameMaster.moves.map(move => [move.moveId, G.normalizeMove(move)]));
   const pokemon = new Map(data.gameMaster.pokemon.filter(p => p?.speciesId && p.baseStats)
     .map(p => G.normalizePokemon(p, moves)).map(p => [p.id, p]));
+  G.addRankingVariants(pokemon, data.standardMovesets);
   const entries = [...ranking.entries].sort((a, b) => a.rank - b.rank);
   const opponents = entries.slice(0, 50);
   const selected = entries.slice(options.offset || 0, options.limit ? (options.offset || 0) + options.limit : undefined);
