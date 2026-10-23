@@ -7,6 +7,16 @@
   // Newest releases first. Keep older entries; Home shows only the latest three.
   return [
     {
+      id: "20261023-dragon-fairy-damage",
+      date: "2026-10-23",
+      category: "Battle & Meta",
+      title: "Corrected Dragon damage against Fairy Pokemon",
+      changes: [
+        "Dragon attacks were dealing too much damage to Fairy Pokemon. For example, Rank 1 Altaria now deals 1 damage per Dragon Breath to Rank 1 Azumarill, instead of 2.",
+        "The type chart has been checked, and Great League rankings and key matchups have been recalculated."
+      ]
+    },
+    {
       id: "20261020-houndoom-variants",
       date: "2026-10-20",
       category: "Battle & Meta",

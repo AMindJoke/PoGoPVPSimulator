@@ -50,9 +50,9 @@ const immune = { dragon: ["fairy"], electric: ["ground"], fighting: ["ghost"], g
 
 function effectiveness(type, defenderTypes) {
   return defenderTypes.reduce((value, defenderType) => {
-    if ((strong[type] || []).includes(defenderType)) value *= 1.6;
-    if ((weak[type] || []).includes(defenderType)) value *= 0.625;
-    if ((immune[type] || []).includes(defenderType)) value *= 0.625;
+    if ((immune[type] || []).includes(defenderType)) value *= 0.390625;
+    else if ((weak[type] || []).includes(defenderType)) value *= 0.625;
+    else if ((strong[type] || []).includes(defenderType)) value *= 1.6;
     return value;
   }, 1);
 }

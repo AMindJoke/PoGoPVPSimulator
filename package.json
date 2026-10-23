@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test:type-effectiveness": "node tools/test-type-effectiveness.js",
     "test:ranking-variants": "node tools/test-ranked-moveset-variants.js",
     "test:fast-count-trainer": "node tools/test-fast-count-engine.js && node tools/test-fast-count-trainer.js && node tools/test-fast-count-trainer-ui-contract.js",
     "audit:planner-alternatives": "node tools/audit-planner-alternatives.js",

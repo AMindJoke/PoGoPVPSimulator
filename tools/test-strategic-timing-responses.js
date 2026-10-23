@@ -139,7 +139,15 @@ for (const opponent of ["kingdra", "kingdra_shadow"]) {
     assert.equal(result.details.outcome, "A", "Preserve the original Florges Smart Shield correction.");
     const moves = chargedEvents(result).map(event => event.moveId);
     assert(moves.includes("MOONBLAST"), "Do not replace the closing threat with repeated Chilling Water.");
-    if (shields === 1 || opponent === "kingdra") assert.equal(moves[0], "MOONBLAST");
+    if (shields === 1) assert.equal(moves[0], "MOONBLAST");
+    // Correct Dragon/Fairy immunity changes the two-shield survival horizon.
+    // A single opening bait is valid; repeated weak nonlethal spam is not.
+    if (shields === 2 && opponent === "kingdra") {
+      assert.deepEqual(Array.from(moves), ["CHILLING_WATER", "MOONBLAST", "MOONBLAST"]);
+      const hits = chargedEvents(result);
+      assert.equal(hits[0].damage, 1, "The opening Chilling Water must actually remove a shield.");
+      assert(hits.at(-1).damage > 1, "Moonblast must land rather than loop Chilling Water.");
+    }
     inspectResponses(result);
   }
 }

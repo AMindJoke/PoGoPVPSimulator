@@ -1,0 +1,168 @@
+{
+  "checks": 3078,
+  "mismatches": [
+    {
+      "moveType": "dragon",
+      "types": [
+        "bug",
+        "fairy"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "dark",
+        "fairy"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "dragon",
+        "fairy"
+      ],
+      "actual": 1,
+      "expected": 0.6250000093132257
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "electric",
+        "fairy"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "fighting"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "fire"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "flying"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "ghost"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "grass"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "ground"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "ice"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "normal"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "poison"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "psychic"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "rock"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "steel"
+      ],
+      "actual": 0.390625,
+      "expected": 0.244140625
+    },
+    {
+      "moveType": "dragon",
+      "types": [
+        "fairy",
+        "water"
+      ],
+      "actual": 0.625,
+      "expected": 0.390625
+    }
+  ],
+  "reference": "PvPoke DamageCalculator defensive type chart",
+  "generatedAt": "2026-10-23T12:20:26.664Z"
+}

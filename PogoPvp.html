@@ -25,12 +25,12 @@
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20261020-houndoom-variants1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20261020-v200"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261023-v203"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20261020-planner-v50"></script>
+  <script src="src/reliability/battle-reliability.js?v=20261023-planner-v51"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -101,7 +101,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20261020-planner-v50-shield-cycle1"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261023-planner-v51-type-immunities1"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -14499,7 +14499,7 @@
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261019-trio-clarity1">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261020-v200"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261023-v203"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -24108,9 +24108,10 @@
     function effectiveness(moveType, defenderTypes) {
       let total = 1;
       for (const t of defenderTypes) {
-        if ((strong[moveType] || []).includes(t)) total *= 1.6;
-        if ((weak[moveType] || []).includes(t)) total *= 0.625;
-        if ((immune[moveType] || []).includes(t)) total *= 0.625;
+        // GO immunities replace a normal resistance; they never stack with it.
+        if ((immune[moveType] || []).includes(t)) total *= 0.390625;
+        else if ((weak[moveType] || []).includes(t)) total *= 0.625;
+        else if ((strong[moveType] || []).includes(t)) total *= 1.6;
       }
       return total;
     }
@@ -38755,7 +38756,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261020-v201").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261023-v203").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });
