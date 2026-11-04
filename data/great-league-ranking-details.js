@@ -1,10 +1,10 @@
 window.GREAT_LEAGUE_RANKING_DETAILS = {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T12:25:56.759Z",
-  "sourceRankingGeneratedAt": "2026-10-23T12:24:04.921Z",
+  "generatedAt": "2026-11-04T11:32:24.122Z",
+  "sourceRankingGeneratedAt": "2026-11-04T11:30:23.993Z",
   "sourceMovesetHash": "216e5608d18f64c64e63eb31c23aa4c40d90028e9d6806c6201bb53d23b2028b",
-  "sourceGameMasterHash": "47ee1e8b89700613348fc563dc9142099488d9de883b5f4f7e2153821a6d849e",
-  "sourceMatrixVersion": "battle-planner-v51",
+  "sourceGameMasterHash": "ba584de473b6c64f090557f399df19a0d6824d05014f14c89eeaf93097b6aa8b",
+  "sourceMatrixVersion": "battle-planner-v52",
   "top50Size": 50,
   "scoreVersion": "resource-score-v5",
   "entries": {
@@ -22874,6 +22874,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "golisopod_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 24,
+          "score": 803
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 778
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 773
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 748
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 46,
+          "score": 676
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 206
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 30,
+          "score": 277
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 26,
+          "score": 326
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 335
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 42,
+          "score": 340
+        }
+      ]
+    },
     "bastiodon": {
       "ratings": {
         "overall": 3,
@@ -32630,6 +32704,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "zekrom_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 36,
+          "score": 697
+        },
+        {
+          "id": "spidops",
+          "name": "Spidops",
+          "rank": 39,
+          "score": 625
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 7,
+          "score": 618
+        },
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 5,
+          "score": 603
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 603
+        }
+      ],
+      "losses": [
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 258
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 278
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 26,
+          "score": 288
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 297
+        },
+        {
+          "id": "snorlax",
+          "name": "Snorlax",
+          "rank": 35,
+          "score": 309
+        }
+      ]
+    },
     "typhlosion_shadow": {
       "ratings": {
         "overall": 3,
@@ -38470,6 +38618,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "pangoro_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "umbreon",
+          "name": "Umbreon",
+          "rank": 13,
+          "score": 782
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 46,
+          "score": 760
+        },
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 31,
+          "score": 758
+        },
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 742
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 47,
+          "score": 714
+        }
+      ],
+      "losses": [
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 175
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 241
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 12,
+          "score": 243
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 310
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 9,
+          "score": 319
+        }
+      ]
+    },
     "zangoose": {
       "ratings": {
         "overall": 3,
@@ -39207,6 +39429,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Steelix",
           "rank": 28,
           "score": 269
+        }
+      ]
+    },
+    "pancham_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 46,
+          "score": 831
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 47,
+          "score": 757
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 14,
+          "score": 709
+        },
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 31,
+          "score": 696
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 37,
+          "score": 689
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 181
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 308
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 9,
+          "score": 313
+        },
+        {
+          "id": "clodsire",
+          "name": "Clodsire",
+          "rank": 19,
+          "score": 316
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 26,
+          "score": 317
         }
       ]
     },
@@ -47616,6 +47912,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "lurantis_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 3,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 756
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 36,
+          "score": 699
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 676
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 30,
+          "score": 634
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 24,
+          "score": 630
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 163
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 183
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 23,
+          "score": 184
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 45,
+          "score": 217
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 233
+        }
+      ]
+    },
     "pumpkaboo_small": {
       "ratings": {
         "overall": 3,
@@ -49241,6 +49611,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Melmetal",
           "rank": 15,
           "score": 278
+        }
+      ]
+    },
+    "maschiff": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "corsola_galarian",
+          "name": "Corsola (Galarian)",
+          "rank": 5,
+          "score": 621
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 548
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 46,
+          "score": 532
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 509
+        },
+        {
+          "id": "sableye",
+          "name": "Sableye",
+          "rank": 10,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 203
+        },
+        {
+          "id": "empoleon_shadow",
+          "name": "Empoleon (Shadow)",
+          "rank": 50,
+          "score": 219
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 225
+        },
+        {
+          "id": "malamar_shadow",
+          "name": "Malamar (Shadow)",
+          "rank": 24,
+          "score": 227
+        },
+        {
+          "id": "vigoroth_shadow",
+          "name": "Vigoroth (Shadow)",
+          "rank": 33,
+          "score": 227
         }
       ]
     },
@@ -56363,6 +56807,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "barraskewda": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 18,
+          "score": 555
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 540
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 16,
+          "score": 539
+        },
+        {
+          "id": "dunsparce",
+          "name": "Dunsparce",
+          "rank": 31,
+          "score": 533
+        },
+        {
+          "id": "sableye_shadow",
+          "name": "Sableye (Shadow)",
+          "rank": 12,
+          "score": 530
+        }
+      ],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 42,
+          "score": 107
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 190
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 195
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 213
+        },
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 255
+        }
+      ]
+    },
     "moltres_shadow": {
       "ratings": {
         "overall": 2,
@@ -58728,6 +59246,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Regidrago",
           "rank": 49,
           "score": 239
+        }
+      ]
+    },
+    "palossand_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 829
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 36,
+          "score": 787
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 747
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 726
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 703
+        }
+      ],
+      "losses": [
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 88
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 17,
+          "score": 164
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 18,
+          "score": 173
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 16,
+          "score": 182
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 47,
+          "score": 197
         }
       ]
     },
@@ -64733,6 +65325,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "brambleghast": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 686
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 575
+        },
+        {
+          "id": "electrode_hisuian",
+          "name": "Electrode (Hisuian)",
+          "rank": 7,
+          "score": 570
+        },
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 561
+        },
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 25,
+          "score": 538
+        }
+      ],
+      "losses": [
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 18,
+          "score": 74
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 47,
+          "score": 88
+        },
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 89
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 14,
+          "score": 97
+        },
+        {
+          "id": "mightyena",
+          "name": "Mightyena",
+          "rank": 37,
+          "score": 145
+        }
+      ]
+    },
     "girafarig_shadow": {
       "ratings": {
         "overall": 2,
@@ -65100,6 +65766,56 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Steelix (Shadow)",
           "rank": 29,
           "score": 257
+        }
+      ]
+    },
+    "mabosstiff": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 42,
+          "score": 584
+        }
+      ],
+      "losses": [
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 197
+        },
+        {
+          "id": "vigoroth",
+          "name": "Vigoroth",
+          "rank": 4,
+          "score": 203
+        },
+        {
+          "id": "rillaboom",
+          "name": "Rillaboom",
+          "rank": 9,
+          "score": 204
+        },
+        {
+          "id": "morpeko_full_belly",
+          "name": "Morpeko (Full Belly)",
+          "rank": 46,
+          "score": 217
+        },
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 15,
+          "score": 221
         }
       ]
     },
@@ -67451,6 +68167,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Malamar (Shadow)",
           "rank": 24,
           "score": 190
+        }
+      ]
+    },
+    "sandygast_shadow": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 1,
+        "technicalDifficulty": 1,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "pachirisu",
+          "name": "Pachirisu",
+          "rank": 34,
+          "score": 812
+        },
+        {
+          "id": "bellibolt",
+          "name": "Bellibolt",
+          "rank": 36,
+          "score": 788
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 730
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 694
+        },
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 689
+        }
+      ],
+      "losses": [
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 68
+        },
+        {
+          "id": "morgrem",
+          "name": "Morgrem",
+          "rank": 18,
+          "score": 133
+        },
+        {
+          "id": "thievul",
+          "name": "Thievul",
+          "rank": 14,
+          "score": 141
+        },
+        {
+          "id": "mandibuzz",
+          "name": "Mandibuzz",
+          "rank": 17,
+          "score": 148
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 157
         }
       ]
     },
@@ -74368,6 +75158,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Pachirisu",
           "rank": 34,
           "score": 178
+        }
+      ]
+    },
+    "minior_core": {
+      "ratings": {
+        "overall": 2,
+        "consistency": 0,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 23,
+          "score": 642
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 45,
+          "score": 598
+        },
+        {
+          "id": "moltres_galarian",
+          "name": "Moltres (Galarian)",
+          "rank": 48,
+          "score": 579
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 529
+        },
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 42,
+          "score": 519
+        }
+      ],
+      "losses": [
+        {
+          "id": "melmetal",
+          "name": "Melmetal",
+          "rank": 15,
+          "score": 135
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 139
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 160
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 173
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 30,
+          "score": 176
         }
       ]
     },
@@ -83239,6 +84103,80 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
         }
       ]
     },
+    "fomantis_shadow": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 1,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 2
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "seismitoad",
+          "name": "Seismitoad",
+          "rank": 25,
+          "score": 732
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 621
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 550
+        },
+        {
+          "id": "malamar",
+          "name": "Malamar",
+          "rank": 20,
+          "score": 543
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 501
+        }
+      ],
+      "losses": [
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 89
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 116
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 26,
+          "score": 118
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 45,
+          "score": 123
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 136
+        }
+      ]
+    },
     "lycanroc_dusk": {
       "ratings": {
         "overall": 2,
@@ -84723,6 +85661,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Wartortle",
           "rank": 32,
           "score": 214
+        }
+      ]
+    },
+    "arrokuda": {
+      "ratings": {
+        "overall": 1,
+        "consistency": 2,
+        "shieldDependence": 4,
+        "technicalDifficulty": 2,
+        "closingPotential": 1
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "ampharos",
+          "name": "Ampharos",
+          "rank": 42,
+          "score": 84
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 91
+        },
+        {
+          "id": "spiritomb",
+          "name": "Spiritomb",
+          "rank": 16,
+          "score": 156
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 160
+        },
+        {
+          "id": "mightyena_shadow",
+          "name": "Mightyena (Shadow)",
+          "rank": 47,
+          "score": 160
         }
       ]
     },
@@ -96330,6 +97311,49 @@ window.GREAT_LEAGUE_RANKING_DETAILS = {
           "name": "Spidops",
           "rank": 39,
           "score": 116
+        }
+      ]
+    },
+    "wimpod_shadow": {
+      "ratings": {
+        "overall": 0,
+        "consistency": 4,
+        "shieldDependence": 2,
+        "technicalDifficulty": 1,
+        "closingPotential": 0
+      },
+      "top50Coverage": 50,
+      "wins": [],
+      "losses": [
+        {
+          "id": "tinkaton",
+          "name": "Tinkaton",
+          "rank": 2,
+          "score": 34
+        },
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 45
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 48
+        },
+        {
+          "id": "mimikyu",
+          "name": "Mimikyu",
+          "rank": 1,
+          "score": 50
+        },
+        {
+          "id": "altaria",
+          "name": "Altaria",
+          "rank": 26,
+          "score": 62
         }
       ]
     },

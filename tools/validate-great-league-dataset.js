@@ -1,4 +1,5 @@
 const fs = require("fs");
+const vm = require("node:vm");
 const path = require("path");
 const crypto = require("crypto");
 const childProcess = require("child_process");
@@ -71,7 +72,11 @@ function loadKnownPokemonIds() {
   const match = code.match(/window\.BATTLE_GAMEMASTER\s*=\s*(\{[\s\S]*\});?\s*$/);
   if (!match) return null;
   const data = JSON.parse(match[1]);
-  return new Set((data.pokemon || []).map(p => p.speciesId).filter(Boolean));
+  const context = vm.createContext({ window: { BATTLE_GAMEMASTER: data } });
+  for (const file of ["cramorant-data.js", "data/content-update-20261104.js"]) {
+    vm.runInContext(fs.readFileSync(path.join(ROOT, file), "utf8"), context, { filename: file, timeout: 30000 });
+  }
+  return new Set(context.window.BATTLE_GAMEMASTER.pokemon.map(p => p.speciesId).filter(Boolean));
 }
 
 function scoreValue(entry) {

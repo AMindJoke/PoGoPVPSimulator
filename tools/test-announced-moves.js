@@ -17,7 +17,7 @@ assert.equal(Announced.label(z,'SUCKER_PUNCH',before), '');
 assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,10,14,0)), '');
 assert.equal(Announced.label(z,'SUCKER_PUNCH',new Date(2026,9,11)), '');
 assert.equal(gm.pokemon.find(p => p.speciesId === 'bramblin').released, true);
-assert.equal(gm.pokemon.find(p => p.speciesId === 'brambleghast').released, false);
+assert.equal(gm.pokemon.find(p => p.speciesId === 'brambleghast').released, true);
 const html = fs.readFileSync('PogoPvp.html','utf8');
 function section(start,end) { return html.slice(html.indexOf('    function '+start+'('), html.indexOf('    function '+end+'(')); }
 const fields = {}, ctx = { window: { PvPeakAnnouncedMoves: {...Announced,label:(p,id)=>Announced.label(p,id,before)} }, moveMap:moves, megaRules:MegaRules,

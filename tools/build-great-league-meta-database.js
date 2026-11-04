@@ -249,6 +249,10 @@ function readWindowGlobal(relativePath, globalName) {
     const overlay = fs.readFileSync(path.join(ROOT, "cramorant-data.js"), "utf8");
     vm.runInContext(overlay, context, { filename: "cramorant-data.js", timeout: 30000 });
   }
+  if (relativePath === "battle-data.js") {
+    const file = "data/content-update-20261104.js";
+    vm.runInContext(fs.readFileSync(path.join(ROOT, file), "utf8"), context, { filename: file, timeout: 30000 });
+  }
   return context.window[globalName];
 }
 
@@ -408,6 +412,7 @@ function normalizeMove(move) {
     buffTarget: move.buffTarget || null,
     buffApplyChance: Number(move.buffApplyChance ?? 0),
     damageMethod: move.damageMethod || null,
+    isMegaMove: move.isMegaMove === true,
     tags: Array.isArray(move.tags) ? [...move.tags] : []
   };
 }

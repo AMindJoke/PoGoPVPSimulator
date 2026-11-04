@@ -20,17 +20,18 @@
   <link rel="stylesheet" href="src/team-builder/team-builder-matrix.css?v=20260916-v7">
   <script src="battle-data.js"></script>
   <script src="data/mega-overlay-20261013.js?v=20261013-mega1"></script>
-  <script src="src/battle/mega-rules.js?v=20261014-mega2"></script>
-  <script src="src/battle/announced-moves.js?v=20261013-v180"></script>
+  <script src="data/content-update-20261104.js?v=20261104-content1"></script>
+  <script src="src/battle/mega-rules.js?v=20261104-content1"></script>
+  <script src="src/battle/announced-moves.js?v=20261104-content1"></script>
   <script src="cramorant-data.js"></script>
   <script src="default-movesets.js?v=20261020-houndoom-variants1"></script>
   <script src="data/seasons/next-season.js?v=20260916-meta-v1"></script>
-  <script src="data/seasons/season-generated-loader.js?v=20261023-v203"></script>
+  <script src="data/seasons/season-generated-loader.js?v=20261104-v205"></script>
   <script src="data/seasons/season-catalog.js?v=20260909-current"></script>
   <script src="src/season/season-context.js"></script>
   <script src="src/performance/perf-debug.js"></script>
   <script src="src/iv-optimization.js"></script>
-  <script src="src/reliability/battle-reliability.js?v=20261023-planner-v51"></script>
+  <script src="src/reliability/battle-reliability.js?v=20261104-planner-v52"></script>
   <script src="src/tactical/tactical-patterns.js"></script>
   <script src="src/analysis/tactical-insights.js"></script>
   <script src="src/analysis/win-condition-engine.js"></script>
@@ -101,7 +102,7 @@
   <script src="src/battle/matchup-planner.js"></script>
   <script src="src/battle/matchup-planner-adapter.js"></script>
   <script src="src/battle/battle-principles.js"></script>
-  <script src="src/battle/battle-intelligence.js?v=20261023-planner-v51-type-immunities1"></script>
+  <script src="src/battle/battle-intelligence.js?v=20261104-planner-v52-content1"></script>
   <style>
     :root {
       --battle-layout-width: 1040px;
@@ -14499,7 +14500,7 @@
   <link rel="stylesheet" href="src/ui/cmp-dependency.css?v=20261006-v132">
   <link rel="stylesheet" href="src/ui/team-workspace.css?v=20261019-trio-clarity1">
   <script defer src="src/ui/meta-desktop-presentation.js?v=20260930-v66"></script>
-  <script defer src="src/ui/meta-quick-matchup.js?v=20261023-v203"></script>
+  <script defer src="src/ui/meta-quick-matchup.js?v=20261104-v205"></script>
   <script defer src="src/ui/analysis-scenario-presentation.js?v=20260929-v2"></script>
 </head>
 <body class="clarity-ui" data-view="home">
@@ -16241,7 +16242,7 @@
           hp: Number(p.baseStats.hp || 100),
           defaultIVs: p.defaultIVs || {},
           fast: (p.fastMoves || []).filter(id => moveMap.has(id)),
-          charged: (p.chargedMoves || []).filter(id => moveMap.has(id)),
+          charged: (window.PvPeakAnnouncedMoves?.chargedIds?.(p) || p.chargedMoves || []).filter(id => moveMap.has(id)),
           extraChargedMoves: (p.extraChargedMoves || []).filter(id => moveMap.has(id)),
           eliteMoves: p.eliteMoves || [],
           tags: p.tags || [],
@@ -16913,6 +16914,8 @@
         equivalentFormMove,
         transitionCombatantForm,
         applyFormChange,
+        initializeBattleForm,
+        applyHpFormChange,
         apply,
         cramorantGulpMissileMove,
         resolveCramorantGulpMissile,
@@ -17272,6 +17275,8 @@
           liveMatchupPlannerTable.clear();
           left = cloneCombatant(config.left);
           right = cloneCombatant(config.right);
+          initializeBattleForm(left);
+          initializeBattleForm(right);
           left.shields = Math.max(0, Math.min(2, Number(aShields || 0)));
           right.shields = Math.max(0, Math.min(2, Number(bShields || 0)));
           const startEnergyA = clampEnergy(config.startEnergyA || 0);
@@ -21033,7 +21038,7 @@
       const eliteMoves = new Set(pokemon.eliteMoves || []);
       $("teamBuilderFastMove").innerHTML = teamBuilderMoveOptions(selectableFastMoveIds(pokemon), draft.fastMoveId, eliteMoves, pokemon);
       ensureTeamBuilderChargedMoveSelects(pokemon).forEach((select, index) => {
-        select.innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[index], eliteMoves);
+        select.innerHTML = teamBuilderMoveOptions(pokemon.charged, draft.chargedMoveIds[index], eliteMoves, pokemon);
       });
       syncTeamBuilderEditorMoves();
       renderTeamBuilderBuildProfile();
@@ -23318,6 +23323,8 @@
     }
 
     function imageUrl(p) {
+      const localSprites = { chandelure_mega: "chandelure-mega", minior_core: "minior-core", minior_meteor: "minior-meteor" };
+      if (localSprites[p?.id]) return `assets/pokemon/${localSprites[p.id]}.png`;
       const slug = spriteSlug(p);
       if (slug) return `https://img.pokemondb.net/sprites/home/normal/${slug}.png`;
       if (!p || !p.dex) return "";
@@ -23902,6 +23909,7 @@
       combatant.initialFormId = pokemon.id;
       combatant.cpm = Number(combatant.cpm || combatant.attack / Math.max(1, pokemon.atk + combatant.ivAtk));
       combatant.formCatalog = buildCombatantFormCatalog(pokemon);
+      initializeBattleForm(combatant);
       return combatant;
     }
 
@@ -24039,6 +24047,7 @@
         shadowDefMult: combatant.shadowDefMult || 1,
         cpm: combatant.cpm,
         initialFormId: combatant.initialFormId || combatant.p?.id || null,
+        battleStartFormApplied: combatant.battleStartFormApplied === true,
         formCatalog: combatant.formCatalog ? JSON.parse(JSON.stringify(combatant.formCatalog)) : {}
       };
     }
@@ -24331,6 +24340,24 @@
       const rule = formChangeRule(combatant, trigger, move);
       const targetId = formChangeTargetId(combatant, rule);
       return targetId ? transitionCombatantForm(combatant, targetId, trigger, rule) : null;
+    }
+
+    function initializeBattleForm(combatant) {
+      if (!combatant || combatant.battleStartFormApplied) return;
+      const rule = combatant.p?.formChange;
+      if (rule?.trigger !== "battle_start") return;
+      // The selected Core build determines CP and level; Meteor only replaces battle stats.
+      combatant.cpm = Number(combatant.cpm || combatant.attack / Math.max(1, combatant.p.atk + combatant.ivAtk));
+      combatant.battleStartFormApplied = true;
+      applyFormChange(combatant, "battle_start");
+      applyHpFormChange(combatant);
+    }
+
+    function applyHpFormChange(combatant) {
+      const rule = combatant?.p?.formChange;
+      if (rule?.trigger !== "hp" || !(Number(rule.amount) > 0)
+        || !(combatant.hp > 0) || combatant.hp / combatant.maxHp >= Number(rule.amount)) return null;
+      return applyFormChange(combatant, "hp");
     }
 
     function resetCombatantFormOnSwitch(combatant) {
@@ -24780,6 +24807,7 @@
         left.energy = phase.state.sides.A.energy;
         right.hp = phase.state.sides.B.hp;
         right.energy = phase.state.sides.B.energy;
+        const formChanges = [applyHpFormChange(left), applyHpFormChange(right)].filter(Boolean);
         phase.events.forEach(impact => {
           const event = Number.isInteger(impact.timelineIndex) ? timeline[impact.timelineIndex] : null;
           if (event) {
@@ -24791,6 +24819,7 @@
             event.energyAfter = Number((impact.sourceSide === "A" ? left : right)?.energy || 0);
             event.hpAfter = Number((impact.targetSide === "A" ? left : right)?.hp || 0);
             event.state = battleSnapshot();
+            event.formChanges = formChanges;
           }
           resolved.push(impact);
           const source = impact.sourceSide === "A" ? left : right;
@@ -24901,6 +24930,7 @@
       const deferDreDamage = typeof shouldDeferTechnicalDreFast === "function" && shouldDeferTechnicalDreFast(attacker, dreFastOrdinal);
       const deferLagDamage = typeof shouldDeferTechnicalLagFast === "function" && shouldDeferTechnicalLagFast(attacker, defender, damage, hpBefore);
       if (deferDreDamage || deferLagDamage) defender.hp = hpBefore;
+      const hpFormChange = !deferDreDamage && !deferLagDamage ? applyHpFormChange(defender) : null;
       const energyGained = attacker.energy - energyBefore;
       const event = recordTimeline(attacker, attacker.fast, "fast", damage, false, energyBefore, {
         actionLifecycle: options.actionLifecycle || null,
@@ -24910,6 +24940,7 @@
         hpAfter: defender.hp
       });
       completeAutomaticActionLifecycle(options.actionLifecycle, event, attacker, defender);
+      if (hpFormChange) event.formChanges = [hpFormChange];
       if (deferDreDamage) {
         event.drePending = true;
         event.state = battleSnapshot();
@@ -29132,6 +29163,8 @@
       }
       const chargedCompletionChange = applyFormChange(attacker, "charged_move", move);
       if (chargedCompletionChange) formChanges.push(chargedCompletionChange);
+      const hpFormChange = applyHpFormChange(defender);
+      if (hpFormChange) formChanges.push(hpFormChange);
       const chargeEvent = recordTimeline(attacker, move, "charge", damage, shielded, energyBefore, {
         actionLifecycle: options.actionLifecycle || null,
         manualAction: options.manualAction || null,
@@ -29151,6 +29184,8 @@
       chargeEvent.protectedByForm = protectedByForm;
       chargeEvent.formChanges = formChanges;
       const gulpMissile = resolveCramorantGulpMissile(defender, attacker, move, shielded, chargeEvent);
+      const recoilFormChange = applyHpFormChange(attacker);
+      if (recoilFormChange) formChanges.push(recoilFormChange);
       if (gulpMissile?.formChange) formChanges.push(gulpMissile.formChange);
       if (gulpMissile) {
         chargeEvent.gulpMissileEventId = gulpMissile.event.timelineEventId;
@@ -31592,6 +31627,8 @@
       left.hp = phase.state.sides.A.hp;
       right.hp = phase.state.sides.B.hp;
 
+      const formChanges = [applyHpFormChange(left), applyHpFormChange(right)].filter(Boolean);
+
       const recordedEvents = [];
       entries.forEach((plan, index) => {
         const attacker = plan.attacker;
@@ -31613,6 +31650,7 @@
         event.resolutionTurn = impactTurns[index];
         event.damageAtRegistration = Number(pendingEvents[index].damageAtRegistration ?? pendingEvents[index].damage ?? 0);
         event.simultaneousFastPhase = true;
+        event.formChanges = formChanges;
         recordedEvents.push(event);
         completeAutomaticActionLifecycle(plan.hybridLifecycle, event, attacker, defender, {
           registrationTurn: startTurn,
@@ -31669,6 +31707,10 @@
     }
 
     function automaticBattleStep() {
+      initializeBattleForm(left);
+      initializeBattleForm(right);
+      applyHpFormChange(left);
+      applyHpFormChange(right);
       if (battleEnded()) return false;
       const currentTurn = Math.min(battleTurns.A || 0, battleTurns.B || 0);
       const timelineStart = timeline.length;
@@ -31808,6 +31850,7 @@
         const hpBefore = Number(target.hp || 0);
         const damage = estimate(source, target, source.fast);
         target.hp = Math.max(0, target.hp - damage);
+        const hpFormChange = applyHpFormChange(target);
         source.energy = clampEnergy(source.energy + Math.max(0, Number(source.fast.energyGain || 0)));
         const event = recordTimeline(source, source.fast, "fast", damage, false, energyBefore, {
           energyAfter: source.energy,
@@ -31818,6 +31861,7 @@
         event.sneakChargeName = chargeEvent.move?.name || "charged move";
         event.sneakChargeIndex = chargeEvent.timelineIndex;
         event.registeredBeforeChargedKo = true;
+        if (hpFormChange) event.formChanges = [hpFormChange];
         event.actionLifecycleStatus = "FAST_IMPACT_RESOLVED";
         if (typeof captureManualEventSnapshots === "function") {
           captureManualEventSnapshots(event, manualRuntimeBefore);
@@ -34588,6 +34632,7 @@
       left.energy = result.state.sides.A.energy;
       right.hp = result.state.sides.B.hp;
       right.energy = result.state.sides.B.energy;
+      const formChanges = [applyHpFormChange(left), applyHpFormChange(right)].filter(Boolean);
       manualPendingFastEvents = manualPendingFastEvents.filter(event => event.id !== pending.id);
       const pendingTimelineEvent = Number.isInteger(pending.timelineIndex) ? timeline[pending.timelineIndex] : null;
       if (pendingTimelineEvent) {
@@ -34597,6 +34642,7 @@
         pendingTimelineEvent.resolutionTurn = currentTurn;
         pendingTimelineEvent.timingAnomaly = true;
         pendingTimelineEvent.state = battleSnapshot();
+        pendingTimelineEvent.formChanges = formChanges;
       }
       const event = recordManualTechnicalEvent(issue, {
         kind: "technical-anomaly",
@@ -34992,6 +35038,7 @@
       attacker.energy = result.state.sides[attacker.trainer].energy;
       defender.hp = result.state.sides[defender.trainer].hp;
       defender.energy = result.state.sides[defender.trainer].energy;
+      const formChanges = [applyHpFormChange(attacker), applyHpFormChange(defender)].filter(Boolean);
       if (pendingEvent) {
         pendingEvent.drePending = false;
         pendingEvent.technicalLagPending = false;
@@ -35003,6 +35050,7 @@
         pendingEvent.energyAfter = defender.energy;
         pendingEvent.hpAfter = attacker.hp;
         pendingEvent.state = battleSnapshot();
+        pendingEvent.formChanges = formChanges;
       }
       const label = injection.type === "dre" ? "DRE" : "One-turn lag";
       if (denied) add(`${label}: ${pending.moveName} damage is denied because ${defender.p.name} faints to ${move.name}.`, "info");
@@ -38756,7 +38804,7 @@
 
     if (typeof navigator !== "undefined" && typeof window !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=20261023-v203").catch(error => {
+        navigator.serviceWorker.register("./sw.js?v=20261104-v205").catch(error => {
           console.warn("Offline support could not be enabled.", error);
         });
       }, { once: true });

@@ -7,6 +7,16 @@
   // Newest releases first. Keep older entries; Home shows only the latest three.
   return [
     {
+      id: "20261104-pokemon-and-moves",
+      date: "2026-11-04",
+      category: "Battle & Meta",
+      title: "More Pokemon and new Mega attacks",
+      changes: [
+        "Minior now starts in Meteor Form and reveals its Core below half HP. More recently released Pokemon and Shadow forms are available in Battle and the rankings.",
+        "Mega Chandelure has Ominous Wind+ and Mega Sableye has Night Shade+. You can also try the upcoming Kowtow Cleave on Kingambit and Magnet Bomb on Magnezone."
+      ]
+    },
+    {
       id: "20261023-dragon-fairy-damage",
       date: "2026-10-23",
       category: "Battle & Meta",

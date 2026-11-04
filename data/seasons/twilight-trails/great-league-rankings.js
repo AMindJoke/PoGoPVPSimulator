@@ -5,14 +5,14 @@ window.TWILIGHT_TRAILS_RANKINGS = {
     "datasetVersion": 1,
     "seasonId": "twilight-trails",
     "dataVersion": "twilight-trails-confirmed-1",
-    "gameMasterHash": "47ee1e8b89700613348fc563dc9142099488d9de883b5f4f7e2153821a6d849e",
+    "gameMasterHash": "ba584de473b6c64f090557f399df19a0d6824d05014f14c89eeaf93097b6aa8b",
     "movesetHash": "216e5608d18f64c64e63eb31c23aa4c40d90028e9d6806c6201bb53d23b2028b",
-    "generatedAt": "2026-10-23T12:24:04.921Z",
+    "generatedAt": "2026-11-04T11:30:23.993Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "dreStandard": true,
-    "matrixVersion": "battle-planner-v51",
-    "engineVersion": "battle-planner-v51",
+    "matrixVersion": "battle-planner-v52",
+    "engineVersion": "battle-planner-v52",
     "scoreVersion": "resource-score-v5",
     "simulationSettings": {
       "ivProfile": "rank1",
@@ -21,11 +21,11 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       "startEnergy": 0
     },
     "cpCap": 1500,
-    "configuredPokemonCount": 1543,
-    "fullCandidateCount": 1543,
+    "configuredPokemonCount": 1558,
+    "fullCandidateCount": 1558,
     "offset": 0,
     "limit": null,
-    "pokemonCount": 1543,
+    "pokemonCount": 1558,
     "opponentPool": "meta",
     "opponentPokemonCount": 43,
     "selfMatchupsSkipped": false,
@@ -63,23 +63,23 @@ window.TWILIGHT_TRAILS_RANKINGS = {
     "priorityMultiplier": null,
     "matchupCache": {
       "enabled": true,
-      "hits": 398094,
+      "hits": 401964,
       "baseHits": 0,
-      "previewHits": 398094,
+      "previewHits": 401964,
       "misses": 0,
       "writes": 0,
-      "filesRead": 3082,
+      "filesRead": 3097,
       "filesWritten": 0
     },
-    "generationDurationSeconds": 33,
-    "theoreticalSimulations": 398094,
-    "completedSimulations": 398094,
+    "generationDurationSeconds": 35,
+    "theoreticalSimulations": 401964,
+    "completedSimulations": 401964,
     "failedSimulations": 0,
     "skippedSimulations": 0,
     "retries": 0,
-    "peakMemoryBytes": 462409728,
-    "cells": 398094,
-    "baseCells": 265396,
+    "peakMemoryBytes": 372731904,
+    "cells": 401964,
+    "baseCells": 267976,
     "rankingModel": {
       "version": 1,
       "mode": "role",
@@ -73576,6 +73576,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
     },
     {
       "rank": 310,
+      "id": "golisopod_shadow",
+      "name": "Golisopod (Shadow)",
+      "profile": "rank1",
+      "averageScore": 401,
+      "externalWeightedAverageScore": 397,
+      "weightedAverageScore": 427,
+      "rawScore": 729,
+      "weightedScore": 684,
+      "competitiveScore": 686,
+      "roleScore": 686,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 630,
+      "overallScore": 630,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 497,
+          "weightedScore": 495,
+          "competitiveScore": 492,
+          "rawRating": 80,
+          "weightedRating": 80,
+          "competitiveRating": 80,
+          "score": 80,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "X_SCISSOR",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 438,
+          "weightedScore": 434,
+          "competitiveScore": 426,
+          "rawRating": 74,
+          "weightedRating": 74,
+          "competitiveRating": 73,
+          "score": 73,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "X_SCISSOR",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 562,
+          "weightedScore": 405,
+          "competitiveScore": 417,
+          "rawRating": 83,
+          "weightedRating": 61,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 25,
+          "losses": 18,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "X_SCISSOR",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 578,
+          "weightedScore": 582,
+          "competitiveScore": 582,
+          "rawRating": 87,
+          "weightedRating": 88,
+          "competitiveRating": 88,
+          "score": 88,
+          "matchups": 43,
+          "wins": 28,
+          "losses": 15,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "X_SCISSOR",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 199,
+          "weightedScore": 195,
+          "competitiveScore": 194,
+          "rawRating": 48,
+          "weightedRating": 47,
+          "competitiveRating": 47,
+          "score": 47,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "X_SCISSOR",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 225.42,
+      "matchups": 172,
+      "wins": 53,
+      "losses": 119,
+      "ties": 0,
+      "winRate": 0.3081,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 438,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 199,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 497,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 469,
+          "matchups": 43,
+          "wins": 16,
+          "losses": 27,
+          "ties": 0
+        }
+      },
+      "types": [
+        "bug",
+        "water"
+      ],
+      "dex": 768,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 8,
+        "ivHp": 15,
+        "level": 18,
+        "cp": 1499
+      },
+      "moveset": {
+        "fast": "FURY_CUTTER",
+        "charged": [
+          "AQUA_JET",
+          "X_SCISSOR"
+        ]
+      }
+    },
+    {
+      "rank": 311,
       "id": "bastiodon",
       "name": "Bastiodon",
       "profile": "rank1",
@@ -73813,7 +74051,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 311,
+      "rank": 312,
       "id": "hypno",
       "name": "Hypno",
       "profile": "rank1",
@@ -74050,7 +74288,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 312,
+      "rank": 313,
       "id": "venusaur",
       "name": "Venusaur",
       "profile": "rank1",
@@ -74288,7 +74526,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 313,
+      "rank": 314,
       "id": "furfrou",
       "name": "Furfrou",
       "profile": "rank1",
@@ -74525,7 +74763,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 314,
+      "rank": 315,
       "id": "quaxwell",
       "name": "Quaxwell",
       "profile": "rank1",
@@ -74762,7 +75000,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 315,
+      "rank": 316,
       "id": "pawmot",
       "name": "Pawmot",
       "profile": "rank1",
@@ -75000,7 +75238,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 316,
+      "rank": 317,
       "id": "arctibax",
       "name": "Arctibax",
       "profile": "rank1",
@@ -75238,7 +75476,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 317,
+      "rank": 318,
       "id": "fletchinder_shadow",
       "name": "Fletchinder (Shadow)",
       "profile": "rank1",
@@ -75476,7 +75714,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 318,
+      "rank": 319,
       "id": "vespiquen",
       "name": "Vespiquen",
       "profile": "rank1",
@@ -75714,7 +75952,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 319,
+      "rank": 320,
       "id": "skeledirge",
       "name": "Skeledirge",
       "profile": "rank1",
@@ -75952,7 +76190,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 320,
+      "rank": 321,
       "id": "toxtricity",
       "name": "Toxtricity",
       "profile": "rank1",
@@ -76190,7 +76428,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 321,
+      "rank": 322,
       "id": "wormadam_sandy",
       "name": "Wormadam (Sandy)",
       "profile": "rank1",
@@ -76428,7 +76666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 322,
+      "rank": 323,
       "id": "starmie",
       "name": "Starmie",
       "profile": "rank1",
@@ -76666,7 +76904,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 323,
+      "rank": 324,
       "id": "qwilfish",
       "name": "Qwilfish",
       "profile": "rank1",
@@ -76904,7 +77142,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 324,
+      "rank": 325,
       "id": "mawile_shadow",
       "name": "Mawile (Shadow)",
       "profile": "rank1",
@@ -77142,7 +77380,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 325,
+      "rank": 326,
       "id": "shiinotic_shadow",
       "name": "Shiinotic (Shadow)",
       "profile": "rank1",
@@ -77380,7 +77618,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 326,
+      "rank": 327,
       "id": "starmie_shadow",
       "name": "Starmie (Shadow)",
       "profile": "rank1",
@@ -77618,7 +77856,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 327,
+      "rank": 328,
       "id": "galvantula_shadow",
       "name": "Galvantula (Shadow)",
       "profile": "rank1",
@@ -77856,7 +78094,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 328,
+      "rank": 329,
       "id": "bronzong",
       "name": "Bronzong",
       "profile": "rank1",
@@ -78094,7 +78332,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 329,
+      "rank": 330,
       "id": "primarina",
       "name": "Primarina",
       "profile": "rank1",
@@ -78332,7 +78570,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 330,
+      "rank": 331,
       "id": "fletchinder",
       "name": "Fletchinder",
       "profile": "rank1",
@@ -78570,7 +78808,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 331,
+      "rank": 332,
       "id": "skarmory_shadow",
       "name": "Skarmory (Shadow)",
       "profile": "rank1",
@@ -78808,7 +79046,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 332,
+      "rank": 333,
       "id": "suicune_shadow",
       "name": "Suicune (Shadow)",
       "profile": "rank1",
@@ -79045,7 +79283,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 333,
+      "rank": 334,
       "id": "overqwil",
       "name": "Overqwil",
       "profile": "rank1",
@@ -79283,7 +79521,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 334,
+      "rank": 335,
       "id": "electivire_shadow",
       "name": "Electivire (Shadow)",
       "profile": "rank1",
@@ -79520,7 +79758,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 335,
+      "rank": 336,
       "id": "magnemite_shadow",
       "name": "Magnemite (Shadow)",
       "profile": "rank1",
@@ -79758,7 +79996,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 336,
+      "rank": 337,
       "id": "dusknoir",
       "name": "Dusknoir",
       "profile": "rank1",
@@ -79995,7 +80233,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 337,
+      "rank": 338,
       "id": "dusknoir_shadow",
       "name": "Dusknoir (Shadow)",
       "profile": "rank1",
@@ -80232,7 +80470,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 338,
+      "rank": 339,
       "id": "torterra",
       "name": "Torterra",
       "profile": "rank1",
@@ -80470,7 +80708,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 339,
+      "rank": 340,
       "id": "oinkologne",
       "name": "Oinkologne",
       "profile": "rank1",
@@ -80707,7 +80945,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 340,
+      "rank": 341,
       "id": "dewgong_shadow",
       "name": "Dewgong (Shadow)",
       "profile": "rank1",
@@ -80945,7 +81183,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 341,
+      "rank": 342,
       "id": "croconaw_shadow",
       "name": "Croconaw (Shadow)",
       "profile": "rank1",
@@ -81182,7 +81420,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 342,
+      "rank": 343,
       "id": "houndoom",
       "name": "Houndoom",
       "profile": "rank1",
@@ -81420,7 +81658,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 343,
+      "rank": 344,
       "id": "abomasnow_shadow",
       "name": "Abomasnow (Shadow)",
       "profile": "rank1",
@@ -81658,7 +81896,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 344,
+      "rank": 345,
       "id": "coalossal",
       "name": "Coalossal",
       "profile": "rank1",
@@ -81896,7 +82134,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 345,
+      "rank": 346,
       "id": "machamp_shadow",
       "name": "Machamp (Shadow)",
       "profile": "rank1",
@@ -82133,7 +82371,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 346,
+      "rank": 347,
       "id": "vaporeon",
       "name": "Vaporeon",
       "profile": "rank1",
@@ -82370,7 +82608,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 347,
+      "rank": 348,
       "id": "piloswine",
       "name": "Piloswine",
       "profile": "rank1",
@@ -82608,7 +82846,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 348,
+      "rank": 349,
       "id": "alomomola",
       "name": "Alomomola",
       "profile": "rank1",
@@ -82845,7 +83083,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 349,
+      "rank": 350,
       "id": "magneton",
       "name": "Magneton",
       "profile": "rank1",
@@ -83083,7 +83321,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 350,
+      "rank": 351,
       "id": "crobat_shadow",
       "name": "Crobat (Shadow)",
       "profile": "rank1",
@@ -83321,7 +83559,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 351,
+      "rank": 352,
       "id": "palkia_shadow",
       "name": "Palkia (Shadow)",
       "profile": "rank1",
@@ -83559,7 +83797,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 352,
+      "rank": 353,
       "id": "golbat",
       "name": "Golbat",
       "profile": "rank1",
@@ -83797,7 +84035,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 353,
+      "rank": 354,
       "id": "muk",
       "name": "Muk",
       "profile": "rank1",
@@ -84034,7 +84272,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 354,
+      "rank": 355,
       "id": "darkrai_shadow",
       "name": "Darkrai (Shadow)",
       "profile": "rank1",
@@ -84271,7 +84509,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 355,
+      "rank": 356,
       "id": "houndoom_shadow",
       "name": "Houndoom (Shadow)",
       "profile": "rank1",
@@ -84509,7 +84747,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 356,
+      "rank": 357,
       "id": "aipom",
       "name": "Aipom",
       "profile": "rank1",
@@ -84746,7 +84984,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 357,
+      "rank": 358,
       "id": "regirock",
       "name": "Regirock",
       "profile": "rank1",
@@ -84983,7 +85221,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 358,
+      "rank": 359,
       "id": "ferrothorn",
       "name": "Ferrothorn",
       "profile": "rank1",
@@ -85221,7 +85459,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 359,
+      "rank": 360,
       "id": "talonflame_shadow",
       "name": "Talonflame (Shadow)",
       "profile": "rank1",
@@ -85459,7 +85697,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 360,
+      "rank": 361,
       "id": "quilladin",
       "name": "Quilladin",
       "profile": "rank1",
@@ -85696,7 +85934,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 361,
+      "rank": 362,
       "id": "tentacruel_shadow",
       "name": "Tentacruel (Shadow)",
       "profile": "rank1",
@@ -85934,7 +86172,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 362,
+      "rank": 363,
       "id": "prinplup",
       "name": "Prinplup",
       "profile": "rank1",
@@ -86171,7 +86409,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 363,
+      "rank": 364,
       "id": "noctowl",
       "name": "Noctowl",
       "profile": "rank1",
@@ -86388,7 +86626,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 364,
+      "rank": 365,
       "id": "qwilfish_shadow",
       "name": "Qwilfish (Shadow)",
       "profile": "rank1",
@@ -86626,7 +86864,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 365,
+      "rank": 366,
       "id": "flamigo",
       "name": "Flamigo",
       "profile": "rank1",
@@ -86864,7 +87102,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 366,
+      "rank": 367,
       "id": "bayleef",
       "name": "Bayleef",
       "profile": "rank1",
@@ -87101,7 +87339,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 367,
+      "rank": 368,
       "id": "vullaby",
       "name": "Vullaby",
       "profile": "rank1",
@@ -87339,7 +87577,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 368,
+      "rank": 369,
       "id": "aipom_shadow",
       "name": "Aipom (Shadow)",
       "profile": "rank1",
@@ -87576,7 +87814,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 369,
+      "rank": 370,
       "id": "garganacl",
       "name": "Garganacl",
       "profile": "rank1",
@@ -87813,7 +88051,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 370,
+      "rank": 371,
       "id": "sceptile",
       "name": "Sceptile",
       "profile": "rank1",
@@ -88050,7 +88288,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 371,
+      "rank": 372,
       "id": "cetoddle",
       "name": "Cetoddle",
       "profile": "rank1",
@@ -88287,7 +88525,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 372,
+      "rank": 373,
       "id": "swoobat",
       "name": "Swoobat",
       "profile": "rank1",
@@ -88525,7 +88763,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 373,
+      "rank": 374,
       "id": "houndoom__flamethrower",
       "name": "Houndoom",
       "profile": "rank1",
@@ -88765,7 +89003,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 374,
+      "rank": 375,
       "id": "talonflame",
       "name": "Talonflame",
       "profile": "rank1",
@@ -89003,7 +89241,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 375,
+      "rank": 376,
       "id": "decidueye_hisuian",
       "name": "Decidueye (Hisuian)",
       "profile": "rank1",
@@ -89241,7 +89479,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 376,
+      "rank": 377,
       "id": "typhlosion",
       "name": "Typhlosion",
       "profile": "rank1",
@@ -89478,7 +89716,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 377,
+      "rank": 378,
       "id": "dragonair",
       "name": "Dragonair",
       "profile": "rank1",
@@ -89715,7 +89953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 378,
+      "rank": 379,
       "id": "druddigon",
       "name": "Druddigon",
       "profile": "rank1",
@@ -89952,7 +90190,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 379,
+      "rank": 380,
       "id": "skarmory",
       "name": "Skarmory",
       "profile": "rank1",
@@ -90190,7 +90428,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 380,
+      "rank": 381,
       "id": "barbaracle",
       "name": "Barbaracle",
       "profile": "rank1",
@@ -90428,7 +90666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 381,
+      "rank": 382,
       "id": "frillish",
       "name": "Frillish",
       "profile": "rank1",
@@ -90666,7 +90904,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 382,
+      "rank": 383,
       "id": "chesnaught",
       "name": "Chesnaught",
       "profile": "rank1",
@@ -90904,7 +91142,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 383,
+      "rank": 384,
       "id": "sylveon",
       "name": "Sylveon",
       "profile": "rank1",
@@ -91141,7 +91379,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 384,
+      "rank": 385,
       "id": "litleo",
       "name": "Litleo",
       "profile": "rank1",
@@ -91379,7 +91617,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 385,
+      "rank": 386,
       "id": "dragalge",
       "name": "Dragalge",
       "profile": "rank1",
@@ -91617,7 +91855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 386,
+      "rank": 387,
       "id": "skuntank_shadow",
       "name": "Skuntank (Shadow)",
       "profile": "rank1",
@@ -91855,7 +92093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 387,
+      "rank": 388,
       "id": "crustle_shadow",
       "name": "Crustle (Shadow)",
       "profile": "rank1",
@@ -92093,7 +92331,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 388,
+      "rank": 389,
       "id": "vikavolt_shadow",
       "name": "Vikavolt (Shadow)",
       "profile": "rank1",
@@ -92331,7 +92569,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 389,
+      "rank": 390,
       "id": "grotle",
       "name": "Grotle",
       "profile": "rank1",
@@ -92568,7 +92806,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 390,
+      "rank": 391,
       "id": "darkrai",
       "name": "Darkrai",
       "profile": "rank1",
@@ -92805,7 +93043,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 391,
+      "rank": 392,
       "id": "genesect_burn",
       "name": "Genesect (Burn)",
       "profile": "rank1",
@@ -93043,7 +93281,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 392,
+      "rank": 393,
       "id": "sandaconda",
       "name": "Sandaconda",
       "profile": "rank1",
@@ -93280,7 +93518,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 393,
+      "rank": 394,
       "id": "sandshrew_alolan",
       "name": "Sandshrew (Alolan)",
       "profile": "rank1",
@@ -93518,7 +93756,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 394,
+      "rank": 395,
       "id": "dachsbun",
       "name": "Dachsbun",
       "profile": "rank1",
@@ -93755,7 +93993,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 395,
+      "rank": 396,
       "id": "sandslash_shadow",
       "name": "Sandslash (Shadow)",
       "profile": "rank1",
@@ -93992,7 +94230,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 396,
+      "rank": 397,
       "id": "nidorina_shadow",
       "name": "Nidorina (Shadow)",
       "profile": "rank1",
@@ -94229,7 +94467,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 397,
+      "rank": 398,
       "id": "rapidash_shadow",
       "name": "Rapidash (Shadow)",
       "profile": "rank1",
@@ -94466,7 +94704,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 398,
+      "rank": 399,
       "id": "drilbur",
       "name": "Drilbur",
       "profile": "rank1",
@@ -94703,7 +94941,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 399,
+      "rank": 400,
       "id": "shiftry",
       "name": "Shiftry",
       "profile": "rank1",
@@ -94941,7 +95179,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 400,
+      "rank": 401,
       "id": "latios_shadow",
       "name": "Latios (Shadow)",
       "profile": "rank1",
@@ -95179,7 +95417,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 401,
+      "rank": 402,
       "id": "baxcalibur",
       "name": "Baxcalibur",
       "profile": "rank1",
@@ -95417,7 +95655,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 402,
+      "rank": 403,
       "id": "lileep",
       "name": "Lileep",
       "profile": "rank1",
@@ -95655,7 +95893,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 403,
+      "rank": 404,
       "id": "eelektrik",
       "name": "Eelektrik",
       "profile": "rank1",
@@ -95892,7 +96130,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 404,
+      "rank": 405,
       "id": "huntail",
       "name": "Huntail",
       "profile": "rank1",
@@ -96129,7 +96367,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 405,
+      "rank": 406,
       "id": "pumpkaboo_super",
       "name": "Pumpkaboo (Super)",
       "profile": "rank1",
@@ -96367,7 +96605,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 406,
+      "rank": 407,
       "id": "jirachi",
       "name": "Jirachi",
       "profile": "rank1",
@@ -96605,7 +96843,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 407,
+      "rank": 408,
       "id": "piloswine_shadow",
       "name": "Piloswine (Shadow)",
       "profile": "rank1",
@@ -96843,7 +97081,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 408,
+      "rank": 409,
       "id": "genesect",
       "name": "Genesect",
       "profile": "rank1",
@@ -97081,7 +97319,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 409,
+      "rank": 410,
       "id": "chesnaught_shadow",
       "name": "Chesnaught (Shadow)",
       "profile": "rank1",
@@ -97319,7 +97557,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 410,
+      "rank": 411,
       "id": "marshtomp",
       "name": "Marshtomp",
       "profile": "rank1",
@@ -97557,7 +97795,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 411,
+      "rank": 412,
       "id": "primeape",
       "name": "Primeape",
       "profile": "rank1",
@@ -97794,7 +98032,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 412,
+      "rank": 413,
       "id": "avalugg",
       "name": "Avalugg",
       "profile": "rank1",
@@ -98031,7 +98269,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 413,
+      "rank": 414,
       "id": "articuno_shadow",
       "name": "Articuno (Shadow)",
       "profile": "rank1",
@@ -98269,7 +98507,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 414,
+      "rank": 415,
       "id": "dodrio",
       "name": "Dodrio",
       "profile": "rank1",
@@ -98507,7 +98745,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 415,
+      "rank": 416,
       "id": "grimer_alolan",
       "name": "Grimer (Alolan)",
       "profile": "rank1",
@@ -98745,7 +98983,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 416,
+      "rank": 417,
       "id": "wailord",
       "name": "Wailord",
       "profile": "rank1",
@@ -98961,7 +99199,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 417,
+      "rank": 418,
       "id": "farfetchd_galarian",
       "name": "Farfetch'd (Galarian)",
       "profile": "rank1",
@@ -99198,7 +99436,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 418,
+      "rank": 419,
       "id": "primeape_shadow",
       "name": "Primeape (Shadow)",
       "profile": "rank1",
@@ -99435,7 +99673,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 419,
+      "rank": 420,
       "id": "teddiursa_shadow",
       "name": "Teddiursa (Shadow)",
       "profile": "rank1",
@@ -99672,7 +99910,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 420,
+      "rank": 421,
       "id": "rufflet",
       "name": "Rufflet",
       "profile": "rank1",
@@ -99910,7 +100148,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 421,
+      "rank": 422,
       "id": "cacturne_shadow",
       "name": "Cacturne (Shadow)",
       "profile": "rank1",
@@ -100148,7 +100386,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 422,
+      "rank": 423,
       "id": "dipplin",
       "name": "Dipplin",
       "profile": "rank1",
@@ -100386,7 +100624,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 423,
+      "rank": 424,
       "id": "lunatone",
       "name": "Lunatone",
       "profile": "rank1",
@@ -100624,7 +100862,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 424,
+      "rank": 425,
       "id": "magnemite",
       "name": "Magnemite",
       "profile": "rank1",
@@ -100862,7 +101100,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 425,
+      "rank": 426,
       "id": "golbat_shadow",
       "name": "Golbat (Shadow)",
       "profile": "rank1",
@@ -101100,7 +101338,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 426,
+      "rank": 427,
       "id": "zeraora",
       "name": "Zeraora",
       "profile": "rank1",
@@ -101337,7 +101575,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 427,
+      "rank": 428,
       "id": "gourgeist_small",
       "name": "Gourgeist (Small)",
       "profile": "rank1",
@@ -101575,7 +101813,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 428,
+      "rank": 429,
       "id": "latios",
       "name": "Latios",
       "profile": "rank1",
@@ -101813,7 +102051,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 429,
+      "rank": 430,
       "id": "flygon",
       "name": "Flygon",
       "profile": "rank1",
@@ -102051,7 +102289,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 430,
+      "rank": 431,
       "id": "zygarde",
       "name": "Zygarde (50% Forme)",
       "profile": "rank1",
@@ -102289,7 +102527,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 431,
+      "rank": 432,
       "id": "keldeo_resolute",
       "name": "Keldeo (Resolute)",
       "profile": "rank1",
@@ -102527,7 +102765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 432,
+      "rank": 433,
       "id": "zekrom",
       "name": "Zekrom",
       "profile": "rank1",
@@ -102765,7 +103003,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 433,
+      "rank": 434,
       "id": "venusaur_shadow",
       "name": "Venusaur (Shadow)",
       "profile": "rank1",
@@ -103003,7 +103241,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 434,
+      "rank": 435,
       "id": "genesect_chill",
       "name": "Genesect (Chill)",
       "profile": "rank1",
@@ -103241,7 +103479,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 435,
+      "rank": 436,
       "id": "golem_alolan_shadow",
       "name": "Golem (Alolan) (Shadow)",
       "profile": "rank1",
@@ -103479,7 +103717,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 436,
+      "rank": 437,
       "id": "crocalor",
       "name": "Crocalor",
       "profile": "rank1",
@@ -103716,7 +103954,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 437,
+      "rank": 438,
       "id": "conkeldurr_shadow",
       "name": "Conkeldurr (Shadow)",
       "profile": "rank1",
@@ -103953,7 +104191,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 438,
+      "rank": 439,
       "id": "bastiodon_shadow",
       "name": "Bastiodon (Shadow)",
       "profile": "rank1",
@@ -104191,7 +104429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 439,
+      "rank": 440,
       "id": "gallade",
       "name": "Gallade",
       "profile": "rank1",
@@ -104429,7 +104667,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 440,
+      "rank": 441,
       "id": "grafaiai",
       "name": "Grafaiai",
       "profile": "rank1",
@@ -104667,7 +104905,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 441,
+      "rank": 442,
       "id": "marshadow",
       "name": "Marshadow",
       "profile": "rank1",
@@ -104905,7 +105143,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 442,
+      "rank": 443,
+      "id": "zekrom_shadow",
+      "name": "Zekrom (Shadow)",
+      "profile": "rank1",
+      "averageScore": 346,
+      "externalWeightedAverageScore": 346,
+      "weightedAverageScore": 421,
+      "rawScore": 661,
+      "weightedScore": 630,
+      "competitiveScore": 631,
+      "roleScore": 631,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 592,
+      "overallScore": 592,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 410,
+          "weightedScore": 411,
+          "competitiveScore": 405,
+          "rawRating": 66,
+          "weightedRating": 66,
+          "competitiveRating": 66,
+          "score": 66,
+          "matchups": 43,
+          "wins": 14,
+          "losses": 29,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "DRAGON_BREATH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "FUSION_BOLT",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 446,
+          "weightedScore": 449,
+          "competitiveScore": 444,
+          "rawRating": 76,
+          "weightedRating": 77,
+          "competitiveRating": 76,
+          "score": 76,
+          "matchups": 43,
+          "wins": 18,
+          "losses": 25,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "DRAGON_BREATH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "FUSION_BOLT",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 624,
+          "weightedScore": 485,
+          "competitiveScore": 490,
+          "rawRating": 93,
+          "weightedRating": 73,
+          "competitiveRating": 74,
+          "score": 74,
+          "matchups": 43,
+          "wins": 33,
+          "losses": 10,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "DRAGON_BREATH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "FUSION_BOLT",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 615,
+          "weightedScore": 611,
+          "competitiveScore": 615,
+          "rawRating": 93,
+          "weightedRating": 92,
+          "competitiveRating": 93,
+          "score": 93,
+          "matchups": 43,
+          "wins": 34,
+          "losses": 9,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "DRAGON_BREATH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "FUSION_BOLT",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 119,
+          "weightedScore": 118,
+          "competitiveScore": 119,
+          "rawRating": 29,
+          "weightedRating": 29,
+          "competitiveRating": 29,
+          "score": 29,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "DRAGON_BREATH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "FUSION_BOLT",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 217.77,
+      "matchups": 172,
+      "wins": 40,
+      "losses": 132,
+      "ties": 0,
+      "winRate": 0.2326,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 446,
+          "matchups": 43,
+          "wins": 18,
+          "losses": 25,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 119,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 410,
+          "matchups": 43,
+          "wins": 14,
+          "losses": 29,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 407,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0
+        }
+      },
+      "types": [
+        "dragon",
+        "electric"
+      ],
+      "dex": 644,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 13,
+        "ivHp": 8,
+        "level": 14,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "DRAGON_BREATH",
+        "charged": [
+          "WILD_CHARGE",
+          "FUSION_BOLT"
+        ]
+      }
+    },
+    {
+      "rank": 444,
       "id": "typhlosion_shadow",
       "name": "Typhlosion (Shadow)",
       "profile": "rank1",
@@ -105142,7 +105618,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 443,
+      "rank": 445,
       "id": "sceptile_shadow",
       "name": "Sceptile (Shadow)",
       "profile": "rank1",
@@ -105379,7 +105855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 444,
+      "rank": 446,
       "id": "aurorus",
       "name": "Aurorus",
       "profile": "rank1",
@@ -105617,7 +106093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 445,
+      "rank": 447,
       "id": "wormadam_plant",
       "name": "Wormadam (Plant)",
       "profile": "rank1",
@@ -105855,7 +106331,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 446,
+      "rank": 448,
       "id": "corvisquire",
       "name": "Corvisquire",
       "profile": "rank1",
@@ -106092,7 +106568,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 447,
+      "rank": 449,
       "id": "conkeldurr",
       "name": "Conkeldurr",
       "profile": "rank1",
@@ -106329,7 +106805,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 448,
+      "rank": 450,
       "id": "heracross",
       "name": "Heracross",
       "profile": "rank1",
@@ -106567,7 +107043,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 449,
+      "rank": 451,
       "id": "ledian_shadow",
       "name": "Ledian (Shadow)",
       "profile": "rank1",
@@ -106805,7 +107281,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 450,
+      "rank": 452,
       "id": "hypno_shadow",
       "name": "Hypno (Shadow)",
       "profile": "rank1",
@@ -107042,7 +107518,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 451,
+      "rank": 453,
       "id": "bibarel",
       "name": "Bibarel",
       "profile": "rank1",
@@ -107280,7 +107756,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 452,
+      "rank": 454,
       "id": "crawdaunt_shadow",
       "name": "Crawdaunt (Shadow)",
       "profile": "rank1",
@@ -107518,7 +107994,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 453,
+      "rank": 455,
       "id": "sandshrew_alolan_shadow",
       "name": "Sandshrew (Alolan) (Shadow)",
       "profile": "rank1",
@@ -107756,7 +108232,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 454,
+      "rank": 456,
       "id": "cacturne",
       "name": "Cacturne",
       "profile": "rank1",
@@ -107994,7 +108470,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 455,
+      "rank": 457,
       "id": "wailmer_shadow",
       "name": "Wailmer (Shadow)",
       "profile": "rank1",
@@ -108231,7 +108707,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 456,
+      "rank": 458,
       "id": "hariyama",
       "name": "Hariyama",
       "profile": "rank1",
@@ -108468,7 +108944,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 457,
+      "rank": 459,
       "id": "amaura",
       "name": "Amaura",
       "profile": "rank1",
@@ -108706,7 +109182,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 458,
+      "rank": 460,
       "id": "meganium_shadow",
       "name": "Meganium (Shadow)",
       "profile": "rank1",
@@ -108943,7 +109419,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 459,
+      "rank": 461,
       "id": "tyranitar",
       "name": "Tyranitar",
       "profile": "rank1",
@@ -109181,7 +109657,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 460,
+      "rank": 462,
       "id": "teddiursa",
       "name": "Teddiursa",
       "profile": "rank1",
@@ -109418,7 +109894,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 461,
+      "rank": 463,
       "id": "pancham",
       "name": "Pancham",
       "profile": "rank1",
@@ -109655,7 +110131,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 462,
+      "rank": 464,
       "id": "bayleef_shadow",
       "name": "Bayleef (Shadow)",
       "profile": "rank1",
@@ -109892,7 +110368,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 463,
+      "rank": 465,
       "id": "grimer_alolan_shadow",
       "name": "Grimer (Alolan) (Shadow)",
       "profile": "rank1",
@@ -110130,7 +110606,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 464,
+      "rank": 466,
       "id": "sandygast",
       "name": "Sandygast",
       "profile": "rank1",
@@ -110368,7 +110844,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 465,
+      "rank": 467,
       "id": "amaura_shadow",
       "name": "Amaura (Shadow)",
       "profile": "rank1",
@@ -110606,7 +111082,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 466,
+      "rank": 468,
       "id": "armarouge",
       "name": "Armarouge",
       "profile": "rank1",
@@ -110844,7 +111320,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 467,
+      "rank": 469,
       "id": "obstagoon_shadow",
       "name": "Obstagoon (Shadow)",
       "profile": "rank1",
@@ -111082,7 +111558,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 468,
+      "rank": 470,
       "id": "obstagoon",
       "name": "Obstagoon",
       "profile": "rank1",
@@ -111320,7 +111796,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 469,
+      "rank": 471,
       "id": "leavanny",
       "name": "Leavanny",
       "profile": "rank1",
@@ -111558,7 +112034,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 470,
+      "rank": 472,
       "id": "uxie",
       "name": "Uxie",
       "profile": "rank1",
@@ -111795,7 +112271,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 471,
+      "rank": 473,
       "id": "scizor",
       "name": "Scizor",
       "profile": "rank1",
@@ -112033,7 +112509,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 472,
+      "rank": 474,
       "id": "electivire",
       "name": "Electivire",
       "profile": "rank1",
@@ -112270,7 +112746,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 473,
+      "rank": 475,
       "id": "shiftry_shadow",
       "name": "Shiftry (Shadow)",
       "profile": "rank1",
@@ -112508,7 +112984,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 474,
+      "rank": 476,
       "id": "lampent",
       "name": "Lampent",
       "profile": "rank1",
@@ -112746,7 +113222,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 475,
+      "rank": 477,
       "id": "camerupt",
       "name": "Camerupt",
       "profile": "rank1",
@@ -112984,7 +113460,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 476,
+      "rank": 478,
       "id": "golurk_shadow",
       "name": "Golurk (Shadow)",
       "profile": "rank1",
@@ -113222,7 +113698,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 477,
+      "rank": 479,
       "id": "glalie",
       "name": "Glalie",
       "profile": "rank1",
@@ -113459,7 +113935,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 478,
+      "rank": 480,
       "id": "froslass",
       "name": "Froslass",
       "profile": "rank1",
@@ -113697,7 +114173,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 479,
+      "rank": 481,
       "id": "escavalier",
       "name": "Escavalier",
       "profile": "rank1",
@@ -113935,7 +114411,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 480,
+      "rank": 482,
       "id": "pumpkaboo_large",
       "name": "Pumpkaboo (Large)",
       "profile": "rank1",
@@ -114173,7 +114649,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 481,
+      "rank": 483,
       "id": "tyranitar_shadow",
       "name": "Tyranitar (Shadow)",
       "profile": "rank1",
@@ -114411,7 +114887,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 482,
+      "rank": 484,
       "id": "aurorus_shadow",
       "name": "Aurorus (Shadow)",
       "profile": "rank1",
@@ -114649,7 +115125,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 483,
+      "rank": 485,
       "id": "golem_alolan",
       "name": "Golem (Alolan)",
       "profile": "rank1",
@@ -114887,7 +115363,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 484,
+      "rank": 486,
       "id": "regieleki",
       "name": "Regieleki",
       "profile": "rank1",
@@ -115124,7 +115600,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 485,
+      "rank": 487,
       "id": "drilbur_shadow",
       "name": "Drilbur (Shadow)",
       "profile": "rank1",
@@ -115361,7 +115837,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 486,
+      "rank": 488,
       "id": "appletun",
       "name": "Appletun",
       "profile": "rank1",
@@ -115599,7 +116075,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 487,
+      "rank": 489,
       "id": "muk_shadow",
       "name": "Muk (Shadow)",
       "profile": "rank1",
@@ -115836,7 +116312,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 488,
+      "rank": 490,
       "id": "ursaring_shadow",
       "name": "Ursaring (Shadow)",
       "profile": "rank1",
@@ -116073,7 +116549,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 489,
+      "rank": 491,
       "id": "nidoking",
       "name": "Nidoking",
       "profile": "rank1",
@@ -116311,7 +116787,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 490,
+      "rank": 492,
       "id": "hariyama_shadow",
       "name": "Hariyama (Shadow)",
       "profile": "rank1",
@@ -116548,7 +117024,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 491,
+      "rank": 493,
       "id": "wobbuffet",
       "name": "Wobbuffet",
       "profile": "rank1",
@@ -116764,7 +117240,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 492,
+      "rank": 494,
       "id": "blaziken_shadow",
       "name": "Blaziken (Shadow)",
       "profile": "rank1",
@@ -117002,7 +117478,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 493,
+      "rank": 495,
       "id": "stoutland",
       "name": "Stoutland",
       "profile": "rank1",
@@ -117239,7 +117715,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 494,
+      "rank": 496,
       "id": "vikavolt",
       "name": "Vikavolt",
       "profile": "rank1",
@@ -117477,7 +117953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 495,
+      "rank": 497,
       "id": "palpitoad",
       "name": "Palpitoad",
       "profile": "rank1",
@@ -117715,7 +118191,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 496,
+      "rank": 498,
       "id": "golett_shadow",
       "name": "Golett (Shadow)",
       "profile": "rank1",
@@ -117953,7 +118429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 497,
+      "rank": 499,
       "id": "drifloon_shadow",
       "name": "Drifloon (Shadow)",
       "profile": "rank1",
@@ -118191,7 +118667,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 498,
+      "rank": 500,
       "id": "wobbuffet_shadow",
       "name": "Wobbuffet (Shadow)",
       "profile": "rank1",
@@ -118407,7 +118883,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 499,
+      "rank": 501,
       "id": "pangoro",
       "name": "Pangoro",
       "profile": "rank1",
@@ -118645,7 +119121,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 500,
+      "rank": 502,
       "id": "torterra_shadow",
       "name": "Torterra (Shadow)",
       "profile": "rank1",
@@ -118883,7 +119359,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 501,
+      "rank": 503,
       "id": "misdreavus_shadow",
       "name": "Misdreavus (Shadow)",
       "profile": "rank1",
@@ -119120,7 +119596,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 502,
+      "rank": 504,
       "id": "flygon_shadow",
       "name": "Flygon (Shadow)",
       "profile": "rank1",
@@ -119358,7 +119834,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 503,
+      "rank": 505,
       "id": "hitmontop",
       "name": "Hitmontop",
       "profile": "rank1",
@@ -119595,7 +120071,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 504,
+      "rank": 506,
       "id": "quilladin_shadow",
       "name": "Quilladin (Shadow)",
       "profile": "rank1",
@@ -119832,7 +120308,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 505,
+      "rank": 507,
       "id": "raticate_alolan",
       "name": "Raticate (Alolan)",
       "profile": "rank1",
@@ -120049,7 +120525,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 506,
+      "rank": 508,
       "id": "thundurus_incarnate_shadow",
       "name": "Thundurus (Incarnate) (Shadow)",
       "profile": "rank1",
@@ -120287,7 +120763,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 507,
+      "rank": 509,
       "id": "golurk",
       "name": "Golurk",
       "profile": "rank1",
@@ -120525,7 +121001,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 508,
+      "rank": 510,
       "id": "reshiram_shadow",
       "name": "Reshiram (Shadow)",
       "profile": "rank1",
@@ -120763,7 +121239,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 509,
+      "rank": 511,
       "id": "heliolisk",
       "name": "Heliolisk",
       "profile": "rank1",
@@ -121001,7 +121477,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 510,
+      "rank": 512,
       "id": "sandshrew",
       "name": "Sandshrew",
       "profile": "rank1",
@@ -121238,7 +121714,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 511,
+      "rank": 513,
       "id": "slowbro_galarian",
       "name": "Slowbro (Galarian)",
       "profile": "rank1",
@@ -121476,7 +121952,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 512,
+      "rank": 514,
       "id": "raichu_alolan",
       "name": "Raichu (Alolan)",
       "profile": "rank1",
@@ -121714,7 +122190,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 513,
+      "rank": 515,
       "id": "squawkabilly",
       "name": "Squawkabilly",
       "profile": "rank1",
@@ -121952,7 +122428,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 514,
+      "rank": 516,
       "id": "slowking_galarian",
       "name": "Slowking (Galarian)",
       "profile": "rank1",
@@ -122190,7 +122666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 515,
+      "rank": 517,
       "id": "machoke",
       "name": "Machoke",
       "profile": "rank1",
@@ -122406,7 +122882,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 516,
+      "rank": 518,
       "id": "ursaring",
       "name": "Ursaring",
       "profile": "rank1",
@@ -122643,7 +123119,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 517,
+      "rank": 519,
       "id": "blaziken",
       "name": "Blaziken",
       "profile": "rank1",
@@ -122881,7 +123357,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 518,
+      "rank": 520,
       "id": "golduck",
       "name": "Golduck",
       "profile": "rank1",
@@ -123118,7 +123594,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 519,
+      "rank": 521,
       "id": "crawdaunt",
       "name": "Crawdaunt",
       "profile": "rank1",
@@ -123356,7 +123832,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 520,
+      "rank": 522,
       "id": "sawsbuck",
       "name": "Sawsbuck",
       "profile": "rank1",
@@ -123594,7 +124070,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 521,
+      "rank": 523,
+      "id": "pangoro_shadow",
+      "name": "Pangoro (Shadow)",
+      "profile": "rank1",
+      "averageScore": 354,
+      "externalWeightedAverageScore": 353,
+      "weightedAverageScore": 392,
+      "rawScore": 636,
+      "weightedScore": 591,
+      "competitiveScore": 589,
+      "roleScore": 589,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 562,
+      "overallScore": 562,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 446,
+          "weightedScore": 454,
+          "competitiveScore": 456,
+          "rawRating": 72,
+          "weightedRating": 73,
+          "competitiveRating": 74,
+          "score": 74,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "KARATE_CHOP",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              },
+              {
+                "id": "IRON_HEAD",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 458,
+          "weightedScore": 462,
+          "competitiveScore": 456,
+          "rawRating": 78,
+          "weightedRating": 79,
+          "competitiveRating": 78,
+          "score": 78,
+          "matchups": 43,
+          "wins": 20,
+          "losses": 23,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "KARATE_CHOP",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              },
+              {
+                "id": "IRON_HEAD",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 528,
+          "weightedScore": 365,
+          "competitiveScore": 366,
+          "rawRating": 78,
+          "weightedRating": 55,
+          "competitiveRating": 55,
+          "score": 55,
+          "matchups": 43,
+          "wins": 23,
+          "losses": 20,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "KARATE_CHOP",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              },
+              {
+                "id": "IRON_HEAD",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 527,
+          "weightedScore": 537,
+          "competitiveScore": 531,
+          "rawRating": 79,
+          "weightedRating": 81,
+          "competitiveRating": 80,
+          "score": 80,
+          "matchups": 43,
+          "wins": 25,
+          "losses": 18,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "KARATE_CHOP",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              },
+              {
+                "id": "IRON_HEAD",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 124,
+          "weightedScore": 114,
+          "competitiveScore": 114,
+          "rawRating": 30,
+          "weightedRating": 28,
+          "competitiveRating": 28,
+          "score": 28,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "KARATE_CHOP",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              },
+              {
+                "id": "IRON_HEAD",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 271.01,
+      "matchups": 172,
+      "wins": 59,
+      "losses": 113,
+      "ties": 0,
+      "winRate": 0.343,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 458,
+          "matchups": 43,
+          "wins": 20,
+          "losses": 23,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 124,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 446,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 387,
+          "matchups": 43,
+          "wins": 17,
+          "losses": 26,
+          "ties": 0
+        }
+      },
+      "types": [
+        "fighting",
+        "dark"
+      ],
+      "dex": 675,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 13,
+        "ivHp": 13,
+        "level": 19.5,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "KARATE_CHOP",
+        "charged": [
+          "CLOSE_COMBAT",
+          "IRON_HEAD"
+        ]
+      }
+    },
+    {
+      "rank": 524,
       "id": "zangoose",
       "name": "Zangoose",
       "profile": "rank1",
@@ -123831,7 +124545,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 522,
+      "rank": 525,
       "id": "prinplup_shadow",
       "name": "Prinplup (Shadow)",
       "profile": "rank1",
@@ -124068,7 +124782,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 523,
+      "rank": 526,
       "id": "ferrothorn_shadow",
       "name": "Ferrothorn (Shadow)",
       "profile": "rank1",
@@ -124306,7 +125020,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 524,
+      "rank": 527,
       "id": "electabuzz",
       "name": "Electabuzz",
       "profile": "rank1",
@@ -124522,7 +125236,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 525,
+      "rank": 528,
       "id": "drifloon",
       "name": "Drifloon",
       "profile": "rank1",
@@ -124760,7 +125474,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 526,
+      "rank": 529,
       "id": "comfey",
       "name": "Comfey",
       "profile": "rank1",
@@ -124997,7 +125711,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 527,
+      "rank": 530,
       "id": "garchomp",
       "name": "Garchomp",
       "profile": "rank1",
@@ -125235,7 +125949,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 528,
+      "rank": 531,
       "id": "dolliv",
       "name": "Dolliv",
       "profile": "rank1",
@@ -125473,7 +126187,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 529,
+      "rank": 532,
       "id": "gallade_shadow",
       "name": "Gallade (Shadow)",
       "profile": "rank1",
@@ -125711,7 +126425,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 530,
+      "rank": 533,
       "id": "thundurus_incarnate",
       "name": "Thundurus (Incarnate)",
       "profile": "rank1",
@@ -125949,7 +126663,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 531,
+      "rank": 534,
+      "id": "pancham_shadow",
+      "name": "Pancham (Shadow)",
+      "profile": "rank1",
+      "averageScore": 349,
+      "externalWeightedAverageScore": 345,
+      "weightedAverageScore": 361,
+      "rawScore": 628,
+      "weightedScore": 585,
+      "competitiveScore": 585,
+      "roleScore": 585,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 560,
+      "overallScore": 560,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 419,
+          "weightedScore": 416,
+          "competitiveScore": 414,
+          "rawRating": 67,
+          "weightedRating": 67,
+          "competitiveRating": 67,
+          "score": 67,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "LOW_KICK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 43
+              },
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 357,
+          "weightedScore": 353,
+          "competitiveScore": 346,
+          "rawRating": 61,
+          "weightedRating": 60,
+          "competitiveRating": 59,
+          "score": 59,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "LOW_KICK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 43
+              },
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 487,
+          "weightedScore": 353,
+          "competitiveScore": 362,
+          "rawRating": 72,
+          "weightedRating": 53,
+          "competitiveRating": 55,
+          "score": 55,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "LOW_KICK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 43
+              },
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 491,
+          "weightedScore": 485,
+          "competitiveScore": 485,
+          "rawRating": 74,
+          "weightedRating": 73,
+          "competitiveRating": 73,
+          "score": 73,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "LOW_KICK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 43
+              },
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 187,
+          "weightedScore": 181,
+          "competitiveScore": 180,
+          "rawRating": 45,
+          "weightedRating": 44,
+          "competitiveRating": 43,
+          "score": 43,
+          "matchups": 43,
+          "wins": 4,
+          "losses": 39,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "LOW_KICK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BODY_SLAM",
+                "uses": 43
+              },
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 203.37,
+      "matchups": 172,
+      "wins": 32,
+      "losses": 140,
+      "ties": 0,
+      "winRate": 0.186,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 357,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 187,
+          "matchups": 43,
+          "wins": 4,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 419,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 434,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0
+        }
+      },
+      "types": [
+        "fighting"
+      ],
+      "dex": 674,
+      "build": {
+        "ivAtk": 1,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 48,
+        "cp": 1499
+      },
+      "moveset": {
+        "fast": "LOW_KICK",
+        "charged": [
+          "BODY_SLAM",
+          "CRUNCH"
+        ]
+      }
+    },
+    {
+      "rank": 535,
       "id": "flapple",
       "name": "Flapple",
       "profile": "rank1",
@@ -126187,7 +127138,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 532,
+      "rank": 536,
       "id": "donphan",
       "name": "Donphan",
       "profile": "rank1",
@@ -126424,7 +127375,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 533,
+      "rank": 537,
       "id": "misdreavus",
       "name": "Misdreavus",
       "profile": "rank1",
@@ -126661,7 +127612,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 534,
+      "rank": 538,
       "id": "castform_snowy",
       "name": "Castform (Snowy)",
       "profile": "rank1",
@@ -126898,7 +127849,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 535,
+      "rank": 539,
       "id": "xatu",
       "name": "Xatu",
       "profile": "rank1",
@@ -127136,7 +128087,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 536,
+      "rank": 540,
       "id": "rapidash_galarian",
       "name": "Rapidash (Galarian)",
       "profile": "rank1",
@@ -127374,7 +128325,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 537,
+      "rank": 541,
       "id": "bruxish",
       "name": "Bruxish",
       "profile": "rank1",
@@ -127612,7 +128563,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 538,
+      "rank": 542,
       "id": "kricketune",
       "name": "Kricketune",
       "profile": "rank1",
@@ -127849,7 +128800,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 539,
+      "rank": 543,
       "id": "kabuto",
       "name": "Kabuto",
       "profile": "rank1",
@@ -128087,7 +129038,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 540,
+      "rank": 544,
       "id": "lampent_shadow",
       "name": "Lampent (Shadow)",
       "profile": "rank1",
@@ -128325,7 +129276,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 541,
+      "rank": 545,
       "id": "xerneas",
       "name": "Xerneas",
       "profile": "rank1",
@@ -128562,7 +129513,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 542,
+      "rank": 546,
       "id": "grimer",
       "name": "Grimer",
       "profile": "rank1",
@@ -128799,7 +129750,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 543,
+      "rank": 547,
       "id": "linoone_galarian",
       "name": "Linoone (Galarian)",
       "profile": "rank1",
@@ -129037,7 +129988,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 544,
+      "rank": 548,
       "id": "camerupt_shadow",
       "name": "Camerupt (Shadow)",
       "profile": "rank1",
@@ -129275,7 +130226,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 545,
+      "rank": 549,
       "id": "aerodactyl_shadow",
       "name": "Aerodactyl (Shadow)",
       "profile": "rank1",
@@ -129513,7 +130464,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 546,
+      "rank": 550,
       "id": "axew",
       "name": "Axew",
       "profile": "rank1",
@@ -129750,7 +130701,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 547,
+      "rank": 551,
       "id": "golduck_shadow",
       "name": "Golduck (Shadow)",
       "profile": "rank1",
@@ -129987,7 +130938,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 548,
+      "rank": 552,
       "id": "xatu_shadow",
       "name": "Xatu (Shadow)",
       "profile": "rank1",
@@ -130225,7 +131176,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 549,
+      "rank": 553,
       "id": "grotle_shadow",
       "name": "Grotle (Shadow)",
       "profile": "rank1",
@@ -130462,7 +131413,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 550,
+      "rank": 554,
       "id": "bibarel_shadow",
       "name": "Bibarel (Shadow)",
       "profile": "rank1",
@@ -130700,7 +131651,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 551,
+      "rank": 555,
       "id": "floragato",
       "name": "Floragato",
       "profile": "rank1",
@@ -130937,7 +131888,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 552,
+      "rank": 556,
       "id": "gigalith",
       "name": "Gigalith",
       "profile": "rank1",
@@ -131174,7 +132125,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 553,
+      "rank": 557,
       "id": "wyrdeer",
       "name": "Wyrdeer",
       "profile": "rank1",
@@ -131412,7 +132363,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 554,
+      "rank": 558,
       "id": "graveler_alolan",
       "name": "Graveler (Alolan)",
       "profile": "rank1",
@@ -131650,7 +132601,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 555,
+      "rank": 559,
       "id": "swadloon",
       "name": "Swadloon",
       "profile": "rank1",
@@ -131888,7 +132839,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 556,
+      "rank": 560,
       "id": "leafeon",
       "name": "Leafeon",
       "profile": "rank1",
@@ -132125,7 +133076,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 557,
+      "rank": 561,
       "id": "scizor_shadow",
       "name": "Scizor (Shadow)",
       "profile": "rank1",
@@ -132363,7 +133314,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 558,
+      "rank": 562,
       "id": "chatot",
       "name": "Chatot",
       "profile": "rank1",
@@ -132601,7 +133552,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 559,
+      "rank": 563,
       "id": "illumise",
       "name": "Illumise",
       "profile": "rank1",
@@ -132838,7 +133789,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 560,
+      "rank": 564,
       "id": "ariados",
       "name": "Ariados",
       "profile": "rank1",
@@ -133076,7 +134027,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 561,
+      "rank": 565,
       "id": "aerodactyl",
       "name": "Aerodactyl",
       "profile": "rank1",
@@ -133314,7 +134265,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 562,
+      "rank": 566,
       "id": "hitmonlee_shadow",
       "name": "Hitmonlee (Shadow)",
       "profile": "rank1",
@@ -133551,7 +134502,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 563,
+      "rank": 567,
       "id": "pawniard",
       "name": "Pawniard",
       "profile": "rank1",
@@ -133789,7 +134740,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 564,
+      "rank": 568,
       "id": "mew",
       "name": "Mew",
       "profile": "rank1",
@@ -134026,7 +134977,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 565,
+      "rank": 569,
       "id": "hydrapple",
       "name": "Hydrapple",
       "profile": "rank1",
@@ -134264,7 +135215,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 566,
+      "rank": 570,
       "id": "rotom_mow",
       "name": "Rotom (Mow)",
       "profile": "rank1",
@@ -134502,7 +135453,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 567,
+      "rank": 571,
       "id": "fraxure",
       "name": "Fraxure",
       "profile": "rank1",
@@ -134739,7 +135690,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 568,
+      "rank": 572,
       "id": "pumpkaboo_average",
       "name": "Pumpkaboo (Average)",
       "profile": "rank1",
@@ -134977,7 +135928,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 569,
+      "rank": 573,
       "id": "luxio",
       "name": "Luxio",
       "profile": "rank1",
@@ -135214,7 +136165,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 570,
+      "rank": 574,
       "id": "exploud",
       "name": "Exploud",
       "profile": "rank1",
@@ -135451,7 +136402,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 571,
+      "rank": 575,
       "id": "loudred",
       "name": "Loudred",
       "profile": "rank1",
@@ -135688,7 +136639,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 572,
+      "rank": 576,
       "id": "corvisquire_shadow",
       "name": "Corvisquire (Shadow)",
       "profile": "rank1",
@@ -135925,7 +136876,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 573,
+      "rank": 577,
       "id": "tirtouga",
       "name": "Tirtouga",
       "profile": "rank1",
@@ -136163,7 +137114,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 574,
+      "rank": 578,
       "id": "kartana",
       "name": "Kartana",
       "profile": "rank1",
@@ -136401,7 +137352,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 575,
+      "rank": 579,
       "id": "toxicroak",
       "name": "Toxicroak",
       "profile": "rank1",
@@ -136639,7 +137590,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 576,
+      "rank": 580,
       "id": "monferno",
       "name": "Monferno",
       "profile": "rank1",
@@ -136877,7 +137828,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 577,
+      "rank": 581,
       "id": "hitmonlee",
       "name": "Hitmonlee",
       "profile": "rank1",
@@ -137114,7 +138065,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 578,
+      "rank": 582,
       "id": "golett",
       "name": "Golett",
       "profile": "rank1",
@@ -137352,7 +138303,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 579,
+      "rank": 583,
       "id": "beedrill",
       "name": "Beedrill",
       "profile": "rank1",
@@ -137590,7 +138541,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 580,
+      "rank": 584,
       "id": "scyther_shadow",
       "name": "Scyther (Shadow)",
       "profile": "rank1",
@@ -137828,7 +138779,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 581,
+      "rank": 585,
       "id": "lileep_shadow",
       "name": "Lileep (Shadow)",
       "profile": "rank1",
@@ -138066,7 +139017,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 582,
+      "rank": 586,
       "id": "jolteon",
       "name": "Jolteon",
       "profile": "rank1",
@@ -138303,7 +139254,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 583,
+      "rank": 587,
       "id": "froslass_shadow",
       "name": "Froslass (Shadow)",
       "profile": "rank1",
@@ -138541,7 +139492,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 584,
+      "rank": 588,
       "id": "lairon",
       "name": "Lairon",
       "profile": "rank1",
@@ -138779,7 +139730,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 585,
+      "rank": 589,
       "id": "escavalier_shadow",
       "name": "Escavalier (Shadow)",
       "profile": "rank1",
@@ -139017,7 +139968,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 586,
+      "rank": 590,
       "id": "kabutops_shadow",
       "name": "Kabutops (Shadow)",
       "profile": "rank1",
@@ -139255,7 +140206,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 587,
+      "rank": 591,
       "id": "linoone_galarian_shadow",
       "name": "Linoone (Galarian) (Shadow)",
       "profile": "rank1",
@@ -139493,7 +140444,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 588,
+      "rank": 592,
       "id": "watchog",
       "name": "Watchog",
       "profile": "rank1",
@@ -139730,7 +140681,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 589,
+      "rank": 593,
       "id": "houndour_shadow",
       "name": "Houndour (Shadow)",
       "profile": "rank1",
@@ -139968,7 +140919,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 590,
+      "rank": 594,
       "id": "sawk",
       "name": "Sawk",
       "profile": "rank1",
@@ -140205,7 +141156,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 591,
+      "rank": 595,
       "id": "slowking",
       "name": "Slowking",
       "profile": "rank1",
@@ -140443,7 +141394,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 592,
+      "rank": 596,
       "id": "scraggy",
       "name": "Scraggy",
       "profile": "rank1",
@@ -140681,7 +141632,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 593,
+      "rank": 597,
       "id": "giratina_origin",
       "name": "Giratina (Origin)",
       "profile": "rank1",
@@ -140919,7 +141870,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 594,
+      "rank": 598,
       "id": "machop",
       "name": "Machop",
       "profile": "rank1",
@@ -141156,7 +142107,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 595,
+      "rank": 599,
       "id": "chimecho",
       "name": "Chimecho",
       "profile": "rank1",
@@ -141393,7 +142344,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 596,
+      "rank": 600,
       "id": "basculin",
       "name": "Basculin",
       "profile": "rank1",
@@ -141630,7 +142581,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 597,
+      "rank": 601,
       "id": "wailord_shadow",
       "name": "Wailord (Shadow)",
       "profile": "rank1",
@@ -141867,7 +142818,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 598,
+      "rank": 602,
       "id": "mienfoo",
       "name": "Mienfoo",
       "profile": "rank1",
@@ -142104,7 +143055,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 599,
+      "rank": 603,
       "id": "tauros_aqua",
       "name": "Tauros (Aqua)",
       "profile": "rank1",
@@ -142342,7 +143293,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 600,
+      "rank": 604,
       "id": "pignite",
       "name": "Pignite",
       "profile": "rank1",
@@ -142580,7 +143531,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 601,
+      "rank": 605,
       "id": "hitmontop_shadow",
       "name": "Hitmontop (Shadow)",
       "profile": "rank1",
@@ -142817,7 +143768,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 602,
+      "rank": 606,
       "id": "electabuzz_shadow",
       "name": "Electabuzz (Shadow)",
       "profile": "rank1",
@@ -143054,7 +144005,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 603,
+      "rank": 607,
       "id": "regice",
       "name": "Regice",
       "profile": "rank1",
@@ -143291,7 +144242,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 604,
+      "rank": 608,
       "id": "ponyta",
       "name": "Ponyta",
       "profile": "rank1",
@@ -143528,7 +144479,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 605,
+      "rank": 609,
       "id": "sawk_shadow",
       "name": "Sawk (Shadow)",
       "profile": "rank1",
@@ -143765,7 +144716,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 606,
+      "rank": 610,
       "id": "orthworm",
       "name": "Orthworm",
       "profile": "rank1",
@@ -144002,7 +144953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 607,
+      "rank": 611,
       "id": "pyroar",
       "name": "Pyroar",
       "profile": "rank1",
@@ -144240,7 +145191,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 608,
+      "rank": 612,
       "id": "slowpoke",
       "name": "Slowpoke",
       "profile": "rank1",
@@ -144478,7 +145429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 609,
+      "rank": 613,
       "id": "arbok",
       "name": "Arbok",
       "profile": "rank1",
@@ -144715,7 +145666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 610,
+      "rank": 614,
       "id": "larvesta",
       "name": "Larvesta",
       "profile": "rank1",
@@ -144953,7 +145904,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 611,
+      "rank": 615,
       "id": "delphox",
       "name": "Delphox",
       "profile": "rank1",
@@ -145191,7 +146142,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 612,
+      "rank": 616,
       "id": "victini",
       "name": "Victini",
       "profile": "rank1",
@@ -145429,7 +146380,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 613,
+      "rank": 617,
       "id": "dialga_shadow",
       "name": "Dialga (Shadow)",
       "profile": "rank1",
@@ -145667,7 +146618,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 614,
+      "rank": 618,
       "id": "espurr",
       "name": "Espurr",
       "profile": "rank1",
@@ -145904,7 +146855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 615,
+      "rank": 619,
       "id": "honchkrow",
       "name": "Honchkrow",
       "profile": "rank1",
@@ -146142,7 +147093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 616,
+      "rank": 620,
       "id": "machop_shadow",
       "name": "Machop (Shadow)",
       "profile": "rank1",
@@ -146379,7 +147330,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 617,
+      "rank": 621,
       "id": "typhlosion_hisuian",
       "name": "Typhlosion (Hisuian)",
       "profile": "rank1",
@@ -146617,7 +147568,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 618,
+      "rank": 622,
       "id": "diancie",
       "name": "Diancie",
       "profile": "rank1",
@@ -146855,7 +147806,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 619,
+      "rank": 623,
       "id": "salamence_shadow",
       "name": "Salamence (Shadow)",
       "profile": "rank1",
@@ -147093,7 +148044,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 620,
+      "rank": 624,
       "id": "garchomp_shadow",
       "name": "Garchomp (Shadow)",
       "profile": "rank1",
@@ -147331,7 +148282,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 621,
+      "rank": 625,
       "id": "kabutops",
       "name": "Kabutops",
       "profile": "rank1",
@@ -147569,7 +148520,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 622,
+      "rank": 626,
       "id": "herdier",
       "name": "Herdier",
       "profile": "rank1",
@@ -147806,7 +148757,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 623,
+      "rank": 627,
       "id": "zoroark",
       "name": "Zoroark",
       "profile": "rank1",
@@ -148043,7 +148994,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 624,
+      "rank": 628,
       "id": "braixen",
       "name": "Braixen",
       "profile": "rank1",
@@ -148280,7 +149231,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 625,
+      "rank": 629,
       "id": "regirock_shadow",
       "name": "Regirock (Shadow)",
       "profile": "rank1",
@@ -148517,7 +149468,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 626,
+      "rank": 630,
       "id": "honchkrow_shadow",
       "name": "Honchkrow (Shadow)",
       "profile": "rank1",
@@ -148755,7 +149706,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 627,
+      "rank": 631,
       "id": "nidoking_shadow",
       "name": "Nidoking (Shadow)",
       "profile": "rank1",
@@ -148993,7 +149944,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 628,
+      "rank": 632,
       "id": "rotom",
       "name": "Rotom",
       "profile": "rank1",
@@ -149231,7 +150182,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 629,
+      "rank": 633,
       "id": "parasect",
       "name": "Parasect",
       "profile": "rank1",
@@ -149469,7 +150420,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 630,
+      "rank": 634,
       "id": "sirfetchd",
       "name": "Sirfetch'd",
       "profile": "rank1",
@@ -149706,7 +150657,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 631,
+      "rank": 635,
       "id": "durant",
       "name": "Durant",
       "profile": "rank1",
@@ -149944,7 +150895,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 632,
+      "rank": 636,
       "id": "grimer_shadow",
       "name": "Grimer (Shadow)",
       "profile": "rank1",
@@ -150181,7 +151132,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 633,
+      "rank": 637,
       "id": "charmeleon_shadow",
       "name": "Charmeleon (Shadow)",
       "profile": "rank1",
@@ -150418,7 +151369,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 634,
+      "rank": 638,
       "id": "orbeetle",
       "name": "Orbeetle",
       "profile": "rank1",
@@ -150656,7 +151607,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 635,
+      "rank": 639,
       "id": "slowpoke_shadow",
       "name": "Slowpoke (Shadow)",
       "profile": "rank1",
@@ -150894,7 +151845,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 636,
+      "rank": 640,
       "id": "tangrowth",
       "name": "Tangrowth",
       "profile": "rank1",
@@ -151131,7 +152082,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 637,
+      "rank": 641,
       "id": "karrablast_shadow",
       "name": "Karrablast (Shadow)",
       "profile": "rank1",
@@ -151368,7 +152319,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 638,
+      "rank": 642,
       "id": "magmar",
       "name": "Magmar",
       "profile": "rank1",
@@ -151605,7 +152556,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 639,
+      "rank": 643,
       "id": "zoroark_hisuian",
       "name": "Zoroark (Hisuian)",
       "profile": "rank1",
@@ -151843,7 +152794,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 640,
+      "rank": 644,
       "id": "ceruledge",
       "name": "Ceruledge",
       "profile": "rank1",
@@ -152081,7 +153032,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 641,
+      "rank": 645,
       "id": "pidgeotto",
       "name": "Pidgeotto",
       "profile": "rank1",
@@ -152319,7 +153270,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 642,
+      "rank": 646,
       "id": "kabuto_shadow",
       "name": "Kabuto (Shadow)",
       "profile": "rank1",
@@ -152557,7 +153508,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 643,
+      "rank": 647,
       "id": "salazzle",
       "name": "Salazzle",
       "profile": "rank1",
@@ -152795,7 +153746,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 644,
+      "rank": 648,
       "id": "beartic",
       "name": "Beartic",
       "profile": "rank1",
@@ -153032,7 +153983,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 645,
+      "rank": 649,
+      "id": "lurantis_shadow",
+      "name": "Lurantis (Shadow)",
+      "profile": "rank1",
+      "averageScore": 329,
+      "externalWeightedAverageScore": 320,
+      "weightedAverageScore": 350,
+      "rawScore": 608,
+      "weightedScore": 543,
+      "competitiveScore": 538,
+      "roleScore": 538,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 527,
+      "overallScore": 527,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 394,
+          "weightedScore": 388,
+          "competitiveScore": 386,
+          "rawRating": 63,
+          "weightedRating": 63,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LEAF_STORM",
+                "uses": 43
+              },
+              {
+                "id": "SUPER_POWER",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 445,
+          "weightedScore": 435,
+          "competitiveScore": 433,
+          "rawRating": 76,
+          "weightedRating": 75,
+          "competitiveRating": 74,
+          "score": 74,
+          "matchups": 43,
+          "wins": 25,
+          "losses": 18,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LEAF_STORM",
+                "uses": 43
+              },
+              {
+                "id": "SUPER_POWER",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 470,
+          "weightedScore": 290,
+          "competitiveScore": 292,
+          "rawRating": 70,
+          "weightedRating": 44,
+          "competitiveRating": 44,
+          "score": 44,
+          "matchups": 43,
+          "wins": 17,
+          "losses": 26,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LEAF_STORM",
+                "uses": 43
+              },
+              {
+                "id": "SUPER_POWER",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 494,
+          "weightedScore": 486,
+          "competitiveScore": 485,
+          "rawRating": 75,
+          "weightedRating": 73,
+          "competitiveRating": 73,
+          "score": 73,
+          "matchups": 43,
+          "wins": 22,
+          "losses": 21,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LEAF_STORM",
+                "uses": 43
+              },
+              {
+                "id": "SUPER_POWER",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 136,
+          "weightedScore": 127,
+          "competitiveScore": 126,
+          "rawRating": 33,
+          "weightedRating": 31,
+          "competitiveRating": 30,
+          "score": 30,
+          "matchups": 43,
+          "wins": 1,
+          "losses": 41,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LEAF_STORM",
+                "uses": 43
+              },
+              {
+                "id": "SUPER_POWER",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 248.64,
+      "matchups": 172,
+      "wins": 51,
+      "losses": 120,
+      "ties": 1,
+      "winRate": 0.2965,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 445,
+          "matchups": 43,
+          "wins": 25,
+          "losses": 18,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 136,
+          "matchups": 43,
+          "wins": 1,
+          "losses": 41,
+          "ties": 1
+        },
+        "1-1": {
+          "averageScore": 394,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 339,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 33,
+          "ties": 0
+        }
+      },
+      "types": [
+        "grass"
+      ],
+      "dex": 754,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 23.5,
+        "cp": 1493
+      },
+      "moveset": {
+        "fast": "FURY_CUTTER",
+        "charged": [
+          "LEAF_STORM",
+          "SUPER_POWER"
+        ]
+      }
+    },
+    {
+      "rank": 650,
       "id": "pumpkaboo_small",
       "name": "Pumpkaboo (Small)",
       "profile": "rank1",
@@ -153270,7 +154458,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 646,
+      "rank": 651,
       "id": "armaldo_shadow",
       "name": "Armaldo (Shadow)",
       "profile": "rank1",
@@ -153508,7 +154696,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 647,
+      "rank": 652,
       "id": "volcanion",
       "name": "Volcanion",
       "profile": "rank1",
@@ -153746,7 +154934,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 648,
+      "rank": 653,
       "id": "darumaka",
       "name": "Darumaka",
       "profile": "rank1",
@@ -153983,7 +155171,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 649,
+      "rank": 654,
       "id": "haxorus_shadow",
       "name": "Haxorus (Shadow)",
       "profile": "rank1",
@@ -154220,7 +155408,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 650,
+      "rank": 655,
       "id": "perrserker",
       "name": "Perrserker",
       "profile": "rank1",
@@ -154457,7 +155645,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 651,
+      "rank": 656,
       "id": "floette",
       "name": "Floette",
       "profile": "rank1",
@@ -154694,7 +155882,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 652,
+      "rank": 657,
       "id": "mudsdale",
       "name": "Mudsdale",
       "profile": "rank1",
@@ -154931,7 +156119,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 653,
+      "rank": 658,
       "id": "zebstrika_shadow",
       "name": "Zebstrika (Shadow)",
       "profile": "rank1",
@@ -155168,7 +156356,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 654,
+      "rank": 659,
       "id": "cobalion",
       "name": "Cobalion",
       "profile": "rank1",
@@ -155406,7 +156594,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 655,
+      "rank": 660,
       "id": "donphan_shadow",
       "name": "Donphan (Shadow)",
       "profile": "rank1",
@@ -155643,7 +156831,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 656,
+      "rank": 661,
       "id": "grovyle",
       "name": "Grovyle",
       "profile": "rank1",
@@ -155880,7 +157068,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 657,
+      "rank": 662,
       "id": "dhelmise",
       "name": "Dhelmise",
       "profile": "rank1",
@@ -156118,7 +157306,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 658,
+      "rank": 663,
       "id": "glalie_shadow",
       "name": "Glalie (Shadow)",
       "profile": "rank1",
@@ -156355,7 +157543,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 659,
+      "rank": 664,
       "id": "moltres",
       "name": "Moltres",
       "profile": "rank1",
@@ -156593,7 +157781,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 660,
+      "rank": 665,
       "id": "krookodile",
       "name": "Krookodile",
       "profile": "rank1",
@@ -156831,7 +158019,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 661,
+      "rank": 666,
       "id": "eldegoss",
       "name": "Eldegoss",
       "profile": "rank1",
@@ -157068,7 +158256,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 662,
+      "rank": 667,
       "id": "exploud_shadow",
       "name": "Exploud (Shadow)",
       "profile": "rank1",
@@ -157305,7 +158493,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 663,
+      "rank": 668,
       "id": "excadrill",
       "name": "Excadrill",
       "profile": "rank1",
@@ -157543,7 +158731,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 664,
+      "rank": 669,
       "id": "zebstrika",
       "name": "Zebstrika",
       "profile": "rank1",
@@ -157780,7 +158968,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 665,
+      "rank": 670,
       "id": "delcatty",
       "name": "Delcatty",
       "profile": "rank1",
@@ -158017,7 +159205,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 666,
+      "rank": 671,
       "id": "salamence",
       "name": "Salamence",
       "profile": "rank1",
@@ -158255,7 +159443,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 667,
+      "rank": 672,
+      "id": "maschiff",
+      "name": "Maschiff",
+      "profile": "rank1",
+      "averageScore": 306,
+      "externalWeightedAverageScore": 302,
+      "weightedAverageScore": 328,
+      "rawScore": 576,
+      "weightedScore": 528,
+      "competitiveScore": 533,
+      "roleScore": 533,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 523,
+      "overallScore": 523,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 360,
+          "weightedScore": 351,
+          "competitiveScore": 345,
+          "rawRating": 58,
+          "weightedRating": 57,
+          "competitiveRating": 56,
+          "score": 56,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 380,
+          "weightedScore": 369,
+          "competitiveScore": 370,
+          "rawRating": 65,
+          "weightedRating": 63,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 425,
+          "weightedScore": 310,
+          "competitiveScore": 316,
+          "rawRating": 63,
+          "weightedRating": 47,
+          "competitiveRating": 48,
+          "score": 48,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 429,
+          "weightedScore": 425,
+          "competitiveScore": 429,
+          "rawRating": 65,
+          "weightedRating": 64,
+          "competitiveRating": 65,
+          "score": 65,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 169,
+          "weightedScore": 157,
+          "competitiveScore": 163,
+          "rawRating": 41,
+          "weightedRating": 38,
+          "competitiveRating": 39,
+          "score": 39,
+          "matchups": 43,
+          "wins": 1,
+          "losses": 42,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 197.87,
+      "matchups": 172,
+      "wins": 23,
+      "losses": 149,
+      "ties": 0,
+      "winRate": 0.1337,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 380,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 169,
+          "matchups": 43,
+          "wins": 1,
+          "losses": 42,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 360,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 316,
+          "matchups": 43,
+          "wins": 7,
+          "losses": 36,
+          "ties": 0
+        }
+      },
+      "types": [
+        "dark"
+      ],
+      "dex": 942,
+      "build": {
+        "ivAtk": 6,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 50.5,
+        "cp": 1499
+      },
+      "moveset": {
+        "fast": "SNARL",
+        "charged": [
+          "CRUNCH",
+          "DIG"
+        ]
+      }
+    },
+    {
+      "rank": 673,
       "id": "buzzwole",
       "name": "Buzzwole",
       "profile": "rank1",
@@ -158493,7 +159918,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 668,
+      "rank": 674,
       "id": "pinsir_shadow",
       "name": "Pinsir (Shadow)",
       "profile": "rank1",
@@ -158730,7 +160155,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 669,
+      "rank": 675,
       "id": "pidgeotto_shadow",
       "name": "Pidgeotto (Shadow)",
       "profile": "rank1",
@@ -158968,7 +160393,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 670,
+      "rank": 676,
       "id": "armaldo",
       "name": "Armaldo",
       "profile": "rank1",
@@ -159206,7 +160631,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 671,
+      "rank": 677,
       "id": "poliwhirl",
       "name": "Poliwhirl",
       "profile": "rank1",
@@ -159443,7 +160868,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 672,
+      "rank": 678,
       "id": "thwackey",
       "name": "Thwackey",
       "profile": "rank1",
@@ -159680,7 +161105,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 673,
+      "rank": 679,
       "id": "heliolisk_shadow",
       "name": "Heliolisk (Shadow)",
       "profile": "rank1",
@@ -159918,7 +161343,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 674,
+      "rank": 680,
       "id": "kubfu",
       "name": "Kubfu",
       "profile": "rank1",
@@ -160155,7 +161580,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 675,
+      "rank": 681,
       "id": "chansey",
       "name": "Chansey",
       "profile": "rank1",
@@ -160392,7 +161817,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 676,
+      "rank": 682,
       "id": "landorus_incarnate",
       "name": "Landorus (Incarnate)",
       "profile": "rank1",
@@ -160630,7 +162055,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 677,
+      "rank": 683,
       "id": "scyther",
       "name": "Scyther",
       "profile": "rank1",
@@ -160868,7 +162293,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 678,
+      "rank": 684,
       "id": "buneary",
       "name": "Buneary",
       "profile": "rank1",
@@ -161105,7 +162530,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 679,
+      "rank": 685,
       "id": "lairon_shadow",
       "name": "Lairon (Shadow)",
       "profile": "rank1",
@@ -161343,7 +162768,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 680,
+      "rank": 686,
       "id": "pinsir",
       "name": "Pinsir",
       "profile": "rank1",
@@ -161580,7 +163005,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 681,
+      "rank": 687,
       "id": "monferno_shadow",
       "name": "Monferno (Shadow)",
       "profile": "rank1",
@@ -161818,7 +163243,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 682,
+      "rank": 688,
       "id": "lunala",
       "name": "Lunala",
       "profile": "rank1",
@@ -162056,7 +163481,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 683,
+      "rank": 689,
       "id": "slowking_shadow",
       "name": "Slowking (Shadow)",
       "profile": "rank1",
@@ -162294,7 +163719,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 684,
+      "rank": 690,
       "id": "stufful_shadow",
       "name": "Stufful (Shadow)",
       "profile": "rank1",
@@ -162532,7 +163957,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 685,
+      "rank": 691,
       "id": "snubbull",
       "name": "Snubbull",
       "profile": "rank1",
@@ -162769,7 +164194,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 686,
+      "rank": 692,
       "id": "axew_shadow",
       "name": "Axew (Shadow)",
       "profile": "rank1",
@@ -163006,7 +164431,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 687,
+      "rank": 693,
       "id": "combusken",
       "name": "Combusken",
       "profile": "rank1",
@@ -163244,7 +164669,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 688,
+      "rank": 694,
       "id": "snubbull_shadow",
       "name": "Snubbull (Shadow)",
       "profile": "rank1",
@@ -163481,7 +164906,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 689,
+      "rank": 695,
       "id": "celesteela",
       "name": "Celesteela",
       "profile": "rank1",
@@ -163719,7 +165144,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 690,
+      "rank": 696,
       "id": "totodile",
       "name": "Totodile",
       "profile": "rank1",
@@ -163956,7 +165381,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 691,
+      "rank": 697,
       "id": "gigalith_shadow",
       "name": "Gigalith (Shadow)",
       "profile": "rank1",
@@ -164193,7 +165618,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 692,
+      "rank": 698,
       "id": "growlithe",
       "name": "Growlithe",
       "profile": "rank1",
@@ -164430,7 +165855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 693,
+      "rank": 699,
       "id": "landorus_incarnate_shadow",
       "name": "Landorus (Incarnate) (Shadow)",
       "profile": "rank1",
@@ -164668,7 +166093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 694,
+      "rank": 700,
       "id": "ho_oh",
       "name": "Ho-Oh",
       "profile": "rank1",
@@ -164906,7 +166331,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 695,
+      "rank": 701,
       "id": "gengar_shadow",
       "name": "Gengar (Shadow)",
       "profile": "rank1",
@@ -165144,7 +166569,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 696,
+      "rank": 702,
       "id": "darumaka_shadow",
       "name": "Darumaka (Shadow)",
       "profile": "rank1",
@@ -165381,7 +166806,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 697,
+      "rank": 703,
       "id": "toedscool",
       "name": "Toedscool",
       "profile": "rank1",
@@ -165619,7 +167044,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 698,
+      "rank": 704,
       "id": "yveltal",
       "name": "Yveltal",
       "profile": "rank1",
@@ -165857,7 +167282,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 699,
+      "rank": 705,
       "id": "stufful",
       "name": "Stufful",
       "profile": "rank1",
@@ -166095,7 +167520,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 700,
+      "rank": 706,
       "id": "elekid",
       "name": "Elekid",
       "profile": "rank1",
@@ -166332,7 +167757,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 701,
+      "rank": 707,
       "id": "hitmonchan",
       "name": "Hitmonchan",
       "profile": "rank1",
@@ -166569,7 +167994,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 702,
+      "rank": 708,
       "id": "weezing",
       "name": "Weezing",
       "profile": "rank1",
@@ -166806,7 +168231,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 703,
+      "rank": 709,
       "id": "mantyke",
       "name": "Mantyke",
       "profile": "rank1",
@@ -167044,7 +168469,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 704,
+      "rank": 710,
       "id": "flareon",
       "name": "Flareon",
       "profile": "rank1",
@@ -167281,7 +168706,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 705,
+      "rank": 711,
       "id": "venomoth",
       "name": "Venomoth",
       "profile": "rank1",
@@ -167519,7 +168944,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 706,
+      "rank": 712,
       "id": "urshifu_rapid_strike",
       "name": "Urshifu (Rapid Strike)",
       "profile": "rank1",
@@ -167757,7 +169182,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 707,
+      "rank": 713,
       "id": "arbok_shadow",
       "name": "Arbok (Shadow)",
       "profile": "rank1",
@@ -167994,7 +169419,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 708,
+      "rank": 714,
       "id": "carkol",
       "name": "Carkol",
       "profile": "rank1",
@@ -168232,7 +169657,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 709,
+      "rank": 715,
       "id": "shellos",
       "name": "Shellos",
       "profile": "rank1",
@@ -168469,7 +169894,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 710,
+      "rank": 716,
       "id": "tentacool",
       "name": "Tentacool",
       "profile": "rank1",
@@ -168707,7 +170132,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 711,
+      "rank": 717,
       "id": "growlithe_hisuian",
       "name": "Growlithe (Hisuian)",
       "profile": "rank1",
@@ -168945,7 +170370,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 712,
+      "rank": 718,
       "id": "combusken_shadow",
       "name": "Combusken (Shadow)",
       "profile": "rank1",
@@ -169183,7 +170608,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 713,
+      "rank": 719,
       "id": "enamorus_therian",
       "name": "Enamorus (Therian)",
       "profile": "rank1",
@@ -169421,7 +170846,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 714,
+      "rank": 720,
       "id": "celebi",
       "name": "Celebi",
       "profile": "rank1",
@@ -169659,7 +171084,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 715,
+      "rank": 721,
       "id": "slowpoke_galarian",
       "name": "Slowpoke (Galarian)",
       "profile": "rank1",
@@ -169896,7 +171321,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 716,
+      "rank": 722,
       "id": "silicobra",
       "name": "Silicobra",
       "profile": "rank1",
@@ -170133,7 +171558,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 717,
+      "rank": 723,
       "id": "graveler_alolan_shadow",
       "name": "Graveler (Alolan) (Shadow)",
       "profile": "rank1",
@@ -170371,7 +171796,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 718,
+      "rank": 724,
       "id": "metagross",
       "name": "Metagross",
       "profile": "rank1",
@@ -170609,7 +172034,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 719,
+      "rank": 725,
       "id": "excadrill_shadow",
       "name": "Excadrill (Shadow)",
       "profile": "rank1",
@@ -170847,7 +172272,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 720,
+      "rank": 726,
       "id": "toxicroak_shadow",
       "name": "Toxicroak (Shadow)",
       "profile": "rank1",
@@ -171085,7 +172510,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 721,
+      "rank": 727,
       "id": "zarude",
       "name": "Zarude",
       "profile": "rank1",
@@ -171323,7 +172748,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 722,
+      "rank": 728,
       "id": "ponyta_shadow",
       "name": "Ponyta (Shadow)",
       "profile": "rank1",
@@ -171560,7 +172985,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 723,
+      "rank": 729,
       "id": "bouffalant",
       "name": "Bouffalant",
       "profile": "rank1",
@@ -171797,7 +173222,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 724,
+      "rank": 730,
       "id": "pignite_shadow",
       "name": "Pignite (Shadow)",
       "profile": "rank1",
@@ -172035,7 +173460,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 725,
+      "rank": 731,
       "id": "magmar_shadow",
       "name": "Magmar (Shadow)",
       "profile": "rank1",
@@ -172272,7 +173697,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 726,
+      "rank": 732,
       "id": "charmeleon",
       "name": "Charmeleon",
       "profile": "rank1",
@@ -172488,7 +173913,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 727,
+      "rank": 733,
       "id": "haxorus",
       "name": "Haxorus",
       "profile": "rank1",
@@ -172725,7 +174150,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 728,
+      "rank": 734,
       "id": "lucario",
       "name": "Lucario",
       "profile": "rank1",
@@ -172963,7 +174388,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 729,
+      "rank": 735,
       "id": "vanillish",
       "name": "Vanillish",
       "profile": "rank1",
@@ -173200,7 +174625,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 730,
+      "rank": 736,
       "id": "braixen_shadow",
       "name": "Braixen (Shadow)",
       "profile": "rank1",
@@ -173437,7 +174862,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 731,
+      "rank": 737,
       "id": "clefable",
       "name": "Clefable",
       "profile": "rank1",
@@ -173674,7 +175099,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 732,
+      "rank": 738,
       "id": "tyrunt",
       "name": "Tyrunt",
       "profile": "rank1",
@@ -173912,7 +175337,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 733,
+      "rank": 739,
       "id": "arboliva",
       "name": "Arboliva",
       "profile": "rank1",
@@ -174150,7 +175575,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 734,
+      "rank": 740,
       "id": "kilowattrel",
       "name": "Kilowattrel",
       "profile": "rank1",
@@ -174388,7 +175813,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 735,
+      "rank": 741,
       "id": "cryogonal",
       "name": "Cryogonal",
       "profile": "rank1",
@@ -174625,7 +176050,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 736,
+      "rank": 742,
       "id": "tirtouga_shadow",
       "name": "Tirtouga (Shadow)",
       "profile": "rank1",
@@ -174863,7 +176288,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 737,
+      "rank": 743,
       "id": "staraptor",
       "name": "Staraptor",
       "profile": "rank1",
@@ -175101,7 +176526,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 738,
+      "rank": 744,
       "id": "sharpedo_shadow",
       "name": "Sharpedo (Shadow)",
       "profile": "rank1",
@@ -175339,7 +176764,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 739,
+      "rank": 745,
       "id": "aromatisse",
       "name": "Aromatisse",
       "profile": "rank1",
@@ -175576,7 +177001,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 740,
+      "rank": 746,
       "id": "garbodor",
       "name": "Garbodor",
       "profile": "rank1",
@@ -175813,7 +177238,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 741,
+      "rank": 747,
       "id": "geodude_alolan",
       "name": "Geodude (Alolan)",
       "profile": "rank1",
@@ -176051,7 +177476,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 742,
+      "rank": 748,
       "id": "purugly",
       "name": "Purugly",
       "profile": "rank1",
@@ -176288,7 +177713,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 743,
+      "rank": 749,
       "id": "karrablast",
       "name": "Karrablast",
       "profile": "rank1",
@@ -176525,7 +177950,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 744,
+      "rank": 750,
       "id": "rhyperior_shadow",
       "name": "Rhyperior (Shadow)",
       "profile": "rank1",
@@ -176763,7 +178188,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 745,
+      "rank": 751,
       "id": "stunky",
       "name": "Stunky",
       "profile": "rank1",
@@ -177001,7 +178426,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 746,
+      "rank": 752,
       "id": "volbeat",
       "name": "Volbeat",
       "profile": "rank1",
@@ -177238,7 +178663,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 747,
+      "rank": 753,
       "id": "eelektross",
       "name": "Eelektross",
       "profile": "rank1",
@@ -177475,7 +178900,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 748,
+      "rank": 754,
       "id": "avalugg_hisuian",
       "name": "Avalugg (Hisuian)",
       "profile": "rank1",
@@ -177713,7 +179138,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 749,
+      "rank": 755,
       "id": "nuzleaf_shadow",
       "name": "Nuzleaf (Shadow)",
       "profile": "rank1",
@@ -177951,7 +179376,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 750,
+      "rank": 756,
       "id": "koffing",
       "name": "Koffing",
       "profile": "rank1",
@@ -178188,7 +179613,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 751,
+      "rank": 757,
       "id": "blacephalon",
       "name": "Blacephalon",
       "profile": "rank1",
@@ -178426,7 +179851,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 752,
+      "rank": 758,
       "id": "fraxure_shadow",
       "name": "Fraxure (Shadow)",
       "profile": "rank1",
@@ -178663,7 +180088,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 753,
+      "rank": 759,
       "id": "gumshoos",
       "name": "Gumshoos",
       "profile": "rank1",
@@ -178900,7 +180325,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 754,
+      "rank": 760,
       "id": "magmortar_shadow",
       "name": "Magmortar (Shadow)",
       "profile": "rank1",
@@ -179137,7 +180562,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 755,
+      "rank": 761,
       "id": "floatzel",
       "name": "Floatzel",
       "profile": "rank1",
@@ -179374,7 +180799,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 756,
+      "rank": 762,
       "id": "spritzee",
       "name": "Spritzee",
       "profile": "rank1",
@@ -179611,7 +181036,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 757,
+      "rank": 763,
       "id": "zapdos_galarian",
       "name": "Zapdos (Galarian)",
       "profile": "rank1",
@@ -179849,7 +181274,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 758,
+      "rank": 764,
       "id": "probopass",
       "name": "Probopass",
       "profile": "rank1",
@@ -180087,7 +181512,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 759,
+      "rank": 765,
       "id": "rotom_fan",
       "name": "Rotom (Fan)",
       "profile": "rank1",
@@ -180325,7 +181750,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 760,
+      "rank": 766,
       "id": "poliwhirl_shadow",
       "name": "Poliwhirl (Shadow)",
       "profile": "rank1",
@@ -180562,7 +181987,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 761,
+      "rank": 767,
       "id": "ivysaur",
       "name": "Ivysaur",
       "profile": "rank1",
@@ -180800,7 +182225,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 762,
+      "rank": 768,
       "id": "beedrill_shadow",
       "name": "Beedrill (Shadow)",
       "profile": "rank1",
@@ -181038,7 +182463,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 763,
+      "rank": 769,
       "id": "loudred_shadow",
       "name": "Loudred (Shadow)",
       "profile": "rank1",
@@ -181275,7 +182700,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 764,
+      "rank": 770,
       "id": "weepinbell_shadow",
       "name": "Weepinbell (Shadow)",
       "profile": "rank1",
@@ -181513,7 +182938,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 765,
+      "rank": 771,
+      "id": "barraskewda",
+      "name": "Barraskewda",
+      "profile": "rank1",
+      "averageScore": 301,
+      "externalWeightedAverageScore": 301,
+      "weightedAverageScore": 359,
+      "rawScore": 526,
+      "weightedScore": 494,
+      "competitiveScore": 494,
+      "roleScore": 494,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 496,
+      "overallScore": 496,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 394,
+          "weightedScore": 385,
+          "competitiveScore": 383,
+          "rawRating": 63,
+          "weightedRating": 62,
+          "competitiveRating": 62,
+          "score": 62,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 355,
+          "weightedScore": 359,
+          "competitiveScore": 354,
+          "rawRating": 60,
+          "weightedRating": 62,
+          "competitiveRating": 61,
+          "score": 61,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 529,
+          "weightedScore": 399,
+          "competitiveScore": 402,
+          "rawRating": 79,
+          "weightedRating": 60,
+          "competitiveRating": 61,
+          "score": 61,
+          "matchups": 43,
+          "wins": 22,
+          "losses": 21,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 556,
+          "weightedScore": 561,
+          "competitiveScore": 561,
+          "rawRating": 84,
+          "weightedRating": 85,
+          "competitiveRating": 85,
+          "score": 85,
+          "matchups": 43,
+          "wins": 28,
+          "losses": 15,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 67,
+          "weightedScore": 63,
+          "competitiveScore": 63,
+          "rawRating": 16,
+          "weightedRating": 15,
+          "competitiveRating": 15,
+          "score": 15,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 213.08,
+      "matchups": 172,
+      "wins": 26,
+      "losses": 146,
+      "ties": 0,
+      "winRate": 0.1512,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 355,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 67,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 394,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 387,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0
+        }
+      },
+      "types": [
+        "water"
+      ],
+      "dex": 847,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 14,
+        "ivHp": 14,
+        "level": 21,
+        "cp": 1496
+      },
+      "moveset": {
+        "fast": "PECK",
+        "charged": [
+          "CLOSE_COMBAT",
+          "AQUA_JET"
+        ]
+      }
+    },
+    {
+      "rank": 772,
       "id": "moltres_shadow",
       "name": "Moltres (Shadow)",
       "profile": "rank1",
@@ -181751,7 +183413,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 766,
+      "rank": 773,
       "id": "sinistcha",
       "name": "Sinistcha",
       "profile": "rank1",
@@ -181989,7 +183651,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 767,
+      "rank": 774,
       "id": "entei",
       "name": "Entei",
       "profile": "rank1",
@@ -182226,7 +183888,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 768,
+      "rank": 775,
       "id": "hattrem",
       "name": "Hattrem",
       "profile": "rank1",
@@ -182463,7 +184125,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 769,
+      "rank": 776,
       "id": "geodude_alolan_shadow",
       "name": "Geodude (Alolan) (Shadow)",
       "profile": "rank1",
@@ -182701,7 +184363,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 770,
+      "rank": 777,
       "id": "hitmonchan_shadow",
       "name": "Hitmonchan (Shadow)",
       "profile": "rank1",
@@ -182938,7 +184600,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 771,
+      "rank": 778,
       "id": "corsola",
       "name": "Corsola",
       "profile": "rank1",
@@ -183176,7 +184838,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 772,
+      "rank": 779,
       "id": "scolipede",
       "name": "Scolipede",
       "profile": "rank1",
@@ -183414,7 +185076,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 773,
+      "rank": 780,
       "id": "rhyperior",
       "name": "Rhyperior",
       "profile": "rank1",
@@ -183652,7 +185314,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 774,
+      "rank": 781,
       "id": "nuzleaf",
       "name": "Nuzleaf",
       "profile": "rank1",
@@ -183890,7 +185552,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 775,
+      "rank": 782,
       "id": "frigibax",
       "name": "Frigibax",
       "profile": "rank1",
@@ -184128,7 +185790,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 776,
+      "rank": 783,
       "id": "granbull",
       "name": "Granbull",
       "profile": "rank1",
@@ -184365,7 +186027,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 777,
+      "rank": 784,
       "id": "roserade",
       "name": "Roserade",
       "profile": "rank1",
@@ -184603,7 +186265,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 778,
+      "rank": 785,
       "id": "brionne",
       "name": "Brionne",
       "profile": "rank1",
@@ -184840,7 +186502,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 779,
+      "rank": 786,
       "id": "absol_shadow",
       "name": "Absol (Shadow)",
       "profile": "rank1",
@@ -185077,7 +186739,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 780,
+      "rank": 787,
       "id": "kleavor",
       "name": "Kleavor",
       "profile": "rank1",
@@ -185315,7 +186977,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 781,
+      "rank": 788,
       "id": "emboar",
       "name": "Emboar",
       "profile": "rank1",
@@ -185553,7 +187215,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 782,
+      "rank": 789,
       "id": "krokorok",
       "name": "Krokorok",
       "profile": "rank1",
@@ -185791,7 +187453,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 783,
+      "rank": 790,
       "id": "raticate_alolan_shadow",
       "name": "Raticate (Alolan) (Shadow)",
       "profile": "rank1",
@@ -186029,7 +187691,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 784,
+      "rank": 791,
       "id": "weepinbell",
       "name": "Weepinbell",
       "profile": "rank1",
@@ -186267,7 +187929,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 785,
+      "rank": 792,
       "id": "houndour",
       "name": "Houndour",
       "profile": "rank1",
@@ -186505,7 +188167,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 786,
+      "rank": 793,
       "id": "ho_oh_shadow",
       "name": "Ho-Oh (Shadow)",
       "profile": "rank1",
@@ -186743,7 +188405,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 787,
+      "rank": 794,
       "id": "venomoth_shadow",
       "name": "Venomoth (Shadow)",
       "profile": "rank1",
@@ -186981,7 +188643,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 788,
+      "rank": 795,
       "id": "sandshrew_shadow",
       "name": "Sandshrew (Shadow)",
       "profile": "rank1",
@@ -187218,7 +188880,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 789,
+      "rank": 796,
       "id": "watchog_shadow",
       "name": "Watchog (Shadow)",
       "profile": "rank1",
@@ -187455,7 +189117,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 790,
+      "rank": 797,
       "id": "doduo",
       "name": "Doduo",
       "profile": "rank1",
@@ -187693,7 +189355,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 791,
+      "rank": 798,
       "id": "bonsly",
       "name": "Bonsly",
       "profile": "rank1",
@@ -187930,7 +189592,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 792,
+      "rank": 799,
       "id": "sudowoodo",
       "name": "Sudowoodo",
       "profile": "rank1",
@@ -188167,7 +189829,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 793,
+      "rank": 800,
       "id": "torracat",
       "name": "Torracat",
       "profile": "rank1",
@@ -188404,7 +190066,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 794,
+      "rank": 801,
       "id": "delphox_shadow",
       "name": "Delphox (Shadow)",
       "profile": "rank1",
@@ -188642,7 +190304,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 795,
+      "rank": 802,
       "id": "cloyster",
       "name": "Cloyster",
       "profile": "rank1",
@@ -188880,7 +190542,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 796,
+      "rank": 803,
       "id": "entei_shadow",
       "name": "Entei (Shadow)",
       "profile": "rank1",
@@ -189117,7 +190779,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 797,
+      "rank": 804,
+      "id": "palossand_shadow",
+      "name": "Palossand (Shadow)",
+      "profile": "rank1",
+      "averageScore": 305,
+      "externalWeightedAverageScore": 303,
+      "weightedAverageScore": 313,
+      "rawScore": 573,
+      "weightedScore": 475,
+      "competitiveScore": 480,
+      "roleScore": 480,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 486,
+      "overallScore": 486,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 345,
+          "weightedScore": 337,
+          "competitiveScore": 333,
+          "rawRating": 55,
+          "weightedRating": 54,
+          "competitiveRating": 54,
+          "score": 54,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 373,
+          "weightedScore": 369,
+          "competitiveScore": 366,
+          "rawRating": 63,
+          "weightedRating": 63,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 13,
+          "losses": 30,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 409,
+          "weightedScore": 175,
+          "competitiveScore": 180,
+          "rawRating": 61,
+          "weightedRating": 26,
+          "competitiveRating": 27,
+          "score": 27,
+          "matchups": 43,
+          "wins": 16,
+          "losses": 27,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 499,
+          "weightedScore": 492,
+          "competitiveScore": 499,
+          "rawRating": 75,
+          "weightedRating": 74,
+          "competitiveRating": 75,
+          "score": 75,
+          "matchups": 43,
+          "wins": 23,
+          "losses": 20,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 163,
+          "weightedScore": 151,
+          "competitiveScore": 155,
+          "rawRating": 39,
+          "weightedRating": 37,
+          "competitiveRating": 37,
+          "score": 37,
+          "matchups": 43,
+          "wins": 4,
+          "losses": 39,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 250.9,
+      "matchups": 172,
+      "wins": 41,
+      "losses": 131,
+      "ties": 0,
+      "winRate": 0.2384,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 373,
+          "matchups": 43,
+          "wins": 13,
+          "losses": 30,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 163,
+          "matchups": 43,
+          "wins": 4,
+          "losses": 39,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 345,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 340,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0
+        }
+      },
+      "types": [
+        "ghost",
+        "ground"
+      ],
+      "dex": 770,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 15,
+        "ivHp": 11,
+        "level": 23.5,
+        "cp": 1499
+      },
+      "moveset": {
+        "fast": "MUD_SHOT",
+        "charged": [
+          "SHADOW_BALL",
+          "EARTH_POWER"
+        ]
+      }
+    },
+    {
+      "rank": 805,
       "id": "shaymin_land",
       "name": "Shaymin (Land)",
       "profile": "rank1",
@@ -189354,7 +191254,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 798,
+      "rank": 806,
       "id": "gengar",
       "name": "Gengar",
       "profile": "rank1",
@@ -189592,7 +191492,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 799,
+      "rank": 807,
       "id": "tangrowth_shadow",
       "name": "Tangrowth (Shadow)",
       "profile": "rank1",
@@ -189829,7 +191729,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 800,
+      "rank": 808,
       "id": "gholdengo",
       "name": "Gholdengo",
       "profile": "rank1",
@@ -190067,7 +191967,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 801,
+      "rank": 809,
       "id": "carnivine",
       "name": "Carnivine",
       "profile": "rank1",
@@ -190304,7 +192204,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 802,
+      "rank": 810,
       "id": "purugly_shadow",
       "name": "Purugly (Shadow)",
       "profile": "rank1",
@@ -190541,7 +192441,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 803,
+      "rank": 811,
       "id": "meowstic_female",
       "name": "Meowstic (Female)",
       "profile": "rank1",
@@ -190778,7 +192678,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 804,
+      "rank": 812,
       "id": "cubone",
       "name": "Cubone",
       "profile": "rank1",
@@ -191015,7 +192915,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 805,
+      "rank": 813,
       "id": "ambipom_shadow",
       "name": "Ambipom (Shadow)",
       "profile": "rank1",
@@ -191252,7 +193152,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 806,
+      "rank": 814,
       "id": "mudbray",
       "name": "Mudbray",
       "profile": "rank1",
@@ -191489,7 +193389,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 807,
+      "rank": 815,
       "id": "staravia",
       "name": "Staravia",
       "profile": "rank1",
@@ -191727,7 +193627,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 808,
+      "rank": 816,
       "id": "emboar_shadow",
       "name": "Emboar (Shadow)",
       "profile": "rank1",
@@ -191965,7 +193865,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 809,
+      "rank": 817,
       "id": "drakloak",
       "name": "Drakloak",
       "profile": "rank1",
@@ -192203,7 +194103,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 810,
+      "rank": 818,
       "id": "growlithe_shadow",
       "name": "Growlithe (Shadow)",
       "profile": "rank1",
@@ -192440,7 +194340,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 811,
+      "rank": 819,
       "id": "girafarig",
       "name": "Girafarig",
       "profile": "rank1",
@@ -192678,7 +194578,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 812,
+      "rank": 820,
       "id": "klawf",
       "name": "Klawf",
       "profile": "rank1",
@@ -192915,7 +194815,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 813,
+      "rank": 821,
       "id": "magby",
       "name": "Magby",
       "profile": "rank1",
@@ -193152,7 +195052,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 814,
+      "rank": 822,
       "id": "quilava",
       "name": "Quilava",
       "profile": "rank1",
@@ -193389,7 +195289,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 815,
+      "rank": 823,
       "id": "dugtrio_shadow",
       "name": "Dugtrio (Shadow)",
       "profile": "rank1",
@@ -193626,7 +195526,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 816,
+      "rank": 824,
       "id": "staravia_shadow",
       "name": "Staravia (Shadow)",
       "profile": "rank1",
@@ -193864,7 +195764,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 817,
+      "rank": 825,
       "id": "kyogre",
       "name": "Kyogre",
       "profile": "rank1",
@@ -194101,7 +196001,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 818,
+      "rank": 826,
       "id": "metagross_shadow",
       "name": "Metagross (Shadow)",
       "profile": "rank1",
@@ -194339,7 +196239,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 819,
+      "rank": 827,
       "id": "rhyhorn_shadow",
       "name": "Rhyhorn (Shadow)",
       "profile": "rank1",
@@ -194577,7 +196477,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 820,
+      "rank": 828,
       "id": "gothitelle",
       "name": "Gothitelle",
       "profile": "rank1",
@@ -194814,7 +196714,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 821,
+      "rank": 829,
       "id": "minun",
       "name": "Minun",
       "profile": "rank1",
@@ -195051,7 +196951,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 822,
+      "rank": 830,
       "id": "oddish",
       "name": "Oddish",
       "profile": "rank1",
@@ -195289,7 +197189,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 823,
+      "rank": 831,
       "id": "oddish_shadow",
       "name": "Oddish (Shadow)",
       "profile": "rank1",
@@ -195527,7 +197427,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 824,
+      "rank": 832,
       "id": "weezing_shadow",
       "name": "Weezing (Shadow)",
       "profile": "rank1",
@@ -195764,7 +197664,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 825,
+      "rank": 833,
       "id": "seel",
       "name": "Seel",
       "profile": "rank1",
@@ -196001,7 +197901,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 826,
+      "rank": 834,
       "id": "dugtrio",
       "name": "Dugtrio",
       "profile": "rank1",
@@ -196238,7 +198138,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 827,
+      "rank": 835,
       "id": "falinks",
       "name": "Falinks",
       "profile": "rank1",
@@ -196475,7 +198375,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 828,
+      "rank": 836,
       "id": "rhyhorn",
       "name": "Rhyhorn",
       "profile": "rank1",
@@ -196713,7 +198613,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 829,
+      "rank": 837,
       "id": "garbodor_shadow",
       "name": "Garbodor (Shadow)",
       "profile": "rank1",
@@ -196950,7 +198850,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 830,
+      "rank": 838,
       "id": "meowstic",
       "name": "Meowstic (Male)",
       "profile": "rank1",
@@ -197187,7 +199087,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 831,
+      "rank": 839,
       "id": "noivern",
       "name": "Noivern",
       "profile": "rank1",
@@ -197425,7 +199325,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 832,
+      "rank": 840,
       "id": "skrelp",
       "name": "Skrelp",
       "profile": "rank1",
@@ -197663,7 +199563,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 833,
+      "rank": 841,
       "id": "magmortar",
       "name": "Magmortar",
       "profile": "rank1",
@@ -197900,7 +199800,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 834,
+      "rank": 842,
       "id": "probopass_shadow",
       "name": "Probopass (Shadow)",
       "profile": "rank1",
@@ -198138,7 +200038,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 835,
+      "rank": 843,
       "id": "goldeen",
       "name": "Goldeen",
       "profile": "rank1",
@@ -198375,7 +200275,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 836,
+      "rank": 844,
       "id": "grovyle_shadow",
       "name": "Grovyle (Shadow)",
       "profile": "rank1",
@@ -198612,7 +200512,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 837,
+      "rank": 845,
       "id": "dustox",
       "name": "Dustox",
       "profile": "rank1",
@@ -198850,7 +200750,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 838,
+      "rank": 846,
       "id": "mienshao",
       "name": "Mienshao",
       "profile": "rank1",
@@ -199087,7 +200987,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 839,
+      "rank": 847,
       "id": "meloetta_aria",
       "name": "Meloetta (Aria)",
       "profile": "rank1",
@@ -199325,7 +201225,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 840,
+      "rank": 848,
       "id": "heatran_shadow",
       "name": "Heatran (Shadow)",
       "profile": "rank1",
@@ -199563,7 +201463,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 841,
+      "rank": 849,
       "id": "raboot",
       "name": "Raboot",
       "profile": "rank1",
@@ -199800,7 +201700,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 842,
+      "rank": 850,
       "id": "totodile_shadow",
       "name": "Totodile (Shadow)",
       "profile": "rank1",
@@ -200037,7 +201937,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 843,
+      "rank": 851,
       "id": "chandelure_shadow",
       "name": "Chandelure (Shadow)",
       "profile": "rank1",
@@ -200275,7 +202175,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 844,
+      "rank": 852,
       "id": "absol",
       "name": "Absol",
       "profile": "rank1",
@@ -200512,7 +202412,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 845,
+      "rank": 853,
       "id": "heatran",
       "name": "Heatran",
       "profile": "rank1",
@@ -200750,7 +202650,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 846,
+      "rank": 854,
       "id": "flaaffy",
       "name": "Flaaffy",
       "profile": "rank1",
@@ -200987,7 +202887,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 847,
+      "rank": 855,
       "id": "seviper",
       "name": "Seviper",
       "profile": "rank1",
@@ -201224,7 +203124,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 848,
+      "rank": 856,
       "id": "tentacool_shadow",
       "name": "Tentacool (Shadow)",
       "profile": "rank1",
@@ -201462,7 +203362,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 849,
+      "rank": 857,
       "id": "luxray_shadow",
       "name": "Luxray (Shadow)",
       "profile": "rank1",
@@ -201699,7 +203599,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 850,
+      "rank": 858,
       "id": "luxio_shadow",
       "name": "Luxio (Shadow)",
       "profile": "rank1",
@@ -201936,7 +203836,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 851,
+      "rank": 859,
       "id": "smoochum",
       "name": "Smoochum",
       "profile": "rank1",
@@ -202174,7 +204074,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 852,
+      "rank": 860,
       "id": "cursola",
       "name": "Cursola",
       "profile": "rank1",
@@ -202411,7 +204311,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 853,
+      "rank": 861,
       "id": "darumaka_galarian",
       "name": "Darumaka (Galarian)",
       "profile": "rank1",
@@ -202648,7 +204548,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 854,
+      "rank": 862,
       "id": "passimian",
       "name": "Passimian",
       "profile": "rank1",
@@ -202885,7 +204785,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 855,
+      "rank": 863,
       "id": "graveler",
       "name": "Graveler",
       "profile": "rank1",
@@ -203123,7 +205023,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 856,
+      "rank": 864,
       "id": "lugia",
       "name": "Lugia",
       "profile": "rank1",
@@ -203361,7 +205261,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 857,
+      "rank": 865,
       "id": "cubone_shadow",
       "name": "Cubone (Shadow)",
       "profile": "rank1",
@@ -203598,7 +205498,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 858,
+      "rank": 866,
       "id": "gloom",
       "name": "Gloom",
       "profile": "rank1",
@@ -203836,7 +205736,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 859,
+      "rank": 867,
       "id": "grapploct",
       "name": "Grapploct",
       "profile": "rank1",
@@ -204073,7 +205973,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 860,
+      "rank": 868,
       "id": "tyrunt_shadow",
       "name": "Tyrunt (Shadow)",
       "profile": "rank1",
@@ -204311,7 +206211,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 861,
+      "rank": 869,
       "id": "kyogre_shadow",
       "name": "Kyogre (Shadow)",
       "profile": "rank1",
@@ -204548,7 +206448,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 862,
+      "rank": 870,
       "id": "heatmor",
       "name": "Heatmor",
       "profile": "rank1",
@@ -204785,7 +206685,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 863,
+      "rank": 871,
       "id": "haunter",
       "name": "Haunter",
       "profile": "rank1",
@@ -205023,7 +206923,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 864,
+      "rank": 872,
       "id": "graveler_shadow",
       "name": "Graveler (Shadow)",
       "profile": "rank1",
@@ -205261,7 +207161,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 865,
+      "rank": 873,
       "id": "mr_mime",
       "name": "Mr. Mime",
       "profile": "rank1",
@@ -205499,7 +207399,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 866,
+      "rank": 874,
       "id": "nidorino",
       "name": "Nidorino",
       "profile": "rank1",
@@ -205736,7 +207636,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 867,
+      "rank": 875,
       "id": "quilava_shadow",
       "name": "Quilava (Shadow)",
       "profile": "rank1",
@@ -205973,7 +207873,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 868,
+      "rank": 876,
       "id": "gothitelle_shadow",
       "name": "Gothitelle (Shadow)",
       "profile": "rank1",
@@ -206210,7 +208110,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 869,
+      "rank": 877,
       "id": "staraptor_shadow",
       "name": "Staraptor (Shadow)",
       "profile": "rank1",
@@ -206448,7 +208348,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 870,
+      "rank": 878,
       "id": "espathra",
       "name": "Espathra",
       "profile": "rank1",
@@ -206685,7 +208585,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 871,
+      "rank": 879,
       "id": "darmanitan_standard_shadow",
       "name": "Darmanitan (Standard) (Shadow)",
       "profile": "rank1",
@@ -206922,7 +208822,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 872,
+      "rank": 880,
       "id": "cinderace",
       "name": "Cinderace",
       "profile": "rank1",
@@ -207159,7 +209059,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 873,
+      "rank": 881,
       "id": "stonjourner",
       "name": "Stonjourner",
       "profile": "rank1",
@@ -207396,7 +209296,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 874,
+      "rank": 882,
       "id": "vibrava",
       "name": "Vibrava",
       "profile": "rank1",
@@ -207634,7 +209534,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 875,
+      "rank": 883,
       "id": "manectric_shadow",
       "name": "Manectric (Shadow)",
       "profile": "rank1",
@@ -207871,7 +209771,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 876,
+      "rank": 884,
       "id": "seel_shadow",
       "name": "Seel (Shadow)",
       "profile": "rank1",
@@ -208108,7 +210008,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 877,
+      "rank": 885,
       "id": "bisharp",
       "name": "Bisharp",
       "profile": "rank1",
@@ -208346,7 +210246,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 878,
+      "rank": 886,
       "id": "scolipede_shadow",
       "name": "Scolipede (Shadow)",
       "profile": "rank1",
@@ -208584,7 +210484,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 879,
+      "rank": 887,
       "id": "gabite",
       "name": "Gabite",
       "profile": "rank1",
@@ -208822,7 +210722,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 880,
+      "rank": 888,
+      "id": "brambleghast",
+      "name": "Brambleghast",
+      "profile": "rank1",
+      "averageScore": 256,
+      "externalWeightedAverageScore": 251,
+      "weightedAverageScore": 300,
+      "rawScore": 511,
+      "weightedScore": 440,
+      "competitiveScore": 440,
+      "roleScore": 440,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 458,
+      "overallScore": 458,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 282,
+          "weightedScore": 279,
+          "competitiveScore": 280,
+          "rawRating": 45,
+          "weightedRating": 45,
+          "competitiveRating": 45,
+          "score": 45,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "HEX",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "NIGHT_SHADE",
+                "uses": 43
+              },
+              {
+                "id": "POWER_WHIP",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 346,
+          "weightedScore": 335,
+          "competitiveScore": 333,
+          "rawRating": 59,
+          "weightedRating": 57,
+          "competitiveRating": 57,
+          "score": 57,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "HEX",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "NIGHT_SHADE",
+                "uses": 43
+              },
+              {
+                "id": "POWER_WHIP",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 410,
+          "weightedScore": 210,
+          "competitiveScore": 209,
+          "rawRating": 61,
+          "weightedRating": 32,
+          "competitiveRating": 32,
+          "score": 32,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "HEX",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "NIGHT_SHADE",
+                "uses": 43
+              },
+              {
+                "id": "POWER_WHIP",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 480,
+          "weightedScore": 476,
+          "competitiveScore": 479,
+          "rawRating": 72,
+          "weightedRating": 72,
+          "competitiveRating": 72,
+          "score": 72,
+          "matchups": 43,
+          "wins": 20,
+          "losses": 23,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "HEX",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "NIGHT_SHADE",
+                "uses": 43
+              },
+              {
+                "id": "POWER_WHIP",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 122,
+          "weightedScore": 115,
+          "competitiveScore": 115,
+          "rawRating": 30,
+          "weightedRating": 28,
+          "competitiveRating": 28,
+          "score": 28,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "HEX",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "NIGHT_SHADE",
+                "uses": 43
+              },
+              {
+                "id": "POWER_WHIP",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 219.08,
+      "matchups": 172,
+      "wins": 25,
+      "losses": 147,
+      "ties": 0,
+      "winRate": 0.1453,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 346,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 122,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 282,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 275,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0
+        }
+      },
+      "types": [
+        "grass",
+        "ghost"
+      ],
+      "dex": 947,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 23,
+        "cp": 1497
+      },
+      "moveset": {
+        "fast": "HEX",
+        "charged": [
+          "POWER_WHIP",
+          "NIGHT_SHADE"
+        ]
+      }
+    },
+    {
+      "rank": 889,
       "id": "girafarig_shadow",
       "name": "Girafarig (Shadow)",
       "profile": "rank1",
@@ -209060,7 +211198,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 881,
+      "rank": 890,
       "id": "stunky_shadow",
       "name": "Stunky (Shadow)",
       "profile": "rank1",
@@ -209298,7 +211436,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 882,
+      "rank": 891,
       "id": "phantump_shadow",
       "name": "Phantump (Shadow)",
       "profile": "rank1",
@@ -209536,7 +211674,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 883,
+      "rank": 892,
       "id": "pineco",
       "name": "Pineco",
       "profile": "rank1",
@@ -209773,7 +211911,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 884,
+      "rank": 893,
       "id": "sharpedo",
       "name": "Sharpedo",
       "profile": "rank1",
@@ -210011,7 +212149,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 885,
+      "rank": 894,
+      "id": "mabosstiff",
+      "name": "Mabosstiff",
+      "profile": "rank1",
+      "averageScore": 235,
+      "externalWeightedAverageScore": 230,
+      "weightedAverageScore": 300,
+      "rawScore": 467,
+      "weightedScore": 429,
+      "competitiveScore": 435,
+      "roleScore": 435,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 455,
+      "overallScore": 455,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 283,
+          "weightedScore": 272,
+          "competitiveScore": 265,
+          "rawRating": 45,
+          "weightedRating": 44,
+          "competitiveRating": 43,
+          "score": 43,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 294,
+          "weightedScore": 283,
+          "competitiveScore": 284,
+          "rawRating": 50,
+          "weightedRating": 48,
+          "competitiveRating": 49,
+          "score": 49,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 401,
+          "weightedScore": 306,
+          "competitiveScore": 311,
+          "rawRating": 60,
+          "weightedRating": 46,
+          "competitiveRating": 47,
+          "score": 47,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 417,
+          "weightedScore": 413,
+          "competitiveScore": 417,
+          "rawRating": 63,
+          "weightedRating": 62,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 13,
+          "losses": 30,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 107,
+          "weightedScore": 98,
+          "competitiveScore": 103,
+          "rawRating": 26,
+          "weightedRating": 24,
+          "competitiveRating": 25,
+          "score": 25,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "SNARL",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "CRUNCH",
+                "uses": 43
+              },
+              {
+                "id": "DIG",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 194.87,
+      "matchups": 172,
+      "wins": 17,
+      "losses": 155,
+      "ties": 0,
+      "winRate": 0.0988,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 294,
+          "matchups": 43,
+          "wins": 8,
+          "losses": 35,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 107,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 283,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 254,
+          "matchups": 43,
+          "wins": 4,
+          "losses": 39,
+          "ties": 0
+        }
+      },
+      "types": [
+        "dark"
+      ],
+      "dex": 943,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 14,
+        "ivHp": 13,
+        "level": 19,
+        "cp": 1498
+      },
+      "moveset": {
+        "fast": "SNARL",
+        "charged": [
+          "CRUNCH",
+          "DIG"
+        ]
+      }
+    },
+    {
+      "rank": 895,
       "id": "breloom",
       "name": "Breloom",
       "profile": "rank1",
@@ -210249,7 +212624,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 886,
+      "rank": 896,
       "id": "zamazenta_crowned_shield",
       "name": "Zamazenta (Crowned Shield)",
       "profile": "rank1",
@@ -210487,7 +212862,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 887,
+      "rank": 897,
       "id": "masquerain",
       "name": "Masquerain",
       "profile": "rank1",
@@ -210725,7 +213100,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 888,
+      "rank": 898,
       "id": "ivysaur_shadow",
       "name": "Ivysaur (Shadow)",
       "profile": "rank1",
@@ -210963,7 +213338,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 889,
+      "rank": 899,
       "id": "chandelure",
       "name": "Chandelure",
       "profile": "rank1",
@@ -211201,7 +213576,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 890,
+      "rank": 900,
       "id": "lombre",
       "name": "Lombre",
       "profile": "rank1",
@@ -211439,7 +213814,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 891,
+      "rank": 901,
       "id": "deino",
       "name": "Deino",
       "profile": "rank1",
@@ -211677,7 +214052,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 892,
+      "rank": 902,
       "id": "tapu_koko",
       "name": "Tapu Koko",
       "profile": "rank1",
@@ -211915,7 +214290,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 893,
+      "rank": 903,
       "id": "deerling",
       "name": "Deerling",
       "profile": "rank1",
@@ -212153,7 +214528,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 894,
+      "rank": 904,
       "id": "gothorita",
       "name": "Gothorita",
       "profile": "rank1",
@@ -212390,7 +214765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 895,
+      "rank": 905,
       "id": "frosmoth",
       "name": "Frosmoth",
       "profile": "rank1",
@@ -212628,7 +215003,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 896,
+      "rank": 906,
       "id": "inteleon",
       "name": "Inteleon",
       "profile": "rank1",
@@ -212865,7 +215240,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 897,
+      "rank": 907,
       "id": "mismagius",
       "name": "Mismagius",
       "profile": "rank1",
@@ -213102,7 +215477,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 898,
+      "rank": 908,
       "id": "exeggutor_shadow",
       "name": "Exeggutor (Shadow)",
       "profile": "rank1",
@@ -213340,7 +215715,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 899,
+      "rank": 909,
       "id": "simisage",
       "name": "Simisage",
       "profile": "rank1",
@@ -213577,7 +215952,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 900,
+      "rank": 910,
       "id": "flaaffy_shadow",
       "name": "Flaaffy (Shadow)",
       "profile": "rank1",
@@ -213814,7 +216189,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 901,
+      "rank": 911,
       "id": "cherrim_sunny",
       "name": "Cherrim (Sunshine)",
       "profile": "rank1",
@@ -214051,7 +216426,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 902,
+      "rank": 912,
       "id": "dwebble",
       "name": "Dwebble",
       "profile": "rank1",
@@ -214289,7 +216664,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 903,
+      "rank": 913,
       "id": "tauros",
       "name": "Tauros",
       "profile": "rank1",
@@ -214526,7 +216901,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 904,
+      "rank": 914,
       "id": "genesect_shock",
       "name": "Genesect (Shock)",
       "profile": "rank1",
@@ -214764,7 +217139,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 905,
+      "rank": 915,
       "id": "geodude_shadow",
       "name": "Geodude (Shadow)",
       "profile": "rank1",
@@ -215002,7 +217377,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 906,
+      "rank": 916,
       "id": "vibrava_shadow",
       "name": "Vibrava (Shadow)",
       "profile": "rank1",
@@ -215240,7 +217615,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 907,
+      "rank": 917,
       "id": "gabite_shadow",
       "name": "Gabite (Shadow)",
       "profile": "rank1",
@@ -215478,7 +217853,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 908,
+      "rank": 918,
       "id": "darmanitan_standard",
       "name": "Darmanitan (Standard)",
       "profile": "rank1",
@@ -215715,7 +218090,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 909,
+      "rank": 919,
       "id": "pineco_shadow",
       "name": "Pineco (Shadow)",
       "profile": "rank1",
@@ -215952,7 +218327,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 910,
+      "rank": 920,
       "id": "mewtwo_shadow",
       "name": "Mewtwo (Shadow)",
       "profile": "rank1",
@@ -216189,7 +218564,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 911,
+      "rank": 921,
       "id": "clamperl",
       "name": "Clamperl",
       "profile": "rank1",
@@ -216426,7 +218801,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 912,
+      "rank": 922,
       "id": "espeon",
       "name": "Espeon",
       "profile": "rank1",
@@ -216663,7 +219038,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 913,
+      "rank": 923,
       "id": "mesprit",
       "name": "Mesprit",
       "profile": "rank1",
@@ -216900,7 +219275,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 914,
+      "rank": 924,
       "id": "rayquaza",
       "name": "Rayquaza",
       "profile": "rank1",
@@ -217138,7 +219513,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 915,
+      "rank": 925,
       "id": "fuecoco",
       "name": "Fuecoco",
       "profile": "rank1",
@@ -217375,7 +219750,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 916,
+      "rank": 926,
       "id": "tsareena",
       "name": "Tsareena",
       "profile": "rank1",
@@ -217612,7 +219987,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 917,
+      "rank": 927,
       "id": "hatterene",
       "name": "Hatterene",
       "profile": "rank1",
@@ -217850,7 +220225,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 918,
+      "rank": 928,
+      "id": "sandygast_shadow",
+      "name": "Sandygast (Shadow)",
+      "profile": "rank1",
+      "averageScore": 267,
+      "externalWeightedAverageScore": 264,
+      "weightedAverageScore": 300,
+      "rawScore": 511,
+      "weightedScore": 417,
+      "competitiveScore": 420,
+      "roleScore": 420,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 444,
+      "overallScore": 444,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 311,
+          "weightedScore": 302,
+          "competitiveScore": 300,
+          "rawRating": 50,
+          "weightedRating": 49,
+          "competitiveRating": 49,
+          "score": 49,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 33,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 320,
+          "weightedScore": 313,
+          "competitiveScore": 310,
+          "rawRating": 54,
+          "weightedRating": 54,
+          "competitiveRating": 53,
+          "score": 53,
+          "matchups": 43,
+          "wins": 11,
+          "losses": 32,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 379,
+          "weightedScore": 148,
+          "competitiveScore": 152,
+          "rawRating": 56,
+          "weightedRating": 22,
+          "competitiveRating": 23,
+          "score": 23,
+          "matchups": 43,
+          "wins": 16,
+          "losses": 27,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 467,
+          "weightedScore": 464,
+          "competitiveScore": 471,
+          "rawRating": 70,
+          "weightedRating": 70,
+          "competitiveRating": 71,
+          "score": 71,
+          "matchups": 43,
+          "wins": 21,
+          "losses": 22,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 135,
+          "weightedScore": 126,
+          "competitiveScore": 129,
+          "rawRating": 33,
+          "weightedRating": 31,
+          "competitiveRating": 31,
+          "score": 31,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "MUD_SHOT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "EARTH_POWER",
+                "uses": 43
+              },
+              {
+                "id": "SHADOW_BALL",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 245.82,
+      "matchups": 172,
+      "wins": 34,
+      "losses": 138,
+      "ties": 0,
+      "winRate": 0.1977,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 320,
+          "matchups": 43,
+          "wins": 11,
+          "losses": 32,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 135,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 311,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 33,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 300,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 33,
+          "ties": 0
+        }
+      },
+      "types": [
+        "ghost",
+        "ground"
+      ],
+      "dex": 769,
+      "build": {
+        "ivAtk": 15,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 51,
+        "cp": 1411
+      },
+      "moveset": {
+        "fast": "MUD_SHOT",
+        "charged": [
+          "SHADOW_BALL",
+          "EARTH_POWER"
+        ]
+      }
+    },
+    {
+      "rank": 929,
       "id": "granbull_shadow",
       "name": "Granbull (Shadow)",
       "profile": "rank1",
@@ -218087,7 +220700,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 919,
+      "rank": 930,
       "id": "omastar",
       "name": "Omastar",
       "profile": "rank1",
@@ -218325,7 +220938,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 920,
+      "rank": 931,
       "id": "klang",
       "name": "Klang",
       "profile": "rank1",
@@ -218562,7 +221175,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 921,
+      "rank": 932,
       "id": "gothorita_shadow",
       "name": "Gothorita (Shadow)",
       "profile": "rank1",
@@ -218799,7 +221412,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 922,
+      "rank": 933,
       "id": "exeggutor_alolan",
       "name": "Exeggutor (Alolan)",
       "profile": "rank1",
@@ -219037,7 +221650,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 923,
+      "rank": 934,
       "id": "tyrantrum",
       "name": "Tyrantrum",
       "profile": "rank1",
@@ -219275,7 +221888,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 924,
+      "rank": 935,
       "id": "chinchou",
       "name": "Chinchou",
       "profile": "rank1",
@@ -219513,7 +222126,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 925,
+      "rank": 936,
       "id": "rotom_heat",
       "name": "Rotom (Heat)",
       "profile": "rank1",
@@ -219751,7 +222364,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 926,
+      "rank": 937,
       "id": "carracosta",
       "name": "Carracosta",
       "profile": "rank1",
@@ -219989,7 +222602,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 927,
+      "rank": 938,
       "id": "deino_shadow",
       "name": "Deino (Shadow)",
       "profile": "rank1",
@@ -220227,7 +222840,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 928,
+      "rank": 939,
       "id": "honedge",
       "name": "Honedge",
       "profile": "rank1",
@@ -220465,7 +223078,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 929,
+      "rank": 940,
       "id": "sneasler_shadow",
       "name": "Sneasler (Shadow)",
       "profile": "rank1",
@@ -220703,7 +223316,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 930,
+      "rank": 941,
       "id": "sneasel_hisuian",
       "name": "Sneasel (Hisuian)",
       "profile": "rank1",
@@ -220941,7 +223554,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 931,
+      "rank": 942,
       "id": "simipour",
       "name": "Simipour",
       "profile": "rank1",
@@ -221178,7 +223791,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 932,
+      "rank": 943,
       "id": "koffing_shadow",
       "name": "Koffing (Shadow)",
       "profile": "rank1",
@@ -221415,7 +224028,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 933,
+      "rank": 944,
       "id": "tauros_blaze",
       "name": "Tauros (Blaze)",
       "profile": "rank1",
@@ -221653,7 +224266,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 934,
+      "rank": 945,
       "id": "articuno_galarian",
       "name": "Articuno (Galarian)",
       "profile": "rank1",
@@ -221891,7 +224504,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 935,
+      "rank": 946,
       "id": "tranquill",
       "name": "Tranquill",
       "profile": "rank1",
@@ -222129,7 +224742,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 936,
+      "rank": 947,
       "id": "snover",
       "name": "Snover",
       "profile": "rank1",
@@ -222367,7 +224980,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 937,
+      "rank": 948,
       "id": "exeggutor_alolan_shadow",
       "name": "Exeggutor (Alolan) (Shadow)",
       "profile": "rank1",
@@ -222605,7 +225218,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 938,
+      "rank": 949,
       "id": "polteageist",
       "name": "Polteageist",
       "profile": "rank1",
@@ -222842,7 +225455,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 939,
+      "rank": 950,
       "id": "aggron",
       "name": "Aggron",
       "profile": "rank1",
@@ -223080,7 +225693,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 940,
+      "rank": 951,
       "id": "banette",
       "name": "Banette",
       "profile": "rank1",
@@ -223317,7 +225930,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 941,
+      "rank": 952,
       "id": "drizzile",
       "name": "Drizzile",
       "profile": "rank1",
@@ -223554,7 +226167,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 942,
+      "rank": 953,
       "id": "blissey",
       "name": "Blissey",
       "profile": "rank1",
@@ -223791,7 +226404,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 943,
+      "rank": 954,
       "id": "gloom_shadow",
       "name": "Gloom (Shadow)",
       "profile": "rank1",
@@ -224029,7 +226642,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 944,
+      "rank": 955,
       "id": "popplio",
       "name": "Popplio",
       "profile": "rank1",
@@ -224266,7 +226879,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 945,
+      "rank": 956,
       "id": "genesect_douse",
       "name": "Genesect (Douse)",
       "profile": "rank1",
@@ -224504,7 +227117,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 946,
+      "rank": 957,
       "id": "onix",
       "name": "Onix",
       "profile": "rank1",
@@ -224742,7 +227355,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 947,
+      "rank": 958,
       "id": "cloyster_shadow",
       "name": "Cloyster (Shadow)",
       "profile": "rank1",
@@ -224980,7 +227593,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 948,
+      "rank": 959,
       "id": "zorua_hisuian",
       "name": "Zorua (Hisuian)",
       "profile": "rank1",
@@ -225218,7 +227831,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 949,
+      "rank": 960,
       "id": "phantump",
       "name": "Phantump",
       "profile": "rank1",
@@ -225456,7 +228069,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 950,
+      "rank": 961,
       "id": "keldeo_ordinary",
       "name": "Keldeo (Ordinary)",
       "profile": "rank1",
@@ -225694,7 +228307,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 951,
+      "rank": 962,
       "id": "tauros_combat",
       "name": "Tauros (Combat)",
       "profile": "rank1",
@@ -225931,7 +228544,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 952,
+      "rank": 963,
       "id": "banette_shadow",
       "name": "Banette (Shadow)",
       "profile": "rank1",
@@ -226168,7 +228781,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 953,
+      "rank": 964,
       "id": "omastar_shadow",
       "name": "Omastar (Shadow)",
       "profile": "rank1",
@@ -226406,7 +229019,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 954,
+      "rank": 965,
       "id": "dugtrio_alolan_shadow",
       "name": "Dugtrio (Alolan) (Shadow)",
       "profile": "rank1",
@@ -226644,7 +229257,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 955,
+      "rank": 966,
       "id": "clawitzer",
       "name": "Clawitzer",
       "profile": "rank1",
@@ -226881,7 +229494,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 956,
+      "rank": 967,
       "id": "zacian_hero",
       "name": "Zacian (Hero)",
       "profile": "rank1",
@@ -227118,7 +229731,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 957,
+      "rank": 968,
       "id": "exeggutor",
       "name": "Exeggutor",
       "profile": "rank1",
@@ -227356,7 +229969,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 958,
+      "rank": 969,
       "id": "aron_shadow",
       "name": "Aron (Shadow)",
       "profile": "rank1",
@@ -227594,7 +230207,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 959,
+      "rank": 970,
       "id": "rowlet",
       "name": "Rowlet",
       "profile": "rank1",
@@ -227832,7 +230445,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 960,
+      "rank": 971,
       "id": "rotom_wash",
       "name": "Rotom (Wash)",
       "profile": "rank1",
@@ -228070,7 +230683,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 961,
+      "rank": 972,
       "id": "dwebble_shadow",
       "name": "Dwebble (Shadow)",
       "profile": "rank1",
@@ -228308,7 +230921,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 962,
+      "rank": 973,
       "id": "infernape",
       "name": "Infernape",
       "profile": "rank1",
@@ -228546,7 +231159,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 963,
+      "rank": 974,
       "id": "zapdos",
       "name": "Zapdos",
       "profile": "rank1",
@@ -228784,7 +231397,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 964,
+      "rank": 975,
       "id": "vileplume",
       "name": "Vileplume",
       "profile": "rank1",
@@ -229022,7 +231635,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 965,
+      "rank": 976,
       "id": "sudowoodo_shadow",
       "name": "Sudowoodo (Shadow)",
       "profile": "rank1",
@@ -229259,7 +231872,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 966,
+      "rank": 977,
       "id": "swellow",
       "name": "Swellow",
       "profile": "rank1",
@@ -229497,7 +232110,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 967,
+      "rank": 978,
       "id": "natu_shadow",
       "name": "Natu (Shadow)",
       "profile": "rank1",
@@ -229735,7 +232348,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 968,
+      "rank": 979,
       "id": "skorupi",
       "name": "Skorupi",
       "profile": "rank1",
@@ -229973,7 +232586,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 969,
+      "rank": 980,
       "id": "manectric",
       "name": "Manectric",
       "profile": "rank1",
@@ -230210,7 +232823,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 970,
+      "rank": 981,
       "id": "dialga",
       "name": "Dialga",
       "profile": "rank1",
@@ -230448,7 +233061,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 971,
+      "rank": 982,
       "id": "beautifly",
       "name": "Beautifly",
       "profile": "rank1",
@@ -230686,7 +233299,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 972,
+      "rank": 983,
       "id": "clauncher",
       "name": "Clauncher",
       "profile": "rank1",
@@ -230923,7 +233536,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 973,
+      "rank": 984,
       "id": "haunter_shadow",
       "name": "Haunter (Shadow)",
       "profile": "rank1",
@@ -231161,7 +233774,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 974,
+      "rank": 985,
       "id": "geodude",
       "name": "Geodude",
       "profile": "rank1",
@@ -231399,7 +234012,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 975,
+      "rank": 986,
       "id": "gardevoir",
       "name": "Gardevoir",
       "profile": "rank1",
@@ -231637,7 +234250,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 976,
+      "rank": 987,
       "id": "ninjask",
       "name": "Ninjask",
       "profile": "rank1",
@@ -231875,7 +234488,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 977,
+      "rank": 988,
       "id": "zorua",
       "name": "Zorua",
       "profile": "rank1",
@@ -232112,7 +234725,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 978,
+      "rank": 989,
       "id": "bagon",
       "name": "Bagon",
       "profile": "rank1",
@@ -232349,7 +234962,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 979,
+      "rank": 990,
       "id": "kyurem_white",
       "name": "Kyurem (White)",
       "profile": "rank1",
@@ -232587,7 +235200,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 980,
+      "rank": 991,
       "id": "exeggcute",
       "name": "Exeggcute",
       "profile": "rank1",
@@ -232825,7 +235438,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 981,
+      "rank": 992,
       "id": "mankey_shadow",
       "name": "Mankey (Shadow)",
       "profile": "rank1",
@@ -233062,7 +235675,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 982,
+      "rank": 993,
       "id": "tangela",
       "name": "Tangela",
       "profile": "rank1",
@@ -233299,7 +235912,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 983,
+      "rank": 994,
       "id": "arcanine",
       "name": "Arcanine",
       "profile": "rank1",
@@ -233536,7 +236149,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 984,
+      "rank": 995,
       "id": "sneasler",
       "name": "Sneasler",
       "profile": "rank1",
@@ -233774,7 +236387,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 985,
+      "rank": 996,
       "id": "skorupi_shadow",
       "name": "Skorupi (Shadow)",
       "profile": "rank1",
@@ -234012,7 +236625,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 986,
+      "rank": 997,
       "id": "anorith_shadow",
       "name": "Anorith (Shadow)",
       "profile": "rank1",
@@ -234250,7 +236863,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 987,
+      "rank": 998,
       "id": "mothim",
       "name": "Mothim",
       "profile": "rank1",
@@ -234488,7 +237101,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 988,
+      "rank": 999,
       "id": "tranquill_shadow",
       "name": "Tranquill (Shadow)",
       "profile": "rank1",
@@ -234726,7 +237339,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 989,
+      "rank": 1000,
       "id": "sneasel_hisuian_shadow",
       "name": "Sneasel (Hisuian) (Shadow)",
       "profile": "rank1",
@@ -234964,7 +237577,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 990,
+      "rank": 1001,
       "id": "omanyte",
       "name": "Omanyte",
       "profile": "rank1",
@@ -235202,7 +237815,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 991,
+      "rank": 1002,
       "id": "zapdos_shadow",
       "name": "Zapdos (Shadow)",
       "profile": "rank1",
@@ -235440,7 +238053,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 992,
+      "rank": 1003,
       "id": "regice_shadow",
       "name": "Regice (Shadow)",
       "profile": "rank1",
@@ -235677,7 +238290,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 993,
+      "rank": 1004,
       "id": "tyrantrum_shadow",
       "name": "Tyrantrum (Shadow)",
       "profile": "rank1",
@@ -235915,7 +238528,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 994,
+      "rank": 1005,
       "id": "lycanroc_midday",
       "name": "Lycanroc (Midday)",
       "profile": "rank1",
@@ -236152,7 +238765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 995,
+      "rank": 1006,
       "id": "bagon_shadow",
       "name": "Bagon (Shadow)",
       "profile": "rank1",
@@ -236389,7 +239002,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 996,
+      "rank": 1007,
       "id": "lugia_shadow",
       "name": "Lugia (Shadow)",
       "profile": "rank1",
@@ -236627,7 +239240,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 997,
+      "rank": 1008,
       "id": "oricorio_pom_pom",
       "name": "Oricorio (Pom-Pom)",
       "profile": "rank1",
@@ -236865,7 +239478,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 998,
+      "rank": 1009,
       "id": "mr_mime_galarian",
       "name": "Mr. Mime (Galarian)",
       "profile": "rank1",
@@ -237103,7 +239716,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 999,
+      "rank": 1010,
       "id": "liepard_shadow",
       "name": "Liepard (Shadow)",
       "profile": "rank1",
@@ -237340,7 +239953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1000,
+      "rank": 1011,
       "id": "cinccino",
       "name": "Cinccino",
       "profile": "rank1",
@@ -237577,7 +240190,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1001,
+      "rank": 1012,
       "id": "infernape_shadow",
       "name": "Infernape (Shadow)",
       "profile": "rank1",
@@ -237815,7 +240428,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1002,
+      "rank": 1013,
       "id": "mr_rime",
       "name": "Mr. Rime",
       "profile": "rank1",
@@ -238053,7 +240666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1003,
+      "rank": 1014,
       "id": "aron",
       "name": "Aron",
       "profile": "rank1",
@@ -238291,7 +240904,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1004,
+      "rank": 1015,
       "id": "pupitar",
       "name": "Pupitar",
       "profile": "rank1",
@@ -238529,7 +241142,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1005,
+      "rank": 1016,
       "id": "onix_shadow",
       "name": "Onix (Shadow)",
       "profile": "rank1",
@@ -238767,7 +241380,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1006,
+      "rank": 1017,
       "id": "exeggcute_shadow",
       "name": "Exeggcute (Shadow)",
       "profile": "rank1",
@@ -239005,7 +241618,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1007,
+      "rank": 1018,
       "id": "vivillon",
       "name": "Vivillon",
       "profile": "rank1",
@@ -239243,7 +241856,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1008,
+      "rank": 1019,
       "id": "simisear",
       "name": "Simisear",
       "profile": "rank1",
@@ -239480,7 +242093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1009,
+      "rank": 1020,
       "id": "nidorino_shadow",
       "name": "Nidorino (Shadow)",
       "profile": "rank1",
@@ -239717,7 +242330,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1010,
+      "rank": 1021,
       "id": "glimmet",
       "name": "Glimmet",
       "profile": "rank1",
@@ -239955,7 +242568,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1011,
+      "rank": 1022,
       "id": "glimmora",
       "name": "Glimmora",
       "profile": "rank1",
@@ -240193,7 +242806,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1012,
+      "rank": 1023,
       "id": "mismagius_shadow",
       "name": "Mismagius (Shadow)",
       "profile": "rank1",
@@ -240430,7 +243043,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1013,
+      "rank": 1024,
       "id": "boldore",
       "name": "Boldore",
       "profile": "rank1",
@@ -240667,7 +243280,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1014,
+      "rank": 1025,
       "id": "musharna",
       "name": "Musharna",
       "profile": "rank1",
@@ -240904,7 +243517,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1015,
+      "rank": 1026,
       "id": "duraludon",
       "name": "Duraludon",
       "profile": "rank1",
@@ -241142,7 +243755,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1016,
+      "rank": 1027,
       "id": "braviary",
       "name": "Braviary",
       "profile": "rank1",
@@ -241380,7 +243993,245 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1017,
+      "rank": 1028,
+      "id": "minior_core",
+      "name": "Minior (Core)",
+      "profile": "rank1",
+      "averageScore": 235,
+      "externalWeightedAverageScore": 235,
+      "weightedAverageScore": 300,
+      "rawScore": 447,
+      "weightedScore": 375,
+      "competitiveScore": 377,
+      "roleScore": 377,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 414,
+      "overallScore": 414,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 269,
+          "weightedScore": 264,
+          "competitiveScore": 262,
+          "rawRating": 43,
+          "weightedRating": 43,
+          "competitiveRating": 43,
+          "score": 43,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "ROLLOUT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "ACROBATICS",
+                "uses": 43
+              },
+              {
+                "id": "POWER_GEM",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 320,
+          "weightedScore": 319,
+          "competitiveScore": 306,
+          "rawRating": 54,
+          "weightedRating": 55,
+          "competitiveRating": 53,
+          "score": 53,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 32,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "ROLLOUT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "ACROBATICS",
+                "uses": 43
+              },
+              {
+                "id": "POWER_GEM",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 352,
+          "weightedScore": 149,
+          "competitiveScore": 151,
+          "rawRating": 52,
+          "weightedRating": 22,
+          "competitiveRating": 23,
+          "score": 23,
+          "matchups": 43,
+          "wins": 11,
+          "losses": 32,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "ROLLOUT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "ACROBATICS",
+                "uses": 43
+              },
+              {
+                "id": "POWER_GEM",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 390,
+          "weightedScore": 380,
+          "competitiveScore": 382,
+          "rawRating": 59,
+          "weightedRating": 57,
+          "competitiveRating": 58,
+          "score": 58,
+          "matchups": 43,
+          "wins": 17,
+          "losses": 26,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "ROLLOUT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "ACROBATICS",
+                "uses": 43
+              },
+              {
+                "id": "POWER_GEM",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 102,
+          "weightedScore": 101,
+          "competitiveScore": 104,
+          "rawRating": 25,
+          "weightedRating": 25,
+          "competitiveRating": 25,
+          "score": 25,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "ROLLOUT",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "ACROBATICS",
+                "uses": 43
+              },
+              {
+                "id": "POWER_GEM",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 224.01,
+      "matchups": 172,
+      "wins": 24,
+      "losses": 146,
+      "ties": 2,
+      "winRate": 0.1395,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 320,
+          "matchups": 43,
+          "wins": 10,
+          "losses": 32,
+          "ties": 1
+        },
+        "0-1": {
+          "averageScore": 102,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 269,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 249,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 36,
+          "ties": 1
+        }
+      },
+      "types": [
+        "rock",
+        "flying"
+      ],
+      "dex": 774,
+      "build": {
+        "ivAtk": 1,
+        "ivDef": 15,
+        "ivHp": 13,
+        "level": 24.5,
+        "cp": 1499
+      },
+      "moveset": {
+        "fast": "ROLLOUT",
+        "charged": [
+          "ACROBATICS",
+          "POWER_GEM"
+        ]
+      }
+    },
+    {
+      "rank": 1029,
       "id": "kingler",
       "name": "Kingler",
       "profile": "rank1",
@@ -241617,7 +244468,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1018,
+      "rank": 1030,
       "id": "dratini_shadow",
       "name": "Dratini (Shadow)",
       "profile": "rank1",
@@ -241854,7 +244705,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1019,
+      "rank": 1031,
       "id": "carracosta_shadow",
       "name": "Carracosta (Shadow)",
       "profile": "rank1",
@@ -242092,7 +244943,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1020,
+      "rank": 1032,
       "id": "reshiram",
       "name": "Reshiram",
       "profile": "rank1",
@@ -242330,7 +245181,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1021,
+      "rank": 1033,
       "id": "sneasel_shadow",
       "name": "Sneasel (Shadow)",
       "profile": "rank1",
@@ -242568,7 +245419,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1022,
+      "rank": 1034,
       "id": "weavile_shadow",
       "name": "Weavile (Shadow)",
       "profile": "rank1",
@@ -242806,7 +245657,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1023,
+      "rank": 1035,
       "id": "rhydon_shadow",
       "name": "Rhydon (Shadow)",
       "profile": "rank1",
@@ -243044,7 +245895,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1024,
+      "rank": 1036,
       "id": "snover_shadow",
       "name": "Snover (Shadow)",
       "profile": "rank1",
@@ -243282,7 +246133,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1025,
+      "rank": 1037,
       "id": "elgyem",
       "name": "Elgyem",
       "profile": "rank1",
@@ -243519,7 +246370,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1026,
+      "rank": 1038,
       "id": "dugtrio_alolan",
       "name": "Dugtrio (Alolan)",
       "profile": "rank1",
@@ -243757,7 +246608,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1027,
+      "rank": 1039,
       "id": "noivern_shadow",
       "name": "Noivern (Shadow)",
       "profile": "rank1",
@@ -243995,7 +246846,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1028,
+      "rank": 1040,
       "id": "ponyta_galarian",
       "name": "Ponyta (Galarian)",
       "profile": "rank1",
@@ -244232,7 +247083,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1029,
+      "rank": 1041,
       "id": "ambipom",
       "name": "Ambipom",
       "profile": "rank1",
@@ -244448,7 +247299,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1030,
+      "rank": 1042,
       "id": "raticate",
       "name": "Raticate",
       "profile": "rank1",
@@ -244685,7 +247536,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1031,
+      "rank": 1043,
       "id": "liepard",
       "name": "Liepard",
       "profile": "rank1",
@@ -244922,7 +247773,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1032,
+      "rank": 1044,
       "id": "tatsugiri_curly",
       "name": "Tatsugiri (Curly)",
       "profile": "rank1",
@@ -245160,7 +248011,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1033,
+      "rank": 1045,
       "id": "tatsugiri_droopy",
       "name": "Tatsugiri (Droopy)",
       "profile": "rank1",
@@ -245398,7 +248249,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1034,
+      "rank": 1046,
       "id": "tatsugiri_stretchy",
       "name": "Tatsugiri (Stretchy)",
       "profile": "rank1",
@@ -245636,7 +248487,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1035,
+      "rank": 1047,
       "id": "gible",
       "name": "Gible",
       "profile": "rank1",
@@ -245874,7 +248725,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1036,
+      "rank": 1048,
       "id": "dratini",
       "name": "Dratini",
       "profile": "rank1",
@@ -246111,7 +248962,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1037,
+      "rank": 1049,
       "id": "dialga_origin",
       "name": "Dialga (Origin)",
       "profile": "rank1",
@@ -246349,7 +249200,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1038,
+      "rank": 1050,
       "id": "zygarde_10",
       "name": "Zygarde (10% Forme)",
       "profile": "rank1",
@@ -246587,7 +249438,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1039,
+      "rank": 1051,
       "id": "golem",
       "name": "Golem",
       "profile": "rank1",
@@ -246825,7 +249676,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1040,
+      "rank": 1052,
       "id": "mankey",
       "name": "Mankey",
       "profile": "rank1",
@@ -247062,7 +249913,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1041,
+      "rank": 1053,
       "id": "gardevoir_shadow",
       "name": "Gardevoir (Shadow)",
       "profile": "rank1",
@@ -247300,7 +250151,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1042,
+      "rank": 1054,
       "id": "vileplume_shadow",
       "name": "Vileplume (Shadow)",
       "profile": "rank1",
@@ -247538,7 +250389,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1043,
+      "rank": 1055,
       "id": "eevee",
       "name": "Eevee",
       "profile": "rank1",
@@ -247775,7 +250626,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1044,
+      "rank": 1056,
       "id": "pupitar_shadow",
       "name": "Pupitar (Shadow)",
       "profile": "rank1",
@@ -248013,7 +250864,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1045,
+      "rank": 1057,
       "id": "golem_shadow",
       "name": "Golem (Shadow)",
       "profile": "rank1",
@@ -248251,7 +251102,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1046,
+      "rank": 1058,
       "id": "groudon_shadow",
       "name": "Groudon (Shadow)",
       "profile": "rank1",
@@ -248488,7 +251339,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1047,
+      "rank": 1059,
       "id": "natu",
       "name": "Natu",
       "profile": "rank1",
@@ -248726,7 +251577,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1048,
+      "rank": 1060,
       "id": "weavile",
       "name": "Weavile",
       "profile": "rank1",
@@ -248964,7 +251815,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1049,
+      "rank": 1061,
       "id": "darmanitan_galarian_standard",
       "name": "Darmanitan (Galarian)",
       "profile": "rank1",
@@ -249201,7 +252052,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1050,
+      "rank": 1062,
       "id": "aggron_shadow",
       "name": "Aggron (Shadow)",
       "profile": "rank1",
@@ -249439,7 +252290,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1051,
+      "rank": 1063,
       "id": "swellow_shadow",
       "name": "Swellow (Shadow)",
       "profile": "rank1",
@@ -249677,7 +252528,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1052,
+      "rank": 1064,
       "id": "drowzee_shadow",
       "name": "Drowzee (Shadow)",
       "profile": "rank1",
@@ -249914,7 +252765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1053,
+      "rank": 1065,
       "id": "swirlix",
       "name": "Swirlix",
       "profile": "rank1",
@@ -250151,7 +253002,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1054,
+      "rank": 1066,
       "id": "reuniclus_shadow",
       "name": "Reuniclus (Shadow)",
       "profile": "rank1",
@@ -250388,7 +253239,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1055,
+      "rank": 1067,
       "id": "anorith",
       "name": "Anorith",
       "profile": "rank1",
@@ -250626,7 +253477,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1056,
+      "rank": 1068,
       "id": "gible_shadow",
       "name": "Gible (Shadow)",
       "profile": "rank1",
@@ -250864,7 +253715,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1057,
+      "rank": 1069,
       "id": "omanyte_shadow",
       "name": "Omanyte (Shadow)",
       "profile": "rank1",
@@ -251102,7 +253953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1058,
+      "rank": 1070,
       "id": "sinistea",
       "name": "Sinistea",
       "profile": "rank1",
@@ -251339,7 +254190,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1059,
+      "rank": 1071,
       "id": "lilligant_hisuian",
       "name": "Lilligant (Hisuian)",
       "profile": "rank1",
@@ -251577,7 +254428,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1060,
+      "rank": 1072,
       "id": "sneasel",
       "name": "Sneasel",
       "profile": "rank1",
@@ -251815,7 +254666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1061,
+      "rank": 1073,
       "id": "yamask",
       "name": "Yamask",
       "profile": "rank1",
@@ -252052,7 +254903,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1062,
+      "rank": 1074,
       "id": "poltchageist",
       "name": "Poltchageist",
       "profile": "rank1",
@@ -252290,7 +255141,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1063,
+      "rank": 1075,
       "id": "dragapult",
       "name": "Dragapult",
       "profile": "rank1",
@@ -252528,7 +255379,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1064,
+      "rank": 1076,
       "id": "nihilego",
       "name": "Nihilego",
       "profile": "rank1",
@@ -252766,7 +255617,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1065,
+      "rank": 1077,
       "id": "rhydon",
       "name": "Rhydon",
       "profile": "rank1",
@@ -253004,7 +255855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1066,
+      "rank": 1078,
       "id": "yanma",
       "name": "Yanma",
       "profile": "rank1",
@@ -253242,7 +256093,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1067,
+      "rank": 1079,
       "id": "revavroom",
       "name": "Revavroom",
       "profile": "rank1",
@@ -253480,7 +256331,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1068,
+      "rank": 1080,
       "id": "nosepass_shadow",
       "name": "Nosepass (Shadow)",
       "profile": "rank1",
@@ -253717,7 +256568,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1069,
+      "rank": 1081,
       "id": "boldore_shadow",
       "name": "Boldore (Shadow)",
       "profile": "rank1",
@@ -253954,7 +256805,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1070,
+      "rank": 1082,
       "id": "grumpig",
       "name": "Grumpig",
       "profile": "rank1",
@@ -254191,7 +257042,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1071,
+      "rank": 1083,
       "id": "crabrawler",
       "name": "Crabrawler",
       "profile": "rank1",
@@ -254428,7 +257279,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1072,
+      "rank": 1084,
       "id": "nosepass",
       "name": "Nosepass",
       "profile": "rank1",
@@ -254665,7 +257516,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1073,
+      "rank": 1085,
       "id": "zamazenta_hero",
       "name": "Zamazenta (Hero)",
       "profile": "rank1",
@@ -254902,7 +257753,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1074,
+      "rank": 1086,
       "id": "seadra",
       "name": "Seadra",
       "profile": "rank1",
@@ -255139,7 +257990,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1075,
+      "rank": 1087,
       "id": "oricorio_baile",
       "name": "Oricorio (Baile)",
       "profile": "rank1",
@@ -255377,7 +258228,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1076,
+      "rank": 1088,
       "id": "arcanine_shadow",
       "name": "Arcanine (Shadow)",
       "profile": "rank1",
@@ -255614,7 +258465,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1077,
+      "rank": 1089,
       "id": "tornadus_therian",
       "name": "Tornadus (Therian)",
       "profile": "rank1",
@@ -255851,7 +258702,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1078,
+      "rank": 1090,
       "id": "rampardos_shadow",
       "name": "Rampardos (Shadow)",
       "profile": "rank1",
@@ -256088,7 +258939,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1079,
+      "rank": 1091,
       "id": "morelull",
       "name": "Morelull",
       "profile": "rank1",
@@ -256326,7 +259177,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1080,
+      "rank": 1092,
       "id": "drowzee",
       "name": "Drowzee",
       "profile": "rank1",
@@ -256542,7 +259393,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1081,
+      "rank": 1093,
       "id": "alakazam_shadow",
       "name": "Alakazam (Shadow)",
       "profile": "rank1",
@@ -256779,7 +259630,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1082,
+      "rank": 1094,
       "id": "yamask_shadow",
       "name": "Yamask (Shadow)",
       "profile": "rank1",
@@ -257016,7 +259867,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1083,
+      "rank": 1095,
       "id": "beheeyem",
       "name": "Beheeyem",
       "profile": "rank1",
@@ -257253,7 +260104,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1084,
+      "rank": 1096,
       "id": "trapinch",
       "name": "Trapinch",
       "profile": "rank1",
@@ -257490,7 +260341,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1085,
+      "rank": 1097,
       "id": "stantler_shadow",
       "name": "Stantler (Shadow)",
       "profile": "rank1",
@@ -257727,7 +260578,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1086,
+      "rank": 1098,
       "id": "vanilluxe",
       "name": "Vanilluxe",
       "profile": "rank1",
@@ -257964,7 +260815,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1087,
+      "rank": 1099,
       "id": "trapinch_shadow",
       "name": "Trapinch (Shadow)",
       "profile": "rank1",
@@ -258201,7 +261052,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1088,
+      "rank": 1100,
       "id": "tangela_shadow",
       "name": "Tangela (Shadow)",
       "profile": "rank1",
@@ -258438,7 +261289,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1089,
+      "rank": 1101,
       "id": "mamoswine_shadow",
       "name": "Mamoswine (Shadow)",
       "profile": "rank1",
@@ -258676,7 +261527,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1090,
+      "rank": 1102,
       "id": "mamoswine",
       "name": "Mamoswine",
       "profile": "rank1",
@@ -258914,7 +261765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1091,
+      "rank": 1103,
       "id": "jynx",
       "name": "Jynx",
       "profile": "rank1",
@@ -259152,7 +262003,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1092,
+      "rank": 1104,
       "id": "yamask_galarian",
       "name": "Yamask (Galarian)",
       "profile": "rank1",
@@ -259390,7 +262241,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1093,
+      "rank": 1105,
       "id": "eternatus",
       "name": "Eternatus",
       "profile": "rank1",
@@ -259628,7 +262479,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1094,
+      "rank": 1106,
       "id": "enamorus_incarnate",
       "name": "Enamorus (Incarnate)",
       "profile": "rank1",
@@ -259866,7 +262717,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1095,
+      "rank": 1107,
       "id": "pawmo",
       "name": "Pawmo",
       "profile": "rank1",
@@ -260104,7 +262955,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1096,
+      "rank": 1108,
       "id": "azelf",
       "name": "Azelf",
       "profile": "rank1",
@@ -260341,7 +263192,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1097,
+      "rank": 1109,
       "id": "krabby_shadow",
       "name": "Krabby (Shadow)",
       "profile": "rank1",
@@ -260578,7 +263429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1098,
+      "rank": 1110,
       "id": "boltund",
       "name": "Boltund",
       "profile": "rank1",
@@ -260815,7 +263666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1099,
+      "rank": 1111,
       "id": "phanpy",
       "name": "Phanpy",
       "profile": "rank1",
@@ -261052,7 +263903,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1100,
+      "rank": 1112,
       "id": "bulbasaur",
       "name": "Bulbasaur",
       "profile": "rank1",
@@ -261290,7 +264141,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1101,
+      "rank": 1113,
       "id": "quaxly",
       "name": "Quaxly",
       "profile": "rank1",
@@ -261527,7 +264378,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1102,
+      "rank": 1114,
       "id": "roggenrola_shadow",
       "name": "Roggenrola (Shadow)",
       "profile": "rank1",
@@ -261764,7 +264615,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1103,
+      "rank": 1115,
       "id": "magneton_shadow",
       "name": "Magneton (Shadow)",
       "profile": "rank1",
@@ -262002,7 +264853,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1104,
+      "rank": 1116,
       "id": "kyurem_black",
       "name": "Kyurem (Black)",
       "profile": "rank1",
@@ -262240,7 +265091,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1105,
+      "rank": 1117,
       "id": "raticate_shadow",
       "name": "Raticate (Shadow)",
       "profile": "rank1",
@@ -262477,7 +265328,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1106,
+      "rank": 1118,
       "id": "numel",
       "name": "Numel",
       "profile": "rank1",
@@ -262715,7 +265566,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1107,
+      "rank": 1119,
       "id": "indeedee_female",
       "name": "Indeedee (Female)",
       "profile": "rank1",
@@ -262953,7 +265804,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1108,
+      "rank": 1120,
       "id": "alakazam",
       "name": "Alakazam",
       "profile": "rank1",
@@ -263190,7 +266041,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1109,
+      "rank": 1121,
       "id": "thundurus_therian",
       "name": "Thundurus (Therian)",
       "profile": "rank1",
@@ -263428,7 +266279,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1110,
+      "rank": 1122,
       "id": "meowth_galarian",
       "name": "Meowth (Galarian)",
       "profile": "rank1",
@@ -263665,7 +266516,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1111,
+      "rank": 1123,
       "id": "gastly_shadow",
       "name": "Gastly (Shadow)",
       "profile": "rank1",
@@ -263903,7 +266754,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1112,
+      "rank": 1124,
       "id": "tepig",
       "name": "Tepig",
       "profile": "rank1",
@@ -264140,7 +266991,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1113,
+      "rank": 1125,
       "id": "arcanine_hisuian",
       "name": "Arcanine (Hisuian)",
       "profile": "rank1",
@@ -264378,7 +267229,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1114,
+      "rank": 1126,
       "id": "mewtwo",
       "name": "Mewtwo",
       "profile": "rank1",
@@ -264615,7 +267466,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1115,
+      "rank": 1127,
       "id": "komala",
       "name": "Komala",
       "profile": "rank1",
@@ -264852,7 +267703,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1116,
+      "rank": 1128,
       "id": "oricorio_sensu",
       "name": "Oricorio (Sensu)",
       "profile": "rank1",
@@ -265090,7 +267941,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1117,
+      "rank": 1129,
       "id": "bergmite",
       "name": "Bergmite",
       "profile": "rank1",
@@ -265327,7 +268178,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1118,
+      "rank": 1130,
       "id": "landorus_therian",
       "name": "Landorus (Therian)",
       "profile": "rank1",
@@ -265565,7 +268416,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1119,
+      "rank": 1131,
       "id": "torchic",
       "name": "Torchic",
       "profile": "rank1",
@@ -265802,7 +268653,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1120,
+      "rank": 1132,
       "id": "hoopa",
       "name": "Hoopa",
       "profile": "rank1",
@@ -266040,7 +268891,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1121,
+      "rank": 1133,
       "id": "psyduck_shadow",
       "name": "Psyduck (Shadow)",
       "profile": "rank1",
@@ -266277,7 +269128,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1122,
+      "rank": 1134,
       "id": "psyduck",
       "name": "Psyduck",
       "profile": "rank1",
@@ -266514,7 +269365,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1123,
+      "rank": 1135,
       "id": "roggenrola",
       "name": "Roggenrola",
       "profile": "rank1",
@@ -266751,7 +269602,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1124,
+      "rank": 1136,
       "id": "corphish_shadow",
       "name": "Corphish (Shadow)",
       "profile": "rank1",
@@ -266988,7 +269839,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1125,
+      "rank": 1137,
       "id": "archen_shadow",
       "name": "Archen (Shadow)",
       "profile": "rank1",
@@ -267226,7 +270077,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1126,
+      "rank": 1138,
       "id": "phanpy_shadow",
       "name": "Phanpy (Shadow)",
       "profile": "rank1",
@@ -267463,7 +270314,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1127,
+      "rank": 1139,
       "id": "stantler",
       "name": "Stantler",
       "profile": "rank1",
@@ -267700,7 +270551,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1128,
+      "rank": 1140,
       "id": "corphish",
       "name": "Corphish",
       "profile": "rank1",
@@ -267937,7 +270788,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1129,
+      "rank": 1141,
       "id": "tapu_lele",
       "name": "Tapu Lele",
       "profile": "rank1",
@@ -268175,7 +271026,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1130,
+      "rank": 1142,
       "id": "plusle",
       "name": "Plusle",
       "profile": "rank1",
@@ -268412,7 +271263,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1131,
+      "rank": 1143,
       "id": "krabby",
       "name": "Krabby",
       "profile": "rank1",
@@ -268649,7 +271500,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1132,
+      "rank": 1144,
       "id": "grumpig_shadow",
       "name": "Grumpig (Shadow)",
       "profile": "rank1",
@@ -268886,7 +271737,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1133,
+      "rank": 1145,
       "id": "deoxys_speed",
       "name": "Deoxys (Speed)",
       "profile": "rank1",
@@ -269123,7 +271974,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1134,
+      "rank": 1146,
       "id": "yanmega",
       "name": "Yanmega",
       "profile": "rank1",
@@ -269361,7 +272212,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1135,
+      "rank": 1147,
       "id": "whirlipede",
       "name": "Whirlipede",
       "profile": "rank1",
@@ -269599,7 +272450,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1136,
+      "rank": 1148,
       "id": "frogadier",
       "name": "Frogadier",
       "profile": "rank1",
@@ -269836,7 +272687,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1137,
+      "rank": 1149,
       "id": "numel_shadow",
       "name": "Numel (Shadow)",
       "profile": "rank1",
@@ -270074,7 +272925,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1138,
+      "rank": 1150,
       "id": "archeops_shadow",
       "name": "Archeops (Shadow)",
       "profile": "rank1",
@@ -270312,7 +273163,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1139,
+      "rank": 1151,
       "id": "ribombee",
       "name": "Ribombee",
       "profile": "rank1",
@@ -270550,7 +273401,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1140,
+      "rank": 1152,
       "id": "joltik",
       "name": "Joltik",
       "profile": "rank1",
@@ -270788,7 +273639,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1141,
+      "rank": 1153,
       "id": "volcarona",
       "name": "Volcarona",
       "profile": "rank1",
@@ -271026,7 +273877,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1142,
+      "rank": 1154,
       "id": "rotom_frost",
       "name": "Rotom (Frost)",
       "profile": "rank1",
@@ -271264,7 +274115,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1143,
+      "rank": 1155,
       "id": "bulbasaur_shadow",
       "name": "Bulbasaur (Shadow)",
       "profile": "rank1",
@@ -271502,7 +274353,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1144,
+      "rank": 1156,
       "id": "solgaleo",
       "name": "Solgaleo",
       "profile": "rank1",
@@ -271740,7 +274591,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1145,
+      "rank": 1157,
       "id": "shaymin_sky",
       "name": "Shaymin (Sky)",
       "profile": "rank1",
@@ -271978,7 +274829,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1146,
+      "rank": 1158,
       "id": "lycanroc_midnight",
       "name": "Lycanroc (Midnight)",
       "profile": "rank1",
@@ -272215,7 +275066,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1147,
+      "rank": 1159,
       "id": "wugtrio",
       "name": "Wugtrio",
       "profile": "rank1",
@@ -272452,7 +275303,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1148,
+      "rank": 1160,
       "id": "unfezant",
       "name": "Unfezant",
       "profile": "rank1",
@@ -272690,7 +275541,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1149,
+      "rank": 1161,
       "id": "octillery",
       "name": "Octillery",
       "profile": "rank1",
@@ -272927,7 +275778,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1150,
+      "rank": 1162,
       "id": "porygon_shadow",
       "name": "Porygon (Shadow)",
       "profile": "rank1",
@@ -273164,7 +276015,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1151,
+      "rank": 1163,
       "id": "joltik_shadow",
       "name": "Joltik (Shadow)",
       "profile": "rank1",
@@ -273402,7 +276253,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1152,
+      "rank": 1164,
       "id": "porygon",
       "name": "Porygon",
       "profile": "rank1",
@@ -273639,7 +276490,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1153,
+      "rank": 1165,
       "id": "foongus",
       "name": "Foongus",
       "profile": "rank1",
@@ -273877,7 +276728,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1154,
+      "rank": 1166,
       "id": "chikorita",
       "name": "Chikorita",
       "profile": "rank1",
@@ -274114,7 +276965,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1155,
+      "rank": 1167,
       "id": "seadra_shadow",
       "name": "Seadra (Shadow)",
       "profile": "rank1",
@@ -274351,7 +277202,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1156,
+      "rank": 1168,
+      "id": "fomantis_shadow",
+      "name": "Fomantis (Shadow)",
+      "profile": "rank1",
+      "averageScore": 172,
+      "externalWeightedAverageScore": 167,
+      "weightedAverageScore": 300,
+      "rawScore": 315,
+      "weightedScore": 277,
+      "competitiveScore": 276,
+      "roleScore": 276,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 343,
+      "overallScore": 343,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 256,
+          "weightedScore": 255,
+          "competitiveScore": 255,
+          "rawRating": 41,
+          "weightedRating": 41,
+          "competitiveRating": 41,
+          "score": 41,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "GRASS_KNOT",
+                "uses": 43
+              },
+              {
+                "id": "LEAF_BLADE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 196,
+          "weightedScore": 197,
+          "competitiveScore": 195,
+          "rawRating": 33,
+          "weightedRating": 34,
+          "competitiveRating": 33,
+          "score": 33,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "GRASS_KNOT",
+                "uses": 43
+              },
+              {
+                "id": "LEAF_BLADE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 314,
+          "weightedScore": 161,
+          "competitiveScore": 159,
+          "rawRating": 47,
+          "weightedRating": 24,
+          "competitiveRating": 24,
+          "score": 24,
+          "matchups": 43,
+          "wins": 7,
+          "losses": 35,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "GRASS_KNOT",
+                "uses": 43
+              },
+              {
+                "id": "LEAF_BLADE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 327,
+          "weightedScore": 325,
+          "competitiveScore": 323,
+          "rawRating": 49,
+          "weightedRating": 49,
+          "competitiveRating": 49,
+          "score": 49,
+          "matchups": 43,
+          "wins": 9,
+          "losses": 34,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "GRASS_KNOT",
+                "uses": 43
+              },
+              {
+                "id": "LEAF_BLADE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 42,
+          "weightedScore": 41,
+          "competitiveScore": 41,
+          "rawRating": 10,
+          "weightedRating": 10,
+          "competitiveRating": 10,
+          "score": 10,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FURY_CUTTER",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "GRASS_KNOT",
+                "uses": 43
+              },
+              {
+                "id": "LEAF_BLADE",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 178.91,
+      "matchups": 172,
+      "wins": 10,
+      "losses": 162,
+      "ties": 0,
+      "winRate": 0.0581,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 196,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 42,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 256,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 194,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0
+        }
+      },
+      "types": [
+        "grass"
+      ],
+      "dex": 753,
+      "build": {
+        "ivAtk": 15,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 51,
+        "cp": 848
+      },
+      "moveset": {
+        "fast": "FURY_CUTTER",
+        "charged": [
+          "LEAF_BLADE",
+          "GRASS_KNOT"
+        ]
+      }
+    },
+    {
+      "rank": 1169,
       "id": "lycanroc_dusk",
       "name": "Lycanroc (Dusk)",
       "profile": "rank1",
@@ -274588,7 +277676,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1157,
+      "rank": 1170,
       "id": "archeops",
       "name": "Archeops",
       "profile": "rank1",
@@ -274826,7 +277914,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1158,
+      "rank": 1171,
       "id": "tepig_shadow",
       "name": "Tepig (Shadow)",
       "profile": "rank1",
@@ -275063,7 +278151,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1159,
+      "rank": 1172,
       "id": "grookey",
       "name": "Grookey",
       "profile": "rank1",
@@ -275300,7 +278388,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1160,
+      "rank": 1173,
       "id": "roselia",
       "name": "Roselia",
       "profile": "rank1",
@@ -275538,7 +278626,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1161,
+      "rank": 1174,
       "id": "piplup",
       "name": "Piplup",
       "profile": "rank1",
@@ -275775,7 +278863,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1162,
+      "rank": 1175,
       "id": "sewaddle",
       "name": "Sewaddle",
       "profile": "rank1",
@@ -276013,7 +279101,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1163,
+      "rank": 1176,
       "id": "pikachu_horizons",
       "name": "Pikachu (Horizons)",
       "profile": "rank1",
@@ -276250,7 +279338,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1164,
+      "rank": 1177,
       "id": "frogadier_shadow",
       "name": "Frogadier (Shadow)",
       "profile": "rank1",
@@ -276487,7 +279575,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1165,
+      "rank": 1178,
       "id": "squirtle",
       "name": "Squirtle",
       "profile": "rank1",
@@ -276724,7 +279812,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1166,
+      "rank": 1179,
       "id": "gorebyss",
       "name": "Gorebyss",
       "profile": "rank1",
@@ -276961,7 +280049,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1167,
+      "rank": 1180,
       "id": "archen",
       "name": "Archen",
       "profile": "rank1",
@@ -277199,7 +280287,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1168,
+      "rank": 1181,
       "id": "hoopa_unbound",
       "name": "Hoopa (Unbound)",
       "profile": "rank1",
@@ -277437,7 +280525,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1169,
+      "rank": 1182,
       "id": "chespin",
       "name": "Chespin",
       "profile": "rank1",
@@ -277674,7 +280762,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1170,
+      "rank": 1183,
       "id": "oricorio_pau",
       "name": "Oricorio (Pa'u)",
       "profile": "rank1",
@@ -277912,7 +281000,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1171,
+      "rank": 1184,
       "id": "sandile",
       "name": "Sandile",
       "profile": "rank1",
@@ -278150,7 +281238,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1172,
+      "rank": 1185,
       "id": "mareep",
       "name": "Mareep",
       "profile": "rank1",
@@ -278387,7 +281475,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1173,
+      "rank": 1186,
       "id": "mareep_shadow",
       "name": "Mareep (Shadow)",
       "profile": "rank1",
@@ -278624,7 +281712,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1174,
+      "rank": 1187,
       "id": "sunflora",
       "name": "Sunflora",
       "profile": "rank1",
@@ -278861,7 +281949,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1175,
+      "rank": 1188,
       "id": "unfezant_shadow",
       "name": "Unfezant (Shadow)",
       "profile": "rank1",
@@ -279099,7 +282187,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1176,
+      "rank": 1189,
       "id": "gimmighoul",
       "name": "Gimmighoul",
       "profile": "rank1",
@@ -279315,7 +282403,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1177,
+      "rank": 1190,
       "id": "sigilyph",
       "name": "Sigilyph",
       "profile": "rank1",
@@ -279553,7 +282641,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1178,
+      "rank": 1191,
       "id": "buizel",
       "name": "Buizel",
       "profile": "rank1",
@@ -279790,7 +282878,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1179,
+      "rank": 1192,
       "id": "xurkitree",
       "name": "Xurkitree",
       "profile": "rank1",
@@ -280027,7 +283115,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1180,
+      "rank": 1193,
       "id": "whirlipede_shadow",
       "name": "Whirlipede (Shadow)",
       "profile": "rank1",
@@ -280265,7 +283353,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1181,
+      "rank": 1194,
       "id": "sizzlipede",
       "name": "Sizzlipede",
       "profile": "rank1",
@@ -280503,7 +283591,244 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1182,
+      "rank": 1195,
+      "id": "arrokuda",
+      "name": "Arrokuda",
+      "profile": "rank1",
+      "averageScore": 149,
+      "externalWeightedAverageScore": 146,
+      "weightedAverageScore": 300,
+      "rawScore": 282,
+      "weightedScore": 257,
+      "competitiveScore": 255,
+      "roleScore": 255,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 329,
+      "overallScore": 329,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 196,
+          "weightedScore": 189,
+          "competitiveScore": 188,
+          "rawRating": 31,
+          "weightedRating": 31,
+          "competitiveRating": 30,
+          "score": 30,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 140,
+          "weightedScore": 137,
+          "competitiveScore": 134,
+          "rawRating": 24,
+          "weightedRating": 23,
+          "competitiveRating": 23,
+          "score": 23,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 290,
+          "weightedScore": 199,
+          "competitiveScore": 198,
+          "rawRating": 43,
+          "weightedRating": 30,
+          "competitiveRating": 30,
+          "score": 30,
+          "matchups": 43,
+          "wins": 2,
+          "losses": 41,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 336,
+          "weightedScore": 342,
+          "competitiveScore": 344,
+          "rawRating": 51,
+          "weightedRating": 52,
+          "competitiveRating": 52,
+          "score": 52,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 45,
+          "weightedScore": 43,
+          "competitiveScore": 43,
+          "rawRating": 11,
+          "weightedRating": 10,
+          "competitiveRating": 10,
+          "score": 10,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PECK",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "AQUA_JET",
+                "uses": 43
+              },
+              {
+                "id": "CLOSE_COMBAT",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 126.59,
+      "matchups": 172,
+      "wins": 1,
+      "losses": 171,
+      "ties": 0,
+      "winRate": 0.0058,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 140,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 45,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 196,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 213,
+          "matchups": 43,
+          "wins": 1,
+          "losses": 42,
+          "ties": 0
+        }
+      },
+      "types": [
+        "water"
+      ],
+      "dex": 846,
+      "build": {
+        "ivAtk": 15,
+        "ivDef": 15,
+        "ivHp": 14,
+        "level": 51,
+        "cp": 1029
+      },
+      "moveset": {
+        "fast": "PECK",
+        "charged": [
+          "CLOSE_COMBAT",
+          "AQUA_JET"
+        ]
+      }
+    },
+    {
+      "rank": 1196,
       "id": "braviary_hisuian",
       "name": "Braviary (Hisuian)",
       "profile": "rank1",
@@ -280741,7 +284066,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1183,
+      "rank": 1197,
       "id": "cherrim_overcast",
       "name": "Cherrim (Overcast)",
       "profile": "rank1",
@@ -280978,7 +284303,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1184,
+      "rank": 1198,
       "id": "naganadel",
       "name": "Naganadel",
       "profile": "rank1",
@@ -281216,7 +284541,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1185,
+      "rank": 1199,
       "id": "rampardos",
       "name": "Rampardos",
       "profile": "rank1",
@@ -281453,7 +284778,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1186,
+      "rank": 1200,
       "id": "gastly",
       "name": "Gastly",
       "profile": "rank1",
@@ -281691,7 +285016,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1187,
+      "rank": 1201,
       "id": "cubchoo",
       "name": "Cubchoo",
       "profile": "rank1",
@@ -281928,7 +285253,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1188,
+      "rank": 1202,
       "id": "kingler_shadow",
       "name": "Kingler (Shadow)",
       "profile": "rank1",
@@ -282165,7 +285490,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1189,
+      "rank": 1203,
       "id": "terrakion",
       "name": "Terrakion",
       "profile": "rank1",
@@ -282403,7 +285728,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1190,
+      "rank": 1204,
       "id": "litwick",
       "name": "Litwick",
       "profile": "rank1",
@@ -282641,7 +285966,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1191,
+      "rank": 1205,
       "id": "chikorita_shadow",
       "name": "Chikorita (Shadow)",
       "profile": "rank1",
@@ -282878,7 +286203,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1192,
+      "rank": 1206,
       "id": "pikipek_shadow",
       "name": "Pikipek (Shadow)",
       "profile": "rank1",
@@ -283116,7 +286441,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1193,
+      "rank": 1207,
       "id": "turtwig",
       "name": "Turtwig",
       "profile": "rank1",
@@ -283353,7 +286678,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1194,
+      "rank": 1208,
       "id": "chespin_shadow",
       "name": "Chespin (Shadow)",
       "profile": "rank1",
@@ -283590,7 +286915,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1195,
+      "rank": 1209,
       "id": "fidough",
       "name": "Fidough",
       "profile": "rank1",
@@ -283827,7 +287152,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1196,
+      "rank": 1210,
       "id": "torchic_shadow",
       "name": "Torchic (Shadow)",
       "profile": "rank1",
@@ -284064,7 +287389,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1197,
+      "rank": 1211,
       "id": "foongus_shadow",
       "name": "Foongus (Shadow)",
       "profile": "rank1",
@@ -284302,7 +287627,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1198,
+      "rank": 1212,
       "id": "kyurem",
       "name": "Kyurem",
       "profile": "rank1",
@@ -284540,7 +287865,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1199,
+      "rank": 1213,
       "id": "shuppet_shadow",
       "name": "Shuppet (Shadow)",
       "profile": "rank1",
@@ -284777,7 +288102,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1200,
+      "rank": 1214,
       "id": "accelgor",
       "name": "Accelgor",
       "profile": "rank1",
@@ -285014,7 +288339,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1201,
+      "rank": 1215,
       "id": "swablu",
       "name": "Swablu",
       "profile": "rank1",
@@ -285252,7 +288577,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1202,
+      "rank": 1216,
       "id": "litwick_shadow",
       "name": "Litwick (Shadow)",
       "profile": "rank1",
@@ -285490,7 +288815,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1203,
+      "rank": 1217,
       "id": "inkay_shadow",
       "name": "Inkay (Shadow)",
       "profile": "rank1",
@@ -285728,7 +289053,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1204,
+      "rank": 1218,
       "id": "fennekin_shadow",
       "name": "Fennekin (Shadow)",
       "profile": "rank1",
@@ -285965,7 +289290,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1205,
+      "rank": 1219,
       "id": "shellder",
       "name": "Shellder",
       "profile": "rank1",
@@ -286202,7 +289527,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1206,
+      "rank": 1220,
       "id": "greavard",
       "name": "Greavard",
       "profile": "rank1",
@@ -286439,7 +289764,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1207,
+      "rank": 1221,
       "id": "stakataka",
       "name": "Stakataka",
       "profile": "rank1",
@@ -286677,7 +290002,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1208,
+      "rank": 1222,
       "id": "glaceon",
       "name": "Glaceon",
       "profile": "rank1",
@@ -286914,7 +290239,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1209,
+      "rank": 1223,
       "id": "grubbin_shadow",
       "name": "Grubbin (Shadow)",
       "profile": "rank1",
@@ -287151,7 +290476,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1210,
+      "rank": 1224,
       "id": "lilligant",
       "name": "Lilligant",
       "profile": "rank1",
@@ -287388,7 +290713,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1211,
+      "rank": 1225,
       "id": "accelgor_shadow",
       "name": "Accelgor (Shadow)",
       "profile": "rank1",
@@ -287625,7 +290950,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1212,
+      "rank": 1226,
       "id": "vulpix",
       "name": "Vulpix",
       "profile": "rank1",
@@ -287862,7 +291187,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1213,
+      "rank": 1227,
       "id": "pansage",
       "name": "Pansage",
       "profile": "rank1",
@@ -288099,7 +291424,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1214,
+      "rank": 1228,
       "id": "paras",
       "name": "Paras",
       "profile": "rank1",
@@ -288337,7 +291662,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1215,
+      "rank": 1229,
       "id": "squirtle_shadow",
       "name": "Squirtle (Shadow)",
       "profile": "rank1",
@@ -288574,7 +291899,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1216,
+      "rank": 1230,
       "id": "flabebe",
       "name": "Flabebe",
       "profile": "rank1",
@@ -288811,7 +292136,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1217,
+      "rank": 1231,
       "id": "inkay",
       "name": "Inkay",
       "profile": "rank1",
@@ -289049,7 +292374,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1218,
+      "rank": 1232,
       "id": "zacian_crowned_sword",
       "name": "Zacian (Crowned Sword)",
       "profile": "rank1",
@@ -289287,7 +292612,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1219,
+      "rank": 1233,
       "id": "pikachu_libre",
       "name": "Pikachu (Libre)",
       "profile": "rank1",
@@ -289524,7 +292849,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1220,
+      "rank": 1234,
       "id": "woobat",
       "name": "Woobat",
       "profile": "rank1",
@@ -289762,7 +293087,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1221,
+      "rank": 1235,
       "id": "crabominable",
       "name": "Crabominable",
       "profile": "rank1",
@@ -290000,7 +293325,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1222,
+      "rank": 1236,
       "id": "pikachu_shaymin",
       "name": "Pikachu (Shaymin Scarf)",
       "profile": "rank1",
@@ -290237,7 +293562,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1223,
+      "rank": 1237,
       "id": "piplup_shadow",
       "name": "Piplup (Shadow)",
       "profile": "rank1",
@@ -290474,7 +293799,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1224,
+      "rank": 1238,
       "id": "groudon",
       "name": "Groudon",
       "profile": "rank1",
@@ -290711,7 +294036,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1225,
+      "rank": 1239,
       "id": "fennekin",
       "name": "Fennekin",
       "profile": "rank1",
@@ -290948,7 +294273,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1226,
+      "rank": 1240,
       "id": "bramblin",
       "name": "Bramblin",
       "profile": "rank1",
@@ -291186,7 +294511,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1227,
+      "rank": 1241,
       "id": "klinklang",
       "name": "Klinklang",
       "profile": "rank1",
@@ -291423,7 +294748,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1228,
+      "rank": 1242,
       "id": "vulpix_shadow",
       "name": "Vulpix (Shadow)",
       "profile": "rank1",
@@ -291660,7 +294985,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1229,
+      "rank": 1243,
       "id": "mime_jr",
       "name": "Mime (Jr)",
       "profile": "rank1",
@@ -291898,7 +295223,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1230,
+      "rank": 1244,
       "id": "maractus",
       "name": "Maractus",
       "profile": "rank1",
@@ -292135,7 +295460,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1231,
+      "rank": 1245,
       "id": "turtwig_shadow",
       "name": "Turtwig (Shadow)",
       "profile": "rank1",
@@ -292372,7 +295697,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1232,
+      "rank": 1246,
       "id": "panpour",
       "name": "Panpour",
       "profile": "rank1",
@@ -292609,7 +295934,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1233,
+      "rank": 1247,
       "id": "binacle",
       "name": "Binacle",
       "profile": "rank1",
@@ -292847,7 +296172,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1234,
+      "rank": 1248,
       "id": "nacli",
       "name": "Nacli",
       "profile": "rank1",
@@ -293084,7 +296409,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1235,
+      "rank": 1249,
       "id": "dottler",
       "name": "Dottler",
       "profile": "rank1",
@@ -293322,7 +296647,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1236,
+      "rank": 1250,
       "id": "munna",
       "name": "Munna",
       "profile": "rank1",
@@ -293559,7 +296884,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1237,
+      "rank": 1251,
       "id": "pheromosa",
       "name": "Pheromosa",
       "profile": "rank1",
@@ -293797,7 +297122,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1238,
+      "rank": 1252,
       "id": "deoxys_attack",
       "name": "Deoxys (Attack)",
       "profile": "rank1",
@@ -294034,7 +297359,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1239,
+      "rank": 1253,
       "id": "sprigatito",
       "name": "Sprigatito",
       "profile": "rank1",
@@ -294271,7 +297596,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1240,
+      "rank": 1254,
       "id": "shelmet",
       "name": "Shelmet",
       "profile": "rank1",
@@ -294508,7 +297833,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1241,
+      "rank": 1255,
       "id": "staryu",
       "name": "Staryu",
       "profile": "rank1",
@@ -294745,7 +298070,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1242,
+      "rank": 1256,
       "id": "impidimp",
       "name": "Impidimp",
       "profile": "rank1",
@@ -294983,7 +298308,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1243,
+      "rank": 1257,
       "id": "pikachu_pop_star",
       "name": "Pikachu (Pop Star)",
       "profile": "rank1",
@@ -295220,7 +298545,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1244,
+      "rank": 1258,
       "id": "cyndaquil_shadow",
       "name": "Cyndaquil (Shadow)",
       "profile": "rank1",
@@ -295457,7 +298782,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1245,
+      "rank": 1259,
       "id": "necrozma_dawn_wings",
       "name": "Necrozma (Dawn Wings)",
       "profile": "rank1",
@@ -295695,7 +299020,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1246,
+      "rank": 1260,
       "id": "kadabra",
       "name": "Kadabra",
       "profile": "rank1",
@@ -295932,7 +299257,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1247,
+      "rank": 1261,
       "id": "shuppet",
       "name": "Shuppet",
       "profile": "rank1",
@@ -296169,7 +299494,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1248,
+      "rank": 1262,
       "id": "reuniclus",
       "name": "Reuniclus",
       "profile": "rank1",
@@ -296406,7 +299731,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1249,
+      "rank": 1263,
       "id": "swablu_shadow",
       "name": "Swablu (Shadow)",
       "profile": "rank1",
@@ -296644,7 +299969,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1250,
+      "rank": 1264,
       "id": "ferroseed",
       "name": "Ferroseed",
       "profile": "rank1",
@@ -296882,7 +300207,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1251,
+      "rank": 1265,
       "id": "pikipek",
       "name": "Pikipek",
       "profile": "rank1",
@@ -297120,7 +300445,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1252,
+      "rank": 1266,
       "id": "klink",
       "name": "Klink",
       "profile": "rank1",
@@ -297357,7 +300682,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1253,
+      "rank": 1267,
       "id": "necrozma_dusk_mane",
       "name": "Necrozma (Dusk Mane)",
       "profile": "rank1",
@@ -297595,7 +300920,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1254,
+      "rank": 1268,
       "id": "litten",
       "name": "Litten",
       "profile": "rank1",
@@ -297832,7 +301157,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1255,
+      "rank": 1269,
       "id": "scorbunny",
       "name": "Scorbunny",
       "profile": "rank1",
@@ -298069,7 +301394,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1256,
+      "rank": 1270,
       "id": "chimchar_shadow",
       "name": "Chimchar (Shadow)",
       "profile": "rank1",
@@ -298306,7 +301631,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1257,
+      "rank": 1271,
       "id": "grubbin",
       "name": "Grubbin",
       "profile": "rank1",
@@ -298543,7 +301868,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1258,
+      "rank": 1272,
       "id": "vulpix_alolan_shadow",
       "name": "Vulpix (Alolan) (Shadow)",
       "profile": "rank1",
@@ -298780,7 +302105,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1259,
+      "rank": 1273,
       "id": "indeedee_male",
       "name": "Indeedee (Male)",
       "profile": "rank1",
@@ -299018,7 +302343,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1260,
+      "rank": 1274,
       "id": "pikachu",
       "name": "Pikachu",
       "profile": "rank1",
@@ -299255,7 +302580,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1261,
+      "rank": 1275,
       "id": "pikachu_flying",
       "name": "Pikachu (Flying)",
       "profile": "rank1",
@@ -299492,7 +302817,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1262,
+      "rank": 1276,
       "id": "pikachu_kariyushi",
       "name": "Pikachu (Kariyushi)",
       "profile": "rank1",
@@ -299729,7 +303054,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1263,
+      "rank": 1277,
       "id": "voltorb_shadow",
       "name": "Voltorb (Shadow)",
       "profile": "rank1",
@@ -299966,7 +303291,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1264,
+      "rank": 1278,
       "id": "voltorb",
       "name": "Voltorb",
       "profile": "rank1",
@@ -300203,7 +303528,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1265,
+      "rank": 1279,
       "id": "tornadus_incarnate",
       "name": "Tornadus (Incarnate)",
       "profile": "rank1",
@@ -300440,7 +303765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1266,
+      "rank": 1280,
       "id": "delibird",
       "name": "Delibird",
       "profile": "rank1",
@@ -300678,7 +304003,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1267,
+      "rank": 1281,
       "id": "barboach_shadow",
       "name": "Barboach (Shadow)",
       "profile": "rank1",
@@ -300916,7 +304241,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1268,
+      "rank": 1282,
       "id": "kadabra_shadow",
       "name": "Kadabra (Shadow)",
       "profile": "rank1",
@@ -301153,7 +304478,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1269,
+      "rank": 1283,
       "id": "palkia",
       "name": "Palkia",
       "profile": "rank1",
@@ -301391,7 +304716,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1270,
+      "rank": 1284,
       "id": "gothita",
       "name": "Gothita",
       "profile": "rank1",
@@ -301628,7 +304953,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1271,
+      "rank": 1285,
       "id": "palkia_origin",
       "name": "Palkia (Origin)",
       "profile": "rank1",
@@ -301866,7 +305191,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1272,
+      "rank": 1286,
       "id": "tinkatink",
       "name": "Tinkatink",
       "profile": "rank1",
@@ -302104,7 +305429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1273,
+      "rank": 1287,
       "id": "croagunk",
       "name": "Croagunk",
       "profile": "rank1",
@@ -302342,7 +305667,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1274,
+      "rank": 1288,
       "id": "fletchling_shadow",
       "name": "Fletchling (Shadow)",
       "profile": "rank1",
@@ -302580,7 +305905,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1275,
+      "rank": 1289,
       "id": "varoom",
       "name": "Varoom",
       "profile": "rank1",
@@ -302818,7 +306143,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1276,
+      "rank": 1290,
       "id": "pansear",
       "name": "Pansear",
       "profile": "rank1",
@@ -303055,7 +306380,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1277,
+      "rank": 1291,
       "id": "cranidos_shadow",
       "name": "Cranidos (Shadow)",
       "profile": "rank1",
@@ -303292,7 +306617,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1278,
+      "rank": 1292,
       "id": "skiploom",
       "name": "Skiploom",
       "profile": "rank1",
@@ -303530,7 +306855,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1279,
+      "rank": 1293,
       "id": "finneon",
       "name": "Finneon",
       "profile": "rank1",
@@ -303767,7 +307092,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1280,
+      "rank": 1294,
       "id": "shelmet_shadow",
       "name": "Shelmet (Shadow)",
       "profile": "rank1",
@@ -304004,7 +307329,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1281,
+      "rank": 1295,
       "id": "necrozma",
       "name": "Necrozma",
       "profile": "rank1",
@@ -304241,7 +307566,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1282,
+      "rank": 1296,
       "id": "tadbulb",
       "name": "Tadbulb",
       "profile": "rank1",
@@ -304478,7 +307803,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1283,
+      "rank": 1297,
       "id": "butterfree_shadow",
       "name": "Butterfree (Shadow)",
       "profile": "rank1",
@@ -304716,7 +308041,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1284,
+      "rank": 1298,
       "id": "chingling",
       "name": "Chingling",
       "profile": "rank1",
@@ -304953,7 +308278,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1285,
+      "rank": 1299,
       "id": "venonat",
       "name": "Venonat",
       "profile": "rank1",
@@ -305191,7 +308516,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1286,
+      "rank": 1300,
       "id": "gothita_shadow",
       "name": "Gothita (Shadow)",
       "profile": "rank1",
@@ -305428,7 +308753,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1287,
+      "rank": 1301,
       "id": "oshawott",
       "name": "Oshawott",
       "profile": "rank1",
@@ -305665,7 +308990,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1288,
+      "rank": 1302,
       "id": "oshawott_shadow",
       "name": "Oshawott (Shadow)",
       "profile": "rank1",
@@ -305902,7 +309227,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1289,
+      "rank": 1303,
       "id": "skiddo",
       "name": "Skiddo",
       "profile": "rank1",
@@ -306139,7 +309464,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1290,
+      "rank": 1304,
       "id": "cacnea",
       "name": "Cacnea",
       "profile": "rank1",
@@ -306376,7 +309701,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1291,
+      "rank": 1305,
       "id": "tapu_bulu",
       "name": "Tapu Bulu",
       "profile": "rank1",
@@ -306614,7 +309939,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1292,
+      "rank": 1306,
       "id": "snivy",
       "name": "Snivy",
       "profile": "rank1",
@@ -306851,7 +310176,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1293,
+      "rank": 1307,
       "id": "tornadus_incarnate_shadow",
       "name": "Tornadus (Incarnate) (Shadow)",
       "profile": "rank1",
@@ -307088,7 +310413,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1294,
+      "rank": 1308,
       "id": "fletchling",
       "name": "Fletchling",
       "profile": "rank1",
@@ -307326,7 +310651,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1295,
+      "rank": 1309,
       "id": "chimchar",
       "name": "Chimchar",
       "profile": "rank1",
@@ -307563,7 +310888,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1296,
+      "rank": 1310,
       "id": "ducklett",
       "name": "Ducklett",
       "profile": "rank1",
@@ -307801,7 +311126,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1297,
+      "rank": 1311,
       "id": "ferroseed_shadow",
       "name": "Ferroseed (Shadow)",
       "profile": "rank1",
@@ -308039,7 +311364,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1298,
+      "rank": 1312,
       "id": "vulpix_alolan",
       "name": "Vulpix (Alolan)",
       "profile": "rank1",
@@ -308276,7 +311601,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1299,
+      "rank": 1313,
       "id": "fomantis",
       "name": "Fomantis",
       "profile": "rank1",
@@ -308513,7 +311838,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1300,
+      "rank": 1314,
       "id": "cyndaquil",
       "name": "Cyndaquil",
       "profile": "rank1",
@@ -308750,7 +312075,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1301,
+      "rank": 1315,
       "id": "croagunk_shadow",
       "name": "Croagunk (Shadow)",
       "profile": "rank1",
@@ -308988,7 +312313,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1302,
+      "rank": 1316,
       "id": "luvdisc",
       "name": "Luvdisc",
       "profile": "rank1",
@@ -309225,7 +312550,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1303,
+      "rank": 1317,
       "id": "pikachu_rock_star",
       "name": "Pikachu (Rock Star)",
       "profile": "rank1",
@@ -309462,7 +312787,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1304,
+      "rank": 1318,
       "id": "barboach",
       "name": "Barboach",
       "profile": "rank1",
@@ -309700,7 +313025,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1305,
+      "rank": 1319,
       "id": "shroomish",
       "name": "Shroomish",
       "profile": "rank1",
@@ -309937,7 +313262,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1306,
+      "rank": 1320,
       "id": "jangmo_o",
       "name": "Jangmo-o",
       "profile": "rank1",
@@ -310174,7 +313499,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1307,
+      "rank": 1321,
       "id": "regigigas",
       "name": "Regigigas",
       "profile": "rank1",
@@ -310411,7 +313736,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1308,
+      "rank": 1322,
       "id": "spheal",
       "name": "Spheal",
       "profile": "rank1",
@@ -310649,7 +313974,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1309,
+      "rank": 1323,
       "id": "pikachu_5th_anniversary",
       "name": "Pikachu (5th Anniversary)",
       "profile": "rank1",
@@ -310886,7 +314211,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1310,
+      "rank": 1324,
       "id": "snivy_shadow",
       "name": "Snivy (Shadow)",
       "profile": "rank1",
@@ -311123,7 +314448,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1311,
+      "rank": 1325,
       "id": "butterfree",
       "name": "Butterfree",
       "profile": "rank1",
@@ -311361,7 +314686,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1312,
+      "rank": 1326,
       "id": "riolu",
       "name": "Riolu",
       "profile": "rank1",
@@ -311598,7 +314923,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1313,
+      "rank": 1327,
       "id": "porygon2",
       "name": "Porygon2",
       "profile": "rank1",
@@ -311835,7 +315160,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1314,
+      "rank": 1328,
       "id": "spearow",
       "name": "Spearow",
       "profile": "rank1",
@@ -312073,7 +315398,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1315,
+      "rank": 1329,
       "id": "sobble",
       "name": "Sobble",
       "profile": "rank1",
@@ -312310,7 +315635,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1316,
+      "rank": 1330,
       "id": "venonat_shadow",
       "name": "Venonat (Shadow)",
       "profile": "rank1",
@@ -312548,7 +315873,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1317,
+      "rank": 1331,
       "id": "nickit",
       "name": "Nickit",
       "profile": "rank1",
@@ -312785,7 +316110,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1318,
+      "rank": 1332,
       "id": "shellder_shadow",
       "name": "Shellder (Shadow)",
       "profile": "rank1",
@@ -313022,7 +316347,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1319,
+      "rank": 1333,
       "id": "cacnea_shadow",
       "name": "Cacnea (Shadow)",
       "profile": "rank1",
@@ -313259,7 +316584,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1320,
+      "rank": 1334,
       "id": "shieldon",
       "name": "Shieldon",
       "profile": "rank1",
@@ -313497,7 +316822,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1321,
+      "rank": 1335,
       "id": "petilil",
       "name": "Petilil",
       "profile": "rank1",
@@ -313734,7 +317059,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1322,
+      "rank": 1336,
       "id": "ducklett_shadow",
       "name": "Ducklett (Shadow)",
       "profile": "rank1",
@@ -313972,7 +317297,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1323,
+      "rank": 1337,
       "id": "treecko",
       "name": "Treecko",
       "profile": "rank1",
@@ -314209,7 +317534,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1324,
+      "rank": 1338,
       "id": "bellsprout",
       "name": "Bellsprout",
       "profile": "rank1",
@@ -314447,7 +317772,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1325,
+      "rank": 1339,
       "id": "meltan",
       "name": "Meltan",
       "profile": "rank1",
@@ -314684,7 +318009,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1326,
+      "rank": 1340,
       "id": "beldum_shadow",
       "name": "Beldum (Shadow)",
       "profile": "rank1",
@@ -314901,7 +318226,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1327,
+      "rank": 1341,
       "id": "duosion_shadow",
       "name": "Duosion (Shadow)",
       "profile": "rank1",
@@ -315138,7 +318463,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1328,
+      "rank": 1342,
       "id": "cranidos",
       "name": "Cranidos",
       "profile": "rank1",
@@ -315375,7 +318700,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1329,
+      "rank": 1343,
       "id": "trubbish",
       "name": "Trubbish",
       "profile": "rank1",
@@ -315612,7 +318937,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1330,
+      "rank": 1344,
       "id": "skwovet",
       "name": "Skwovet",
       "profile": "rank1",
@@ -315849,7 +319174,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1331,
+      "rank": 1345,
       "id": "bellsprout_shadow",
       "name": "Bellsprout (Shadow)",
       "profile": "rank1",
@@ -316087,7 +319412,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1332,
+      "rank": 1346,
       "id": "beldum",
       "name": "Beldum",
       "profile": "rank1",
@@ -316304,7 +319629,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1333,
+      "rank": 1347,
       "id": "voltorb_hisuian",
       "name": "Voltorb (Hisuian)",
       "profile": "rank1",
@@ -316542,7 +319867,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1334,
+      "rank": 1348,
       "id": "skiploom_shadow",
       "name": "Skiploom (Shadow)",
       "profile": "rank1",
@@ -316780,7 +320105,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1335,
+      "rank": 1349,
       "id": "charmander",
       "name": "Charmander",
       "profile": "rank1",
@@ -317017,7 +320342,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1336,
+      "rank": 1350,
       "id": "nincada",
       "name": "Nincada",
       "profile": "rank1",
@@ -317255,7 +320580,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1337,
+      "rank": 1351,
       "id": "solosis_shadow",
       "name": "Solosis (Shadow)",
       "profile": "rank1",
@@ -317492,7 +320817,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1338,
+      "rank": 1352,
       "id": "budew",
       "name": "Budew",
       "profile": "rank1",
@@ -317730,7 +321055,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1339,
+      "rank": 1353,
       "id": "helioptile",
       "name": "Helioptile",
       "profile": "rank1",
@@ -317968,7 +321293,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1340,
+      "rank": 1354,
       "id": "shroodle",
       "name": "Shroodle",
       "profile": "rank1",
@@ -318206,7 +321531,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1341,
+      "rank": 1355,
       "id": "regigigas_shadow",
       "name": "Regigigas (Shadow)",
       "profile": "rank1",
@@ -318443,7 +321768,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1342,
+      "rank": 1356,
       "id": "salandit",
       "name": "Salandit",
       "profile": "rank1",
@@ -318681,7 +322006,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1343,
+      "rank": 1357,
       "id": "meowth_shadow",
       "name": "Meowth (Shadow)",
       "profile": "rank1",
@@ -318918,7 +322243,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1344,
+      "rank": 1358,
       "id": "charmander_shadow",
       "name": "Charmander (Shadow)",
       "profile": "rank1",
@@ -319155,7 +322480,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1345,
+      "rank": 1359,
       "id": "porygon2_shadow",
       "name": "Porygon2 (Shadow)",
       "profile": "rank1",
@@ -319392,7 +322717,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1346,
+      "rank": 1360,
       "id": "spheal_shadow",
       "name": "Spheal (Shadow)",
       "profile": "rank1",
@@ -319630,7 +322955,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1347,
+      "rank": 1361,
       "id": "clobbopus",
       "name": "Clobbopus",
       "profile": "rank1",
@@ -319867,7 +323192,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1348,
+      "rank": 1362,
       "id": "mudkip",
       "name": "Mudkip",
       "profile": "rank1",
@@ -320104,7 +323429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1349,
+      "rank": 1363,
       "id": "carvanha",
       "name": "Carvanha",
       "profile": "rank1",
@@ -320342,7 +323667,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1350,
+      "rank": 1364,
       "id": "slugma",
       "name": "Slugma",
       "profile": "rank1",
@@ -320579,7 +323904,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1351,
+      "rank": 1365,
       "id": "snorunt_shadow",
       "name": "Snorunt (Shadow)",
       "profile": "rank1",
@@ -320816,7 +324141,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1352,
+      "rank": 1366,
       "id": "ledyba_shadow",
       "name": "Ledyba (Shadow)",
       "profile": "rank1",
@@ -321054,7 +324379,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1353,
+      "rank": 1367,
       "id": "duosion",
       "name": "Duosion",
       "profile": "rank1",
@@ -321291,7 +324616,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1354,
+      "rank": 1368,
       "id": "larvitar_shadow",
       "name": "Larvitar (Shadow)",
       "profile": "rank1",
@@ -321529,7 +324854,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1355,
+      "rank": 1369,
       "id": "staryu_shadow",
       "name": "Staryu (Shadow)",
       "profile": "rank1",
@@ -321766,7 +325091,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1356,
+      "rank": 1370,
       "id": "hoothoot",
       "name": "Hoothoot",
       "profile": "rank1",
@@ -322004,7 +325329,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1357,
+      "rank": 1371,
       "id": "trubbish_shadow",
       "name": "Trubbish (Shadow)",
       "profile": "rank1",
@@ -322241,7 +325566,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1358,
+      "rank": 1372,
       "id": "vanillite",
       "name": "Vanillite",
       "profile": "rank1",
@@ -322478,7 +325803,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1359,
+      "rank": 1373,
       "id": "solosis",
       "name": "Solosis",
       "profile": "rank1",
@@ -322715,7 +326040,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1360,
+      "rank": 1374,
       "id": "tandemaus",
       "name": "Tandemaus",
       "profile": "rank1",
@@ -322952,7 +326277,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1361,
+      "rank": 1375,
       "id": "yamper",
       "name": "Yamper",
       "profile": "rank1",
@@ -323189,7 +326514,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1362,
+      "rank": 1376,
       "id": "lillipup",
       "name": "Lillipup",
       "profile": "rank1",
@@ -323426,7 +326751,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1363,
+      "rank": 1377,
       "id": "treecko_shadow",
       "name": "Treecko (Shadow)",
       "profile": "rank1",
@@ -323663,7 +326988,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1364,
+      "rank": 1378,
       "id": "kirlia_shadow",
       "name": "Kirlia (Shadow)",
       "profile": "rank1",
@@ -323901,7 +327226,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1365,
+      "rank": 1379,
       "id": "snorunt",
       "name": "Snorunt",
       "profile": "rank1",
@@ -324138,7 +327463,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1366,
+      "rank": 1380,
       "id": "shinx_shadow",
       "name": "Shinx (Shadow)",
       "profile": "rank1",
@@ -324375,7 +327700,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1367,
+      "rank": 1381,
       "id": "meowth_alolan",
       "name": "Meowth (Alolan)",
       "profile": "rank1",
@@ -324612,7 +327937,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1368,
+      "rank": 1382,
       "id": "bronzor",
       "name": "Bronzor",
       "profile": "rank1",
@@ -324850,7 +328175,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1369,
+      "rank": 1383,
       "id": "helioptile_shadow",
       "name": "Helioptile (Shadow)",
       "profile": "rank1",
@@ -325088,7 +328413,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1370,
+      "rank": 1384,
       "id": "meowth",
       "name": "Meowth",
       "profile": "rank1",
@@ -325325,7 +328650,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1371,
+      "rank": 1385,
       "id": "carvanha_shadow",
       "name": "Carvanha (Shadow)",
       "profile": "rank1",
@@ -325563,7 +328888,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1372,
+      "rank": 1386,
       "id": "ledyba",
       "name": "Ledyba",
       "profile": "rank1",
@@ -325801,7 +329126,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1373,
+      "rank": 1387,
       "id": "cottonee",
       "name": "Cottonee",
       "profile": "rank1",
@@ -326039,7 +329364,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1374,
+      "rank": 1388,
       "id": "larvitar",
       "name": "Larvitar",
       "profile": "rank1",
@@ -326277,7 +329602,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1375,
+      "rank": 1389,
       "id": "hoothoot_shadow",
       "name": "Hoothoot (Shadow)",
       "profile": "rank1",
@@ -326515,7 +329840,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1376,
+      "rank": 1390,
       "id": "pidove_shadow",
       "name": "Pidove (Shadow)",
       "profile": "rank1",
@@ -326753,7 +330078,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1377,
+      "rank": 1391,
       "id": "goomy",
       "name": "Goomy",
       "profile": "rank1",
@@ -326990,7 +330315,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1378,
+      "rank": 1392,
       "id": "shieldon_shadow",
       "name": "Shieldon (Shadow)",
       "profile": "rank1",
@@ -327228,7 +330553,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1379,
+      "rank": 1393,
       "id": "mudkip_shadow",
       "name": "Mudkip (Shadow)",
       "profile": "rank1",
@@ -327465,7 +330790,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1380,
+      "rank": 1394,
       "id": "minccino",
       "name": "Minccino",
       "profile": "rank1",
@@ -327702,7 +331027,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1381,
+      "rank": 1395,
       "id": "pidove",
       "name": "Pidove",
       "profile": "rank1",
@@ -327940,7 +331265,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1382,
+      "rank": 1396,
       "id": "hatenna",
       "name": "Hatenna",
       "profile": "rank1",
@@ -328177,7 +331502,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1383,
+      "rank": 1397,
       "id": "glameow",
       "name": "Glameow",
       "profile": "rank1",
@@ -328414,7 +331739,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1384,
+      "rank": 1398,
       "id": "electrike_shadow",
       "name": "Electrike (Shadow)",
       "profile": "rank1",
@@ -328651,7 +331976,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1385,
+      "rank": 1399,
       "id": "kirlia",
       "name": "Kirlia",
       "profile": "rank1",
@@ -328889,7 +332214,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1386,
+      "rank": 1400,
       "id": "remoraid",
       "name": "Remoraid",
       "profile": "rank1",
@@ -329126,7 +332451,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1387,
+      "rank": 1401,
       "id": "purrloin_shadow",
       "name": "Purrloin (Shadow)",
       "profile": "rank1",
@@ -329363,7 +332688,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1388,
+      "rank": 1402,
       "id": "abra_shadow",
       "name": "Abra (Shadow)",
       "profile": "rank1",
@@ -329600,7 +332925,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1389,
+      "rank": 1403,
       "id": "nidoran_female",
       "name": "Nidoran Female",
       "profile": "rank1",
@@ -329837,7 +333162,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1390,
+      "rank": 1404,
       "id": "purrloin",
       "name": "Purrloin",
       "profile": "rank1",
@@ -330074,7 +333399,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1391,
+      "rank": 1405,
       "id": "froakie_shadow",
       "name": "Froakie (Shadow)",
       "profile": "rank1",
@@ -330311,7 +333636,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1392,
+      "rank": 1406,
       "id": "deoxys",
       "name": "Deoxys",
       "profile": "rank1",
@@ -330548,7 +333873,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1393,
+      "rank": 1407,
       "id": "electrike",
       "name": "Electrike",
       "profile": "rank1",
@@ -330785,7 +334110,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1394,
+      "rank": 1408,
       "id": "glameow_shadow",
       "name": "Glameow (Shadow)",
       "profile": "rank1",
@@ -331022,7 +334347,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1395,
+      "rank": 1409,
       "id": "spoink_shadow",
       "name": "Spoink (Shadow)",
       "profile": "rank1",
@@ -331259,7 +334584,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1396,
+      "rank": 1410,
       "id": "abra",
       "name": "Abra",
       "profile": "rank1",
@@ -331496,7 +334821,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1397,
+      "rank": 1411,
       "id": "smoliv",
       "name": "Smoliv",
       "profile": "rank1",
@@ -331734,7 +335059,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1398,
+      "rank": 1412,
       "id": "shinx",
       "name": "Shinx",
       "profile": "rank1",
@@ -331971,7 +335296,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1399,
+      "rank": 1413,
       "id": "spoink",
       "name": "Spoink",
       "profile": "rank1",
@@ -332208,7 +335533,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1400,
+      "rank": 1414,
       "id": "dewpider",
       "name": "Dewpider",
       "profile": "rank1",
@@ -332446,7 +335771,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1401,
+      "rank": 1415,
       "id": "swinub_shadow",
       "name": "Swinub (Shadow)",
       "profile": "rank1",
@@ -332684,7 +336009,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1402,
+      "rank": 1416,
       "id": "blitzle_shadow",
       "name": "Blitzle (Shadow)",
       "profile": "rank1",
@@ -332921,7 +336246,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1403,
+      "rank": 1417,
       "id": "diglett_alolan_shadow",
       "name": "Diglett (Alolan) (Shadow)",
       "profile": "rank1",
@@ -333159,7 +336484,224 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1404,
+      "rank": 1418,
+      "id": "wimpod_shadow",
+      "name": "Wimpod (Shadow)",
+      "profile": "rank1",
+      "averageScore": 49,
+      "externalWeightedAverageScore": 49,
+      "weightedAverageScore": 300,
+      "rawScore": 78,
+      "weightedScore": 76,
+      "competitiveScore": 76,
+      "roleScore": 76,
+      "candidatePriorScore": 500,
+      "metaViabilityScore": 203,
+      "overallScore": 203,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 61,
+          "weightedScore": 61,
+          "competitiveScore": 61,
+          "rawRating": 10,
+          "weightedRating": 10,
+          "competitiveRating": 10,
+          "score": 10,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "STRUGGLE_BUG",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BUG_BUZZ",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 32,
+          "weightedScore": 32,
+          "competitiveScore": 32,
+          "rawRating": 5,
+          "weightedRating": 5,
+          "competitiveRating": 5,
+          "score": 5,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "STRUGGLE_BUG",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BUG_BUZZ",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 60,
+          "weightedScore": 51,
+          "competitiveScore": 51,
+          "rawRating": 9,
+          "weightedRating": 8,
+          "competitiveRating": 8,
+          "score": 8,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "STRUGGLE_BUG",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BUG_BUZZ",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 54,
+          "weightedScore": 54,
+          "competitiveScore": 54,
+          "rawRating": 8,
+          "weightedRating": 8,
+          "competitiveRating": 8,
+          "score": 8,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "STRUGGLE_BUG",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BUG_BUZZ",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 32,
+          "weightedScore": 32,
+          "competitiveScore": 32,
+          "rawRating": 8,
+          "weightedRating": 8,
+          "competitiveRating": 8,
+          "score": 8,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "STRUGGLE_BUG",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "BUG_BUZZ",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 43.12,
+      "matchups": 172,
+      "wins": 0,
+      "losses": 172,
+      "ties": 0,
+      "winRate": 0,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 32,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 32,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 61,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 71,
+          "matchups": 43,
+          "wins": 0,
+          "losses": 43,
+          "ties": 0
+        }
+      },
+      "types": [
+        "bug",
+        "water"
+      ],
+      "dex": 767,
+      "build": {
+        "ivAtk": 15,
+        "ivDef": 15,
+        "ivHp": 15,
+        "level": 51,
+        "cp": 574
+      },
+      "moveset": {
+        "fast": "STRUGGLE_BUG",
+        "charged": [
+          "BUG_BUZZ"
+        ]
+      }
+    },
+    {
+      "rank": 1419,
       "id": "mareanie",
       "name": "Mareanie",
       "profile": "rank1",
@@ -333397,7 +336939,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1405,
+      "rank": 1420,
       "id": "horsea_shadow",
       "name": "Horsea (Shadow)",
       "profile": "rank1",
@@ -333634,7 +337176,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1406,
+      "rank": 1421,
       "id": "froakie",
       "name": "Froakie",
       "profile": "rank1",
@@ -333871,7 +337413,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1407,
+      "rank": 1422,
       "id": "nidoran_female_shadow",
       "name": "Nidoran Female (Shadow)",
       "profile": "rank1",
@@ -334108,7 +337650,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1408,
+      "rank": 1423,
       "id": "nidoran_male_shadow",
       "name": "Nidoran Male (Shadow)",
       "profile": "rank1",
@@ -334345,7 +337887,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1409,
+      "rank": 1424,
       "id": "yungoos",
       "name": "Yungoos",
       "profile": "rank1",
@@ -334582,7 +338124,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1410,
+      "rank": 1425,
       "id": "dewpider_shadow",
       "name": "Dewpider (Shadow)",
       "profile": "rank1",
@@ -334820,7 +338362,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1411,
+      "rank": 1426,
       "id": "porygon_z_shadow",
       "name": "Porygon-Z (Shadow)",
       "profile": "rank1",
@@ -335057,7 +338599,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1412,
+      "rank": 1427,
       "id": "wattrel",
       "name": "Wattrel",
       "profile": "rank1",
@@ -335295,7 +338837,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1413,
+      "rank": 1428,
       "id": "poliwag_shadow",
       "name": "Poliwag (Shadow)",
       "profile": "rank1",
@@ -335532,7 +339074,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1414,
+      "rank": 1429,
       "id": "nidoran_male",
       "name": "Nidoran Male",
       "profile": "rank1",
@@ -335769,7 +339311,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1415,
+      "rank": 1430,
       "id": "baltoy_shadow",
       "name": "Baltoy (Shadow)",
       "profile": "rank1",
@@ -336007,7 +339549,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1416,
+      "rank": 1431,
       "id": "spinarak",
       "name": "Spinarak",
       "profile": "rank1",
@@ -336245,7 +339787,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1417,
+      "rank": 1432,
       "id": "blitzle",
       "name": "Blitzle",
       "profile": "rank1",
@@ -336482,7 +340024,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1418,
+      "rank": 1433,
       "id": "togepi",
       "name": "Togepi",
       "profile": "rank1",
@@ -336719,7 +340261,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1419,
+      "rank": 1434,
       "id": "horsea",
       "name": "Horsea",
       "profile": "rank1",
@@ -336956,7 +340498,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1420,
+      "rank": 1435,
       "id": "porygon_z",
       "name": "Porygon-Z",
       "profile": "rank1",
@@ -337193,7 +340735,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1421,
+      "rank": 1436,
       "id": "swinub",
       "name": "Swinub",
       "profile": "rank1",
@@ -337431,7 +340973,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1422,
+      "rank": 1437,
       "id": "lechonk",
       "name": "Lechonk",
       "profile": "rank1",
@@ -337668,7 +341210,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1423,
+      "rank": 1438,
       "id": "baltoy",
       "name": "Baltoy",
       "profile": "rank1",
@@ -337906,7 +341448,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1424,
+      "rank": 1439,
       "id": "taillow_shadow",
       "name": "Taillow (Shadow)",
       "profile": "rank1",
@@ -338123,7 +341665,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1425,
+      "rank": 1440,
       "id": "delibird_shadow",
       "name": "Delibird (Shadow)",
       "profile": "rank1",
@@ -338361,7 +341903,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1426,
+      "rank": 1441,
       "id": "noibat_shadow",
       "name": "Noibat (Shadow)",
       "profile": "rank1",
@@ -338599,7 +342141,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1427,
+      "rank": 1442,
       "id": "poliwag",
       "name": "Poliwag",
       "profile": "rank1",
@@ -338836,7 +342378,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1428,
+      "rank": 1443,
       "id": "taillow",
       "name": "Taillow",
       "profile": "rank1",
@@ -339053,7 +342595,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1429,
+      "rank": 1444,
       "id": "diglett_alolan",
       "name": "Diglett (Alolan)",
       "profile": "rank1",
@@ -339291,7 +342833,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1430,
+      "rank": 1445,
       "id": "duskull_shadow",
       "name": "Duskull (Shadow)",
       "profile": "rank1",
@@ -339528,7 +343070,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1431,
+      "rank": 1446,
       "id": "cutiefly",
       "name": "Cutiefly",
       "profile": "rank1",
@@ -339766,7 +343308,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1432,
+      "rank": 1447,
       "id": "bidoof",
       "name": "Bidoof",
       "profile": "rank1",
@@ -340003,7 +343545,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1433,
+      "rank": 1448,
       "id": "duskull",
       "name": "Duskull",
       "profile": "rank1",
@@ -340240,7 +343782,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1434,
+      "rank": 1449,
       "id": "sentret",
       "name": "Sentret",
       "profile": "rank1",
@@ -340477,7 +344019,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1435,
+      "rank": 1450,
       "id": "bidoof_shadow",
       "name": "Bidoof (Shadow)",
       "profile": "rank1",
@@ -340714,7 +344256,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1436,
+      "rank": 1451,
       "id": "charcadet",
       "name": "Charcadet",
       "profile": "rank1",
@@ -340951,7 +344493,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1437,
+      "rank": 1452,
       "id": "patrat",
       "name": "Patrat",
       "profile": "rank1",
@@ -341188,7 +344730,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1438,
+      "rank": 1453,
       "id": "wooloo",
       "name": "Wooloo",
       "profile": "rank1",
@@ -341425,7 +344967,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1439,
+      "rank": 1454,
       "id": "surskit",
       "name": "Surskit",
       "profile": "rank1",
@@ -341663,7 +345205,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1440,
+      "rank": 1455,
       "id": "steenee",
       "name": "Steenee",
       "profile": "rank1",
@@ -341900,7 +345442,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1441,
+      "rank": 1456,
       "id": "clefairy",
       "name": "Clefairy",
       "profile": "rank1",
@@ -342137,7 +345679,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1442,
+      "rank": 1457,
       "id": "wooper_shadow",
       "name": "Wooper (Shadow)",
       "profile": "rank1",
@@ -342375,7 +345917,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1443,
+      "rank": 1458,
       "id": "jigglypuff",
       "name": "Jigglypuff",
       "profile": "rank1",
@@ -342613,7 +346155,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1444,
+      "rank": 1459,
       "id": "noibat",
       "name": "Noibat",
       "profile": "rank1",
@@ -342851,7 +346393,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1445,
+      "rank": 1460,
       "id": "makuhita",
       "name": "Makuhita",
       "profile": "rank1",
@@ -343088,7 +346630,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1446,
+      "rank": 1461,
       "id": "ekans",
       "name": "Ekans",
       "profile": "rank1",
@@ -343325,7 +346867,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1447,
+      "rank": 1462,
       "id": "wooper",
       "name": "Wooper",
       "profile": "rank1",
@@ -343563,7 +347105,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1448,
+      "rank": 1463,
       "id": "makuhita_shadow",
       "name": "Makuhita (Shadow)",
       "profile": "rank1",
@@ -343800,7 +347342,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1449,
+      "rank": 1464,
       "id": "pidgey_shadow",
       "name": "Pidgey (Shadow)",
       "profile": "rank1",
@@ -344038,7 +347580,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1450,
+      "rank": 1465,
       "id": "gossifleur",
       "name": "Gossifleur",
       "profile": "rank1",
@@ -344275,7 +347817,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1451,
+      "rank": 1466,
       "id": "whismur_shadow",
       "name": "Whismur (Shadow)",
       "profile": "rank1",
@@ -344512,7 +348054,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1452,
+      "rank": 1467,
       "id": "patrat_shadow",
       "name": "Patrat (Shadow)",
       "profile": "rank1",
@@ -344749,7 +348291,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1453,
+      "rank": 1468,
       "id": "ekans_shadow",
       "name": "Ekans (Shadow)",
       "profile": "rank1",
@@ -344986,7 +348528,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1454,
+      "rank": 1469,
       "id": "tympole",
       "name": "Tympole",
       "profile": "rank1",
@@ -345223,7 +348765,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1455,
+      "rank": 1470,
       "id": "cherubi",
       "name": "Cherubi",
       "profile": "rank1",
@@ -345460,7 +349002,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1456,
+      "rank": 1471,
       "id": "meditite",
       "name": "Meditite",
       "profile": "rank1",
@@ -345698,7 +349240,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1457,
+      "rank": 1472,
       "id": "rockruff",
       "name": "Rockruff",
       "profile": "rank1",
@@ -345935,7 +349477,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1458,
+      "rank": 1473,
       "id": "wingull",
       "name": "Wingull",
       "profile": "rank1",
@@ -346173,7 +349715,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1459,
+      "rank": 1474,
       "id": "diglett_shadow",
       "name": "Diglett (Shadow)",
       "profile": "rank1",
@@ -346410,7 +349952,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1460,
+      "rank": 1475,
       "id": "skitty",
       "name": "Skitty",
       "profile": "rank1",
@@ -346647,7 +350189,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1461,
+      "rank": 1476,
       "id": "shuckle",
       "name": "Shuckle",
       "profile": "rank1",
@@ -346885,7 +350427,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1462,
+      "rank": 1477,
       "id": "rattata_shadow",
       "name": "Rattata (Shadow)",
       "profile": "rank1",
@@ -347122,7 +350664,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1463,
+      "rank": 1478,
       "id": "pidgey",
       "name": "Pidgey",
       "profile": "rank1",
@@ -347360,7 +350902,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1464,
+      "rank": 1479,
       "id": "gulpin",
       "name": "Gulpin",
       "profile": "rank1",
@@ -347597,7 +351139,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1465,
+      "rank": 1480,
       "id": "toxel",
       "name": "Toxel",
       "profile": "rank1",
@@ -347814,7 +351356,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1466,
+      "rank": 1481,
       "id": "marill",
       "name": "Marill",
       "profile": "rank1",
@@ -348052,7 +351594,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1467,
+      "rank": 1482,
       "id": "shuckle_shadow",
       "name": "Shuckle (Shadow)",
       "profile": "rank1",
@@ -348290,7 +351832,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1468,
+      "rank": 1483,
       "id": "flittle",
       "name": "Flittle",
       "profile": "rank1",
@@ -348527,7 +352069,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1469,
+      "rank": 1484,
       "id": "pawmi",
       "name": "Pawmi",
       "profile": "rank1",
@@ -348764,7 +352306,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1470,
+      "rank": 1485,
       "id": "lotad",
       "name": "Lotad",
       "profile": "rank1",
@@ -349002,7 +352544,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1471,
+      "rank": 1486,
       "id": "whismur",
       "name": "Whismur",
       "profile": "rank1",
@@ -349239,7 +352781,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1472,
+      "rank": 1487,
       "id": "poochyena_shadow",
       "name": "Poochyena (Shadow)",
       "profile": "rank1",
@@ -349476,7 +353018,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1473,
+      "rank": 1488,
       "id": "dreepy",
       "name": "Dreepy",
       "profile": "rank1",
@@ -349693,7 +353235,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1474,
+      "rank": 1489,
       "id": "rattata",
       "name": "Rattata",
       "profile": "rank1",
@@ -349930,7 +353472,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1475,
+      "rank": 1490,
       "id": "poochyena",
       "name": "Poochyena",
       "profile": "rank1",
@@ -350167,7 +353709,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1476,
+      "rank": 1491,
       "id": "nymble",
       "name": "Nymble",
       "profile": "rank1",
@@ -350404,7 +353946,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1477,
+      "rank": 1492,
       "id": "starly",
       "name": "Starly",
       "profile": "rank1",
@@ -350642,7 +354184,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1478,
+      "rank": 1493,
       "id": "starly_shadow",
       "name": "Starly (Shadow)",
       "profile": "rank1",
@@ -350880,7 +354422,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1479,
+      "rank": 1494,
       "id": "rookidee_shadow",
       "name": "Rookidee (Shadow)",
       "profile": "rank1",
@@ -351117,7 +354659,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1480,
+      "rank": 1495,
       "id": "diglett",
       "name": "Diglett",
       "profile": "rank1",
@@ -351354,7 +354896,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1481,
+      "rank": 1496,
       "id": "wynaut",
       "name": "Wynaut",
       "profile": "rank1",
@@ -351570,7 +355112,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1482,
+      "rank": 1497,
       "id": "zubat_shadow",
       "name": "Zubat (Shadow)",
       "profile": "rank1",
@@ -351808,7 +355350,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1483,
+      "rank": 1498,
       "id": "rookidee",
       "name": "Rookidee",
       "profile": "rank1",
@@ -352045,7 +355587,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1484,
+      "rank": 1499,
       "id": "tarountula",
       "name": "Tarountula",
       "profile": "rank1",
@@ -352282,7 +355824,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1485,
+      "rank": 1500,
       "id": "rattata_alolan_shadow",
       "name": "Rattata (Alolan) (Shadow)",
       "profile": "rank1",
@@ -352520,7 +356062,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1486,
+      "rank": 1501,
       "id": "zubat",
       "name": "Zubat",
       "profile": "rank1",
@@ -352758,7 +356300,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1487,
+      "rank": 1502,
       "id": "smeargle",
       "name": "Smeargle",
       "profile": "rank1",
@@ -352995,7 +356537,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1488,
+      "rank": 1503,
       "id": "wooper_paldean",
       "name": "Wooper (Paldean)",
       "profile": "rank1",
@@ -353233,7 +356775,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1489,
+      "rank": 1504,
       "id": "zigzagoon_galarian_shadow",
       "name": "Zigzagoon (Galarian) (Shadow)",
       "profile": "rank1",
@@ -353471,7 +357013,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1490,
+      "rank": 1505,
       "id": "venipede_shadow",
       "name": "Venipede (Shadow)",
       "profile": "rank1",
@@ -353709,7 +357251,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1491,
+      "rank": 1506,
       "id": "unown",
       "name": "Unown",
       "profile": "rank1",
@@ -353925,7 +357467,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1492,
+      "rank": 1507,
       "id": "combee",
       "name": "Combee",
       "profile": "rank1",
@@ -354142,7 +357684,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1493,
+      "rank": 1508,
       "id": "rattata_alolan",
       "name": "Rattata (Alolan)",
       "profile": "rank1",
@@ -354380,7 +357922,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1494,
+      "rank": 1509,
       "id": "applin",
       "name": "Applin",
       "profile": "rank1",
@@ -354597,7 +358139,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1495,
+      "rank": 1510,
       "id": "seedot_shadow",
       "name": "Seedot (Shadow)",
       "profile": "rank1",
@@ -354834,7 +358376,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1496,
+      "rank": 1511,
       "id": "venipede",
       "name": "Venipede",
       "profile": "rank1",
@@ -355072,7 +358614,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1497,
+      "rank": 1512,
       "id": "wurmple",
       "name": "Wurmple",
       "profile": "rank1",
@@ -355288,7 +358830,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1498,
+      "rank": 1513,
       "id": "seedot",
       "name": "Seedot",
       "profile": "rank1",
@@ -355525,7 +359067,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1499,
+      "rank": 1514,
       "id": "pichu",
       "name": "Pichu",
       "profile": "rank1",
@@ -355762,7 +359304,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1500,
+      "rank": 1515,
       "id": "ralts_shadow",
       "name": "Ralts (Shadow)",
       "profile": "rank1",
@@ -356000,7 +359542,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1501,
+      "rank": 1516,
       "id": "zigzagoon_galarian",
       "name": "Zigzagoon (Galarian)",
       "profile": "rank1",
@@ -356238,7 +359780,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1502,
+      "rank": 1517,
       "id": "hoppip_shadow",
       "name": "Hoppip (Shadow)",
       "profile": "rank1",
@@ -356476,7 +360018,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1503,
+      "rank": 1518,
       "id": "hoppip",
       "name": "Hoppip",
       "profile": "rank1",
@@ -356714,7 +360256,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1504,
+      "rank": 1519,
       "id": "tynamo",
       "name": "Tynamo",
       "profile": "rank1",
@@ -356930,7 +360472,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1505,
+      "rank": 1520,
       "id": "zigzagoon",
       "name": "Zigzagoon",
       "profile": "rank1",
@@ -357167,7 +360709,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1506,
+      "rank": 1521,
       "id": "wiglett",
       "name": "Wiglett",
       "profile": "rank1",
@@ -357404,7 +360946,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1507,
+      "rank": 1522,
       "id": "snom",
       "name": "Snom",
       "profile": "rank1",
@@ -357642,7 +361184,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1508,
+      "rank": 1523,
       "id": "rolycoly",
       "name": "Rolycoly",
       "profile": "rank1",
@@ -357879,7 +361421,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1509,
+      "rank": 1524,
       "id": "metapod_shadow",
       "name": "Metapod (Shadow)",
       "profile": "rank1",
@@ -358095,7 +361637,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1510,
+      "rank": 1525,
       "id": "sunkern",
       "name": "Sunkern",
       "profile": "rank1",
@@ -358332,7 +361874,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1511,
+      "rank": 1526,
       "id": "burmy_plant",
       "name": "Burmy (Plant)",
       "profile": "rank1",
@@ -358548,7 +362090,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1512,
+      "rank": 1527,
       "id": "burmy_sandy",
       "name": "Burmy (Sandy)",
       "profile": "rank1",
@@ -358764,7 +362306,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1513,
+      "rank": 1528,
       "id": "burmy_trash",
       "name": "Burmy (Trash)",
       "profile": "rank1",
@@ -358980,7 +362522,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1514,
+      "rank": 1529,
       "id": "metapod",
       "name": "Metapod",
       "profile": "rank1",
@@ -359196,7 +362738,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1515,
+      "rank": 1530,
       "id": "ralts",
       "name": "Ralts",
       "profile": "rank1",
@@ -359434,7 +362976,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1516,
+      "rank": 1531,
       "id": "scatterbug",
       "name": "Scatterbug",
       "profile": "rank1",
@@ -359650,7 +363192,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1517,
+      "rank": 1532,
       "id": "bunnelby_shadow",
       "name": "Bunnelby (Shadow)",
       "profile": "rank1",
@@ -359887,7 +363429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1518,
+      "rank": 1533,
       "id": "caterpie_shadow",
       "name": "Caterpie (Shadow)",
       "profile": "rank1",
@@ -360103,7 +363645,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1519,
+      "rank": 1534,
       "id": "bunnelby",
       "name": "Bunnelby",
       "profile": "rank1",
@@ -360340,7 +363882,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1520,
+      "rank": 1535,
       "id": "igglybuff",
       "name": "Igglybuff",
       "profile": "rank1",
@@ -360578,7 +364120,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1521,
+      "rank": 1536,
       "id": "caterpie",
       "name": "Caterpie",
       "profile": "rank1",
@@ -360794,7 +364336,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1522,
+      "rank": 1537,
       "id": "tyrogue",
       "name": "Tyrogue",
       "profile": "rank1",
@@ -361031,7 +364573,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1523,
+      "rank": 1538,
       "id": "slakoth",
       "name": "Slakoth",
       "profile": "rank1",
@@ -361268,7 +364810,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1524,
+      "rank": 1539,
       "id": "bounsweet",
       "name": "Bounsweet",
       "profile": "rank1",
@@ -361505,7 +365047,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1525,
+      "rank": 1540,
       "id": "kricketot",
       "name": "Kricketot",
       "profile": "rank1",
@@ -361721,7 +365263,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1526,
+      "rank": 1541,
       "id": "wimpod",
       "name": "Wimpod",
       "profile": "rank1",
@@ -361938,7 +365480,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1527,
+      "rank": 1542,
       "id": "slaking",
       "name": "Slaking",
       "profile": "rank1",
@@ -362175,7 +365717,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1528,
+      "rank": 1543,
       "id": "slakoth_shadow",
       "name": "Slakoth (Shadow)",
       "profile": "rank1",
@@ -362412,7 +365954,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1529,
+      "rank": 1544,
       "id": "azurill",
       "name": "Azurill",
       "profile": "rank1",
@@ -362650,7 +366192,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1530,
+      "rank": 1545,
       "id": "cleffa",
       "name": "Cleffa",
       "profile": "rank1",
@@ -362887,7 +366429,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1531,
+      "rank": 1546,
       "id": "slaking_shadow",
       "name": "Slaking (Shadow)",
       "profile": "rank1",
@@ -363124,7 +366666,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1532,
+      "rank": 1547,
       "id": "happiny",
       "name": "Happiny",
       "profile": "rank1",
@@ -363340,7 +366882,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1533,
+      "rank": 1548,
       "id": "feebas",
       "name": "Feebas",
       "profile": "rank1",
@@ -363556,7 +367098,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1534,
+      "rank": 1549,
       "id": "feebas_shadow",
       "name": "Feebas (Shadow)",
       "profile": "rank1",
@@ -363772,7 +367314,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1535,
+      "rank": 1550,
       "id": "weedle_shadow",
       "name": "Weedle (Shadow)",
       "profile": "rank1",
@@ -363989,7 +367531,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1536,
+      "rank": 1551,
       "id": "cascoon",
       "name": "Cascoon",
       "profile": "rank1",
@@ -364205,7 +367747,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1537,
+      "rank": 1552,
       "id": "silcoon",
       "name": "Silcoon",
       "profile": "rank1",
@@ -364421,7 +367963,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1538,
+      "rank": 1553,
       "id": "kakuna_shadow",
       "name": "Kakuna (Shadow)",
       "profile": "rank1",
@@ -364638,7 +368180,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1539,
+      "rank": 1554,
       "id": "blipbug",
       "name": "Blipbug",
       "profile": "rank1",
@@ -364854,7 +368396,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1540,
+      "rank": 1555,
       "id": "kakuna",
       "name": "Kakuna",
       "profile": "rank1",
@@ -365071,7 +368613,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1541,
+      "rank": 1556,
       "id": "weedle",
       "name": "Weedle",
       "profile": "rank1",
@@ -365288,7 +368830,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1542,
+      "rank": 1557,
       "id": "magikarp",
       "name": "Magikarp",
       "profile": "rank1",
@@ -365504,7 +369046,7 @@ window.TWILIGHT_TRAILS_RANKINGS = {
       }
     },
     {
-      "rank": 1543,
+      "rank": 1558,
       "id": "magikarp_shadow",
       "name": "Magikarp (Shadow)",
       "profile": "rank1",

@@ -17,6 +17,7 @@
   function format(id) { return FORMATS[canonicalFormatId(id)]; }
   function isMega(pokemon) { return (pokemon?.tags || []).includes("mega"); }
   function isEligible(pokemon, formatId) {
+    if (pokemon?.released === false && pokemon.formChange?.trigger === "hp") return false;
     return !!pokemon && (!isMega(pokemon) || pokemon.released !== false);
   }
   function level(value) {
