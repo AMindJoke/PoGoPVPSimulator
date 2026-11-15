@@ -1,9 +1,9 @@
 window.TWILIGHT_TRAILS_RANKING_DETAILS = {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-04T11:32:24.122Z",
-  "sourceRankingGeneratedAt": "2026-11-04T11:30:23.993Z",
-  "sourceMovesetHash": "216e5608d18f64c64e63eb31c23aa4c40d90028e9d6806c6201bb53d23b2028b",
-  "sourceGameMasterHash": "ba584de473b6c64f090557f399df19a0d6824d05014f14c89eeaf93097b6aa8b",
+  "generatedAt": "2026-11-15T14:37:16.300Z",
+  "sourceRankingGeneratedAt": "2026-11-15T14:36:04.897Z",
+  "sourceMovesetHash": "1c81acecc03890ec705bd1e2fda21aab9b65a9ae0367615d6cc0866613e96e44",
+  "sourceGameMasterHash": "b197a75d9d624cb19a43449b56868c876758205dae5b504185c838ec95542113",
   "sourceMatrixVersion": "battle-planner-v52",
   "top50Size": 50,
   "scoreVersion": "resource-score-v5",
@@ -15326,6 +15326,80 @@ window.TWILIGHT_TRAILS_RANKING_DETAILS = {
         }
       ]
     },
+    "magnezone_shadow": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 5,
+        "technicalDifficulty": 4,
+        "closingPotential": 3
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 899
+        },
+        {
+          "id": "empoleon_shadow",
+          "name": "Empoleon (Shadow)",
+          "rank": 50,
+          "score": 850
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 45,
+          "score": 739
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 735
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 703
+        }
+      ],
+      "losses": [
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 203
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 220
+        },
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 220
+        },
+        {
+          "id": "steelix",
+          "name": "Steelix",
+          "rank": 28,
+          "score": 264
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 299
+        }
+      ]
+    },
     "cetitan": {
       "ratings": {
         "overall": 3,
@@ -15397,6 +15471,80 @@ window.TWILIGHT_TRAILS_RANKING_DETAILS = {
           "name": "Mimikyu",
           "rank": 1,
           "score": 338
+        }
+      ]
+    },
+    "magnezone": {
+      "ratings": {
+        "overall": 3,
+        "consistency": 0,
+        "shieldDependence": 3,
+        "technicalDifficulty": 2,
+        "closingPotential": 4
+      },
+      "top50Coverage": 50,
+      "wins": [
+        {
+          "id": "cramorant",
+          "name": "Cramorant",
+          "rank": 6,
+          "score": 903
+        },
+        {
+          "id": "florges",
+          "name": "Florges",
+          "rank": 21,
+          "score": 783
+        },
+        {
+          "id": "empoleon",
+          "name": "Empoleon",
+          "rank": 30,
+          "score": 774
+        },
+        {
+          "id": "araquanid",
+          "name": "Araquanid",
+          "rank": 44,
+          "score": 730
+        },
+        {
+          "id": "muk_alolan",
+          "name": "Muk (Alolan)",
+          "rank": 45,
+          "score": 703
+        }
+      ],
+      "losses": [
+        {
+          "id": "stunfisk",
+          "name": "Stunfisk",
+          "rank": 11,
+          "score": 193
+        },
+        {
+          "id": "quagsire_shadow",
+          "name": "Quagsire (Shadow)",
+          "rank": 8,
+          "score": 203
+        },
+        {
+          "id": "quagsire",
+          "name": "Quagsire",
+          "rank": 43,
+          "score": 221
+        },
+        {
+          "id": "steelix_shadow",
+          "name": "Steelix (Shadow)",
+          "rank": 29,
+          "score": 264
+        },
+        {
+          "id": "ninetales_shadow",
+          "name": "Ninetales (Shadow)",
+          "rank": 23,
+          "score": 274
         }
       ]
     },
@@ -17173,80 +17321,6 @@ window.TWILIGHT_TRAILS_RANKING_DETAILS = {
           "name": "Muk (Alolan)",
           "rank": 45,
           "score": 306
-        }
-      ]
-    },
-    "magnezone_shadow": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 5,
-        "technicalDifficulty": 3,
-        "closingPotential": 3
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 6,
-          "score": 899
-        },
-        {
-          "id": "empoleon_shadow",
-          "name": "Empoleon (Shadow)",
-          "rank": 50,
-          "score": 850
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 44,
-          "score": 700
-        },
-        {
-          "id": "tinkaton",
-          "name": "Tinkaton",
-          "rank": 2,
-          "score": 684
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 45,
-          "score": 675
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 177
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 43,
-          "score": 214
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 223
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 231
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 29,
-          "score": 260
         }
       ]
     },
@@ -19097,80 +19171,6 @@ window.TWILIGHT_TRAILS_RANKING_DETAILS = {
           "name": "Sableye (Shadow)",
           "rank": 12,
           "score": 326
-        }
-      ]
-    },
-    "magnezone": {
-      "ratings": {
-        "overall": 3,
-        "consistency": 0,
-        "shieldDependence": 4,
-        "technicalDifficulty": 2,
-        "closingPotential": 4
-      },
-      "top50Coverage": 50,
-      "wins": [
-        {
-          "id": "cramorant",
-          "name": "Cramorant",
-          "rank": 6,
-          "score": 903
-        },
-        {
-          "id": "araquanid",
-          "name": "Araquanid",
-          "rank": 44,
-          "score": 727
-        },
-        {
-          "id": "muk_alolan",
-          "name": "Muk (Alolan)",
-          "rank": 45,
-          "score": 687
-        },
-        {
-          "id": "melmetal",
-          "name": "Melmetal",
-          "rank": 15,
-          "score": 659
-        },
-        {
-          "id": "empoleon",
-          "name": "Empoleon",
-          "rank": 30,
-          "score": 647
-        }
-      ],
-      "losses": [
-        {
-          "id": "stunfisk",
-          "name": "Stunfisk",
-          "rank": 11,
-          "score": 156
-        },
-        {
-          "id": "quagsire_shadow",
-          "name": "Quagsire (Shadow)",
-          "rank": 8,
-          "score": 214
-        },
-        {
-          "id": "quagsire",
-          "name": "Quagsire",
-          "rank": 43,
-          "score": 218
-        },
-        {
-          "id": "steelix_shadow",
-          "name": "Steelix (Shadow)",
-          "rank": 29,
-          "score": 231
-        },
-        {
-          "id": "steelix",
-          "name": "Steelix",
-          "rank": 28,
-          "score": 258
         }
       ]
     },

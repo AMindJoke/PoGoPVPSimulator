@@ -15,6 +15,7 @@ vm.createContext(browser);
 for (const relative of [
   "battle-data.js",
   "cramorant-data.js",
+  "data/content-update-20261104.js",
   "default-movesets.js",
   "data/great-league-rankings.js",
   "data/great-league-ranking-details.js",
@@ -38,8 +39,8 @@ const context = Season.create({
 assert.equal(context.previewAvailable, false);
 assert.equal(context.activeSeasonData.id, "twilight-trails");
 assert.equal(context.activeSeasonData.status, "current");
-assert.equal(context.activeSeasonData.rankings.entries.length, 1540);
-assert.equal(Object.keys(context.activeSeasonData.rankingDetails.entries).length, 1540);
+assert.equal(context.activeSeasonData.rankings.entries.length, browser.GREAT_LEAGUE_RANKINGS.entries.length);
+assert.equal(Object.keys(context.activeSeasonData.rankingDetails.entries).length, context.activeSeasonData.rankings.entries.length);
 assert.equal(context.activeSeasonData.rankings.metadata.seasonId, "twilight-trails");
 assert.equal(context.activeSeasonData.rankings.metadata.dataVersion, "twilight-trails-confirmed-1");
 const ranking = context.activeSeasonData.rankings;
@@ -55,7 +56,7 @@ assert.equal(
   ranking.metadata.cells
 );
 assert.ok(ranking.metadata.cells > 0);
-assert.equal(ranking.metadata.fullCandidateCount, 1540);
+assert.equal(ranking.metadata.fullCandidateCount, ranking.entries.length);
 assert.equal(ranking.metadata.offset, 0);
 assert.equal(ranking.metadata.limit, null);
 assert.equal(opponentCount, 43);

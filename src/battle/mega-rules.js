@@ -18,7 +18,7 @@
   function isMega(pokemon) { return (pokemon?.tags || []).includes("mega"); }
   function isEligible(pokemon, formatId) {
     if (pokemon?.released === false && pokemon.formChange?.trigger === "hp") return false;
-    return !!pokemon && (!isMega(pokemon) || pokemon.released !== false);
+    return !!pokemon && (!isMega(pokemon) || pokemon.released !== false || Boolean(pokemon.previewLabel));
   }
   function level(value) {
     const numeric = Number(value);

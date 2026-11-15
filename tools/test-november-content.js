@@ -28,7 +28,7 @@ for (const [id, extra, power] of [["sableye_mega", "NIGHT_SHADE_PLUS", 55], ["ch
     assert.equal(selected[2].power, power * Mega.bonus(level));
   }
 }
-for (const [id, move] of [["kingambit", "KOWTOW_CLEAVE"], ["magnezone", "MAGNET_BOMB"], ["magnezone_shadow", "MAGNET_BOMB"]]) {
+for (const [id, move] of [["kingambit", "KOWTOW_CLEAVE"]]) {
   const p = raw.get(id), before = JSON.stringify(p.chargedMoves);
   assert(!p.chargedMoves.includes(move), "Unreleased previews must not enter live ranking pools.");
   assert(Announced.chargedIds(p).includes(move));
@@ -36,6 +36,14 @@ for (const [id, move] of [["kingambit", "KOWTOW_CLEAVE"], ["magnezone", "MAGNET_
   assert.match(Announced.label(p, move, new Date(2026, 11, 1)), /Preview/, "A date alone must not silently promote an attack.");
   assert.equal(JSON.stringify(p.chargedMoves), before);
 }
+for (const id of ["magnezone", "magnezone_shadow"]) {
+  const p = raw.get(id);
+  assert(p.chargedMoves.includes("MAGNET_BOMB"));
+  assert(p.eliteMoves.includes("MAGNET_BOMB"));
+  assert.equal(Announced.label(p, "MAGNET_BOMB"), "");
+}
+assert(raw.get("carkol").fastMoves.includes("TACKLE"));
+assert(raw.get("toxtricity").chargedMoves.includes("SWIFT"));
 const html = fs.readFileSync("PogoPvp.html", "utf8");
 const helpers = html.slice(html.indexOf("    function initializeBattleForm("), html.indexOf("    function resetCombatantFormOnSwitch("));
 const ctx = vm.createContext({ changes: [] });

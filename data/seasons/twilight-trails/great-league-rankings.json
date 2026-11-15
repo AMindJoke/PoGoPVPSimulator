@@ -5,9 +5,9 @@
     "datasetVersion": 1,
     "seasonId": "twilight-trails",
     "dataVersion": "twilight-trails-confirmed-1",
-    "gameMasterHash": "ba584de473b6c64f090557f399df19a0d6824d05014f14c89eeaf93097b6aa8b",
-    "movesetHash": "216e5608d18f64c64e63eb31c23aa4c40d90028e9d6806c6201bb53d23b2028b",
-    "generatedAt": "2026-11-04T11:30:23.993Z",
+    "gameMasterHash": "b197a75d9d624cb19a43449b56868c876758205dae5b504185c838ec95542113",
+    "movesetHash": "1c81acecc03890ec705bd1e2fda21aab9b65a9ae0367615d6cc0866613e96e44",
+    "generatedAt": "2026-11-15T14:36:04.897Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "dreStandard": true,
@@ -71,13 +71,13 @@
       "filesRead": 3097,
       "filesWritten": 0
     },
-    "generationDurationSeconds": 35,
+    "generationDurationSeconds": 34,
     "theoreticalSimulations": 401964,
     "completedSimulations": 401964,
     "failedSimulations": 0,
     "skippedSimulations": 0,
     "retries": 0,
-    "peakMemoryBytes": 372731904,
+    "peakMemoryBytes": 367562752,
     "cells": 401964,
     "baseCells": 267976,
     "rankingModel": {
@@ -49325,6 +49325,244 @@
     },
     {
       "rank": 208,
+      "id": "magnezone_shadow",
+      "name": "Magnezone (Shadow)",
+      "profile": "rank1",
+      "averageScore": 409,
+      "externalWeightedAverageScore": 401,
+      "weightedAverageScore": 430,
+      "rawScore": 741,
+      "weightedScore": 682,
+      "competitiveScore": 683,
+      "roleScore": 683,
+      "candidatePriorScore": 653,
+      "metaViabilityScore": 674,
+      "overallScore": 674,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 545,
+          "weightedScore": 540,
+          "competitiveScore": 547,
+          "rawRating": 87,
+          "weightedRating": 87,
+          "competitiveRating": 89,
+          "score": 89,
+          "matchups": 43,
+          "wins": 26,
+          "losses": 17,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 391,
+          "weightedScore": 382,
+          "competitiveScore": 383,
+          "rawRating": 66,
+          "weightedRating": 65,
+          "competitiveRating": 66,
+          "score": 66,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 617,
+          "weightedScore": 429,
+          "competitiveScore": 417,
+          "rawRating": 92,
+          "weightedRating": 65,
+          "competitiveRating": 63,
+          "score": 63,
+          "matchups": 43,
+          "wins": 34,
+          "losses": 9,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 596,
+          "weightedScore": 592,
+          "competitiveScore": 589,
+          "rawRating": 90,
+          "weightedRating": 89,
+          "competitiveRating": 89,
+          "score": 89,
+          "matchups": 43,
+          "wins": 34,
+          "losses": 9,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 194,
+          "weightedScore": 186,
+          "competitiveScore": 187,
+          "rawRating": 47,
+          "weightedRating": 45,
+          "competitiveRating": 45,
+          "score": 45,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 263.28,
+      "matchups": 172,
+      "wins": 72,
+      "losses": 98,
+      "ties": 2,
+      "winRate": 0.4186,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 391,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 194,
+          "matchups": 43,
+          "wins": 5,
+          "losses": 38,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 545,
+          "matchups": 43,
+          "wins": 26,
+          "losses": 17,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 506,
+          "matchups": 43,
+          "wins": 22,
+          "losses": 19,
+          "ties": 2
+        }
+      },
+      "types": [
+        "electric",
+        "steel"
+      ],
+      "dex": 462,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 13,
+        "ivHp": 15,
+        "level": 17.5,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "VOLT_SWITCH",
+        "charged": [
+          "WILD_CHARGE",
+          "MAGNET_BOMB"
+        ]
+      }
+    },
+    {
+      "rank": 209,
       "id": "cetitan",
       "name": "Cetitan",
       "profile": "rank1",
@@ -49561,7 +49799,245 @@
       }
     },
     {
-      "rank": 209,
+      "rank": 210,
+      "id": "magnezone",
+      "name": "Magnezone",
+      "profile": "rank1",
+      "averageScore": 402,
+      "externalWeightedAverageScore": 395,
+      "weightedAverageScore": 410,
+      "rawScore": 737,
+      "weightedScore": 675,
+      "competitiveScore": 676,
+      "roleScore": 676,
+      "candidatePriorScore": 667,
+      "metaViabilityScore": 673,
+      "overallScore": 673,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 470,
+          "weightedScore": 464,
+          "competitiveScore": 466,
+          "rawRating": 75,
+          "weightedRating": 75,
+          "competitiveRating": 76,
+          "score": 76,
+          "matchups": 43,
+          "wins": 17,
+          "losses": 26,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 420,
+          "weightedScore": 415,
+          "competitiveScore": 417,
+          "rawRating": 71,
+          "weightedRating": 71,
+          "competitiveRating": 72,
+          "score": 72,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 571,
+          "weightedScore": 380,
+          "competitiveScore": 377,
+          "rawRating": 85,
+          "weightedRating": 57,
+          "competitiveRating": 57,
+          "score": 57,
+          "matchups": 43,
+          "wins": 27,
+          "losses": 16,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 549,
+          "weightedScore": 538,
+          "competitiveScore": 540,
+          "rawRating": 83,
+          "weightedRating": 81,
+          "competitiveRating": 81,
+          "score": 81,
+          "matchups": 43,
+          "wins": 27,
+          "losses": 16,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 238,
+          "weightedScore": 234,
+          "competitiveScore": 233,
+          "rawRating": 58,
+          "weightedRating": 57,
+          "competitiveRating": 56,
+          "score": 56,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MAGNET_BOMB",
+                "uses": 43
+              },
+              {
+                "id": "WILD_CHARGE",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 248.24,
+      "matchups": 172,
+      "wins": 61,
+      "losses": 111,
+      "ties": 0,
+      "winRate": 0.3547,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 420,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 238,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 470,
+          "matchups": 43,
+          "wins": 17,
+          "losses": 26,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 479,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        }
+      },
+      "types": [
+        "electric",
+        "steel"
+      ],
+      "dex": 462,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 13,
+        "ivHp": 15,
+        "level": 17.5,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "VOLT_SWITCH",
+        "charged": [
+          "WILD_CHARGE",
+          "MAGNET_BOMB"
+        ]
+      }
+    },
+    {
+      "rank": 211,
       "id": "pelipper",
       "name": "Pelipper",
       "profile": "rank1",
@@ -49799,7 +50275,7 @@
       }
     },
     {
-      "rank": 210,
+      "rank": 212,
       "id": "swampert_shadow",
       "name": "Swampert (Shadow)",
       "profile": "rank1",
@@ -50037,7 +50513,7 @@
       }
     },
     {
-      "rank": 211,
+      "rank": 213,
       "id": "bewear_shadow",
       "name": "Bewear (Shadow)",
       "profile": "rank1",
@@ -50275,7 +50751,7 @@
       }
     },
     {
-      "rank": 212,
+      "rank": 214,
       "id": "whimsicott",
       "name": "Whimsicott",
       "profile": "rank1",
@@ -50513,7 +50989,7 @@
       }
     },
     {
-      "rank": 213,
+      "rank": 215,
       "id": "crustle",
       "name": "Crustle",
       "profile": "rank1",
@@ -50751,7 +51227,7 @@
       }
     },
     {
-      "rank": 214,
+      "rank": 216,
       "id": "cofagrigus_shadow",
       "name": "Cofagrigus (Shadow)",
       "profile": "rank1",
@@ -50988,7 +51464,7 @@
       }
     },
     {
-      "rank": 215,
+      "rank": 217,
       "id": "dewgong",
       "name": "Dewgong",
       "profile": "rank1",
@@ -51226,7 +51702,7 @@
       }
     },
     {
-      "rank": 216,
+      "rank": 218,
       "id": "hippopotas",
       "name": "Hippopotas",
       "profile": "rank1",
@@ -51463,7 +51939,7 @@
       }
     },
     {
-      "rank": 217,
+      "rank": 219,
       "id": "palossand",
       "name": "Palossand",
       "profile": "rank1",
@@ -51701,7 +52177,7 @@
       }
     },
     {
-      "rank": 218,
+      "rank": 220,
       "id": "toucannon_shadow",
       "name": "Toucannon (Shadow)",
       "profile": "rank1",
@@ -51939,7 +52415,7 @@
       }
     },
     {
-      "rank": 219,
+      "rank": 221,
       "id": "gliscor_shadow",
       "name": "Gliscor (Shadow)",
       "profile": "rank1",
@@ -52177,7 +52653,7 @@
       }
     },
     {
-      "rank": 220,
+      "rank": 222,
       "id": "suicune",
       "name": "Suicune",
       "profile": "rank1",
@@ -52414,7 +52890,7 @@
       }
     },
     {
-      "rank": 221,
+      "rank": 223,
       "id": "meowscarada",
       "name": "Meowscarada",
       "profile": "rank1",
@@ -52652,7 +53128,7 @@
       }
     },
     {
-      "rank": 222,
+      "rank": 224,
       "id": "metang",
       "name": "Metang",
       "profile": "rank1",
@@ -52890,7 +53366,7 @@
       }
     },
     {
-      "rank": 223,
+      "rank": 225,
       "id": "swalot",
       "name": "Swalot",
       "profile": "rank1",
@@ -53127,7 +53603,7 @@
       }
     },
     {
-      "rank": 224,
+      "rank": 226,
       "id": "centiskorch",
       "name": "Centiskorch",
       "profile": "rank1",
@@ -53365,7 +53841,7 @@
       }
     },
     {
-      "rank": 225,
+      "rank": 227,
       "id": "torkoal",
       "name": "Torkoal",
       "profile": "rank1",
@@ -53602,7 +54078,7 @@
       }
     },
     {
-      "rank": 226,
+      "rank": 228,
       "id": "dragonite",
       "name": "Dragonite",
       "profile": "rank1",
@@ -53840,7 +54316,7 @@
       }
     },
     {
-      "rank": 227,
+      "rank": 229,
       "id": "scrafty",
       "name": "Scrafty",
       "profile": "rank1",
@@ -54078,7 +54554,7 @@
       }
     },
     {
-      "rank": 228,
+      "rank": 230,
       "id": "murkrow",
       "name": "Murkrow",
       "profile": "rank1",
@@ -54316,7 +54792,7 @@
       }
     },
     {
-      "rank": 229,
+      "rank": 231,
       "id": "amoonguss",
       "name": "Amoonguss",
       "profile": "rank1",
@@ -54554,7 +55030,7 @@
       }
     },
     {
-      "rank": 230,
+      "rank": 232,
       "id": "munchlax",
       "name": "Munchlax",
       "profile": "rank1",
@@ -54791,7 +55267,7 @@
       }
     },
     {
-      "rank": 231,
+      "rank": 233,
       "id": "dartrix",
       "name": "Dartrix",
       "profile": "rank1",
@@ -55029,7 +55505,7 @@
       }
     },
     {
-      "rank": 232,
+      "rank": 234,
       "id": "victreebel",
       "name": "Victreebel",
       "profile": "rank1",
@@ -55267,245 +55743,7 @@
       }
     },
     {
-      "rank": 233,
-      "id": "magnezone_shadow",
-      "name": "Magnezone (Shadow)",
-      "profile": "rank1",
-      "averageScore": 403,
-      "externalWeightedAverageScore": 396,
-      "weightedAverageScore": 416,
-      "rawScore": 724,
-      "weightedScore": 668,
-      "competitiveScore": 669,
-      "roleScore": 669,
-      "candidatePriorScore": 653,
-      "metaViabilityScore": 664,
-      "overallScore": 664,
-      "categoryScores": {
-        "lead": {
-          "label": "Lead",
-          "weight": 1,
-          "averageScore": 492,
-          "weightedScore": 485,
-          "competitiveScore": 486,
-          "rawRating": 79,
-          "weightedRating": 78,
-          "competitiveRating": 79,
-          "score": 79,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "closer": {
-          "label": "Closer",
-          "weight": 1,
-          "averageScore": 394,
-          "weightedScore": 382,
-          "competitiveScore": 383,
-          "rawRating": 67,
-          "weightedRating": 65,
-          "competitiveRating": 66,
-          "score": 66,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "switch": {
-          "label": "Switch",
-          "weight": 1,
-          "averageScore": 609,
-          "weightedScore": 423,
-          "competitiveScore": 422,
-          "rawRating": 90,
-          "weightedRating": 64,
-          "competitiveRating": 64,
-          "score": 64,
-          "matchups": 43,
-          "wins": 34,
-          "losses": 9,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "charger": {
-          "label": "Charger",
-          "weight": 1,
-          "averageScore": 593,
-          "weightedScore": 588,
-          "competitiveScore": 589,
-          "rawRating": 89,
-          "weightedRating": 89,
-          "competitiveRating": 89,
-          "score": 89,
-          "matchups": 43,
-          "wins": 34,
-          "losses": 9,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "attacker": {
-          "label": "Attacker",
-          "weight": 1,
-          "averageScore": 196,
-          "weightedScore": 188,
-          "competitiveScore": 189,
-          "rawRating": 47,
-          "weightedRating": 46,
-          "competitiveRating": 45,
-          "score": 45,
-          "matchups": 43,
-          "wins": 5,
-          "losses": 38,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 255.2,
-      "matchups": 172,
-      "wins": 65,
-      "losses": 106,
-      "ties": 1,
-      "winRate": 0.3779,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 394,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0
-        },
-        "0-1": {
-          "averageScore": 196,
-          "matchups": 43,
-          "wins": 5,
-          "losses": 38,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 492,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 531,
-          "matchups": 43,
-          "wins": 24,
-          "losses": 18,
-          "ties": 1
-        }
-      },
-      "types": [
-        "electric",
-        "steel"
-      ],
-      "dex": 462,
-      "build": {
-        "ivAtk": 0,
-        "ivDef": 13,
-        "ivHp": 15,
-        "level": 17.5,
-        "cp": 1500
-      },
-      "moveset": {
-        "fast": "VOLT_SWITCH",
-        "charged": [
-          "WILD_CHARGE",
-          "MIRROR_SHOT"
-        ]
-      }
-    },
-    {
-      "rank": 234,
+      "rank": 235,
       "id": "tropius",
       "name": "Tropius",
       "profile": "rank1",
@@ -55743,7 +55981,7 @@
       }
     },
     {
-      "rank": 235,
+      "rank": 236,
       "id": "claydol_shadow",
       "name": "Claydol (Shadow)",
       "profile": "rank1",
@@ -55981,7 +56219,7 @@
       }
     },
     {
-      "rank": 236,
+      "rank": 237,
       "id": "quaquaval",
       "name": "Quaquaval",
       "profile": "rank1",
@@ -56219,7 +56457,7 @@
       }
     },
     {
-      "rank": 237,
+      "rank": 238,
       "id": "maushold",
       "name": "Maushold",
       "profile": "rank1",
@@ -56456,7 +56694,7 @@
       }
     },
     {
-      "rank": 238,
+      "rank": 239,
       "id": "croconaw",
       "name": "Croconaw",
       "profile": "rank1",
@@ -56693,7 +56931,7 @@
       }
     },
     {
-      "rank": 239,
+      "rank": 240,
       "id": "nidoqueen_shadow",
       "name": "Nidoqueen (Shadow)",
       "profile": "rank1",
@@ -56931,7 +57169,7 @@
       }
     },
     {
-      "rank": 240,
+      "rank": 241,
       "id": "grimmsnarl",
       "name": "Grimmsnarl",
       "profile": "rank1",
@@ -57169,7 +57407,7 @@
       }
     },
     {
-      "rank": 241,
+      "rank": 242,
       "id": "klefki",
       "name": "Klefki",
       "profile": "rank1",
@@ -57407,7 +57645,7 @@
       }
     },
     {
-      "rank": 242,
+      "rank": 243,
       "id": "drapion_shadow",
       "name": "Drapion (Shadow)",
       "profile": "rank1",
@@ -57645,7 +57883,7 @@
       }
     },
     {
-      "rank": 243,
+      "rank": 244,
       "id": "slurpuff",
       "name": "Slurpuff",
       "profile": "rank1",
@@ -57882,7 +58120,7 @@
       }
     },
     {
-      "rank": 244,
+      "rank": 245,
       "id": "dragonite_shadow",
       "name": "Dragonite (Shadow)",
       "profile": "rank1",
@@ -58120,7 +58358,7 @@
       }
     },
     {
-      "rank": 245,
+      "rank": 246,
       "id": "tapu_fini",
       "name": "Tapu Fini",
       "profile": "rank1",
@@ -58358,7 +58596,7 @@
       }
     },
     {
-      "rank": 246,
+      "rank": 247,
       "id": "lanturn",
       "name": "Lanturn",
       "profile": "rank1",
@@ -58596,7 +58834,7 @@
       }
     },
     {
-      "rank": 247,
+      "rank": 248,
       "id": "swanna",
       "name": "Swanna",
       "profile": "rank1",
@@ -58834,7 +59072,7 @@
       }
     },
     {
-      "rank": 248,
+      "rank": 249,
       "id": "sandslash_alolan",
       "name": "Sandslash (Alolan)",
       "profile": "rank1",
@@ -59072,7 +59310,7 @@
       }
     },
     {
-      "rank": 249,
+      "rank": 250,
       "id": "meganium",
       "name": "Meganium",
       "profile": "rank1",
@@ -59309,7 +59547,7 @@
       }
     },
     {
-      "rank": 250,
+      "rank": 251,
       "id": "trevenant_shadow",
       "name": "Trevenant (Shadow)",
       "profile": "rank1",
@@ -59547,7 +59785,7 @@
       }
     },
     {
-      "rank": 251,
+      "rank": 252,
       "id": "machamp",
       "name": "Machamp",
       "profile": "rank1",
@@ -59784,7 +60022,7 @@
       }
     },
     {
-      "rank": 252,
+      "rank": 253,
       "id": "ursaluna_shadow",
       "name": "Ursaluna (Shadow)",
       "profile": "rank1",
@@ -60022,7 +60260,7 @@
       }
     },
     {
-      "rank": 253,
+      "rank": 254,
       "id": "aegislash_shield",
       "name": "Aegislash (Shield)",
       "profile": "rank1",
@@ -60260,7 +60498,7 @@
       }
     },
     {
-      "rank": 254,
+      "rank": 255,
       "id": "runerigus",
       "name": "Runerigus",
       "profile": "rank1",
@@ -60498,7 +60736,7 @@
       }
     },
     {
-      "rank": 255,
+      "rank": 256,
       "id": "galvantula",
       "name": "Galvantula",
       "profile": "rank1",
@@ -60736,7 +60974,7 @@
       }
     },
     {
-      "rank": 256,
+      "rank": 257,
       "id": "trevenant",
       "name": "Trevenant",
       "profile": "rank1",
@@ -60974,7 +61212,7 @@
       }
     },
     {
-      "rank": 257,
+      "rank": 258,
       "id": "victreebel_shadow",
       "name": "Victreebel (Shadow)",
       "profile": "rank1",
@@ -61212,7 +61450,7 @@
       }
     },
     {
-      "rank": 258,
+      "rank": 259,
       "id": "sandslash_alolan_shadow",
       "name": "Sandslash (Alolan) (Shadow)",
       "profile": "rank1",
@@ -61446,244 +61684,6 @@
         "charged": [
           "ICE_PUNCH",
           "DRILL_RUN"
-        ]
-      }
-    },
-    {
-      "rank": 259,
-      "id": "magnezone",
-      "name": "Magnezone",
-      "profile": "rank1",
-      "averageScore": 389,
-      "externalWeightedAverageScore": 383,
-      "weightedAverageScore": 393,
-      "rawScore": 706,
-      "weightedScore": 644,
-      "competitiveScore": 648,
-      "roleScore": 648,
-      "candidatePriorScore": 667,
-      "metaViabilityScore": 654,
-      "overallScore": 654,
-      "categoryScores": {
-        "lead": {
-          "label": "Lead",
-          "weight": 1,
-          "averageScore": 424,
-          "weightedScore": 417,
-          "competitiveScore": 417,
-          "rawRating": 68,
-          "weightedRating": 67,
-          "competitiveRating": 68,
-          "score": 68,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "closer": {
-          "label": "Closer",
-          "weight": 1,
-          "averageScore": 416,
-          "weightedScore": 412,
-          "competitiveScore": 412,
-          "rawRating": 71,
-          "weightedRating": 70,
-          "competitiveRating": 71,
-          "score": 71,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "switch": {
-          "label": "Switch",
-          "weight": 1,
-          "averageScore": 557,
-          "weightedScore": 361,
-          "competitiveScore": 367,
-          "rawRating": 83,
-          "weightedRating": 55,
-          "competitiveRating": 55,
-          "score": 55,
-          "matchups": 43,
-          "wins": 27,
-          "losses": 16,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "charger": {
-          "label": "Charger",
-          "weight": 1,
-          "averageScore": 539,
-          "weightedScore": 536,
-          "competitiveScore": 537,
-          "rawRating": 81,
-          "weightedRating": 81,
-          "competitiveRating": 81,
-          "score": 81,
-          "matchups": 43,
-          "wins": 27,
-          "losses": 16,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "attacker": {
-          "label": "Attacker",
-          "weight": 1,
-          "averageScore": 224,
-          "weightedScore": 219,
-          "competitiveScore": 219,
-          "rawRating": 54,
-          "weightedRating": 53,
-          "competitiveRating": 53,
-          "score": 53,
-          "matchups": 43,
-          "wins": 5,
-          "losses": 38,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "MIRROR_SHOT",
-                "uses": 43
-              },
-              {
-                "id": "WILD_CHARGE",
-                "uses": 43
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 243.51,
-      "matchups": 172,
-      "wins": 56,
-      "losses": 116,
-      "ties": 0,
-      "winRate": 0.3256,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 416,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0
-        },
-        "0-1": {
-          "averageScore": 224,
-          "matchups": 43,
-          "wins": 5,
-          "losses": 38,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 424,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 491,
-          "matchups": 43,
-          "wins": 20,
-          "losses": 23,
-          "ties": 0
-        }
-      },
-      "types": [
-        "electric",
-        "steel"
-      ],
-      "dex": 462,
-      "build": {
-        "ivAtk": 0,
-        "ivDef": 13,
-        "ivHp": 15,
-        "level": 17.5,
-        "cp": 1500
-      },
-      "moveset": {
-        "fast": "VOLT_SWITCH",
-        "charged": [
-          "WILD_CHARGE",
-          "MIRROR_SHOT"
         ]
       }
     },

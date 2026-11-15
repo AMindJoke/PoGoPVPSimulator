@@ -8,11 +8,7 @@
   const updates = Object.freeze([
     Object.freeze({ pokemonId: "kingambit", moveId: "KOWTOW_CLEAVE", kind: "charged", status: "upcoming",
       eventDate: "2026-11-21", eventStartLocal: "14:00", labelDate: "Nov 21",
-      sourceUrl: "https://pokemongo.com/news/communityday-november-2026-pawniard" }),
-    ...["magnezone", "magnezone_shadow"].map(pokemonId => Object.freeze({
-      pokemonId, moveId: "MAGNET_BOMB", kind: "charged", status: "upcoming",
-      eventDate: "2026-11-06", eventStartLocal: "10:00", labelDate: "Wild Area",
-      sourceUrl: "https://pokemongo.com/en/gowildarea/global" }))
+      sourceUrl: "https://pokemongo.com/news/communityday-november-2026-pawniard" })
   ]);
   function forPokemon(pokemon) {
     return updates.filter(update => update.pokemonId === (pokemon?.id || pokemon?.speciesId));

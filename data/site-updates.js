@@ -7,6 +7,16 @@
   // Newest releases first. Keep older entries; Home shows only the latest three.
   return [
     {
+      id: "20261115-wild-area-moves",
+      date: "2026-11-15",
+      category: "Battle & Meta",
+      title: "Magnet Bomb is available for Magnezone",
+      changes: [
+        "Pick Magnet Bomb on regular or Shadow Magnezone. Carkol now has Tackle and Toxtricity has Swift.",
+        "Try Mega Clefable with Moonblast+ ahead of its November 28 debut. Kingambit's Kowtow Cleave is still a preview."
+      ]
+    },
+    {
       id: "20261104-pokemon-and-moves",
       date: "2026-11-04",
       category: "Battle & Meta",

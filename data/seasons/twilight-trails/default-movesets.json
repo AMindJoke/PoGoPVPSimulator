@@ -2595,7 +2595,7 @@
     "fast": "VOLT_SWITCH",
     "charged": [
       "WILD_CHARGE",
-      "MIRROR_SHOT"
+      "MAGNET_BOMB"
     ]
   },
   "quaquaval": {
@@ -2861,7 +2861,7 @@
     "fast": "VOLT_SWITCH",
     "charged": [
       "WILD_CHARGE",
-      "MIRROR_SHOT"
+      "MAGNET_BOMB"
     ]
   },
   "aron": {

@@ -12,10 +12,10 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(root, "battle-data.js"), "utf8"), context);
 vm.runInContext(fs.readFileSync(path.join(root, "data/mega-overlay-20261013.js"), "utf8"), context);
 const overlay = context.window.BATTLE_MEGA_OVERLAY;
-assert.equal(overlay.pokemon.length, 62);
-assert.equal(overlay.moves.length, 16);
+assert.equal(overlay.pokemon.length, 63);
+assert.equal(overlay.moves.length, 17);
 assert(overlay.sourceSha256 && overlay.sourceTimestamp);
-assert.equal(new Set(overlay.pokemon.map(p => p.speciesId)).size, 62);
+assert.equal(new Set(overlay.pokemon.map(p => p.speciesId)).size, overlay.pokemon.length);
 const moveIds = new Set([...context.window.BATTLE_GAMEMASTER.moves, ...overlay.moves].map(move => move.moveId));
 for (const form of overlay.pokemon) {
   assert(form.tags.includes("mega"), `${form.speciesId} must be a Mega form`);
@@ -24,8 +24,17 @@ for (const form of overlay.pokemon) {
     assert(moveIds.has(id), `${form.speciesId} references unknown move ${id}`);
   }
 }
-assert.equal(overlay.pokemon.filter(p => p.extraChargedMoves?.length).length, 16);
+assert.equal(overlay.pokemon.filter(p => p.extraChargedMoves?.length).length, 17);
 assert(overlay.moves.every(move => move.isMegaMove === true));
+
+const clefable = overlay.pokemon.find(p => p.speciesId === "clefable_mega");
+const moonblast = overlay.moves.find(m => m.moveId === "MOONBLAST_PLUS");
+assert.equal(clefable.released, false);
+assert.equal(clefable.previewLabel, "Preview (Nov 28)");
+assert.equal(Mega.isEligible(clefable, "standard"), true);
+assert.equal(moonblast.energy, 50);
+assert.equal(moonblast.buffApplyChance, 0.1);
+assert.equal(Mega.chargedMove(moonblast, 4).power, 104);
 
 const mega = overlay.pokemon.find(p => p.speciesId === "raichu_mega_x");
 const plus = overlay.moves.find(m => m.moveId === "VOLT_TACKLE_PLUS");

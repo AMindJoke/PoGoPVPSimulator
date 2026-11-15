@@ -4,6 +4,26 @@ window.BATTLE_MEGA_OVERLAY = {
   "sourceSha256": "3b800b1fc8e3c7b88a5f27e5bc07c35b2f9922995243847649455c3f1007303a",
   "pokemon": [
     {
+      "dex": 36,
+      "speciesName": "Clefable (Mega)",
+      "speciesId": "clefable_mega",
+      "baseStats": { "atk": 253, "def": 205, "hp": 216 },
+      "types": ["fairy"],
+      "fastMoves": ["CHARGE_BEAM", "POUND", "ZEN_HEADBUTT", "CHARM", "FAIRY_WIND"],
+      "chargedMoves": ["DAZZLING_GLEAM", "METEOR_MASH", "MOONBLAST", "PSYCHIC", "SWIFT", "DRAINING_KISS"],
+      "extraChargedMoves": ["MOONBLAST_PLUS"],
+      "defaultIVs": {
+        "cp500": [5, 11, 14, 15],
+        "cp1500": [14.5, 4, 15, 14],
+        "cp2500": [24.5, 4, 13, 11]
+      },
+      "eliteMoves": ["POUND"],
+      "released": false,
+      "previewLabel": "Preview (Nov 28)",
+      "sourceUrl": "https://pokemongo.com/en/news/clefable-super-mega-raid-day-2026",
+      "tags": ["mega", "supermega"]
+    },
+    {
       "dex": 3,
       "speciesName": "Venusaur (Mega)",
       "speciesId": "venusaur_mega",
@@ -3777,6 +3797,21 @@ window.BATTLE_MEGA_OVERLAY = {
     }
   ],
   "moves": [
+    {
+      "moveId": "MOONBLAST_PLUS",
+      "name": "Moonblast+",
+      "abbreviation": "M+",
+      "type": "fairy",
+      "power": 80,
+      "energy": 50,
+      "energyGain": 0,
+      "cooldown": 500,
+      "buffs": [-1, 0],
+      "buffTarget": "opponent",
+      "buffApplyChance": 0.1,
+      "turns": 1,
+      "isMegaMove": true
+    },
     {
       "moveId": "ACID_SPRAY_PLUS",
       "name": "Acid Spray+",

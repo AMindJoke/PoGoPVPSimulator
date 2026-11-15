@@ -40,7 +40,8 @@ assert.ok(home.indexOf('id="homeNews"') > home.indexOf('data-home-target="compen
 assert.ok(home.indexOf('id="homeNews"') < home.indexOf('class="home-footer"'));
 assert.match(home, /aria-labelledby="homeNewsTitle"/);
 for (const file of ["data/site-updates.js", "src/ui/site-updates.js", "src/ui/site-updates.css"]) {
-  assert.ok(html.includes(file + "?v=20261019-news1"), file + ": HTML version");
-  assert.ok(sw.includes(file + "?v=20261019-news1"), file + ": offline precache");
+  const asset = html.split('"').find(value => value.startsWith(file + "?v="));
+  assert.ok(asset, file + ": HTML version");
+  assert.ok(sw.includes('"./' + asset + '"'), file + ": matching offline precache");
 }
 console.log("Site updates passed: three newest releases, stable ordering, content limits, invalid/empty data, placement and offline assets.");

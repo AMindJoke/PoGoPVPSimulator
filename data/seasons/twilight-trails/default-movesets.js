@@ -2595,7 +2595,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     "fast": "VOLT_SWITCH",
     "charged": [
       "WILD_CHARGE",
-      "MIRROR_SHOT"
+      "MAGNET_BOMB"
     ]
   },
   "quaquaval": {
@@ -2861,7 +2861,7 @@ window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = {
     "fast": "VOLT_SWITCH",
     "charged": [
       "WILD_CHARGE",
-      "MIRROR_SHOT"
+      "MAGNET_BOMB"
     ]
   },
   "aron": {

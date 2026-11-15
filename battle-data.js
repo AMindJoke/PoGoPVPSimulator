@@ -56152,8 +56152,10 @@ window.BATTLE_GAMEMASTER = {
         "FLASH_CANNON",
         "WILD_CHARGE",
         "ZAP_CANNON",
-        "MIRROR_SHOT"
+        "MIRROR_SHOT",
+        "MAGNET_BOMB"
       ],
+      "eliteMoves": ["MAGNET_BOMB"],
       "defaultIVs": {
         "cp500": [
           6,
@@ -56213,8 +56215,10 @@ window.BATTLE_GAMEMASTER = {
         "FLASH_CANNON",
         "WILD_CHARGE",
         "ZAP_CANNON",
-        "MIRROR_SHOT"
+        "MIRROR_SHOT",
+        "MAGNET_BOMB"
       ],
+      "eliteMoves": ["MAGNET_BOMB"],
       "defaultIVs": {
         "cp500": [
           6,
@@ -90062,7 +90066,8 @@ window.BATTLE_GAMEMASTER = {
         "fire"
       ],
       "fastMoves": [
-        "SMACK_DOWN"
+        "SMACK_DOWN",
+        "TACKLE"
       ],
       "chargedMoves": [
         "ROCK_BLAST",
@@ -90653,7 +90658,8 @@ window.BATTLE_GAMEMASTER = {
         "ACID_SPRAY",
         "DISCHARGE",
         "WILD_CHARGE",
-        "POWER_UP_PUNCH"
+        "POWER_UP_PUNCH",
+        "SWIFT"
       ],
       "defaultIVs": {
         "cp500": [
