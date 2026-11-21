@@ -78,7 +78,8 @@
       });
       if (override.status === "estimated" && !cleanId(override.note)) errors.push(`PREVIEW_MOVE_ESTIMATE_NOTE_MISSING:${code}`);
     });
-    const pokemonIds = new Set((gameMaster?.pokemon || []).map(pokemon => cleanId(pokemon?.speciesId)).filter(Boolean));
+    const pokemonIds = new Set([...(gameMaster?.pokemon || []), ...(options.additionalPokemon || [])]
+      .map(pokemon => cleanId(pokemon?.speciesId)).filter(Boolean));
     if (preview.pokemonMoveOverrides != null && !record(preview.pokemonMoveOverrides)) errors.push("PREVIEW_POKEMON_OVERRIDES_INVALID");
     else Object.entries(preview.pokemonMoveOverrides || {}).forEach(([pokemonId, override]) => {
       if (!pokemonIds.has(cleanId(pokemonId))) errors.push(`PREVIEW_POKEMON_UNKNOWN:${cleanId(pokemonId)}`);

@@ -269,16 +269,26 @@ function generationData(seasonId = generationSeasonId) {
   const canonicalGameMaster = readWindowGlobal("battle-data.js", "BATTLE_GAMEMASTER");
   const canonicalMovesets = readWindowGlobal("default-movesets.js", "BATTLE_DEFAULT_MOVESETS") || {};
   if (!seasonId) return { gameMaster: canonicalGameMaster, standardMovesets: canonicalMovesets, preview: null };
-  const preview = readRootGlobal("data/seasons/next-season.js", "BATTLE_NEXT_SEASON");
+  const currentSeason = readRootGlobal("data/seasons/next-season.js", "BATTLE_NEXT_SEASON");
+  const december = seasonId === "december-2026"
+    ? readRootGlobal("data/seasons/december-2026-balance.js", "BATTLE_DECEMBER_2026_BALANCE")
+    : null;
+  const preview = december ? {
+    ...december,
+    defaultMovesets: { ...currentSeason.defaultMovesets, ...december.defaultMovesets }
+  } : currentSeason;
   if (!preview || safeCacheSegment(preview.id) !== seasonId) {
     throw new Error(`Unknown or unavailable generation season: ${seasonId}`);
   }
   activeGenerationPreview = preview;
   const moveResolved = seasonContext.applyMoveOverrides(canonicalGameMaster, preview.moveOverrides);
   const gameMaster = seasonContext.applyPokemonMoveOverrides(moveResolved, preview.pokemonMoveOverrides);
+  const baselineMovesets = december
+    ? readWindowGlobal("data/seasons/twilight-trails/default-movesets.js", "TWILIGHT_TRAILS_DEFAULT_MOVESETS")
+    : canonicalMovesets;
   return {
     gameMaster,
-    standardMovesets: buildPreviewMovesets(canonicalMovesets, gameMaster, preview),
+    standardMovesets: buildPreviewMovesets(baselineMovesets, gameMaster, preview),
     preview
   };
 }
@@ -576,8 +586,8 @@ function buildPreviewMovesets(canonicalMovesets, gameMaster, preview) {
     const affectedCharged = (pokemon.chargedMoves || []).filter(moveId => changedMoveIds.has(moveId));
     const addedFast = availability?.fast?.add || [];
     const addedCharged = availability?.charged?.add || [];
-    if (!current && !availability) continue;
-    if (!availability && !affectedFast.length && !affectedCharged.length) continue;
+    if (!current && !availability && !explicit) continue;
+    if (!explicit && !availability && !affectedFast.length && !affectedCharged.length) continue;
 
     const validFast = moveId => (pokemon.fastMoves || []).includes(moveId) && normalizedMoves.has(moveId);
     const validCharged = moveId => (pokemon.chargedMoves || []).includes(moveId) && normalizedMoves.has(moveId);
@@ -1933,7 +1943,9 @@ function writeRankingScript(rankings) {
   const relativePath = generationPath("great-league-rankings.js");
   const file = path.join(ROOT, relativePath);
   ensureDir(path.dirname(relativePath));
-  const globalName = generationSeasonId ? "TWILIGHT_TRAILS_RANKINGS" : "GREAT_LEAGUE_RANKINGS";
+  const globalName = generationSeasonId
+    ? activeGenerationPreview?.generatedGlobals?.rankings || "TWILIGHT_TRAILS_RANKINGS"
+    : "GREAT_LEAGUE_RANKINGS";
   fs.writeFileSync(file, `window.${globalName} = ${JSON.stringify(rankings, null, 2)};\n`, "utf8");
 }
 
@@ -1942,7 +1954,8 @@ function writeDefaultMovesets(standardMovesets) {
   writeJson(jsonPath, standardMovesets);
   const jsPath = generationPath("default-movesets.js");
   ensureDir(path.dirname(jsPath));
-  fs.writeFileSync(path.join(ROOT, jsPath), `window.TWILIGHT_TRAILS_DEFAULT_MOVESETS = ${JSON.stringify(standardMovesets, null, 2)};\n`, "utf8");
+  const globalName = activeGenerationPreview?.generatedGlobals?.defaultMovesets || "TWILIGHT_TRAILS_DEFAULT_MOVESETS";
+  fs.writeFileSync(path.join(ROOT, jsPath), `window.${globalName} = ${JSON.stringify(standardMovesets, null, 2)};\n`, "utf8");
 }
 
 if (require.main === module) {

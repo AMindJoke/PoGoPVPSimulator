@@ -144,7 +144,9 @@ const output = {
 const json = `${JSON.stringify(output, null, 2)}\n`;
 fs.mkdirSync(path.dirname(outputJson), { recursive: true });
 fs.writeFileSync(outputJson, json);
-const globalName = seasonId ? "TWILIGHT_TRAILS_RANKING_DETAILS" : "GREAT_LEAGUE_RANKING_DETAILS";
+const globalName = seasonId
+  ? sourceData.preview?.generatedGlobals?.rankingDetails || "TWILIGHT_TRAILS_RANKING_DETAILS"
+  : "GREAT_LEAGUE_RANKING_DETAILS";
 fs.writeFileSync(outputJs, `window.${globalName} = ${JSON.stringify(output, null, 2)};\n`);
 if (syncCurrent) {
   fs.writeFileSync(path.join(root, "data", "great-league-ranking-details.json"), json);
