@@ -573,7 +573,7 @@ window.DECEMBER_2026_DEFAULT_MOVESETS = {
     ]
   },
   "morpeko_full_belly": {
-    "fast": "BITE",
+    "fast": "THUNDER_SHOCK",
     "charged": [
       "AURA_WHEEL_ELECTRIC",
       "PSYCHIC_FANGS"

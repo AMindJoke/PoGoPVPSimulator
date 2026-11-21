@@ -9,7 +9,7 @@
   const next = root.BATTLE_DECEMBER_2026_BALANCE?.enabled
     ? root.BATTLE_DECEMBER_2026_BALANCE : root.BATTLE_NEXT_SEASON;
   const preview = next?.enabled && requested === next.id && next.generatedAssets;
-  const currentAssetVersion = "20261121-season-preview5";
+  const currentAssetVersion = "20261121-season-preview6";
   const files = ["data/great-league-rankings.js", "data/great-league-ranking-details.js"];
   if (preview) files.push(...Object.values(next.generatedAssets));
   // Preview battle rules must be resolved before the app initializes.

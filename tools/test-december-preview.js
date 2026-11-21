@@ -87,7 +87,7 @@ async function main() {
 
   const data = G.generationData("december-2026");
   const currentDefaults = JSON.parse(read("data/seasons/twilight-trails/default-movesets.json"));
-  for (const id of ["morpeko_full_belly", "persian", "persian_shadow"]) {
+  for (const id of ["persian", "persian_shadow"]) {
     assert.equal(JSON.stringify(data.standardMovesets[id]), JSON.stringify(currentDefaults[id]),
       `${id}: an unchanged moveset must inherit the published current-season default`);
   }
@@ -99,6 +99,7 @@ async function main() {
     ["cradily_b", "ACID", ["ROCK_TOMB", "GRASS_KNOT"]],
     ["eelektross", "VOLT_SWITCH", ["LUNGE", "PSYCHIC_FANGS"]],
     ["houndstone", "BITE", ["SHADOW_BALL", "PSYCHIC_FANGS"]],
+    ["morpeko_full_belly", "THUNDER_SHOCK", ["AURA_WHEEL_ELECTRIC", "PSYCHIC_FANGS"]],
     ["pidgeot", "WING_ATTACK", ["BRAVE_BIRD", "FEATHER_DANCE"]],
     ["starmie", "PSYWAVE", ["SURF", "TRIPLE_AXEL"]]
   ]) {
