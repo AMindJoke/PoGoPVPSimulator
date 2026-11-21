@@ -377,10 +377,10 @@ window.DECEMBER_2026_DEFAULT_MOVESETS = {
     ]
   },
   "clefable": {
-    "fast": "CHARGE_BEAM",
+    "fast": "FAIRY_WIND",
     "charged": [
       "MOONBLAST",
-      "METEOR_MASH"
+      "MYSTICAL_FIRE"
     ]
   },
   "mantine": {
@@ -1651,7 +1651,7 @@ window.DECEMBER_2026_DEFAULT_MOVESETS = {
   "starmie": {
     "fast": "PSYWAVE",
     "charged": [
-      "AQUA_JET",
+      "SURF",
       "TRIPLE_AXEL"
     ]
   },
@@ -6738,8 +6738,8 @@ window.DECEMBER_2026_DEFAULT_MOVESETS = {
   "eelektross": {
     "fast": "VOLT_SWITCH",
     "charged": [
-      "DRAGON_CLAW",
-      "THUNDERBOLT"
+      "LUNGE",
+      "PSYCHIC_FANGS"
     ]
   },
   "exeggcute_shadow": {

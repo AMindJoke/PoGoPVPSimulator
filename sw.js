@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "pogo-pvp-simulator";
-const CACHE_VERSION = "2026-11-21-v211-next-season-preview";
+const CACHE_VERSION = "2026-11-21-v212-next-season-preview";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -28,8 +28,8 @@ const CORE_ASSETS = [
   "./src/battle/announced-moves.js?v=20261115-moves",
   "./cramorant-data.js",
   "./default-movesets.js",
-  "./data/seasons/december-2026-balance.js?v=20261121-preview5",
-  "./data/seasons/season-generated-loader.js?v=20261121-season-preview4",
+  "./data/seasons/december-2026-balance.js?v=20261121-preview6",
+  "./data/seasons/season-generated-loader.js?v=20261121-season-preview5",
   "./data/seasons/next-season.js",
   "./data/seasons/season-catalog.js?v=20261121-preview1",
   "./src/season/season-context.js?v=20261121-preview1",

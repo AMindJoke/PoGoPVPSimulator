@@ -6,8 +6,8 @@ window.DECEMBER_2026_RANKINGS = {
     "seasonId": "december-2026",
     "dataVersion": "december-2026-laic-1",
     "gameMasterHash": "f5cf0a43458d7950250251e9c87bc740957f2bf5bd4cd6cc61144f6e47e96c9b",
-    "movesetHash": "dcf5c86f9a5e3aad0111da71124a3ad5215de4702b897a3de23edfde69121bb8",
-    "generatedAt": "2026-11-21T21:36:05.141Z",
+    "movesetHash": "63d8ad5177711108a372a6209d32afaf11d848c13bf36a95d979814bcc45046d",
+    "generatedAt": "2026-11-21T21:41:12.361Z",
     "generator": "tools/build-great-league-meta-database.js",
     "simulatorSource": "PogoPvp.html buildMatrixComputeWorkerSource()",
     "dreStandard": true,
@@ -77,7 +77,7 @@ window.DECEMBER_2026_RANKINGS = {
     "failedSimulations": 0,
     "skippedSimulations": 0,
     "retries": 0,
-    "peakMemoryBytes": 486359040,
+    "peakMemoryBytes": 372862976,
     "cells": 401964,
     "baseCells": 267976,
     "rankingModel": {
@@ -24143,6 +24143,243 @@ window.DECEMBER_2026_RANKINGS = {
     },
     {
       "rank": 102,
+      "id": "clefable",
+      "name": "Clefable",
+      "profile": "rank1",
+      "averageScore": 508,
+      "externalWeightedAverageScore": 497,
+      "weightedAverageScore": 517,
+      "rawScore": 897,
+      "weightedScore": 867,
+      "competitiveScore": 865,
+      "roleScore": 865,
+      "candidatePriorScore": 436,
+      "metaViabilityScore": 736,
+      "overallScore": 736,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 569,
+          "weightedScore": 563,
+          "competitiveScore": 564,
+          "rawRating": 91,
+          "weightedRating": 91,
+          "competitiveRating": 92,
+          "score": 92,
+          "matchups": 43,
+          "wins": 26,
+          "losses": 17,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FAIRY_WIND",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MOONBLAST",
+                "uses": 43
+              },
+              {
+                "id": "MYSTICAL_FIRE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 492,
+          "weightedScore": 486,
+          "competitiveScore": 485,
+          "rawRating": 83,
+          "weightedRating": 83,
+          "competitiveRating": 83,
+          "score": 83,
+          "matchups": 43,
+          "wins": 21,
+          "losses": 21,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FAIRY_WIND",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MOONBLAST",
+                "uses": 43
+              },
+              {
+                "id": "MYSTICAL_FIRE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 631,
+          "weightedScore": 538,
+          "competitiveScore": 535,
+          "rawRating": 94,
+          "weightedRating": 82,
+          "competitiveRating": 81,
+          "score": 81,
+          "matchups": 43,
+          "wins": 34,
+          "losses": 9,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FAIRY_WIND",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MOONBLAST",
+                "uses": 43
+              },
+              {
+                "id": "MYSTICAL_FIRE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 616,
+          "weightedScore": 611,
+          "competitiveScore": 609,
+          "rawRating": 93,
+          "weightedRating": 92,
+          "competitiveRating": 92,
+          "score": 92,
+          "matchups": 43,
+          "wins": 37,
+          "losses": 6,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FAIRY_WIND",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MOONBLAST",
+                "uses": 43
+              },
+              {
+                "id": "MYSTICAL_FIRE",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 363,
+          "weightedScore": 345,
+          "competitiveScore": 345,
+          "rawRating": 88,
+          "weightedRating": 86,
+          "competitiveRating": 85,
+          "score": 85,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "FAIRY_WIND",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "MOONBLAST",
+                "uses": 43
+              },
+              {
+                "id": "MYSTICAL_FIRE",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 209.41,
+      "matchups": 172,
+      "wins": 89,
+      "losses": 81,
+      "ties": 2,
+      "winRate": 0.5174,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 492,
+          "matchups": 43,
+          "wins": 21,
+          "losses": 21,
+          "ties": 1
+        },
+        "0-1": {
+          "averageScore": 363,
+          "matchups": 43,
+          "wins": 12,
+          "losses": 31,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 569,
+          "matchups": 43,
+          "wins": 26,
+          "losses": 17,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 609,
+          "matchups": 43,
+          "wins": 30,
+          "losses": 12,
+          "ties": 1
+        }
+      },
+      "types": [
+        "fairy"
+      ],
+      "dex": 36,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 13,
+        "ivHp": 15,
+        "level": 23.5,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "FAIRY_WIND",
+        "charged": [
+          "MOONBLAST",
+          "MYSTICAL_FIRE"
+        ]
+      }
+    },
+    {
+      "rank": 103,
       "id": "urshifu_single_strike",
       "name": "Urshifu (Single Strike)",
       "profile": "rank1",
@@ -24380,7 +24617,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 103,
+      "rank": 104,
       "id": "gligar",
       "name": "Gligar",
       "profile": "rank1",
@@ -24618,7 +24855,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 104,
+      "rank": 105,
       "id": "milotic_shadow",
       "name": "Milotic (Shadow)",
       "profile": "rank1",
@@ -24855,7 +25092,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 105,
+      "rank": 106,
       "id": "shelgon_shadow",
       "name": "Shelgon (Shadow)",
       "profile": "rank1",
@@ -25092,7 +25329,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 106,
+      "rank": 107,
       "id": "altaria_shadow",
       "name": "Altaria (Shadow)",
       "profile": "rank1",
@@ -25330,7 +25567,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 107,
+      "rank": 108,
       "id": "samurott",
       "name": "Samurott",
       "profile": "rank1",
@@ -25567,7 +25804,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 108,
+      "rank": 109,
       "id": "weezing_galarian",
       "name": "Weezing (Galarian)",
       "profile": "rank1",
@@ -25805,7 +26042,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 109,
+      "rank": 110,
       "id": "ninetales",
       "name": "Ninetales",
       "profile": "rank1",
@@ -26042,7 +26279,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 110,
+      "rank": 111,
       "id": "zweilous_shadow",
       "name": "Zweilous (Shadow)",
       "profile": "rank1",
@@ -26280,7 +26517,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 111,
+      "rank": 112,
       "id": "dewott_shadow",
       "name": "Dewott (Shadow)",
       "profile": "rank1",
@@ -26517,7 +26754,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 112,
+      "rank": 113,
       "id": "diggersby_shadow",
       "name": "Diggersby (Shadow)",
       "profile": "rank1",
@@ -26755,7 +26992,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 113,
+      "rank": 114,
       "id": "lickilicky",
       "name": "Lickilicky",
       "profile": "rank1",
@@ -26992,7 +27229,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 114,
+      "rank": 115,
       "id": "sliggoo",
       "name": "Sliggoo",
       "profile": "rank1",
@@ -27229,7 +27466,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 115,
+      "rank": 116,
       "id": "kecleon",
       "name": "Kecleon",
       "profile": "rank1",
@@ -27466,7 +27703,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 116,
+      "rank": 117,
       "id": "carbink",
       "name": "Carbink",
       "profile": "rank1",
@@ -27704,7 +27941,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 117,
+      "rank": 118,
       "id": "castform",
       "name": "Castform",
       "profile": "rank1",
@@ -27941,7 +28178,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 118,
+      "rank": 119,
       "id": "wartortle_shadow",
       "name": "Wartortle (Shadow)",
       "profile": "rank1",
@@ -28178,7 +28415,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 119,
+      "rank": 120,
       "id": "persian_shadow",
       "name": "Persian (Shadow)",
       "profile": "rank1",
@@ -28415,7 +28652,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 120,
+      "rank": 121,
       "id": "articuno",
       "name": "Articuno",
       "profile": "rank1",
@@ -28653,7 +28890,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 121,
+      "rank": 122,
       "id": "servine",
       "name": "Servine",
       "profile": "rank1",
@@ -28890,7 +29127,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 122,
+      "rank": 123,
       "id": "walrein",
       "name": "Walrein",
       "profile": "rank1",
@@ -29128,7 +29365,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 123,
+      "rank": 124,
       "id": "doublade",
       "name": "Doublade",
       "profile": "rank1",
@@ -29366,7 +29603,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 124,
+      "rank": 125,
       "id": "blastoise_shadow",
       "name": "Blastoise (Shadow)",
       "profile": "rank1",
@@ -29603,7 +29840,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 125,
+      "rank": 126,
       "id": "persian",
       "name": "Persian",
       "profile": "rank1",
@@ -29840,7 +30077,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 126,
+      "rank": 127,
       "id": "dragonair_shadow",
       "name": "Dragonair (Shadow)",
       "profile": "rank1",
@@ -30077,7 +30314,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 127,
+      "rank": 128,
       "id": "gurdurr",
       "name": "Gurdurr",
       "profile": "rank1",
@@ -30314,7 +30551,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 128,
+      "rank": 129,
       "id": "poliwrath",
       "name": "Poliwrath",
       "profile": "rank1",
@@ -30552,7 +30789,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 129,
+      "rank": 130,
       "id": "claydol",
       "name": "Claydol",
       "profile": "rank1",
@@ -30790,7 +31027,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 130,
+      "rank": 131,
       "id": "greninja_shadow",
       "name": "Greninja (Shadow)",
       "profile": "rank1",
@@ -31028,7 +31265,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 131,
+      "rank": 132,
       "id": "linoone",
       "name": "Linoone",
       "profile": "rank1",
@@ -31265,7 +31502,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 132,
+      "rank": 133,
       "id": "medicham",
       "name": "Medicham",
       "profile": "rank1",
@@ -31503,7 +31740,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 133,
+      "rank": 134,
       "id": "lopunny",
       "name": "Lopunny",
       "profile": "rank1",
@@ -31740,7 +31977,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 134,
+      "rank": 135,
       "id": "feraligatr_shadow",
       "name": "Feraligatr (Shadow)",
       "profile": "rank1",
@@ -31977,7 +32214,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 135,
+      "rank": 136,
       "id": "throh",
       "name": "Throh",
       "profile": "rank1",
@@ -32214,7 +32451,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 136,
+      "rank": 137,
       "id": "eelektrik",
       "name": "Eelektrik",
       "profile": "rank1",
@@ -32451,7 +32688,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 137,
+      "rank": 138,
       "id": "raikou",
       "name": "Raikou",
       "profile": "rank1",
@@ -32688,7 +32925,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 138,
+      "rank": 139,
       "id": "togekiss",
       "name": "Togekiss",
       "profile": "rank1",
@@ -32926,7 +33163,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 139,
+      "rank": 140,
       "id": "electrode_shadow",
       "name": "Electrode (Shadow)",
       "profile": "rank1",
@@ -33163,7 +33400,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 140,
+      "rank": 141,
       "id": "forretress_shadow",
       "name": "Forretress (Shadow)",
       "profile": "rank1",
@@ -33401,7 +33638,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 141,
+      "rank": 142,
       "id": "gliscor",
       "name": "Gliscor",
       "profile": "rank1",
@@ -33639,7 +33876,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 142,
+      "rank": 143,
       "id": "dedenne",
       "name": "Dedenne",
       "profile": "rank1",
@@ -33877,7 +34114,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 143,
+      "rank": 144,
       "id": "runerigus",
       "name": "Runerigus",
       "profile": "rank1",
@@ -34115,7 +34352,244 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 144,
+      "rank": 145,
+      "id": "eelektross",
+      "name": "Eelektross",
+      "profile": "rank1",
+      "averageScore": 452,
+      "externalWeightedAverageScore": 450,
+      "weightedAverageScore": 470,
+      "rawScore": 798,
+      "weightedScore": 786,
+      "competitiveScore": 782,
+      "roleScore": 782,
+      "candidatePriorScore": 556,
+      "metaViabilityScore": 714,
+      "overallScore": 714,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 510,
+          "weightedScore": 510,
+          "competitiveScore": 511,
+          "rawRating": 82,
+          "weightedRating": 82,
+          "competitiveRating": 83,
+          "score": 83,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LUNGE",
+                "uses": 43
+              },
+              {
+                "id": "PSYCHIC_FANGS",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 417,
+          "weightedScore": 416,
+          "competitiveScore": 411,
+          "rawRating": 71,
+          "weightedRating": 71,
+          "competitiveRating": 70,
+          "score": 70,
+          "matchups": 43,
+          "wins": 16,
+          "losses": 27,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LUNGE",
+                "uses": 43
+              },
+              {
+                "id": "PSYCHIC_FANGS",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 597,
+          "weightedScore": 530,
+          "competitiveScore": 528,
+          "rawRating": 89,
+          "weightedRating": 80,
+          "competitiveRating": 80,
+          "score": 80,
+          "matchups": 43,
+          "wins": 30,
+          "losses": 12,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LUNGE",
+                "uses": 43
+              },
+              {
+                "id": "PSYCHIC_FANGS",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 578,
+          "weightedScore": 576,
+          "competitiveScore": 574,
+          "rawRating": 87,
+          "weightedRating": 87,
+          "competitiveRating": 86,
+          "score": 86,
+          "matchups": 43,
+          "wins": 30,
+          "losses": 12,
+          "ties": 1,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LUNGE",
+                "uses": 43
+              },
+              {
+                "id": "PSYCHIC_FANGS",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 299,
+          "weightedScore": 297,
+          "competitiveScore": 294,
+          "rawRating": 72,
+          "weightedRating": 74,
+          "competitiveRating": 73,
+          "score": 73,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "VOLT_SWITCH",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "LUNGE",
+                "uses": 43
+              },
+              {
+                "id": "PSYCHIC_FANGS",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 202.5,
+      "matchups": 172,
+      "wins": 65,
+      "losses": 106,
+      "ties": 1,
+      "winRate": 0.3779,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 417,
+          "matchups": 43,
+          "wins": 16,
+          "losses": 27,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 299,
+          "matchups": 43,
+          "wins": 6,
+          "losses": 37,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 510,
+          "matchups": 43,
+          "wins": 19,
+          "losses": 24,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 583,
+          "matchups": 43,
+          "wins": 24,
+          "losses": 18,
+          "ties": 1
+        }
+      },
+      "types": [
+        "electric"
+      ],
+      "dex": 604,
+      "build": {
+        "ivAtk": 1,
+        "ivDef": 15,
+        "ivHp": 14,
+        "level": 20.5,
+        "cp": 1500
+      },
+      "moveset": {
+        "fast": "VOLT_SWITCH",
+        "charged": [
+          "LUNGE",
+          "PSYCHIC_FANGS"
+        ]
+      }
+    },
+    {
+      "rank": 146,
       "id": "samurott_hisuian",
       "name": "Samurott (Hisuian)",
       "profile": "rank1",
@@ -34353,7 +34827,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 145,
+      "rank": 147,
       "id": "gastrodon",
       "name": "Gastrodon",
       "profile": "rank1",
@@ -34591,7 +35065,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 146,
+      "rank": 148,
       "id": "deoxys_defense",
       "name": "Deoxys (Defense)",
       "profile": "rank1",
@@ -34828,7 +35302,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 147,
+      "rank": 149,
       "id": "lapras",
       "name": "Lapras",
       "profile": "rank1",
@@ -35066,7 +35540,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 148,
+      "rank": 150,
       "id": "oinkologne_female",
       "name": "Oinkologne (Female)",
       "profile": "rank1",
@@ -35303,7 +35777,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 149,
+      "rank": 151,
       "id": "lurantis",
       "name": "Lurantis",
       "profile": "rank1",
@@ -35540,7 +36014,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 150,
+      "rank": 152,
       "id": "throh_shadow",
       "name": "Throh (Shadow)",
       "profile": "rank1",
@@ -35777,7 +36251,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 151,
+      "rank": 153,
       "id": "cresselia",
       "name": "Cresselia",
       "profile": "rank1",
@@ -36014,7 +36488,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 152,
+      "rank": 154,
       "id": "audino",
       "name": "Audino",
       "profile": "rank1",
@@ -36251,7 +36725,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 153,
+      "rank": 155,
       "id": "annihilape",
       "name": "Annihilape",
       "profile": "rank1",
@@ -36489,7 +36963,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 154,
+      "rank": 156,
       "id": "toxapex",
       "name": "Toxapex",
       "profile": "rank1",
@@ -36727,7 +37201,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 155,
+      "rank": 157,
       "id": "cradily_shadow",
       "name": "Cradily (Shadow)",
       "profile": "rank1",
@@ -36965,7 +37439,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 156,
+      "rank": 158,
       "id": "samurott_shadow",
       "name": "Samurott (Shadow)",
       "profile": "rank1",
@@ -37202,7 +37676,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 157,
+      "rank": 159,
       "id": "walrein_shadow",
       "name": "Walrein (Shadow)",
       "profile": "rank1",
@@ -37440,7 +37914,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 158,
+      "rank": 160,
       "id": "golisopod",
       "name": "Golisopod",
       "profile": "rank1",
@@ -37678,7 +38152,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 159,
+      "rank": 161,
       "id": "castform_rainy",
       "name": "Castform (Rainy)",
       "profile": "rank1",
@@ -37915,7 +38389,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 160,
+      "rank": 162,
       "id": "togedemaru",
       "name": "Togedemaru",
       "profile": "rank1",
@@ -38153,7 +38627,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 161,
+      "rank": 163,
       "id": "wigglytuff",
       "name": "Wigglytuff",
       "profile": "rank1",
@@ -38391,7 +38865,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 162,
+      "rank": 164,
       "id": "bellossom",
       "name": "Bellossom",
       "profile": "rank1",
@@ -38628,7 +39102,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 163,
+      "rank": 165,
       "id": "togetic",
       "name": "Togetic",
       "profile": "rank1",
@@ -38866,7 +39340,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 164,
+      "rank": 166,
       "id": "giratina_altered_shadow",
       "name": "Giratina (Altered) (Shadow)",
       "profile": "rank1",
@@ -39104,7 +39578,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 165,
+      "rank": 167,
       "id": "centiskorch",
       "name": "Centiskorch",
       "profile": "rank1",
@@ -39342,7 +39816,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 166,
+      "rank": 168,
       "id": "lickitung",
       "name": "Lickitung",
       "profile": "rank1",
@@ -39579,7 +40053,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 167,
+      "rank": 169,
       "id": "drifblim",
       "name": "Drifblim",
       "profile": "rank1",
@@ -39817,7 +40291,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 168,
+      "rank": 170,
       "id": "slowbro",
       "name": "Slowbro",
       "profile": "rank1",
@@ -40055,7 +40529,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 169,
+      "rank": 171,
       "id": "swampert",
       "name": "Swampert",
       "profile": "rank1",
@@ -40293,7 +40767,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 170,
+      "rank": 172,
       "id": "cofagrigus",
       "name": "Cofagrigus",
       "profile": "rank1",
@@ -40530,7 +41004,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 171,
+      "rank": 173,
       "id": "hippowdon_shadow",
       "name": "Hippowdon (Shadow)",
       "profile": "rank1",
@@ -40767,7 +41241,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 172,
+      "rank": 174,
       "id": "nidoqueen",
       "name": "Nidoqueen",
       "profile": "rank1",
@@ -41005,7 +41479,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 173,
+      "rank": 175,
       "id": "drapion",
       "name": "Drapion",
       "profile": "rank1",
@@ -41243,7 +41717,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 174,
+      "rank": 176,
       "id": "oranguru",
       "name": "Oranguru",
       "profile": "rank1",
@@ -41481,7 +41955,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 175,
+      "rank": 177,
       "id": "annihilape_shadow",
       "name": "Annihilape (Shadow)",
       "profile": "rank1",
@@ -41719,7 +42193,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 176,
+      "rank": 178,
       "id": "jumpluff_shadow",
       "name": "Jumpluff (Shadow)",
       "profile": "rank1",
@@ -41957,7 +42431,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 177,
+      "rank": 179,
       "id": "persian_alolan",
       "name": "Persian (Alolan)",
       "profile": "rank1",
@@ -42194,7 +42668,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 178,
+      "rank": 180,
       "id": "poliwrath_shadow",
       "name": "Poliwrath (Shadow)",
       "profile": "rank1",
@@ -42432,7 +42906,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 179,
+      "rank": 181,
       "id": "marowak_alolan",
       "name": "Marowak (Alolan)",
       "profile": "rank1",
@@ -42670,7 +43144,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 180,
+      "rank": 182,
       "id": "timburr",
       "name": "Timburr",
       "profile": "rank1",
@@ -42907,7 +43381,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 181,
+      "rank": 183,
       "id": "castform_sunny",
       "name": "Castform (Sunny)",
       "profile": "rank1",
@@ -43144,7 +43618,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 182,
+      "rank": 184,
       "id": "kommo_o",
       "name": "Kommo-o",
       "profile": "rank1",
@@ -43382,7 +43856,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 183,
+      "rank": 185,
       "id": "golisopodsh",
       "name": "Golisopod",
       "profile": "rank1",
@@ -43620,7 +44094,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 184,
+      "rank": 186,
       "id": "lapras_shadow",
       "name": "Lapras (Shadow)",
       "profile": "rank1",
@@ -43858,7 +44332,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 185,
+      "rank": 187,
       "id": "greedent",
       "name": "Greedent",
       "profile": "rank1",
@@ -44095,7 +44569,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 186,
+      "rank": 188,
       "id": "wailmer",
       "name": "Wailmer",
       "profile": "rank1",
@@ -44332,7 +44806,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 187,
+      "rank": 189,
       "id": "crustle",
       "name": "Crustle",
       "profile": "rank1",
@@ -44570,7 +45044,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 188,
+      "rank": 190,
       "id": "toucannon",
       "name": "Toucannon",
       "profile": "rank1",
@@ -44808,7 +45282,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 189,
+      "rank": 191,
       "id": "nidorina",
       "name": "Nidorina",
       "profile": "rank1",
@@ -45045,7 +45519,245 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 190,
+      "rank": 192,
+      "id": "starmie",
+      "name": "Starmie",
+      "profile": "rank1",
+      "averageScore": 432,
+      "externalWeightedAverageScore": 433,
+      "weightedAverageScore": 450,
+      "rawScore": 756,
+      "weightedScore": 735,
+      "competitiveScore": 732,
+      "roleScore": 732,
+      "candidatePriorScore": 582,
+      "metaViabilityScore": 687,
+      "overallScore": 687,
+      "categoryScores": {
+        "lead": {
+          "label": "Lead",
+          "weight": 1,
+          "averageScore": 536,
+          "weightedScore": 529,
+          "competitiveScore": 522,
+          "rawRating": 86,
+          "weightedRating": 85,
+          "competitiveRating": 85,
+          "score": 85,
+          "matchups": 43,
+          "wins": 24,
+          "losses": 19,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PSYWAVE",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "SURF",
+                "uses": 43
+              },
+              {
+                "id": "TRIPLE_AXEL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "closer": {
+          "label": "Closer",
+          "weight": 1,
+          "averageScore": 391,
+          "weightedScore": 385,
+          "competitiveScore": 382,
+          "rawRating": 66,
+          "weightedRating": 66,
+          "competitiveRating": 65,
+          "score": 65,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PSYWAVE",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "SURF",
+                "uses": 43
+              },
+              {
+                "id": "TRIPLE_AXEL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "switch": {
+          "label": "Switch",
+          "weight": 1,
+          "averageScore": 591,
+          "weightedScore": 497,
+          "competitiveScore": 503,
+          "rawRating": 88,
+          "weightedRating": 75,
+          "competitiveRating": 76,
+          "score": 76,
+          "matchups": 43,
+          "wins": 29,
+          "losses": 14,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PSYWAVE",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "SURF",
+                "uses": 43
+              },
+              {
+                "id": "TRIPLE_AXEL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "charger": {
+          "label": "Charger",
+          "weight": 1,
+          "averageScore": 584,
+          "weightedScore": 582,
+          "competitiveScore": 585,
+          "rawRating": 88,
+          "weightedRating": 88,
+          "competitiveRating": 88,
+          "score": 88,
+          "matchups": 43,
+          "wins": 31,
+          "losses": 12,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PSYWAVE",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "SURF",
+                "uses": 43
+              },
+              {
+                "id": "TRIPLE_AXEL",
+                "uses": 43
+              }
+            ]
+          }
+        },
+        "attacker": {
+          "label": "Attacker",
+          "weight": 1,
+          "averageScore": 233,
+          "weightedScore": 231,
+          "competitiveScore": 232,
+          "rawRating": 56,
+          "weightedRating": 58,
+          "competitiveRating": 57,
+          "score": 57,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0,
+          "moveUsage": {
+            "fast": [
+              {
+                "id": "PSYWAVE",
+                "uses": 43
+              }
+            ],
+            "charged": [
+              {
+                "id": "SURF",
+                "uses": 43
+              },
+              {
+                "id": "TRIPLE_AXEL",
+                "uses": 43
+              }
+            ]
+          }
+        }
+      },
+      "scoreStdDev": 233.8,
+      "matchups": 172,
+      "wins": 70,
+      "losses": 102,
+      "ties": 0,
+      "winRate": 0.407,
+      "shieldStates": {
+        "0-0": {
+          "averageScore": 391,
+          "matchups": 43,
+          "wins": 15,
+          "losses": 28,
+          "ties": 0
+        },
+        "0-1": {
+          "averageScore": 233,
+          "matchups": 43,
+          "wins": 3,
+          "losses": 40,
+          "ties": 0
+        },
+        "1-1": {
+          "averageScore": 536,
+          "matchups": 43,
+          "wins": 24,
+          "losses": 19,
+          "ties": 0
+        },
+        "2-2": {
+          "averageScore": 569,
+          "matchups": 43,
+          "wins": 28,
+          "losses": 15,
+          "ties": 0
+        }
+      },
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "dex": 121,
+      "build": {
+        "ivAtk": 0,
+        "ivDef": 15,
+        "ivHp": 11,
+        "level": 22,
+        "cp": 1498
+      },
+      "moveset": {
+        "fast": "PSYWAVE",
+        "charged": [
+          "SURF",
+          "TRIPLE_AXEL"
+        ]
+      }
+    },
+    {
+      "rank": 193,
       "id": "ursaluna",
       "name": "Ursaluna",
       "profile": "rank1",
@@ -45283,7 +45995,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 191,
+      "rank": 194,
       "id": "gurdurr_shadow",
       "name": "Gurdurr (Shadow)",
       "profile": "rank1",
@@ -45520,7 +46232,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 192,
+      "rank": 195,
       "id": "palossand",
       "name": "Palossand",
       "profile": "rank1",
@@ -45758,7 +46470,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 193,
+      "rank": 196,
       "id": "gyarados",
       "name": "Gyarados",
       "profile": "rank1",
@@ -45996,7 +46708,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 194,
+      "rank": 197,
       "id": "ninetales_alolan",
       "name": "Ninetales (Alolan)",
       "profile": "rank1",
@@ -46234,7 +46946,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 195,
+      "rank": 198,
       "id": "farfetchd",
       "name": "Farfetch'd",
       "profile": "rank1",
@@ -46472,7 +47184,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 196,
+      "rank": 199,
       "id": "murkrow_shadow",
       "name": "Murkrow (Shadow)",
       "profile": "rank1",
@@ -46710,7 +47422,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 197,
+      "rank": 200,
       "id": "miltank",
       "name": "Miltank",
       "profile": "rank1",
@@ -46947,7 +47659,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 198,
+      "rank": 201,
       "id": "electabuzz",
       "name": "Electabuzz",
       "profile": "rank1",
@@ -47184,7 +47896,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 199,
+      "rank": 202,
       "id": "tentacruel",
       "name": "Tentacruel",
       "profile": "rank1",
@@ -47422,7 +48134,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 200,
+      "rank": 203,
       "id": "pelipper",
       "name": "Pelipper",
       "profile": "rank1",
@@ -47660,7 +48372,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 201,
+      "rank": 204,
       "id": "kingambit",
       "name": "Kingambit",
       "profile": "rank1",
@@ -47898,7 +48610,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 202,
+      "rank": 205,
       "id": "emolga",
       "name": "Emolga",
       "profile": "rank1",
@@ -48136,7 +48848,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 203,
+      "rank": 206,
       "id": "croconaw",
       "name": "Croconaw",
       "profile": "rank1",
@@ -48373,7 +49085,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 204,
+      "rank": 207,
       "id": "bewear_shadow",
       "name": "Bewear (Shadow)",
       "profile": "rank1",
@@ -48611,7 +49323,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 205,
+      "rank": 208,
       "id": "swampert_shadow",
       "name": "Swampert (Shadow)",
       "profile": "rank1",
@@ -48849,7 +49561,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 206,
+      "rank": 209,
       "id": "cetitan",
       "name": "Cetitan",
       "profile": "rank1",
@@ -49086,7 +49798,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 207,
+      "rank": 210,
       "id": "magnezone",
       "name": "Magnezone",
       "profile": "rank1",
@@ -49324,7 +50036,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 208,
+      "rank": 211,
       "id": "magnezone_shadow",
       "name": "Magnezone (Shadow)",
       "profile": "rank1",
@@ -49562,7 +50274,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 209,
+      "rank": 212,
       "id": "drifblim_shadow",
       "name": "Drifblim (Shadow)",
       "profile": "rank1",
@@ -49800,7 +50512,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 210,
+      "rank": 213,
       "id": "marowak_alolan_shadow",
       "name": "Marowak (Alolan) (Shadow)",
       "profile": "rank1",
@@ -50038,7 +50750,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 211,
+      "rank": 214,
       "id": "raikou_shadow",
       "name": "Raikou (Shadow)",
       "profile": "rank1",
@@ -50275,7 +50987,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 212,
+      "rank": 215,
       "id": "ninetales_alolan_shadow",
       "name": "Ninetales (Alolan) (Shadow)",
       "profile": "rank1",
@@ -50513,7 +51225,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 213,
+      "rank": 216,
       "id": "latias",
       "name": "Latias",
       "profile": "rank1",
@@ -50751,7 +51463,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 214,
+      "rank": 217,
       "id": "lokix",
       "name": "Lokix",
       "profile": "rank1",
@@ -50989,7 +51701,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 215,
+      "rank": 218,
       "id": "virizion",
       "name": "Virizion",
       "profile": "rank1",
@@ -51227,7 +51939,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 216,
+      "rank": 219,
       "id": "cofagrigus_shadow",
       "name": "Cofagrigus (Shadow)",
       "profile": "rank1",
@@ -51464,7 +52176,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 217,
+      "rank": 220,
       "id": "suicune",
       "name": "Suicune",
       "profile": "rank1",
@@ -51701,7 +52413,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 218,
+      "rank": 221,
       "id": "toedscruel",
       "name": "Toedscruel",
       "profile": "rank1",
@@ -51939,7 +52651,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 219,
+      "rank": 222,
       "id": "tropius",
       "name": "Tropius",
       "profile": "rank1",
@@ -52177,7 +52889,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 220,
+      "rank": 223,
       "id": "whimsicott",
       "name": "Whimsicott",
       "profile": "rank1",
@@ -52415,7 +53127,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 221,
+      "rank": 224,
       "id": "gliscor_shadow",
       "name": "Gliscor (Shadow)",
       "profile": "rank1",
@@ -52653,7 +53365,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 222,
+      "rank": 225,
       "id": "quaquaval",
       "name": "Quaquaval",
       "profile": "rank1",
@@ -52891,7 +53603,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 223,
+      "rank": 226,
       "id": "dewgong",
       "name": "Dewgong",
       "profile": "rank1",
@@ -53129,7 +53841,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 224,
+      "rank": 227,
       "id": "meowscarada",
       "name": "Meowscarada",
       "profile": "rank1",
@@ -53367,7 +54079,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 225,
+      "rank": 228,
       "id": "regirock",
       "name": "Regirock",
       "profile": "rank1",
@@ -53604,7 +54316,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 226,
+      "rank": 229,
       "id": "torkoal",
       "name": "Torkoal",
       "profile": "rank1",
@@ -53841,7 +54553,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 227,
+      "rank": 230,
       "id": "tapu_fini",
       "name": "Tapu Fini",
       "profile": "rank1",
@@ -54079,7 +54791,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 228,
+      "rank": 231,
       "id": "scrafty",
       "name": "Scrafty",
       "profile": "rank1",
@@ -54317,7 +55029,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 229,
+      "rank": 232,
       "id": "victreebel",
       "name": "Victreebel",
       "profile": "rank1",
@@ -54555,7 +55267,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 230,
+      "rank": 233,
       "id": "toucannon_shadow",
       "name": "Toucannon (Shadow)",
       "profile": "rank1",
@@ -54793,7 +55505,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 231,
+      "rank": 234,
       "id": "metang",
       "name": "Metang",
       "profile": "rank1",
@@ -55031,7 +55743,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 232,
+      "rank": 235,
       "id": "solrock",
       "name": "Solrock",
       "profile": "rank1",
@@ -55269,7 +55981,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 233,
+      "rank": 236,
       "id": "murkrow",
       "name": "Murkrow",
       "profile": "rank1",
@@ -55507,7 +56219,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 234,
+      "rank": 237,
       "id": "serperior",
       "name": "Serperior",
       "profile": "rank1",
@@ -55744,7 +56456,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 235,
+      "rank": 238,
       "id": "claydol_shadow",
       "name": "Claydol (Shadow)",
       "profile": "rank1",
@@ -55982,7 +56694,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 236,
+      "rank": 239,
       "id": "trevenant_shadow",
       "name": "Trevenant (Shadow)",
       "profile": "rank1",
@@ -56220,7 +56932,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 237,
+      "rank": 240,
       "id": "lanturn",
       "name": "Lanturn",
       "profile": "rank1",
@@ -56458,7 +57170,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 238,
+      "rank": 241,
       "id": "pidgeot_shadow",
       "name": "Pidgeot (Shadow)",
       "profile": "rank1",
@@ -56696,7 +57408,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 239,
+      "rank": 242,
       "id": "swanna",
       "name": "Swanna",
       "profile": "rank1",
@@ -56934,7 +57646,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 240,
+      "rank": 243,
       "id": "slurpuff",
       "name": "Slurpuff",
       "profile": "rank1",
@@ -57171,7 +57883,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 241,
+      "rank": 244,
       "id": "maushold",
       "name": "Maushold",
       "profile": "rank1",
@@ -57408,7 +58120,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 242,
+      "rank": 245,
       "id": "dartrix",
       "name": "Dartrix",
       "profile": "rank1",
@@ -57646,7 +58358,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 243,
+      "rank": 246,
       "id": "coalossal",
       "name": "Coalossal",
       "profile": "rank1",
@@ -57884,7 +58596,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 244,
+      "rank": 247,
       "id": "grimmsnarl",
       "name": "Grimmsnarl",
       "profile": "rank1",
@@ -58122,245 +58834,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 245,
-      "id": "starmie",
-      "name": "Starmie",
-      "profile": "rank1",
-      "averageScore": 411,
-      "externalWeightedAverageScore": 411,
-      "weightedAverageScore": 425,
-      "rawScore": 724,
-      "weightedScore": 698,
-      "competitiveScore": 698,
-      "roleScore": 698,
-      "candidatePriorScore": 582,
-      "metaViabilityScore": 663,
-      "overallScore": 663,
-      "categoryScores": {
-        "lead": {
-          "label": "Lead",
-          "weight": 1,
-          "averageScore": 509,
-          "weightedScore": 501,
-          "competitiveScore": 494,
-          "rawRating": 82,
-          "weightedRating": 81,
-          "competitiveRating": 80,
-          "score": 80,
-          "matchups": 43,
-          "wins": 20,
-          "losses": 23,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PSYWAVE",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "AQUA_JET",
-                "uses": 43
-              },
-              {
-                "id": "TRIPLE_AXEL",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "closer": {
-          "label": "Closer",
-          "weight": 1,
-          "averageScore": 420,
-          "weightedScore": 416,
-          "competitiveScore": 412,
-          "rawRating": 71,
-          "weightedRating": 71,
-          "competitiveRating": 70,
-          "score": 70,
-          "matchups": 43,
-          "wins": 16,
-          "losses": 27,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PSYWAVE",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "AQUA_JET",
-                "uses": 43
-              },
-              {
-                "id": "TRIPLE_AXEL",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "switch": {
-          "label": "Switch",
-          "weight": 1,
-          "averageScore": 522,
-          "weightedScore": 422,
-          "competitiveScore": 429,
-          "rawRating": 78,
-          "weightedRating": 64,
-          "competitiveRating": 65,
-          "score": 65,
-          "matchups": 43,
-          "wins": 20,
-          "losses": 23,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PSYWAVE",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "AQUA_JET",
-                "uses": 43
-              },
-              {
-                "id": "TRIPLE_AXEL",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "charger": {
-          "label": "Charger",
-          "weight": 1,
-          "averageScore": 540,
-          "weightedScore": 543,
-          "competitiveScore": 548,
-          "rawRating": 81,
-          "weightedRating": 82,
-          "competitiveRating": 83,
-          "score": 83,
-          "matchups": 43,
-          "wins": 26,
-          "losses": 17,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PSYWAVE",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "AQUA_JET",
-                "uses": 43
-              },
-              {
-                "id": "TRIPLE_AXEL",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "attacker": {
-          "label": "Attacker",
-          "weight": 1,
-          "averageScore": 221,
-          "weightedScore": 220,
-          "competitiveScore": 221,
-          "rawRating": 54,
-          "weightedRating": 55,
-          "competitiveRating": 55,
-          "score": 55,
-          "matchups": 43,
-          "wins": 1,
-          "losses": 42,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "PSYWAVE",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "AQUA_JET",
-                "uses": 43
-              },
-              {
-                "id": "TRIPLE_AXEL",
-                "uses": 43
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 215.94,
-      "matchups": 172,
-      "wins": 55,
-      "losses": 117,
-      "ties": 0,
-      "winRate": 0.3198,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 420,
-          "matchups": 43,
-          "wins": 16,
-          "losses": 27,
-          "ties": 0
-        },
-        "0-1": {
-          "averageScore": 221,
-          "matchups": 43,
-          "wins": 1,
-          "losses": 42,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 509,
-          "matchups": 43,
-          "wins": 20,
-          "losses": 23,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 492,
-          "matchups": 43,
-          "wins": 18,
-          "losses": 25,
-          "ties": 0
-        }
-      },
-      "types": [
-        "water",
-        "psychic"
-      ],
-      "dex": 121,
-      "build": {
-        "ivAtk": 0,
-        "ivDef": 15,
-        "ivHp": 11,
-        "level": 22,
-        "cp": 1498
-      },
-      "moveset": {
-        "fast": "PSYWAVE",
-        "charged": [
-          "AQUA_JET",
-          "TRIPLE_AXEL"
-        ]
-      }
-    },
-    {
-      "rank": 246,
+      "rank": 248,
       "id": "pangoro",
       "name": "Pangoro",
       "profile": "rank1",
@@ -58598,7 +59072,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 247,
+      "rank": 249,
       "id": "klefki",
       "name": "Klefki",
       "profile": "rank1",
@@ -58836,7 +59310,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 248,
+      "rank": 250,
       "id": "machamp",
       "name": "Machamp",
       "profile": "rank1",
@@ -59073,7 +59547,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 249,
+      "rank": 251,
       "id": "victreebel_shadow",
       "name": "Victreebel (Shadow)",
       "profile": "rank1",
@@ -59311,7 +59785,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 250,
+      "rank": 252,
       "id": "sandslash_alolan_shadow",
       "name": "Sandslash (Alolan) (Shadow)",
       "profile": "rank1",
@@ -59549,7 +60023,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 251,
+      "rank": 253,
       "id": "swalot",
       "name": "Swalot",
       "profile": "rank1",
@@ -59786,7 +60260,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 252,
+      "rank": 254,
       "id": "munchlax",
       "name": "Munchlax",
       "profile": "rank1",
@@ -60023,7 +60497,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 253,
+      "rank": 255,
       "id": "dragonite",
       "name": "Dragonite",
       "profile": "rank1",
@@ -60261,7 +60735,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 254,
+      "rank": 256,
       "id": "sandslash_alolan",
       "name": "Sandslash (Alolan)",
       "profile": "rank1",
@@ -60499,7 +60973,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 255,
+      "rank": 257,
       "id": "dudunsparce",
       "name": "Dudunsparce",
       "profile": "rank1",
@@ -60736,7 +61210,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 256,
+      "rank": 258,
       "id": "drapion_shadow",
       "name": "Drapion (Shadow)",
       "profile": "rank1",
@@ -60974,7 +61448,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 257,
+      "rank": 259,
       "id": "galvantula",
       "name": "Galvantula",
       "profile": "rank1",
@@ -61212,7 +61686,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 258,
+      "rank": 260,
       "id": "aegislash_shield",
       "name": "Aegislash (Shield)",
       "profile": "rank1",
@@ -61450,7 +61924,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 259,
+      "rank": 261,
       "id": "shiinotic",
       "name": "Shiinotic",
       "profile": "rank1",
@@ -61688,7 +62162,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 260,
+      "rank": 262,
       "id": "mawile",
       "name": "Mawile",
       "profile": "rank1",
@@ -61926,7 +62400,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 261,
+      "rank": 263,
       "id": "trevenant",
       "name": "Trevenant",
       "profile": "rank1",
@@ -62164,7 +62638,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 262,
+      "rank": 264,
       "id": "nidoqueen_shadow",
       "name": "Nidoqueen (Shadow)",
       "profile": "rank1",
@@ -62402,7 +62876,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 263,
+      "rank": 265,
       "id": "articuno_shadow",
       "name": "Articuno (Shadow)",
       "profile": "rank1",
@@ -62640,7 +63114,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 264,
+      "rank": 266,
       "id": "bellossom_shadow",
       "name": "Bellossom (Shadow)",
       "profile": "rank1",
@@ -62877,7 +63351,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 265,
+      "rank": 267,
       "id": "servine_shadow",
       "name": "Servine (Shadow)",
       "profile": "rank1",
@@ -63114,7 +63588,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 266,
+      "rank": 268,
       "id": "relicanth",
       "name": "Relicanth",
       "profile": "rank1",
@@ -63352,7 +63826,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 267,
+      "rank": 269,
       "id": "spinda",
       "name": "Spinda",
       "profile": "rank1",
@@ -63589,7 +64063,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 268,
+      "rank": 270,
       "id": "ursaluna_shadow",
       "name": "Ursaluna (Shadow)",
       "profile": "rank1",
@@ -63827,7 +64301,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 269,
+      "rank": 271,
       "id": "dragonite_shadow",
       "name": "Dragonite (Shadow)",
       "profile": "rank1",
@@ -64065,7 +64539,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 270,
+      "rank": 272,
       "id": "amoonguss_shadow",
       "name": "Amoonguss (Shadow)",
       "profile": "rank1",
@@ -64303,7 +64777,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 271,
+      "rank": 273,
       "id": "latias_shadow",
       "name": "Latias (Shadow)",
       "profile": "rank1",
@@ -64541,7 +65015,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 272,
+      "rank": 274,
       "id": "hawlucha",
       "name": "Hawlucha",
       "profile": "rank1",
@@ -64779,7 +65253,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 273,
+      "rank": 275,
       "id": "gyarados_shadow",
       "name": "Gyarados (Shadow)",
       "profile": "rank1",
@@ -65017,7 +65491,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 274,
+      "rank": 276,
       "id": "qwilfish_hisuian",
       "name": "Qwilfish (Hisuian)",
       "profile": "rank1",
@@ -65255,7 +65729,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 275,
+      "rank": 277,
       "id": "hippopotas",
       "name": "Hippopotas",
       "profile": "rank1",
@@ -65492,7 +65966,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 276,
+      "rank": 278,
       "id": "flaaffy",
       "name": "Flaaffy",
       "profile": "rank1",
@@ -65729,7 +66203,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 277,
+      "rank": 279,
       "id": "dubwool",
       "name": "Dubwool",
       "profile": "rank1",
@@ -65966,7 +66440,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 278,
+      "rank": 280,
       "id": "flaaffy_shadow",
       "name": "Flaaffy (Shadow)",
       "profile": "rank1",
@@ -66203,7 +66677,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 279,
+      "rank": 281,
       "id": "amoonguss",
       "name": "Amoonguss",
       "profile": "rank1",
@@ -66441,7 +66915,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 280,
+      "rank": 282,
       "id": "marshtomp_shadow",
       "name": "Marshtomp (Shadow)",
       "profile": "rank1",
@@ -66679,7 +67153,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 281,
+      "rank": 283,
       "id": "sandslash",
       "name": "Sandslash",
       "profile": "rank1",
@@ -66916,7 +67390,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 282,
+      "rank": 284,
       "id": "abomasnow",
       "name": "Abomasnow",
       "profile": "rank1",
@@ -67154,7 +67628,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 283,
+      "rank": 285,
       "id": "golem_alolan_shadow",
       "name": "Golem (Alolan) (Shadow)",
       "profile": "rank1",
@@ -67392,7 +67866,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 284,
+      "rank": 286,
       "id": "bewear",
       "name": "Bewear",
       "profile": "rank1",
@@ -67630,7 +68104,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 285,
+      "rank": 287,
       "id": "trumbeak",
       "name": "Trumbeak",
       "profile": "rank1",
@@ -67868,7 +68342,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 286,
+      "rank": 288,
       "id": "metang_shadow",
       "name": "Metang (Shadow)",
       "profile": "rank1",
@@ -68106,7 +68580,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 287,
+      "rank": 289,
       "id": "meganium",
       "name": "Meganium",
       "profile": "rank1",
@@ -68343,7 +68817,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 288,
+      "rank": 290,
       "id": "slowbro_shadow",
       "name": "Slowbro (Shadow)",
       "profile": "rank1",
@@ -68581,7 +69055,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 289,
+      "rank": 291,
       "id": "cresselia_shadow",
       "name": "Cresselia (Shadow)",
       "profile": "rank1",
@@ -68818,7 +69292,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 290,
+      "rank": 292,
       "id": "charizard",
       "name": "Charizard",
       "profile": "rank1",
@@ -69056,7 +69530,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 291,
+      "rank": 293,
       "id": "litleo",
       "name": "Litleo",
       "profile": "rank1",
@@ -69294,7 +69768,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 292,
+      "rank": 294,
       "id": "timburr_shadow",
       "name": "Timburr (Shadow)",
       "profile": "rank1",
@@ -69531,7 +70005,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 293,
+      "rank": 295,
       "id": "golem_alolan",
       "name": "Golem (Alolan)",
       "profile": "rank1",
@@ -69769,7 +70243,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 294,
+      "rank": 296,
       "id": "suicune_shadow",
       "name": "Suicune (Shadow)",
       "profile": "rank1",
@@ -70006,7 +70480,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 295,
+      "rank": 297,
       "id": "houndoom_shadow__flamethrower",
       "name": "Houndoom (Shadow)",
       "profile": "rank1",
@@ -70246,7 +70720,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 296,
+      "rank": 298,
       "id": "zygarde_complete",
       "name": "Zygarde (Complete Forme)",
       "profile": "rank1",
@@ -70484,7 +70958,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 297,
+      "rank": 299,
       "id": "starmie_shadow",
       "name": "Starmie (Shadow)",
       "profile": "rank1",
@@ -70722,7 +71196,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 298,
+      "rank": 300,
       "id": "quaxwell",
       "name": "Quaxwell",
       "profile": "rank1",
@@ -70959,7 +71433,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 299,
+      "rank": 301,
       "id": "noctowl_shadow",
       "name": "Noctowl (Shadow)",
       "profile": "rank1",
@@ -71197,7 +71671,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 300,
+      "rank": 302,
       "id": "gourgeist_large",
       "name": "Gourgeist (Large)",
       "profile": "rank1",
@@ -71435,7 +71909,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 301,
+      "rank": 303,
       "id": "naclstack",
       "name": "Naclstack",
       "profile": "rank1",
@@ -71672,7 +72146,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 302,
+      "rank": 304,
       "id": "pangoro_shadow",
       "name": "Pangoro (Shadow)",
       "profile": "rank1",
@@ -71910,7 +72384,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 303,
+      "rank": 305,
       "id": "gourgeist_average",
       "name": "Gourgeist (Average)",
       "profile": "rank1",
@@ -72148,7 +72622,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 304,
+      "rank": 306,
       "id": "tinkatuff",
       "name": "Tinkatuff",
       "profile": "rank1",
@@ -72386,7 +72860,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 305,
+      "rank": 307,
       "id": "poipole",
       "name": "Poipole",
       "profile": "rank1",
@@ -72623,7 +73097,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 306,
+      "rank": 308,
       "id": "crobat",
       "name": "Crobat",
       "profile": "rank1",
@@ -72861,7 +73335,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 307,
+      "rank": 309,
       "id": "raichu",
       "name": "Raichu",
       "profile": "rank1",
@@ -73098,7 +73572,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 308,
+      "rank": 310,
       "id": "skuntank",
       "name": "Skuntank",
       "profile": "rank1",
@@ -73336,7 +73810,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 309,
+      "rank": 311,
       "id": "swanna_shadow",
       "name": "Swanna (Shadow)",
       "profile": "rank1",
@@ -73574,7 +74048,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 310,
+      "rank": 312,
       "id": "machoke_shadow",
       "name": "Machoke (Shadow)",
       "profile": "rank1",
@@ -73811,7 +74285,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 311,
+      "rank": 313,
       "id": "trumbeak_shadow",
       "name": "Trumbeak (Shadow)",
       "profile": "rank1",
@@ -74049,7 +74523,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 312,
+      "rank": 314,
       "id": "machamp_shadow",
       "name": "Machamp (Shadow)",
       "profile": "rank1",
@@ -74286,7 +74760,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 313,
+      "rank": 315,
       "id": "serperior_shadow",
       "name": "Serperior (Shadow)",
       "profile": "rank1",
@@ -74523,7 +74997,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 314,
+      "rank": 316,
       "id": "venusaur",
       "name": "Venusaur",
       "profile": "rank1",
@@ -74761,7 +75235,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 315,
+      "rank": 317,
       "id": "barbaracle",
       "name": "Barbaracle",
       "profile": "rank1",
@@ -74999,7 +75473,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 316,
+      "rank": 318,
       "id": "decidueye",
       "name": "Decidueye",
       "profile": "rank1",
@@ -75237,7 +75711,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 317,
+      "rank": 319,
       "id": "croconaw_shadow",
       "name": "Croconaw (Shadow)",
       "profile": "rank1",
@@ -75474,7 +75948,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 318,
+      "rank": 320,
       "id": "electabuzz_shadow",
       "name": "Electabuzz (Shadow)",
       "profile": "rank1",
@@ -75711,7 +76185,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 319,
+      "rank": 321,
       "id": "primarina",
       "name": "Primarina",
       "profile": "rank1",
@@ -75949,7 +76423,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 320,
+      "rank": 322,
       "id": "charizard_shadow",
       "name": "Charizard (Shadow)",
       "profile": "rank1",
@@ -76187,7 +76661,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 321,
+      "rank": 323,
       "id": "registeel_shadow",
       "name": "Registeel (Shadow)",
       "profile": "rank1",
@@ -76424,7 +76898,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 322,
+      "rank": 324,
       "id": "arctibax",
       "name": "Arctibax",
       "profile": "rank1",
@@ -76662,7 +77136,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 323,
+      "rank": 325,
       "id": "fletchinder",
       "name": "Fletchinder",
       "profile": "rank1",
@@ -76900,7 +77374,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 324,
+      "rank": 326,
       "id": "golisopod_shadow",
       "name": "Golisopod (Shadow)",
       "profile": "rank1",
@@ -77138,7 +77612,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 325,
+      "rank": 327,
       "id": "incineroar",
       "name": "Incineroar",
       "profile": "rank1",
@@ -77376,7 +77850,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 326,
+      "rank": 328,
       "id": "shiinotic_shadow",
       "name": "Shiinotic (Shadow)",
       "profile": "rank1",
@@ -77614,7 +78088,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 327,
+      "rank": 329,
       "id": "pawmot",
       "name": "Pawmot",
       "profile": "rank1",
@@ -77852,7 +78326,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 328,
+      "rank": 330,
       "id": "gourgeist_super",
       "name": "Gourgeist (Super)",
       "profile": "rank1",
@@ -78090,7 +78564,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 329,
+      "rank": 331,
       "id": "whiscash",
       "name": "Whiscash",
       "profile": "rank1",
@@ -78328,7 +78802,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 330,
+      "rank": 332,
       "id": "qwilfish",
       "name": "Qwilfish",
       "profile": "rank1",
@@ -78566,7 +79040,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 331,
+      "rank": 333,
       "id": "furfrou",
       "name": "Furfrou",
       "profile": "rank1",
@@ -78803,7 +79277,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 332,
+      "rank": 334,
       "id": "mawile_shadow",
       "name": "Mawile (Shadow)",
       "profile": "rank1",
@@ -79041,7 +79515,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 333,
+      "rank": 335,
       "id": "vaporeon",
       "name": "Vaporeon",
       "profile": "rank1",
@@ -79278,7 +79752,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 334,
+      "rank": 336,
       "id": "hypno",
       "name": "Hypno",
       "profile": "rank1",
@@ -79515,7 +79989,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 335,
+      "rank": 337,
       "id": "abomasnow_shadow",
       "name": "Abomasnow (Shadow)",
       "profile": "rank1",
@@ -79753,7 +80227,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 336,
+      "rank": 338,
       "id": "alomomola",
       "name": "Alomomola",
       "profile": "rank1",
@@ -79990,7 +80464,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 337,
+      "rank": 339,
       "id": "bronzong",
       "name": "Bronzong",
       "profile": "rank1",
@@ -80228,7 +80702,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 338,
+      "rank": 340,
       "id": "magnemite_shadow",
       "name": "Magnemite (Shadow)",
       "profile": "rank1",
@@ -80466,7 +80940,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 339,
+      "rank": 341,
       "id": "electivire_shadow",
       "name": "Electivire (Shadow)",
       "profile": "rank1",
@@ -80703,7 +81177,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 340,
+      "rank": 342,
       "id": "skeledirge",
       "name": "Skeledirge",
       "profile": "rank1",
@@ -80941,7 +81415,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 341,
+      "rank": 343,
       "id": "marshadow",
       "name": "Marshadow",
       "profile": "rank1",
@@ -81179,7 +81653,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 342,
+      "rank": 344,
       "id": "ledian",
       "name": "Ledian",
       "profile": "rank1",
@@ -81417,7 +81891,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 343,
+      "rank": 345,
       "id": "rapidash",
       "name": "Rapidash",
       "profile": "rank1",
@@ -81654,7 +82128,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 344,
+      "rank": 346,
       "id": "dewgong_shadow",
       "name": "Dewgong (Shadow)",
       "profile": "rank1",
@@ -81892,7 +82366,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 345,
+      "rank": 347,
       "id": "overqwil",
       "name": "Overqwil",
       "profile": "rank1",
@@ -82130,7 +82604,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 346,
+      "rank": 348,
       "id": "galvantula_shadow",
       "name": "Galvantula (Shadow)",
       "profile": "rank1",
@@ -82368,7 +82842,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 347,
+      "rank": 349,
       "id": "bastiodon",
       "name": "Bastiodon",
       "profile": "rank1",
@@ -82606,7 +83080,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 348,
+      "rank": 350,
       "id": "palkia_shadow",
       "name": "Palkia (Shadow)",
       "profile": "rank1",
@@ -82844,7 +83318,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 349,
+      "rank": 351,
       "id": "dusknoir",
       "name": "Dusknoir",
       "profile": "rank1",
@@ -83081,7 +83555,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 350,
+      "rank": 352,
       "id": "houndoom_shadow",
       "name": "Houndoom (Shadow)",
       "profile": "rank1",
@@ -83319,7 +83793,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 351,
+      "rank": 353,
       "id": "piloswine",
       "name": "Piloswine",
       "profile": "rank1",
@@ -83557,7 +84031,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 352,
+      "rank": 354,
       "id": "toxtricity",
       "name": "Toxtricity",
       "profile": "rank1",
@@ -83795,7 +84269,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 353,
+      "rank": 355,
       "id": "dusknoir_shadow",
       "name": "Dusknoir (Shadow)",
       "profile": "rank1",
@@ -84032,7 +84506,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 354,
+      "rank": 356,
       "id": "prinplup",
       "name": "Prinplup",
       "profile": "rank1",
@@ -84269,7 +84743,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 355,
+      "rank": 357,
       "id": "vespiquen",
       "name": "Vespiquen",
       "profile": "rank1",
@@ -84507,7 +84981,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 356,
+      "rank": 358,
       "id": "darkrai_shadow",
       "name": "Darkrai (Shadow)",
       "profile": "rank1",
@@ -84744,7 +85218,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 357,
+      "rank": 359,
       "id": "houndoom",
       "name": "Houndoom",
       "profile": "rank1",
@@ -84982,7 +85456,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 358,
+      "rank": 360,
       "id": "magneton",
       "name": "Magneton",
       "profile": "rank1",
@@ -85220,7 +85694,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 359,
+      "rank": 361,
       "id": "whiscash_shadow",
       "name": "Whiscash (Shadow)",
       "profile": "rank1",
@@ -85458,7 +85932,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 360,
+      "rank": 362,
       "id": "oinkologne",
       "name": "Oinkologne",
       "profile": "rank1",
@@ -85695,7 +86169,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 361,
+      "rank": 363,
       "id": "luxray",
       "name": "Luxray",
       "profile": "rank1",
@@ -85932,7 +86406,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 362,
+      "rank": 364,
       "id": "torterra",
       "name": "Torterra",
       "profile": "rank1",
@@ -86170,7 +86644,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 363,
+      "rank": 365,
       "id": "skarmory_shadow",
       "name": "Skarmory (Shadow)",
       "profile": "rank1",
@@ -86408,7 +86882,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 364,
+      "rank": 366,
       "id": "marshtomp",
       "name": "Marshtomp",
       "profile": "rank1",
@@ -86646,7 +87120,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 365,
+      "rank": 367,
       "id": "wormadam_sandy",
       "name": "Wormadam (Sandy)",
       "profile": "rank1",
@@ -86884,7 +87358,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 366,
+      "rank": 368,
       "id": "tentacruel_shadow",
       "name": "Tentacruel (Shadow)",
       "profile": "rank1",
@@ -87122,7 +87596,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 367,
+      "rank": 369,
       "id": "qwilfish_shadow",
       "name": "Qwilfish (Shadow)",
       "profile": "rank1",
@@ -87360,7 +87834,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 368,
+      "rank": 370,
       "id": "fletchinder_shadow",
       "name": "Fletchinder (Shadow)",
       "profile": "rank1",
@@ -87598,7 +88072,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 369,
+      "rank": 371,
       "id": "aipom",
       "name": "Aipom",
       "profile": "rank1",
@@ -87835,7 +88309,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 370,
+      "rank": 372,
       "id": "tyranitar_shadow",
       "name": "Tyranitar (Shadow)",
       "profile": "rank1",
@@ -88073,7 +88547,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 371,
+      "rank": 373,
       "id": "golbat",
       "name": "Golbat",
       "profile": "rank1",
@@ -88311,7 +88785,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 372,
+      "rank": 374,
       "id": "frillish",
       "name": "Frillish",
       "profile": "rank1",
@@ -88549,7 +89023,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 373,
+      "rank": 375,
       "id": "huntail",
       "name": "Huntail",
       "profile": "rank1",
@@ -88786,7 +89260,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 374,
+      "rank": 376,
       "id": "dragonair",
       "name": "Dragonair",
       "profile": "rank1",
@@ -89023,7 +89497,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 375,
+      "rank": 377,
       "id": "ferrothorn",
       "name": "Ferrothorn",
       "profile": "rank1",
@@ -89261,7 +89735,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 376,
+      "rank": 378,
       "id": "quilladin",
       "name": "Quilladin",
       "profile": "rank1",
@@ -89498,7 +89972,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 377,
+      "rank": 379,
       "id": "muk",
       "name": "Muk",
       "profile": "rank1",
@@ -89735,7 +90209,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 378,
+      "rank": 380,
       "id": "vullaby",
       "name": "Vullaby",
       "profile": "rank1",
@@ -89973,7 +90447,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 379,
+      "rank": 381,
       "id": "sceptile",
       "name": "Sceptile",
       "profile": "rank1",
@@ -90210,7 +90684,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 380,
+      "rank": 382,
       "id": "sylveon",
       "name": "Sylveon",
       "profile": "rank1",
@@ -90447,7 +90921,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 381,
+      "rank": 383,
       "id": "aerodactyl",
       "name": "Aerodactyl",
       "profile": "rank1",
@@ -90685,7 +91159,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 382,
+      "rank": 384,
       "id": "druddigon",
       "name": "Druddigon",
       "profile": "rank1",
@@ -90922,7 +91396,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 383,
+      "rank": 385,
       "id": "cetoddle",
       "name": "Cetoddle",
       "profile": "rank1",
@@ -91159,7 +91633,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 384,
+      "rank": 386,
       "id": "crustle_shadow",
       "name": "Crustle (Shadow)",
       "profile": "rank1",
@@ -91397,7 +91871,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 385,
+      "rank": 387,
       "id": "noctowl",
       "name": "Noctowl",
       "profile": "rank1",
@@ -91614,7 +92088,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 386,
+      "rank": 388,
       "id": "garganacl",
       "name": "Garganacl",
       "profile": "rank1",
@@ -91851,7 +92325,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 387,
+      "rank": 389,
       "id": "dragalge",
       "name": "Dragalge",
       "profile": "rank1",
@@ -92089,7 +92563,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 388,
+      "rank": 390,
       "id": "sandaconda",
       "name": "Sandaconda",
       "profile": "rank1",
@@ -92326,7 +92800,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 389,
+      "rank": 391,
       "id": "sandslash_shadow",
       "name": "Sandslash (Shadow)",
       "profile": "rank1",
@@ -92563,7 +93037,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 390,
+      "rank": 392,
       "id": "houndoom__flamethrower",
       "name": "Houndoom",
       "profile": "rank1",
@@ -92803,7 +93277,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 391,
+      "rank": 393,
       "id": "chesnaught",
       "name": "Chesnaught",
       "profile": "rank1",
@@ -93041,7 +93515,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 392,
+      "rank": 394,
       "id": "decidueye_hisuian",
       "name": "Decidueye (Hisuian)",
       "profile": "rank1",
@@ -93279,7 +93753,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 393,
+      "rank": 395,
       "id": "aipom_shadow",
       "name": "Aipom (Shadow)",
       "profile": "rank1",
@@ -93516,7 +93990,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 394,
+      "rank": 396,
       "id": "tyranitar",
       "name": "Tyranitar",
       "profile": "rank1",
@@ -93754,7 +94228,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 395,
+      "rank": 397,
       "id": "lunatone",
       "name": "Lunatone",
       "profile": "rank1",
@@ -93992,7 +94466,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 396,
+      "rank": 398,
       "id": "grotle",
       "name": "Grotle",
       "profile": "rank1",
@@ -94229,7 +94703,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 397,
+      "rank": 399,
       "id": "swoobat",
       "name": "Swoobat",
       "profile": "rank1",
@@ -94467,7 +94941,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 398,
+      "rank": 400,
       "id": "drampa",
       "name": "Drampa",
       "profile": "rank1",
@@ -94705,7 +95179,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 399,
+      "rank": 401,
       "id": "genesect_burn",
       "name": "Genesect (Burn)",
       "profile": "rank1",
@@ -94943,7 +95417,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 400,
+      "rank": 402,
       "id": "talonflame",
       "name": "Talonflame",
       "profile": "rank1",
@@ -95181,7 +95655,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 401,
+      "rank": 403,
       "id": "flamigo",
       "name": "Flamigo",
       "profile": "rank1",
@@ -95419,7 +95893,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 402,
+      "rank": 404,
       "id": "dachsbun",
       "name": "Dachsbun",
       "profile": "rank1",
@@ -95656,7 +96130,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 403,
+      "rank": 405,
       "id": "wailord",
       "name": "Wailord",
       "profile": "rank1",
@@ -95872,7 +96346,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 404,
+      "rank": 406,
       "id": "crobat_shadow",
       "name": "Crobat (Shadow)",
       "profile": "rank1",
@@ -96110,7 +96584,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 405,
+      "rank": 407,
       "id": "teddiursa_shadow",
       "name": "Teddiursa (Shadow)",
       "profile": "rank1",
@@ -96347,7 +96821,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 406,
+      "rank": 408,
       "id": "chesnaught_shadow",
       "name": "Chesnaught (Shadow)",
       "profile": "rank1",
@@ -96585,7 +97059,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 407,
+      "rank": 409,
       "id": "shiftry",
       "name": "Shiftry",
       "profile": "rank1",
@@ -96823,7 +97297,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 408,
+      "rank": 410,
       "id": "sandshrew_alolan",
       "name": "Sandshrew (Alolan)",
       "profile": "rank1",
@@ -97061,7 +97535,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 409,
+      "rank": 411,
       "id": "talonflame_shadow",
       "name": "Talonflame (Shadow)",
       "profile": "rank1",
@@ -97299,7 +97773,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 410,
+      "rank": 412,
       "id": "jirachi",
       "name": "Jirachi",
       "profile": "rank1",
@@ -97537,7 +98011,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 411,
+      "rank": 413,
       "id": "piloswine_shadow",
       "name": "Piloswine (Shadow)",
       "profile": "rank1",
@@ -97775,7 +98249,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 412,
+      "rank": 414,
       "id": "grimer_alolan",
       "name": "Grimer (Alolan)",
       "profile": "rank1",
@@ -98013,7 +98487,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 413,
+      "rank": 415,
       "id": "pumpkaboo_super",
       "name": "Pumpkaboo (Super)",
       "profile": "rank1",
@@ -98251,7 +98725,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 414,
+      "rank": 416,
       "id": "wormadam_plant",
       "name": "Wormadam (Plant)",
       "profile": "rank1",
@@ -98489,7 +98963,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 415,
+      "rank": 417,
       "id": "hitmontop",
       "name": "Hitmontop",
       "profile": "rank1",
@@ -98726,7 +99200,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 416,
+      "rank": 418,
       "id": "sandshrew",
       "name": "Sandshrew",
       "profile": "rank1",
@@ -98963,7 +99437,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 417,
+      "rank": 419,
       "id": "genesect",
       "name": "Genesect",
       "profile": "rank1",
@@ -99201,7 +99675,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 418,
+      "rank": 420,
       "id": "bayleef",
       "name": "Bayleef",
       "profile": "rank1",
@@ -99438,7 +99912,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 419,
+      "rank": 421,
       "id": "latios_shadow",
       "name": "Latios (Shadow)",
       "profile": "rank1",
@@ -99676,7 +100150,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 420,
+      "rank": 422,
       "id": "skarmory",
       "name": "Skarmory",
       "profile": "rank1",
@@ -99914,7 +100388,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 421,
+      "rank": 423,
       "id": "baxcalibur",
       "name": "Baxcalibur",
       "profile": "rank1",
@@ -100152,7 +100626,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 422,
+      "rank": 424,
       "id": "lampent",
       "name": "Lampent",
       "profile": "rank1",
@@ -100390,7 +100864,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 423,
+      "rank": 425,
       "id": "hippopotas_shadow",
       "name": "Hippopotas (Shadow)",
       "profile": "rank1",
@@ -100627,7 +101101,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 424,
+      "rank": 426,
       "id": "darkrai",
       "name": "Darkrai",
       "profile": "rank1",
@@ -100864,7 +101338,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 425,
+      "rank": 427,
       "id": "zygarde",
       "name": "Zygarde (50% Forme)",
       "profile": "rank1",
@@ -101102,7 +101576,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 426,
+      "rank": 428,
       "id": "conkeldurr_shadow",
       "name": "Conkeldurr (Shadow)",
       "profile": "rank1",
@@ -101339,7 +101813,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 427,
+      "rank": 429,
       "id": "typhlosion",
       "name": "Typhlosion",
       "profile": "rank1",
@@ -101576,7 +102050,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 428,
+      "rank": 430,
       "id": "conkeldurr",
       "name": "Conkeldurr",
       "profile": "rank1",
@@ -101813,7 +102287,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 429,
+      "rank": 431,
       "id": "keldeo_resolute",
       "name": "Keldeo (Resolute)",
       "profile": "rank1",
@@ -102051,7 +102525,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 430,
+      "rank": 432,
       "id": "bibarel",
       "name": "Bibarel",
       "profile": "rank1",
@@ -102289,7 +102763,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 431,
+      "rank": 433,
       "id": "avalugg",
       "name": "Avalugg",
       "profile": "rank1",
@@ -102526,7 +103000,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 432,
+      "rank": 434,
       "id": "rapidash_shadow",
       "name": "Rapidash (Shadow)",
       "profile": "rank1",
@@ -102763,7 +103237,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 433,
+      "rank": 435,
       "id": "skuntank_shadow",
       "name": "Skuntank (Shadow)",
       "profile": "rank1",
@@ -103001,7 +103475,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 434,
+      "rank": 436,
       "id": "flygon",
       "name": "Flygon",
       "profile": "rank1",
@@ -103239,7 +103713,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 435,
+      "rank": 437,
       "id": "farfetchd_galarian",
       "name": "Farfetch'd (Galarian)",
       "profile": "rank1",
@@ -103476,7 +103950,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 436,
+      "rank": 438,
       "id": "dipplin",
       "name": "Dipplin",
       "profile": "rank1",
@@ -103714,7 +104188,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 437,
+      "rank": 439,
       "id": "cacturne_shadow",
       "name": "Cacturne (Shadow)",
       "profile": "rank1",
@@ -103952,7 +104426,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 438,
+      "rank": 440,
       "id": "venusaur_shadow",
       "name": "Venusaur (Shadow)",
       "profile": "rank1",
@@ -104190,7 +104664,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 439,
+      "rank": 441,
       "id": "zekrom",
       "name": "Zekrom",
       "profile": "rank1",
@@ -104428,7 +104902,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 440,
+      "rank": 442,
       "id": "aurorus",
       "name": "Aurorus",
       "profile": "rank1",
@@ -104666,7 +105140,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 441,
+      "rank": 443,
       "id": "lileep",
       "name": "Lileep",
       "profile": "rank1",
@@ -104904,7 +105378,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 442,
+      "rank": 444,
       "id": "magnemite",
       "name": "Magnemite",
       "profile": "rank1",
@@ -105142,7 +105616,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 443,
+      "rank": 445,
       "id": "golbat_shadow",
       "name": "Golbat (Shadow)",
       "profile": "rank1",
@@ -105380,7 +105854,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 444,
+      "rank": 446,
       "id": "wailmer_shadow",
       "name": "Wailmer (Shadow)",
       "profile": "rank1",
@@ -105617,7 +106091,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 445,
+      "rank": 447,
       "id": "gourgeist_small",
       "name": "Gourgeist (Small)",
       "profile": "rank1",
@@ -105855,7 +106329,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 446,
+      "rank": 448,
       "id": "sceptile_shadow",
       "name": "Sceptile (Shadow)",
       "profile": "rank1",
@@ -106092,7 +106566,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 447,
+      "rank": 449,
       "id": "dodrio",
       "name": "Dodrio",
       "profile": "rank1",
@@ -106330,7 +106804,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 448,
+      "rank": 450,
       "id": "crawdaunt_shadow",
       "name": "Crawdaunt (Shadow)",
       "profile": "rank1",
@@ -106568,7 +107042,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 449,
+      "rank": 451,
       "id": "genesect_chill",
       "name": "Genesect (Chill)",
       "profile": "rank1",
@@ -106806,7 +107280,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 450,
+      "rank": 452,
       "id": "rufflet",
       "name": "Rufflet",
       "profile": "rank1",
@@ -107044,7 +107518,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 451,
+      "rank": 453,
       "id": "vikavolt_shadow",
       "name": "Vikavolt (Shadow)",
       "profile": "rank1",
@@ -107282,7 +107756,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 452,
+      "rank": 454,
       "id": "nidorina_shadow",
       "name": "Nidorina (Shadow)",
       "profile": "rank1",
@@ -107519,7 +107993,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 453,
+      "rank": 455,
       "id": "typhlosion_shadow",
       "name": "Typhlosion (Shadow)",
       "profile": "rank1",
@@ -107756,7 +108230,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 454,
+      "rank": 456,
       "id": "palpitoad",
       "name": "Palpitoad",
       "profile": "rank1",
@@ -107994,7 +108468,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 455,
+      "rank": 457,
       "id": "sandygast",
       "name": "Sandygast",
       "profile": "rank1",
@@ -108232,7 +108706,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 456,
+      "rank": 458,
       "id": "bastiodon_shadow",
       "name": "Bastiodon (Shadow)",
       "profile": "rank1",
@@ -108470,7 +108944,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 457,
+      "rank": 459,
       "id": "latios",
       "name": "Latios",
       "profile": "rank1",
@@ -108708,7 +109182,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 458,
+      "rank": 460,
       "id": "gallade",
       "name": "Gallade",
       "profile": "rank1",
@@ -108946,7 +109420,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 459,
+      "rank": 461,
       "id": "heracross",
       "name": "Heracross",
       "profile": "rank1",
@@ -109184,7 +109658,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 460,
+      "rank": 462,
       "id": "crocalor",
       "name": "Crocalor",
       "profile": "rank1",
@@ -109421,7 +109895,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 461,
+      "rank": 463,
       "id": "teddiursa",
       "name": "Teddiursa",
       "profile": "rank1",
@@ -109658,7 +110132,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 462,
+      "rank": 464,
       "id": "hypno_shadow",
       "name": "Hypno (Shadow)",
       "profile": "rank1",
@@ -109895,7 +110369,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 463,
+      "rank": 465,
       "id": "corvisquire",
       "name": "Corvisquire",
       "profile": "rank1",
@@ -110132,7 +110606,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 464,
+      "rank": 466,
       "id": "leavanny",
       "name": "Leavanny",
       "profile": "rank1",
@@ -110370,7 +110844,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 465,
+      "rank": 467,
       "id": "obstagoon",
       "name": "Obstagoon",
       "profile": "rank1",
@@ -110608,7 +111082,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 466,
+      "rank": 468,
       "id": "zekrom_shadow",
       "name": "Zekrom (Shadow)",
       "profile": "rank1",
@@ -110846,7 +111320,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 467,
+      "rank": 469,
       "id": "aerodactyl_shadow",
       "name": "Aerodactyl (Shadow)",
       "profile": "rank1",
@@ -111084,7 +111558,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 468,
+      "rank": 470,
       "id": "meganium_shadow",
       "name": "Meganium (Shadow)",
       "profile": "rank1",
@@ -111321,7 +111795,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 469,
+      "rank": 471,
       "id": "hariyama",
       "name": "Hariyama",
       "profile": "rank1",
@@ -111558,7 +112032,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 470,
+      "rank": 472,
       "id": "amaura",
       "name": "Amaura",
       "profile": "rank1",
@@ -111796,7 +112270,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 471,
+      "rank": 473,
       "id": "sandshrew_alolan_shadow",
       "name": "Sandshrew (Alolan) (Shadow)",
       "profile": "rank1",
@@ -112034,7 +112508,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 472,
+      "rank": 474,
       "id": "primeape",
       "name": "Primeape",
       "profile": "rank1",
@@ -112271,7 +112745,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 473,
+      "rank": 475,
       "id": "golurk_shadow",
       "name": "Golurk (Shadow)",
       "profile": "rank1",
@@ -112509,7 +112983,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 474,
+      "rank": 476,
       "id": "primeape_shadow",
       "name": "Primeape (Shadow)",
       "profile": "rank1",
@@ -112746,7 +113220,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 475,
+      "rank": 477,
       "id": "scizor",
       "name": "Scizor",
       "profile": "rank1",
@@ -112984,7 +113458,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 476,
+      "rank": 478,
       "id": "grafaiai",
       "name": "Grafaiai",
       "profile": "rank1",
@@ -113222,7 +113696,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 477,
+      "rank": 479,
       "id": "amaura_shadow",
       "name": "Amaura (Shadow)",
       "profile": "rank1",
@@ -113460,7 +113934,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 478,
+      "rank": 480,
       "id": "cacturne",
       "name": "Cacturne",
       "profile": "rank1",
@@ -113698,7 +114172,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 479,
+      "rank": 481,
       "id": "zeraora",
       "name": "Zeraora",
       "profile": "rank1",
@@ -113935,7 +114409,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 480,
+      "rank": 482,
       "id": "machoke",
       "name": "Machoke",
       "profile": "rank1",
@@ -114151,7 +114625,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 481,
+      "rank": 483,
       "id": "camerupt",
       "name": "Camerupt",
       "profile": "rank1",
@@ -114389,7 +114863,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 482,
+      "rank": 484,
       "id": "obstagoon_shadow",
       "name": "Obstagoon (Shadow)",
       "profile": "rank1",
@@ -114627,7 +115101,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 483,
+      "rank": 485,
       "id": "pancham",
       "name": "Pancham",
       "profile": "rank1",
@@ -114864,7 +115338,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 484,
+      "rank": 486,
       "id": "armaldo",
       "name": "Armaldo",
       "profile": "rank1",
@@ -115102,7 +115576,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 485,
+      "rank": 487,
       "id": "carracosta",
       "name": "Carracosta",
       "profile": "rank1",
@@ -115340,7 +115814,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 486,
+      "rank": 488,
       "id": "aurorus_shadow",
       "name": "Aurorus (Shadow)",
       "profile": "rank1",
@@ -115578,7 +116052,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 487,
+      "rank": 489,
       "id": "bayleef_shadow",
       "name": "Bayleef (Shadow)",
       "profile": "rank1",
@@ -115815,7 +116289,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 488,
+      "rank": 490,
       "id": "escavalier",
       "name": "Escavalier",
       "profile": "rank1",
@@ -116053,7 +116527,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 489,
+      "rank": 491,
       "id": "grimer_alolan_shadow",
       "name": "Grimer (Alolan) (Shadow)",
       "profile": "rank1",
@@ -116291,7 +116765,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 490,
+      "rank": 492,
       "id": "armarouge",
       "name": "Armarouge",
       "profile": "rank1",
@@ -116529,7 +117003,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 491,
+      "rank": 493,
       "id": "shiftry_shadow",
       "name": "Shiftry (Shadow)",
       "profile": "rank1",
@@ -116767,7 +117241,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 492,
+      "rank": 494,
       "id": "lampent_shadow",
       "name": "Lampent (Shadow)",
       "profile": "rank1",
@@ -117005,7 +117479,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 493,
+      "rank": 495,
       "id": "uxie",
       "name": "Uxie",
       "profile": "rank1",
@@ -117242,7 +117716,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 494,
+      "rank": 496,
       "id": "nidoking",
       "name": "Nidoking",
       "profile": "rank1",
@@ -117480,7 +117954,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 495,
+      "rank": 497,
       "id": "pumpkaboo_large",
       "name": "Pumpkaboo (Large)",
       "profile": "rank1",
@@ -117718,7 +118192,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 496,
+      "rank": 498,
       "id": "magcargo",
       "name": "Magcargo",
       "profile": "rank1",
@@ -117956,7 +118430,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 497,
+      "rank": 499,
       "id": "flygon_shadow",
       "name": "Flygon (Shadow)",
       "profile": "rank1",
@@ -118194,7 +118668,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 498,
+      "rank": 500,
       "id": "appletun",
       "name": "Appletun",
       "profile": "rank1",
@@ -118432,7 +118906,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 499,
+      "rank": 501,
       "id": "herdier",
       "name": "Herdier",
       "profile": "rank1",
@@ -118669,7 +119143,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 500,
+      "rank": 502,
       "id": "blaziken_shadow",
       "name": "Blaziken (Shadow)",
       "profile": "rank1",
@@ -118907,7 +119381,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 501,
+      "rank": 503,
       "id": "geodude_alolan",
       "name": "Geodude (Alolan)",
       "profile": "rank1",
@@ -119145,7 +119619,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 502,
+      "rank": 504,
       "id": "prinplup_shadow",
       "name": "Prinplup (Shadow)",
       "profile": "rank1",
@@ -119382,7 +119856,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 503,
+      "rank": 505,
       "id": "ursaring_shadow",
       "name": "Ursaring (Shadow)",
       "profile": "rank1",
@@ -119619,7 +120093,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 504,
+      "rank": 506,
       "id": "tirtouga",
       "name": "Tirtouga",
       "profile": "rank1",
@@ -119857,7 +120331,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 505,
+      "rank": 507,
       "id": "armaldo_shadow",
       "name": "Armaldo (Shadow)",
       "profile": "rank1",
@@ -120095,7 +120569,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 506,
+      "rank": 508,
       "id": "golett_shadow",
       "name": "Golett (Shadow)",
       "profile": "rank1",
@@ -120333,7 +120807,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 507,
+      "rank": 509,
       "id": "glalie",
       "name": "Glalie",
       "profile": "rank1",
@@ -120570,7 +121044,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 508,
+      "rank": 510,
       "id": "froslass",
       "name": "Froslass",
       "profile": "rank1",
@@ -120808,7 +121282,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 509,
+      "rank": 511,
       "id": "golurk",
       "name": "Golurk",
       "profile": "rank1",
@@ -121046,7 +121520,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 510,
+      "rank": 512,
       "id": "crawdaunt",
       "name": "Crawdaunt",
       "profile": "rank1",
@@ -121284,7 +121758,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 511,
+      "rank": 513,
       "id": "wobbuffet",
       "name": "Wobbuffet",
       "profile": "rank1",
@@ -121500,7 +121974,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 512,
+      "rank": 514,
       "id": "staraptor",
       "name": "Staraptor",
       "profile": "rank1",
@@ -121738,7 +122212,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 513,
+      "rank": 515,
       "id": "stoutland",
       "name": "Stoutland",
       "profile": "rank1",
@@ -121975,7 +122449,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 514,
+      "rank": 516,
       "id": "quilladin_shadow",
       "name": "Quilladin (Shadow)",
       "profile": "rank1",
@@ -122212,7 +122686,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 515,
+      "rank": 517,
       "id": "vikavolt",
       "name": "Vikavolt",
       "profile": "rank1",
@@ -122450,7 +122924,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 516,
+      "rank": 518,
       "id": "regieleki",
       "name": "Regieleki",
       "profile": "rank1",
@@ -122687,7 +123161,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 517,
+      "rank": 519,
       "id": "electivire",
       "name": "Electivire",
       "profile": "rank1",
@@ -122924,7 +123398,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 518,
+      "rank": 520,
       "id": "kabuto",
       "name": "Kabuto",
       "profile": "rank1",
@@ -123162,7 +123636,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 519,
+      "rank": 521,
       "id": "torterra_shadow",
       "name": "Torterra (Shadow)",
       "profile": "rank1",
@@ -123400,7 +123874,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 520,
+      "rank": 522,
       "id": "muk_shadow",
       "name": "Muk (Shadow)",
       "profile": "rank1",
@@ -123637,7 +124111,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 521,
+      "rank": 523,
       "id": "hariyama_shadow",
       "name": "Hariyama (Shadow)",
       "profile": "rank1",
@@ -123874,7 +124348,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 522,
+      "rank": 524,
       "id": "slowking_galarian",
       "name": "Slowking (Galarian)",
       "profile": "rank1",
@@ -124112,7 +124586,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 523,
+      "rank": 525,
       "id": "linoone_galarian",
       "name": "Linoone (Galarian)",
       "profile": "rank1",
@@ -124350,7 +124824,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 524,
+      "rank": 526,
       "id": "geodude_alolan_shadow",
       "name": "Geodude (Alolan) (Shadow)",
       "profile": "rank1",
@@ -124588,7 +125062,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 525,
+      "rank": 527,
       "id": "blaziken",
       "name": "Blaziken",
       "profile": "rank1",
@@ -124826,7 +125300,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 526,
+      "rank": 528,
       "id": "ledian_shadow",
       "name": "Ledian (Shadow)",
       "profile": "rank1",
@@ -125064,7 +125538,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 527,
+      "rank": 529,
       "id": "misdreavus_shadow",
       "name": "Misdreavus (Shadow)",
       "profile": "rank1",
@@ -125301,7 +125775,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 528,
+      "rank": 530,
       "id": "bruxish",
       "name": "Bruxish",
       "profile": "rank1",
@@ -125539,7 +126013,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 529,
+      "rank": 531,
       "id": "reshiram_shadow",
       "name": "Reshiram (Shadow)",
       "profile": "rank1",
@@ -125777,7 +126251,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 530,
+      "rank": 532,
       "id": "wobbuffet_shadow",
       "name": "Wobbuffet (Shadow)",
       "profile": "rank1",
@@ -125993,7 +126467,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 531,
+      "rank": 533,
       "id": "drilbur",
       "name": "Drilbur",
       "profile": "rank1",
@@ -126230,7 +126704,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 532,
+      "rank": 534,
       "id": "grimer",
       "name": "Grimer",
       "profile": "rank1",
@@ -126467,7 +126941,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 533,
+      "rank": 535,
       "id": "bibarel_shadow",
       "name": "Bibarel (Shadow)",
       "profile": "rank1",
@@ -126705,7 +127179,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 534,
+      "rank": 536,
       "id": "ferrothorn_shadow",
       "name": "Ferrothorn (Shadow)",
       "profile": "rank1",
@@ -126943,7 +127417,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 535,
+      "rank": 537,
       "id": "garchomp",
       "name": "Garchomp",
       "profile": "rank1",
@@ -127181,7 +127655,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 536,
+      "rank": 538,
       "id": "sawsbuck",
       "name": "Sawsbuck",
       "profile": "rank1",
@@ -127419,7 +127893,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 537,
+      "rank": 539,
       "id": "heliolisk",
       "name": "Heliolisk",
       "profile": "rank1",
@@ -127657,7 +128131,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 538,
+      "rank": 540,
       "id": "landorus_incarnate",
       "name": "Landorus (Incarnate)",
       "profile": "rank1",
@@ -127895,7 +128369,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 539,
+      "rank": 541,
       "id": "raichu_alolan",
       "name": "Raichu (Alolan)",
       "profile": "rank1",
@@ -128133,7 +128607,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 540,
+      "rank": 542,
       "id": "floragato",
       "name": "Floragato",
       "profile": "rank1",
@@ -128370,7 +128844,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 541,
+      "rank": 543,
       "id": "flapple",
       "name": "Flapple",
       "profile": "rank1",
@@ -128608,7 +129082,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 542,
+      "rank": 544,
       "id": "golduck_shadow",
       "name": "Golduck (Shadow)",
       "profile": "rank1",
@@ -128845,7 +129319,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 543,
+      "rank": 545,
       "id": "swadloon",
       "name": "Swadloon",
       "profile": "rank1",
@@ -129083,7 +129557,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 544,
+      "rank": 546,
       "id": "avalugg_hisuian",
       "name": "Avalugg (Hisuian)",
       "profile": "rank1",
@@ -129321,7 +129795,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 545,
+      "rank": 547,
       "id": "pyroar",
       "name": "Pyroar",
       "profile": "rank1",
@@ -129559,7 +130033,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 546,
+      "rank": 548,
       "id": "pancham_shadow",
       "name": "Pancham (Shadow)",
       "profile": "rank1",
@@ -129796,7 +130270,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 547,
+      "rank": 549,
       "id": "raticate_alolan",
       "name": "Raticate (Alolan)",
       "profile": "rank1",
@@ -130013,7 +130487,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 548,
+      "rank": 550,
       "id": "golduck",
       "name": "Golduck",
       "profile": "rank1",
@@ -130250,7 +130724,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 549,
+      "rank": 551,
       "id": "kricketune",
       "name": "Kricketune",
       "profile": "rank1",
@@ -130487,7 +130961,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 550,
+      "rank": 552,
       "id": "carracosta_shadow",
       "name": "Carracosta (Shadow)",
       "profile": "rank1",
@@ -130725,7 +131199,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 551,
+      "rank": 553,
       "id": "leafeon",
       "name": "Leafeon",
       "profile": "rank1",
@@ -130962,7 +131436,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 552,
+      "rank": 554,
       "id": "tangrowth",
       "name": "Tangrowth",
       "profile": "rank1",
@@ -131199,7 +131673,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 553,
+      "rank": 555,
       "id": "comfey",
       "name": "Comfey",
       "profile": "rank1",
@@ -131436,7 +131910,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 554,
+      "rank": 556,
       "id": "castform_snowy",
       "name": "Castform (Snowy)",
       "profile": "rank1",
@@ -131673,7 +132147,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 555,
+      "rank": 557,
       "id": "kabutops_shadow",
       "name": "Kabutops (Shadow)",
       "profile": "rank1",
@@ -131911,7 +132385,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 556,
+      "rank": 558,
       "id": "dolliv",
       "name": "Dolliv",
       "profile": "rank1",
@@ -132149,7 +132623,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 557,
+      "rank": 559,
       "id": "excadrill",
       "name": "Excadrill",
       "profile": "rank1",
@@ -132387,7 +132861,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 558,
+      "rank": 560,
       "id": "gallade_shadow",
       "name": "Gallade (Shadow)",
       "profile": "rank1",
@@ -132625,7 +133099,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 559,
+      "rank": 561,
       "id": "emboar",
       "name": "Emboar",
       "profile": "rank1",
@@ -132863,7 +133337,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 560,
+      "rank": 562,
       "id": "linoone_galarian_shadow",
       "name": "Linoone (Galarian) (Shadow)",
       "profile": "rank1",
@@ -133101,7 +133575,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 561,
+      "rank": 563,
       "id": "thundurus_incarnate",
       "name": "Thundurus (Incarnate)",
       "profile": "rank1",
@@ -133339,7 +133813,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 562,
+      "rank": 564,
       "id": "arbok",
       "name": "Arbok",
       "profile": "rank1",
@@ -133576,7 +134050,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 563,
+      "rank": 565,
       "id": "thundurus_incarnate_shadow",
       "name": "Thundurus (Incarnate) (Shadow)",
       "profile": "rank1",
@@ -133814,7 +134288,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 564,
+      "rank": 566,
       "id": "ursaring",
       "name": "Ursaring",
       "profile": "rank1",
@@ -134051,7 +134525,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 565,
+      "rank": 567,
       "id": "camerupt_shadow",
       "name": "Camerupt (Shadow)",
       "profile": "rank1",
@@ -134289,7 +134763,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 566,
+      "rank": 568,
       "id": "gigalith",
       "name": "Gigalith",
       "profile": "rank1",
@@ -134526,7 +135000,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 567,
+      "rank": 569,
       "id": "zangoose",
       "name": "Zangoose",
       "profile": "rank1",
@@ -134763,7 +135237,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 568,
+      "rank": 570,
       "id": "rapidash_galarian",
       "name": "Rapidash (Galarian)",
       "profile": "rank1",
@@ -135001,7 +135475,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 569,
+      "rank": 571,
       "id": "grotle_shadow",
       "name": "Grotle (Shadow)",
       "profile": "rank1",
@@ -135238,7 +135712,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 570,
+      "rank": 572,
       "id": "misdreavus",
       "name": "Misdreavus",
       "profile": "rank1",
@@ -135475,7 +135949,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 571,
+      "rank": 573,
       "id": "hydrapple",
       "name": "Hydrapple",
       "profile": "rank1",
@@ -135713,7 +136187,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 572,
+      "rank": 574,
       "id": "donphan",
       "name": "Donphan",
       "profile": "rank1",
@@ -135950,7 +136424,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 573,
+      "rank": 575,
       "id": "hitmontop_shadow",
       "name": "Hitmontop (Shadow)",
       "profile": "rank1",
@@ -136187,7 +136661,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 574,
+      "rank": 576,
       "id": "rotom_mow",
       "name": "Rotom (Mow)",
       "profile": "rank1",
@@ -136425,7 +136899,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 575,
+      "rank": 577,
       "id": "axew",
       "name": "Axew",
       "profile": "rank1",
@@ -136662,7 +137136,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 576,
+      "rank": 578,
       "id": "machop",
       "name": "Machop",
       "profile": "rank1",
@@ -136899,7 +137373,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 577,
+      "rank": 579,
       "id": "sandshrew_shadow",
       "name": "Sandshrew (Shadow)",
       "profile": "rank1",
@@ -137136,7 +137610,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 578,
+      "rank": 580,
       "id": "drifloon",
       "name": "Drifloon",
       "profile": "rank1",
@@ -137374,7 +137848,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 579,
+      "rank": 581,
       "id": "drilbur_shadow",
       "name": "Drilbur (Shadow)",
       "profile": "rank1",
@@ -137611,7 +138085,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 580,
+      "rank": 582,
       "id": "machop_shadow",
       "name": "Machop (Shadow)",
       "profile": "rank1",
@@ -137848,7 +138322,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 581,
+      "rank": 583,
       "id": "basculin",
       "name": "Basculin",
       "profile": "rank1",
@@ -138085,7 +138559,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 582,
+      "rank": 584,
       "id": "staraptor_shadow",
       "name": "Staraptor (Shadow)",
       "profile": "rank1",
@@ -138323,7 +138797,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 583,
+      "rank": 585,
       "id": "wyrdeer",
       "name": "Wyrdeer",
       "profile": "rank1",
@@ -138561,7 +139035,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 584,
+      "rank": 586,
       "id": "drifloon_shadow",
       "name": "Drifloon (Shadow)",
       "profile": "rank1",
@@ -138799,7 +139273,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 585,
+      "rank": 587,
       "id": "slowpoke",
       "name": "Slowpoke",
       "profile": "rank1",
@@ -139037,7 +139511,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 586,
+      "rank": 588,
       "id": "excadrill_shadow",
       "name": "Excadrill (Shadow)",
       "profile": "rank1",
@@ -139275,7 +139749,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 587,
+      "rank": 589,
       "id": "squawkabilly",
       "name": "Squawkabilly",
       "profile": "rank1",
@@ -139513,7 +139987,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 588,
+      "rank": 590,
       "id": "golett",
       "name": "Golett",
       "profile": "rank1",
@@ -139751,7 +140225,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 589,
+      "rank": 591,
       "id": "hitmonlee_shadow",
       "name": "Hitmonlee (Shadow)",
       "profile": "rank1",
@@ -139988,7 +140462,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 590,
+      "rank": 592,
       "id": "xatu",
       "name": "Xatu",
       "profile": "rank1",
@@ -140226,7 +140700,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 591,
+      "rank": 593,
       "id": "xatu_shadow",
       "name": "Xatu (Shadow)",
       "profile": "rank1",
@@ -140464,7 +140938,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 592,
+      "rank": 594,
       "id": "kabuto_shadow",
       "name": "Kabuto (Shadow)",
       "profile": "rank1",
@@ -140702,7 +141176,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 593,
+      "rank": 595,
       "id": "xerneas",
       "name": "Xerneas",
       "profile": "rank1",
@@ -140939,7 +141413,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 594,
+      "rank": 596,
       "id": "slowking",
       "name": "Slowking",
       "profile": "rank1",
@@ -141177,7 +141651,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 595,
+      "rank": 597,
       "id": "pawniard",
       "name": "Pawniard",
       "profile": "rank1",
@@ -141415,7 +141889,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 596,
+      "rank": 598,
       "id": "hitmonlee",
       "name": "Hitmonlee",
       "profile": "rank1",
@@ -141652,7 +142126,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 597,
+      "rank": 599,
       "id": "regirock_shadow",
       "name": "Regirock (Shadow)",
       "profile": "rank1",
@@ -141889,7 +142363,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 598,
+      "rank": 600,
       "id": "kartana",
       "name": "Kartana",
       "profile": "rank1",
@@ -142127,7 +142601,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 599,
+      "rank": 601,
       "id": "combusken",
       "name": "Combusken",
       "profile": "rank1",
@@ -142365,7 +142839,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 600,
+      "rank": 602,
       "id": "illumise",
       "name": "Illumise",
       "profile": "rank1",
@@ -142602,7 +143076,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 601,
+      "rank": 603,
       "id": "pumpkaboo_average",
       "name": "Pumpkaboo (Average)",
       "profile": "rank1",
@@ -142840,7 +143314,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 602,
+      "rank": 604,
       "id": "ariados",
       "name": "Ariados",
       "profile": "rank1",
@@ -143078,7 +143552,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 603,
+      "rank": 605,
       "id": "darmanitan_standard_shadow",
       "name": "Darmanitan (Standard) (Shadow)",
       "profile": "rank1",
@@ -143315,7 +143789,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 604,
+      "rank": 606,
       "id": "kabutops",
       "name": "Kabutops",
       "profile": "rank1",
@@ -143553,7 +144027,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 605,
+      "rank": 607,
       "id": "loudred",
       "name": "Loudred",
       "profile": "rank1",
@@ -143790,7 +144264,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 606,
+      "rank": 608,
       "id": "wailord_shadow",
       "name": "Wailord (Shadow)",
       "profile": "rank1",
@@ -144027,7 +144501,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 607,
+      "rank": 609,
       "id": "garchomp_shadow",
       "name": "Garchomp (Shadow)",
       "profile": "rank1",
@@ -144265,7 +144739,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 608,
+      "rank": 610,
       "id": "scizor_shadow",
       "name": "Scizor (Shadow)",
       "profile": "rank1",
@@ -144503,7 +144977,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 609,
+      "rank": 611,
       "id": "monferno",
       "name": "Monferno",
       "profile": "rank1",
@@ -144741,7 +145215,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 610,
+      "rank": 612,
       "id": "fraxure",
       "name": "Fraxure",
       "profile": "rank1",
@@ -144978,7 +145452,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 611,
+      "rank": 613,
       "id": "lileep_shadow",
       "name": "Lileep (Shadow)",
       "profile": "rank1",
@@ -145216,7 +145690,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 612,
+      "rank": 614,
       "id": "lairon_shadow",
       "name": "Lairon (Shadow)",
       "profile": "rank1",
@@ -145454,7 +145928,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 613,
+      "rank": 615,
       "id": "sudowoodo",
       "name": "Sudowoodo",
       "profile": "rank1",
@@ -145691,7 +146165,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 614,
+      "rank": 616,
       "id": "escavalier_shadow",
       "name": "Escavalier (Shadow)",
       "profile": "rank1",
@@ -145929,7 +146403,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 615,
+      "rank": 617,
       "id": "sawk",
       "name": "Sawk",
       "profile": "rank1",
@@ -146166,7 +146640,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 616,
+      "rank": 618,
       "id": "giratina_origin",
       "name": "Giratina (Origin)",
       "profile": "rank1",
@@ -146404,7 +146878,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 617,
+      "rank": 619,
       "id": "salamence_shadow",
       "name": "Salamence (Shadow)",
       "profile": "rank1",
@@ -146642,7 +147116,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 618,
+      "rank": 620,
       "id": "slowpoke_shadow",
       "name": "Slowpoke (Shadow)",
       "profile": "rank1",
@@ -146880,7 +147354,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 619,
+      "rank": 621,
       "id": "exploud",
       "name": "Exploud",
       "profile": "rank1",
@@ -147117,7 +147591,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 620,
+      "rank": 622,
       "id": "tauros_aqua",
       "name": "Tauros (Aqua)",
       "profile": "rank1",
@@ -147355,7 +147829,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 621,
+      "rank": 623,
       "id": "chatot",
       "name": "Chatot",
       "profile": "rank1",
@@ -147593,7 +148067,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 622,
+      "rank": 624,
       "id": "pignite",
       "name": "Pignite",
       "profile": "rank1",
@@ -147831,7 +148305,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 623,
+      "rank": 625,
       "id": "mew",
       "name": "Mew",
       "profile": "rank1",
@@ -148068,7 +148542,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 624,
+      "rank": 626,
       "id": "lairon",
       "name": "Lairon",
       "profile": "rank1",
@@ -148306,7 +148780,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 625,
+      "rank": 627,
       "id": "chimecho",
       "name": "Chimecho",
       "profile": "rank1",
@@ -148543,7 +149017,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 626,
+      "rank": 628,
       "id": "watchog",
       "name": "Watchog",
       "profile": "rank1",
@@ -148780,7 +149254,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 627,
+      "rank": 629,
       "id": "sawk_shadow",
       "name": "Sawk (Shadow)",
       "profile": "rank1",
@@ -149017,7 +149491,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 628,
+      "rank": 630,
       "id": "jolteon",
       "name": "Jolteon",
       "profile": "rank1",
@@ -149254,7 +149728,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 629,
+      "rank": 631,
       "id": "corvisquire_shadow",
       "name": "Corvisquire (Shadow)",
       "profile": "rank1",
@@ -149491,7 +149965,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 630,
+      "rank": 632,
       "id": "froslass_shadow",
       "name": "Froslass (Shadow)",
       "profile": "rank1",
@@ -149729,7 +150203,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 631,
+      "rank": 633,
       "id": "typhlosion_hisuian",
       "name": "Typhlosion (Hisuian)",
       "profile": "rank1",
@@ -149967,7 +150441,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 632,
+      "rank": 634,
       "id": "combusken_shadow",
       "name": "Combusken (Shadow)",
       "profile": "rank1",
@@ -150205,7 +150679,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 633,
+      "rank": 635,
       "id": "mienfoo",
       "name": "Mienfoo",
       "profile": "rank1",
@@ -150442,7 +150916,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 634,
+      "rank": 636,
       "id": "scyther_shadow",
       "name": "Scyther (Shadow)",
       "profile": "rank1",
@@ -150680,7 +151154,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 635,
+      "rank": 637,
       "id": "scraggy",
       "name": "Scraggy",
       "profile": "rank1",
@@ -150918,7 +151392,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 636,
+      "rank": 638,
       "id": "beedrill",
       "name": "Beedrill",
       "profile": "rank1",
@@ -151156,7 +151630,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 637,
+      "rank": 639,
       "id": "orthworm",
       "name": "Orthworm",
       "profile": "rank1",
@@ -151393,7 +151867,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 638,
+      "rank": 640,
       "id": "houndour_shadow",
       "name": "Houndour (Shadow)",
       "profile": "rank1",
@@ -151631,7 +152105,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 639,
+      "rank": 641,
       "id": "landorus_incarnate_shadow",
       "name": "Landorus (Incarnate) (Shadow)",
       "profile": "rank1",
@@ -151869,7 +152343,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 640,
+      "rank": 642,
       "id": "nidorino",
       "name": "Nidorino",
       "profile": "rank1",
@@ -152106,7 +152580,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 641,
+      "rank": 643,
       "id": "dialga_shadow",
       "name": "Dialga (Shadow)",
       "profile": "rank1",
@@ -152344,7 +152818,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 642,
+      "rank": 644,
       "id": "toxicroak",
       "name": "Toxicroak",
       "profile": "rank1",
@@ -152582,7 +153056,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 643,
+      "rank": 645,
       "id": "ponyta",
       "name": "Ponyta",
       "profile": "rank1",
@@ -152819,7 +153293,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 644,
+      "rank": 646,
       "id": "espurr",
       "name": "Espurr",
       "profile": "rank1",
@@ -153056,7 +153530,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 645,
+      "rank": 647,
       "id": "omastar",
       "name": "Omastar",
       "profile": "rank1",
@@ -153294,7 +153768,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 646,
+      "rank": 648,
       "id": "durant",
       "name": "Durant",
       "profile": "rank1",
@@ -153532,7 +154006,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 647,
+      "rank": 649,
       "id": "slowking_shadow",
       "name": "Slowking (Shadow)",
       "profile": "rank1",
@@ -153770,7 +154244,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 648,
+      "rank": 650,
       "id": "zoroark_hisuian",
       "name": "Zoroark (Hisuian)",
       "profile": "rank1",
@@ -154008,7 +154482,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 649,
+      "rank": 651,
       "id": "carkol",
       "name": "Carkol",
       "profile": "rank1",
@@ -154246,7 +154720,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 650,
+      "rank": 652,
       "id": "zoroark",
       "name": "Zoroark",
       "profile": "rank1",
@@ -154483,7 +154957,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 651,
+      "rank": 653,
       "id": "ceruledge",
       "name": "Ceruledge",
       "profile": "rank1",
@@ -154721,7 +155195,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 652,
+      "rank": 654,
       "id": "braixen",
       "name": "Braixen",
       "profile": "rank1",
@@ -154958,7 +155432,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 653,
+      "rank": 655,
       "id": "luxio",
       "name": "Luxio",
       "profile": "rank1",
@@ -155195,7 +155669,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 654,
+      "rank": 656,
       "id": "tirtouga_shadow",
       "name": "Tirtouga (Shadow)",
       "profile": "rank1",
@@ -155433,7 +155907,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 655,
+      "rank": 657,
       "id": "flareon",
       "name": "Flareon",
       "profile": "rank1",
@@ -155670,7 +156144,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 656,
+      "rank": 658,
       "id": "donphan_shadow",
       "name": "Donphan (Shadow)",
       "profile": "rank1",
@@ -155907,7 +156381,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 657,
+      "rank": 659,
       "id": "karrablast_shadow",
       "name": "Karrablast (Shadow)",
       "profile": "rank1",
@@ -156144,7 +156618,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 658,
+      "rank": 660,
       "id": "volcanion",
       "name": "Volcanion",
       "profile": "rank1",
@@ -156382,7 +156856,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 659,
+      "rank": 661,
       "id": "slowbro_galarian",
       "name": "Slowbro (Galarian)",
       "profile": "rank1",
@@ -156620,7 +157094,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 660,
+      "rank": 662,
       "id": "perrserker",
       "name": "Perrserker",
       "profile": "rank1",
@@ -156857,7 +157331,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 661,
+      "rank": 663,
       "id": "parasect",
       "name": "Parasect",
       "profile": "rank1",
@@ -157095,7 +157569,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 662,
+      "rank": 664,
       "id": "mudsdale",
       "name": "Mudsdale",
       "profile": "rank1",
@@ -157332,7 +157806,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 663,
+      "rank": 665,
       "id": "pumpkaboo_small",
       "name": "Pumpkaboo (Small)",
       "profile": "rank1",
@@ -157570,7 +158044,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 664,
+      "rank": 666,
       "id": "delphox",
       "name": "Delphox",
       "profile": "rank1",
@@ -157808,7 +158282,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 665,
+      "rank": 667,
       "id": "zebstrika_shadow",
       "name": "Zebstrika (Shadow)",
       "profile": "rank1",
@@ -158045,7 +158519,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 666,
+      "rank": 668,
       "id": "growlithe_hisuian",
       "name": "Growlithe (Hisuian)",
       "profile": "rank1",
@@ -158283,7 +158757,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 667,
+      "rank": 669,
       "id": "floette",
       "name": "Floette",
       "profile": "rank1",
@@ -158520,7 +158994,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 668,
+      "rank": 670,
       "id": "sirfetchd",
       "name": "Sirfetch'd",
       "profile": "rank1",
@@ -158757,7 +159231,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 669,
+      "rank": 671,
       "id": "larvesta",
       "name": "Larvesta",
       "profile": "rank1",
@@ -158995,7 +159469,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 670,
+      "rank": 672,
       "id": "victini",
       "name": "Victini",
       "profile": "rank1",
@@ -159233,7 +159707,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 671,
+      "rank": 673,
       "id": "maschiff",
       "name": "Maschiff",
       "profile": "rank1",
@@ -159470,7 +159944,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 672,
+      "rank": 674,
       "id": "nihilego",
       "name": "Nihilego",
       "profile": "rank1",
@@ -159708,7 +160182,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 673,
+      "rank": 675,
       "id": "krookodile",
       "name": "Krookodile",
       "profile": "rank1",
@@ -159946,7 +160420,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 674,
+      "rank": 676,
       "id": "salazzle",
       "name": "Salazzle",
       "profile": "rank1",
@@ -160184,7 +160658,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 675,
+      "rank": 677,
       "id": "grovyle",
       "name": "Grovyle",
       "profile": "rank1",
@@ -160421,7 +160895,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 676,
+      "rank": 678,
       "id": "pidgeotto",
       "name": "Pidgeotto",
       "profile": "rank1",
@@ -160659,7 +161133,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 677,
+      "rank": 679,
       "id": "dhelmise",
       "name": "Dhelmise",
       "profile": "rank1",
@@ -160897,7 +161371,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 678,
+      "rank": 680,
       "id": "rotom",
       "name": "Rotom",
       "profile": "rank1",
@@ -161135,7 +161609,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 679,
+      "rank": 681,
       "id": "quilava",
       "name": "Quilava",
       "profile": "rank1",
@@ -161372,7 +161846,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 680,
+      "rank": 682,
       "id": "beartic",
       "name": "Beartic",
       "profile": "rank1",
@@ -161609,7 +162083,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 681,
+      "rank": 683,
       "id": "mantyke",
       "name": "Mantyke",
       "profile": "rank1",
@@ -161847,7 +162321,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 682,
+      "rank": 684,
       "id": "regice",
       "name": "Regice",
       "profile": "rank1",
@@ -162084,7 +162558,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 683,
+      "rank": 685,
       "id": "lurantis_shadow",
       "name": "Lurantis (Shadow)",
       "profile": "rank1",
@@ -162321,7 +162795,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 684,
+      "rank": 686,
       "id": "quilava_shadow",
       "name": "Quilava (Shadow)",
       "profile": "rank1",
@@ -162558,7 +163032,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 685,
+      "rank": 687,
       "id": "orbeetle",
       "name": "Orbeetle",
       "profile": "rank1",
@@ -162796,7 +163270,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 686,
+      "rank": 688,
       "id": "salamence",
       "name": "Salamence",
       "profile": "rank1",
@@ -163034,7 +163508,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 687,
+      "rank": 689,
       "id": "delcatty",
       "name": "Delcatty",
       "profile": "rank1",
@@ -163271,7 +163745,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 688,
+      "rank": 690,
       "id": "heliolisk_shadow",
       "name": "Heliolisk (Shadow)",
       "profile": "rank1",
@@ -163509,7 +163983,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 689,
+      "rank": 691,
       "id": "monferno_shadow",
       "name": "Monferno (Shadow)",
       "profile": "rank1",
@@ -163747,7 +164221,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 690,
+      "rank": 692,
       "id": "totodile",
       "name": "Totodile",
       "profile": "rank1",
@@ -163984,7 +164458,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 691,
+      "rank": 693,
       "id": "grimer_shadow",
       "name": "Grimer (Shadow)",
       "profile": "rank1",
@@ -164221,7 +164695,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 692,
+      "rank": 694,
       "id": "nidoking_shadow",
       "name": "Nidoking (Shadow)",
       "profile": "rank1",
@@ -164459,7 +164933,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 693,
+      "rank": 695,
       "id": "sudowoodo_shadow",
       "name": "Sudowoodo (Shadow)",
       "profile": "rank1",
@@ -164696,7 +165170,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 694,
+      "rank": 696,
       "id": "thwackey",
       "name": "Thwackey",
       "profile": "rank1",
@@ -164933,7 +165407,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 695,
+      "rank": 697,
       "id": "haxorus_shadow",
       "name": "Haxorus (Shadow)",
       "profile": "rank1",
@@ -165170,7 +165644,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 696,
+      "rank": 698,
       "id": "honchkrow",
       "name": "Honchkrow",
       "profile": "rank1",
@@ -165408,7 +165882,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 697,
+      "rank": 699,
       "id": "honchkrow_shadow",
       "name": "Honchkrow (Shadow)",
       "profile": "rank1",
@@ -165646,7 +166120,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 698,
+      "rank": 700,
       "id": "zebstrika",
       "name": "Zebstrika",
       "profile": "rank1",
@@ -165883,7 +166357,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 699,
+      "rank": 701,
       "id": "pinsir_shadow",
       "name": "Pinsir (Shadow)",
       "profile": "rank1",
@@ -166120,7 +166594,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 700,
+      "rank": 702,
       "id": "pidgeotto_shadow",
       "name": "Pidgeotto (Shadow)",
       "profile": "rank1",
@@ -166358,7 +166832,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 701,
+      "rank": 703,
       "id": "shellos",
       "name": "Shellos",
       "profile": "rank1",
@@ -166595,7 +167069,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 702,
+      "rank": 704,
       "id": "urshifu_rapid_strike",
       "name": "Urshifu (Rapid Strike)",
       "profile": "rank1",
@@ -166833,7 +167307,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 703,
+      "rank": 705,
       "id": "cobalion",
       "name": "Cobalion",
       "profile": "rank1",
@@ -167071,7 +167545,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 704,
+      "rank": 706,
       "id": "buzzwole",
       "name": "Buzzwole",
       "profile": "rank1",
@@ -167309,7 +167783,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 705,
+      "rank": 707,
       "id": "eldegoss",
       "name": "Eldegoss",
       "profile": "rank1",
@@ -167546,7 +168020,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 706,
+      "rank": 708,
       "id": "gengar_shadow",
       "name": "Gengar (Shadow)",
       "profile": "rank1",
@@ -167784,7 +168258,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 707,
+      "rank": 709,
       "id": "exploud_shadow",
       "name": "Exploud (Shadow)",
       "profile": "rank1",
@@ -168021,7 +168495,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 708,
+      "rank": 710,
       "id": "magmar",
       "name": "Magmar",
       "profile": "rank1",
@@ -168258,7 +168732,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 709,
+      "rank": 711,
       "id": "charmeleon_shadow",
       "name": "Charmeleon (Shadow)",
       "profile": "rank1",
@@ -168495,7 +168969,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 710,
+      "rank": 712,
       "id": "moltres",
       "name": "Moltres",
       "profile": "rank1",
@@ -168733,7 +169207,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 711,
+      "rank": 713,
       "id": "arbok_shadow",
       "name": "Arbok (Shadow)",
       "profile": "rank1",
@@ -168970,7 +169444,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 712,
+      "rank": 714,
       "id": "snubbull",
       "name": "Snubbull",
       "profile": "rank1",
@@ -169207,7 +169681,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 713,
+      "rank": 715,
       "id": "chansey",
       "name": "Chansey",
       "profile": "rank1",
@@ -169444,7 +169918,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 714,
+      "rank": 716,
       "id": "darumaka",
       "name": "Darumaka",
       "profile": "rank1",
@@ -169681,7 +170155,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 715,
+      "rank": 717,
       "id": "celesteela",
       "name": "Celesteela",
       "profile": "rank1",
@@ -169919,7 +170393,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 716,
+      "rank": 718,
       "id": "diancie",
       "name": "Diancie",
       "profile": "rank1",
@@ -170157,7 +170631,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 717,
+      "rank": 719,
       "id": "tangrowth_shadow",
       "name": "Tangrowth (Shadow)",
       "profile": "rank1",
@@ -170394,7 +170868,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 718,
+      "rank": 720,
       "id": "gigalith_shadow",
       "name": "Gigalith (Shadow)",
       "profile": "rank1",
@@ -170631,7 +171105,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 719,
+      "rank": 721,
       "id": "kubfu",
       "name": "Kubfu",
       "profile": "rank1",
@@ -170868,7 +171342,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 720,
+      "rank": 722,
       "id": "glalie_shadow",
       "name": "Glalie (Shadow)",
       "profile": "rank1",
@@ -171105,7 +171579,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 721,
+      "rank": 723,
       "id": "buneary",
       "name": "Buneary",
       "profile": "rank1",
@@ -171342,7 +171816,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 722,
+      "rank": 724,
       "id": "corsola",
       "name": "Corsola",
       "profile": "rank1",
@@ -171580,7 +172054,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 723,
+      "rank": 725,
       "id": "tentacool",
       "name": "Tentacool",
       "profile": "rank1",
@@ -171818,7 +172292,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 724,
+      "rank": 726,
       "id": "axew_shadow",
       "name": "Axew (Shadow)",
       "profile": "rank1",
@@ -172055,7 +172529,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 725,
+      "rank": 727,
       "id": "tyrunt",
       "name": "Tyrunt",
       "profile": "rank1",
@@ -172293,7 +172767,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 726,
+      "rank": 728,
       "id": "klawf",
       "name": "Klawf",
       "profile": "rank1",
@@ -172530,7 +173004,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 727,
+      "rank": 729,
       "id": "weezing",
       "name": "Weezing",
       "profile": "rank1",
@@ -172767,7 +173241,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 728,
+      "rank": 730,
       "id": "kleavor",
       "name": "Kleavor",
       "profile": "rank1",
@@ -173005,7 +173479,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 729,
+      "rank": 731,
       "id": "graveler",
       "name": "Graveler",
       "profile": "rank1",
@@ -173243,7 +173717,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 730,
+      "rank": 732,
       "id": "pinsir",
       "name": "Pinsir",
       "profile": "rank1",
@@ -173480,7 +173954,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 731,
+      "rank": 733,
       "id": "emboar_shadow",
       "name": "Emboar (Shadow)",
       "profile": "rank1",
@@ -173718,7 +174192,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 732,
+      "rank": 734,
       "id": "darmanitan_standard",
       "name": "Darmanitan (Standard)",
       "profile": "rank1",
@@ -173955,7 +174429,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 733,
+      "rank": 735,
       "id": "rhyperior_shadow",
       "name": "Rhyperior (Shadow)",
       "profile": "rank1",
@@ -174193,7 +174667,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 734,
+      "rank": 736,
       "id": "stufful_shadow",
       "name": "Stufful (Shadow)",
       "profile": "rank1",
@@ -174431,7 +174905,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 735,
+      "rank": 737,
       "id": "lucario",
       "name": "Lucario",
       "profile": "rank1",
@@ -174669,7 +175143,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 736,
+      "rank": 738,
       "id": "absol_shadow",
       "name": "Absol (Shadow)",
       "profile": "rank1",
@@ -174906,7 +175380,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 737,
+      "rank": 739,
       "id": "scyther",
       "name": "Scyther",
       "profile": "rank1",
@@ -175144,7 +175618,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 738,
+      "rank": 740,
       "id": "darumaka_shadow",
       "name": "Darumaka (Shadow)",
       "profile": "rank1",
@@ -175381,7 +175855,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 739,
+      "rank": 741,
       "id": "lunala",
       "name": "Lunala",
       "profile": "rank1",
@@ -175619,7 +176093,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 740,
+      "rank": 742,
       "id": "floatzel",
       "name": "Floatzel",
       "profile": "rank1",
@@ -175856,7 +176330,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 741,
+      "rank": 743,
       "id": "metagross",
       "name": "Metagross",
       "profile": "rank1",
@@ -176094,7 +176568,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 742,
+      "rank": 744,
       "id": "stufful",
       "name": "Stufful",
       "profile": "rank1",
@@ -176332,7 +176806,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 743,
+      "rank": 745,
       "id": "slowpoke_galarian",
       "name": "Slowpoke (Galarian)",
       "profile": "rank1",
@@ -176569,7 +177043,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 744,
+      "rank": 746,
       "id": "ho_oh",
       "name": "Ho-Oh",
       "profile": "rank1",
@@ -176807,7 +177281,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 745,
+      "rank": 747,
       "id": "growlithe",
       "name": "Growlithe",
       "profile": "rank1",
@@ -177044,7 +177518,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 746,
+      "rank": 748,
       "id": "vanillish",
       "name": "Vanillish",
       "profile": "rank1",
@@ -177281,7 +177755,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 747,
+      "rank": 749,
       "id": "graveler_shadow",
       "name": "Graveler (Shadow)",
       "profile": "rank1",
@@ -177519,7 +177993,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 748,
+      "rank": 750,
       "id": "rhyperior",
       "name": "Rhyperior",
       "profile": "rank1",
@@ -177757,7 +178231,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 749,
+      "rank": 751,
       "id": "toedscool",
       "name": "Toedscool",
       "profile": "rank1",
@@ -177995,7 +178469,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 750,
+      "rank": 752,
       "id": "cryogonal",
       "name": "Cryogonal",
       "profile": "rank1",
@@ -178232,7 +178706,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 751,
+      "rank": 753,
       "id": "silicobra",
       "name": "Silicobra",
       "profile": "rank1",
@@ -178469,7 +178943,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 752,
+      "rank": 754,
       "id": "braixen_shadow",
       "name": "Braixen (Shadow)",
       "profile": "rank1",
@@ -178706,7 +179180,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 753,
+      "rank": 755,
       "id": "poliwhirl",
       "name": "Poliwhirl",
       "profile": "rank1",
@@ -178943,7 +179417,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 754,
+      "rank": 756,
       "id": "zarude",
       "name": "Zarude",
       "profile": "rank1",
@@ -179181,7 +179655,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 755,
+      "rank": 757,
       "id": "graveler_alolan",
       "name": "Graveler (Alolan)",
       "profile": "rank1",
@@ -179419,7 +179893,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 756,
+      "rank": 758,
       "id": "snubbull_shadow",
       "name": "Snubbull (Shadow)",
       "profile": "rank1",
@@ -179656,7 +180130,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 757,
+      "rank": 759,
       "id": "kilowattrel",
       "name": "Kilowattrel",
       "profile": "rank1",
@@ -179894,7 +180368,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 758,
+      "rank": 760,
       "id": "celebi",
       "name": "Celebi",
       "profile": "rank1",
@@ -180132,7 +180606,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 759,
+      "rank": 761,
       "id": "yveltal",
       "name": "Yveltal",
       "profile": "rank1",
@@ -180370,7 +180844,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 760,
+      "rank": 762,
       "id": "ponyta_shadow",
       "name": "Ponyta (Shadow)",
       "profile": "rank1",
@@ -180607,7 +181081,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 761,
+      "rank": 763,
       "id": "elekid",
       "name": "Elekid",
       "profile": "rank1",
@@ -180844,7 +181318,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 762,
+      "rank": 764,
       "id": "brionne",
       "name": "Brionne",
       "profile": "rank1",
@@ -181081,7 +181555,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 763,
+      "rank": 765,
       "id": "hitmonchan",
       "name": "Hitmonchan",
       "profile": "rank1",
@@ -181318,7 +181792,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 764,
+      "rank": 766,
       "id": "bouffalant",
       "name": "Bouffalant",
       "profile": "rank1",
@@ -181555,7 +182029,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 765,
+      "rank": 767,
       "id": "toxicroak_shadow",
       "name": "Toxicroak (Shadow)",
       "profile": "rank1",
@@ -181793,7 +182267,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 766,
+      "rank": 768,
       "id": "venomoth",
       "name": "Venomoth",
       "profile": "rank1",
@@ -182031,7 +182505,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 767,
+      "rank": 769,
       "id": "magmar_shadow",
       "name": "Magmar (Shadow)",
       "profile": "rank1",
@@ -182268,7 +182742,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 768,
+      "rank": 770,
       "id": "charmeleon",
       "name": "Charmeleon",
       "profile": "rank1",
@@ -182484,7 +182958,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 769,
+      "rank": 771,
       "id": "karrablast",
       "name": "Karrablast",
       "profile": "rank1",
@@ -182721,7 +183195,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 770,
+      "rank": 772,
       "id": "volbeat",
       "name": "Volbeat",
       "profile": "rank1",
@@ -182958,7 +183432,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 771,
+      "rank": 773,
       "id": "haxorus",
       "name": "Haxorus",
       "profile": "rank1",
@@ -183195,7 +183669,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 772,
+      "rank": 774,
       "id": "tsareena",
       "name": "Tsareena",
       "profile": "rank1",
@@ -183432,7 +183906,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 773,
+      "rank": 775,
       "id": "aromatisse",
       "name": "Aromatisse",
       "profile": "rank1",
@@ -183669,7 +184143,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 774,
+      "rank": 776,
       "id": "sharpedo_shadow",
       "name": "Sharpedo (Shadow)",
       "profile": "rank1",
@@ -183907,7 +184381,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 775,
+      "rank": 777,
       "id": "fraxure_shadow",
       "name": "Fraxure (Shadow)",
       "profile": "rank1",
@@ -184144,7 +184618,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 776,
+      "rank": 778,
       "id": "omastar_shadow",
       "name": "Omastar (Shadow)",
       "profile": "rank1",
@@ -184382,7 +184856,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 777,
+      "rank": 779,
       "id": "hattrem",
       "name": "Hattrem",
       "profile": "rank1",
@@ -184619,7 +185093,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 778,
+      "rank": 780,
       "id": "cloyster",
       "name": "Cloyster",
       "profile": "rank1",
@@ -184857,7 +185331,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 779,
+      "rank": 781,
       "id": "moltres_shadow",
       "name": "Moltres (Shadow)",
       "profile": "rank1",
@@ -185095,7 +185569,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 780,
+      "rank": 782,
       "id": "sinistcha",
       "name": "Sinistcha",
       "profile": "rank1",
@@ -185333,7 +185807,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 781,
+      "rank": 783,
       "id": "ivysaur",
       "name": "Ivysaur",
       "profile": "rank1",
@@ -185571,7 +186045,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 782,
+      "rank": 784,
       "id": "barraskewda",
       "name": "Barraskewda",
       "profile": "rank1",
@@ -185808,7 +186282,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 783,
+      "rank": 785,
       "id": "magmortar_shadow",
       "name": "Magmortar (Shadow)",
       "profile": "rank1",
@@ -186045,7 +186519,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 784,
+      "rank": 786,
       "id": "garbodor",
       "name": "Garbodor",
       "profile": "rank1",
@@ -186282,7 +186756,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 785,
+      "rank": 787,
       "id": "spritzee",
       "name": "Spritzee",
       "profile": "rank1",
@@ -186519,7 +186993,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 786,
+      "rank": 788,
       "id": "gothitelle",
       "name": "Gothitelle",
       "profile": "rank1",
@@ -186756,7 +187230,7 @@ window.DECEMBER_2026_RANKINGS = {
       }
     },
     {
-      "rank": 787,
+      "rank": 789,
       "id": "arboliva",
       "name": "Arboliva",
       "profile": "rank1",
@@ -186990,480 +187464,6 @@ window.DECEMBER_2026_RANKINGS = {
         "charged": [
           "EARTH_POWER",
           "TRAILBLAZE"
-        ]
-      }
-    },
-    {
-      "rank": 788,
-      "id": "eelektross",
-      "name": "Eelektross",
-      "profile": "rank1",
-      "averageScore": 318,
-      "externalWeightedAverageScore": 317,
-      "weightedAverageScore": 300,
-      "rawScore": 542,
-      "weightedScore": 478,
-      "competitiveScore": 478,
-      "roleScore": 478,
-      "candidatePriorScore": 556,
-      "metaViabilityScore": 501,
-      "overallScore": 501,
-      "categoryScores": {
-        "lead": {
-          "label": "Lead",
-          "weight": 1,
-          "averageScore": 315,
-          "weightedScore": 305,
-          "competitiveScore": 300,
-          "rawRating": 51,
-          "weightedRating": 49,
-          "competitiveRating": 49,
-          "score": 49,
-          "matchups": 43,
-          "wins": 7,
-          "losses": 36,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "DRAGON_CLAW",
-                "uses": 43
-              },
-              {
-                "id": "THUNDERBOLT",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "closer": {
-          "label": "Closer",
-          "weight": 1,
-          "averageScore": 399,
-          "weightedScore": 402,
-          "competitiveScore": 401,
-          "rawRating": 68,
-          "weightedRating": 69,
-          "competitiveRating": 69,
-          "score": 69,
-          "matchups": 43,
-          "wins": 17,
-          "losses": 26,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "DRAGON_CLAW",
-                "uses": 43
-              },
-              {
-                "id": "THUNDERBOLT",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "switch": {
-          "label": "Switch",
-          "weight": 1,
-          "averageScore": 392,
-          "weightedScore": 210,
-          "competitiveScore": 211,
-          "rawRating": 59,
-          "weightedRating": 32,
-          "competitiveRating": 32,
-          "score": 32,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "DRAGON_CLAW",
-                "uses": 43
-              },
-              {
-                "id": "THUNDERBOLT",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "charger": {
-          "label": "Charger",
-          "weight": 1,
-          "averageScore": 371,
-          "weightedScore": 367,
-          "competitiveScore": 367,
-          "rawRating": 56,
-          "weightedRating": 55,
-          "competitiveRating": 55,
-          "score": 55,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "DRAGON_CLAW",
-                "uses": 43
-              },
-              {
-                "id": "THUNDERBOLT",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "attacker": {
-          "label": "Attacker",
-          "weight": 1,
-          "averageScore": 169,
-          "weightedScore": 167,
-          "competitiveScore": 168,
-          "rawRating": 41,
-          "weightedRating": 42,
-          "competitiveRating": 42,
-          "score": 42,
-          "matchups": 43,
-          "wins": 2,
-          "losses": 41,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "VOLT_SWITCH",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "DRAGON_CLAW",
-                "uses": 43
-              },
-              {
-                "id": "THUNDERBOLT",
-                "uses": 43
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 205.82,
-      "matchups": 172,
-      "wins": 37,
-      "losses": 135,
-      "ties": 0,
-      "winRate": 0.2151,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 399,
-          "matchups": 43,
-          "wins": 17,
-          "losses": 26,
-          "ties": 0
-        },
-        "0-1": {
-          "averageScore": 169,
-          "matchups": 43,
-          "wins": 2,
-          "losses": 41,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 315,
-          "matchups": 43,
-          "wins": 7,
-          "losses": 36,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 388,
-          "matchups": 43,
-          "wins": 11,
-          "losses": 32,
-          "ties": 0
-        }
-      },
-      "types": [
-        "electric"
-      ],
-      "dex": 604,
-      "build": {
-        "ivAtk": 1,
-        "ivDef": 15,
-        "ivHp": 14,
-        "level": 20.5,
-        "cp": 1500
-      },
-      "moveset": {
-        "fast": "VOLT_SWITCH",
-        "charged": [
-          "DRAGON_CLAW",
-          "THUNDERBOLT"
-        ]
-      }
-    },
-    {
-      "rank": 789,
-      "id": "clefable",
-      "name": "Clefable",
-      "profile": "rank1",
-      "averageScore": 310,
-      "externalWeightedAverageScore": 299,
-      "weightedAverageScore": 328,
-      "rawScore": 588,
-      "weightedScore": 529,
-      "competitiveScore": 529,
-      "roleScore": 529,
-      "candidatePriorScore": 436,
-      "metaViabilityScore": 501,
-      "overallScore": 501,
-      "categoryScores": {
-        "lead": {
-          "label": "Lead",
-          "weight": 1,
-          "averageScore": 391,
-          "weightedScore": 379,
-          "competitiveScore": 379,
-          "rawRating": 63,
-          "weightedRating": 61,
-          "competitiveRating": 62,
-          "score": 62,
-          "matchups": 43,
-          "wins": 12,
-          "losses": 31,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "CHARGE_BEAM",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "METEOR_MASH",
-                "uses": 43
-              },
-              {
-                "id": "MOONBLAST",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "closer": {
-          "label": "Closer",
-          "weight": 1,
-          "averageScore": 402,
-          "weightedScore": 391,
-          "competitiveScore": 386,
-          "rawRating": 68,
-          "weightedRating": 67,
-          "competitiveRating": 66,
-          "score": 66,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "CHARGE_BEAM",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "METEOR_MASH",
-                "uses": 43
-              },
-              {
-                "id": "MOONBLAST",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "switch": {
-          "label": "Switch",
-          "weight": 1,
-          "averageScore": 432,
-          "weightedScore": 268,
-          "competitiveScore": 270,
-          "rawRating": 64,
-          "weightedRating": 41,
-          "competitiveRating": 41,
-          "score": 41,
-          "matchups": 43,
-          "wins": 15,
-          "losses": 28,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "CHARGE_BEAM",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "METEOR_MASH",
-                "uses": 43
-              },
-              {
-                "id": "MOONBLAST",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "charger": {
-          "label": "Charger",
-          "weight": 1,
-          "averageScore": 426,
-          "weightedScore": 411,
-          "competitiveScore": 411,
-          "rawRating": 64,
-          "weightedRating": 62,
-          "competitiveRating": 62,
-          "score": 62,
-          "matchups": 43,
-          "wins": 17,
-          "losses": 26,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "CHARGE_BEAM",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "METEOR_MASH",
-                "uses": 43
-              },
-              {
-                "id": "MOONBLAST",
-                "uses": 43
-              }
-            ]
-          }
-        },
-        "attacker": {
-          "label": "Attacker",
-          "weight": 1,
-          "averageScore": 166,
-          "weightedScore": 161,
-          "competitiveScore": 162,
-          "rawRating": 40,
-          "weightedRating": 40,
-          "competitiveRating": 40,
-          "score": 40,
-          "matchups": 43,
-          "wins": 1,
-          "losses": 42,
-          "ties": 0,
-          "moveUsage": {
-            "fast": [
-              {
-                "id": "CHARGE_BEAM",
-                "uses": 43
-              }
-            ],
-            "charged": [
-              {
-                "id": "METEOR_MASH",
-                "uses": 43
-              },
-              {
-                "id": "MOONBLAST",
-                "uses": 43
-              }
-            ]
-          }
-        }
-      },
-      "scoreStdDev": 208.98,
-      "matchups": 172,
-      "wins": 31,
-      "losses": 141,
-      "ties": 0,
-      "winRate": 0.1802,
-      "shieldStates": {
-        "0-0": {
-          "averageScore": 402,
-          "matchups": 43,
-          "wins": 13,
-          "losses": 30,
-          "ties": 0
-        },
-        "0-1": {
-          "averageScore": 166,
-          "matchups": 43,
-          "wins": 1,
-          "losses": 42,
-          "ties": 0
-        },
-        "1-1": {
-          "averageScore": 391,
-          "matchups": 43,
-          "wins": 12,
-          "losses": 31,
-          "ties": 0
-        },
-        "2-2": {
-          "averageScore": 283,
-          "matchups": 43,
-          "wins": 5,
-          "losses": 38,
-          "ties": 0
-        }
-      },
-      "types": [
-        "fairy"
-      ],
-      "dex": 36,
-      "build": {
-        "ivAtk": 0,
-        "ivDef": 13,
-        "ivHp": 15,
-        "level": 23.5,
-        "cp": 1500
-      },
-      "moveset": {
-        "fast": "CHARGE_BEAM",
-        "charged": [
-          "MOONBLAST",
-          "METEOR_MASH"
         ]
       }
     },

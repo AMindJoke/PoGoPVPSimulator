@@ -94,10 +94,13 @@ async function main() {
   const ranking = JSON.parse(read("data/seasons/december-2026/great-league-rankings.json"));
   const defaults = JSON.parse(read("data/seasons/december-2026/default-movesets.json"));
   for (const [id, fast, charged] of [
+    ["clefable", "FAIRY_WIND", ["MOONBLAST", "MYSTICAL_FIRE"]],
     ["cradily", "ACID", ["ROCK_TOMB", "GRASS_KNOT"]],
     ["cradily_b", "ACID", ["ROCK_TOMB", "GRASS_KNOT"]],
+    ["eelektross", "VOLT_SWITCH", ["LUNGE", "PSYCHIC_FANGS"]],
     ["houndstone", "BITE", ["SHADOW_BALL", "PSYCHIC_FANGS"]],
-    ["pidgeot", "WING_ATTACK", ["BRAVE_BIRD", "FEATHER_DANCE"]]
+    ["pidgeot", "WING_ATTACK", ["BRAVE_BIRD", "FEATHER_DANCE"]],
+    ["starmie", "PSYWAVE", ["SURF", "TRIPLE_AXEL"]]
   ]) {
     const entry = ranking.entries.find(candidate => candidate.id === id);
     assert.deepEqual(defaults[id], { fast, charged }, id);

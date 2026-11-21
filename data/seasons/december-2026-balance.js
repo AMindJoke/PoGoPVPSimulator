@@ -25,7 +25,7 @@
     dataVersion: "december-2026-laic-1",
     effectiveDate: "2026-12-01",
     enabled: true,
-    rankingVersion: "great-league-december-2026-laic-v52-4",
+    rankingVersion: "great-league-december-2026-laic-v52-5",
     generatedAssets: Object.freeze({
       rankings: "data/seasons/december-2026/great-league-rankings.js",
       rankingDetails: "data/seasons/december-2026/great-league-ranking-details.js",
@@ -109,10 +109,13 @@
       wartortle_shadow: add(["WATERFALL"])
     }),
     defaultMovesets: Object.freeze({
+      clefable: Object.freeze({ fast: "FAIRY_WIND", charged: Object.freeze(["MOONBLAST", "MYSTICAL_FIRE"]) }),
       cradily: cradilyMoveset,
       cradily_b: cradilyMoveset,
+      eelektross: Object.freeze({ fast: "VOLT_SWITCH", charged: Object.freeze(["LUNGE", "PSYCHIC_FANGS"]) }),
       houndstone: Object.freeze({ fast: "BITE", charged: Object.freeze(["SHADOW_BALL", "PSYCHIC_FANGS"]) }),
-      pidgeot: Object.freeze({ fast: "WING_ATTACK", charged: Object.freeze(["BRAVE_BIRD", "FEATHER_DANCE"]) })
+      pidgeot: Object.freeze({ fast: "WING_ATTACK", charged: Object.freeze(["BRAVE_BIRD", "FEATHER_DANCE"]) }),
+      starmie: Object.freeze({ fast: "PSYWAVE", charged: Object.freeze(["SURF", "TRIPLE_AXEL"]) })
     }),
     pendingValues: Object.freeze([])
   });
